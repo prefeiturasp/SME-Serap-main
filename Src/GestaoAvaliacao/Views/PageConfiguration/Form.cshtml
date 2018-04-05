@@ -1,0 +1,146 @@
+﻿@using GestaoAvaliacao.Util;
+@*Alertas*@
+<alert></alert>
+<div class="wellCustom" data-ng-controller="PageConfigurationFormController">
+    <div class="headerCustom">
+        <h4>Configuração da página inicial <span>Adicionar uma nova configuração de página</span></h4>
+    </div>
+    <div class="well well-large">
+        <div ng-init="loadPage()">
+            <form role="form">
+                <div class="form-group">
+                    @* Categoria *@
+                    <div class="campoLabel">
+                        <label for="tipoNivelEnsino">Categoria *: </label>
+                        <div id="container">
+                            <select id="tipoNivelEnsino" class="form-control"
+                                    ng-change="limparCampos();"
+                                    ng-model="PageConfiguration.CategoryCombo"
+                                    ng-options="c as c.Description for c in categoryList"
+                                    ng-title="PageConfiguration.CategoryCombo.Description"
+                                    ng-title-propertie="Description"
+                                    ng-title-index="1"
+                                    ng-title-selected
+                                    ng-hide="disableComboCategory">
+                                <option value="">--Selecione--</option>
+                            </select>
+                            <label ng-show="disableComboCategory">{{PageConfiguration.CategoryCombo.Description}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div id="divTextoPrincipal" ng-if="PageConfiguration.CategoryCombo.Id == 1">
+                    <div class="campoLabel">
+                        <label>Título *: </label>
+                        <div id="container">
+                            <input type="text" id="tituloTextoPrincipal" class="form-control ng-pristine ng-valid" maxlength="100" placeholder="Digite aqui o título" ng-model="PageConfiguration.Title">
+                        </div>
+                    </div>
+                    <div class="campoLabel">
+                        <label>Descrição *: </label>
+                        <textarea rows="4" id="descricaoTextoPrincipal" class="form-control ng-pristine ng-valid" maxlength="5000" placeholder="Digite aqui a descrição" ng-model="PageConfiguration.Description" style="resize:vertical"></textarea>
+                    </div>
+                </div>
+                <div id="divLinkExterno" ng-if="PageConfiguration.CategoryCombo.Id == 2">
+                    <div class="campoLabel">
+                        <label>Título *: </label>
+                        <div id="container">
+                            <input type="text" id="tituloLinkExterno" class="form-control ng-pristine ng-valid" maxlength="100" placeholder="Digite aqui o título" ng-model="PageConfiguration.Title">
+                        </div>
+                    </div>
+                    <div class="campoLabel">
+                        <label>Descrição *: </label>
+                        <textarea rows="4" id="descricaoLinkExterno" class="form-control ng-pristine ng-valid" maxlength="5000" placeholder="Digite aqui a descrição" ng-model="PageConfiguration.Description" style="resize:vertical"></textarea>
+                    </div>
+                    <div class="campoLabel">
+                        <label>Link *: </label>
+                        <input id="descricaoLinkExterno" class="form-control ng-pristine ng-valid" maxlength="300" placeholder="Digite aqui o link (colocar http ou https no começo)" ng-model="PageConfiguration.Link">
+                    </div>                   
+                    <div class="campoLabel">
+                        @* Header *@
+                        <label>Destaque: </label>
+                        <div class="switch" ng-click="selectFeaturedLinkExterno();"
+                             ng-class="{'off': !PageConfiguration.Featured}" style="position: absolute; margin: 4px 206px;"><input type="button" /></div>
+                    </div>
+                </div>
+                <div id="divFerramentaDestaque" ng-if="PageConfiguration.CategoryCombo.Id == 3">
+                    <div class="campoLabel">
+                        <label>Título *: </label>
+                        <div id="container">
+                            <input type="text" id="tituloFerramentaDestaque" class="form-control ng-pristine ng-valid" maxlength="100" placeholder="Digite aqui o título" ng-model="PageConfiguration.Title">
+                        </div>
+                    </div>
+                    <div class="campoLabel">
+                        <label>Descrição *: </label>
+                        <textarea rows="4" id="descricaoFerramentaDestaque" class="form-control ng-pristine ng-valid" maxlength="5000" placeholder="Digite aqui a descrição" ng-model="PageConfiguration.Description" style="resize:vertical"></textarea>
+                    </div>
+                    <div class="campoLabel">
+                        <label>Texto do botão *: </label>
+                        <input id="textoBotaoFerramentaDestaque" class="form-control ng-pristine ng-valid" maxlength="300" placeholder="Digite aqui o texto do botão" ng-model="PageConfiguration.ButtonDescription">
+                    </div>
+                    <div class="campoLabel">
+                        <label>Link *: </label>
+                        <input id="descricaoFerramentaDestaque" class="form-control ng-pristine ng-valid" maxlength="300" placeholder="Digite aqui o link (colocar http ou https no começo)" ng-model="PageConfiguration.Link">
+                    </div>
+                    <div class="campoLabel">
+                        <label>Ícone *: </label>
+                        <div class="uploadImage">
+                            <div upload="" type="@(EnumFileType.IconeFerramentaDestaque)" component="PageConfiguration.FileIllustrativeImage" placeholder="uma imagem" data-listextensions="listextensionsImage"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="divFerramentas" ng-if="PageConfiguration.CategoryCombo.Id == 4">
+                    <div class="campoLabel">
+                        <label>Título *: </label>
+                        <div id="container">
+                            <input type="text" id="tituloFerramentas" class="form-control ng-pristine ng-valid" maxlength="100" placeholder="Digite aqui o título" ng-model="PageConfiguration.Title">
+                        </div>
+                    </div>
+                    <div class="campoLabel">
+                        <label>Link *: </label>
+                        <input id="descricaoFerramentas" class="form-control ng-pristine ng-valid" maxlength="300" placeholder="Digite aqui o link (colocar http ou https no começo)" ng-model="PageConfiguration.Link">
+                    </div>
+                    <div class="campoLabel">
+                        <label>Ícone *: </label>
+                        <div class="uploadImage">
+                            <div upload="" type="@(EnumFileType.IconeFerramentas)" component="PageConfiguration.FileIllustrativeImage" placeholder="uma imagem" data-listextensions="listextensionsImage"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="divVideo" ng-if="PageConfiguration.CategoryCombo.Id == 5">
+                    <div class="campoLabel">
+                        <label>Título *: </label>
+                        <div id="container">
+                            <input type="text" id="tituloVideo" class="form-control ng-pristine ng-valid" maxlength="100" placeholder="Digite aqui o título" ng-model="PageConfiguration.Title">
+                        </div>
+                    </div>
+                    <div class="campoLabel">
+                        <label>Descrição *: </label>
+                        <textarea rows="4" id="descricaoVideo" class="form-control ng-pristine ng-valid" maxlength="5000" placeholder="Digite aqui a descrição" ng-model="PageConfiguration.Description" style="resize:vertical"></textarea>
+                    </div>
+                    <div class="campoLabel">
+                        <label>Vídeo *: </label>
+                        <div class="uploadImage">
+                            <div upload="" type="@(EnumFileType.Video)" component="PageConfiguration.FileVideo" placeholder="um vídeo" data-listextensions="listextensionsVideo"></div>
+                        </div>
+                    </div>
+                    <div class="campoLabel">
+                        <label>Thumbnail *: </label>
+                        <div class="uploadImage">
+                            <div upload="" type="@(EnumFileType.ThumbnailVideo)" component="PageConfiguration.FileIllustrativeImage" placeholder="uma imagem" data-listextensions="listextensionsImage"></div>
+                        </div>
+                    </div>
+                    <div class="campoLabel">
+                        @* Header *@
+                        <label>Destaque: </label>
+                        <div class="switch" ng-click="selectFeaturedVideo();"
+                             ng-class="{'off': !PageConfiguration.Featured}" style="position: absolute; margin: 4px 206px;"><input type="button" /></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="well well-large itens">
+        <a class="btnCancelar pull-right" href="~/PageConfiguration/List"> Cancelar </a>
+        <button class="btnPadrao2 pull-right" ng-click="salvar(pageConfiguration)" ng-disabled="PageConfiguration.CategoryCombo.Id == undefined || PageConfiguration.CategoryCombo.Id <= 0"> Salvar </button>
+    </div>
+</div>

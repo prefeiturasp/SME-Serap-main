@@ -1,0 +1,84 @@
+﻿<alert></alert>
+<section class="wellCustom" ng-controller="ModelEvaluationMatrixListController">
+    <div class="headerCustom ">
+        <h4>Modelo de matriz de avaliação <span> Listagem</span></h4>
+    </div>
+    <div class="well well-large">
+        <div class="container-fluid">
+            <form class="row-fluid">
+                <div class="col-md-8 form-inline-page">
+                    <input class="form-pesquisa" ng-model="searchField" type="text" placeholder="Nome do modelo de matriz">
+                    <input class="form-pesquisa" style="width:160px;" ng-model="levelField" type="text" ng-change="numberOnly()" placeholder="Números de níveis">
+                    <button class="btn-pesquisar" ng-click="loadPage(0)"><i class="material-icons">search</i></button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btnPadrao pull-right" ng-click="create()"> Novo modelo de matriz</button>
+                </div>
+            </form>
+        </div>
+        <table class="table table-hover">
+            <colgroup>
+                <col width="70%" />
+                <col width="12%" />
+                <col width="12%" />
+                <col width="2%" />
+                <col width="2%" />
+            </colgroup>
+            <thead>
+				<tr ng-show="listaModeloMatriz">
+                    <th>Nome</th>
+                    <th>Nº de níveis</th>
+                    <th>Situação</th>
+					<th>Editar</th>
+					<th>Excluir</th>
+				</tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="lmm in listaModeloMatriz">
+                    <td class="selectable">{{lmm.Description}}</td>
+                    <td>{{lmm.levelCount}}</td>
+                    <td>{{ situacaoOptions[lmm.modelState-1].Description }}</td>
+                    <td class="center">
+                        <a type="button" class="material-icons" ng-click="edit(lmm)">
+                            edite
+                        </a>
+                    </td>
+                    <td class="center">
+                        <a type="button" class="material-icons" ng-click="callModal(lmm)">
+                            delete
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="panel-body">
+            <page method="loadPage()" ng-show="listaModeloMatriz" total-pages="{{pages}}" total-itens="{{total}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+            <p class="nresultados" ng-hide="listaModeloMatriz">Nenhum resultado encontrado.</p>
+        </div>
+    </div>
+
+    @*Modal*@
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{ itemDeletado.Description }}</h4>
+                </div>
+
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir o modelo de matriz de avaliação <b>{{itemDeletado.Description}}</b> ? </span>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btnPadrao" ng-click="delete()">Excluir</button>
+                    <button type="button" class="btnCancelar2" ng-click="itemDeletado=undefined;" data-dismiss="modal">Fechar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @*fim modal*@
+
+</section>

@@ -1,0 +1,798 @@
+﻿@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/Assets/fonts/MaterialIcons-Regular/MaterialIcons-Regular.eot);
+    /* For IE6-8 */
+    src: local("Material Icons"), local("MaterialIcons-Regular"), url(/Assets/fonts/MaterialIcons-Regular.woff2) format("woff2"), url(/Assets/fonts/MaterialIcons-Regular.woff) format("woff"), url(/Assets/onts/MaterialIcons-Regular.ttf) format("truetype");
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 20px;
+    /* Preferred icon size */
+    width: 1em;
+    height: 1em;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
+#answerSheetOrientation {
+    display: inline-block;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.answerSheetStudentID {
+    background-size: 774.7244094488px;
+    padding: 35px 255px 0 0;
+    background-repeat: no-repeat;
+    overflow: visible;
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+    background-position: right top;
+}
+
+.answerFrame {
+    margin-top: 220px;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+}
+
+.material-icons {
+    vertical-align: middle;
+}
+
+.material-icons.menor {
+    font-size: 14px;
+    width: 0px;
+}
+
+.prova-body {
+    margin-top: -5px;
+}
+
+.pdf-content {
+    font-family: "Arial";
+    color: black;
+    font-size: 16px;
+}
+
+.pdf-content .prova-hr-border {
+    border-top: black solid 2px;
+    margin-top: 10px;
+    margin-bottom: 40px;
+}
+
+.pdf-content .prova-table-container {
+    width: 90%;
+    border-radius: 30px;
+    border: 3px solid #000;
+    overflow: hidden;
+    color: black;
+}
+
+.pdf-content .prova-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.pdf-content .prova-table tr {
+    height: 45px;
+}
+
+.pdf-content .prova-table tr td {
+    text-align: left;
+    width: 90px;
+    border-bottom: 1px solid #000;
+    padding-left: 10px;
+    padding-top: 15px;
+}
+
+.pdf-content .prova-table tr.prova-tr-first {
+    height: 55px !important;
+}
+
+.pdf-content .prova-table tr.prova-tr-first td {
+    padding-top: 20px !important;
+}
+
+.pdf-content .prova-table tr.prova-tr-last {
+    height: 20px !important;
+}
+
+.pdf-content .pageTop {
+    /* margin-top: 0px; */
+}
+
+.pdf-content .prova-description {
+    text-align: center;
+    color: black;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.pdf-content .prova-question {
+    color: black;
+    padding-top: 20px;
+}
+
+.pdf-content .prova-question-num {
+    font-style: italic;
+}
+
+.pdf-content .prova-question p {
+    text-align: justify;
+}
+
+.pdf-content .prova-quest {
+    text-align: right !important;
+    color: black;
+}
+
+.pdf-content .prova-answer p {
+    margin: 0px 0px !important;
+    padding-bottom: 1em;
+}
+
+.pdf-content .prova-alternative {
+    float: left;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.pdf-content .prova-gabarito {
+    page-break-before: always;
+    text-align: center;
+}
+
+.pdf-content .prova-gabarito-description {
+    text-align: center;
+}
+
+.pdf-content .prova-gabarito-questions {
+    text-align: center;
+    padding: 0;
+}
+
+.pdf-content .prova-gabarito-container {
+    float: left;
+    margin-left: 30px;
+}
+
+.pdf-content .prova-gabarito-table {
+    float: left;
+    text-align: center;
+    padding: 0;
+}
+
+.pdf-content .prova-gabarito-table .td-number {
+    padding: 7px;
+    text-align: center;
+    opacity: 0.5;
+}
+
+.pdf-content .prova-gabarito-table .td-resp {
+    text-align: center;
+    padding: 13px;
+    border: 1px solid #000;
+}
+
+.pdf-content .page-break {
+    display: block;
+    page-break-inside: avoid;
+}
+
+.pdf-content .page-break img {
+    page-break-inside: avoid;
+}
+
+.pdf-content .campoLabel {
+    display: table;
+    height: 33px;
+    /*width: calc(100% - 50px);*/
+    width: 100%;
+}
+
+.pdf-content .campoLabel > * {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.pdf-content .modeloProva {
+    position: relative;
+    box-shadow: 0 1500px 0 #327acb inset;
+    margin-top: -30px;
+}
+
+.pdf-content .modeloProva .campoLabel label {
+    margin: 0;
+    max-width: 90px;
+}
+
+.pdf-content .modeloProva .topoConfig {
+    width: 100%;
+    display: inline-block;
+    margin-bottom: 40px;
+}
+
+.pdf-content .modeloProva .topoProva {
+    padding: 0 25px;
+    display: inline-block;
+    width: 100%;
+    margin: 15px 0;
+}
+
+.pdf-content .modeloProva .topoProva .checkbox {
+    display: inline-block;
+    margin: 0 20px 0 20px;
+}
+
+.pdf-content .btnGeralProva {
+    float: right;
+    margin-top: 15px;
+}
+
+.pdf-content .btnGeralProva a {
+    text-transform: uppercase;
+    color: white;
+    padding: 0 10px 0 0;
+    font-size: 14px;
+}
+
+.pdf-content .btnGeralProva a.salvar {
+    color: #97bce5;
+}
+
+.pdf-content .thumbnail-logo {
+    display: none;
+    /*background: url("../images/default.jpg");
+background-size: cover;
+width: 251px;
+height: 134px;
+display: inline-block;
+flex: inherit;
+position: relative;
+margin-top: 15px;
+  */
+}
+
+.pdf-content .image-logo {
+    display: inline-block;
+    flex: inherit;
+    position: relative;
+    margin-right: 15px;
+    margin-top: 15px;
+}
+
+.pdf-content .leftTest {
+    text-align: left;
+    /*padding-left: 50px;*/
+}
+
+.pdf-content .leftTest > * {
+    display: inline-block;
+}
+
+.pdf-content .centerTest {
+    text-align: center;
+}
+
+.pdf-content .centerTest > * {
+    display: inline-block;
+}
+
+.pdf-content .rightTest {
+    text-align: right;
+}
+
+.pdf-content .rightTest > * {
+    display: inline-block;
+}
+
+.pdf-content .capa {
+    page-break-after: always;
+}
+
+.pdf-content .logosmall {
+    height: 50px;
+    width: auto;
+}
+
+.pdf-content .logomedium {
+    height: 100px;
+    width: auto;
+}
+
+.pdf-content .logobig {
+    height: 150px;
+    width: auto;
+}
+
+.pdf-content .watermark {
+    opacity: .4;
+}
+
+.pdf-content .col-md-6 {
+    float: left;
+    width: 50%;
+    position: relative;
+    min-height: 1px;
+}
+
+.pdf-content .col-md-4 {
+    float: left;
+    width: 33.33333333%;
+    position: relative;
+    min-height: 1px;
+}
+
+.pdf-content .col-md-8 {
+    float: left;
+    width: 66.66666667%;
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+}
+
+.pdf-content .col-md-12 {
+    float: left;
+    width: 100%;
+    position: relative;
+    min-height: 1px;
+}
+
+/*.pdf-content input {
+border: 0;
+border-bottom: 1px solid #000;
+width: 90%;
+}*/
+
+.pdf-content input {
+    border: 0;
+    border-bottom: 0;
+    width: 100%;
+}
+
+.pdf-content .numeral {
+    display: inline-block;
+}
+
+.pageBreakBefore {
+    page-break-before: always;
+}
+
+.pageBreakInside {
+    page-break-inside: avoid;
+}
+
+.pdf-content .answerSheetPage hr, .pdf-content #answerSheetPage hr {
+    visibility: hidden !important;
+    display: none !important;
+    height: 0 !important;
+    border: 0 !important;
+    border-width: 0 !important;
+    margin: 0 !important;
+    color: transparent !important;
+    border-style: none !important;
+    border-top: transparent !important;
+}
+
+.pdf-content .answerSheetStudentData {
+    border: 1px solid #000;
+    margin: 0;
+    padding: 10px 10px 5px 10px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.pdf-content .testStudentData {
+    /*border: 1px solid #000;*/
+    margin-top: 14px;
+    padding: 10px 10px 10px 10px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.pdf-content .test-items {
+    margin-top: 25px;
+}
+
+.pdf-content h1.prova-description {
+    font-size: 14px;
+}
+
+.pdf-content h2.prova-description {
+    font-size: 18px;
+    text-transform: uppercase;
+    margin: 0;
+    /*display: inline-block;*/
+    vertical-align: middle;
+    /*width: calc(100% - 99px);*/
+}
+
+.testTitleSection {
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 10px;
+}
+
+.pdf-content .campoLabel label {
+    /*width: 100px;
+  max-width: 100px;*/
+    width: 3%;
+    padding-right: 15px;
+}
+
+/*.pdf-content .form-control {
+  border-bottom: 1px solid #000;
+  margin: 0 0 10px 0;
+}*/
+
+#modelTestStudentData .campoLabel > div input, .campoLabel > div input {
+    border-bottom: 1px solid #000 !important;
+    margin: 0 0 10px 0;
+}
+
+.pdf-content label {
+    color: #000;
+}
+
+.pdf-content {
+    color: #000;
+}
+
+.pdf-content ul {
+    padding-left: 20px;
+    margin-top: 5px;
+}
+
+.pdf-content ul li {
+    font-size: 14px;
+}
+
+.pdf-content hr {
+    background: transparent;
+    color: #000;
+    border-width: 1px;
+}
+
+.pdf-content .studentSignature {
+    padding: 0 12px 0;
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.studentSignature .col-md-12 {
+    margin-bottom: 10px;
+}
+
+.testHeader {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-align-content: center;
+    -ms-flex-line-pack: center;
+    align-content: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+.testHeader img {
+    -webkit-order: 0;
+    -ms-flex-order: 0;
+    order: 0;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    -webkit-align-self: flex-start;
+    -ms-flex-item-align: flex-start;
+    align-self: flex-start;
+}
+
+.testHeader div {
+    -webkit-order: 0;
+    -ms-flex-order: 0;
+    order: 0;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    -webkit-align-self: center;
+    -ms-flex-item-align: center;
+    align-self: center;
+}
+
+.pdf-content .testInfo {
+    text-align: center;
+    font-size: 14px;
+    vertical-align: middle;
+    width: 100%;
+    display: inline-block;
+}
+
+.pdf-content img {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.line-separation {
+    height: 1px;
+    /*background: lighten( $cor-preta, 85% );*/
+    background: #000000;
+    display: inline-block;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.sideleft {
+    width: 67%;
+    float: left;
+    min-height: 485px;
+    border: 2px dashed #969696;
+    margin: 15px;
+    border-radius: 25px;
+    padding: 15px;
+    position: relative;
+}
+
+.sideright {
+    width: 25%;
+    float: right;
+    text-align: right;
+    padding-top: 40px;
+}
+
+.sideright img {
+    width: 100%;
+}
+
+.sideright .table-pdf {
+    margin: 17px;
+}
+
+.table-pdf {
+    /*margin: 140px auto;*/
+    margin-bottom: 20px;
+    position: relative;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+.table-pdf table {
+    margin: 30px 30px 0 30px;
+    border-spacing: 0;
+    border: 0;
+    table-layout: fixed;
+    position: relative;
+}
+
+.table-pdf tbody {
+    display: inline-table;
+}
+
+.table-pdf tbody:last-child {
+    border: 0;
+}
+
+.table-pdf tr td {
+    box-shadow: 0 2px 0px 0px #e4e3e3;
+}
+
+.pdf-content table tbody tr td:first-child {
+    box-shadow: 26px 0 0 #e4e3e3 inset;
+    color: #0A0A0A;
+    text-align: left;
+    padding-left: 0px !important;
+    text-align: center;
+}
+
+.table-pdf tr td, .table-pdf tr th {
+    text-align: center;
+    vertical-align: middle !important;
+    padding: 3px 3px !important;
+    font-size: 15px;
+    width: 30px !important;
+    height: 30px !important;
+    /*box-shadow: 0 2px 0px 0px #e4e3e3;*/
+    /* box-sizing: border-box; */
+}
+
+.absence-container .mark,
+.table-pdf .mark {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #000;
+    left: 0;
+    top: 0;
+}
+
+.table-pdf .mark.right {
+    right: 0;
+    left: inherit;
+    top: 0;
+}
+
+.absence-container {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    float: left;
+    margin-left: 34%;
+    margin-bottom: 185px;
+}
+
+.absence-container .mark.right {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #000;
+    left: 60px;
+    top: 0;
+}
+
+.absence-container .mark.bottomLeft {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #000;
+    left: 0;
+    top: 90px;
+}
+
+.absence-container .mark.bottomRight {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #000;
+    left: 60px;
+    top: 90px;
+}
+
+.absence-container .label-absence {
+    position: absolute;
+    width: 90px;
+    height: 20px;
+    background: #e4e3e3;
+    left: 0;
+    top: 35px;
+}
+
+.absence-container .content-number {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    left: 30px;
+    top: 60px;
+}
+
+.table-pdf .mark.bottom {
+    left: 0;
+    top: inherit;
+    bottom: 0;
+}
+
+/*.table-pdf .number,*/
+.absence-container .content-number .number,
+.table-pdf .number {
+    color: #8c8c8c;
+    width: 23px;
+    height: 23px;
+    box-sizing: border-box;
+    border-radius: 100%;
+    border: 1px solid #b3b3b3;
+    vertical-align: middle;
+    padding-top: 1px;
+    margin: 0 auto;
+    margin-top: 1px;
+}
+
+.div-columns {
+    float: left;
+}
+
+.margin-right {
+    margin-right: 0px !important;
+}
+
+.margin-left {
+    margin-left: 0px !important;
+}
+
+#MathJax_Message {
+    display: none !important;
+}
+
+.pdf-content .MathJax_Display {
+    font-size: 40px;
+}
+
+.pdf-content.preview .MathJax_Display {
+    font-size: 15px;
+}
+
+.pdf-content .pageTop img.logosmall {
+    display: inline-block;
+    /* margin: 0 auto; */
+    /* margin-bottom: 0px; */
+    margin-right: 21px;
+    /* margin-top: -110px; */
+    vertical-align: middle;
+}
+
+.logosmall {
+    height: 50px;
+    width: auto;
+}
+
+.pdf-content .textoCapa {
+    min-height: 650px;
+}
+
+.pdf-content .pdf-cover .testStudentData {
+    margin-top: 20px;
+}
+
+.pdf-content .prova-question .baseTextDefault {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.pdf-content #answerSheetPage .infoarea {
+    border-bottom: 1px dashed #8a8a8a;
+    margin-top: 5px;
+    width: 100%;
+    float: left;
+    font-size: 16px;
+}
+
+.footer{
+    width:100%;
+    padding:8px 0;
+    text-align: center;
+    position:absolute;
+    bottom:0;
+}
+
+.knowledgeArea {
+    background-color: #e4e3e3!important;
+    text-align: center!important;
+    max-width: 15ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 7px!important;
+    padding-right: 7px!important;
+}

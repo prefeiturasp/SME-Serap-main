@@ -1,0 +1,184 @@
+﻿@using GestaoAvaliacao.Util;
+<alert></alert>
+<div class="wellCustom" ng-controller="BatchDetailsLotFilesController">
+    <div ng-if="!blockPage">
+        @* Header *@
+        <div class="headerCustom">
+            <h4> Upload de folhas de resposta em lote  <span></span></h4>
+        </div>
+        @* Informações *@
+        <div class="resumoAdesao">
+            <div class="maxWidth">
+                <div class="dadosGerais">
+                    <h2 ng-if="generalBatch">
+                        <strong ng-if="testInformation.test.Description">{{testInformation.test.Description}}</strong> {{testInformation.test.FrequencyApplication}} |  {{testInformation.test.Discipline}}
+                    </h2>
+                    <h2 ng-if="!generalBatch"><strong>Upload</strong><i class="material-icons">help_outline</i></h2>
+
+                    <div class="dadosResumo pesquisa-upload">
+                        <div>
+                            <p ng-if="testInformation.team.Description" style="max-width: 260px;">
+                                <i class="material-icons">group</i>
+                                <label>{{testInformation.team.Description}}</label>
+                            </p>
+                            <p ng-if="testInformation.school.Description">
+                                <i class="material-icons">school</i>
+                                <label>{{testInformation.school.Description}}</label>
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <button class="btnPadrao" ng-click="voltar();">Voltar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Paginação *@
+        <div class="cards maxWidth table-responsive" ng-if="lookUpload">           
+            <h4 class="margin pull-left">Folhas de respostas</h4>
+            <table class="table table-hover tableCorrecao" ng-if="list.displayed" style="margin-top: 30px;">
+                <colgroup>
+                    <col width="10%" />
+                    <col ng-if="!generalBatch" width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="5%" />
+                    <col width="15%" />
+                    <col width="25%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Arquivo</th>
+                        <th class="text-center" ng-if="!generalBatch">Prova</th>
+                        <th class="text-center">DRE</th>
+                        <th class="text-center">Escola</th>
+                        <th class="text-center">Turma</th>
+                        <th class="text-center">Aluno</th>
+                        <th class="text-center">Resolução</th>
+                        <th class="text-center">
+                            <span data-ng-if="!filtredDateUpdate">Data de upload</span>
+                            <span data-ng-if="filtredDateUpdate">Data de correção</span>
+                        </th>
+                        <th class="text-center">Situação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="($indexArquivo, arquivo) in list.displayed track by $indexArquivo">
+                        <td style="width: inherit;">
+                            <a ng-if="!baixarGabarito" href="{{arquivo.FilePath}}"
+                               data-title="{{arquivo.File.Description}}"
+                               data-animation="am-fade"
+                               data-placement="top"
+                               data-container="body"
+                               bs-tooltip>
+                                {{arquivo.File.Description != null ? (arquivo.File.Description | minimize: 10) : ' - '}}
+                            </a>
+                            <span ng-if="baixarGabarito"
+                                  data-title="{{arquivo.File.Description}}"
+                                  data-animation="am-fade"
+                                  data-placement="top"
+                                  data-container="body"
+                                  bs-tooltip>
+                                {{arquivo.File.Description != null ? (arquivo.File.Description | minimize: 10) : ' - '}}
+                            </span>
+                        </td>
+                        <td ng-if="!generalBatch" class="text-center" style="width: inherit;">
+                            <span>{{arquivo.DRE.Test_Id ? arquivo.DRE.Test_Id : ' - '}}</span>
+                            @*<a ng-click="redirectTestId(arquivo.DRE.Test_Id)">{{arquivo.DRE.Test_Id ? arquivo.DRE.Test_Id : ' - '}}</a>*@
+                        </td>
+                        <td class="text-center" style="width: inherit;">
+                            <span data-title="{{arquivo.DRE.Description}}"
+                                  data-animation="am-fade"
+                                  data-placement="top"
+                                  data-container="body"
+                                  bs-tooltip>
+                                {{arquivo.DRE.Description != null ? (arquivo.DRE.Description | minimize: 10): ' - '}}
+                            </span>
+                        </td>
+                        <td class="text-center" style="width: inherit;">
+                            <span data-title="{{arquivo.School.Description}}"
+                                  data-animation="am-fade"
+                                  data-placement="top"
+                                  data-container="body"
+                                  bs-tooltip>
+                                {{arquivo.School.Description != null ? (arquivo.School.Description | minimize: 8) : ' - '}}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            {{arquivo.Team.Description != null ? (arquivo.Team.Description | minimize: 8) : ' - '}}
+                        </td>
+                        <td class="text-center" style="width: inherit;">
+                            <span data-title="{{arquivo.Student.Description}}"
+                                  data-animation="am-fade"
+                                  data-placement="top"
+                                  data-container="body"
+                                  bs-tooltip>
+                                {{arquivo.Student.Description != null ? (arquivo.Student.Description | minimize: 8): ' - '}}
+                            </span>
+                        </td>
+                        <td class="text-center" style="width: inherit;">
+                            <span data-title="{{arquivo.File.Resolution}}"
+                                  data-animation="am-fade"
+                                  data-placement="top"
+                                  data-container="body"
+                                  bs-tooltip>
+                                {{arquivo.File.Resolution != null ? (arquivo.File.Resolution | minimize: 9): ' - '}}
+                            </span>
+                        </td>
+                        <td class="center">
+                            <span data-ng-if="!filtredDateUpdate">{{arquivo.CreateDate }}</span>
+                            <span data-ng-if="filtredDateUpdate">{{arquivo.UpdateDate }}</span>
+                        </td>
+                        <td class="center">
+                            @* Status processamento  *@
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.Pending" class="status-{{EnumBatchSituationLabel.Pending}} botao">
+                                {{EnumBatchSituationDescription.Pending}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.Success" class="status-{{EnumBatchSituationLabel.Success}} botao">
+                                {{EnumBatchSituationDescription.Success}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.Error" class="status-{{EnumBatchSituationLabel.Error}} botao">
+                                {{EnumBatchSituationDescription.Error}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.Warning" class="status-{{EnumBatchSituationLabel.Warning}} botao">
+                                {{ (!WARNING_UPLOAD_BATCH_DETAIL ? EnumBatchSituationDescription.Warning : 'Sucesso') }}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.Absent" class="status-{{EnumBatchSituationLabel.Absent}} botao">
+                                {{EnumBatchSituationDescription.Absent}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.PendingIdentification" class="status-{{EnumBatchSituationLabel.PendingIdentification}} botao">
+                                {{EnumBatchSituationDescription.PendingIdentification}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.NotIdentified" class="status-{{EnumBatchSituationLabel.NotIdentified}} botao">
+                                {{EnumBatchSituationDescription.NotIdentified}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            @* Pagination controll *@
+            <div class="nresultados">
+                <page method="search()" pager="paginate" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+            </div>
+            @* Results not found *@
+            <p class="nresultados" ng-if="list.displayed === null || (message)">Nenhum resultado encontrado.</p>
+        </div>
+    </div>
+</div>

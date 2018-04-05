@@ -1,0 +1,13 @@
+﻿#pagination .active {
+    background-color: #5a94d6 !important;
+    -webkit-border-radius: 5px 5px 5px 5px !important;
+	border-radius: 5px 5px 5px 5px !important;
+}
+
+#pagination ul li {
+    margin-right: 5px !important;
+}
+
+#pagination .active a {
+   color:#fff !important;
+}

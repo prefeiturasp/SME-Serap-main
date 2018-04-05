@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{242C8D73-4940-442B-AE4C-1B538AC9FED8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GestaoAvaliacao.Business</RootNamespace>
+    <AssemblyName>GestaoAvaliacao.Business</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MSTech.Business.Common">
+      <HintPath>..\MSTech.Library\CoreSSO\MSTech.Business.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MSTech.CoreSSO.BLL">
+      <HintPath>..\MSTech.Library\CoreSSO\MSTech.CoreSSO.BLL.dll</HintPath>
+    </Reference>
+    <Reference Include="MSTech.CoreSSO.DAL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MSTech.Library\CoreSSO\MSTech.CoreSSO.DAL.dll</HintPath>
+    </Reference>
+    <Reference Include="MSTech.CoreSSO.Entities">
+      <HintPath>..\MSTech.Library\CoreSSO\MSTech.CoreSSO.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="MSTech.Data.Common">
+      <HintPath>..\MSTech.Library\MSTech\MSTech.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbsenceReasonBusiness.cs" />
+    <Compile Include="Adapters\ItemModelAdapter.cs" />
+    <Compile Include="AdherenceBusiness.cs" />
+    <Compile Include="AdministrativeUnitTypeBusiness.cs" />
+    <Compile Include="AlternativeBusiness.cs" />
+    <Compile Include="AnswerSheetBatchQueueBusiness.cs" />
+    <Compile Include="AnswerSheetBusiness.cs" />
+    <Compile Include="AnswerSheetLotBusiness.cs" />
+    <Compile Include="BaseTextBusiness.cs" />
+    <Compile Include="BlockBusiness.cs" />
+    <Compile Include="BookletBusiness.cs" />
+    <Compile Include="CognitiveCompetenceBusiness.cs" />
+    <Compile Include="AnswerSheetBatchBusiness.cs" />
+    <Compile Include="AnswerSheetBatchFilesBusiness.cs" />
+    <Compile Include="AnswerSheetBatchLogBusiness.cs" />
+    <Compile Include="CorrectionBusiness.cs" />
+    <Compile Include="CorrectionResultsBusiness.cs" />
+    <Compile Include="ExportAnalysisBusiness.cs" />
+    <Compile Include="GenerateHtmlBusiness.cs" />
+    <Compile Include="ItemFileBusiness.cs" />
+    <Compile Include="KnowledgeAreaBusiness.cs" />
+    <Compile Include="KnowledgeAreaDisciplineBusiness.cs" />
+    <Compile Include="PageConfigurationBusiness.cs" />
+    <Compile Include="PerformanceItemBusiness.cs" />
+    <Compile Include="ReportItemChoiceBusiness.cs" />
+    <Compile Include="ReportStudentPerformanceBusiness.cs" />
+    <Compile Include="ReportItemPerformanceBusiness.cs" />
+    <Compile Include="RequestRevokeBusiness.cs" />
+    <Compile Include="ResponseChangeLogBusiness.cs" />
+    <Compile Include="SectionTestGenerateLotBusiness.cs" />
+    <Compile Include="SectionTestStatsBusiness.cs" />
+    <Compile Include="ServiceAnswerSheetInfoBusiness.cs" />
+    <Compile Include="ReportTestPerformanceBusiness.cs" />
+    <Compile Include="StudentCorrectionBusiness.cs" />
+    <Compile Include="StudentTestAbsenceReasonBusiness.cs" />
+    <Compile Include="SubjectBusiness.cs" />
+    <Compile Include="SubSubjectBusiness.cs" />
+    <Compile Include="TestFilesBusiness.cs" />
+    <Compile Include="ItemCurriculumGradeBusiness.cs" />
+    <Compile Include="EvaluationMatrixCourseBusiness.cs" />
+    <Compile Include="CorrelatedSkillBusiness.cs" />
+    <Compile Include="DisciplineBusiness.cs" />
+    <Compile Include="EvaluationMatrixBusiness.cs" />
+    <Compile Include="EvaluationMatrixCourseCurriculumGradeBusiness.cs" />
+    <Compile Include="FileBusiness.cs" />
+    <Compile Include="ItemBusiness.cs" />
+    <Compile Include="ItemLevelBusiness.cs" />
+    <Compile Include="ItemSituationBusiness.cs" />
+    <Compile Include="ItemSkillBusiness.cs" />
+    <Compile Include="ItemTypeBusiness.cs" />
+    <Compile Include="ModelEvaluationMatrixBusiness.cs" />
+    <Compile Include="ModelSkillLevelBusiness.cs" />
+    <Compile Include="ModelTestBusiness.cs" />
+    <Compile Include="ParameterBusiness.cs" />
+    <Compile Include="PerformanceLevelBusiness.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SkillBusiness.cs" />
+    <Compile Include="TestBusiness.cs" />
+    <Compile Include="TestCurriculumGradeBusiness.cs" />
+    <Compile Include="TestGroupBusiness.cs" />
+    <Compile Include="TestPerformanceLevelBusiness.cs" />
+    <Compile Include="TestPermissionBusiness.cs" />
+    <Compile Include="TestSectionStatusCorrectionBusiness.cs" />
+    <Compile Include="TestSubGroupBusiness.cs" />
+    <Compile Include="TestTypeBusiness.cs" />
+    <Compile Include="TestTypeCourseBusiness.cs" />
+    <Compile Include="TestTypeCourseCurriculumGradeBusiness.cs" />
+    <Compile Include="TestTypeItemLevelBusiness.cs" />
+    <Compile Include="FormatTypeBusiness.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Domain\AvaliaMais.FolhaRespostas.Domain.csproj">
+      <Project>{390CA6C5-2A34-4F9E-A38E-7BBBB94E6EDD}</Project>
+      <Name>AvaliaMais.FolhaRespostas.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
+      <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>
+      <Name>GestaoAvaliacao.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IBusiness\GestaoAvaliacao.IBusiness.csproj">
+      <Project>{4f696134-e4e6-422b-9286-8332fd194616}</Project>
+      <Name>GestaoAvaliacao.IBusiness</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IFileServer\GestaoAvaliacao.IFileServer.csproj">
+      <Project>{b4a51b1d-3d2f-44e0-bfbf-5ab6fb7f4ae3}</Project>
+      <Name>GestaoAvaliacao.IFileServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IPDFConverter\GestaoAvaliacao.IPDFConverter.csproj">
+      <Project>{5d0b3c01-1ef5-43f4-99b2-647629509540}</Project>
+      <Name>GestaoAvaliacao.IPDFConverter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IRepository\GestaoAvaliacao.IRepository.csproj">
+      <Project>{e76144dd-15b5-4f3f-9681-3f0e2d5c90b5}</Project>
+      <Name>GestaoAvaliacao.IRepository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.MongoEntities\GestaoAvaliacao.MongoEntities.csproj">
+      <Project>{5ab49ee2-f4ea-428d-8ec1-257d1ee4ea37}</Project>
+      <Name>GestaoAvaliacao.MongoEntities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
+      <Project>{638b2bdc-aa34-4dcd-a041-ab4eb9c4d831}</Project>
+      <Name>GestaoAvaliacao.Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscola.Dll\GestaoEscolar.Repository.csproj">
+      <Project>{0EE260BC-992E-4C7A-9DBD-A743B48509D6}</Project>
+      <Name>GestaoEscolar.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.Business\GestaoEscolar.Business.csproj">
+      <Project>{5D8E0078-A0BA-47F3-A519-6F964DB0FED2}</Project>
+      <Name>GestaoEscolar.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.Entities\GestaoEscolar.Entities.csproj">
+      <Project>{36bb3fdc-ba72-420a-8496-565de18a3b3e}</Project>
+      <Name>GestaoEscolar.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.IBusiness\GestaoEscolar.IBusiness.csproj">
+      <Project>{21f7980e-6a17-48ca-bf47-8a298810565a}</Project>
+      <Name>GestaoEscolar.IBusiness</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.IRepository\GestaoEscolar.IRepository.csproj">
+      <Project>{f9ce7af3-712f-4295-8f2f-158b4ddcee5e}</Project>
+      <Name>GestaoEscolar.IRepository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OMRService\OMRService.csproj">
+      <Project>{edae4fec-1800-4d82-af1a-4ab8e451d9db}</Project>
+      <Name>OMRService</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

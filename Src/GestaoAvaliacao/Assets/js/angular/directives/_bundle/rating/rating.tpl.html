@@ -1,0 +1,10 @@
+﻿<div class="semPadding" ng-repeat="rating in list" style="margin-top: -10px;">
+    <button type="button" 
+            data-ng-class="{'dificuldadeOff': $index == index, 'dificuldadeOn': $index != index}"
+            data-ng-click="select(rating)" 
+            btn-checkbox="" 
+            btn-checkbox-true="1" 
+            btn-checkbox-false="0">
+        {{rating.Value}} - {{rating.Description}}
+    </button>
+</div>

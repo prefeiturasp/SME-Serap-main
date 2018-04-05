@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "PerformanceItem";
+}
+<alert></alert>
+<div class="wellCustom" ng-controller="PerformanceItemController">
+    <div class="headerCustom">
+        <h4>Relatório<span>Desempenho de prova por item</span></h4>
+    </div>
+    @* Informações *@
+    <div class="resumoAdesao">
+        <div class="maxWidth">
+            <div class="dadosGerais">
+                <h2>
+                    <strong>Relatório</strong>
+                </h2>
+                <div class="dadosResumo">
+                    <div style="text-align: right;">
+                        <button class="btnPadrao" ng-click="exportFile();">Exportar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Gatilho Filtros *@
+    <div class="pesquisa-upload row">
+        <div class="col-md-8"></div>
+        <div class="filtrar-lista col-md-4" data-side-filters>
+            <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                <i class="material-icons" data-side-filters>filter_list</i>
+                <label data-side-filters>Filtrar</label>
+                <div class="notificationFilter"
+                     data-trigger="hover"
+                     data-type="success"
+                     data-title="Filtros selecionados"
+                     data-placement="top"
+                     data-container="body"
+                     data-bs-tooltip>
+                    {{countFilter}}
+                </div>
+            </a>
+        </div>
+    </div>
+    @* Painel Filtros *@
+    <div class="panel-search side-filters" data-side-filters>
+        <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+            <i class="material-icons">filter_list</i>
+            <label class="filtroP">Filtrar provas</label>
+            <i class="material-icons fecha">arrow_forward</i>
+        </a>
+        @* Directiva Filtros *@
+        <report-filters filters="filters" global="global"></report-filters>
+        <div class="col-seach" data-side-filters>
+            <div style="display: inline-block; width: 100%;">
+                <button class="btnCancelar pull-right" data-ng-click="clearFields()" data-side-filters><span>Limpar</span> </button>
+                <button type="button" class="btnCancelar pull-right" ng-click="search()" data-side-filters>Pesquisar</button>
+            </div>
+        </div>
+    </div>
+    @* Pesquisa *@
+    <div class="well well-large">
+        <table class="table table-hover" data-ng-show="collection.schools.length>0" style=" margin-top: 0px;">
+            <colgroup>
+                <col width="35%" />
+                <col width="5%" />
+                <col width="3%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Escola</th>
+                    <th>
+                        <a ng-click="begin();" ng-class="{'correction-buttons-disabled': slider.current == 0, 'correction-buttons': slider.current>0}">
+                            <i class="material-icons" style="margin: 0px -9px;">chevron_left</i>
+                            <i class="material-icons" style="margin: 0px -9px;">chevron_left</i>
+                        </a>
+                    </th>
+                    <th>
+                        <a ng-click="previus();" ng-class="{'correction-buttons-disabled': slider.current == 0, 'correction-buttons': slider.current>0}">
+                        <i class="material-icons">chevron_left</i></a>
+                    </th>
+                    <th ng-repeat="($indexItem, item) in collection.average.items track by $indexItem" class="center">{{item.Name}}</th>
+                    <th>
+                        <a ng-click="next();" data-ng-class="{'correction-buttons-disabled': slider.current == slider.max, 'correction-buttons': slider.current<slider.max}"><i class="material-icons">chevron_right</i></a>
+                    </th>
+                    <th>
+                        <a ng-click="end();" data-ng-class="{'correction-buttons-disabled': slider.current == slider.max, 'correction-buttons': slider.current<slider.max}">
+                            <i class="material-icons" style="margin: 0px -9px;">chevron_right</i>
+                            <i class="material-icons" style="margin: 0px -9px;">chevron_right</i>
+                        </a>
+                    </th>
+            </thead>
+            <tbody>
+                @* Média DRE *@
+                <tr>
+                    <td>Média DRE</td>
+                    <td></td>
+                    <td></td>
+                    <td ng-repeat="($indexDre, dre) in collection.average.dre track by $indexDre" class="center">{{dre}}</td>
+                </tr>
+                @* Média da rede *@
+                <tr>
+                    <td>Média da rede</td>
+                    <td></td>
+                    <td></td>
+                    <td ng-repeat="($indexGrid, grid) in collection.average.grid track by $indexGrid" class="center">{{grid}}</td>
+                </tr>
+                @* Escolas *@
+                <tr ng-repeat="($indexSchool, school) in collection.schools track by $indexSchool">
+                    <td>{{school.Name}}</td>
+                    <td></td>
+                    <td></td>
+                    <td ng-repeat="($indexData, data) in school.averageDisplayed track by $indexData" class="center">{{data}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <page method="search('paginate')" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" ng-show="collection.schools.length>0" data-arr-page-size="[10,20,30,40,50,100]"></page>
+        <p class="nresultados" ng-show="collection.schools.length==0" class="nresultados">Nenhum resultado encontrado.</p>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+{
+  "BuildName": "serap",  
+  "SolutionFile": "./src/GestaoAvaliacao.sln",
+  "Configuration": "Release",
+  "SemVer": null,  
+  "WebProjects": [
+    {      
+      "UpdateVersionXml": true,
+      "ProjectName": "GestaoAvaliacao",
+      "ProjectFile": "./src/GestaoAvaliacao/GestaoAvaliacao.csproj",
+      "PublishMethod": {
+        "Type": "Package"
+      }
+    },
+  {      
+      "UpdateVersionXml": true,
+      "ProjectName": "GestaoAvaliacaoAPI",
+      "ProjectFile": "./src/GestaoAvaliacao.API/GestaoAvaliacao.API.csproj",
+      "PublishMethod": {
+        "Type": "Package"
+      }
+    },
+	{      
+      "UpdateVersionXml": true,
+      "ProjectName": "ProvaSP.Web",
+      "ProjectFile": "./src/ProvaSP.Web/ProvaSP.Web.csproj",
+      "PublishMethod": {
+        "Type": "Package"
+      }
+    }
+  ],
+  "DatabaseProjects": [
+    {
+      "DatabaseProjectType": "DbUp",
+      "ProjectName": "DbUpdater",
+      "ProjectFile": "./src/DbUpdater/DbUpdater.csproj"
+    }
+  ],
+  "WindowsServiceProjects": [
+    {
+      "WindowsServiceProjectType": "CopyFiles",
+      "ProjectName": "GestaoAvaliacao.AnswerSheetLotService",
+      "ProjectFile": "./src/GestaoAvaliacao.AnswerSheetLotService/GestaoAvaliacao.AnswerSheetLotService.csproj"
+    },
+  {
+      "WindowsServiceProjectType": "CopyFiles",
+      "ProjectName": "GestaoAvaliacao.ExportAnalysisService",
+      "ProjectFile": "./src/GestaoAvaliacao.ExportAnalysisService/GestaoAvaliacao.ExportAnalysisService.csproj"
+    },
+  {
+      "WindowsServiceProjectType": "CopyFiles",
+      "ProjectName": "GestaoAvaliacao.UnzipAnswerSheetQueueService",
+      "ProjectFile": "./src/GestaoAvaliacao.UnzipAnswerSheetQueueService/GestaoAvaliacao.UnzipAnswerSheetQueueService.csproj"
+  },
+  {
+      "WindowsServiceProjectType": "CopyFiles",
+      "ProjectName": "GestaoAvaliacao.CorrectionResultService",
+      "ProjectFile": "./src/GestaoAvaliacao.CorrectionResultService/GestaoAvaliacao.CorrectionResultService.csproj"
+  },
+  {
+      "WindowsServiceProjectType": "CopyFiles",
+      "ProjectName": "GestaoAvaliacao.GenerateNewCorrectionResultService",
+      "ProjectFile": "./src/GestaoAvaliacao.GenerateNewCorrectionResultService/GestaoAvaliacao.GenerateNewCorrectionResultService.csproj"      
+  } 
+  ]
+}

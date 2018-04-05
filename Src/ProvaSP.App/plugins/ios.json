@@ -1,0 +1,44 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-dbcopy": {
+            "PACKAGE_NAME": "br.gov.sp.prefeitura.provasp"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "br.gov.sp.prefeitura.provasp"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "br.gov.sp.prefeitura.provasp"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "br.gov.sp.prefeitura.provasp"
+        },
+        "cordova-sqlite-storage": {
+            "PACKAGE_NAME": "br.gov.sp.prefeitura.provasp"
+        },
+        "de.appplant.cordova.plugin.local-notification": {
+            "PACKAGE_NAME": "br.gov.sp.prefeitura.provasp"
+        },
+        "phonegap-plugin-barcodescanner": {
+            "CAMERA_USAGE_DESCRIPTION": " ",
+            "PACKAGE_NAME": "br.gov.sp.prefeitura.provasp"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-app-event": {
+            "PACKAGE_NAME": "br.gov.sp.prefeitura.provasp"
+        },
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "br.gov.sp.prefeitura.provasp"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "br.gov.sp.prefeitura.provasp"
+        }
+    }
+}

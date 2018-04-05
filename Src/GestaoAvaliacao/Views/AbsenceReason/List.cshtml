@@ -1,0 +1,60 @@
+﻿@* Alertas *@
+<alert></alert>
+<div class="wellCustom" data-ng-controller="ListAbsenceReasonController">
+    <div class="headerCustom">
+        <h4>Motivo de ausência<span>Listagem</span></h4>
+    </div>
+    <div class="well well-large">
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <input type="text" class="form-pesquisa" placeholder="Motivo de ausência" ng-model="pesquisa">
+            </div>
+            <button class="btn-pesquisar" ng-click="copySearch()" title="Pesquisar"><i class="material-icons">search</i></button>
+            <a href="~/AbsenceReason/Form" class="btnPadrao pull-right"> Novo motivo de ausência</a>
+        </form>
+        <br />
+        <table class="table table-hover" ng-show="absenceReasonList != null">
+            <colgroup>
+                <col width="90%" />
+                <col width="5%" />
+                <col width="5%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th class="center">Padrão</th>
+                    <th class="center">Editar</th>
+                    <th class="center">Excluir</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="pesquisado in absenceReasonList">
+                    <td>{{pesquisado.Description}}</td>
+                    <td class="center"><div ng-if="pesquisado.IsDefault == true"><i class="material-icons">check</i></div></td>
+                    <td class="center"><a href="~/AbsenceReason/Form?Id={{pesquisado.Id}}"><i class="material-icons">create</i></a></td>
+                    <td class="center"><a ng-click="confirmar(pesquisado)"><i class="material-icons">delete</i></a></td>
+                </tr>
+            </tbody>
+        </table>
+        <page method="load()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+        <p class="nresultados" ng-hide="absenceReasonList != null || !(message)">Nenhum resultado encontrado.</p>
+    </div>
+    @*Modal*@
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{absenceReason.Description}}</h4>
+                </div>
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir o motivo de ausência <b>{{absenceReason.Description}}</b>?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btnPadrao" ng-click="delete(absenceReason)">Excluir</button>
+                    <button type="button" class="btn btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

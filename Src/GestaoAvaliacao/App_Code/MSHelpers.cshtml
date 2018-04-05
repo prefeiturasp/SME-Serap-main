@@ -1,0 +1,36 @@
+﻿@using GestaoAvaliacao.WebProject.Entities
+@inherits  HelperPage
+
+
+
+@helper MenuStructure()
+{    
+        
+    <ul id="mainMenu" class="">
+    </ul>
+      
+}
+
+@helper MenuBind(string actionMenu)
+{
+    <script>
+        renderMenuBar("@actionMenu");
+    </script>
+}
+
+@helper Sitemap(List<Menu> menus)
+{
+    <ul class="breadcrumb">
+        @foreach (var menu in menus)
+        {
+            <li><a href="@menu.Url">@menu.Id</a></li>
+        }
+
+        @*<li><a href="javascript:void(0)">Home</a> <span class="divider">/</span></li>
+        <li><a href="javascript:void(0)">Library</a> <span class="divider">/</span></li>
+        <li class="active">Data</li>
+        *@
+
+    </ul>
+}
+

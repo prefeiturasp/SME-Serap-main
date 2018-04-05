@@ -1,0 +1,178 @@
+﻿@using System.Web.Optimization
+@using GestaoAvaliacao.WebProject.Facade
+@using System.Configuration
+@{ 
+	Layout = null;
+	var url = Request.Url;
+	var port = Request.Url.Port;
+	var host = url.GetComponents(UriComponents.Host, UriFormat.Unescaped);
+	var baseurl = ApplicationFacade.ProjectVirtualDirectory;
+	var area = (ViewContext.RouteData.DataTokens["area"] != null ? ViewContext.RouteData.DataTokens["area"].ToString().ToLower() : "");
+	var IsRetrict = SessionFacade.UsuarioLogado.Grupo.vis_id == (int)GestaoAvaliacao.Util.EnumSYS_Visao.Administracao;
+	var group_name = SessionFacade.UsuarioLogado.Grupo.gru_nome;
+	var api_url = string.Concat(ConfigurationManager.AppSettings["URL_API"], '/');
+	var vision = SessionFacade.UsuarioLogado.Grupo.vis_id;
+}
+
+@*Vendor*@
+@Scripts.Render("~/bundles/vendor_js")
+
+@*Angular*@
+@Scripts.Render("~/bundles/angular_js")
+
+@*Select2*@
+@Scripts.Render("~/bundles/select2_js")
+
+@{ 
+	
+	var controllerDefault = ViewContext.RouteData.GetRequiredString("controller");
+	var controller = ViewContext.RouteData.GetRequiredString("controller");
+	var action = ViewContext.RouteData.GetRequiredString("action");
+}
+
+@*_js*@
+
+@if (controller.Equals("Item") ||
+    controller.Equals("Test") ||
+    controller.Equals("ModelTest") ||
+    controller.Equals("ItemType") ||
+    controller.Equals("File") ||
+    controller.Equals("ModelEvaluationMatrix") ||
+    controller.Equals("EvaluationMatrix") ||
+    controller.Equals("Correction") ||
+    controller.Equals("AnswerSheet") ||
+    controller.Equals("AbsenceReason") ||
+    controller.Equals("CognitiveCompetence") ||
+    controller.Equals("CorrelatedSkill") ||
+    controller.Equals("Discipline") ||
+    controller.Equals("ItemLevel") ||
+    controller.Equals("PerformanceLevel") ||
+    controller.Equals("TestType") ||
+    controller.Equals("ReportTest")||
+    controller.Equals("ReportCorrection") ||
+    controller.Equals("ReportAnswerSheet") ||
+    controller.Equals("ReportTestPerformance") ||
+    controller.Equals("ReportItemPerformance") ||
+    controller.Equals("ReportItemChoice") ||
+    controller.Equals("ReportStudentPerformance") ||
+    controller.Equals("TestGroup") ||
+    controller.Equals("KnowledgeArea") ||
+    controller.Equals("Subject") ||
+    controller.Equals("ReportPerformance") ||
+    controller.Equals("ResponseChangeLog") ||
+    controller.Equals("ElectronicTest") ||
+    controller.Equals("PageConfiguration") ||
+    controller.Equals("AdministrativeUnitType")
+    )
+
+{
+    controller = String.Format("{0}_{1}", controller, action);
+}
+
+@Scripts.Render("~/bundles/{{controler}}_js".Replace("{{controler}}", controller))
+
+<script>
+
+	@Html.Partial("~/Views/Shared/partials/ParametersObject.cshtml")
+
+	function base_url(url) {
+		url = url || "";
+		return '@baseurl' + url;
+	};
+
+	function base_area_url(url) {
+		url = url || "";
+		return '@baseurl@area/' + url;
+	};
+
+	function template_url(directive, area, folder) {
+		folder = folder ? folder + '/' : '';
+		var path = folder + directive + '/' + directive + '.htm';
+
+		if (area) {
+			return base_url('areas/@area/assets/js/directives/' + path);
+		}
+		else {
+			return base_url('assets/js/angular/directives/_bundle/' + path);
+		}
+	};
+
+	
+	function getGroupName() {
+		return '@group_name';
+	};
+
+	function getCurrentVision() {
+		return '@vision';
+	};
+
+	function getIsRestrict() {
+		return '@IsRetrict';
+	};
+
+	function api_url(service) {
+		service = service || "";
+		return '@api_url' + service;
+	};
+
+	var EnumVisions = {
+		ADMINISTRATOR: '1',
+		MANAGER: '2',
+		UNIT_ADMINISTRATIVE: '3',
+		INDIVIDUAL: '4',
+	};
+
+</script>
+
+@if (controllerDefault.Equals("item", StringComparison.CurrentCultureIgnoreCase) || controllerDefault.Equals("test", StringComparison.CurrentCultureIgnoreCase))
+{ 
+	string urlMathJax = bool.Parse(ApplicationFacade.Parameters.First(p => p.Key.Equals("UTILIZACDNMATHJAX")).Value) ? 
+		"http://cdn.mathjax.org/mathjax/latest/MathJax.js" : "/Assets/js/vendor/MathJax.js";
+	
+<script src="@urlMathJax">
+
+	$(document).ready(function () {
+	   
+		function startMathJax() {
+
+			MathJax.Hub.Config({
+				extensions: ['tex2jax.js', "TeX/AMSmath.js", "TeX/AMSsymbols.js"],
+				tex2jax: {
+					inlineMath: [["$$", "$$"], ["\\(", "\\)"]]
+				},
+				jax: ["input/TeX", "output/HTML-CSS"],
+				displayAlign: "center",
+				displayIndent: "0.1em",
+				showProcessingMessages: false,
+				"HTML-CSS": {
+					styles: {
+						".MathJax_Display": {
+							'display': 'inline-block!important',
+							'width': ''
+						}
+					}
+				}
+			});
+
+			MathJax.Localization.setLocale("pt-br");
+			timerRefreshMath();
+		};
+
+
+		function timerRefreshMath() {
+
+			var counter = 0;
+			function reloadMathJax() {
+				clearInterval(interval);
+				interval = setInterval(reloadMathJax, 500);
+				counter += 1;
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+			}
+			var interval = setInterval(reloadMathJax, counter);
+		};
+
+		startMathJax();
+	});
+</script>
+}
+

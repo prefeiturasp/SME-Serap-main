@@ -1,0 +1,248 @@
+﻿@*Alertas*@
+<alert></alert>
+@* Controller *@
+<div class="container-fluid semPadding" data-ng-controller="TestRequestRevokeController">
+	<div class="row-fluid">
+		<div class="wellCustom">
+			@* Título Página *@
+			<div class="headerCustom">
+				<h4>Solicitações de anulação de itens</h4>
+			</div>
+			@* Filtros *@
+			<div class="pesquisa-upload row">
+				<div class="col-md-8">
+					<form class="form-inline">
+						<div class="form-group">
+							<input type="text" fieldinteger class="form-pesquisa cinza ng-pristine ng-valid" name="myText" placeholder="Código" ng-model="ItemCode" maxlength="10">
+						</div>
+						<button class="btn-pesquisar" ng-click="search(true)" title="Pesquisar"><i class="material-icons">search</i></button>
+					</form>
+				</div>
+                @* Gatilho para filtros laterais *@
+				<div class="filtrar-lista col-md-4">
+                    <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                        <i class="material-icons" data-side-filters>filter_list</i>
+                        <label data-side-filters>Filtrar Solicitações</label>
+                        <div class="notificationFilter"
+                             data-trigger="hover"
+                             data-type="success"
+                             data-title="Filtros selecionados"
+                             data-placement="top"
+                             data-container="body"
+                             data-bs-tooltip>
+                            {{countFilter}}
+                        </div>
+                    </a>
+				</div>
+			</div>
+            @* Filtros *@
+            <div class="panel-search side-filters" data-side-filters>
+                <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+                    <i class="material-icons">filter_list</i>
+                    <label class="filtroP">Filtrar Solicitações</label>
+                    <i class="material-icons fecha">arrow_forward</i>
+                </a>
+                <div class="col-seach" data-side-filters>
+                    <label data-side-filters>Data da solicitação</label>
+                    <br data-side-filters />
+                    <div class="calendario-grafico" data-side-filters>
+                        <label data-side-filters>de</label>
+                        <button type="button" ng-click="datepicker('dateStart')" data-side-filters>
+                            <i class="material-icons">event</i>
+                        </button>
+                        <input class="dateInput" type="text" placeholder="Data de Início" ng-model="StartDate" id="dateStart" datepicker />
+                    </div>
+                    <div class="calendario-grafico" data-side-filters>
+                        <label data-side-filters>até </label>
+                        <button type="button" ng-click="datepicker('dateEnd')" data-side-filters>
+                            <i class="material-icons">event</i>
+                        </button>
+                        <input class="dateInput" type="text" placeholder="Data de Término" ng-model="EndDate" id="dateEnd" datepicker />
+                    </div>
+                </div>
+                <div class="col-seach" data-side-filters>
+                    <label data-side-filters>Situação: </label>
+                    <div data-side-filters>
+                        <select class="form-control"
+                                ng-options='situation as situation.Description for situation in ListSituation track by situation.value' 
+                                ng-model='Situation'
+                                ng-title="ListSituation"
+                                ng-title-propertie="Description"
+                                ng-title-index="1"
+                                ng-title-selected>
+                            <option value="">--Selecione--</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-seach" data-side-filters>
+                    <div style="display: inline-block; width: 100%;">
+                        <button class="btnCancelar pull-right" ng-click="clearFilters()" data-side-filters><span>Limpar</span> </button>
+                        <button type="button" class="btnCancelar pull-right" ng-click="search()" data-side-filters>Pesquisar</button>
+                    </div>
+                </div>
+            </div>
+			@* Pesquisa *@
+			<div class="well well-large">
+				<div class="row" style="margin: 0;">
+					<div class="col-md-12 semPadding table-responsive">
+						<table class="table table-hover padding" style="margin-top: 0;" ng-hide="itemList == null">
+							<thead class="noselect">
+								<tr>
+									<th>Data da solicitação </th>
+									<th>Prova</th>
+									<th class="text-center">Cód.</th>
+									<th class="text-center">Versão</th>
+									<th class="text-center">Ordem</th>
+									<th class="text-center">Solicitações</th>
+									<th class="text-center">Anular</th>
+									<th>Ação</th>
+								</tr>
+							</thead>
+							<tbody>
+                                <tr class="tr-vertical-center" ng-repeat="($indexItem, item) in itemList track by $indexItem">
+                                    <td>{{item.Date | moment:"DD/MM/YYYY"}}</td>
+                                    <td>{{item.Test_Description}}</td>
+                                    <td class="text-center" style="font-size:16px; color: gray;">
+                                        {{item.ItemCode}}
+                                        <item-brief item-id="{{item.Item_Id}}" can-print="false"></item-brief>
+                                    </td>
+                                    <td class="text-center">
+                                        {{item.ItemVersion}}
+                                        <i class="material-icons" ng-if="!item.ItemLastVersion" data-trigger="hover" data-type="success" data-title="Este item já possui uma versão mais atual" data-placement="top" data-animation="am-fade" data-container="body" style="cursor:pointer; color:orange" bs-tooltip>error</i>
+                                    </td>
+                                    <td class="text-center">{{item.ItemOrder + 1}} </td>
+                                    <td class="text-center" style="font-size:16px; color: gray;">
+                                        {{item.RequestRevokes}}
+                                        <i class="material-icons" ng-click="openModal('solicitacoesItem', item)" style="cursor:pointer" data-trigger="hover" data-type="success" data-title="Visualizar solicitantes" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>group</i>
+                                    </td>
+                                    <td class="text-center">
+                                        <span ng-if="item.Situation == 2">-</span>
+                                        <span ng-if="item.Situation != 2">{{item.LabelSituation}}</span>
+                                    </td>
+                                    <td>
+                                        @* Ações *@
+                                        <button class="btnMais" data-ng-if="item.Situation == 2"
+                                                data-ng-click="popover.set($parent.item)"
+                                                data-placement="top"
+                                                data-trigger="focus"
+                                                data-custom-class="itemListPopover"
+                                                data-template="Assets/js/angular/controllers/test/indexRequestRevokeMenu.html"
+                                                data-animation="popover-fade"
+                                                data-container="body"
+                                                data-bs-popover="popovermenu"
+                                                type="button">
+                                            <i class="material-icons">view_list</i>
+                                        </button>
+                                        @* Desfazer *@
+                                        <i data-ng-if="item.Situation != 2"
+                                           ng-click="openModal('desfazerAnulacao' , item)"
+                                           data-trigger="hover"
+                                           data-type="success"
+                                           data-title="Desfazer"
+                                           data-animation="am-fade"
+                                           data-placement="top"
+                                           data-container="body"
+                                           data-bs-tooltip
+                                           class="material-icons"
+                                           style="cursor:pointer; padding: 15px 0 0 10px;">
+                                            keyboard_return
+                                        </i>
+                                    </td>
+                                </tr>
+							</tbody>
+						</table>
+						@* paginação *@
+						<page class="nresultados" method="loadPagination()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+						<p class="nresultados" ng-hide="itemList != null">Nenhum resultado encontrado.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	@*Modal*@
+	<div id="modalRequestRevoke" class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" ng-style="modalBody == 'solicitacoesItem' ? { 'width':'80%'} : {'display':'block'}">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Atenção</h4>
+				</div>
+				<div ng-if="modalBody == 'recusarItem'">
+					<div class="modal-body">
+						<span>Deseja realmente recusar a solicitação?</span>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btnPadrao" data-dismiss="modal" ng-click="updateRequestRevokedByTestBlockItem(true)">Sim</button>
+						<button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+					</div>
+				</div>
+				<div ng-if="modalBody == 'anularItem'">
+					<div class="modal-body">
+						<span>
+							Deseja realmente anular o item? Ao confirmar a ação, o item será desconsiderado nos cálculos de desempenho da prova.
+						</span>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btnPadrao" data-dismiss="modal" ng-click="updateRequestRevokedByTestBlockItem()">Sim</button>
+						<button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+					</div>
+				</div>
+				<div ng-if="modalBody == 'anularProvaItem'">
+					<div class="modal-body">
+						<span>
+							Deseja realmente anular o item? Ao confirmar a ação, o item será desconsiderado nos cálculos de desempenho da prova
+							e será sinalizado no banco de itens como anulado.
+						</span>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btnPadrao" data-dismiss="modal" ng-click="UpdateRevokeItem()">Sim</button>
+						<button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+					</div>
+				</div>
+				<div ng-if="modalBody == 'desfazerAnulacao'">
+					<div class="modal-body">
+						<span>
+							Deseja realmente desfazer a ação?
+						</span>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btnPadrao" data-dismiss="modal" ng-click="UpdateRevokeItem(true)">Sim</button>
+						<button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+					</div>
+				</div>
+				<div ng-if="modalBody == 'solicitacoesItem'">
+					<div class="modal-body">
+						<table class="table table-hover padding" style="margin-top: 0;">
+							<thead class="noselect">
+								<tr>
+									<th>Data da solicitação</th>
+									<th>E-mail</th>
+									<th>Solicitante</th>
+									<th>Justificativa</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="tr-vertical-center" ng-repeat-start="requester in requestRevokeList">
+									<td>{{requester.Date}}</td>
+									<td>{{requester.Requester_Email}}</td>
+									<td>{{requester.Requester_Name}}</td>
+									<td style="width: 23%; cursor: pointer;" class="right">
+										<span> {{requester.Justification | minimize:15}}</span>
+										<a class="material-icons ng-scope" ng-show="request.test" ng-click="request.test = false">expand_more</a>
+										<a class="material-icons ng-scope" ng-show="!request.test" ng-click="request.test = true">expand_less</a>
+									</td>
+								</tr>
+								<tr ng-repeat-end>
+									<th colspan="4" ng-show="request.test">{{requester.Justification}}</th>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btnPadrao" data-dismiss="modal">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

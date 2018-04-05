@@ -1,0 +1,48 @@
+﻿#preloading {
+	top: 15px;
+	z-index: 150000;
+	background-color: #34cc56;
+	font-size: 13px;
+	color: #ffffff;
+	font-weight: 600;
+	padding: 3px 20px;
+	position: fixed;
+	box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.1);
+	min-width: 110px;
+	width: auto !important;
+	line-height: 28px;
+	text-align: center;
+	left: 46%;
+	border-radius: 3px;
+}
+
+/*#preloading {
+  top: 0;
+  z-index: 150000;
+  background-color: #f9edbe;
+  border: 1px solid #f0c36d;
+  font-size: 13px;
+  color: #111;
+  font-weight: bold;
+  padding: 0  8px;
+  position: fixed;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  min-width: 110px;
+  width: auto !important;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  left: 46%;
+  border-radius: 0 0 2px 2px;
+}
+
+#region AngularJS helper */
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak
+{
+    display: none;
+}

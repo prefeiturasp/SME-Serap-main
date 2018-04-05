@@ -1,0 +1,17 @@
+﻿<div class="popover" tabindex="-1" ng-show="content">
+  <div class="arrow"></div>
+      <div class="popover-content">
+          <ul class="listaPopover">
+              <li>
+                  <!-- Selecionar todos -->
+                  <i class="material-icons">check</i>
+                  <a href="" ng-click="requiredmenu.selectAllRequired(requiredmenu.index, true); $hide()">Marcar todos</a>
+              </li>
+              <li>
+                  <!-- Deselecionar todos -->
+                  <i class="material-icons">close</i>
+                  <a href="" ng-click="requiredmenu.selectAllRequired(requiredmenu.index, false); $hide()">Desmarcar todos</a>
+              </li>
+          </ul>   
+    </div>
+</div>

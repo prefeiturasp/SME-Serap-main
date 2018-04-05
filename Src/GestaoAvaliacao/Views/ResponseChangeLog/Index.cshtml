@@ -1,0 +1,207 @@
+﻿@* Alertas *@
+<alert></alert>
+<div class="wellCustom" data-ng-controller="ResponseChangeLogController">
+    <div class="headerCustom">
+        <h4>Log de alterações nas respostas</h4>
+    </div>
+    <div class="resumoAdesao" ng-if="filters.test_id > 0">
+        <div class="maxWidth">
+            <div class="dadosGerais">
+                <h2>                  
+                    <label data-ng-if="TestDescription"><strong>Prova:</strong> {{TestDescription}}</label>     
+                </h2>
+            </div>
+        </div>
+    </div>
+    @* Gatilho Filtros *@
+    <div class="pesquisa-upload row">
+        <div class="col-md-8"></div>
+        <div class="filtrar-lista col-md-4" style="width: 50px;" data-side-filters>
+            <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                <i class="material-icons" data-side-filters>filter_list</i>
+                <label data-side-filters>Filtrar</label>
+                <div class="notificationFilter"
+                     data-trigger="hover"
+                     data-type="success"
+                     data-title="Filtros selecionados"
+                     data-placement="top"
+                     data-container="body"
+                     data-bs-tooltip>
+                    {{countFilter}}
+                </div>
+            </a>
+        </div>
+    </div>
+    @* Painel Filtros *@
+    <div class="panel-search side-filters" data-side-filters>
+        <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+            <i class="material-icons">filter_list</i>
+            <label class="filtroP">Filtrar</label>
+            <i class="material-icons fecha">arrow_forward</i>
+        </a>
+        <div class="col-seach" data-side-filters>
+            <label data-side-filters>Período de aplicação*</label>
+            <br />
+            <div class="calendario-grafico" data-side-filters>
+                <label data-side-filters>De </label>
+                <button type="button" data-ng-click="datepicker('dateStart')" data-side-filters>
+                    <i class="material-icons">event</i>
+                </button>
+                <input class="dateInput" type="text" placeholder="Data de Início" data-ng-model="filters.DateStart" data-ng-change="getTests()" id="dateStart" datepicker data-side-filters />
+            </div>
+            <div class="calendario-grafico" data-side-filters>
+                <label data-side-filters>até </label>
+                <button type="button" data-ng-click="datepicker('dateEnd')" data-side-filters>
+                    <i class="material-icons">event</i>
+                </button>
+                <input class="dateInput" type="text" placeholder="Data de Término" data-ng-model="filters.DateEnd" data-ng-change="getTests()" id="dateEnd" datepicker data-side-filters />
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <label data-side-filters>Cód. da prova*</label>
+            <div data-side-filters>
+                <input class="form-control" type="number" placeholder="Código da prova" data-ng-model="filters.test_id" ng-change="changeTestCode()" id="testCode" data-side-filters />
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <label data-side-filters>Prova*</label>
+                <select class="form-control"
+                        ng-model="filters.test_id"
+                        ng-options="test.TestId as test.TestDescription for test in listTests"
+                        ng-title="listTests"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected
+                        data-side-filters
+                        ng-change="changeTest(); getSchools(); clearByFilter('Test');"
+                        id="selectTest">
+                    <option value="">Selecione uma prova</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <label data-side-filters>DREs</label>
+                <select class="form-control"
+                        ng-model="filters.uad_id"
+                        ng-options="dre.Id as dre.Description for dre in listDREs"
+                        ng-title="listDREs"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected
+                        ng-change="getSchools(); clearByFilter('DRE');"
+                        id="filterDre"
+                        data-side-filters>
+                    <option value="">Todas as DREs</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <label data-side-filters>Escolas</label>
+                <select class="form-control"
+                        ng-change="getTeams(); clearByFilter('School');"
+                        ng-model="filters.esc_id"
+                        ng-options="scholl as scholl.Description for scholl in listSchools"
+                        ng-title="listSchools"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected
+                        id="filterSchool"
+                        data-side-filters>
+                    <option value="">Todas as escolas</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <label data-side-filters>Turmas</label>
+                <select class="form-control"
+                        ng-model="filters.tur_id"
+                        ng-options="team as team.Description for team in listTeams"
+                        ng-title="listTeams"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected
+                        id="filterTeam"
+                        ng-change="getNameTeam();"
+                        data-side-filters>
+                    <option value="">Todas as turmas</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <label data-side-filters>Período de alteração</label>
+            <br />
+            <div class="calendario-grafico" data-side-filters>
+                <label data-side-filters>De </label>
+                <button type="button" data-ng-click="datepicker('dateStartChange')" data-side-filters>
+                    <i class="material-icons">event</i>
+                </button>
+                <input class="dateInput" type="text" placeholder="Data de Início" data-ng-model="filters.DateStartChange" id="dateStartChange" datepicker data-side-filters />
+            </div>
+            <div class="calendario-grafico" data-side-filters>
+                <label data-side-filters>até </label>
+                <button type="button" data-ng-click="datepicker('dateEndChange')" data-side-filters>
+                    <i class="material-icons">event</i>
+                </button>
+                <input class="dateInput" type="text" placeholder="Data de Término" data-ng-model="filters.DateEndChange" id="dateEndChange" datepicker data-side-filters />
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <button data-side-filters class="btnCancelar pull-right" ng-click="clearFilters();">Limpar</button>
+                <button data-side-filters class="btnCancelar pull-right" id="btFiltrar" ng-click="search();">Filtrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="well well-large">       
+        <br />
+        <table class="table table-hover" ng-show="responseChangeLogList != null">
+            <colgroup>
+                <col width="8%" />
+                <col width="17%" />
+                <col width="15%" />
+                <col width="5%" />
+                <col width="12%" />
+                <col width="8%" />
+                <col width="10%" />
+                <col width="10%" />
+                <col width="10%" />
+                <col width="5%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>DRE</th>
+                    <th>Escola</th>
+                    <th>Turma</th>
+                    <th>Aluno</th>
+                    <th>Usuário</th>
+                    <th>Ordem do item</th>
+                    <th>Valor anterior</th>
+                    <th>Valor atual</th>
+                    <th>Automático</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="pesquisado in responseChangeLogList">
+                    <td>{{pesquisado.dataCriacao | moment:"DD/MM/YYYY HH:mm:ss"}}</td>
+                    <td>{{pesquisado.dre_nome}}</td>
+                    <td>{{pesquisado.esc_nome}}</td>
+                    <td>{{pesquisado.tur_nome}}</td>
+                    <td>{{pesquisado.alu_nome}}</td>
+                    <td>{{pesquisado.usu_login}}</td>
+                    <td>{{pesquisado.OrderItem}}</td>
+                    <td>{{pesquisado.valorAnterior}}</td>
+                    <td>{{pesquisado.valorAtual}}</td>
+                    <td>{{pesquisado.Automatic == true ? 'Sim' : 'Não'}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <page method="Paginate()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+        <p class="nresultados" ng-hide="responseChangeLogList != null || !(message)">Nenhum resultado encontrado.</p>
+    </div>   
+</div>

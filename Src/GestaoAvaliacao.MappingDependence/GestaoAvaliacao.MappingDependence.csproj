@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BE1E5A8F-69D3-4B9D-B6B4-A71F94FB7840}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GestaoAvaliacao.MappingDependence</RootNamespace>
+    <AssemblyName>GestaoAvaliacao.MappingDependence</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessInstaller.cs" />
+    <Compile Include="ComponentRegistrationExtender.cs" />
+    <Compile Include="PDFConverterInstaller.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositoriesInstaller.cs" />
+    <Compile Include="StorageInstaller.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Application\AvaliaMais.FolhaRespostas.Application.csproj">
+      <Project>{c9da05eb-f737-403d-a667-14e053272350}</Project>
+      <Name>AvaliaMais.FolhaRespostas.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Data\AvaliaMais.FolhaRespostas.Data.csproj">
+      <Project>{6281132a-3d19-4b76-8986-60c73011b4d5}</Project>
+      <Name>AvaliaMais.FolhaRespostas.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Domain\AvaliaMais.FolhaRespostas.Domain.csproj">
+      <Project>{390ca6c5-2a34-4f9e-a38e-7bbbb94e6edd}</Project>
+      <Name>AvaliaMais.FolhaRespostas.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Business\GestaoAvaliacao.Business.csproj">
+      <Project>{242c8d73-4940-442b-ae4c-1b538ac9fed8}</Project>
+      <Name>GestaoAvaliacao.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
+      <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>
+      <Name>GestaoAvaliacao.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.FileServer\GestaoAvaliacao.FileServer.csproj">
+      <Project>{92129b89-7c4b-452a-a2e7-63f5f3ef2d72}</Project>
+      <Name>GestaoAvaliacao.FileServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IBusiness\GestaoAvaliacao.IBusiness.csproj">
+      <Project>{4f696134-e4e6-422b-9286-8332fd194616}</Project>
+      <Name>GestaoAvaliacao.IBusiness</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IFileServer\GestaoAvaliacao.IFileServer.csproj">
+      <Project>{b4a51b1d-3d2f-44e0-bfbf-5ab6fb7f4ae3}</Project>
+      <Name>GestaoAvaliacao.IFileServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IPDFConverter\GestaoAvaliacao.IPDFConverter.csproj">
+      <Project>{5d0b3c01-1ef5-43f4-99b2-647629509540}</Project>
+      <Name>GestaoAvaliacao.IPDFConverter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IRepository\GestaoAvaliacao.IRepository.csproj">
+      <Project>{e76144dd-15b5-4f3f-9681-3f0e2d5c90b5}</Project>
+      <Name>GestaoAvaliacao.IRepository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.MongoEntities\GestaoAvaliacao.MongoEntities.csproj">
+      <Project>{5ab49ee2-f4ea-428d-8ec1-257d1ee4ea37}</Project>
+      <Name>GestaoAvaliacao.MongoEntities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.MongoRepository\GestaoAvaliacao.MongoRepository.csproj">
+      <Project>{fbac65c4-1ea6-4a80-88c5-54e34a8309a4}</Project>
+      <Name>GestaoAvaliacao.MongoRepository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.PDFConverter\GestaoAvaliacao.PDFConverter.csproj">
+      <Project>{913d4c0b-a662-4412-ab56-9db7cb5f5606}</Project>
+      <Name>GestaoAvaliacao.PDFConverter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Repository\GestaoAvaliacao.Repository.csproj">
+      <Project>{20f146e2-63fd-4e62-bd1b-512bd01f9c6b}</Project>
+      <Name>GestaoAvaliacao.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscola.Dll\GestaoEscolar.Repository.csproj">
+      <Project>{0ee260bc-992e-4c7a-9dbd-a743b48509d6}</Project>
+      <Name>GestaoEscolar.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.Business\GestaoEscolar.Business.csproj">
+      <Project>{5d8e0078-a0ba-47f3-a519-6f964db0fed2}</Project>
+      <Name>GestaoEscolar.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.IBusiness\GestaoEscolar.IBusiness.csproj">
+      <Project>{21f7980e-6a17-48ca-bf47-8a298810565a}</Project>
+      <Name>GestaoEscolar.IBusiness</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.IRepository\GestaoEscolar.IRepository.csproj">
+      <Project>{f9ce7af3-712f-4295-8f2f-158b4ddcee5e}</Project>
+      <Name>GestaoEscolar.IRepository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

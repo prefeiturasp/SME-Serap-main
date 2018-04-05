@@ -1,0 +1,61 @@
+﻿<div ng-show="loading" class="loading-box" style="width:100%; height:100%; position:fixed; background:rgba(255,255,255,.3); top:0; z-index:99999"><label id="preloading">Carregando...</label></div>
+<header class="frame-header">
+    <a href="" class="toggle-menu-bootstrap-bar" data-ng-click="open();" data-menu-element>
+        <i class="material-icons" data-menu-element>menu</i> Menu
+    </a>
+    <div id="logos">
+        <a href="/">
+            <img class="logos_img hand-logo" src="/Assets/images/sia.png"><span>{{system}}</span>
+        </a>
+    </div>
+    <div class="infoGeral">
+        <ul class="opcoesGerais">
+            <li>
+                <span id="frame-account" class="nomeUsuario"> Bem-vindo, <b>{{user}}</b></span>
+            </li>
+            <li data-ng-if="showManual">
+                <a data-ng-if="true" target="_blank" href="/Assets/images/manual/manual_avalia.pdf">
+                    <i class="material-icons">insert_drive_file</i> Manual
+                </a>
+            </li>
+            <li id="toggle-sistemas">
+                <a href="javascript:void(0)" type="button" class="" data-placement="bottom-right" data-trigger="focus" 
+                            data-template="Assets/js/angular/directives/_bundle/menu/sitemas.html"
+                            data-animation="popover-fade" data-container="body" data-bs-popover="sistemas">
+                    <i class="material-icons">apps</i> Sistemas
+                </a>
+            </li>
+            <li>
+                <a id="frame-logout" href="/Account/LogoutSSO" class="toggleBox">
+                    <i class="material-icons">exit_to_app</i> Sair
+                </a>
+            </li>
+        </ul>
+    </div>
+</header>
+<ul class="menuLateral system-menu" data-menu-element>
+    <li ng-repeat="($indexN1, n1) in menus" ng-class="{'collapsed': !n1.$open}" data-menu-element>
+        <span data-toggle="collapse" data-parent="#accordion" href="#n1_{{$indexN1}}" ng-click="n1.$open=!n1.$open" data-menu-element>
+            <i class="material-icons" data-menu-element>{{n1.Icon}}</i>{{n1.Id}}
+            <i class="material-icons upMenu" data-menu-element>keyboard_arrow_up</i>
+        </span>
+        <ul class="subItenMenu panel-collapse collapse" id="n1_{{$indexN1}}" data-menu-element>
+            <li ng-repeat="($indeN2, n2) in n1.Itens" ng-class="{'collapsed': !n2.$open}" data-menu-element>
+                <span ng-if="n2.Itens.length>0" data-toggle="collapse" data-parent="#accordion" href="#n2_{{$indexN2}}" ng-click="n2.$open=!n2.$open" data-menu-element>
+                    <i class="material-icons" data-menu-element>{{n2.Icon}}</i>{{n2.Id}}
+                    <i class="material-icons upMenu" data-menu-element>keyboard_arrow_up</i>
+                </span>
+                <span ng-if="n2.Itens.length==0" data-menu-element>
+                    <i class="material-icons" data-menu-element>{{n2.Icon}}</i>
+                    <a ng-href="{{n2.Url}}" data-menu-element>{{n2.Id}}</a>
+                </span>
+                <ul class="subItenMenuNivel panel-collapse collapse" id="n2_{{$indexN2}}" data-menu-element>
+                    <li ng-repeat="n3 in n2.Itens" data-menu-element>
+                        <i class="material-icons" data-menu-element>{{n3.Icon}}</i>
+                        <a ng-href="{{n3.Url}}" data-menu-element>{{n3.Id}}</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>

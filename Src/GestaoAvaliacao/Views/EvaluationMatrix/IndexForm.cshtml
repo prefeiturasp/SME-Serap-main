@@ -1,0 +1,510 @@
+﻿@using GestaoAvaliacao.WebProject.Facade;
+@*Alertas*@
+<alert></alert>
+<div class="wellCustom" data-ng-controller="EvaluationMatrixController">
+    <div class="headerCustom">
+        <h4>Matriz de avaliação<span>Crie uma nova matriz de avaliação</span></h4>
+    </div>
+    <div class="wizard">
+        <div class="maxWidth">
+            <a data-ng-class="{'current':navigation == 1}"><i class="material-icons">chevron_right</i><span data-ng-class="{'badge': navigation != 1, 'badge badge-inverse': navigation == 1}">1</span> Cadastro Matriz </a>
+            <a data-ng-class="{'current':navigation == 2}"><i class="material-icons">chevron_right</i><span data-ng-class="{'badge': navigation != 2, 'badge badge-inverse': navigation == 2}">2</span> Níveis da Matriz</a>
+            <a data-ng-class="{'current':navigation == 3}"><i class="material-icons">chevron_right</i><span data-ng-class="{'badge': navigation != 3, 'badge badge-inverse': navigation == 3}">3</span> Associação de Cursos </a>
+        </div>
+    </div>
+    <div class="well well-large itens">
+        <div class="form-group">
+            <div class="step" data-ng-show="navigation === 1">
+                <div class="boxConteudo">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label for="evaluationMatrix.Description">Nome da matriz*:</label>
+                                    <div>
+                                        <input type="text" id="description" class="col-md-5 form-control" maxlength="100" placeholder="Digite aqui o nome da matriz" data-ng-model="objMatrix.Description">
+                                    </div>
+                                </div>
+                                <div class="campoLabel">
+                                    <label for="evaluationMatrix.Edition">Edição da matriz*:</label>
+                                    <div>
+                                        <input type="text" id="edition" class="form-control number" maxlength="4" placeholder="Digite aqui a edição da matriz" data-ng-model="objMatrix.Edition">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label for="modelMatrix">Modelo da matriz*: </label>
+                                    <div>
+                                        <select id="evaluationMatrix1" class="form-control" title="{{ selectedObjModelMatrix.Description }}"
+                                                ng-change="carregaEvaluationMatrix2();"
+                                                ng-model="selectedObjModelMatrix"
+                                                ng-options="matrix as (matrix.Description | minimize:35) for matrix in modelMatrixList"
+                                                ng-disabled="containsCourse"
+                                                ng-title="modelMatrixList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1">
+                                            <option value="">Selecione um modelo da matriz</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="campoLabel">
+                                    <label for="levelEducation">Nível de ensino*: </label>
+                                    <div>
+                                        <select id="levelEducation" class="form-control" title="{{ selectedObjLevelEducation.Description }}"
+                                                ng-model="selectedObjLevelEducation"
+                                                ng-options="tipoNivelEnsino as (tipoNivelEnsino.Description | minimize:35) for tipoNivelEnsino in tipoNivelEnsinoList"
+                                                ng-disabled="containsCourse"
+                                                ng-title="tipoNivelEnsinoList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1">
+                                            <option value="">Selecione um nível de ensino</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="campoLabel">
+                                    <label for="disciplines">Componente curricular*: </label>
+                                    <div>
+                                        <select id="disciplines" class="form-control" title="{{ selectedObjLevelDisciplines.Description }}"
+                                                ng-model="selectedObjLevelDisciplines"
+                                                ng-options="discipline as (discipline.Description | minimize:35) for discipline in disciplinesList"
+                                                ng-disabled="containsCourse"
+                                                ng-title="disciplinesList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1">
+                                            <option value="">Selecione um componente curricular</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label for="course">Situação*: </label>
+                                    <div radio-select radiolist="situationList" radioselected="selectedObjSituation" custom-class="radio-inline" style="margin: 0 -84px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="botoes">
+                    <button type="button"
+                            class="btnPadrao2  pull-right"
+                            data-ng-click="salvar(evaluationMatrix, curriculumGrade.curriculumGradeList)"
+                            btn-checkbox=""
+                            btn-checkbox-true="1"
+                            btn-checkbox-false="0">
+                        Avançar
+                    </button>
+                    <a href="~/EvaluationMatrix/Index" class="btnCancelar pull-right">Cancelar</a>
+                </div>
+            </div>
+            <div class="step" data-ng-show="navigation === 2">
+                <div class="boxConteudo">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label for="evaluationMatrix.ModelDescription">Modelo da matriz:</label>
+                                    <span>{{selectedObjModelMatrix.Description}}</span>
+                                </div>
+                                <div class="campoLabel">
+                                    <label for="evaluationMatrix.Description">Matriz:</label>
+                                    <span>{{evaluationMatrix.Description}}</span>
+                                </div>
+                                <div class="campoLabel">
+                                    <label for="evaluationMatrix.Edition">Edição da matriz:</label>
+                                    <span>{{evaluationMatrix.Edition}}</span>
+                                </div>
+                                <div class="campoLabel">
+                                    <label>Componente curricular:</label>
+                                    <span>{{selectedObjLevelDisciplines.Description}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label for="level">Nível: </label>
+                                    <div>
+                                        <span class="">{{nivel.Description}}</span>
+                                        <a data-ng-click="confirmarModal(nivel, null, 'novo', selectedObjModelMatrix)" class="btnPadrao" data-ng-show="nivel.Level == 1">Novo(a) {{nivel.Description}}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" data-ng-hide="listLevelPanel">
+                        <div class="col-md-12">
+                            <div class="cards" style="padding:0;">
+                                <div class="voltar-cadastro">
+                                    <div data-ng-show="nivel.Level != 1">
+                                        <a href="" data-ng-click="voltarNivelAnterior(parent)">
+                                            <span data-trigger="hover"
+                                                  data-type="success"
+                                                  data-title="Voltar nível anterior"
+                                                  data-placement="bottom"
+                                                  data-container="body"
+                                                  bs-tooltip>
+                                                <i class="material-icons">undo</i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <label data-ng-show="parentDescription != undefined">Nível anterior: <b>{{parentDescription}}</b></label>
+                                </div>
+                                <table class="table table-hover" style="margin:0;" data-ng-show="skillList != null">
+                                    <colgroup>
+                                        <col>
+                                        <col data-ng-show="nivel.LastLevel != 1" width="20%">
+                                        <col data-ng-show="nivel.LastLevel == true" width="20%">
+                                        <col width="5%">
+                                        <col width="5%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>Cód - <span>{{nivel.Description}}</span> </th>
+                                            <th class="center" data-ng-show="nivel.LastLevel != 1"><span>{{proximoNivel.Description}}</span> </th>
+                                            <th class="center" data-ng-show="nivel.LastLevel == true"><span>Competência cognitiva</span></th>
+                                            <th class="center">Editar</th>
+                                            <th class="center">Excluir</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="skill in skillList">
+                                            <td>
+                                                <span data-trigger="hover" data-type="success" data-title="{{skill.Description}}" data-placement="top" data-container="body" bs-tooltip>{{minimize(skill.Description)}}</span>
+                                            </td>
+                                            <td class="center" data-ng-if="nivel.LastLevel != 1">
+                                                <a href="" data-ng-click="carregarProximoNivel(skill, skill.Description, proximoNivel)" style="text-decoration: none;">
+                                                    <span data-trigger="hover" data-type="success" data-title="Visualizar {{proximoNivel.Description}}" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">menu</i></span>
+                                                </a>
+                                                <a href="" data-ng-click="confirmarModal(nivel, skill, 'last', proximoNivel, skill.Description)" style="text-decoration: none;">
+                                                    <span data-trigger="hover" data-type="success" data-title="Adicionar {{proximoNivel.Description}}" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">add</i></span>
+                                                </a>
+                                            </td>
+                                            <th class="center" data-ng-show="nivel.LastLevel == true"><span>{{skill.CognitiveCompetence.Description}}</span><span data-ng-if="!skill.CognitiveCompetence.Description">Sem competência cognitiva</span></th>
+                                            <td class="center"><a data-trigger="hover" data-type="success" data-title="Editar {{proximoNivel.Description}}" data-placement="top" data-container="body" bs-tooltip data-ng-click="confirmarModal(nivel, skill.Id, 'edit', proximoNivel, skill.Description)"><i class="material-icons">edite</i></a></td>
+                                            <td class="center"><a data-trigger="hover" data-type="success" data-title="Excluir {{proximoNivel.Description}}" data-placement="top" data-container="body" bs-tooltip data-ng-click="confirmarDeletarSkill(skill, nivel)"><i class="material-icons">delete</i></a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="campoLabel">
+                                    <page method="loadSkill(parentId, nivel.Id, next)" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                                    <p class="nresultados" data-ng-hide="skillList != null || !(message)">Nenhum resultado encontrado.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="button"
+                            class="btnPadrao2 pull-right"
+                            data-ng-click="carregarCourses()">
+                        Avançar
+                    </button>
+
+                    <button type="button"
+                            class="btnCancelar semMargin"
+                            data-ng-click="previus(1)">
+                        Voltar
+                    </button>
+                </div>
+            </div>
+            <div class="step" data-ng-show="navigation === 3">
+                <div class="boxConteudo">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label>Nível de Ensino:</label>
+                                    <div>{{selectedObjLevelEducation.Description}}</div>
+                                </div>
+                                <div class="campoLabel">
+                                    <label for="modality">Modalidade*: </label>
+                                    <div>
+                                        <select id="modality" class="form-control" title="{{ selectedObjModality.Description }}"
+                                                ng-change="carregaCourse()"
+                                                ng-model="selectedObjModality"
+                                                ng-options="modality as modality.Description for modality in modalityList"
+                                                ng-title="modalityList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1">
+                                            <option value="">Selecione uma modalidade</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div data-ng-show="selectedObjModality.Id > 0 && courseList.length > 0">
+                                    <div class="campoLabel">
+                                        <label class="" for="course">Curso*: </label>
+                                        <div>
+                                            <select id="modality" class="form-control" title="{{ selectedObjCourse.Description }}"
+                                                    ng-change="loadCurriculumGrade()"
+                                                    ng-model="selectedObjCourse"
+                                                    ng-options="course as course.Description for course in courseList"
+                                                    ng-title="courseList"
+                                                    ng-title-propertie="Description"
+                                                    ng-title-index="1">
+                                                <option value="">Selecione um curso</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="cards" data-ng-show="selectedObjCourse.Id > 0 && curriculumGradeList.length > 0">
+                                        <div class="campoLabel" id="course">
+                                            <label class="">{{curriculumGradeLabel | capitalize}}(s) do curso: </label>
+                                            <div class="checkbox checkbox-colunas checkbox-primary">
+                                                <div data-ng-repeat="s in curriculumGradeList">
+                                                    <input id="{{s.Description}}_{{$index}}" type="checkbox" checklist-model="curriculumGrade.curriculumGradeList" checklist-value="s">
+                                                    <label for="{{s.Description}}_{{$index}}">
+                                                        {{s.Description}}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" style="margin: -30px 15px;"
+                                                class="btnPadrao2 pull-right"
+                                                data-ng-click="salvarCourses(selectedObjCourse, curriculumGrade.curriculumGradeList)">
+                                            Salvar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="cards" style="padding-top: 0;">
+                                <div class="row" title="Cursos">
+                                    <div class="col-md-12">
+                                        <div class="" style="padding:0;">
+                                            <table class="table table-hover" style="margin:0;" data-ng-show="courseListGrid != null">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Modalidade</th>
+                                                        <th>Curso</th>
+                                                        <th class="text-center">{{curriculumGradeLabel | capitalize}}(s)</th>
+                                                        <th class="center">Editar</th>
+                                                        <th class="center">Excluir</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr data-ng-repeat="course in courseListGrid">
+                                                        <td>{{course.Modality.Description}}</td>
+                                                        <td>{{course.Description}}</td>
+                                                        <td class="text-center">
+                                                            <div class="row">
+                                                                <div data-ng-repeat="curriculum in course.EvaluationMatrixCourseCurriculumGrades">
+                                                                    {{curriculum.Description}}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="center"><a data-ng-click="confirmarEditCourse(course)"><i class="material-icons">edite</i></a></td>
+                                                        <td class="center"><a data-ng-click="confirmarDeletarCourse(course)"><i class="material-icons">delete</i></a></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div style="padding: 15px;">
+                                                <page method="loadCourse()" pager="paginateCourse" total-pages="{{pagesCourse}}" total-itens="{{totalItensCourse}}" page-size="pageSizeCourse" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                                                <p class="nresultados" data-ng-hide="courseListGrid != null || !(messageCourse)">Nenhum resultado encontrado.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="~/EvaluationMatrix/Index"
+                           class="btnPadrao2 pull-right">Finalizar</a>
+                        <button type="button"
+                                class="btnCancelar pull-left"
+                                data-ng-click="previus(2)">
+                            Voltar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Modal que exibetodo o texto do select *@
+    <modal id="modalDescription" modal-title="{{textSelected.Description}}">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="modal-body">
+                    <span>{{textSelected.TextDescription}}</span>
+                </div>
+                <div class="col-sm-12 text-right">
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </modal>
+    @*ModalSkill*@
+    <div class="modal fade" id="modalSkill" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{level.Description}}</h4>
+                </div>
+                <modal-alert notification="notification.objNotification"></modal-alert>
+                <br />
+                <label data-ng-show="description != undefined" class="col-md-12">Nível anterior: {{description}}</label>
+                <br /><br />
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row-fluid">
+                            <label class="col-md-5 textRight">Código do(a) {{level.Description}}*:</label>
+                            <div class="col-md-6">
+                                <input type="text" id="code" class="form-control" maxlength="50" data-ng-model="skill.Code">
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;" class="container-fluid">
+                        <div class="row-fluid step-row">
+                            <label class="col-md-5 textRight">{{level.Description}}*:</label>
+                            <div class="col-md-6">
+                                <textarea id="description" class="form-control" data-ng-model="skill.Description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;" class="container-fluid" data-ng-show="LastLevel">
+                        <div class="row-fluid step-row">
+                            <label class="col-md-5 textRight">Competência cognitiva:</label>
+                            <div class="col-md-6">
+                                <div>
+                                    <select id="cognitiveCompetence" class="form-control" title="{{ skill.CognitiveCompetence.Description }}"
+                                            ng-model="skill.CognitiveCompetence"
+                                            ng-options="cognitiveCompetence as cognitiveCompetence.Description for cognitiveCompetence in listCognitiveCompetence"
+                                            ng-title="listCognitiveCompetence"
+                                            ng-title-propertie="Description"
+                                            ng-title-index="1">
+                                        <option value="">--Selecione--</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;" class="container-fluid">
+                        <div class="row-fluid">
+                            <div class="col-md-2 col-md-offset-5">
+                                <button type="button" class="btn btn-primary" data-ng-show="action != 'edit'" data-ng-click="adicionarSkillModal(skill)">Adicionar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                        <div class="col-md-12" style="padding-left: 4px; padding-right: 0px;">
+                            <table class="table table-hover" data-ng-show="action != 'edit'">
+                                <thead>
+                                    <tr>
+                                        <th>Itens Adicionados </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="pesquisado in skillListModal">
+                                        <td>
+                                            <span data-trigger="hover" data-type="success" data-title="{{pesquisado.ItemAdicionado}}" data-placement="top" data-container="body" bs-tooltip>{{minimize(pesquisado.ItemAdicionado)}}</span>
+                                        </td>
+                                        <td><a data-ng-click="removerSkillModal($index)"><i class="material-icons">delete</i></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-ng-click="salvarSkills(skillListModal)" data-ng-show="action != 'edit'" data-ng-disabled="skillListModal.length <= 0">Salvar</button>
+                    <button type="button" class="btn btn-primary" data-ng-click="salvarSkill(skill)" data-ng-show="action == 'edit'">Salvar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*ModalCourse*@
+    <div class="modal fade" id="modalCourse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{course.Description}}</h4>
+                </div>
+                <modal-alert notification="notification.objNotification"></modal-alert>
+                <div class="modal-body">
+                    <div id="container">
+                        <div class="row step-row">
+                            <div class="col-sm-4 col-md-12"><strong>Modalidade*: </strong>{{course.Modality.Description}}</div>
+                            <div class="col-sm-4 col-md-12"><strong>{{curriculumGradeLabel}} do curso*: </strong></div>
+                            <div class="col-sm-4 col-md-12">
+                                <div class="row checkbox checkbox-primary"
+                                     style="margin-left: 15px; margin-top: 10px;">
+                                    <div class="col-md-4" data-ng-repeat="s in curriculumGradeListModal" style="margin-bottom: 10px;">
+                                        <input id="curriculum_{{$index}}" type="checkbox" data-ng-model="s.checked" data-ng-click="removeAndAddPeriod(curriculumGradeListEdit, s, $index)" data-ng-disabled="s.Status">
+                                        <label for="curriculum_{{$index}}">
+                                            {{s.Description}}
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-ng-click="saveCurriculumGrades(curriculumGradeListEdit)">Salvar</button>
+                    <button type="button" class="btn btn-primary" data-ng-click="cancelar()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*ModalCourseDelete*@
+    <div class="modal fade" id="modalCourseDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{course.Description}}</h4>
+                </div>
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir o curso <b>{{course.Description}}</b> da modalidade <b>{{course.Modality.Description}}</b>?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btnPadrao" data-ng-click="deleteCourse(course)">Excluir</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*ModalSkillDelete*@
+    <div class="modal fade" id="modalSkillDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{skill.Description}}</h4>
+                </div>
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir <b>{{skill.Description}}</b>?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btnPadrao" data-ng-click="deleteSkill(skill)">Excluir</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

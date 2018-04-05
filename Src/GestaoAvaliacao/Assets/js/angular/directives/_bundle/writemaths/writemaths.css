@@ -1,0 +1,16 @@
+﻿.wm_preview {
+    z-index: 100000;
+    position: absolute;
+    display: none;
+    border: 1px solid;
+    padding: 0.2em;
+    width: auto;
+    margin: 0 auto;
+    background: white;
+}
+.MathJax_MenuItem {
+    z-index: 100000 !important;
+}
+#MathJax_MenuFrame {
+    z-index: 100000 !important;
+}

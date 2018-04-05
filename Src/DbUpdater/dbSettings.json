@@ -1,0 +1,82 @@
+﻿{
+  "SystemId": "$SystemId$",
+  "DbSettings": [
+    {
+      "ProjectDatabase": "GestaoAvaliacaoSGP.Database",
+      "DeployConnectionString": "$DeployConnectionStringGestaoAvaliacaoSGP$",
+      "InitialVersionRestoreType": "$InitialVersionRestoreTypeGestaoAvaliacaoSGP$",
+      "BackupFilePath": "$BackupFilePathGestaoAvaliacaoSGP$",
+      "Variables": {
+        "UserName": "$UserName$",
+        "UserPass": "$UserPass$",
+        "GestaoAvaliacaoSGP": "$GestaoAvaliacaoSGP$",
+        "GestaoAvaliacaoSource": "$GestaoAvaliacaoSource$",
+        "GestaoAvaliacaoTarget": "$GestaoAvaliacaoTarget$"
+      }
+    },
+    {
+      "ProjectDatabase": "ProvaSP.Database",
+      "DeployConnectionString": "$DeployConnectionStringProvaSP$",
+      "InitialVersionRestoreType": "$InitialVersionRestoreTypeProvaSP$",
+      "BackupFilePath": "$BackupFilePathProvaSP$",
+      "Variables": {
+        "UserName": "$UserName$",
+        "UserPass": "$UserPass$",
+        "ProvaSP": "$ProvaSP$"
+      }
+    },
+    {
+      "ProjectDatabase": "GestaoAvaliacao.Database",
+      "DeployConnectionString": "$DeployConnectionStringGestaoAvaliacao$",
+      "InitialVersionRestoreType": "$InitialVersionRestoreTypeGestaoAvaliacao$",
+      "BackupFilePath": "$BackupFilePathGestaoAvaliacao$",
+      "Variables": {
+        "SystemName": "$SystemName$",
+        "UserName": "$UserName$",
+        "UserPass": "$UserPass$",
+        "StoragePath": "$StoragePath$",
+        "GestaoAvaliacaoDatabase": "$GestaoAvaliacaoDatabase$",
+        "CoreSource": "$CoreSource$",
+        "CoreTarget": "$CoreTarget$",
+        "GestaoAvaliacaoSGPSource": "$GestaoAvaliacaoSGPSource$",
+        "GestaoAvaliacaoSGPTarget": "$GestaoAvaliacaoSGPTarget$",
+        "VirtualPath": "$VirtualPath$"
+      }
+    },
+    {
+      "ProjectDatabase": "CoreSSO.Database",
+      "DeployConnectionString": "$DeployConnectionStringCore$",
+      "InitialVersionRestoreType": "None",
+      "BackupFilePath": "",
+      "Variables": {
+        "SystemName": "$SystemName$",
+        "UserName": "$UserName$",
+        "UserPass": "$UserPass$",
+        "UrlSerapLogin": "$UrlSerapLogin$",
+        "UrlSerapLogout": "$UrlSerapLogout$",
+        "UrlOmrLogin": "$UrlOmrLogin$",
+        "UrlOmrLogout": "$UrlOmrLogout$"
+      }
+    },
+    {
+      "ProjectDatabase": "CoreIDS.Database",
+      "DeployConnectionString": "$DeployConnectionStringCoreIDS$",
+      "InitialVersionRestoreType": "None",
+      "BackupFilePath": "",
+      "Variables": {
+        "ClientIdMvc": "$ClientIdMvc$",
+        "UrlSerap": "$UrlSerap$",
+        "UrlSerapLogin": "$UrlSerapLogin$"
+      }
+    }
+  ],
+  "MongoSettings": [
+    {
+      "ServerName": "$MongoServerName$",
+      "Database": "$MongoDatabase$",
+      "DumpFilePath": "$MongoDumpFilePath$",
+      "InitialVersionRestoreType": "$MongoInitialVersionRestoreType$",
+      "CompressedFile": "$MongoCompressedFile$"
+    }
+  ]
+}

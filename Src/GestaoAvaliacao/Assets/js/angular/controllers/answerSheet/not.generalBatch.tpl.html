@@ -1,0 +1,14 @@
+﻿<div class="tooltip in">
+    <div class="tooltip-arrow"></div>
+    <div class="tooltip-inner html-bind-trusted imgResponsive">
+        <span class='help'><i class='material-icons'>help_outline</i></span> {{EnumBatchSituationDescription.PendingIdentification}} <br />
+        <span class='erro'><i class='material-icons'>block</i></span> {{EnumBatchSituationDescription.NotIdentified}} <br />
+        <span class='help'><i class='material-icons'>radio_button_unchecked</i></span> {{EnumBatchSituationDescription.Pending}} <br />
+        <span class='erro'><i class='material-icons'>cancel</i></span> {{EnumBatchSituationDescription.Error}} <br />
+        <span class='absent'><i class='material-icons'>do_not_disturb</i></span> {{EnumBatchSituationDescription.Absent}} <br />
+        <span class='atencao'><i class='material-icons'>check_circle</i></span> {{ (!WARNING_UPLOAD_BATCH_DETAIL ? EnumBatchSituationDescription.Warning : 'Sucesso - questão(ões) nula(s) e/ou rasurada(s)') }} <br />
+        <span class='double_check_tooltip'><i class='material-icons double_check_i'>done_all</i></span> {{EnumBatchSituationDescription.Success}}
+    </div>
+</div>
+
+

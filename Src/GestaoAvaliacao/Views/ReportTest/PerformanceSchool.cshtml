@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "PerformanceSchool";
+}
+<alert></alert>
+<div class="wellCustom" ng-controller="PerformanceSchoolController">
+    <div class="headerCustom">
+        <h4>Relatório<span>Desempenho de prova por escola</span></h4>
+    </div>
+    @* Informações *@
+    <div class="resumoAdesao">
+        <div class="maxWidth">
+            <div class="dadosGerais">
+                <h2>
+                    <strong>Relatório</strong>
+                </h2>
+                <div class="dadosResumo">
+                    <div>
+                        <span>{{AverageDre}}%</span>
+                        <i class="material-icons">assessment</i>
+                        <p>Média DRE</p>
+                    </div>
+                    <div>
+                        <span>{{AverageGrid}}%</span>
+                        <i class="material-icons">public</i>
+                        <p>Média da rede</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <button class="btnPadrao" ng-click="exportFile();">Exportar</button>
+                        <a href="/ReportTest/GraphicPerformanceSchool" class="btnCancelar2" >Gráfico</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Gatilho Filtros *@
+    <div class="pesquisa-upload row">
+        <div class="col-md-8"></div>
+        <div class="filtrar-lista col-md-4" data-side-filters>
+            <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                <i class="material-icons" data-side-filters>filter_list</i>
+                <label data-side-filters>Filtrar</label>
+                <div class="notificationFilter"
+                     data-trigger="hover"
+                     data-type="success"
+                     data-title="Filtros selecionados"
+                     data-placement="top"
+                     data-container="body"
+                     data-bs-tooltip>
+                    {{countFilter}}
+                </div>
+            </a>
+        </div>
+    </div>
+    @* Painel Filtros *@
+    <div class="panel-search side-filters" data-side-filters>
+        <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+            <i class="material-icons">filter_list</i>
+            <label class="filtroP">Filtrar provas</label>
+            <i class="material-icons fecha">arrow_forward</i>
+        </a>
+        @* Directiva Filtros *@
+        <report-filters filters="filters" global="global"></report-filters>
+        <div class="col-seach" data-side-filters>
+            <div style="display: inline-block; width: 100%;">
+                <button class="btnCancelar pull-right" data-ng-click="clearFields()" data-side-filters><span>Limpar</span> </button>
+                <button type="button" class="btnCancelar pull-right" ng-click="search()" data-side-filters>Pesquisar</button>
+            </div>
+        </div>
+    </div>
+    @* Pesquisa *@
+    <div class="well well-large">
+        <table class="table table-hover" data-ng-show="schools.length>0" style=" margin-top: 0px;">
+            <colgroup>
+                <col width="50%" />
+                <col width="30%" />
+                <col width="20%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Escola</th>
+                    <th class="center">DRE</th>
+                    <th class="center">Acertos Positivos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="($indexSchool, school) in schools track by $indexSchool">
+                    <td>{{school.Name}}</td>
+                    <td class="center" ng-show="school">{{school.Dre}}</td>
+                    <td class="center">{{school.AveragePositive}}%</td>
+                </tr>
+            </tbody>
+        </table>
+        <page method="search('paginate')" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" ng-show="schools.length>0" data-arr-page-size="[10,20,30,40,50,100]"></page>
+        <p class="nresultados" ng-show="schools.length == 0" class="nresultados">Nenhum resultado encontrado.</p>
+    </div>
+</div>

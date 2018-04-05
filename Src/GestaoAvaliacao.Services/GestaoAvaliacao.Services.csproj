@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CFC2DCD1-7A99-4A97-AA75-76B97D8A5537}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GestaoAvaliacao.Services</RootNamespace>
+    <AssemblyName>GestaoAvaliacao.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MSTech.Business.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MSTech.Library\CoreSSO\MSTech.Business.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MSTech.CoreSSO.BLL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MSTech.Library\CoreSSO\MSTech.CoreSSO.BLL.dll</HintPath>
+    </Reference>
+    <Reference Include="MSTech.CoreSSO.DAL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MSTech.Library\CoreSSO\MSTech.CoreSSO.DAL.dll</HintPath>
+    </Reference>
+    <Reference Include="MSTech.CoreSSO.Entities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MSTech.Library\CoreSSO\MSTech.CoreSSO.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="MSTech.Data.Common">
+      <HintPath>..\MSTech.Library\MSTech\MSTech.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MSTech.Log">
+      <HintPath>..\MSTech.Library\MSTech\MSTech.Log.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnswersheetLotService.cs" />
+    <Compile Include="GenerateNewCorrectionResult.cs" />
+    <Compile Include="ExportAnalysisService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceContainerInstaller.cs" />
+    <Compile Include="CorrectionResult.cs" />
+    <Compile Include="UnzipAnswerSheetQueue.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Application\AvaliaMais.FolhaRespostas.Application.csproj">
+      <Project>{c9da05eb-f737-403d-a667-14e053272350}</Project>
+      <Name>AvaliaMais.FolhaRespostas.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
+      <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>
+      <Name>GestaoAvaliacao.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IBusiness\GestaoAvaliacao.IBusiness.csproj">
+      <Project>{4f696134-e4e6-422b-9286-8332fd194616}</Project>
+      <Name>GestaoAvaliacao.IBusiness</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IFileServer\GestaoAvaliacao.IFileServer.csproj">
+      <Project>{b4a51b1d-3d2f-44e0-bfbf-5ab6fb7f4ae3}</Project>
+      <Name>GestaoAvaliacao.IFileServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IPDFConverter\GestaoAvaliacao.IPDFConverter.csproj">
+      <Project>{5d0b3c01-1ef5-43f4-99b2-647629509540}</Project>
+      <Name>GestaoAvaliacao.IPDFConverter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IRepository\GestaoAvaliacao.IRepository.csproj">
+      <Project>{E76144DD-15B5-4F3F-9681-3F0E2D5C90B5}</Project>
+      <Name>GestaoAvaliacao.IRepository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.LogFacade\GestaoAvaliacao.LogFacade.csproj">
+      <Project>{6ae4ec99-bf93-4e74-b732-978fb5af8980}</Project>
+      <Name>GestaoAvaliacao.LogFacade</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.MappingDependence\GestaoAvaliacao.MappingDependence.csproj">
+      <Project>{be1e5a8f-69d3-4b9d-b6b4-a71f94fb7840}</Project>
+      <Name>GestaoAvaliacao.MappingDependence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.MongoEntities\GestaoAvaliacao.MongoEntities.csproj">
+      <Project>{5ab49ee2-f4ea-428d-8ec1-257d1ee4ea37}</Project>
+      <Name>GestaoAvaliacao.MongoEntities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
+      <Project>{638b2bdc-aa34-4dcd-a041-ab4eb9c4d831}</Project>
+      <Name>GestaoAvaliacao.Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.Entities\GestaoEscolar.Entities.csproj">
+      <Project>{36bb3fdc-ba72-420a-8496-565de18a3b3e}</Project>
+      <Name>GestaoEscolar.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.IBusiness\GestaoEscolar.IBusiness.csproj">
+      <Project>{21f7980e-6a17-48ca-bf47-8a298810565a}</Project>
+      <Name>GestaoEscolar.IBusiness</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,75 @@
+﻿@using GestaoAvaliacao.WebProject.Facade
+@using GestaoAvaliacao.Util
+@{
+    ViewBag.Title = ApplicationFacade.TituloSistema;
+}
+<alert></alert>
+<div class="wellCustom" ng-controller="HomeController">
+    <section class="novaHome">
+        <div class="maxWidth">
+            <h2>Bem-vindo ao @ViewBag.Title <br />Sua ferramenta completa para aplicação de provas</h2>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div >
+                        <h3>{{ pageConfigurationVideoDestaque.Title }}</h3>
+                        <p class="justified">{{ pageConfigurationVideoDestaque.Description }}</p>
+                    </div>
+                    <div ng-repeat="linkAcessoExterno in pageConfigurationLinkAcessoExternoDestaque">
+                        <a class="diagnostico" href="{{ linkAcessoExterno.Link }}" target="_blank"><i class="material-icons">trending_up</i> {{ linkAcessoExterno.Title }}</a>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="playlist" ng-if="pageConfigurationVideoDestaque.FileVideo.Path.length > 0">
+                        <video height="400" width="400" preload="none" controls poster="{{ pageConfigurationVideoDestaque.FileIllustrativeImage.Path }}" src="{{ trustSrc(pageConfigurationVideoDestaque.FileVideo.Path) }}">
+                            Seu navegador não suporta vídeos.
+                        </video>
+                        <h3 nf-if="pageConfigurationVideo.length > 0">+ vídeos</h3>
+                        <ul class="listaVideos">
+                            <li ng-repeat="video in pageConfigurationVideo">
+                                <img ng-src="{{ video.FileIllustrativeImage.Path }}" class="img-responsive" ng-click="loadVideo(video);" />
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="destaqueHome" ng-if="pageConfigurationFerramentaDestaque.length > 0 || pageConfigurationFerramenta.length > 0">
+            <div class="maxWidth">
+                <div class="row-flex">
+                    <div class="col-6-flex">
+                        <h3>Ferramentas em destaque</h3>
+                        <div ng-repeat="ferramentaDestaque in pageConfigurationFerramentaDestaque">
+                            <div class="ferramentas">
+                                <h3>{{ ferramentaDestaque.Title }}</h3>
+                                <p>{{ ferramentaDestaque.Description }}</p>
+                                <a class="consultar" href="{{ ferramentaDestaque.Link }}"><i class="material-icons">play_arrow</i> {{ ferramentaDestaque.ButtonDescription }}</a>
+                            </div>
+                            <img class="imagem" ng-src="{{ ferramentaDestaque.FileIllustrativeImage.Path }}">
+                        </div>
+                    </div>
+                    <div class="col-6-flex">
+                        <ul class="listaFerramentas">
+                            <li ng-repeat="ferramenta in pageConfigurationFerramenta">
+                                <a href="{{ ferramenta.Link }}"><img class="imagemFerramentas" ng-src="{{ ferramenta.FileIllustrativeImage.Path }}"><br />{{ ferramenta.Title }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="destaqueMesangem" ng-if="pageConfigurationLinkAcessoExterno.length > 0">
+            <h3>+ infos</h3>
+            <div class="maxWidth" ng-repeat="linkAcessoExterno in pageConfigurationLinkAcessoExterno">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p>{{ linkAcessoExterno.Description }}</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <a class="diagnostico" href="{{ linkAcessoExterno.Link }}" target="_blank"><i class="material-icons">trending_up</i> {{ linkAcessoExterno.Title }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

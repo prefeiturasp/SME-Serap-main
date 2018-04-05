@@ -1,0 +1,11 @@
+﻿<div class="popover" tabindex="-1">
+    <div class="arrow">
+    </div>
+    <div class="popover-content">
+        <ul ng-repeat="($indexSys, sys) in sistemas track by $indexSys" class="listaPopover">
+            <li>
+                <a href="{{sys.caminho}}" ng-click="$hide();">{{sys.nome}}</a>
+            </li>
+        </ul>
+    </div>
+</div>

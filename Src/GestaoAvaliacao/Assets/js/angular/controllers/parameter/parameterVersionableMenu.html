@@ -1,0 +1,17 @@
+﻿<div class="popover" tabindex="-1" ng-show="content">
+  <div class="arrow"></div>
+      <div class="popover-content">
+          <ul class="listaPopover">
+		  	<li ng-click="versionablemenu.selectAllVersionable(versionablemenu.index, true); $hide()">
+		  		<!-- Selecionar todos -->
+		  		<i class="material-icons">check</i>
+		  		<a href="javascript:void(0)">Marcar todos</a>
+		  	</li>
+		  	<li ng-click="versionablemenu.selectAllVersionable(versionablemenu.index, false); $hide()">
+		  		<!-- Deselecionar todos -->
+		  		<i class="material-icons">close</i>
+		  		<a href="javascript:void(0)">Desmarcar todos</a>
+		  	</li>
+          </ul>   
+    </div>
+</div>

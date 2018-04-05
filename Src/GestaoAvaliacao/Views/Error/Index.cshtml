@@ -1,0 +1,30 @@
+﻿@using System.Web.Optimization
+
+@using GestaoAvaliacao.WebProject.Facade
+@{
+	ViewBag.Title = ApplicationFacade.TituloSistema;
+}
+@{
+	Layout = null;
+}
+
+@*CSS*@
+@Styles.Render("~/bundles/Error_css")
+
+<div class="selecao">
+	<h3>@ViewBag.Title - Manutenção</h3>
+
+	<div>
+		<ul>
+			<li><span>@ViewBag.Message</span></li>
+			<li><a href="/Home/Index">Clique aqui para voltar para a página inicial do sistema.</a></li>
+		</ul>
+	</div>
+
+</div>
+
+<style>
+	body {
+		margin: 0;
+	}
+</style>

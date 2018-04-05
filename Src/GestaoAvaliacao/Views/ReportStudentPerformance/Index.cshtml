@@ -1,0 +1,124 @@
+﻿@using GestaoAvaliacao.WebProject.Facade;
+@using GestaoAvaliacao.Util;
+@* Diretiva para alertas padrões do sistema *@
+<alert></alert>
+<div class="wellCustom" ng-controller="ReportStudentPerformanceController">
+    <div>
+        @* Header da Adesão *@
+        <div class="headerCustom">
+            <h4>Resultado do aluno</h4>
+        </div>
+        @* Informações *@
+        <div class="resumoAdesao">
+            <div class="maxWidth">
+                <div class="dadosGerais">
+                    <h2>
+                        <strong>{{studendInformation.Alu_nome}}</strong>
+                        <strong class="pull-right">Nº {{studendInformation.Mtu_numeroChamada}}</strong>
+                        <span class="dadosDetalhes">{{unitsInformation.TestDescription}} - {{unitsInformation.TestDiscipline}}</span>
+                    </h2>
+                    <div class="dadosResumo">
+                        <div style="max-width: 260px;">
+                            <i class="material-icons">group</i>
+                            <span>{{unitsInformation.Tur_codigo}}</span>
+                        </div>
+                        <div>
+                            <i class="material-icons">school</i>
+                            <p style="max-width: 500px;min-width: 500px;">{{unitsInformation.Esc_nome}}</p>
+                        </div>
+                        <div style="text-align: right;width: 400px;">
+                            <button class="btnCancelar2" data-toggle="modal" data-target="#cancelModal" ng-click="redirectToCorrection()">Trocar Aluno</button>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Geral Resultados *@
+        <div class="cards maxWidth">
+            <ul class="dadosListaInline colunaMedias">
+                <li class="itemDestaque">
+                    <span>Acertos do aluno</span>
+                    <div class="acertoValor">
+                        <span><strong>{{studendInformation.Hits}} itens / {{studendInformation.Avg}}%</strong></span>
+                    </div>
+                </li>
+                <li>
+                    <span>Média de acertos da turma</span>
+                    <div class="acertoValor">
+                        <span><strong>{{unitsInformation.AvgHitsTeam}} itens / {{unitsInformation.AvgTeam}}%</strong></span>
+                    </div>
+                </li>
+                @if (SessionFacade.UsuarioLogado.Grupo.vis_id != (int)EnumSYS_Visao.Individual)
+                {
+                    <li>
+                        <span>Média de acertos da escola</span>
+                        <div class="acertoValor">
+                            <span><strong>{{unitsInformation.AvgHitsESC}} itens / {{unitsInformation.AvgESC}}%</strong></span>
+                        </div>
+                    </li>
+                }
+                @if (SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Administracao)
+                {
+                    <li>
+                        <span>Média de acertos da SME</span>
+                        <div class="acertoValor">
+                            <span><strong>{{unitsInformation.AvgHitsSME}} itens / {{unitsInformation.AvgSME}}%</strong></span>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        @* Lista Aluno *@
+        <div class="cards maxWidth">
+            <div class="headerAdesao">
+                <h4>
+                    Resultados do aluno
+                    <button class="btnPadrao pull-right" ng-click="generateReport();">
+                        <span>Exportar</span>
+                    </button>
+                </h4>                
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Item</th>
+                            <th>Habilidade</th>
+                            <th class="text-center">Alternativa</th>
+                            <th class="text-center">Gabarito</th>
+                            @if (SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Administracao || SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Gestao)
+                            {
+                                <th class="text-center">% DRE</th>
+
+                                if (SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Administracao)
+                                {
+                                    <th class="text-center">% SME</th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr ng-repeat="item in studendInformation.Items" ng-class="{'revoked' : item.Revoked}">
+                            <td class="text-center"><strong>{{item.Order+1}}</strong></td>
+                            <td>{{item.SkillCode}} - {{item.SkillDescription}} </td>
+                            <td class="text-center"><span ng-class="{'alternativarel-correta': item.Correct, 'alternativarel-errada': !item.Correct}">{{item.ChosenAlternative}}</span></td>
+                            <td class="text-center"><span class="alternativarel">{{item.CorrectAlternative}}</span></td>
+                            @if (SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Administracao || SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Gestao)
+                            {
+                                <td class="text-center text-color">{{item.AvgDRE}}</td>
+
+                                if (SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Administracao)
+                                {
+                                    <td class="text-center text-color">{{item.AvgSME}}</td>
+                                }
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

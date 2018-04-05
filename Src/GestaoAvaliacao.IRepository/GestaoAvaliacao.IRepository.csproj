@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E76144DD-15B5-4F3F-9681-3F0E2D5C90B5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GestaoAvaliacao.IRepository</RootNamespace>
+    <AssemblyName>GestaoAvaliacao.IRepository</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IAdministrativeUnitTypeRepository.cs" />
+    <Compile Include="IAnswerSheetBatchLogRepository.cs" />
+    <Compile Include="IAnswerSheetBatchFilesRepository.cs" />
+    <Compile Include="IAnswerSheetBatchQueueRepository.cs" />
+    <Compile Include="IAnswerSheetBatchRepository.cs" />
+    <Compile Include="IAnswerSheetLotRepository.cs" />
+    <Compile Include="ICorrectionRepository.cs" />
+    <Compile Include="ICorrectionResultsRepository.cs" />
+    <Compile Include="IExportAnalysisRepository.cs" />
+    <Compile Include="IItemFileRepository.cs" />
+    <Compile Include="IKnowledgeAreaDisciplineRepository.cs" />
+    <Compile Include="IKnowledgeAreaRepository.cs" />
+    <Compile Include="IPageConfigurationRepository.cs" />
+    <Compile Include="IPerformanceItemRepository.cs" />
+    <Compile Include="IReportItemPerformanceRepository.cs" />
+    <Compile Include="IRequestRevokeRepository.cs" />
+    <Compile Include="IResponseChangeLogMongoRepository.cs" />
+    <Compile Include="IResponseChangeLogRepository.cs" />
+    <Compile Include="ISectionTestGenerateLotRepository.cs" />
+    <Compile Include="ISectionTestStatsRepository.cs" />
+    <Compile Include="IServiceAnswerSheetInfoRepository.cs" />
+    <Compile Include="IReportTestPerformanceRepository.cs" />
+    <Compile Include="IStudentCorrectionRepository.cs" />
+    <Compile Include="IStudentTestAbsenceReasonRepository.cs" />
+    <Compile Include="ISubjectRepository.cs" />
+    <Compile Include="ISubSubjectRepository.cs" />
+    <Compile Include="ITempCorrectionResultRepository.cs" />
+    <Compile Include="ITestFilesRepository.cs" />
+    <Compile Include="IAdherenceRepository.cs" />
+    <Compile Include="IBlockRepository.cs" />
+    <Compile Include="IBookletRepository.cs" />
+    <Compile Include="ICognitiveCompetenceRepository.cs" />
+    <Compile Include="IItemCurriculumGradeRepository.cs" />
+    <Compile Include="IAbsenceReasonRepository.cs" />
+    <Compile Include="IAlternativeRepository.cs" />
+    <Compile Include="IBaseTextRepository.cs" />
+    <Compile Include="ICorrelatedSkillRepository.cs" />
+    <Compile Include="IEvaluationMatrixCourseRepository.cs" />
+    <Compile Include="IDisciplineRepository.cs" />
+    <Compile Include="IEvaluationMatrixCourseCurriculumGradeRepository.cs" />
+    <Compile Include="IEvaluationMatrixRepository.cs" />
+    <Compile Include="IFileRepository.cs" />
+    <Compile Include="IItemLevelRepository.cs" />
+    <Compile Include="IItemRepository.cs" />
+    <Compile Include="IItemSituationRepository.cs" />
+    <Compile Include="IItemSkillRepository.cs" />
+    <Compile Include="IItemTypeRepository.cs" />
+    <Compile Include="IModelEvaluationMatrixRepository.cs" />
+    <Compile Include="IModelSkillLevelRepository.cs" />
+    <Compile Include="IModelTestRepository.cs" />
+    <Compile Include="IParameterRepository.cs" />
+    <Compile Include="IPerformanceLevelRepository.cs" />
+    <Compile Include="ISkillRepository.cs" />
+    <Compile Include="ITestCurriculumGradeRepository.cs" />
+    <Compile Include="ITestGroupRepository.cs" />
+    <Compile Include="ITestPerformanceLevelRepository.cs" />
+    <Compile Include="ITestPermissionRepository.cs" />
+    <Compile Include="ITestRepository.cs" />
+    <Compile Include="ITestSectionStatusCorrectionRepository.cs" />
+    <Compile Include="ITestSubGroupRepository.cs" />
+    <Compile Include="ITestTemplateRepository.cs" />
+    <Compile Include="ITestTypeCourseRepository.cs" />
+    <Compile Include="ITestTypeCourseCurriculumGradeRepository.cs" />
+    <Compile Include="ITestTypeItemLevelRepository.cs" />
+    <Compile Include="ITestTypeRepository.cs" />
+    <Compile Include="IFormatTypeRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
+      <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>
+      <Name>GestaoAvaliacao.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.MongoEntities\GestaoAvaliacao.MongoEntities.csproj">
+      <Project>{5ab49ee2-f4ea-428d-8ec1-257d1ee4ea37}</Project>
+      <Name>GestaoAvaliacao.MongoEntities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
+      <Project>{638b2bdc-aa34-4dcd-a041-ab4eb9c4d831}</Project>
+      <Name>GestaoAvaliacao.Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.Entities\GestaoEscolar.Entities.csproj">
+      <Project>{36bb3fdc-ba72-420a-8496-565de18a3b3e}</Project>
+      <Name>GestaoEscolar.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

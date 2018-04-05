@@ -1,0 +1,15 @@
+﻿<div id="customAlert-container" class="customAlert-top-full-width" aria-live="polite" role="alert">
+    <div ng-click="remove(notification.id)" 
+         ng-show="notification.closeable" 
+         ng-class="['customAlert', 'customAlert-' + notification.type]" 
+         ng-repeat="notification in notifications"
+         auto-close="{{notification.autoClose}}" 
+         data-index="{{notification.id}}" 
+         data-delay="{{notification.delay}}">
+            <button class="close" ng-click="remove(notification.id)" ng-show="notification.closeable">Fechar</button>
+            <div>
+                <div class="toast-title" ng-bind-html="notification.title"></div>
+                <div class="toast-message" ng-bind-html="notification.message"></div>
+            </div>
+    </div>
+</div>

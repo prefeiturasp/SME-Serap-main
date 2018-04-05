@@ -1,0 +1,48 @@
+﻿@using ProvaSP.Model.Entidades
+@using ProvaSP.Data
+@model List<RelatorioItem>
+
+@{
+    ViewBag.Title = "Relatório de Acompanhamento";
+    Layout = "~/Views/Shared/_LayoutRelatorioAcompanhamento.cshtml";
+}
+
+<h2>Nível SME por DRE</h2>
+
+<table cellpadding="5">
+
+    @{
+        string ultimoTitulo = "";
+        foreach (var item in Model)
+        {
+
+            if (ultimoTitulo != @item.Titulo)
+            {
+                <tr>
+                    <td style="padding-top:30px;">
+                        <a href="RelatorioAcompanhamentoNivelDRE_PorEscola?uad_codigo=@item.Titulo&usu_id=@ViewBag.Usuario.usu_id ">
+                            <b>@Html.Raw(EnumHelper<DRE>.GetEnumDescription(item.Titulo))</b>
+                            <br />
+                            (Clique aqui para ver mais detalhes)
+                        </a>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+
+            <tr>
+                <td>
+                    @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                </td>
+                <td>
+                    @item.Valor
+                </td>
+            </tr>
+            ultimoTitulo = @item.Titulo;
+        }
+    }
+</table>
+<br />
+<button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelSME?usu_id=@ViewBag.Usuario.usu_id'">
+    Visualizar Nível SME
+</button>

@@ -1,0 +1,396 @@
+﻿<alert></alert>
+<div class="wellCustom" data-ng-controller="FormTestTypeController">
+    <div class="headerCustom">
+        <h4>Tipo de prova <span>Crie um novo tipo de prova</span></h4>
+    </div>
+    <div class="wizard">
+        <div class="maxWidth">
+            <a ng-class="{'current':navigation == 1}"><i class="material-icons">chevron_right</i><span ng-class="{'badge': navigation != 1, 'badge badge-inverse': navigation == 1}">1</span> Cadastro Tipo de prova </a>
+            <a ng-class="{'current':navigation == 2}"><i class="material-icons">chevron_right</i><span ng-class="{'badge': navigation != 2, 'badge badge-inverse': navigation == 2}">2</span> Associar curso</a>
+        </div>
+    </div>
+    <div class="well well-large itens">
+        <div class="form-group">
+            <div class="step" ng-show="navigation == 1">
+                <div class="boxConteudo">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label for="testType.Description">Descrição*:</label>
+                                    <div>
+                                        <input type="text" id="description" class="ng-pristine ng-valid form-control" maxlength="100" placeholder="Digite aqui a descrição" ng-model="testType.Description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label class="" for="levelEducation">Nível de ensino*: </label>
+                                    <div>
+                                        <select id="levelEducation" class="form-control"
+                                                ng-model="selectedObjLevelEducation"
+                                                ng-options="nivelEnsino as (nivelEnsino.Description | minimize:35) for nivelEnsino in tipoNivelEnsinoList"
+                                                ng-disabled="testType.Disabled"
+                                                ng-title="tipoNivelEnsinoList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1"
+                                                ng-title-selected>
+                                            <option value="">--Selecione--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="campoLabel">
+                                    <label data-side-filters>Frequência de aplicação*:</label>
+                                    <div>
+                                        <select class="form-control"
+                                                ng-model="frequencyApplication"
+                                                ng-options="frequency.Id as frequency.Description for frequency in frequencyApplicationList"
+                                                ng-title="frequencyApplicationList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1"
+                                                ng-title-selected>
+                                            <option value="">--Selecione--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="campoLabel">
+                                    <label class="" for="testType.ItemType">Tipo do item:</label>
+                                    <div>
+                                        <div>
+                                            <select id="itemType" class="form-control"
+                                                    ng-model="selectedObjItemType"
+                                                    ng-options="itemType as (itemType.Description | minimize:35) for itemType in itemTypeList"
+                                                    ng-disabled="typItemBlock"
+                                                    ng-title="itemTypeList"
+                                                    ng-title-propertie="Description"
+                                                    ng-title-index="1"
+                                                    ng-title-selected>
+                                                <option value="">--Selecione--</option>
+                                            </select>
+                                        </div>
+                                        <a class="lock" ng-click="modalActive();" ng-show="typItemBlock">
+                                            Desbloquear
+                                            <i type="button"
+                                               class="criar-prova padding-top"
+                                               ng-class="{'material-icons': typItemBlock , 'some-icon': !typItemBlock}">
+                                                lock
+                                            </i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="campoLabel">
+                                    <label class="" for="modelTest">Modelo de Prova*:</label>
+                                    <div>
+                                        <select id="modelTest" class="form-control"
+                                                ng-model="selectedModelTest"
+                                                ng-options="modelTest as (modelTest.Description | minimize:35) for modelTest in modelTestList"
+                                                ng-disabled="typItemBlock"
+                                                ng-title="modelTestList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1"
+                                                ng-title-selected
+                                                required>
+                                            <option value="">--Selecione--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="campoLabel">
+                                    <label for="testType.Global">Tipo*:</label>
+                                    <div>
+                                        <select id="global" class="form-control"
+                                                ng-model="selectedObjGlobal"
+                                                ng-options="global as (global.Description | minimize:35) for global in globalList"
+                                                ng-disabled="typItemBlockAplication"
+                                                ng-title="globalList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1"
+                                                ng-title-selected>
+                                            <option value="">--Selecione--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="campoLabel">
+                                    <p>
+                                        {{(selectedObjGlobal.Id === 1) ? "As provas criadas com esse tipo poderão ser aplicadas por todas as escolas." : ""}}<br />
+                                        {{(selectedObjGlobal.Id === 1) ? "Selecionando essa opção esse tipo de prova não será exibido para os professores." : ""}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label><b>Itens por dificuldade:</b></label>
+                                </div>
+                                <div class="campoLabel">
+                                    <label for="testType.CurriculumGradeId">Formato:</label>
+                                    <div>
+                                        <select id="formatyType" class="form-control"
+                                                ng-model="selectedObjFormatType"
+                                                ng-options="formatType as (formatType.Description | minimize:35) for formatType in formatTypeList"
+                                                ng-title="formatTypeList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1"
+                                                ng-title-selected>
+                                            <option value="">--Selecione--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="campoLabel">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr ng-repeat="item in itensLevel | orderBy: 'Ordem'">
+                                                <th>{{ item.Description }} </th>
+                                                <th>
+                                                    <input ng-model="item.Value" type="text" size="4" maxlength="3" ng-change="replaceValue(item)">
+                                                    <span>{{(selectedObjFormatType.Description === "Porcentagem") ? ' %' : ""}}</span>
+                                                </th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="botoes">
+                    <button class="btnPadrao2  pull-right" ng-click="avancarCourse()" ng-disabled="avancarCourseDisabled">Avançar</button>
+                    <button class="btnCancelar pull-right" ng-click="voltar()">Cancelar</button>
+                    <button class="btnPadrao2 pull-right" ng-click="salvar()">Salvar</button>
+                </div>
+            </div>
+            <div class="step" ng-show="navigation == 2">
+                <div class="boxConteudo">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    @* Nivel de Ensino *@
+                                    <label class="">Nível de Ensino:</label>
+                                    <span class="">{{selectedObjLevelEducation.Description}}</span>
+                                </div>
+                                <div class="campoLabel">
+                                    @* Modalidade *@
+                                    <label class="" for="modality">Modalidade*: </label>
+                                    <div>
+                                        <select id="modality" class="form-control"
+                                                ng-change="carregaCourse()"
+                                                ng-model="selectedObjModality"
+                                                ng-options="modality as modality.Description for modality in modalityList"
+                                                ng-title="modalityList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1"
+                                                ng-title-selected>
+                                            <option value="">--Selecione--</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                @* Curso *@
+                                <div ng-show="selectedObjModality.Id > 0 && courseList.length > 0">
+                                    <div class="campoLabel" id="course">
+                                        <label class="" for="course">Curso: </label>
+                                        <div>
+                                            <select id="modality" class="form-control"
+                                                    ng-change="loadCurriculumGrade()"
+                                                    ng-model="selectedObjCourse"
+                                                    ng-options="course as course.Description for course in courseList"
+                                                    ng-title="courseList"
+                                                    ng-title-propertie="Description"
+                                                    ng-title-index="1"
+                                                    ng-title-selected>
+                                                <option value="">--Selecione--</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @* Ano do Curso *@
+                                    <div class="cards" ng-show="selectedObjCourse.Id > 0 && curriculumGradeList.length > 0">
+                                        <div class="campoLabel" id="course">
+                                            <label class="">{{curriculumGradeLabel | capitalize}} do curso: </label>
+                                            <div class="checkbox checkbox-colunas checkbox-primary">
+                                                <div ng-repeat="s in curriculumGradeList">
+                                                    <input id="{{s.Description}}_{{$index}}" type="checkbox" checklist-model="curriculumGrade.curriculumGradeList" checklist-value="s">
+                                                    <label for="{{s.Description}}_{{$index}}">
+                                                        {{s.Description}}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button style="margin: 0 15px;" ng-show="selectedObjModality.Id > 0 && courseList.length > 0" type="button" class="btnPadrao pull-right ng-valid ng-dirty"
+                                                ng-click="salvarCourses(selectedObjCourse, curriculumGrade.curriculumGradeList)">
+                                            Salvar
+                                        </button>
+                                        <br clear="all" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            @* Table Cursos *@
+                            <div class="well well-large " title="Cursos" style="padding-top: 0;">
+                                <table class="table table-hover" style="margin-top:0;" ng-show="courseListGrid != null">
+                                    <thead>
+                                        <tr>
+                                            <th>Modalidade</th>
+                                            <th>Curso</th>
+                                            <th class="text-center">{{curriculumGradeLabel | capitalize}}(s)</th>
+                                            <th class="center">Editar</th>
+                                            <th class="center">Excluir</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="course in courseListGrid | orderBy: 'Description'">
+                                            <td>{{course.Modality.Description}}</td>
+                                            <td>{{course.Description}}</td>
+                                            <td class="text-center">
+                                                <div class="row">
+                                                    <div ng-repeat="curriculum in course.TestTypeCourseCurriculumGrades">
+                                                        {{curriculum.Description}}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="center"><a ng-click="confirmarEditCourse(course)"><i class="material-icons">create</i></a></td>
+                                            <td class="center"><a ng-click="confirmarDeletarCourse(course)"><i class="material-icons">close</i></a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div style="padding: 15px;">
+                                    <page method="loadCourse()" pager="paginateCourse" total-pages="{{pagesCourse}}" total-itens="{{totalItensCourse}}" page-size="pageSizeCourse" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                                    <p class="nresultados" ng-hide="courseListGrid != null || !(messageCourse)" class="campoLabel">Nenhum resultado encontrado.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div style="margin-top: 15px;">
+                                <button class="btnPadrao2 pull-right" ng-click="finalizar()">Finalizar</button>
+                                <button class="btnCancelar pull-left" ng-click="previus(1)">Voltar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Modal que exibetodo o texto do select *@
+    <modal id="modalDescription" modal-title="{{textSelected.Description}}">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="modal-body">
+                    <span>{{textSelected.TextDescription}}</span>
+                </div>
+                <div class="col-sm-12 text-right">
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </modal>
+    @* ModalCourse *@
+    <div class="modal fade" id="modalCourse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{course.Description}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="container">
+                        <div class="row step-row">
+                            <div class="col-sm-4 col-md-12"><strong>Modalidade: </strong>{{course.Modality.Description}}</div>
+                            <div class="col-sm-4 col-md-12"><strong>{{curriculumGradeLabel}} do curso*: </strong></div>
+                            <div class="col-sm-4 col-md-12">
+                                <div class="row checkbox checkbox-primary"
+                                     style="margin-left: 15px; margin-top: 10px;">
+                                    <div class="col-md-4" ng-repeat="s in curriculumGradeListModal" style="margin-bottom: 10px;">
+                                        <input id="curriculum_{{$index}}" type="checkbox" ng-model="s.checked" ng-click="removeAndAddPeriod(curriculumGradeListEdit, s, $index)" ng-disabled="s.Status">
+                                        <label for="curriculum_{{$index}}">
+                                            {{s.Description}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="saveCurriculumGrades(curriculumGradeListEdit)">Salvar</button>
+                    <button type="button" class="btn btn-primary" ng-click="cancelar()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ModalCourse *@
+    <div class="modal fade" id="modaAlteracao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{course.Description}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="container">
+                        <div class="row step-row">
+                            <div class="col-sm-4 col-md-12"><strong>Modalidade: </strong>{{course.Modality.Description}}</div>
+                            <div class="col-sm-4 col-md-12"><strong>{{curriculumGradeLabel}} do curso*: </strong></div>
+                            <div class="col-sm-4 col-md-12">
+                                <div class="row checkbox checkbox-primary"
+                                     style="margin-left: 15px; margin-top: 10px;">
+                                    <div class="col-md-4" ng-repeat="s in curriculumGradeListModal" style="margin-bottom: 10px;">
+                                        <input id="curriculum_{{$index}}" type="checkbox" checklist-model="curriculumGradeListEdit" checklist-value="s" ng-disabled="s.Status">
+                                        <label for="curriculum_{{$index}}">
+                                            {{s.Description}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="saveCurriculumGrades(curriculumGradeListEdit)">Salvar</button>
+                    <button type="button" class="btn btn-primary" ng-click="cancelar()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Modal de alteração do tipo do item confirm *@
+    <modal id="modaTypeItem" modal-title="Alteração do tipo do item">
+        <div class="container-fluid">
+            <span>Tem certeza que deseja alterar o tipo do item, os itens adicionados nas provas vinculadas a esse tipo de prova poderão ficar inconsistentes?</span>
+            <div class="row">
+                <div class="col-sm-12 text-right">
+                    <button type="button" class="btnPadrao" ng-click="ablilityElement();">Sim</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+        </div>
+    </modal>
+    @* ModalCourseDelete *@
+    <div class="modal fade" id="modalCourseDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{course.Description}}</h4>
+                </div>
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir o curso <b>{{course.Description}}</b> da modalidade <b>{{course.Modality.Description}}</b>?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btnPadrao" ng-click="deleteCourse(course)">Excluir</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

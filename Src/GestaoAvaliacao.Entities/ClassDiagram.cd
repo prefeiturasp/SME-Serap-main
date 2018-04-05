@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GestaoAvaliacao.Entities.Test">
+    <Position X="4.25" Y="2" Width="2" />
+    <AssociationLine Name="TestType" Type="GestaoAvaliacao.Entities.TestType" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.666" Y="2" />
+        <Point X="4.666" Y="1.625" />
+        <Point X="4.312" Y="1.625" />
+        <Point X="4.312" Y="1.191" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Discipline" Type="GestaoAvaliacao.Entities.Discipline" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.583" Y="2" />
+        <Point X="5.583" Y="1.625" />
+        <Point X="6.062" Y="1.625" />
+        <Point X="6.062" Y="1.191" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AASAAQAACAIgAAAICAABAQhEAAAAAhAABAAAAAAAAAA=</HashCode>
+      <FileName>Test.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="TestType" />
+      <Property Name="Discipline" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GestaoAvaliacao.Entities.Booklet">
+    <Position X="7" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Booklet.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Test" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GestaoAvaliacao.Entities.Block">
+    <Position X="9" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgCAAAAAAAAAAAQAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Block.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Booklet" />
+      <Property Name="Test" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GestaoAvaliacao.Entities.TestType" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIgAAAACgAAAQAAAAAAAAACAAAEAgABAAA=</HashCode>
+      <FileName>TestType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GestaoAvaliacao.Entities.TestCurriculumGrade">
+    <Position X="1.5" Y="3.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAACAAAAAA=</HashCode>
+      <FileName>TestCurriculumGrade.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Test" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GestaoAvaliacao.Entities.Discipline" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIgAAAAAAgBAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Discipline.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GestaoAvaliacao.Entities.TestPerformanceLevel">
+    <Position X="1.5" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgCCAAAAA=</HashCode>
+      <FileName>TestPerformanceLevel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="PerformanceLevel" />
+      <Property Name="Test" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GestaoAvaliacao.Entities.PerformanceLevel" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIgAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PerformanceLevel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GestaoAvaliacao.Entities.TestItemLevel">
+    <Position X="7" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAgCAAAAAA=</HashCode>
+      <FileName>TestItemLevel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Test" />
+      <Property Name="ItemLevel" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GestaoAvaliacao.Entities.ItemLevel" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIgAAAAAAAAAAAAAAAAAAACAAAgAAAAAAA=</HashCode>
+      <FileName>ItemLevel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GestaoAvaliacao.Entities.Item" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQEQAABAAACACAoQABAAAACAwAAAAAAAEAAUAAIhgA=</HashCode>
+      <FileName>Item.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

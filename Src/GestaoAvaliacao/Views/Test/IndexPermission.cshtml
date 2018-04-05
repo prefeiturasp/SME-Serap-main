@@ -1,0 +1,83 @@
+﻿<alert></alert>
+<div class="wellCustom" ng-controller="TestPermissionController" ng-init='init();'>
+    @*Bloquear a tela quando não houver permissão*@
+    <div ng-if="!blockPage">
+        @* Header da Permissão *@
+        <div class="headerCustom">
+            <h4>Permissões da prova</h4>
+        </div>
+        @* Informações *@
+        <div class="resumoAdesao">
+            <div class="maxWidth">
+                <div class="dadosGerais">
+                    <h2>
+                        <strong>{{testInformation.Description}} </strong> {{testInformation.FrequencyApplication}} |  {{testInformation.Discipline}}</br>
+                        <label><strong>Cód: </strong>{{params.test_id}}</label>
+                    </h2>
+                    <div class="dadosResumo">
+                        <div style="text-align: right;">
+                            <button class="btnCancelar2" data-toggle="modal" ng-click="cancel()">Trocar Prova</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Paginação *@
+        <div class="cards maxWidth" ng-if="list.displayed">
+            <div class="headerAdesao">
+                <h4>Permissões</h4>
+            </div>
+            <table class="table tablePermissions">
+                <col width="130">
+                <col width="80">
+                <thead>
+                    <tr>
+                        <th style="width: 30%">Grupos</th>
+                        <th class="center" style="width: 30%">Permitir lançamento de respostas</th>
+                        <th class="center" style="width: 20%">Exibir resultados</th>
+                        <th class="center" style="width: 20%">Ocultar prova</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tr-vertical-center" ng-repeat="($indexGroup, permission) in list.displayed track by $indexGroup">
+                        @* Grupo *@
+                        <td>{{permission.gru_nome}}</td>
+                        @*Permitir lançamento de respostas*@
+                        <td class="center">
+                            <div class="checkbox checkbox-primary">
+                                <input id="allowAnswer{{$indexGroup}}" type="checkbox" ng-model="permission.AllowAnswer" ng-checked="{{permission.AllowAnswer}}" />
+                                <label for="allowAnswer{{$indexGroup}}"></label>
+                            </div>
+                        </td>
+                        @*Exibir resultados*@
+                        <td class="center">
+                            <div class="checkbox checkbox-primary">
+                                <input id="showResult{{$indexGroup}}" type="checkbox" ng-model="permission.ShowResult" ng-checked="{{permission.ShowResult}}" />
+                                <label for="showResult{{$indexGroup}}"></label>
+                            </div>
+                        </td>
+                        @*Ocultar prova*@
+                        <td class="center">
+                            <div class="checkbox checkbox-primary">
+                                <input id="testHide{{$indexGroup}}" type="checkbox" ng-model="permission.TestHide" ng-checked="{{permission.TestHide}}" />
+                                <label for="testHide{{$indexGroup}}"></label>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="nresultados">
+                <page method="search()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+            </div>
+        </div>
+        <div class="well well-large itens" ng-if="list.displayed">
+            <button class="btnCancelar pull-right" ng-click="cancel()">Cancelar</button>
+            <button class="btnPadrao2 pull-right" ng-click="save()">Salvar</button>
+        </div>
+        @* Results not found *@
+        <div class="cards maxWidth" ng-if="list.displayed === null || (message)">
+            <p class="nresultados">Nenhum resultado encontrado.</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,138 @@
+﻿@{
+    ViewBag.Title = "Documentação API";
+}
+<div class="jumbotron">
+	<h1>API</h1>
+	<p class="lead">Responsável pela comunicação entre o Avalia+ e OMR</p>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h2>GetBatchFiles</h2>
+        <p>Busca os arquivos do lote</p>
+        <p><b>Requisição:</b> GET</p>
+        <p><b>URL:</b> api/answersheet/getbatchfiles/{id:long}/{status:bool}/{rows:int}</p>
+        <p><b>Ex:</b> api/answersheet/getbatchfiles/3/true/500</p>
+        <p><b>Parâmetros:</b></p>
+        <ol>
+            <li>id: Id do lote</li>
+            <li>status: false- Arquivos não enviados | true- Arquivos enviados</li>
+            <li>rows: Número de registros que a busca retorna (ex: SELECT TOP 100)</li>
+        </ol>
+        <p><b>Retorno:</b> Id, FileId, FileName, FileOriginalName, FileContentType, FilePath</p>
+	</div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>DeleteBatchFiles</h2>
+        <p>Exclui os arquivos do lote</p>
+        <p><b>Requisição:</b> GET</p>
+        <p><b>URL:</b> api/answersheet/deletebatchfiles/{id:long}/{status:bool}</p>
+        <p><b>Ex:</b> api/answersheet/deletebatchfiles/3/false</p>
+        <p><b>Parâmetros:</b></p>
+        <ol>
+            <li>id: Id do lote</li>
+            <li>status: false- Não exclui logicamente | true- Exclui logicamente</li>
+        </ol>
+        <p><b>Retorno:</b> Retorna a quantidade de arquivos excluídos e os não excluídos ocasionado por algum problema e HttpResponseMessage</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>PostFilesLog</h2>
+        <p>Salva o log de erros ou inconsistências do arquivo</p>
+        <p><b>Requisição:</b> POST</p>
+        <p><b>URL:</b> api/answersheet/postfileslog/{id:long}/{status:int}</p>
+        <p><b>Parâmetros:</b></p>
+        <ol>
+            <li>id: Id do arquivo (referência Id do retorno do GetBatchFiles)</li>
+            <li>status: Success = 4, Error = 5, Warning = 6</li>
+        </ol>
+        <p><b>Body:</b></p>
+        <ul>
+            <li>description: Descrição do erro</li>
+        </ul>
+        <p><b>Retorno:</b> HttpStatusCode</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>PostBatchLog</h2>
+        <p>Salva o status de sucesso ou falha do lote</p>
+        <p><b>Requisição:</b> POST</p>
+        <p><b>URL:</b> api/answersheet/postbatchlog/{id:long}/{status:int}</p>
+        <p><b>Parâmetros:</b></p>
+        <ol>
+            <li>id: Id do lote</li>
+            <li>status: Pending = 1, Processing = 2, Success = 3, Failure = 4, Retry = 5</li>
+        </ol>
+        <p><b>Body:</b></p>
+        <ul>
+            <li>description: Descrição do erro</li>
+        </ul>
+        <p><b>Retorno:</b> HttpStatusCode</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>PostListFileLog</h2>
+        <p>Salva o log de erros ou inconsistências da lista de arquivos</p>
+        <p><b>Requisição:</b> POST</p>
+        <p><b>URL:</b> api/answersheet/postlistfilelog/</p>
+        <p><b>Body:</b></p>
+        <p>
+            <code style="white-space: pre-wrap;">
+                [
+                    {
+                        "Id": (id do arquivo),
+                        "Status": (Success = 4, Error = 5, Warning = 6),
+                        "Description": (Descrição do erro)
+                    },
+                    {
+                        "Id": (id do arquivo),
+                        "Status": (Success = 4, Error = 5, Warning = 6),
+                        "Description": (Descrição do erro)
+                    },
+                    {
+                        "Id": (id do arquivo),
+                        "Status": (Success = 4, Error = 5, Warning = 6),
+                        "Description": (Descrição do erro)
+                    }
+                ]
+            </code>
+        </p>
+        <p><b>Retorno:</b> HttpResponseMessage</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>PostBatchResult</h2>
+        <p>Grava o resultado do lote (correção)</p>
+        <p><b>Requisição:</b> POST</p>
+        <p><b>URL:</b> api/answersheet/postbatchresult/</p>
+        <p><b>Body:</b></p>
+        <p>
+            <code style="white-space: pre-wrap;">
+                {
+                    "Batch_Id": 10011,
+                    "Test_Id": 5,
+                    "Section_Id": 97808,
+                    "exclusionLogic": false,
+                    "Students": 
+                    [{
+                        "Id": 1186642,
+                        "NumberId": 1,
+                        "File_Id": 97,
+                        "Items": 
+                        [{
+                            "Order": 1,
+                            "AlternativeOrder": 0,
+                            "EmptyAlternative": false,
+                            "DuplicateAlternative": false
+                        }]
+                    }]
+                }
+            </code>
+        </p>
+        <p><b>Retorno:</b> HttpStatusCode</p>
+    </div>
+</div>

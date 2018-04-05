@@ -1,0 +1,506 @@
+﻿@using GestaoAvaliacao.Util;
+@*Alertas*@
+<alert></alert>
+<div class="wellCustom" ng-controller="ModelTestController" ng-cloak>
+    <div class="headerCustom">
+        <h4>Modelo de prova<span>Crie um novo modelo de prova</span></h4>
+    </div>
+    <div class="modeloProva">
+        <div class="">
+            <form name="formModelTest" novalidate="true">
+                <!--topo do modelo de prova-->
+                <div class="topoProva">
+					<div class="maxWidth">
+						<div class="form-group">
+							<input id="modelTestDescription" class="inputModelo" name="modelTestDescription" ng-model="modelTest.Description" type="text" placeholder="Digite aqui o nome do modelo de prova" required="true">
+						</div>
+						<div class="checkbox checkbox-primary">
+							<input id="modelTestShowCoverPage" type="checkbox" ng-model="modelTest.ShowCoverPage" ng-change="setTabFocus(modelTest.ShowCoverPage);">
+							<label for="modelTestShowCoverPage">Adicionar capa de prova</label>
+						</div>
+						<div class="checkbox checkbox-primary">
+							<input id="modelTestShowBorder" type="checkbox" ng-model="modelTest.ShowBorder">
+							<label for="modelTestShowBorder">Colocar contorno na prova</label>
+						</div>
+						<div class="checkbox checkbox-primary">
+							<input id="modelTestDefaultModel" type="checkbox" ng-model="modelTest.DefaultModel">
+							<label for="modelTestDefaultModel">Modelo Padrão</label>
+						</div>
+						<!-- toggle config gerais -->
+						<div class="pull-right confGeral">
+							<a class="collapsed aba" data-toggle="collapse" href="#geral" for="geral"><i class="material-icons">keyboard_arrow_up</i> Configurações gerais</a>
+						</div>
+						<br clear="all" />
+					</div>
+                </div>
+                <!-- collapse config gerais -->
+                <div class="collapse confGeralConteudo" id="geral">
+					<div class="maxWidth">
+						<div class="confItens">
+							<!-- toggle config header -->
+							<h4 class="collapsed" data-toggle="collapse" href="#config-header" for="config-header">Cabeçalho <i class="material-icons">keyboard_arrow_up</i></h4>
+							<!-- collapse config header -->
+							<div class="collapse" id="config-header">
+								<!-- upload image header-->
+								<div class="row">
+									<div class="col-md-6">
+										<div ng-if="modelTest.ShowLogoHeader" class="uploadImage" style="padding: 0 20px;">
+											<div upload="" type="@(EnumFileType.ModelTestHeader)" component="modelTest.LogoHeader" placeholder="uma imagem" listextensions="typeFile"></div>
+										</div>
+										<div class="marginProva">
+											<div class="checkbox checkbox-primary">
+												<input id="modelTestShowLogoHeader" type="checkbox" ng-model="modelTest.ShowLogoHeader" ng-change="showLogoHeader(modelTest.ShowLogoHeader);">
+												<label for="modelTestShowLogoHeader">Inserir logo</label>
+												<span ng-if="modelTest.ShowLogoHeader">
+													a(ao)
+													<div class="dropProva">
+														<a data-toggle="dropdown">{{modelTest.LogoHeaderPosition}} <i class="material-icons">keyboard_arrow_down</i></a>
+														<ul class="dropdown-menu">
+															<li><a ng-click="setLogoHeaderPosition('Esquerda');" href="javascript:void(0)">Esquerda</a></li>
+															<li><a ng-click="setLogoHeaderPosition('Centro');" href="javascript:void(0)">Centro</a></li>
+															<li><a ng-click="setLogoHeaderPosition('Direita');" href="javascript:void(0)">Direita</a></li>
+														</ul>
+													</div>
+													do cabeçalho
+												</span>
+											</div>
+											<div class="checkbox">
+												<span>Tamanho do logotipo do cabeçalho como</span>
+												<div class="dropProva">
+													<a data-toggle="dropdown">{{modelTest.LogoHeaderSize}} <i class="material-icons">keyboard_arrow_down</i></a>
+													<ul class="dropdown-menu">
+														<li><a ng-click="setLogoHeaderSize('Pequeno');" href="javascript:void(0)">Pequeno</a></li>
+														<li><a ng-click="setLogoHeaderSize('Médio (padrão)');" href="javascript:void(0)">Médio (padrão)</a></li>
+														<li><a ng-click="setLogoHeaderSize('Grande');" href="javascript:void(0)">Grande</a></li>
+													</ul>
+												</div>
+											</div>
+											<div class="checkbox checkbox-primary">
+												<input id="modelTestLogoHeaderWaterMark" type="checkbox" ng-model="modelTest.LogoHeaderWaterMark">
+												<label for="modelTestLogoHeaderWaterMark">Deixar logo como marca d'agua</label>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="marginProva">
+											<div ng-if="modelTest.ShowMessageHeader">
+												<textarea ng-model="modelTest.MessageHeader" type="text" class="mensagem" placeholder="Digite aqui a mensagem de cabeçalho" maxlength="140"></textarea>
+											</div>
+											<div class="checkbox checkbox-primary">
+												<input id="modelTestShowMessageHeader" type="checkbox" ng-model="modelTest.ShowMessageHeader" ng-change="showMessageHeader(modelTest.ShowMessageHeader);">
+												<label for="modelTestShowMessageHeader">Inserir mensagem</label>
+												<span ng-if="modelTest.ShowMessageHeader">
+													a(ao)
+													<div class="dropProva">
+														<a data-toggle="dropdown">{{modelTest.MessageHeaderPosition}} <i class="material-icons">keyboard_arrow_down</i></a>
+														<ul class="dropdown-menu">
+															<li><a ng-click="setMessageHeaderPosition('Esquerda');" href="javascript:void(0)">Esquerda</a></li>
+															<li><a ng-click="setMessageHeaderPosition('Centro');" href="javascript:void(0)">Centro</a></li>
+															<li><a ng-click="setMessageHeaderPosition('Direita');" href="javascript:void(0)">Direita</a></li>
+														</ul>
+													</div>
+													do cabeçalho
+												</span>
+											</div>
+											<div class="checkbox checkbox-primary">
+												<input id="modelTestMessageHeaderWaterMark" type="checkbox" ng-model="modelTest.MessageHeaderWaterMark">
+												<label for="modelTestMessageHeaderWaterMark">Deixar mensagem como marca d'agua</label>
+											</div>
+											<div class="checkbox checkbox-primary">
+												<input id="modelTestShowLineBelowHeader" type="checkbox" ng-model="modelTest.ShowLineBelowHeader">
+												<label for="modelTestShowLineBelowHeader">Colocar linha divisória abaixo do cabeçalho</label>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="confItens">
+							<!-- toggle config dados aluno -->
+							<h4 class="collapsed" data-toggle="collapse" href="#config-student-data" for="config-student-data">Identificação do aluno <i class="material-icons">keyboard_arrow_up</i></h4>
+							<!-- collapse config dados aluno -->
+							<div class="row collapse" id="config-student-data">
+								<div class="col-md-6">
+									<div class="marginProva">
+										<div class="checkbox checkbox-primary">
+											<input id="modelTestShowSchool" type="checkbox" ng-model="modelTest.ShowSchool">
+											<label for="modelTestShowSchool">Inserir campo "Escola"</label>
+										</div>
+										<div class="checkbox checkbox-primary">
+											<input id="modelTestShowStudentName" type="checkbox" ng-model="modelTest.ShowStudentName">
+											<label for="modelTestShowStudentName">Inserir campo "Nome"</label>
+										</div>
+										<div class="checkbox checkbox-primary">
+											<input id="modelTestShowTeacherName" type="checkbox" ng-model="modelTest.ShowTeacherName">
+											<label for="modelTestShowTeacherName">Inserir campo "Professor"</label>
+										</div>
+										<div class="checkbox checkbox-primary">
+											<input id="modelTestShowClassName" type="checkbox" ng-model="modelTest.ShowClassName">
+											<label for="modelTestShowClassName">Inserir campo "Turma"</label>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="marginProva">
+										<div class="checkbox checkbox-primary">
+											<input id="modelTestShowStudentNumber" type="checkbox" ng-model="modelTest.ShowStudentNumber">
+											<label for="modelTestShowStudentNumber">Inserir campo "Número"</label>
+										</div>
+										<div class="checkbox checkbox-primary">
+											<input id="modelTestShowDate" type="checkbox" ng-model="modelTest.ShowDate">
+											<label for="modelTestShowDate">Inserir campo "Data"</label>
+										</div>
+										<div ng-if="modelTest.ShowCoverPage" class="identificacao">
+											<label>Identificação do aluno:</label>
+											<div class="radio radio-primary radio-inline">
+												<input name="modelTestShowStudentInformationsOnCoverPageCover" id="modelTestShowStudentInformationsOnCoverPageCover" ng-value="true" type="radio" ng-model="modelTest.ShowStudentInformationsOnCoverPage">
+												<label for="modelTestShowStudentInformationsOnCoverPageCover">Na capa</label>
+												<input name="modelTestShowStudentInformationsOnCoverPage" id="modelTestShowStudentInformationsOnCoverPage" ng-value="false" type="radio" ng-model="modelTest.ShowStudentInformationsOnCoverPage">
+												<label for="modelTestShowStudentInformationsOnCoverPage">No conteúdo</label>
+											</div>
+										</div>
+										@*<div class="checkbox checkbox-primary">
+											<input id="modelTestShowLineBelowStudentInformation" type="checkbox" ng-model="modelTest.ShowLineBelowStudentInformation">
+											<label for="modelTestShowLineBelowStudentInformation">Colocar linha divisória abaixo da identificação do aluno</label>
+										</div>*@
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="confItens">
+							<!-- toggle config footer -->
+							<h4 class="collapsed" data-toggle="collapse" href="#config-footer" for="config-footer">Rodapé <i class="material-icons">keyboard_arrow_up</i></h4>
+							<!-- collapse config footer -->
+							<div class="collapse" id="config-footer">
+								<div class="row">
+									<div class="col-md-6">
+										<div ng-if="modelTest.ShowLogoFooter" class="uploadImage ">
+											<div upload="" type="@(EnumFileType.ModelTestFooter)" component="modelTest.LogoFooter" placeholder="uma imagem"></div>
+										</div>
+										<div class="marginProva">
+											<div class="checkbox checkbox-primary">
+												<input id="modelTestShowLogoFooter" type="checkbox" ng-model="modelTest.ShowLogoFooter" ng-change="showLogoFooter(modelTest.ShowLogoFooter);">
+												<label for="modelTestShowLogoFooter">Inserir logo</label>
+												<span ng-if="modelTest.ShowLogoFooter">
+													a(ao)
+													<div class="dropProva">
+														<a data-toggle="dropdown">{{modelTest.LogoFooterPosition}} <i class="material-icons">keyboard_arrow_down</i></a>
+														<ul class="dropdown-menu">
+															<li><a ng-click="setLogoFooterPosition('Esquerda');" href="javascript:void(0)">Esquerda</a></li>
+															<li><a ng-click="setLogoFooterPosition('Centro');" href="javascript:void(0)">Centro</a></li>
+															<li><a ng-click="setLogoFooterPosition('Direita');" href="javascript:void(0)">Direita</a></li>
+														</ul>
+													</div>
+													do rodapé
+												</span>
+											</div>
+											<div class="checkbox">
+												<span>Tamanho do logogotipo do rodapé como</span>
+												<div class="dropProva">
+													<a data-toggle="dropdown">{{modelTest.LogoFooterSize}} <i class="material-icons">keyboard_arrow_down</i></a>
+													<ul class="dropdown-menu">
+														<li><a ng-click="setLogoFooterSize('Pequeno');" href="javascript:void(0)">Pequeno</a></li>
+														<li><a ng-click="setLogoFooterSize('Médio (padrão)');" href="javascript:void(0)">Médio (padrão)</a></li>
+														<li><a ng-click="setLogoFooterSize('Grande');" href="javascript:void(0)">Grande</a></li>
+													</ul>
+												</div>
+											</div>
+											<div class="checkbox checkbox-primary">
+												<input id="modelTestLogoFooterWaterMark" type="checkbox" ng-model="modelTest.LogoFooterWaterMark">
+												<label for="modelTestLogoFooterWaterMark">Deixar logo como marca d'agua</label>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="marginProva">
+											<div ng-if="modelTest.ShowMessageFooter">
+												<textarea ng-model="modelTest.MessageFooter" type="text" class="mensagem" placeholder="Digite aqui a mensagem de rodapé" maxlength="140"></textarea>
+											</div>
+											<div class="checkbox checkbox-primary">
+                                                <input id="modelTestShowMessageFooter" type="checkbox" ng-model="modelTest.ShowMessageFooter" data-ng-change="showMessageFooter(modelTest.ShowMessageFooter)">
+												<label for="modelTestShowMessageFooter">Inserir mensagem</label>
+												<span ng-if="modelTest.ShowMessageFooter">
+													a(ao)
+													<div class="dropProva">
+														<a data-toggle="dropdown">{{modelTest.MessageFooterPosition}} <i class="material-icons">keyboard_arrow_down</i></a>
+														<ul class="dropdown-menu">
+															<li><a ng-click="setMessageFooterPosition('Esquerda');" href="javascript:void(0)">Esquerda</a></li>
+															<li><a ng-click="setMessageFooterPosition('Centro');" href="javascript:void(0)">Centro</a></li>
+															<li><a ng-click="setMessageFooterPosition('Direita');" href="javascript:void(0)">Direita</a></li>
+														</ul>
+													</div>
+													do rodapé
+												</span>
+											</div>
+											<div class="checkbox checkbox-primary">
+												<input id="modelTestMessageFooterWaterMark" type="checkbox" ng-model="modelTest.MessageFooterWaterMark">
+												<label for="modelTestMessageFooterWaterMark">Deixar mensagem como marca d'agua</label>
+											</div>
+											<div class="checkbox checkbox-primary">
+												<input id="modelTestShowLineAboveFooter" type="checkbox" ng-model="modelTest.ShowLineAboveFooter">
+												<label for="modelTestShowLineAboveFooter">Colocar linha divisória acima do rodapé</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+                        <div class="confItens">
+							<!-- toggle config test item -->
+							<h4 class="collapsed" data-toggle="collapse" href="#config-test-item" for="config-test-item">Configurações do item <i class="material-icons">keyboard_arrow_up</i></h4>
+
+							<!-- collapse config test item -->
+							<div class="collapse" id="config-test-item">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="marginProva">
+											<div class="checkbox checkbox-primary">
+												<input id="modelTestShowItemLine" type="checkbox" ng-model="modelTest.ShowItemLine">
+												<label for="modelTestShowItemLine">Colocar linha divisória abaixo do(s) item(ns)</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+                        <div class="confItens" ng-if="modelTest.ShowCoverPage && currentTab=='capaTab'">
+							<!-- toggle config text cover -->
+							<h4 class="collapsed" data-toggle="collapse" href="#config-text-cover" for="config-text-cover">Configurações da capa <i class="material-icons">keyboard_arrow_up</i></h4>
+
+							<!-- collapse config text cover -->
+							<div class="collapse" id="config-text-cover">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="marginProva">
+											<div ng-if="modelTest.ShowCoverPage" class="checkbox checkbox-primary">
+												<input id="modelTestShowHeaderOnCoverPage" type="checkbox" ng-model="modelTest.ShowHeaderOnCoverPage">
+												<label for="modelTestShowHeaderOnCoverPage">Exibir cabeçalho na capa</label>
+											</div>
+											<div ng-if="modelTest.ShowCoverPage" class="checkbox checkbox-primary">
+												<input id="modelTestShowFooterOnCoverPage" type="checkbox" ng-model="modelTest.ShowFooterOnCoverPage">
+												<label for="modelTestShowFooterOnCoverPage">Exibir rodapé na capa</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="marginProva">
+										<textarea id="textoCapa" name="textoCapa" 
+                                                  class="form-control" images="modelTest.Files" 
+                                                  ng-model="modelTest.CoverPageText" 
+                                                  tipo="@(EnumFileType.ModelTestCover)" 
+                                                  redactor > </textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+                </div>
+                <!--conteudo do modelo de prova-->
+                <div class="contentProva">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li ng-if="modelTest.ShowCoverPage" ng-click="setTab('capaTab');" ng-class="{'active': currentTab=='capaTab'}">
+                            <a href="javascript:void(0)">Capa</a>
+                        </li>
+                        <li ng-click="setTab('conteudoTab');" ng-class="{'active': currentTab=='conteudoTab'}">
+                            <a href="javascript:void(0)">Conteúdo</a>
+                        </li>
+                        <div class="btnGeralProva">
+                            <button name="btnSave" type="button" class="btnPadraoModelo" ng-click="save(formModelTest.$invalid);">Salvar</button>
+							<button name="btnCancel" type="button" class="btnPadraoModelo" ng-click="cancel();">Cancelar</button>
+                        </div>
+                    </ul>
+                    <div id="modeloProva" class="tab-content some" ng-class="{'borda': modelTest.ShowBorder}">
+                        <!--conteudo da capa da prova-->
+                        <div ng-show="modelTest.ShowCoverPage && currentTab=='capaTab'" ng-class="{'active': currentTab=='capaTab'}" role="tabpanel" class="tab-pane" id="capa">
+                            <!-- header -->
+                            <div id="modelTestHeader" class="campoLabel previewTestPosition" ng-include="'header.tpl.html'" ng-if="modelTest.ShowHeaderOnCoverPage"></div>
+							<hr ng-if="modelTest.ShowHeaderOnCoverPage&&modelTest.ShowStudentInformationsOnCoverPage" />
+							<!-- dados aluno -->
+                            <div id="modelTestStudentData" class="row testStudentData" ng-if="modelTest.ShowStudentInformationsOnCoverPage" ng-include="'studentInformation.tpl.html'"></div>
+							@*<hr ng-if="modelTest.ShowLineBelowStudentInformation && modelTest.ShowStudentInformationsOnCoverPage" />*@
+							<!-- texto da capa -->
+                            <div class="textoCapa" ng-bind-html="setTrustedHTML(modelTest.CoverPageText)"></div>
+							<hr ng-if="modelTest.ShowLineAboveFooter" />
+                            <!-- footer -->
+                            <div id="modelTestFooter" class="campoLabel previewTestPosition" ng-if="modelTest.ShowFooterOnCoverPage" ng-include="'footer.tpl.html'"></div>
+                            <div id="modelTestPagination" class="paginacaoProva" ng-if="modelTest.ShowFooterOnCoverPage">Página 1 de 1</div>
+                        </div>
+                        <!--conteudo da prova-->
+                        <div ng-show="currentTab=='conteudoTab'" ng-class="{'active': currentTab=='conteudoTab'}" role="tabpanel" class="tab-pane" id="conteudo">
+                            <!-- header -->
+                            <div id="modelTestHeader" class="campoLabel previewTestPosition" ng-include="'header.tpl.html'"></div>
+							<hr ng-if="modelTest.ShowLineBelowHeader" />
+                            <!-- dados aluno -->
+                            <div id="modelTestStudentData" class="row testStudentData" ng-if="!modelTest.ShowStudentInformationsOnCoverPage" ng-include="'studentInformation.tpl.html'"></div>
+                            @*<hr ng-if="modelTest.ShowLineBelowStudentInformation && !modelTest.ShowStudentInformationsOnCoverPage" />*@
+                            <!-- conteudo prova -->
+                            <div id="modelTestContent" class="textoCapa" $modeltestcontent$>
+                                <div class="prova-question row">
+                                    <div class="col-md-12">
+                                        <h3><b class="prova-question-num">Questão 1</b></h3>
+                                        <p>Esta é uma questão exemplo de prova</p>
+                                        <div class="prova-answer"><span class="prova-alternative">(A) </span> Alternativa</div>
+                                        <div class="prova-answer"><span class="prova-alternative">(B) </span> Alternativa</div>
+                                        <div class="prova-answer"><span class="prova-alternative">(C) </span> Alternativa</div>
+                                        <div class="prova-answer"><span class="prova-alternative">(D) </span> Alternativa</div>
+                                    </div>
+                                </div>
+                                <hr ng-if="modelTest.ShowItemLine" />
+                                <div class="prova-question row">
+                                    <div class="col-md-12">
+                                        <h3><b class="prova-question-num">Questão 2</b></h3>
+                                        <p>Esta é uma questão exemplo de prova</p>
+                                        <div class="prova-answer"><span class="prova-alternative">(A) </span> Alternativa</div>
+                                        <div class="prova-answer"><span class="prova-alternative">(B) </span> Alternativa</div>
+                                        <div class="prova-answer"><span class="prova-alternative">(C) </span> Alternativa</div>
+                                        <div class="prova-answer"><span class="prova-alternative">(D) </span> Alternativa</div>
+                                    </div>
+                                </div>
+                                <hr ng-if="modelTest.ShowItemLine" />
+                                <div class="prova-question row">
+                                    <div class="col-md-12">
+                                        <h3><b class="prova-question-num">Questão 3</b></h3>
+                                        <p>Esta é uma questão exemplo de prova</p>
+                                        <div class="prova-answer"><span class="prova-alternative">(A) </span> Alternativa</div>
+                                        <div class="prova-answer"><span class="prova-alternative">(B) </span> Alternativa</div>
+                                        <div class="prova-answer"><span class="prova-alternative">(C) </span> Alternativa</div>
+                                        <div class="prova-answer"><span class="prova-alternative">(D) </span> Alternativa</div>
+                                    </div>
+                                </div>
+                                <hr ng-if="modelTest.ShowItemLine" />
+                            </div>
+                            <hr ng-if="modelTest.ShowLineAboveFooter" />
+                            <!-- footer -->
+                            <div id="modelTestFooter" class="campoLabel previewTestPosition" ng-include="'footer.tpl.html'"></div>
+                            <div id="modelTestPagination" class="paginacaoProva">Página 1 de 1</div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- confirmar cancelar -->
+    <modal id="cancelModal" modal-title="Deseja realmente cancelar?">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12 text-right">
+                    <button type="button" class="btnPadrao" ng-click="cancel();">Sim</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+        </div>
+    </modal>
+
+    <!-- Header Logo -->
+    <script type="text/ng-template" id="logoHeader.tpl.html">
+        <div ng-if="!modelTest.LogoHeader.Path" class="thumbnail-logo" ng-class="getCssHeaderImage();"></div>
+        <div ng-if="modelTest.LogoHeader.Path" class="image-logo">
+            <img ng-src="{{ modelTest.LogoHeader.Path }}" ng-class="getCssHeaderImage();" />
+        </div>
+    </script>
+
+    <!-- Header Message -->
+    <script type="text/ng-template" id="messageHeader.tpl.html">
+        <div class="addMessage" ng-class="{'watermark': modelTest.MessageHeaderWaterMark}">
+            <div ng-bind-html="setTrustedHTML(converterBreakLineToBr(modelTest.MessageHeader))"> </div>
+        </div>
+    </script>
+
+    <!-- Footer Logo -->
+    <script type="text/ng-template" id="logoFooter.tpl.html">
+        <div ng-if="!modelTest.LogoFooter.Path" class="thumbnail-logo" ng-class="getCssFooterImage();"></div>
+        <div ng-if="modelTest.LogoFooter.Path" class="image-logo">
+            <img ng-src="{{ modelTest.LogoFooter.Path }}" ng-class="getCssFooterImage();" />
+        </div>
+    </script>
+
+    <!-- Footer Message -->
+    <script type="text/ng-template" id="messageFooter.tpl.html">
+        <div class="addMessage" ng-class="{'watermark': modelTest.MessageHeaderWaterMark}">
+            <div ng-bind-html="setTrustedHTML(converterBreakLineToBr(modelTest.MessageFooter))"> </div>
+        </div>
+    </script>
+
+    <!-- Header -->
+    <script type="text/ng-template" id="header.tpl.html">
+        <div class="leftTest">
+            <div ng-if="modelTest.LogoHeaderPosition=='Esquerda'" ng-include="'logoHeader.tpl.html'"></div>
+            <div ng-if="modelTest.MessageHeaderPosition=='Esquerda'" ng-include="'messageHeader.tpl.html'"></div>
+        </div>
+        <div class="centerTest">
+            <div ng-if="modelTest.LogoHeaderPosition=='Centro'" ng-include="'logoHeader.tpl.html'"></div>
+            <div ng-if="modelTest.MessageHeaderPosition=='Centro'" ng-include="'messageHeader.tpl.html'"></div>
+        </div>
+        <div class="rightTest">
+            <div ng-if="modelTest.LogoHeaderPosition=='Direita'" ng-include="'logoHeader.tpl.html'"></div>
+            <div ng-if="modelTest.MessageHeaderPosition=='Direita'" ng-include="'messageHeader.tpl.html'"></div>
+        </div>
+    </script>
+
+    <!-- Student Information -->
+    <script type="text/ng-template" id="studentInformation.tpl.html">
+        <div class="col-md-12">
+            <div ng-if="modelTest.ShowSchool" class="campoLabel col-md-12">
+                <label>Escola: </label>
+                <div>
+                    <input class="form-control" type="text" #school# />
+                </div>
+            </div>
+            <div ng-if="modelTest.ShowStudentName" class="campoLabel col-md-12">
+                <label>Nome: </label>
+                <div>
+                    <input class="form-control" type="text" #studentname# />
+                </div>
+            </div>
+            <div ng-if="modelTest.ShowClassName" class="campoLabel col-md-8">
+                <label>Turma: </label>
+                <div>
+                    <input class="form-control" type="text" #classname# />
+                </div>
+            </div>
+            <div ng-if="modelTest.ShowStudentNumber" class="campoLabel col-md-4">
+                <label>Número: </label>
+                <div>
+                    <input class="form-control" type="text" #studentnumber# />
+                </div>
+            </div>
+            <div ng-if="modelTest.ShowTeacherName" class="campoLabel col-md-8">
+                <label>Professor: </label>
+                <div>
+                    <input class="form-control" type="text" #teachername# />
+                </div>
+            </div>
+            <div ng-if="modelTest.ShowDate" class="campoLabel col-md-4">
+                <label>Data: </label>
+                <div>
+                    <input class="form-control" type="text" #date# />
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <!-- Footer -->
+    <script type="text/ng-template" id="footer.tpl.html">
+        <div class="leftTest">
+            <div ng-if="modelTest.LogoFooterPosition=='Esquerda'" ng-include="'logoFooter.tpl.html'"></div>
+            <div ng-if="modelTest.MessageFooterPosition=='Esquerda'" ng-include="'messageFooter.tpl.html'"></div>
+        </div>
+        <div class="centerTest">
+            <div ng-if="modelTest.LogoFooterPosition=='Centro'" ng-include="'logoFooter.tpl.html'"></div>
+            <div ng-if="modelTest.MessageFooterPosition=='Centro'" ng-include="'messageFooter.tpl.html'"></div>
+        </div>
+        <div class="rightTest">
+            <div ng-if="modelTest.LogoFooterPosition=='Direita'" ng-include="'logoFooter.tpl.html'"></div>
+            <div ng-if="modelTest.MessageFooterPosition=='Direita'" ng-include="'messageFooter.tpl.html'"></div>
+        </div>
+    </script>
+</div>
+
+<div class="contentProva">
+	<div id="test"></div>
+</div>

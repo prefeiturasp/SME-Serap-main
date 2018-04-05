@@ -1,0 +1,38 @@
+﻿@using ProvaSP.Model.Entidades
+@using ProvaSP.Data
+@model List<RelatorioItem>
+
+@{
+    ViewBag.Title = "Relatório de Acompanhamento";
+    Layout = "~/Views/Shared/_LayoutRelatorioAcompanhamento.cshtml";
+}
+
+<h2>DRE @Html.Raw(EnumHelper<DRE>.GetEnumDescription(ViewBag.DRE))</h2>
+
+<table cellpadding="5">
+
+    @{
+        foreach (var item in Model)
+        {
+
+            <tr>
+
+                <td>
+                    @item.Titulo
+                </td>
+                <td>
+                    @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                </td>
+                <td>
+                    @item.Valor
+                </td>
+
+            </tr>
+        }
+    }
+</table>
+
+<br />
+<button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelDRE_PorEscola?usu_id=@ViewBag.Usuario.usu_id&uad_codigo=@ViewBag.DRE'">
+    Visualizar por Escola
+</button>

@@ -1,0 +1,95 @@
+﻿@using GestaoAvaliacao.WebProject.Facade
+
+@{
+    ViewBag.Title = ApplicationFacade.TituloSistema;
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store" />
+    <meta http-equiv="Pragma" content="no-cache, no-store" />
+    <meta http-equiv="Expires" content="0" />
+	<link rel="shortcut icon" href="~/Assets/images/favicon.ico">
+    <title>@ViewBag.Title</title>
+    @*Styles*@
+    @Html.Partial("~/Views/Shared/partials/Styles.cshtml")
+    @*Scripts*@
+    @Html.Partial("~/Views/Shared/partials/Scripts.cshtml")
+    @Html.Partial("~/Views/Shared/partials/Analytics.cshtml")
+    @RenderSection("BundleScripts", required: false)
+
+</head>
+
+<body ng-app="appMain" class="bodyHome" ng-cloak>
+
+    @* BradCrumb *@
+    <div class="container-fluid semPadding">
+        <div class="breadcrumb-sia-fora">
+            <div class="breadcrumb-sia">
+                @SafeBreadCrumb()
+            </div>
+        </div>
+    </div>
+    @* Menu do sistema directive (AngularJS) *@
+    <div menu user='@{Html.RenderAction("NomeUsuarioLogado","Layout");}' system='@ViewBag.Title'></div>
+    @helper SafeBreadCrumb()
+    {
+MvcHtmlString output;
+try
+{
+    output = new MvcHtmlString(Html.MvcSiteMap().SiteMapPath().ToString().Replace(">>", ">"));
+}
+catch
+{
+    output = new MvcHtmlString("");
+}
+        <text>@output</text>
+    }
+    <div class="body-content">
+        @RenderBody()
+    </div>
+    <div class="container-fluid semPadding " style="margin-top: 77px;">
+        <div class="row-fluid">
+            <footer class="footer">
+                <div class="container">
+                    <p>
+                        @ViewBag.Title &nbsp;-&nbsp;Versão:&nbsp;@{Html.RenderAction("VersaoSistema", "Layout");}&nbsp;&nbsp;
+                        <span>Todos os direitos reservados.</span>
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    @{
+        var notificacaoConfig = SessionFacade.NotificacaoConfig;
+    }
+
+    <script>
+        var varUrlNotificationAPI = '@notificacaoConfig.UrlNotificationAPI';
+        var varUserId = '@notificacaoConfig.UserId';
+        var varIdsToken = '@notificacaoConfig.IDSToken';
+        var varUrlNotificationSignalR = '@notificacaoConfig.UrlNotificationSignalR';
+
+        if (varUrlNotificationAPI != null && varUrlNotificationAPI != "") {
+
+            new plgnotify(
+                {
+                    url: varUrlNotificationAPI,
+                    userId: varUserId.toString(),
+                    tokenType: 'Bearer ',
+                    token: varIdsToken.toString(),
+                    ws: {
+                        url: varUrlNotificationSignalR
+                    }
+                }
+            );
+        }
+
+    </script>
+</body>
+</html>

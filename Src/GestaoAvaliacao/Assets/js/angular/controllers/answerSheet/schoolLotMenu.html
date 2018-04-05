@@ -1,0 +1,38 @@
+<div class="popover" tabindex="-1" ng-show="content">
+	<div class="arrow"></div>
+    <!-- Menu Lote por Escola-->
+    <div class="popover-content">       
+        <ul class="listaPopover">
+            <!-- Download -->
+            <li ng-click="popovermenu.baixar(lot.Lot_Id); $hide();" ng-show="lot.StateExecution==4">
+                <i class="material-icons">file_download</i>
+                <a href="javascript:void(0)">Baixar</a>
+            </li>
+            <!-- Gerar -->
+            <li ng-click="showModal(lot)" ng-show="lot.StateExecution==1">
+                <i class="material-icons">playlist_add</i>
+                <a href="javascript:void(0)">Solicitar</a>
+            </li>
+            <!-- Gerar novamente -->
+            <li ng-click="generateAgain(lot)" ng-show="lot.StateExecution>3">
+                <i class="material-icons">swap_horiz</i>
+                <a href="javascript:void(0)">Solicitar novamente</a>
+            </li>
+            <!-- Log -->
+            <li ng-click="modalAcompanhamentoLote(lot)" ng-show="lot.StateExecution>=3">
+                <i class="material-icons">history</i>
+                <a href="javascript:void(0)">Acompanhamento</a>
+            </li>
+            <!-- Desfazer -->
+            <li ng-click="showModalCancel(lot)" ng-show="lot.StateExecution==2">
+                <i class="material-icons">keyboard_return</i>
+                <a href="javascript:void(0)">Desfazer</a>
+            </li>
+            <!-- Excluir -->
+            <li ng-click="deleteLot(lot)" ng-show="lot.StateExecution!=3">
+                <i class="material-icons">delete</i>
+                <a href="javascript:void(0)">Excluir</a>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" defaultValue="$SiteName$" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" />
+  </parameter>
+
+  <parameter name="ProvaSP.DB" defaultvalue="$ProvaSP.DB$" description="Conexão com a base da Prova São Paulo" tags="">
+    <parameterentry kind="XmlFile" match="/configuration/connectionStrings/add[@name='ProvaSP']/@connectionString" scope="\\web.config$" />
+  </parameter>
+
+  <parameter name="ProvaSP_CoreSSO.DB" defaultvalue="$ProvaSP_CoreSSO.DB$" description="Conexão com a base CoreSSO" tags="">
+    <parameterentry kind="XmlFile" match="/configuration/connectionStrings/add[@name='ProvaSP_CoreSSO']/@connectionString" scope="\\web.config$" />
+  </parameter>
+
+  <parameter name="ProvaSP_GestaoEscolar.DB" defaultvalue="$ProvaSP_GestaoEscolar.DB$" description="Conexão com a base GestaoAvaliacaoSGP" tags="">
+    <parameterentry kind="XmlFile" match="/configuration/connectionStrings/add[@name='ProvaSP_GestaoEscolar']/@connectionString" scope="\\web.config$" />
+  </parameter>
+</parameters>

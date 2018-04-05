@@ -1,0 +1,6 @@
+﻿Política de Privacidade.
+
+1. UTILIZAÇÃO DE CAMERA:
+
+O aplicativo pode solicitar a permissão de utilização da camera de seu celular.
+Durante o preenchimento da ficha de aplicação, a solicitação é feita no momento em que você optar por escanear o código de barras do caderno reserva.

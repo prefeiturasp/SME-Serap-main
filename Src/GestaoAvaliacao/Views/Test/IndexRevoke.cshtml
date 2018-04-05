@@ -1,0 +1,134 @@
+﻿@{
+	ViewBag.Title = "IndexRevoke";
+}
+
+@* Controller *@
+<alert></alert>
+<div class="container-fluid semPadding" ng-controller="TestRevokeController" ng-init='init();'>
+
+	<div class="row-fluid" ng-if="!blockPage">
+		<div class="wellCustom">
+			@* Título Página *@
+			<div class="headerCustom">
+				<h4>Anular item da prova</h4>
+			</div>
+			<div class="resumoAdesao">
+				<div class="maxWidth">
+					<div class="dadosGerais">
+						<h2>
+							<strong>{{testDescription}}</strong> | {{testDiscipline}}
+						</h2>
+						<div class="dadosResumo">
+							<div style="text-align: right;">
+								<button class="btnCancelar2" data-toggle="modal" ng-click="cancel()">Trocar Prova</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			@* Filtros *@
+			<div class="well well-large">
+				<div class="container-fluid">
+					<form class="row-fluid">
+						<div class="col-md-8 form-inline-page">
+							<input type="text" class="form-pesquisa" placeholder="Código" ng-model="code">
+							<input type="text" class="form-pesquisa" style="width: 280px;" placeholder="Ordem" ng-model="order">
+							<button class="btn-pesquisar" ng-click="search()" title="Pesquisar"><i class="material-icons">search</i></button>
+						</div>
+					</form>
+				</div>
+				@* Resultados de Pesquisa *@
+				<div class="row" style="margin: 0;">
+					<div class="col-md-12 semPadding table-responsive">
+						<table class="table table-hover padding" style="margin-top: 0;" ng-if="itemList">
+							<thead class="noselect">
+								<tr>
+									<th>Ordem </th>
+									<th>Cód.</th>
+									<th>Versão</th>
+									<th>Texto Base </th>
+									<th>Enunciado</th>
+									<th class="tr_situacao">Situação</th>
+									<th class="centerTest">Ação</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="($indexItem, item) in itemList track by $indexItem" class="tr-vertical-center">
+									<td>{{item.ItemOrder + 1}} </td>
+									<td>{{item.ItemCode}}</td>
+									<td>{{item.ItemVersion}}</td>
+
+                                    <td ng-bind-html="clearTagString(item.BaseTextDescription)"
+                                        data-trigger="hover" data-type="success" data-title="{{item.BaseTextDescription}}"
+                                        data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip></td>
+
+                                    <td ng-bind-html="clearTagString(item.Statement)"
+                                        data-trigger="hover" data-type="success" data-title="{{item.Statement}}"
+                                        data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip></td>
+
+									<td class="tr_situacao">
+										<span ng-if="item.ItemSituation == ItemSituation.WAITING" data-trigger="hover" data-type="success" data-title="Aguardando" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+											<span class="icone-cadastrar material-icons" aria-hidden="true">timelapse</span>
+										</span>
+										<span ng-if="item.ItemSituation!= ItemSituation.NOTREVOKED && item.ItemSituation != ItemSituation.WAITING" data-trigger="hover" data-type="success" data-title="Recebido" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+											<span class="icone-aplicar material-icons" aria-hidden="true">check_circle</span>
+										</span>
+										<span ng-if="item.ItemSituation == ItemSituation.NOTREVOKED" data-trigger="hover" data-type="success" data-title="Não anulado" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+											<span class="icone-andamento material-icons" aria-hidden="true">remove_circle_outline</span>
+										</span>
+									</td>
+									<td class="centerTest">
+										<div class="btn-group">
+											<button ng-show="!isItemRevoked(item)" ng-click="confirmRevoke(item)" type="button" class="btn btn-default">Anular</button>
+										</div>
+										<button ng-show="isItemRevoked(item)" ng-click="confirmRevoke(item)" type="button" class="btn btn-default">Cancelar</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						@* paginação *@
+						<page class="nresultados" method="loadPagination()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+						<p class="nresultados" ng-hide="itemList != null">Nenhum resultado encontrado.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@*Modal*@
+	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Atenção</h4>
+				</div>
+
+				<div ng-show="selectedItem.ItemSituation == ItemSituation.NOTREVOKED || selectedItem.ItemSituation == ItemSituation.WAITING">
+					<ng-form name="revokeForm">
+						<div class="modal-body">
+							<span ng-bind="infoText(selectedItem)"></span>
+							</p>
+							<textarea rows="3" cols="68" placeholder="Justificativa" ng-model="justification" style="resize: none" ng-required="true"></textarea>
+							<label>Ao anular o item, será enviada uma solicitação para que o responsável pela prova analise a viabilidade de anulação do item.</label>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btnPadrao" ng-click="revokeItem()" ng-disabled="revokeForm.$invalid" data-dismiss="modal">Sim</button>
+							<button type="button" class="btnCancelar2" ng-click="cancelRevoke()" data-dismiss="modal">Não</button>
+						</div>
+					</ng-form>
+				</div>
+				<div ng-show="selectedItem.ItemSituation != ItemSituation.NOTREVOKED && selectedItem.ItemSituation != ItemSituation.WAITING">
+					<div class="modal-body">
+						<span>O estado do item não pode mais ser alterado</span>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btnPadrao" data-dismiss="modal">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

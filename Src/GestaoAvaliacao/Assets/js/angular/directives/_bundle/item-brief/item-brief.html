@@ -1,0 +1,207 @@
+﻿<a href="javascript:void(0);" data-ng-click="showItem();">
+    <i class="material-icons">visibility</i> <span data-ng-if="description">{{description}}</span>
+</a>
+<div class="modal fade" id="modalItemBrief_{{itemId}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content modalBig">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><b>Detalhes do Item</b> </h4>
+            </div>
+            <div class="modal-body">
+                <div class="campoLabel" data-ng-class="{'revoked': item.Revoked}">
+                    <div>
+                        <label><b>Código do Item:</b> {{item.ItemCode}}</label>
+                    </div>
+                    <div>
+                        <label><b>Situação: </b> {{item.Situation.Description}}</label>
+                    </div>
+                    <div data-ng-if="item.Revoked">
+                        <label><i class="material-icons">error</i> Item Anulado</label>
+                    </div>
+                </div>
+                <hr class="margin" />
+                <div class="campoLabel">
+                    <div>
+                        <div id="visItemDiscipline">
+                            <h4 id="visItemDisciplinePos">
+                                {{item.Discipline.Description}}
+                            </h4>
+                        </div>
+                    </div>
+                    <div data-ng-if="canPrint">
+                        <button data-ng-click="previewPrint();" type="button" class="btnPadrao">
+                            Imprimir
+                        </button>
+                    </div>
+                </div>
+                <hr class="margin" />
+                <div class="campoLabel">
+                    <label><b>Matriz de Avaliação:</b></label>
+                    <span>{{item.Matriz.Description}}</span>
+                </div>
+                <div class="campoLabel" ng-repeat="_s in item.Skills">
+                    <label><b>{{_s.Skill.ModelSkillLevel.Description}}:</b> </label>
+                    <span data-trigger="hover" data-type="success" data-title="{{_s.Skill.Description}}"
+                          data-placement="top" data-animation="am-fade" data-container="body" data-bs-tooltip>
+                        {{(_s.Skill.Description) | minimize: 60}}
+                    </span>
+                </div>
+                <hr class="margin" />
+                <div class="campoLabel">
+                    <label><b>Ano: </b></label>
+                    <span>{{item.CurriculumGrade}} </span>
+                </div>
+                <div class="campoLabel">
+                    <label><b>Proficiência do item: </b></label>
+                    <span>{{item.Proficiency}} </span>
+                </div>
+                <div class="campoLabel">
+                    <label><b>Tipo Item: </b></label>
+                    <span>{{item.ItemType}} </span>
+                </div>
+                <div class="campoLabel">
+                    <label><b>Dificuldade sugerida: </b></label>
+                    <div>
+                        <button type="button" class="nivelBtn" disabled>
+                            {{item.ItemLevel.Value}}
+                        </button>
+                        <span>
+                            {{item.ItemLevel.Description}}
+                        </span>
+                    </div>
+                </div>
+                <hr class="margin" />
+                <div class="campoLabel">
+                    <label><b>Palavras-Chave:</b> </label>
+                    <div>
+                        <div ng-repeat="word in item.Keywords" class="tagModal">
+                            <span>{{word}} </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="campoLabel">
+                    <label><b>Observações: </b></label>
+                    <span>{{item.Tips}} </span>
+                </div>
+                <hr class="margin" />
+                <div class="campoLabel">
+                    <label class="top"><b>Versão do Item:</b> </label>
+                    <div class="table-responsive">
+                        <table class="table table-visualizar">
+                            <colgroup>
+                                <col width="20%" />
+                                <col width="20%" />
+                                <col width="20%" />
+                                <col width="20%" />
+                                <col width="20%" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Cód.</th>
+                                    <th>Versão </th>
+                                    <th>Aplicado </th>
+                                    <th>Criação </th>
+                                    <th>Prova(s) </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="_version in item.Versions">
+                                    <th>{{ _version.codigo }} </th>
+                                    <th>{{ _version.versao }} </th>
+                                    <th>{{ _version.aplicado }} </th>
+                                    <th>{{ _version.criacao }} </th>
+                                    <th>{{ _version.provas }} </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="campoLabel">
+                    <label class="top"><b>TRI</b> </label>
+                    <div>
+                        <table class="table table-visualizar">
+                            <colgroup>
+                                <col width="60%" />
+                                <col width="40%" />
+                            </colgroup>
+                            <tbody>
+                                <tr ng-repeat="_t in item.TRI">
+                                    <th>{{ _t.preDescription }}: </th>
+                                    <th>{{ _t.Value }} </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <hr class="margin" />
+                <div class="campoLabel">
+                    <label><b>Sentença Descritora do Item: </b></label>
+                    <label>{{item.Sentence}}</label>
+                </div>
+                <hr class="margin" />
+                <div class="campoLabel">
+                    <label class="top"><b>Texto base:</b></label>
+                    <div ng-bind-html="(item.TextBase | changeBlankSpace) | trustedHtml"></div>
+                </div>
+                <div class="campoLabel">
+                    <label class="top"><b>Enunciado:</b></label>
+                    <div ng-bind-html="(item.Statement.Description | changeBlankSpace) | trustedHtml"></div>
+                </div>
+                <div class="campoLabel">
+                    <div class="tabPadrao">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#alternatives_{{itemId}}" aria-controls="alternativas" role="tab" data-toggle="tab">Alternativas</a></li>
+                            <li role="presentation"><a href="#tct_{{itemId}}" aria-controls="tct" role="tab" data-toggle="tab">TCT</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="alternatives_{{itemId}}">
+                                <div ng-repeat="alt in item.Alternatives" class="separaTab">
+                                    <div class="campoLabel">
+                                        <label><b>{{alt.Numeration}}</b> <i ng-show="alt.Correct" class="material-icons">check</i></label>
+                                        <div ng-bind-html="(alt.Description | changeBlankSpace) | trustedHtml"></div>
+                                    </div>
+                                    <div class="campoLabel">
+                                        <label><b>Justificativa:</b></label>
+                                        <div ng-bind-html="(alt.Justificative.Description | changeBlankSpace) | trustedHtml"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="tct_{{itemId}}">
+                                <div class="visAlternativesBkg" ng-repeat="alt in item.Alternatives">
+                                    <table ng-class="{true:'table-selected', false:'table-visualizar'}[alt.Correct]">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <label class="subTitulo">
+                                                        {{alt.Numeration}}
+                                                        <i ng-show="alt.Correct" class="material-icons" style="font-size: 21px;">check</i>
+                                                    </label>
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>Proporção de acertos: </th>
+                                                <th>{{ alt.TCTDificulty }} </th>
+                                            </tr>
+                                            <tr>
+                                                <th>Discriminação: </th>
+                                                <th>{{ alt.TCTDiscrimination }} </th>
+                                            </tr>
+                                            <tr>
+                                                <th>Coeficiente bisserial:</th>
+                                                <th>{{ alt.TCTBiserialCoefficient }} </th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{390CA6C5-2A34-4F9E-A38E-7BBBB94E6EDD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AvaliaMais.FolhaRespostas.Domain</RootNamespace>
+    <AssemblyName>AvaliaMais.FolhaRespostas.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ProcessamentoInicial\Interfaces\IProcessamentoInicialRepository.cs" />
+    <Compile Include="ProcessamentoInicial\Interfaces\IProcessamentoInicialService.cs" />
+    <Compile Include="ProcessamentoInicial\Processamento.cs" />
+    <Compile Include="ProcessamentoInicial\Services\ProcessamentoInicialService.cs" />
+    <Compile Include="ProcessamentoProva\Aluno.cs" />
+    <Compile Include="ProcessamentoProva\AlunoStatus.cs" />
+    <Compile Include="ProcessamentoProva\Composite\Component.cs" />
+    <Compile Include="ProcessamentoProva\Composite\Composite.cs" />
+    <Compile Include="ProcessamentoProva\DRE.cs" />
+    <Compile Include="ProcessamentoProva\Escola.cs" />
+    <Compile Include="ProcessamentoProva\Interfaces\IProcessamentoProvaRepository.cs" />
+    <Compile Include="ProcessamentoProva\Interfaces\IProcessamentoProvaService.cs" />
+    <Compile Include="ProcessamentoProva\ProcessamentoProva.cs" />
+    <Compile Include="ProcessamentoProva\ProcessamentoStatus.cs" />
+    <Compile Include="ProcessamentoProva\Quantidade.cs" />
+    <Compile Include="ProcessamentoProva\Services\ProcessamentoProvaService.cs" />
+    <Compile Include="ProcessamentoProva\Turma.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
+      <Project>{638b2bdc-aa34-4dcd-a041-ab4eb9c4d831}</Project>
+      <Name>GestaoAvaliacao.Util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

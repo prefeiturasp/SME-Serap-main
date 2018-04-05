@@ -1,0 +1,221 @@
+﻿@using GestaoAvaliacao.Entities.Enumerator;
+<alert></alert>
+<div class="wellCustom" ng-controller="TestAdministrateController" ng-init='init();'>
+	@*Bloquear a tela quando não houver permissão*@
+	<div ng-if="!blockPage">
+		@* Header da Adesão *@
+		<div class="headerCustom">
+			<h4>Folhas de respostas da prova<span>Listagem</span></h4>
+		</div>
+		@* Informações *@
+		<div class="resumoAdesao">
+			<div class="maxWidth">
+				<div class="dadosGerais">
+					<h2>
+						<strong>{{testInformation.Description}} </strong> {{testInformation.FrequencyApplication}} |  {{testInformation.Discipline}}</br>
+						<label><strong>Cód:</strong>{{params.test_id}}</label>
+					</h2>
+					<div class="dadosResumo">
+						<div style="max-width: 260px;" ng-if="false">
+							<i class="material-icons">group</i>
+							<span>1º Ano</span>
+						</div>
+						<div ng-if="currentSelectedMasterFilters.DRE_Description&&currentSelectedMasterFilters.School_Description">
+							<i class="material-icons">school</i>
+							<p>{{currentSelectedMasterFilters.DRE_Description}} <br />{{currentSelectedMasterFilters.School_Description}}</p>
+						</div>
+						<div style="text-align: right;">
+							<button class="btnCancelar2" data-toggle="modal" ng-click="arrivingTest()">Voltar</button>
+							<button class="btnCancelar2" data-toggle="modal" ng-click="cancel()">Trocar Prova</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		@* Gatilho filtros laterais *@
+		<div class="pesquisa-codigo row">
+			<div class="col-md-12">
+				<div class="filtrar-lista col-md-12">
+					<a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+						<i class="material-icons" data-side-filters>filter_list</i>
+						<label data-side-filters>Filtrar consulta de turmas</label>
+						<div class="notificationFilter"
+							 data-trigger="hover"
+							 data-type="success"
+							 data-title="Filtros selecionados"
+							 data-placement="top"
+							 data-container="body"
+							 data-bs-tooltip>
+							{{countFilter}}
+						</div>
+					</a>
+				</div>
+			</div> 
+		</div>
+		@* Filtros *@
+		<div class="panel-search side-filters" data-side-filters>
+			<a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+				<i class="material-icons">filter_list</i>
+				<label class="filtroP">Filtrar consulta de turmas</label>
+				<i class="material-icons fecha">arrow_forward</i>
+			</a>
+			<div class="col-seach" data-side-filters>
+				<div data-side-filters>
+					<label data-side-filters>DREs</label>
+					<select class="form-control"
+							ng-change="getSchools();clearByFilter('DRE');" 
+							ng-model="filters.DRE" 
+							ng-options="dre as dre.Description for dre in listFilter.DREs"
+							ng-title="listFilter.DREs"
+							ng-title-propertie="Description"
+							ng-title-index="1"
+							ng-title-selected
+							data-side-filters>
+						<option value="">Todas as DREs</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-seach" data-side-filters>
+				<div data-side-filters>
+					<label data-side-filters>Escolas</label>
+					<select class="form-control"
+							ng-change="getTurns(); getYears(); clearByFilter('School');" 
+							ng-model="filters.School" 
+							ng-options="scholl as scholl.Description for scholl in listFilter.Schools track by scholl.Id"
+							ng-title="listFilter.Schools"
+							ng-title-propertie="Description"
+							ng-title-index="1"
+							ng-title-selected
+							data-side-filters>
+						<option value="">Todas as escolas</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-seach" data-side-filters>
+				<div data-side-filters>
+					<label data-side-filters>Anos</label>
+					<select class="form-control"
+							ng-model="filters.Year" 
+							ng-options="year as year.Description for year in listFilter.Years track by year.Id"
+							ng-title="listFilter.Years"
+							ng-title-propertie="Description"
+							ng-title-index="1"
+							ng-title-selected
+							data-side-filters>
+						<option value="">Todos os anos</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-seach" data-side-filters>
+				<div data-side-filters>
+					<label data-side-filters>Turnos</label>
+					<select class="form-control"
+							ng-model="filters.Turn" 
+							ng-options="turn as turn.Description for turn in listFilter.Turns track by turn.Id"
+							ng-title="listFilter.Turns"
+							ng-title-propertie="Description"
+							ng-title-index="1"
+							ng-title-selected
+							data-side-filters>
+						<option value="">Todos os turnos</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-seach" data-side-filters>
+				<div data-side-filters>
+					<button data-side-filters class="btnCancelar pull-right" ng-click="clearFilters();">Limpar</button>
+					<button data-side-filters class="btnCancelar pull-right" ng-click="searchFilterSchool();">Filtrar</button>
+				</div>
+			</div>
+		</div>
+		@* Paginação *@
+		<div class="cards maxWidth" ng-if="list.displayed">
+			<div class="headerAdesao">
+				<h4>Turmas</h4>
+			</div>
+			<table class="table tableAdesao">
+				<col width="130">
+				<col width="80">
+				<thead>
+					<tr>
+						<th style="width: 15%">Turma</th>
+						<th style="width: 35%">Escola</th>
+						<th class="center" style="width: 10%">
+							@* titulo quando o lote de upload ainda não processado *@
+							<span ng-if="true"> Gerar folhas de respostas da turma</span>
+							@* baixar zip com folhas de resposta *@
+							<span ng-if="false"> <a href="javascript:void(0)"><i class="material-icons">file_download</i></a> </span>
+						</th>
+						<th class="center" style="width: 10%">
+							<span>Baixar folhas de respostas da turma</span>
+						</th>
+						
+						<th class="center" style="width: 10%">Folha de respostas por aluno</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="($indexTeam, team) in list.displayed track by $indexTeam">
+						@* Descrição Turma *@
+						<th>{{team.tur_codigo}} - {{team.ttn_nome}}</th>
+						@*Escolas*@
+						<th>{{team.esc_nome}}</th>
+						@* Realizar upload de folha de resposta *@
+						<th class="center">
+							@* 1º - gerar folhas de resposta? *@
+							<div ng-if="true">
+								<a ng-click="generateAnswerSheet(team, @((int)EnumIdentificationType.QRCode), answerSheetBlocked);" ng-class="{'off':answerSheetBlocked}" ng-disabled="answerSheetBlocked" data-trigger="hover" data-type="success" data-title="{{answerSheetToolTip();}}" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+									<i class="material-icons">assignment</i>
+								</a>
+							</div>						
+							@* 2º - aguardando geração de folhas de resposta? *@
+							<div ng-if="false" class="andamento"><i class="material-icons">timelapse</i> Em andamento </div>
+							@* 3º - folhas de resposta geradas *@
+							<div ng-if="false"> <a href="javascript:void(0)"><i class="material-icons">file_download</i></a> </div>
+						</th>
+						<th class="center">
+							@* 1º - folhas de resposta gerada *@
+							<div ng-if="true">
+								<a ng-click="downloadFolhaResposta(team)" ng-class="{'off':team.FileAnswerSheet.Path==null}" ng-disabled="team.download==undefined" data-trigger="hover" data-type="success" data-title="Baixar folhas de respostas da turma" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+									<i class="material-icons">file_download</i>
+								</a>
+							</div>
+						</th>
+						<th class="center">
+							<a ng-click="leavingIndexAdministrate()" href="~/AnswerSheet/IndexAnswerSheetStudent?test_id={{testInformation.TestId}}&team_id={{team.tur_id}}" data-trigger="hover" data-type="success" data-title="Folha de resposta por aluno" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip=""><i class="material-icons">group</i></ang-click="downloadFolhaResposta(team)">
+						</th>
+					</tr>
+				</tbody>
+			</table>
+			<div class="nresultados">
+				<page method="search()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+			</div>
+		</div>
+		@* Results not found *@
+		<div class="cards maxWidth" ng-if="list.displayed === null || (message)">
+			<p class="nresultados">Nenhum resultado encontrado.</p>
+		</div>
+		@* confirmar Confirmar marcar/desmarcar *@
+		<modal id="cancelModal" modal-title="<p>Deseja realmente sair?</p>">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-12 text-right">
+						<button type="button" class="btnPadrao" ng-click="cancel();">Sim</button>
+						<button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+					</div>
+				</div>
+			</div>
+		</modal>
+
+		@* Confirmar subir lote por escola *@
+		<modal id="alertModal" modal-title="<p>Deseja realmente subir um lote para a escola {{filters.School.Description}}?</p>">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-12 text-right">
+						<button type="button" class="btnPadrao" ng-click="redirectToNextPage();">Sim</button>
+						<button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+					</div>
+				</div>
+			</div>
+		</modal>
+	</div>
+</div>

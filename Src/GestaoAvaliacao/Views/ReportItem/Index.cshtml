@@ -1,0 +1,221 @@
+﻿@*Alertas*@
+<alert></alert>
+<div class="wellCustom" ng-controller="ReportController">
+	<div class="headerCustom">
+		<h4>Relatório Quantitativo de Itens  <span>Consulte os itens que compõem o Banco Municipal de Itens - BMI</span></h4>
+	</div>
+	<div class="well well-large itens">
+		<div class="container-fluid">
+			<div class="cards">
+				<div class="campoLabel">
+					<label>Nível de ensino:</label>
+                    <div>
+                        <select id="subjects" class="form-control"
+                                ng-change="carregaDisciplines();"
+                                ng-model="selectedObjTipoNivelEnsino"
+                                ng-options="tipoNivelEnsino as tipoNivelEnsino.Description for tipoNivelEnsino in tipoNivelEnsinoList"
+                                ng-title="tipoNivelEnsinoList"
+                                ng-title-propertie="Description"
+                                ng-title-index="1"
+                                ng-title-selected>
+                            <option value="">--Selecione--</option>
+                        </select>
+                    </div>
+				</div>
+				<div class="campoLabel">
+					<label>Disciplinas:</label>
+                    <div>
+                        <select id="disciplines" class="form-control"
+                                ng-change="carregaMaterias();"
+                                ng-model="materia.objMateria"
+                                ng-options="discipline as discipline.Description for discipline in materia.lista"
+                                ng-disabled="materia.lock"
+                                ng-title="materia.lista"
+                                ng-title-propertie="Description"
+                                ng-title-selected
+                                ng-title-index="1">
+                            <option value="">--Selecione--</option>
+                        </select>
+                    </div>
+				</div>
+			</div>
+		</div>
+		<div class="container-fluid">
+			<div class="row graficos">
+				<div class="col-md-8" ng-show="chart3.visible && materia.lista.length != 0">
+					<div class="cards" style="position: relative;">
+                        <a class="downloadChart"><i class="material-icons" ng-click="downloadChart('#gfcQuestao')">file_download</i></a>
+						<text x="300" text-anchor="middle" class="charts-title" zindex="4" style="color:#333333;font-size:18px;fill:#333333; position: absolute; top: 15px; left: 15px; z-index:99;" y="25"><tspan>Total de itens por componente curricular</tspan></text><br/>
+                        <canvas id="gfcQuestao" style="min-width: 110px; width: 600px; max-width: 600px; height: 419px; margin: 0 auto"></canvas>
+                </div>
+				</div>
+				<div class="col-md-4" ng-if="materia.lista.length != 0">
+					<div class="cards">
+                        <a class="downloadChart"><i class="material-icons" ng-click="downloadChart('#gfcSituacao')">file_download</i></a>
+						<canvas id="gfcSituacao" style="min-width: 110px; width: 360px; max-width: 360px; height: 419px; margin: 0 auto"></canvas>
+						<div class="calendario-grafico">
+							<button type="button" ng-click="inicio()">
+								<i class="material-icons">event</i>
+							</button>
+							<input type="text" placeholder="Data de Início" ng-model="situacao.inicio" id="inicio" datepicker />
+
+							<button type="button" ng-click="fim()">
+								<i class="material-icons">event</i>
+							</button>
+							<input type="text" placeholder="Data de Término" ng-model="situacao.fim" id="fim" datepicker />
+						</div>
+						<div style="text-align: right;">
+							<button class="btnPadrao" style="margin-top: 20px;" ng-click="carregaGrafico_ItemSituation()" title="Pesquisar">Pesquisar</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4" ng-if="materia.lista.length != 0">
+                    @* Julio Cesar da Silva - 11/11/2015 *@
+                    <div class="cards">
+                        <a class="downloadChart"><i class="material-icons" ng-click="downloadChart('#gfcTipoQuestao')">file_download</i></a>
+                        <canvas id="gfcTipoQuestao"></canvas>
+                        <div class="radioGrafico">
+                            <div ng-repeat="($indexSituationS1, situationS1) in carregasituacaoList track by $indexSituationS1" style="display:inline;">
+                                <div class="radio radio-primary">
+                                    <input name="question_{{$indexSituationS1}}" id="question_{{$indexSituationS1}}" type="radio" ng-value="situationS1" ng-model="$parent.s1" ng-change="carregas1(s1);">
+                                    <label for="question_{{$indexSituationS1}}">{{situationS1.Description}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+				<div class="col-md-4" ng-if="materia.lista.length != 0">
+                    @* Julio Cesar da Silva - 11/11/2015 *@
+                    <div class="cards">
+                        <a class="downloadChart"><i class="material-icons" ng-click="downloadChart('#gfcAno')">file_download</i></a>
+                        <canvas id="gfcAno"></canvas>
+                        <div class="radioGrafico">
+                            <div ng-repeat="($indexSituationS2, situationS2) in carregasituacaoList track by $indexSituationS2" style="display:inline;">
+                                <div class="radio radio-primary">
+                                    <input name="year_{{$indexSituationS2}}" id="year_{{$indexSituationS2}}" type="radio" ng-value="situationS2" ng-model="$parent.s2" ng-change="carregas2(s2);">
+                                    <label for="year_{{$indexSituationS2}}">{{situationS2.Description}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+				<div class="col-md-4" ng-if="materia.lista.length != 0">
+                    @* Julio Cesar da Silva - 11/11/2015 *@
+                    <div class="cards">
+                        <a class="downloadChart"><i class="material-icons" ng-click="downloadChart('#gfcGrauDificuldade')">file_download</i></a>
+                        <canvas id="gfcGrauDificuldade" style="min-width: 110px; width: 360px; max-width: 360px; margin: 0 auto"></canvas>
+                        <div class="radioGrafico">
+                            <div ng-repeat="($indexSituationS3, situationS3) in carregasituacaoList track by $indexSituationS3" style="display:inline;">
+                                <div class="radio radio-primary">
+                                    <input name="gra_{{$indexSituationS3}}" id="gra_{{$indexSituationS3}}" type="radio" ng-value="situationS3" ng-model="$parent.s3" ng-change="carregas3(s3);">
+                                    <label for="gra_{{$indexSituationS3}}">{{situationS3.Description}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+				<div class="col-md-8" ng-show="materia.lista.length != 0">
+					<div class="cards">
+						<h4>Visão por matriz avaliativa de disciplina</h4>
+						<div class="row">
+							<div class="col-md-4">
+								<br><br>
+								<label>Matriz de Avaliação</label>
+                                <div>
+                                    <select id="evaluationMatrix1" style="width:90%" class="form-control" title="{{modelMatrizAval.Description}}"
+                                            ng-change="carregaSkill(modelMatrizAval);"
+                                            ng-model="modelMatrizAval"
+                                            ng-options="evaluationMatrix as (evaluationMatrix.Description | minimize:20) for evaluationMatrix in evaluationMatrixList"
+                                            ng-title="evaluationMatrixList"
+                                            ng-title-propertie="Description"
+                                            ng-title-index="1">
+                                        <option value="">--Selecione--</option>
+                                    </select>
+                                    <a href="javascript:void(0)" class="pull-right" style="position: relative; margin-top: -20px; margin-right: -15px;"
+                                       ng-show="modelMatrizAval"
+                                       ng-click="activeModal('Matriz de Avaliação', modelMatrizAval.Description);">
+                                        <i class="material-icons" data-side-filters>visibility</i>
+                                    </a>
+                                </div>
+								<br><br>
+								<div ng-if="lastButOne">
+									<label>{{lastButOne}}</label>
+                                    <div>
+                                        <select id="skills" style="width:90%" class="form-control" title="{{modelEixoHabilidade.Description}}"
+                                                ng-change="loaderSkillsController(modelEixoHabilidade);"
+                                                ng-model="modelEixoHabilidade"
+                                                ng-options="skill as (skill.Description | minimize:20) for skill in skills"
+                                                ng-title="skills"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1">
+                                            <option value="">--Selecione--</option>
+                                        </select>
+                                        <a href="javascript:void(0)" class="pull-right" style="position: relative; margin-top: -20px; margin-right: -15px;"
+                                           ng-show="modelEixoHabilidade"
+                                           ng-click="activeModal(lastButOne, modelEixoHabilidade.Description);">
+                                            <i class="material-icons" data-side-filters>visibility</i>
+                                        </a>
+                                    </div>
+								</div>
+								<br><br>
+								<div ng-show="lastLevel">
+									<table class="table table-hover tablegray table-bordered">
+										<colgroup>
+											<col width="75%" />
+											<col width="25%" />
+										</colgroup>
+										<thead>
+											<tr>
+												<td>{{last}}</td>
+												<td>Nº itens</td>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="last in lastLevel">
+												<td>
+													<span data-trigger="hover" data-type="success"
+														  data-animation="am-flip-x" data-title="{{last.Description}}" data-placement="left" bs-tooltip>
+														<b>{{last.Code}}</b> - {{minimize(last.Description)}}
+													</span>
+												</td>
+												<td style="text-align: center;">
+													{{last.Value}}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="col-md-8" ng-show="chart6.visible">
+								<div class="col-md-12">
+									<div class="container-fluid" style="margin-left: -20px;">
+										<div class="row-fluid">
+                                            <a class="downloadChart"><i class="material-icons" ng-click="downloadChart('#gfcMatrizAvaliativa')">file_download</i></a>
+											<canvas id="gfcMatrizAvaliativa" style="min-width: 110px; width: 360px; max-width: 360px; height: 419px; margin: 0 auto"></canvas>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    @* Modal que exibe todo o texto do select *@
+    <modal id="modalDescription" modal-title="{{textSelected.Description}}">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="modal-body">
+                    <span>{{textSelected.TextDescription}}</span>
+                </div>
+                <div class="col-sm-12 text-right">
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </modal>
+</div>
+
+
+

@@ -1,0 +1,293 @@
+﻿@using System.Web.Optimization
+
+@* Diretiva para alertas padrões do sistema *@
+<alert></alert>
+<div class="wellCustom" ng-controller="AdherenceController" ng-init='getAuthorize(@Html.Raw(ViewBag.dados)); getEnumSelectionType(@ViewBag.typeSelection); getEnumEntityType(@ViewBag.typeEntity)'>
+	@* Bloquear a visão da page caso não houver permissão *@
+	<div ng-if="!blockPage">
+		@* Header da Adesão *@
+		<div class="headerCustom">
+			<h4>Adesão de Escolas e Turmas<span>Vincule a prova selecionada as turmas que terão permissão de acesso a elas.</span></h4>
+		</div>
+		@* Informações *@
+		<div class="resumoAdesao">
+			<div class="maxWidth">
+				<div class="dadosGerais">
+						<h2>
+							<strong>{{testInformation.Description}}</strong> {{testInformation.FrequencyApplication}} | {{testInformation.Discipline}}
+							@if (this.ViewBag.global == true && this.ViewBag.testOwner == true)
+							{
+							<div class="switch" ng-click="validateAllAdherence();" ng-class="{'off': !mechanics.AllAdhered}">
+								<input type="button" />
+							</div>
+							<span>Selecionar todas as escolas da rede</span>
+							}
+						</h2>
+					
+					<div class="dadosResumo">
+						@if (this.ViewBag.visao != GestaoAvaliacao.Util.EnumSYS_Visao.Individual)
+						{
+							<div ng-click="loadStatistics();">
+								<a href="javascript:void(0);">
+									<i class="material-icons">poll</i>
+									<p>Exibir totais</p>
+								</a>
+							</div>
+							<div class="panel-collapse" ng-class="{'am-fade-and-slide-top am-fade-and-slide-top-remove am-fade-and-slide-top ng-hide': statistics.Open == false, 'am-fade-and-slide-top': statistics.Open == true}">
+								<div>
+									<span>{{statistics.SelectedTeams}}</span>
+									<i class="material-icons">group</i>
+									<p>Turmas <br />selecionadas</p>
+								</div>
+								<div>
+									<span>{{statistics.SelectedSchools}}</span>
+									<i class="material-icons">school</i>
+									<p>Escolas <br />selecionadas</p>
+								</div>
+								<div>
+									<span>{{statistics.TotalSchools}}</span>
+									<i class="material-icons">public</i>
+									<p>Total <br />de escolas</p>
+								</div>
+							</div>
+						}
+						<div style="text-align: right;">
+                            <button class="btnCancelar2" data-toggle="modal" ng-click="arrivingTest()">Voltar</button>
+							<button class="btnCancelar2" data-toggle="modal" ng-click="cancel()">Trocar prova</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		@* Gatilho filtros laterais *@
+		<div class="pesquisa-codigo row">
+			<div class="col-md-12">
+				<div class="filtrar-lista col-md-12">
+                    <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                        <i class="material-icons" data-side-filters>filter_list</i>
+                        <label data-side-filters>Filtrar consulta de escolas</label>
+                        <div class="notificationFilter"
+                             data-trigger="hover"
+                             data-type="success"
+                             data-title="Filtros selecionados"
+                             data-placement="top"
+                             data-container="body"
+                             data-bs-tooltip>
+                            {{countFilter}}
+                        </div>
+                    </a>
+				</div>
+			</div>
+		</div>
+		@* Filtros *@
+        <div class="panel-search side-filters" data-side-filters>
+            <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+                <i class="material-icons">filter_list</i>
+                <label class="filtroP">Filtrar consulta de escolas</label>
+                <i class="material-icons fecha">arrow_forward</i>
+            </a>
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <label data-side-filters>DREs</label>
+                    <select class="form-control"
+                            ng-change="getSchools();clearByFilter('DRE');" 
+                            ng-model="filters.DRE" 
+                            ng-options="dre as dre.Description for dre in listFilter.DREs"
+                            ng-title="listFilter.DREs"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected
+                            data-side-filters>
+                        <option value="">Todas as DREs</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <label data-side-filters>Escolas</label>
+                    <select class="form-control"
+                            ng-change="getTurns(); getYears(); clearByFilter('School');" 
+                            ng-model="filters.School"
+                            ng-options="scholl as scholl.Description for scholl in listFilter.Schools"
+                            ng-title="listFilter.Schools"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected
+                            data-side-filters>
+                        <option value="">Todas as escolas</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <label data-side-filters>Anos</label>
+                    <select class="form-control"
+                            ng-model="filters.Year" 
+                            ng-options="year as year.Description for year in listFilter.Years"
+                            ng-title="listFilter.Years"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected
+                            data-side-filters>
+                        <option value="">Todos os anos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <label data-side-filters>Turnos</label>
+                    <select class="form-control"
+                            ng-model="filters.Turn" 
+                            ng-options="turn as turn.Description for turn in listFilter.Turns"
+                            ng-title="listFilter.Turns"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected
+                            data-side-filters>
+                        <option value="">Todos os turnos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <div data-side-filters class="switch" ng-click="filters.Adherence = !filters.Adherence" ng-class="{'off': !filters.Adherence}">
+                        <input type="button" />
+                    </div>
+                    <span>Exibir aderidas</span>
+                </div>
+            </div>
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <button class="btnCancelar pull-right" ng-click="clearFilters();">Limpar</button>
+                    <button class="btnCancelar pull-right" ng-click="setPagination();">Filtrar</button>
+                </div>
+            </div>
+        </div>
+		@* Paginação *@
+		<div class="cards maxWidth">
+            <div ng-if="list.displayed.length != 0">
+                <div class="headerAdesao">
+                    <h4>Todas as escolas</h4>
+                </div>
+                <table class="table tableAdesao">
+                    <colgroup>
+                        <col width="50%" />
+                        <col width="40%" />
+                        <col width="10%" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>
+                                @if (this.ViewBag.testOwner == true)
+                                {
+                                    <div class="checkbox checkbox-primary">
+                                        <input id="AllAdheredOnPagination" type="checkbox" ng-model="mechanics.AllAdheredOnPagination" ng-change="selectAllSchoolOnPagination(mechanics.AllAdheredOnPagination);">
+                                        <label for="AllAdheredOnPagination">Escola</label>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <label>Escolas</label>
+                                }
+                            </th>
+                            <th>DRE</th>
+                            <th>Turmas</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="($indexSchool, school) in list.displayed track by $indexSchool">
+                        @* Escolas *@
+                        <tr class="maisDados">
+                            <td ng-class="{'parcial': isPartialSelection(school.Status)}">
+                                <div class="checkbox checkbox-primary" ng-if="testInformation.TestOwner">
+                                    <input id="school_{{$indexSchool}}" ng-model="school.Selected" type="checkbox" ng-change="selectSchool(school);">
+                                    <label for="school_{{$indexSchool}}">{{school.Description}}</label>
+                                </div>
+                                <div ng-if="!testInformation.TestOwner">
+                                    <i class="material-icons">done</i>
+                                    {{school.Description}}
+                                </div>
+                            </td>
+                            <td>{{school.DRE}}</td>
+                            <td class="maisDados collapsed" ng-click="school.Open=!school.Open; loadTeamsBySchool(school, $indexSchool, school.Open);">
+                                <span ng-if="school.Teams"> Total ({{(school.Teams !== undefined ? school.Teams.length : 0)}}) </span>
+                                <i ng-class="{'descer':school.Open}" class="material-icons abreModal">expand_less</i>
+                            </td>
+                        </tr>
+                        @* Turmas *@
+                        <tr ng-repeat="($indexTeam, team) in school.Teams track by $indexTeam"
+                            ng-if="school.Open" class="maisDadosSub subAdesao">
+                            <td ng-class="{'parcial': isPartialSelection(team.Status)}">
+                                <div class="checkbox checkbox-primary" ng-if="testInformation.TestOwner">
+                                    <input id="team_{{team.Id}}" type="checkbox" ng-model="team.Selected"
+                                           ng-change="selectTeam($indexSchool, $indexTeam, team.Selected);">
+                                    <label for="team_{{team.Id}}"><span>{{team.Description}} </span> {{team.Turno}}</label>
+                                </div>
+                                <div ng-if="!testInformation.TestOwner">
+                                    <i class="material-icons">done</i>
+                                    <label><span>{{team.Description}}</span> {{team.Turno}}</label>
+                                </div>
+                            </td>
+                            <td class="dre">{{school.DRE}}</td>
+                            <td class="maisDadosSub collapsed">
+                                <i ng-class="{'descer':team.Open}" ng-click="team.Open=!team.Open; loadStudentsByTeam(team, $indexSchool, $indexTeam, team.Open);" class="material-icons abreModal">expand_less</i>
+                                @* Alunos *@
+                                <div ng-if="school.Open && team.Open" class="subAdesaoDiv" >
+                                    <table class="table tableAdesao">
+                                        <tr ng-repeat="($indexStudent, student) in team.Students track by $indexStudent" class="subSubAdesao">
+                                            <td>
+                                                <div class="checkbox checkbox-primary" ng-if="testInformation.TestOwner">
+                                                    <input ng-disabled="isBlocked(student.Status)" ng-class="{'blocked':isBlocked(student.Status)}" id="student_{{student.Id}}" type="checkbox" ng-model="student.Selected"
+                                                            ng-change="selectStudent($indexSchool, $indexTeam, $indexStudent, student.Selected);">
+                                                    <label ng-class="{'blocked':isBlocked(student.Status)}" for="student_{{student.Id}}">{{student.Description}}</label>
+                                                </div>
+                                                <div ng-if="!testInformation.TestOwner">
+                                                    <i class="material-icons">done</i>
+                                                    <label>{{student.Description}}</label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary" ng-class="{'btn-blocked': isBlocked(student.Status)}" id="studentBlockedButton_{{student.Id}}" 
+                                                        ng-if="testInformation.TestOwner" ng-click="blockedStudent($indexSchool, $indexTeam, $indexStudent);">{{isBlocked(student.Status) ? "Desbloquear adesão" : "Bloquear adesão" }}</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+			<div class="nresultados">
+                <page method="search()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                <p class="nresultados" ng-show="list.displayed.length == 0">Nenhum resultado encontrado.</p>
+			</div>
+		</div>
+		@* Results not found *@
+		<div class="cards maxWidth" ng-if="list.displayed === null || (message)">
+			<p class="nresultados">Nenhum resultado encontrado.</p>
+		</div>
+		@* confirmar sair *@
+		<modal id="cancelModal" modal-title="<p>Deseja realmente sair?</p>">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-12 text-right">
+						<button type="button" class="btnPadrao" ng-click="cancel();">Sim</button>
+						<button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+					</div>
+				</div>
+			</div>
+		</modal>
+		@* confirmar Confirmar marcar/desmarcar *@
+		<modal id="selectAllAdherenceModal" modal-title="{{selectAllAdherenceModalTitle}}">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-12 text-right">
+						<button type="button" class="btnPadrao" ng-click="allAdherenceControll();">Sim</button>
+						<button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+					</div>
+				</div>
+			</div>
+		</modal>
+	</div>
+</div>

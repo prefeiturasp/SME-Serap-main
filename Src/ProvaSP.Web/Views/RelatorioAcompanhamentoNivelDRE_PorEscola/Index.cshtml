@@ -1,0 +1,64 @@
+﻿@using ProvaSP.Model.Entidades
+@using ProvaSP.Data
+@model List<RelatorioItem>
+
+@{
+    ViewBag.Title = "Relatório de Acompanhamento";
+    Layout = "~/Views/Shared/_LayoutRelatorioAcompanhamento.cshtml";
+}
+
+<h2>DRE @Html.Raw(EnumHelper<DRE>.GetEnumDescription(ViewBag.DRE))</h2>
+
+<table cellpadding="5">
+
+    @{
+        string ultimoTitulo = "";
+        foreach (var item in Model)
+        {
+            if (ultimoTitulo != @item.Titulo)
+            {
+                <tr>
+                    <td style="padding-top:30px;">
+                        <a  href="RelatorioAcompanhamentoNivelEscola?esc_codigo=@item.Chave&usu_id=@ViewBag.Usuario.usu_id">
+                            <b>@item.Titulo</b>
+                            <br />
+                            (Clique aqui para ver mais detalhes)
+                        </a>
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+            }
+
+            <tr>
+                <td>
+                    @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                </td>
+                <td>
+                    @item.Valor
+                </td>
+
+            </tr>
+            ultimoTitulo = @item.Titulo;
+        }
+    }
+</table>
+
+@{
+    if (ViewBag.Usuario.AdmSERAp)
+    {
+        <br />
+        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelSME_PorDRE?usu_id=@ViewBag.Usuario.usu_id'">
+            Visualizar Nível SME por DRE
+        </button>
+    }
+
+    if (ViewBag.Usuario.grupos.Contains("Supervisão Escolar"))
+    {
+        <br />
+        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelDRE?usu_id=@ViewBag.Usuario.usu_id&uad_codigo=@ViewBag.DRE'">
+            Visualizar Nível DRE
+        </button>
+    }
+}

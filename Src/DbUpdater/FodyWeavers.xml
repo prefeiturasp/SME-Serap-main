@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Weavers>
+  <Costura>
+    <IncludeAssemblies>
+      DbUp
+      DbUpdater.Core
+      Newtonsoft.Json
+      CoreIDS.Database
+      CoreSSO.Database
+      GestaoAvaliacao.Database
+      GestaoAvaliacaoSGP.Database
+      ProvaSP.Database
+    </IncludeAssemblies>
+  </Costura>
+</Weavers>

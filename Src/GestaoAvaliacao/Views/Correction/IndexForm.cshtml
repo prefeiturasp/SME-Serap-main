@@ -1,0 +1,147 @@
+﻿@* Diretiva para alertas padrões do sistema *@
+<alert></alert>
+<div class="wellCustom" ng-controller="CorrectionController" ng-init='init()'>
+    <div ng-if="!blockPage">
+        @* Header da Adesão *@
+        <div class="headerCustom">
+            <h4>Respostas dos alunos<span>Registre as respostas dos alunos individualmente e mantenha o controle das ausências das avaliações aplicadas.</span></h4>
+        </div>
+        @* Informações *@
+        <div class="resumoAdesao">
+            <div class="maxWidth">
+                <div class="dadosGerais">
+                    <h2>
+                        <strong>{{testInformation.Description}} </strong> {{testInformation.FrequencyApplication}} |  {{testInformation.Discipline}}
+                    </h2>
+                    <div class="dadosResumo">
+                        <div style="max-width: 260px;">
+                            <i class="material-icons">group</i>
+                            <span>{{testInformation.Team.Name}}</span>
+                        </div>
+                        <div>
+                            <i class="material-icons">school</i>
+                            <p>{{testInformation.SchoolName}}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <button class="btnCancelar2" data-toggle="modal" ng-click="arrivingStudentResponse()">Voltar</button>
+                            <button class="btnCancelar2" data-toggle="modal" ng-click="cancel()">Trocar Turma</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Lista Alunos *@
+        <div class="cards maxWidth" ng-if="list.displayed">
+            <div class="headerAdesao">
+                <h4>
+                    Respostas dos alunos
+                    <button class="btnPadrao pull-right" ng-show="!ocultarBotaoFinalizarEnviar"
+                            ng-click="finishAndSend();">
+                        <span>Finalizar e enviar</span>
+                    </button>
+                    <button class="btnPadrao pull-right"
+                            ng-click="sendToAutomaticCorrection();" ng-if="testInformation.InCorrection" ng-show="false">
+                        <span>Enviar para correção automática</span>
+                    </button>
+                </h4>
+            </div>
+            <div>
+                <table class="legendas">
+                    <tr>
+                        <td class="legenda-quadrado"></td>
+                        <td>Aluno não tem respostas</td>
+                    </tr>
+                    <tr>
+                        <td class="legenda-quadrado ocorrencia"></td>
+                        <td>Aluno ausente</td>
+                    </tr>
+                    <tr>
+                        <td class="legenda-quadrado corrigido"></td>
+                        <td>Todas as questões preenchidas</td>
+                    </tr>
+                    <tr>
+                        <td class="legenda-quadrado alertFeedback"></td>
+                        <td>Possui questões rasuradas ou nulas</td>
+                    </tr>
+                </table>
+            </div>
+            <table class="table tableCorrecao">
+                <thead>
+                    <tr>
+                        <th class="right">Número</th>
+                        <th>Nome</th>
+                        <th>Ausência</th>
+                        <th class="center">Respostas</th>
+                        <th class="center" ng-show="!baixarGabarito">Respostas do aluno</th>
+                        <th class="center" ng-show="testInformation.electronicTest">Status</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="($indexStudent, student) in list.displayed track by $indexStudent">
+                    <tr class="maisDados" ng-class="{'ocorrencia': student.AbsenceReason_id != null, 'corrigido' : student.TotalAnswered == student.TotalAnswers, 'gabaritoPai': currentStudent == student, 'alertFeedback': student.StudentAnswerKey.Warning}">
+                        <td class="right" style="width:5%;">{{student.mtu_numeroChamada}}</td>
+                        <td style="width:30%;">{{student.alu_nome}}{{student.blocked ? " (Realizou outra prova)": ""}}</td>
+                        <td style="width:20%;">
+                            <select class="form-control" ng-if="!student.blocked"
+                                    ng-click="setCurrentAbsenceReasonStudent(student);"
+                                    ng-change="absenceSave(student);"
+                                    ng-model="student.AbsenceReason_id"
+                                    ng-options="absenceReason.Id as absenceReason.Description for absenceReason in absenceReasonList"
+                                    ng-title="absenceReasonList"
+                                    ng-title-propertie="Description"
+                                    ng-title-index="1"
+                                    ng-title-selected>
+                                <option value="">--Nenhum--</option>
+                            </select>
+                        </td>
+                        <td style="width: 23%; cursor: pointer;" ng-class="{'right': !baixarGabarito, 'center' : baixarGabarito}">
+                            <a ng-if="!student.blocked" href="javascript:void(0);" ng-click="openCurrentStudent(student, $indexStudent);">
+                                <span> {{student.TotalAnswered>0?student.TotalAnswered:0}}/{{student.TotalAnswers>0?student.TotalAnswers:0}}</span> Questões preenchidas
+                                <i class="material-icons abreModal">{{ currentStudent == student ? 'expand_less' : 'expand_more'}}</i>
+                            </a>
+                        </td>
+                        <td class="center" ng-show="!baixarGabarito">
+                            @* Gabarito do aluno *@
+                            <div ng-if="!student.blocked">
+                                <div ng-disabled="!student.StudentAnswerKey.Warning || !student.StudentAnswerKey" ng-if="!student.StudentAnswerKey.Warning||student.StudentAnswerKey == null" class="bloqueio"></div>
+                                <a ng-click="downloadStudentFeedback(student)" ng-class="{'off':!student.StudentAnswerKey.Warning || student.StudentAnswerKey == null}" ng-disabled="!student.StudentAnswerKey.Warning && student.StudentAnswerKey == null" data-trigger="hover" data-type="success" data-title="Baixar arquivo de respostas do aluno" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+                                    <i class="material-icons">file_download</i>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="center" style="width:5%;" ng-show="testInformation.electronicTest">{{student.Status}}</td>                        
+                    </tr>
+                    <tr class="subAdesao gabarito" ng-if="currentStudent == student">
+                        <td colspan="7">
+                            <div class="gabarito-colunas">
+                                <div class="linhas" ng-repeat="($indexItem, item) in student.Items track by $indexItem"
+                                     ng-class="{'selected': item.Selected}">
+                                    <div class="numero">{{$indexItem + 1}}</div>
+                                    <div class="letras" ng-repeat="($indexAlternative, alternative) in item.Alternatives track by $indexAlternative"
+                                         ng-class="{'selected': alternative.Selected}"
+                                         ng-click="selectAlternative($indexStudent, $indexItem, $indexAlternative, null, null);">
+                                        {{removeBracket(alternative.Numeration)}}
+                                    </div>
+                                    <div class="letras" ng-click="selectAlternative($indexStudent, $indexItem, $indexAlternative, true, null);" ng-class="{'selected': item.Null}">
+                                        <span data-trigger="hover" data-type="success"
+                                              data-title="Nulo" data-animation="am-fade"
+                                              data-placement="top" data-container="body" bs-tooltip="">{{Null}}</span>
+                                    </div>
+                                    <div class="letras" ng-click="selectAlternative($indexStudent, $indexItem, $indexAlternative, null, true);" ng-class="{'selected': item.StrikeThrough}">
+                                        <span data-trigger="hover" data-type="success"
+                                              data-title="Rasurado" data-animation="am-fade"
+                                              data-placement="top" data-container="body" bs-tooltip="">{{Erased}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="nresultados" ng-if="list.displayed === null">Nenhum resultado encontrado.</p>
+        </div>
+        <div class="cards maxWidth" ng-if="!list.displayed">
+            <p class="nresultados">Nenhum resultado encontrado.</p>
+        </div>
+    </div>
+</div>

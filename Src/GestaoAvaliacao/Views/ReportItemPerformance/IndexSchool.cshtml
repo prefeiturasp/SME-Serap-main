@@ -1,0 +1,227 @@
+﻿@* Estilo para controle filtro lateral *@
+<style>
+    .side-filters {
+        right: -342px;
+        display: block !important;
+        box-shadow: -4px -1px 2px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+        -webkit-transition: all .5s ease;
+        -moz-transition: all .5s ease;
+        -ms-transition: all .5s ease;
+        -o-transition: all .5s ease;
+        transition: all .5s ease;
+    }
+
+    .side-filters-animation {
+        right: 0;
+        -webkit-transition: all .5s ease;
+        -moz-transition: all .5s ease;
+        -ms-transition: all .5s ease;
+        -o-transition: all .5s ease;
+        transition: all .5s ease;
+    }
+
+    .correction-buttons {
+        cursor: pointer;
+    }
+
+    .correction-buttons-disabled {
+        opacity: 0.5;
+        cursor: not-allowed !important;
+    }
+</style>
+<alert></alert>
+<div class="wellCustom" ng-controller="ReportItemPerformanceSchoolController">
+    <div class="headerCustom">
+        <h4>Relatório de desempenho por item<span>Acompanhamento de desempenho do item por Escola</span></h4>
+    </div>
+    <div class="resumoAdesao">
+        <div class="maxWidth">
+            <div class="dadosGerais">
+                <h2>
+                    <strong data-ng-if="header.uad_nome || header.esc_nome || header.tur_descricao" class="pull-right">
+                        <div>{{header.uad_nome}}</div>
+                        <div>{{header.esc_nome}}</div>
+                        <div>{{header.tur_descricao}}</div>
+                    </strong>
+                    <strong data-ng-if="!header">Selecione uma prova</strong><br />
+                    <strong data-ng-if="header.Description">{{header.Description}}</strong><br />
+                    <label data-ng-if="header.Test_Id"><strong>Cód:</strong> {{header.Test_Id}}</label>
+                    <label data-ng-if="header.CodeP"> | <strong>Cód: p.:</strong> {{header.CodeP}}</label><br />
+                    <label data-ng-if="header.ApplicationStartDate"><strong>Aplicação da prova:</strong> {{header.ApplicationStartDate | moment:"DD/MM/YYYY"}}</label>
+                    <label data-ng-if="header.ApplicationEndDate"> - {{header.ApplicationEndDate | moment:"DD/MM/YYYY"}}</label>
+                </h2>
+                <div class="dadosResumo" data-ng-if="listResult">
+                    <div style="text-align: right;" data-ng-if="listResult">
+                        <button class="btnPadrao" data-ng-if="listResult && listResult.length > 0" data-ng-click="generateReport()">Exportar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Gatilho Filtros *@
+    <div class="pesquisa-upload row" data-ng-show="hasFilters">
+        <div class="col-md-8"></div>
+        <div class="filtrar-lista col-md-4" style="width: 50px;" data-side-filters>
+            <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                <i class="material-icons" data-side-filters>filter_list</i>
+                <label data-side-filters>Filtrar</label>
+                <div class="notificationFilter"
+                     data-trigger="hover"
+                     data-type="success"
+                     data-title="Filtros selecionados"
+                     data-placement="top"
+                     data-container="body"
+                     data-bs-tooltip>
+                    {{countFilter}}
+                </div>
+            </a>
+        </div>
+    </div>
+    @* Painel Filtros *@
+    <div class="panel-search side-filters" data-side-filters>
+        <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+            <i class="material-icons">filter_list</i>
+            <label class="filtroP">Filtrar</label>
+            <i class="material-icons fecha">arrow_forward</i>
+        </a>
+        <div class="col-seach" data-side-filters>
+            <label data-side-filters>Período de aplicação*</label>
+            <br />
+            <div class="calendario-grafico" data-side-filters>
+                <label data-side-filters>De </label>
+                <button type="button" data-ng-click="datepicker('dateStart')" data-side-filters>
+                    <i class="material-icons">event</i>
+                </button>
+                <input class="dateInput" type="text" placeholder="Data de Início" data-ng-model="filters.DateStart" data-ng-change="getTests()" id="dateStart" datepicker data-side-filters />
+            </div>
+            <div class="calendario-grafico" data-side-filters>
+                <label data-side-filters>até </label>
+                <button type="button" data-ng-click="datepicker('dateEnd')" data-side-filters>
+                    <i class="material-icons">event</i>
+                </button>
+                <input class="dateInput" type="text" placeholder="Data de Término" data-ng-model="filters.DateEnd" data-ng-change="getTests()" id="dateEnd" datepicker data-side-filters />
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <label data-side-filters>Cód. da prova*</label>
+            <div data-side-filters>
+                <input class="form-control" type="number" placeholder="Código da prova" data-ng-model="filters.test_id" ng-change="changeTestCode()" id="testCode" data-side-filters />
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <label data-side-filters>Prova*</label>
+                <select class="form-control"
+                        ng-model="filters.test_id"
+                        ng-options="test.TestId as test.TestDescription for test in listTests"
+                        ng-title="listTests"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected
+                        data-side-filters
+                        ng-change="changeTest()"
+                        id="selectTest">
+                    <option value="">Selecione uma prova</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <label data-side-filters>DREs</label>
+                <select class="form-control"
+                        ng-model="filters.uad_id"
+                        ng-options="dre.Id as dre.Description for dre in listDREs"
+                        ng-title="listDREs"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected
+                        data-side-filters>
+                    <option value="">Todas as DREs</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <button data-side-filters class="btnCancelar pull-right" ng-click="clearFilters();">Limpar</button>
+                <button data-side-filters class="btnCancelar pull-right" ng-click="search();">Filtrar</button>
+            </div>
+        </div>
+    </div>
+    @* Paginação *@
+    <div class="cards maxWidth" data-ng-if="listResult">
+        <div class="campoLabel">
+            @* Componente curricular *@
+            <label class="" for="discipline">Componente curricular:</label>
+            <div>
+                <label ng-show="oneDiscipline">{{searcheableFilter.discipline_name}}</label>
+                <select id="discipline" class="form-control"
+                        ng-change="loadByDiscipline()"
+                        ng-model="selectDiscipline"
+                        ng-init="selectDiscipline = listDiscipline[searcheableFilter.index].Id"
+                        ng-options="discipline.Id as discipline.Description for discipline in listDiscipline"
+                        ng-show="!oneDiscipline">
+                    <option value="">--Todos--</option>
+                </select>
+                <div ng-show="oneDiscipline"></div>
+            </div>
+        </div>   
+        <table class="table table-hover tableCorrecao ng-scope tableSlide">     
+            <thead>
+                <tr ng-show="{{totalItensHorizontal}} > 15">
+                    <th colspan="1" style="width: 200px;"></th>
+                    <th colspan="{{escolas[0].Items.length}}" class="navSlide">
+                        <div class="pull-left">
+                            @*begin*@
+                            <i class="material-icons dois"
+                               ng-click="begin();"
+                               ng-class="{'correction-buttons-disabled': slider.current == 0, 'correction-buttons': slider.current>0}">keyboard_arrow_left<i class="material-icons">keyboard_arrow_left</i></i>
+                            @*previus*@
+                            <i class="material-icons"
+                               ng-click="previus();"
+                               ng-class="{'correction-buttons-disabled': slider.current == 0, 'correction-buttons': slider.current>0}">keyboard_arrow_left</i>
+                        </div>
+                        <div class="pull-right">
+                            @*next*@
+                            <i class="material-icons"
+                               ng-click="next();"
+                               ng-class="{'correction-buttons-disabled': slider.current == slider.max, 'correction-buttons': slider.current<slider.max}">keyboard_arrow_right</i>
+                            @*end*@
+                            <i class="material-icons dois"
+                               ng-click="end();"
+                               ng-class="{'correction-buttons-disabled': slider.current == slider.max, 'correction-buttons': slider.current<slider.max}">keyboard_arrow_right<i class="material-icons">keyboard_arrow_right</i></i>
+                        </div>
+                    </th>
+                    <th colspan="2"></th>
+                </tr>
+                <tr>
+                    <th>ESCOLAS</th>
+                    <th class="text-center" style="width: 68px; padding:0 !important;" ng-repeat="item in escolas[0].Items" ng-class="{'revoked' : item.Revoked}">Item {{item.Order + 1}} </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="school in escolas">
+                    <td>
+                        <span data-trigger="hover"
+                              data-type="success"
+                              data-title="{{school.EscName}}"
+                              data-animation="am-fade"
+                              data-placement="top"
+                              data-container="body"
+                              data-bs-tooltip>{{school.EscName | minimize:20}}</span>
+                    </td>
+                    <td class="text-center" ng-repeat="item in school.Items" ng-class="{'revoked' : item.Revoked}" style="padding:0 !important;">
+                        {{item.Media}} %
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="nresultados">
+            <page method="Paginate()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+        </div>
+    </div>
+    @* Results not found *@
+    <div class="cards maxWidth" data-ng-if="!listResult">
+        <p class="nresultados">Nenhum resultado encontrado.</p>
+    </div>
+</div>

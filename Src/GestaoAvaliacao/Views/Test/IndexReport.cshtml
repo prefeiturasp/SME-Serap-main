@@ -1,0 +1,185 @@
+﻿@*Alertas*@
+<alert></alert>
+<div class="wellCustom" ng-controller="ReportController">
+	<div class="headerCustom">
+		<h4>Relatório<span>Desempenho de prova por escola</span></h4>
+	</div>
+	<div class="well well-large itens">
+		<div class="container-fluid">
+			<div class="cards">
+				<div class="row">
+					<div class="col-md-5">
+						<div class="campoLabel">
+							<label>Tipo de prova:* </label>
+							<div>
+								<div class="radio radio-primary">
+									<input type="radio">
+									<label>
+										<strong>Global</strong>
+									</label>
+								</div>
+							</div>
+							<div>
+								<div class="radio radio-primary">
+									<input type="radio">
+									<label>
+										<strong>Local</strong>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-7">
+						<div class="campoLabel">
+							<label>{{curriculumGradeLabel}}:*</label>
+							<div>
+								<div class="radio radio-primary">
+									<label for="">
+										<strong class="ng-binding"></strong>
+										<span>
+											<input type="text" class="form-control-inline" maxlength="4" size="2">
+										</span>
+									</label>
+								</div>
+							</div>
+							<div class="calendario-grafico" style="width: 230px; margin-left: 34px;">
+								<div>
+									<div class="radio radio-primary">
+										<label for="">
+										</label>
+										<button type="button" ng-click="inicio()">
+											<i class="material-icons">event</i>
+										</button>
+										<input type="text" placeholder="Data de Início" ng-model="situacao.inicio" id="inicio" datepicker />
+
+										<button type="button" ng-click="fim()">
+											<i class="material-icons">event</i>
+										</button>
+										<input type="text" placeholder="Data de Término" ng-model="situacao.fim" id="fim" datepicker />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="campoLabel">
+							<label style="max-width: 70px;">DRE*: </label>
+							<div>
+								<div>
+									<select class="form-control">
+										<option>--Selecione--</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="campoLabel">
+							<label style="max-width: 70px;">Escola: </label>
+							<div>
+								<div>
+									<select class="form-control">
+										<option>--Selecione--</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="campoLabel">
+							<label style="max-width: 70px;">Prova*: </label>
+							<div>
+								<div>
+									<select class="form-control">
+										<option>--Selecione--</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a class="btnPadrao pull-left">Exportar</a>
+			<a class="btnPadrao pull-left" data-toggle="modal" data-target="#modalGrafico">Ver gráfico</a>
+			<a class="btnPadrao pull-right">Gerar relatório</a>
+		</div>
+	</div>
+
+	<div class="well well-large itens">
+		<div class="container-fluid">
+			<div class="cards">
+				<table class="table table-hover" style="margin-top: 0;">
+					<colgroup>
+						<col width="70%">
+						<col width="30%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>Média DRE</th>
+							<th class="center">68,58</th>
+						</tr>
+						<tr>
+							<th>Média da escola</th>
+							<th class="center">68,18</th>
+						</tr>
+						<tr class="destaqueFundo">
+							<th>Escola</th>
+							<th class="center">%</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Alcides</td>
+							<td class="center">67,55</td>
+						</tr>
+						<tr>
+							<td>Alcides</td>
+							<td class="center">67,55</td>
+						</tr>
+						<tr>
+							<td>Alcides</td>
+							<td class="center">67,55</td>
+						</tr>
+						<tr>
+							<td>Alcides</td>
+							<td class="center">67,55</td>
+						</tr>
+						<tr>
+							<td>Alcides</td>
+							<td class="center">67,55</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="container-fluid">
+					<div id="pagination">
+						<span>Resultados: (3)</span>
+						<ul>
+							<li class="pull-right">
+								<select class="input-mini">
+									<option value="10">10</option>
+								</select>
+							</li>
+						</ul>
+					</div>
+					<p class="nresultados ng-hide">Nenhum resultado encontrado.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modalGrafico">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Desempenho de prova por escola</h4>
+			</div>
+			<div class="modal-body">
+				<!--Add gráfico-->
+			</div>
+		</div>
+	</div>
+</div>

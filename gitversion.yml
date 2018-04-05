@@ -1,0 +1,5 @@
+branches: 
+  release[/-]: 
+    tag: rc 
+  hotfix(es)?[/-]:
+    tag: rc 

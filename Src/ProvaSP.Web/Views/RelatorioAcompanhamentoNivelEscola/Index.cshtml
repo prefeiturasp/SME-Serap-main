@@ -1,0 +1,95 @@
+﻿@using ProvaSP.Web.ViewModel
+@using ProvaSP.Data
+@model RelatorioAcompanhamentoEscola
+
+@{
+    ViewBag.Title = "Relatório de Acompanhamento";
+    Layout = "~/Views/Shared/_LayoutRelatorioAcompanhamento.cshtml";
+}
+
+<h2>@ViewBag.Escola.esc_nome</h2>
+
+<table cellpadding="5">
+
+    @{
+        foreach (var item in Model.IndicadoresEscola)
+        {
+
+            <tr>
+
+                <td>
+                    @Html.Raw(EnumHelper<DRE>.GetEnumDescription(item.Titulo))
+                </td>
+                <td>
+                    @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                </td>
+                <td>
+                    @item.Valor
+                </td>
+
+            </tr>
+        }
+    }
+</table>
+
+<h2>Turmas</h2>
+
+<table cellpadding="5">
+    @{
+        foreach (var item in Model.IndicadoresTurma)
+        {
+
+            <tr style="@(item.Valor == "SIM" ? "color:green" : "color:red")">
+
+                <td>
+                    @item.Titulo
+                </td>
+                <td>
+                    @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                </td>
+                <td>
+                    @item.Valor
+                </td>
+
+            </tr>
+        }
+    }
+</table>
+
+
+<h2>Docentes</h2>
+
+<table cellpadding="5">
+
+    @{
+        foreach (var item in Model.IndicadoresPessoa)
+        {
+            if (!(item.Atributo.Contains("Diretor") && ViewBag.Usuario.grupos.Contains("Coordenador Pedagógico")))
+            {
+                <tr style="@(item.Valor == "SIM" ? "color:green" : "color:red")">
+
+                    <td>
+                        @item.Titulo
+                    </td>
+                    <td>
+                        @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                    </td>
+                    <td>
+                        @item.Valor
+                    </td>
+
+                </tr>
+            }
+        }
+    }
+</table>
+
+@{
+    if (ViewBag.Usuario.AdmSERAp || ViewBag.Usuario.grupos.Contains("Supervisão Escolar"))
+    {
+        <br />
+        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelDRE_PorEscola?usu_id=@ViewBag.Usuario.usu_id&uad_codigo=@ViewBag.Escola.uad_codigo'">
+            Visualizar DRE <br /> por Escola 
+        </button>
+    }
+}

@@ -1,0 +1,33 @@
+﻿<label style="padding-left:20px; font-size:medium;">{{infoMessage}}</label>
+<div class="multiSelect">
+    <div class="leftms fL ">
+        <label class="control-label fL" for="multiSelectSelected">
+            {{ availableLabel }}
+            ({{ available.length }})
+        </label>
+        <div class="clear"></div>
+        <select id="multiSelectAvailable" ng-model="selected.available" multiple
+                class="pull-left mselect " ng-options="e as e[displayAttr] for e in available | orderBy:'{{orderBy}}'"></select>
+        <div class="clear"></div>
+    </div>
+    <div class="width10p fL">
+        <button class="btn mover left" ng-click="add()" title="Adicionar selecionado"
+                ng-disabled="selected.available.length == 0">
+            <i class="material-icons">keyboard_arrow_right</i>
+        </button>
+        <button class="btn mover right" ng-click="remove()" title="Remover selecionado"
+                ng-disabled="selected.current.length == 0">
+            <i class="material-icons">keyboard_arrow_left</i>
+        </button>
+    </div>
+    <div class="leftms fL">
+        <label class="control-label fL" for="multiSelectSelected">
+            {{ selectedLabel }}
+            ({{ model.length }})
+        </label>
+        <div class="clear"></div>
+        <select id="currentRoles" ng-model="selected.current" multiple
+                class="pull-left mselect fL" ng-options="e as e[displayAttr] for e in model | orderBy:'{{orderBy}}'"></select>
+        <div class="clear"></div>
+    </div>
+</div>

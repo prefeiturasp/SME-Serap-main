@@ -1,0 +1,80 @@
+﻿.am-menu {
+  animation-duration: 0.3s;
+  animation-timing-function: ease;
+  animation-fill-mode: backwards;
+  opacity: 1;
+}
+.am-menu.am-menu-add,
+.am-menu.ng-hide-remove,
+.am-menu.ng-move {
+  animation-name: menu-in;
+}
+.am-menu.am-menu-remove,
+.am-menu.ng-hide {
+  animation-name: menu-out;
+}
+.am-menu.ng-enter {
+  visibility: hidden;
+  animation-name: menu-in;
+  animation-play-state: paused;
+}
+.am-menu.ng-enter.ng-enter-active {
+  visibility: visible;
+  animation-play-state: running;
+}
+.am-menu.ng-leave {
+  animation-name: menu;
+  animation-play-state: paused;
+}
+.am-menu.ng-leave.ng-leave-active {
+  animation-play-state: running;
+}
+@-webkit-keyframes menu-in {
+ from {
+    left: 0px;
+    opacity:0;
+  }
+  to {
+    left: 0px;
+    opacity:1;
+  }
+}
+@keyframes menu-in {
+  from {
+    left: 0px;
+    opacity:0;
+  }
+  to {
+    left: 0px;
+    opacity:1;
+  }
+}
+@-webkit-keyframes menu-out {
+ from {
+    left: -280px;
+    opacity:1;
+  }
+  to {
+    left: -280px;
+    opacity:0;
+  }
+}
+@keyframes menu-out {
+  from {
+    left: 0;
+    opacity:1;
+  }
+  to {
+    left: 0;
+    opacity:0;
+  }
+}
+.panel-menu.am-menu.in-remove {
+  -webkit-animation-name: menu-out;
+  animation-name: menu-out;
+}
+.panel-menu.am-menu.in-add {
+  -webkit-animation-name: menu-in;
+  animation-name: menu-in;
+}
+

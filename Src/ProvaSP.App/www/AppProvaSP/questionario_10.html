@@ -1,0 +1,53 @@
+﻿<div>
+    <p style="font-weight:bold;color:red; ">Apenas preencha essa ficha após o término do último dia de aplicação.</p>
+
+    <div style="text-align:left;margin-bottom:10px;">
+        <h3>
+            1. Identificação da Escola:
+            <input type="hidden" name="Questionario_10_Questao_1" value="" />
+        </h3>
+        <span id="Questionario_10_esc_nome">
+            (O sistema identificará automaticamente sua Escola)
+        </span>
+    </div>
+
+    <fieldset data-role="controlgroup">
+        <h3>
+            2. O(s) malote(s) contendo os Questionários para os pais/mães ou responsáveis foi(ram) entregue(s) na data prevista?
+            <input type="hidden" name="Questionario_10_Questao_2" value="default" />
+        </h3>
+        <label for="Questionario_10_Questao_2_Sim">
+            <input id="Questionario_10_Questao_2_Sim" type="radio" name="Questionario_10_Questao_2" value="Sim" />
+            Sim
+        </label>
+        <label for="Questionario_10_Questao_2_Nao">
+            <input id="Questionario_10_Questao_2_Nao" type="radio" name="Questionario_10_Questao_2" value="Não" />
+            Não
+        </label>
+        <h4>Se não foi(ram), registre os motivos:</h4>
+        <input id="Questionario_10_Questao_2_Motivos" type="text" name="Questionario_10_Questao_2.Motivos" placeholder="Descreva aqui" disabled="disabled" />
+    </fieldset>
+
+    <fieldset data-role="controlgroup">
+        <h3>
+            3. O(s) malote(s) contendo o material da Prova foi(ram) entregue(s) na data prevista?
+            <input type="hidden" name="Questionario_10_Questao_3" value="default" />
+        </h3>
+        <label for="Questionario_10_Questao_3_Sim">
+            <input id="Questionario_10_Questao_3_Sim" type="radio" name="Questionario_10_Questao_3" value="Sim" />
+            Sim
+        </label>
+        <label for="Questionario_10_Questao_3_Nao">
+            <input id="Questionario_10_Questao_3_Nao" type="radio" name="Questionario_10_Questao_3" value="Não" />
+            Não
+        </label>
+        <h4>Se não foi(ram), registre os motivos:</h4>
+        <input id="Questionario_10_Questao_3_Motivos" type="text" name="Questionario_10_Questao_3.Motivos" placeholder="Descreva aqui" disabled="disabled" />
+
+        <h3>4. Observações / Comentários (Registre fatos relevantes ocorridos durante a aplicação)</h3>
+        <input id="Questionario_10_Questao_4_Observacoes" type="text" name="Questionario_10_Questao_4" placeholder="Descreva aqui" />
+
+    </fieldset>
+
+    <a href="#" class="ui-btn" style="color:green;" onclick="btnConcluirQuestionario()">Concluir</a>
+</div>

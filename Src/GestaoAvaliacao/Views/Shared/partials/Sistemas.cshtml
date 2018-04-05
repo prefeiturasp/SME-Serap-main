@@ -1,0 +1,22 @@
+﻿@using GestaoAvaliacao.WebProject.Facade
+
+@{
+    if (SessionFacade.UsuarioLogado.Sistemas.Count > 0)
+    {
+                <li class="">
+                    <a href="javascript:void(0)" class="toggleBox aAzul" >
+                        <i class="material-icons">view_module</i>
+                    </a>
+                    <div class="toggleBox-content toggleCustom" style="display: none;">
+                        <ul>
+                            @foreach (MSTech.CoreSSO.Entities.SYS_Sistema item in SessionFacade.UsuarioLogado.Sistemas)
+                            {
+                                <li>
+                                    <a href="@item.sis_caminho">@item.sis_nome</a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </li>
+    }
+}

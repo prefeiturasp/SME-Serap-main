@@ -1,0 +1,58 @@
+﻿@*Alertas*@
+<alert></alert>
+<div class="wellCustom" ng-controller="ModelTestListController">
+	<div class="headerCustom">
+		<h4>Modelo de prova<span>Listagem</span></h4>
+	</div>
+	<div class="well well-large">
+		<form class="form-inline" role="form">
+			<div class="form-group">
+				<input id="modelTestSearch" type="text" class="form-pesquisa" placeholder="Modelo de prova" ng-model="pesquisa">
+			</div>
+			<button class="btn-pesquisar" ng-click="setFilters();" title="Pesquisar"><i class="material-icons">search</i></button>
+			<a href="~/ModelTest/IndexForm" class="btnPadrao pull-right"> Novo modelo de prova</a>
+		</form>
+		<br />
+		<table class="table table-hover" ng-show="modelTestList != null">
+			<colgroup>
+				<col width="75%" />
+				<col width="15%" />
+				<col width="5%" />
+				<col width="5%" />
+			</colgroup>
+			<thead>
+				<tr>
+                    <th>Descrição</th>
+					<th class="center">Modelo Padrão</th>
+					<th class="center">Editar</th>
+					<th class="center">Excluir</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="modelTestNode in modelTestList">
+					<td>{{modelTestNode.Description}}</td>
+					<td class="center">
+						<a href="javascript:void(0)"><i ng-if="modelTestNode.DefaultModel" class="material-icons">check</i></a>
+					</td>
+					<td class="center"><a href="~/ModelTest/IndexForm?Id={{modelTestNode.Id}}"><i class="material-icons">create</i></a></td>
+					<td class="center"><a ng-click="confirmar(modelTestNode)"><i class="material-icons">delete</i></a></td>
+				</tr>
+			</tbody>
+		</table>
+        <page method="search()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+		<p class="nresultados" ng-hide="modelTestList != null || !(message)">Nenhum resultado encontrado.</p>
+	</div>
+	<!-- delete modal confirm -->
+	<modal id="deleteModal" modal-title="{{modelTest.Description}}">
+		<div class="container-fluid">
+			<span>O modelo de prova '{{modelTest.Description}}' pode estar sendo usado em algum tipo de prova, deseja excluir mesmo assim?</span>
+			<div class="row">
+				<div class="col-sm-12 text-right">
+					<button type="button" class="btnPadrao" ng-click="delete(modelTest);">Sim</button>
+					<button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+				</div>
+			</div>
+		</div>
+	</modal>
+</div>
+

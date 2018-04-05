@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{344B5903-1523-4CF9-B821-237E0FB6E0E0}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AvaliaMais.FolhaRespostas.ProcessamentoProva.Test</RootNamespace>
+    <AssemblyName>AvaliaMais.FolhaRespostas.ProcessamentoProva.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SimpleInjector, Version=3.2.2.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.3.2.2\lib\net45\SimpleInjector.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Application\AvaliaMais.FolhaRespostas.Application.csproj">
+      <Project>{c9da05eb-f737-403d-a667-14e053272350}</Project>
+      <Name>AvaliaMais.FolhaRespostas.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Data\AvaliaMais.FolhaRespostas.Data.csproj">
+      <Project>{6281132a-3d19-4b76-8986-60c73011b4d5}</Project>
+      <Name>AvaliaMais.FolhaRespostas.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Domain\AvaliaMais.FolhaRespostas.Domain.csproj">
+      <Project>{390ca6c5-2a34-4f9e-a38e-7bbbb94e6edd}</Project>
+      <Name>AvaliaMais.FolhaRespostas.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Infra.IoC\AvaliaMais.FolhaRespostas.Infra.IoC.csproj">
+      <Project>{57a426e2-35e8-4a58-8ee7-b66e21398931}</Project>
+      <Name>AvaliaMais.FolhaRespostas.Infra.IoC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Repository\GestaoAvaliacao.Repository.csproj">
+      <Project>{20f146e2-63fd-4e62-bd1b-512bd01f9c6b}</Project>
+      <Name>GestaoAvaliacao.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

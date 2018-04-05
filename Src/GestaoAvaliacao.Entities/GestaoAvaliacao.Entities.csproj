@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{834EFDFB-45FE-48F4-9618-222BEB838A4A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GestaoAvaliacao.Entities</RootNamespace>
+    <AssemblyName>GestaoAvaliacao.Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AbsenceReason.cs" />
+    <Compile Include="Adherence.cs" />
+    <Compile Include="AdherenceGrid.cs" />
+    <Compile Include="AdherenceTest.cs" />
+    <Compile Include="AdministrativeUnitType.cs" />
+    <Compile Include="AJX_Select2.cs" />
+    <Compile Include="Alternative.cs" />
+    <Compile Include="AnswerSheetBatchQueue.cs" />
+    <Compile Include="AnswerSheetLot.cs" />
+    <Compile Include="BaseText.cs" />
+    <Compile Include="Base\EntityBase.cs" />
+    <Compile Include="Block.cs" />
+    <Compile Include="BlockItemFilter.cs" />
+    <Compile Include="BlockKnowledgeArea.cs" />
+    <Compile Include="Booklet.cs" />
+    <Compile Include="CognitiveCompetence.cs" />
+    <Compile Include="BlockItem.cs" />
+    <Compile Include="AnswerSheetBatch.cs" />
+    <Compile Include="AnswerSheetBatchFiles.cs" />
+    <Compile Include="AnswerSheetBatchLog.cs" />
+    <Compile Include="CorrectionStudentGrid.cs" />
+    <Compile Include="DTO\AdherenceDTO.cs" />
+    <Compile Include="DTO\AnswerSheetLotDTO.cs" />
+    <Compile Include="DTO\DreDTO.cs" />
+    <Compile Include="DTO\DresDTO.cs" />
+    <Compile Include="DTO\ElectronicTestDTO.cs" />
+    <Compile Include="DTO\ExportAnalysisDTO.cs" />
+    <Compile Include="DTO\ItemPercentageChoiceByAlternativeWithOrderResult.cs" />
+    <Compile Include="DTO\ReportTestDTO.cs" />
+    <Compile Include="DTO\RequestRevokeDTO.cs" />
+    <Compile Include="DTO\SchoolDTO.cs" />
+    <Compile Include="DTO\StudentDTO.cs" />
+    <Compile Include="DTO\StudentInformationAndPerformanceTestResult.cs" />
+    <Compile Include="DTO\TeamsDTO.cs" />
+    <Compile Include="DTO\TestBatchFilesDTO.cs" />
+    <Compile Include="DTO\TestSectionStatusCorrectionDTO.cs" />
+    <Compile Include="DTO\UnitsInformationAndPerformanceTestDTO.cs" />
+    <Compile Include="DTO\UsersDTO.cs" />
+    <Compile Include="EnumAdherenceType.cs" />
+    <Compile Include="Enumerator\EnumAdherenceSelection.cs" />
+    <Compile Include="Enumerator\EnumAdherenceEntity.cs" />
+    <Compile Include="Enumerator\EnumGenerateType.cs" />
+    <Compile Include="Enumerator\EnumHeaderSize.cs" />
+    <Compile Include="Enumerator\EnumIdentificationType.cs" />
+    <Compile Include="Enumerator\EnumPosition.cs" />
+    <Compile Include="Enumerator\EnumSituation.cs" />
+    <Compile Include="ExportAnalysis.cs" />
+    <Compile Include="FileFilter.cs" />
+    <Compile Include="ItemFile.cs" />
+    <Compile Include="KnowledgeArea.cs" />
+    <Compile Include="KnowledgeAreaDiscipline.cs" />
+    <Compile Include="PageConfiguration.cs" />
+    <Compile Include="PaginatorData.cs" />
+    <Compile Include="PDFFilter.cs" />
+    <Compile Include="Projections\AlternativesWithNumerationAndOrderProjection.cs" />
+    <Compile Include="Projections\ItemWithOrderAndRevoked.cs" />
+    <Compile Include="Projections\ItemWithSkillsAndAlternativesProjection.cs" />
+    <Compile Include="ReportTestResult.cs" />
+    <Compile Include="RequestRevoke.cs" />
+    <Compile Include="SelectedSection.cs" />
+    <Compile Include="StudentCorrectionAnswerGrid.cs" />
+    <Compile Include="StudentTestAbsenceReason.cs" />
+    <Compile Include="Subject.cs" />
+    <Compile Include="SubSubject.cs" />
+    <Compile Include="TestGroup.cs" />
+    <Compile Include="TestPermission.cs" />
+    <Compile Include="TestSectionStatusCorrection.cs" />
+    <Compile Include="TestSubGroup.cs" />
+    <Compile Include="TestTemplate.cs" />
+    <Compile Include="TestFiles.cs" />
+    <Compile Include="ModelTest.cs" />
+    <Compile Include="ItemBlockResult.cs" />
+    <Compile Include="ItemGroupBaseText.cs" />
+    <Compile Include="ItemReportItemSkill.cs" />
+    <Compile Include="ItemResult.cs" />
+    <Compile Include="ItemFilter.cs" />
+    <Compile Include="CorrelatedSkillByEvaluationMatrix.cs" />
+    <Compile Include="CorrelatedSkill.cs" />
+    <Compile Include="EvaluationMatrixCourse.cs" />
+    <Compile Include="Discipline.cs" />
+    <Compile Include="Enumerator\EnumState.cs" />
+    <Compile Include="EvaluationMatrix.cs" />
+    <Compile Include="EvaluationMatrixCourseCurriculumGrade.cs" />
+    <Compile Include="File.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="ItemCurriculumGrade.cs" />
+    <Compile Include="ItemLevel.cs" />
+    <Compile Include="ItemReportItemCurriculumGrade.cs" />
+    <Compile Include="ItemReportItem.cs" />
+    <Compile Include="ItemReportItemLevel.cs" />
+    <Compile Include="ItemReportItemSituation.cs" />
+    <Compile Include="ItemSituation.cs" />
+    <Compile Include="ItemSkill.cs" />
+    <Compile Include="ItemType.cs" />
+    <Compile Include="ModelEvaluationMatrix.cs" />
+    <Compile Include="ModelSkillLevel.cs" />
+    <Compile Include="Parameter.cs" />
+    <Compile Include="ParameterCategory.cs" />
+    <Compile Include="ParameterPage.cs" />
+    <Compile Include="ParameterType.cs" />
+    <Compile Include="PerformanceLevel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ItemReportItemType.cs" />
+    <Compile Include="Skill.cs" />
+    <Compile Include="State.cs" />
+    <Compile Include="Test.cs" />
+    <Compile Include="TestCurriculumGrade.cs" />
+    <Compile Include="TestFilter.cs" />
+    <Compile Include="TestItemLevel.cs" />
+    <Compile Include="TestPerformanceLevel.cs" />
+    <Compile Include="TestResult.cs" />
+    <Compile Include="TestType.cs" />
+    <Compile Include="TestTypeCourse.cs" />
+    <Compile Include="TestTypeCourseCurriculumGrade.cs" />
+    <Compile Include="TestTypeItemLevel.cs" />
+    <Compile Include="FormatType.cs" />
+    <Compile Include="Uploader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
+      <Project>{638b2bdc-aa34-4dcd-a041-ab4eb9c4d831}</Project>
+      <Name>GestaoAvaliacao.Util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

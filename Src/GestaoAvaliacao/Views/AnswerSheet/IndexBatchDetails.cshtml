@@ -1,0 +1,731 @@
+﻿@using GestaoAvaliacao.Util;
+<script>
+
+    var IndexBatchDetailsEnumBatchSituationByte = {
+        Error: '@((Byte)EnumBatchSituation.Error)',
+        NotIdentified: '@((Byte)EnumBatchSituation.NotIdentified)',
+        Pending: '@((Byte)EnumBatchSituation.Pending)',
+        PendingIdentification: '@((Byte)EnumBatchSituation.PendingIdentification)',
+        Success: '@((Byte)EnumBatchSituation.Success)',
+        Warning: '@((Byte)EnumBatchSituation.Warning)',
+        Absent: '@((Byte)EnumBatchSituation.Absent)'
+    };
+
+    var IndexBatchDetailsEnumBatchSituationLabel = {
+        Error: '@(EnumBatchSituation.Error.ToString())',
+        NotIdentified: '@(EnumBatchSituation.NotIdentified.ToString())',
+        Pending: '@(EnumBatchSituation.Pending.ToString())',
+        PendingIdentification: '@(EnumBatchSituation.PendingIdentification.ToString())',
+        Success: '@(EnumBatchSituation.Success.ToString())',
+        Warning: '@(EnumBatchSituation.Warning.ToString())',
+        Absent: '@(EnumBatchSituation.Absent.ToString())'
+    };
+
+    var IndexBatchDetailsEnumBatchSituationDescription = {
+        Error: '@Html.Raw(EnumBatchSituation.Error.GetDescription())',
+        NotIdentified: '@Html.Raw(EnumBatchSituation.NotIdentified.GetDescription())',
+        Pending: '@Html.Raw(EnumBatchSituation.Pending.GetDescription())',
+        PendingIdentification: '@Html.Raw(EnumBatchSituation.PendingIdentification.GetDescription())',
+        Success: '@Html.Raw(EnumBatchSituation.Success.GetDescription())',
+        Warning: '@Html.Raw(EnumBatchSituation.Warning.GetDescription())',
+        Absent: '@Html.Raw(EnumBatchSituation.Absent.GetDescription())'
+    };
+
+    var IndexBatchDetailsEnumBatchProcessingByte = {
+        Failure: '@((Byte)EnumBatchProcessing.Pending)',
+        Initiate: '@((Byte)EnumBatchProcessing.Initiate)',
+        Pending: '@((Byte)EnumBatchProcessing.Pending)',
+        Processing: '@((Byte)EnumBatchProcessing.Processing)',
+        Retry: '@((Byte)EnumBatchProcessing.Retry)',
+        Success: '@((Byte)EnumBatchProcessing.Success)'
+    };
+
+    var IndexBatchDetailsEnumBatchProcessingLabel = {
+        Failure: '@(EnumBatchProcessing.Pending.ToString())',
+        Initiate: '@(EnumBatchProcessing.Initiate.ToString())',
+        Pending: '@(EnumBatchProcessing.Pending.ToString())',
+        Processing: '@(EnumBatchProcessing.Processing.ToString())',
+        Retry: '@(EnumBatchProcessing.Retry.ToString())',
+        Success: '@(EnumBatchProcessing.Success.ToString())'
+    };
+</script>
+<alert></alert>
+<div class="wellCustom" ng-controller="BatchDetailsController" ng-init='init();'>
+    <div ng-if="!blockPage">
+        @* Header *@
+        <div class="headerCustom">
+            <h4> Upload de folhas de resposta em lote  <span></span></h4>
+        </div>
+        @* Informações *@
+        <div class="resumoAdesao">
+            <div class="maxWidth">
+                <div class="dadosGerais">
+                    <h2 ng-if="generalBatch">
+                        <strong ng-if="testInformation.test.Description">{{testInformation.test.Description}}</strong> {{testInformation.test.FrequencyApplication}} |  {{testInformation.test.Discipline}}
+                    </h2>
+                    <h2 ng-if="!generalBatch"><strong>Upload <i class="material-icons" title="Em caso de dúvida consulte a sua DRE ou a COPED/NTA.">help_outline</i></strong></h2>
+									
+                    <div class="dadosResumo pesquisa-upload batchInfo" ng-if="batch != null">
+                        <div ng-if="generalBatch">
+                            <strong ng-if="batch.Description">{{batch.Description}}</strong> | Criado em {{batchInfo.CreateDate}} | {{batchInfo.Total}} arquivo(s)
+                        </div>
+                        <div class="batchStatus">
+                            <div class="batchSituation" ng-if="generalBatch">
+                                Situação do lote
+                                <span ng-if="batch.Processing == EnumBatchProcessingByte.Pending" class="status-{{EnumBatchProcessingLabel.Pending}} botao">{{EnumBatchSituationDescription.Pending}}</span>
+                                <span ng-if="batch.Processing == EnumBatchProcessingByte.Processing" class="status-{{EnumBatchProcessingLabel.Processing}} botao">{{EnumBatchSituationDescription.Processing}}</span>
+                                <span ng-if="batch.Processing == EnumBatchProcessingByte.Success" class="status-{{EnumBatchProcessingLabel.Success}} botao">{{EnumBatchSituationDescription.Success}}</span>
+                                <span ng-if="batch.Processing == EnumBatchProcessingByte.Failure" class="status-{{EnumBatchProcessingLabel.Failure}} botao">{{EnumBatchSituationDescription.Failure}}</span>
+                                <span ng-if="batch.Processing == EnumBatchProcessingByte.Initiate" class="status-{{EnumBatchProcessingLabel.Initiate}} botao">{{EnumBatchSituationDescription.Initiate}}</span>
+                            </div>
+                            <div data-ng-if="generalBatch"
+                                 class="batchFilesSituation"
+                                 data-template="../Assets/js/Angular/controllers/answerSheet/generalBatch.tpl.html"
+                                 data-animation="am-fade"
+                                 data-placement="top"
+                                 data-container="body"
+                                 data-bs-tooltip>
+                                Situação dos arquivos
+                                <span ng-class="{'inactive': batchInfo.Pending == 0, 'active': batchInfo.Pending > 0}" class="help"><i class="material-icons">radio_button_unchecked</i> <label>{{batchInfo.Pending}}</label></span>
+                                <span ng-class="{'inactive': batchInfo.NotIdentified == 0, 'active': batchInfo.NotIdentified > 0}" class="erro"><i class="material-icons">block</i> <label>{{batchInfo.NotIdentified}}</label></span>
+                                <span ng-class="{'inactive': batchInfo.Errors == 0, 'active': batchInfo.Errors > 0}" class="erro"><i class="material-icons">cancel</i> <label>{{batchInfo.Errors}}</label></span>
+                                <span ng-class="{'inactive': batchInfo.Absents == 0, 'active': batchInfo.Absents > 0}" class="absent"><i class="material-icons">do_not_disturb</i> <label>{{batchInfo.Absents}}</label></span>
+                                <span ng-class="{'inactive': batchInfo.Warnings == 0, 'active': batchInfo.Warnings > 0}" class="atencao"><i class="material-icons">check_circle</i> <label>{{batchInfo.Warnings}}</label></span>
+                                <span ng-class="{'inactive': batchInfo.Success == 0, 'active': batchInfo.Success > 0}" class="double_check"><i class="material-icons double_check_circle">done_all</i> <label style="color: #14d23f">{{batchInfo.Success}}</label></span>
+                            </div>
+                            <div data-ng-if="!generalBatch"
+                                 class="batchFilesSituation"
+                                 data-template="../Assets/js/Angular/controllers/answerSheet/not.generalBatch.tpl.html"
+                                 data-animation="am-fade"
+                                 data-placement="top"
+                                 data-container="body"
+                                 data-bs-tooltip>
+                                Situação dos arquivos
+                                <span ng-if="!generalBatch" ng-class="{'inactive': batchInfo.PendingIdentification == 0, 'active': batchInfo.PendingIdentification > 0}" class="help"><i class="material-icons">help_outline</i> <label>{{batchInfo.PendingIdentification}}</label></span>
+                                <span ng-if="!generalBatch" ng-class="{'inactive': batchInfo.NotIdentified == 0, 'active': batchInfo.NotIdentified > 0}" class="erro"><i class="material-icons">block</i> <label>{{batchInfo.NotIdentified}}</label></span>
+                                <span ng-class="{'inactive': batchInfo.Pending == 0, 'active': batchInfo.Pending > 0}" class="help"><i class="material-icons">radio_button_unchecked</i> <label>{{batchInfo.Pending}}</label></span>
+                                <span ng-class="{'inactive': batchInfo.Errors == 0, 'active': batchInfo.Errors > 0}" class="erro"><i class="material-icons">cancel</i> <label>{{batchInfo.Errors}}</label></span>
+                                <span ng-class="{'inactive': batchInfo.Absents == 0, 'active': batchInfo.Absents > 0}" class="absent"><i class="material-icons">do_not_disturb</i> <label>{{batchInfo.Absents}}</label></span>
+                                <span ng-class="{'inactive': batchInfo.Warnings == 0, 'active': batchInfo.Warnings > 0}" class="atencao"><i class="material-icons">check_circle</i> <label>{{batchInfo.Warnings}}</label></span>
+                                <span ng-class="{'inactive': batchInfo.Success == 0, 'active': batchInfo.Success > 0}" class="double_check"><i class="material-icons double_check_circle">done_all</i> <label style="color: #14d23f">{{batchInfo.Success}}</label></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dadosResumo pesquisa-upload">
+                        <div>
+                            <p ng-if="testInformation.team.Description" style="max-width: 260px;">
+                                <i class="material-icons">group</i>
+                                <label>{{testInformation.team.Description}}</label>
+                            </p>
+                            <p ng-if="testInformation.school.Description">
+                                <i class="material-icons">school</i>
+                                <label>{{testInformation.school.Description}}</label>
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <a href="#" onclick="window.history.back();return false;" class="btnCancelar2" ng-if="generalBatch">Voltar</a>
+                            <button class="btnPadrao" ng-if="generalBatch&&list.displayed" ng-click="activeModalConfirm();">Iniciar processamento</button>
+                            <button class="btnPadrao" ng-click="exportErros();" ng-if="list.displayed">Exportar dados</button>
+                            <button ng-if="!generalBatch" class="btnPadrao" ng-click="openModalngGeneralBatch();">Subir arquivos</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Status dos últimos upload zip (5 max.) *@
+        <div class="cards maxWidth">
+            <div class="pesquisa-upload" style="margin-bottom: 0px;">
+                <h4> Últimos 5 arquivos adicionados aguardando descompactação</h4>
+            </div>
+            <table class="table table-hover tableCorrecao" style="margin-top: 0px;" data-ng-if="topUploadQueue.length">
+                <colgroup>
+                    <col width="25%" />
+                    <col width="20%" />
+                    <col width="20%" />
+                    <col width="15%" />
+                    <col width="20%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Arquivo</th>
+                        <th class="text-center">DRE</th>
+                        <th class="text-center">Escola</th>
+                        <th>Data de Criação</th>
+                        <th class="text-center">Situação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat-start="($indexBatch, batch) in topUploadQueue track by $indexBatch">
+                        <td data-title="{{batch.FileName}}" data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip>{{batch.FileName | minimize:26}}</td>
+                        <td class="text-center">
+                            <span data-ng-if="!batch.SupAdmUnitName">-</span>
+                            <span data-ng-if="batch.SupAdmUnitName" data-title="{{batch.SupAdmUnitName}}" data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip> {{batch.SupAdmUnitName | minimize:28}} </span>
+                        </td>
+                        <td class="text-center">
+                            <span data-ng-if="!batch.SchoolName">-</span>
+                            <span data-ng-if="batch.SchoolName" data-title="{{batch.SchoolName}}" data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip>{{batch.SchoolName | minimize:21}}</span>
+                        </td>
+                        <td>{{batch.CreateDate | moment:"DD/MM/YYYY HH:mm:ss"}}</td>
+                        <td>
+                            <div style="height:34px;" class="status-{{EnumBatchSituationLabel.Pending}}Identification botao" data-ng-if="batch.Situation==EnumUploadQueueStatus.PendingUnzip">
+                                @EnumBatchQueueSituation.PendingUnzip.GetDescription()
+                            </div>
+                            <div style="height:34px;" class="status-{{EnumBatchSituationLabel.Success}} botao" data-ng-if="batch.Situation==EnumUploadQueueStatus.Success">
+                                @EnumBatchQueueSituation.Success.GetDescription()
+                            </div>
+                            <div class="status-{{EnumBatchSituationLabel.Error}} botao" data-ng-if="batch.Situation==EnumUploadQueueStatus.NotUnziped">
+                                @EnumBatchQueueSituation.NotUnziped.GetDescription()
+                                <a href="" data-toggle="collapse" data-target="#batch_top_{{batch.File_Id}}">
+                                    <i class="material-icons status-{{EnumBatchSituationLabel.Error}} botao">search</i>
+                                </a>
+                            </div>
+                            <div style="height:34px;" class="status-{{EnumBatchSituationLabel.Pending}} botao" data-ng-if="batch.Situation==EnumUploadQueueStatus.Processing">
+                                @EnumBatchQueueSituation.Processing.GetDescription()
+                            </div>
+                        </td>
+                    </tr>
+                    <tr data-ng-repeat-end="" class="collapse" id="batch_top_{{batch.File_Id}}" data-ng-if="batch.Situation==EnumUploadQueueStatus.NotUnziped">
+                        <td colspan="5" class="status-{{EnumBatchSituationLabel.Error}} botao">{{batch.Description}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="dadosResumo pesquisa-upload" style="margin-bottom: 0px;">
+                <div style="text-align: right;">
+                    <button type="button" ng-click="getUploadQueueTop()" class="btnPadrao" data-ng-if="topUploadQueue.length">Atualizar</button>
+                    <button class="btnPadrao" data-ng-click="openUploadQueueModal()">Ver todos</button>
+                </div>
+            </div>
+        </div>
+        @* Gatilho filtros laterais *@
+        <div class="pesquisa-codigo" ng-show="lookUpload">
+            <div class="filtrar-lista filter-bar">
+                <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                    <i class="material-icons" data-side-filters>filter_list</i>
+                    <label data-side-filters>Filtrar arquivos</label>
+                    <div class="notificationFilter"
+                            data-trigger="hover"
+                            data-type="success"
+                            data-title="Filtros selecionados"
+                            data-placement="top"
+                            data-container="body"
+                            data-bs-tooltip>
+                        {{countFilter}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        @* Filtros *@
+        <div ng-show="lookUpload" class="panel-search side-filters" data-side-filters>
+            <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+                <i class="material-icons">filter_list</i>
+                <label class="filtroP">Filtrar arquivos</label>
+                <i class="material-icons fecha">arrow_forward</i>
+            </a>
+            <div>
+                <div class="col-seach" data-side-filters>
+                    <div data-side-filters>
+                        <label data-side-filters>DREs</label>
+                        <select class="form-control"
+                                ng-change="getSchools();clearByFilter('DRE');countFiltersSelected();"
+                                ng-model="filters.DRE.value" 
+                                ng-options="dre as dre.Description for dre in listFilter.DREs"
+                                ng-title="listFilter.DREs"
+                                ng-title-propertie="Description"
+                                ng-title-index="1"
+                                ng-title-selected
+                                data-side-filters>
+                            <option value="">Todas as DREs</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-seach" data-side-filters>
+                    <div data-side-filters>
+                        <label data-side-filters>Escolas</label>
+                        <select class="form-control"
+                                ng-change="countFiltersSelected(); clearByFilter('School');"
+                                ng-model="filters.School.value" 
+                                ng-options="scholl as scholl.Description for scholl in listFilter.Schools"
+                                ng-title="listFilter.Schools"
+                                ng-title-propertie="Description"
+                                ng-title-index="1"
+                                ng-title-selected
+                                data-side-filters>
+                            <option value="">Todas as escolas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-seach" data-side-filters style="margin-bottom: -20px;">
+                <div data-side-filters>
+                    <label data-side-filters>Situação</label>
+                    <div data-side-filters>
+                        <div data-side-filters class="checkbox checkbox-primary lista-item" ng-repeat="processing in listFilter.Processing | orderBy: 'order'" style="display: flex;" ng-if="showHideSituation(processing, false)" ng-hide="generalBatch  && processing.Id == 7">
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.Error" class='help icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>help_outline</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.NotIdentified" class='erro icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>block</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.Pending" class='help icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>radio_button_unchecked</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.PendingIdentification" class='erro icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>cancel</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.Success" class='atencao icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>check_circle</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.Warning" class='double_check_tooltip icons-filter-situation' style="background:#fff !important;" data-side-filters><i style="color:#5A94D6; font-size: 18px; padding-left: 2px;" class='material-icons' data-side-filters>done_all</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.Absent" class='double_check_tooltip icons-filter-situation' data-side-filters><i data-side-filters>do_not_disturb</i></span>
+                            <input data-side-filters id="p{{processing.Description}}" class="col-xs-1" type="checkbox" ng-model="processing.state" value="" ng-click="setFilterProcessing(processing);" />
+                            <label data-side-filters for="p{{processing.Description}}" class="col-xs-8 lista-item margin-left" style="width: 180px;">
+                                 {{ (processing.Id == EnumBatchSituationByte.Warning ? (!WARNING_UPLOAD_BATCH_DETAIL ? processing.Description : 'Sucesso') : processing.Description) }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-seach" data-side-filters>
+                <label data-side-filters>Período</label>
+                <div data-side-filters class="radio radio-primary">
+                    <input data-side-filters id="FilterDateUpdate1" name="FilterDateUpdate" ng-value="false" class="col-xs-1" type="radio" ng-model="filters.FilterDateUpdate.value" />
+                    <label data-side-filters for="FilterDateUpdate1" class="col-xs-8" style="width: 180px; margin-left:42px;">Data de upload</label>
+                </div>
+                <div data-side-filters class="radio radio-primary">
+                    <input data-side-filters id="FilterDateUpdate2" name="FilterDateUpdate" ng-value="true" class="col-xs-1" type="radio" ng-model="filters.FilterDateUpdate.value" />
+                    <label data-side-filters for="FilterDateUpdate2" class="col-xs-8" style="width: 180px; margin-left:42px;">Data de correção</label>
+                </div>
+                <br data-side-filters />
+                <div class="calendario-grafico" data-side-filters>
+                    <label data-side-filters>de</label>
+                    <button type="button" ng-click="datepicker('StartDate')" data-side-filters>
+                        <i class="material-icons">event</i>
+                    </button>
+                    <input class="dateInput" type="text" placeholder="Início" ng-change="periodSelected();countFiltersSelected();" ng-model="filters.StartDate.value" id="StartDate" datepicker />
+                </div>
+                <div class="calendario-grafico" data-side-filters>
+                    <label data-side-filters>até </label>
+                    <button type="button" ng-click="datepicker('EndDate')" data-side-filters>
+                        <i class="material-icons">event</i>
+                    </button>
+                    <input class="dateInput" type="text" placeholder="Término" ng-change="periodSelected();countFiltersSelected();" ng-model="filters.EndDate.value" id="EndDate" datepicker />
+                </div>
+            </div>
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <label data-side-filters>Situação</label>
+                    <div data-side-filters>
+                        <div data-side-filters data-title="Selecione uma situação" data-template="../Assets/js/Angular/controllers/answerSheet/customTooltip.html" data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip="" ng-if="checkDateSelected()" style="width: 250px; height: 125px; position: absolute; z-index:9"></div>
+                        <div data-side-filters class="checkbox checkbox-primary lista-item" ng-repeat="processing in listFilter.Processing | orderBy: 'order'" style="display: flex;" ng-if="showHideSituation(processing, true)">
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.Error" class='help icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>help_outline</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.NotIdentified" class='erro icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>block</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.Pending" class='help icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>radio_button_unchecked</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.PendingIdentification" class='erro icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>cancel</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.Absent" class='absent icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>do_not_disturb</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.Warning" class='atencao icons-filter-situation' data-side-filters><i class='material-icons' data-side-filters>check_circle</i></span>
+                            <span data-ng-if="processing.Id == EnumBatchSituationByte.Success" class='double_check_tooltip icons-filter-situation' style="background:#fff !important;" data-side-filters><i style="color:#5A94D6 ; font-size: 18px; padding-left: 2px;" class='material-icons' data-side-filters>done_all</i></span>
+                            <input data-side-filters id="p{{processing.Description}}" class="col-xs-1" type="checkbox" ng-model="processing.state" value="" ng-click="setFilterProcessing(processing);" ng-disabled="checkDateSelected()" />
+                            <label data-side-filters for="p{{processing.Description}}" class="col-xs-8 lista-item margin-left" style="width: 180px;">
+                                {{ (processing.Id == EnumBatchSituationByte.Warning ? (!WARNING_UPLOAD_BATCH_DETAIL ? processing.Description : 'Sucesso') : processing.Description) }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <button class="btnCancelar pull-right" ng-click="clearFilters();">Limpar</button>
+                    <button class="btnCancelar pull-right" ng-click="setPagination();">Filtrar</button>
+                </div>
+            </div>
+        </div>
+        <div ng-if="(countFilter > 0)" class="maxWidth" style="min-height:40px; margin: 0 auto 10px auto; position: relative; overflow: auto;">
+            <h4 style="display: inline; float: left; font-style: italic; font-weight: normal; color: gray;">Filtros ativos: </h4>
+            <div ng-repeat="($index, filter) in filters" ng-if="(filter && filter.state && filter.label != 'DataCorrecao')">
+                <div class="keyword">
+                    <p style="display: inline;">{{printFilter(filter.label)}} </p>
+                    <a class="removeKeyword" ng-click="removeFilter(filter.label)">x</a>
+                </div>
+            </div>
+            <div ng-repeat="($index, filter) in processingFilter" ng-if="(filter.Id && filter.state)">
+                <div class="keyword">
+                    <p style="display: inline;">{{printProcessingFilter(filter.Id)}} </p>
+                    <a class="removeKeyword" ng-click="removeProcessingFilter($index)">x</a>
+                </div>
+            </div>
+        </div>
+        @* Paginação *@
+        <div class="cards maxWidth table-responsive" ng-if="lookUpload">
+            <div class="col-md-8" ng-if="(identificationLook!=0 || batch.OwnerEntity == @((Byte)EnumAnswerSheetBatchOwner.Section)) && !STUDENT_NUMBER_ID && generalBatch">
+                <label>Identificação da folha de resposta por QRCode</label>
+            </div>
+            <div class="col-md-8" ng-if="false">
+                <button type="button" ng-click="getBatchGeneral()" class="btn btn-primary">Subir lote geral</button>
+                <button type="button" ng-click="openModalShool()" class="btn btn-primary">Subir lote por escola</button>
+            </div>
+
+            <div class="col-md-8" ng-if="(identificationLook!=0 || batch.OwnerEntity == @((Byte)EnumAnswerSheetBatchOwner.Section)) && STUDENT_NUMBER_ID && generalBatch">
+                <label>Tipo de identificação:</label>
+                <div class="radio radio-primary" style="display: inline; margin-left: 25px;">
+                    <input name="NumberID" id="NumberID" type="radio" ng-value="@((Byte)EnumAnswerSheetBatchType.NumberID)" ng-model="identificationType" ng-disabled="identificationTypeLook || blockProcessing==true" ng-click="setIdentificationTypeValue(identificationType)">
+                    <label for="NumberID">Número de chamada</label>
+                </div>
+                <div class="radio radio-primary" style="display: inline; margin-left: 25px;">
+                    <input name="QRCode" id="QRCode" type="radio" ng-value="@((Byte)EnumAnswerSheetBatchType.QRCode)" ng-model="identificationType" ng-disabled="identificationTypeLook || blockProcessing==true" ng-click="setIdentificationTypeValue(identificationType)">
+                    <label for="QRCode">QRCode</label>
+                </div>
+            </div>
+            <form class="form-inline telaImagem" role="form" ng-if="generalBatch">
+                <div class="uploadImage">
+                    <div data-upload="" data-type="@(EnumFileType.AnswerSheetBatch)" data-url="/File/UploadFile"
+                         data-trash="true" data-placeholder="um arquivo" data-callback="fileUploadSuccess" data-component="modelFile" data-listextensions="listextensions"></div>
+                </div>
+            </form>
+            <h4 class="margin pull-left">Folhas de respostas</h4>
+            <table class="table table-hover tableCorrecao" ng-if="list.displayed" style="margin-top: 30px;">
+                <colgroup>
+                    <col width="10%" />
+                    <col ng-if="!generalBatch" width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="10%" />
+                    <col width="5%" />
+                    <col width="15%" />
+                    <col width="25%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Arquivo</th>
+                        <th class="text-center" ng-if="!generalBatch">Prova</th>
+                        <th class="text-center">DRE</th>
+                        <th class="text-center">Escola</th>
+                        <th class="text-center">Turma</th>
+                        <th class="text-center">Aluno</th>
+                        <th class="text-center">Resolução</th>
+                        <th class="text-center">
+                            <span data-ng-if="!filtredDateUpdate">Data de upload</span>
+                            <span data-ng-if="filtredDateUpdate">Data de correção</span>
+                        </th>
+                        <th class="text-center">Situação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="($indexArquivo, arquivo) in list.displayed track by $indexArquivo">
+                        <td style="width: inherit;">
+                            <a ng-if="!baixarGabarito" href="{{arquivo.FilePath}}" target="_blank"
+                               data-title="{{arquivo.File.Description}}" 
+                               data-animation="am-fade" 
+                               data-placement="top" 
+                               data-container="body" 
+                               bs-tooltip>{{arquivo.File.Description != null ? (arquivo.File.Description | minimize: 10) : ' - '}}
+                            </a>
+                            <span ng-if="baixarGabarito" 
+                                  data-title="{{arquivo.File.Description}}"
+                                  data-animation="am-fade" 
+                                  data-placement="top" 
+                                  data-container="body" 
+                                  bs-tooltip>{{arquivo.File.Description != null ? (arquivo.File.Description | minimize: 10) : ' - '}}
+                            </span>
+                        </td>
+                        <td ng-if="!generalBatch" class="text-center" style="width: inherit;">
+                            <span>{{arquivo.DRE.Test_Id ? arquivo.DRE.Test_Id : ' - '}}</span>
+                            @*<a ng-click="redirectTestId(arquivo.DRE.Test_Id)">{{arquivo.DRE.Test_Id ? arquivo.DRE.Test_Id : ' - '}}</a>*@
+                        </td>
+                        <td class="text-center" style="width: inherit;">
+                            <span data-title="{{arquivo.DRE.Description}}"
+                                  data-animation="am-fade" 
+                                  data-placement="top" 
+                                  data-container="body" 
+                                  bs-tooltip>{{arquivo.DRE.Description != null ? (arquivo.DRE.Description | minimize: 10): ' - '}}
+                            </span>
+                        </td>
+                        <td class="text-center" style="width: inherit;">
+                            <span data-title="{{arquivo.School.Description}}"
+                                  data-animation="am-fade" 
+                                  data-placement="top" 
+                                  data-container="body" 
+                                  bs-tooltip>{{arquivo.School.Description != null ? (arquivo.School.Description | minimize: 8) : ' - '}}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            {{arquivo.Team.Description != null ? (arquivo.Team.Description | minimize: 8) : ' - '}}
+                        </td>
+                        <td class="text-center" style="width: inherit;">
+                            <span data-title="{{arquivo.Student.Description}}"
+                                  data-animation="am-fade" 
+                                  data-placement="top" 
+                                  data-container="body" 
+                                  bs-tooltip>{{arquivo.Student.Description != null ? (arquivo.Student.Description | minimize: 8): ' - '}}
+                            </span>
+                        </td>
+                        <td class="text-center" style="width: inherit;">
+                            <span data-title="{{arquivo.File.Resolution}}"
+                                  data-animation="am-fade"
+                                  data-placement="top"
+                                  data-container="body"
+                                  bs-tooltip>
+                                {{arquivo.File.Resolution != null ? (arquivo.File.Resolution | minimize: 9): ' - '}}
+                            </span>
+                        </td>
+                        <td class="center">
+                            <span data-ng-if="!filtredDateUpdate">{{arquivo.CreateDate }}</span>
+                            <span data-ng-if="filtredDateUpdate">{{arquivo.UpdateDate }}</span>
+                        </td>
+                        <td class="center">
+                            @* Status processamento  *@
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.Pending" class="status-{{EnumBatchSituationLabel.Pending}} botao">
+                                {{EnumBatchSituationDescription.Pending}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.Success" class="status-{{EnumBatchSituationLabel.Success}} botao">
+                                {{EnumBatchSituationDescription.Success}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.Error" class="status-{{EnumBatchSituationLabel.Error}} botao">
+                                {{EnumBatchSituationDescription.Error}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.Warning" class="status-{{EnumBatchSituationLabel.Warning}} botao">
+                                {{ (!WARNING_UPLOAD_BATCH_DETAIL ? EnumBatchSituationDescription.Warning : 'Sucesso') }}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.Absent" class="status-{{EnumBatchSituationLabel.Absent}} botao">
+                                {{EnumBatchSituationDescription.Absent}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.PendingIdentification" class="status-{{EnumBatchSituationLabel.PendingIdentification}} botao">
+                                {{EnumBatchSituationDescription.PendingIdentification}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                            <div ng-if="arquivo.Situation == EnumBatchSituationByte.NotIdentified" class="status-{{EnumBatchSituationLabel.NotIdentified}} botao">
+                                {{EnumBatchSituationDescription.NotIdentified}}
+                                <a ng-if="!baixarGabarito" href="javascript:void(0);" ng-click="downloadFileById(arquivo.File.Id)" data-title="Baixar arquivo"
+                                   data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><i class="material-icons">file_download</i></a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            @* Pagination controll *@
+            <div class="nresultados">
+                <page method="search()" pager="paginate" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+            </div>
+            @* Results not found *@
+            <p class="nresultados" ng-if="list.displayed === null || (message)">Nenhum resultado encontrado.</p>
+        </div>
+        @* confirmar sair *@
+        <modal id="cancelModal" modal-title="<p>Deseja realmente sair?</p>">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btnPadrao" ng-click="cancel();">Sim</button>
+                        <button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+                    </div>
+                </div>
+            </div>
+        </modal>
+        @* confirmar inicio do processamento  *@
+        <modal id="initModal" modal-title="<p>Ao iniciar processamento o upload de folha(s) de resposta(s) ficará suspenso até que o processamento seja finalizado.<br>Deseja continuar?</p>">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btnPadrao" ng-click="sendToProcess();">Sim</button>
+                        <button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+                    </div>
+                </div>
+            </div>
+        </modal>
+        @* Cadastrar Lote *@
+        <modal id="modalLote" modal-title="<p>Escolha as unidades que deseja gerar os lotes:</p>">
+            <div class="container-fluid">
+                <div class="campoLabel">
+                    <label>DREs{{listFilters}}</label>
+                    <select class="form-control"
+                            ng-change="getSchools();" 
+                            ng-model="filters.DRE" 
+                            ng-options="dre as dre.Description for dre in listFilter.DREs"
+                            ng-title="listFilter.DREs"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected>
+                        <option value="">Todas as DREs</option>
+                    </select>
+                </div>
+                <div class="campoLabel">
+                    <label>Escolas</label>
+                    <select class="form-control"
+                            ng-model="filters.School" 
+                            ng-options="scholl as scholl.Description for scholl in listFilter.Schools"
+                            ng-title="listFilter.Schools"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected>
+                        <option value="">Todas as escolas</option>
+                    </select>
+                </div>
+                <div class="campoLabel">
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btnPadrao" ng-click="getBatchSchool();">ok</button>
+                        <button type="button" class="btnCancelar2" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </modal>
+        @* Upload Lote*@
+        <modal id="modalGeneralBatch" class="listagem-modal" modal-title="<strong>Subir arquivos</strong>">
+            <div class="container-fluid">
+                <div class="row campoLabel">
+                    <div class="col-md-6">
+                        <span>Escolha a unidade que deseja subir os arquivos:</span>
+                    </div>
+                </div>
+                <div class="campoLabel">
+                    <label>DRE*:</label>
+                    <select class="form-control"
+                            ng-change="getSchoolsNotTestId(); blockUpload();" 
+                            data-ng-disabled="uploading"
+                            ng-model="filtersUpload.DRE" 
+                            ng-options="dre as dre.Description for dre in listFilterUpload.DREs"
+                            ng-title="listFilterUpload.DREs"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected>
+                        <option value="">Selecione uma DRE</option>
+                    </select>
+                </div>
+                <div class="campoLabel">
+                    <label>Escola*:</label>
+                    <select class="form-control"
+                            ng-change="blockUpload();" 
+                            data-ng-disabled="uploading"
+                            ng-model="filtersUpload.School" 
+                            ng-options="scholl as scholl.Description for scholl in listFilterUpload.Schools"
+                            ng-title="listFilterUpload.Schools"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected>
+                        <option value="">Selecione uma escola</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <form class="form-inline telaImagem" role="form">
+                        <div class="uploadImage">
+                            <div ng-click="alertUpload()" ng-if="!blockUploadLook" style="width: 100%; height: 50px;  z-index: 999; position: absolute;"></div>
+                            <div data-upload="" data-uploading-status-callback="uploadingState" customclass="" label-name="true" data-type="@(EnumFileType.AnswerSheetBatch)" data-url="/File/UploadFile"
+                                 data-trash="true" data-placeholder="um arquivo" data-callback="fileUploadSuccess" data-component="modelFile" data-listextensions="listextensions"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </modal>
+        @* Modal para listagem de arquivos zip na fila de extração *@
+        <div id="uploadQueueModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="uploadQueueModal">
+            <div class="modal-dialog modal-lg" role="document" style="width:90%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title padding-6" id="gridSystemModalLabel">Fila de arquivos compactados</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="table-responsive">
+                                <div class="dadosResumo pesquisa-upload" style="margin-bottom: 0px;">
+                                    <div class="campoLabel">
+                                        <label><strong>Situação: </strong></label>
+                                        <select class="form-control"
+                                                ng-model="uploadQueueStatus"
+                                                ng-options="upQueue.code as upQueue.label for upQueue in listUploadQueueStatus"
+                                                ng-change="changeUploadQueueFilter(uploadQueueStatus)"
+                                                ng-title="listUploadQueueStatus"
+                                                ng-title-propertie="label"
+                                                ng-title-index="1"
+                                                ng-title-selected></select>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <button type="button" ng-click="changeUploadQueueFilter(uploadQueueStatus)" class="btnPadrao">Atualizar</button>
+                                    </div>
+                                </div>
+                                <hr />
+                                <table class="table table-hover tableCorrecao" ng-if="pagerUploadQueue.list" style="margin-top: 0px; overflow-x:auto">
+                                    <colgroup>
+                                        <col width="3%" />
+                                        <col width="8%" />
+                                        <col width="15%" />
+                                        <col width="13%" />
+                                        <col width="12%" />
+                                        <col width="12%" />
+                                        <col width="8%" />
+                                        <col width="7%" />
+                                        <col width="22%" />
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>Código</th>
+                                            <th>Arquivo</th>
+                                            <th class="text-center">DRE</th>
+                                            <th class="text-center">Escola</th>
+                                            <th>Data de upload</th>
+                                            <th>Data descompactação</th>
+                                            <th>Usuário</th>
+                                            <th>Total de Arquivos</th>
+                                            <th class="text-center">Situação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat-start="($indexBatch, batch) in pagerUploadQueue.list track by $indexBatch">
+                                            <td class="text-center">{{batch.Id}}</td>
+                                            <td data-title="{{batch.FileName}}" data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip><a ng-click="downloadFileById(batch.File_Id)">{{batch.FileName | minimize:10}}</a></td>
+                                            <td class="text-center">
+                                                <span data-ng-if="!batch.SupAdmUnitName">-</span>
+                                                <span data-ng-if="batch.SupAdmUnitName" data-title="{{batch.SupAdmUnitName}}" data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip> {{batch.SupAdmUnitName | minimize:20}} </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span data-ng-if="!batch.SchoolName">-</span>
+                                                <span data-ng-if="batch.SchoolName" data-title="{{batch.SchoolName}}" data-animation="am-fade" data-placement="top" data-container="body" bs-tooltip>{{batch.SchoolName | minimize:20}}</span>
+                                            </td>
+                                            <td>{{batch.CreateDate | moment:"DD/MM/YYYY HH:mm:ss"}}</td>
+                                            <td>{{batch.UpdateDate | moment:"DD/MM/YYYY HH:mm:ss"}}</td>
+                                            <td>{{batch.UserName}}</td>
+                                            <td class="text-center">
+                                                <a ng-if="(batch.CountFiles!=null)" ng-click="showFiles(batch.Id, batch.FileName)">{{batch.CountFiles==null?'-':batch.CountFiles}}</a>
+                                                <p ng-if="(batch.CountFiles==null)">-</p>
+                                            </td>
+                                            <td>
+                                                <div style="height:34px;" class="status-{{EnumBatchSituationLabel.Pending}}Identification botao" data-ng-if="batch.Situation==EnumUploadQueueStatus.PendingUnzip">
+                                                    @EnumBatchQueueSituation.PendingUnzip.GetDescription()
+                                                    <a ng-click="downloadFileById(batch.File_Id)"><i class="material-icons">file_download</i></a>
+                                                </div>
+                                                <div style="height:34px;" class="status-{{EnumBatchSituationLabel.Success}} botao" data-ng-if="batch.Situation==EnumUploadQueueStatus.Success">
+                                                    @EnumBatchQueueSituation.Success.GetDescription()
+                                                    <a ng-click="downloadFileById(batch.File_Id)"><i class="material-icons">file_download</i></a>
+                                                </div>
+                                                <div class="status-{{EnumBatchSituationLabel.Error}} botao" data-ng-if="batch.Situation==EnumUploadQueueStatus.NotUnziped">
+                                                    @EnumBatchQueueSituation.NotUnziped.GetDescription()
+                                                    <a ng-click="downloadFileById(batch.File_Id)"><i class="material-icons">file_download</i></a>
+                                                    <a href="" data-toggle="collapse" data-target="#batch_{{batch.File_Id}}">
+                                                        <i class="material-icons status-{{EnumBatchSituationLabel.Error}} botao">search</i>
+                                                    </a>
+                                                </div>
+                                                <div style="height:34px;" class="status-{{EnumBatchSituationLabel.Pending}} botao" data-ng-if="batch.Situation==EnumUploadQueueStatus.Processing">
+                                                    @EnumBatchQueueSituation.Processing.GetDescription()
+                                                    <a ng-click="downloadFileById(batch.File_Id)"><i class="material-icons">file_download</i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr data-ng-repeat-end="" class="collapse" id="batch_{{batch.File_Id}}">
+                                            <td colspan="9" class="status-{{EnumBatchSituationLabel.Error}} botao">{{batch.Description}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            @* Pagination controll *@
+                            <div class="nresultados">
+                                <page method="getUploadQueueStatus()" pager="pagerUploadQueue.paginate" total-pages="{{pagerUploadQueue.pages}}" total-itens="{{pagerUploadQueue.totalItens}}" page-size="pagerUploadQueue.pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                            </div>
+                            @* Results not found *@
+                            <p class="nresultados" ng-if="pagerUploadQueue.list === null || (pagerUploadQueue.message)">Nenhum resultado encontrado.</p>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

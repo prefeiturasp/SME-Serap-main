@@ -1,0 +1,166 @@
+﻿
+@* Alertas *@
+<alert></alert>
+<div class="wellCustom" data-ng-controller="FormCorrelatedSkillController">
+    <div class="headerCustom">
+        <h4>Correlação de habilidades <span></span></h4>
+    </div>
+    <div class="well well-large itens">
+        <div div class="row">
+            <div class="col-md-6">
+                <div class="cards">
+                    <h4 class="matriz">Matriz 1</h4>
+                    <div class="campoLabel">
+                        <label for="correlatedSkill.EvaluationMatrix1">Matriz</label>
+                        <div>
+                            <select id="evaluationMatrix1" class="form-control" title="{{ selectedObjEvaluationMatrix1.Description }}"
+                                    ng-change="carregaEvaluationMatrix2();" 
+                                    ng-model="selectedObjEvaluationMatrix1" 
+                                    ng-options="matrix as (matrix.Description | minimize:35) for matrix in evaluationMatrixList1"
+                                    ng-title="evaluationMatrixList1"
+                                    ng-title-propertie="Description"
+                                    ng-title-index="1">
+                                <option value="">--Selecione--</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div ng-repeat="s in skills" class="campoLabel">
+                        <label for="correlatedSkill.combos.Description">{{ s.Description }} </label>
+                        <div>
+                            <select id="Skills" class="form-control" title="{{ s.objSkill.Description }}"
+                                    ng-model="s.objSkill"
+                                    ng-options="skill as (skill.Description | minimize:35) for skill in s.lista"
+                                    ng-title="s.lista"
+                                    ng-title-propertie="Description"
+                                    ng-title-index="1">
+                                <option value="">--Selecione--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="cards">
+                    <h4 class="matriz">Matriz 2</h4>
+                    <div class="campoLabel">
+                        <label for="correlatedSkill.EvaluationMatrix2">Matriz</label>
+                        <div>
+                            <select id="evaluationMatrix2" class="form-control" title="{{ selectedObjEvaluationMatrix2.Description }}"
+                                    ng-model="selectedObjEvaluationMatrix2"
+                                    ng-options="matrix as (matrix.Description | minimize:35) for matrix in evaluationMatrixList2"
+                                    ng-title="evaluationMatrixList2"
+                                    ng-title-propertie="Description"
+                                    ng-title-index="1">
+                                <option value="">--Selecione--</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div ng-repeat="s in skills2" class="campoLabel">
+                        <label for="correlatedSkill.combos.Description">{{ s.Description }} </label>
+                        <div>
+                            <select id="Skills2" class="form-control" title="{{ s.objSkill.Description }}"
+                                    ng-model="s.objSkill"
+                                    ng-options="skill as (skill.Description | minimize:35) for skill in s.lista"
+                                    ng-title="s.lista"
+                                    ng-title-propertie="Description"
+                                    ng-title-index="1">
+                                <option value="">--Selecione--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <center><button class="btnPadrao2" ng-click="salvar()"><i class="material-icons">swap_horiz</i> Relacionar</button></center>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div div class="row" style="padding-top: 25px;">
+            <div class="col-md-12">
+                <div class="cards" ng-if="selectedObjEvaluationMatrix1" style="padding:0;">
+                    <table class="table table-responsive padding relacao" style="margin:0;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <h4>Matriz 1 </h4>
+                                </th>
+                                <th></th>
+                                <th>
+                                    <h4>Matriz 2 </h4>
+                                </th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <th>Nome da Matriz 1</th>
+                                <th>Habilidade 1</th>
+                                <th>Habilidade 2</th>
+                                <th>Nome da Matriz 2</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="pesquisado in correlatedSkillList">
+                                <td>
+                                    <span data-trigger="hover" data-type="success" data-title="{{pesquisado.Matriz1}}"
+                                          data-placement="top" bs-tooltip>{{pesquisado.Matriz1 | minimize:18}}</span>
+                                </td>
+                                <td>
+                                    <span data-trigger="hover" data-type="success" data-title="{{pesquisado.UltimoNivel1}}"
+                                          data-placement="top" bs-tooltip>{{pesquisado.UltimoNivel1 | minimize:18}}</span>
+                                </td>
+                                <td>
+                                    <span data-trigger="hover" data-type="success" data-title="{{pesquisado.UltimoNivel2}}"
+                                          data-placement="top" bs-tooltip>{{pesquisado.UltimoNivel2 | minimize:18}}</span>
+                                </td>
+                                <td>
+                                    <span data-trigger="hover" data-type="success" data-title="{{pesquisado.Matriz2}}"
+                                          data-placement="top" bs-tooltip>{{pesquisado.Matriz2 | minimize:18}}</span>
+                                </td>
+                                <td><a ng-click="confirmar(pesquisado)"><i class="material-icons">delete</i></a></td>
+                                <td colspan="5" ng-hide="correlatedSkillList != null || !(message)"><span>Nenhum resultado encontrado.</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="padding: 15px;">
+                        <page method="load()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                        <p class="nresultados" ng-hide="correlatedSkillList != null || !(message)">Nenhum resultado encontrado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Modal que exibetodo o texto do select *@
+    <modal id="modalTextMatriz" modal-title="{{textSelected.Description}}">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="modal-body">
+                    <span>{{textSelected.TextDescription}}</span>
+                </div>
+                <div class="col-sm-12 text-right">
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </modal>
+    @* Modal *@
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{correlatedSkill.Matriz1}} - {{correlatedSkill.Matriz2}}</h4>
+                </div>
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir a correlação das matrizes <b>{{correlatedSkill.Matriz1}} - {{correlatedSkill.Matriz2}}</b>?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btnPadrao" ng-click="delete(correlatedSkill)">Excluir</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

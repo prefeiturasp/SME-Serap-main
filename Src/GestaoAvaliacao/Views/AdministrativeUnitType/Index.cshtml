@@ -1,0 +1,22 @@
+﻿<alert></alert>
+<div class="wellCustom" ng-controller="AdministrativeUnitTypeController" ng-init="init()">
+    <div class="headerCustom">
+        <h4>Tipos de unidade</h4>
+    </div>
+    <div class="well well-large">
+        <error-summary errors="validationErrors" class="campoLabel"></error-summary>
+        <multi-select ng-model="unitiesSelecteds"
+                      available="unitiesAvailables"
+                      order-by="Name"
+                      selected-label="Tipos selecionados"
+                      available-label="Tipos disponíveis"
+                      info-message="Mova os tipos de unidades que deseja utilizar para o quadro 'Tipos'"
+                      display-attr="Name" >
+        </multi-select>
+        <br clear="all" />
+        <div>
+            <button class="btn-primary btn pull-right" title="Salvar" ng-click="save()">Salvar</button>
+        </div>
+    </div>
+    @* Modal *@
+</div>

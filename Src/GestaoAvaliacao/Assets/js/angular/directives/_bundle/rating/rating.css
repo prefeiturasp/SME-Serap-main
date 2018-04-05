@@ -1,0 +1,31 @@
+﻿.dificuldadeOn {
+    color:#5891d2 !important;
+    background-image: linear-gradient(to bottom, #fff 0%, #fff 100%);
+    background: #fff !important;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    min-width: 36px;
+    min-height: 27px;
+    border: 1px solid;
+
+}
+
+.dificuldadeOff {
+    color:#ffffff !important;
+    background-image: linear-gradient(to bottom, #2d6ca2 0%, #21527b 100%);
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    min-width: 36px;
+    min-height: 27px;
+    border: 1px solid;
+}
+
+.dificuldadeOff, .dificuldadeOn {
+    margin-top: 10px;
+    margin-right: 10px;
+    float:left
+}

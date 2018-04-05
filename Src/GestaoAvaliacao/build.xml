@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project
+ ToolsVersion="4.0"
+ DefaultTargets="Compile"
+ xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+ 
+	<!-- CLASSE NECESSÁRIA PARA REALIZAR O ZIP DOS ARQUIVOS, CASO MUDAR A ESTRUTURA PRECISA ATUALIZAR O CAMINHO DE ONDE VAI FICAR -->
+	<Import Project="..\Zip.targets" />
+ 
+	<PropertyGroup>
+		<!-- NOME DA APLICAÇÃO [SITE] -->
+		<ProjectName>GestaoAvaliacao</ProjectName>
+		
+		<!-- DIRETÓRIO DA APLICAÇÃO RAIZ -->
+		<ProjectDir>.\</ProjectDir>
+		
+		<!-- NOME DO CSPROJ DA APLICAÇÃO [SITE], CASO O NOME NÃO FOR O MESMO DO <PROJECTNAME> ALTERAR -->
+		<CSProjName>$(ProjectName).csproj</CSProjName>
+		
+		<!-- CAMINHO DE ONDE ESTÁ O ARQUIVO CSPROJ DA SOLUÇÃO [SITE] -->
+		<ProjectPath>$(CSProjName)</ProjectPath>
+		
+		<!-- PASTA AUXILIAR PARA JOGAR A COMPILAÇÃO, ZIPAR E NO FIM É EXCLUIDA -->
+		<TargetDir>PackageBuild\</TargetDir>
+		
+		<!-- PASTA DEFAULT ONDE SERÁ COLOCADO AS DLL APÓS A COMPILAÇÃO DENTRO DO DIRETÓRIO AUXILIAR -->
+		<TargetBinDir>$(TargetDir)\bin</TargetBinDir>
+		
+		<!-- ONDE VAI FICAR O ZIP DO BUILD -->
+		<TargetBuildZip>Builds</TargetBuildZip>
+		
+		<!-- ALTERAR PARA O NOME DA SOLUTION DO PROJETO  -->
+		<!-- <SolutionFile>MSTech.ConPat.sln</SolutionFile> -->
+		
+		<!-- NÃO ALTERAR -->
+		<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+		<BuildPlatform Condition=" '$(BuildPlatform)' == '' ">Any CPU</BuildPlatform>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<BuildArtifactsDir Include="$(TargetBinDir)\" />
+		<ProjectsToBuild Include="$(ProjectDir)\$(CSProjName)"/>
+	</ItemGroup>
+	
+	<Import Project="$(ProjectDir)\version.xml" />
+	
+	<!-- LIMPA OS REGISTROS CASO EXISTA, E CRIA A PASTA PADRÃO ONDE FICARÁ OS ZIP -->
+	<Target Name="Clean">
+		<MakeDir Directories="$(TargetBuildZip)"/>
+        <RemoveDir Directories="$(TargetDir)" />
+    </Target>
+	
+	<!-- COPIA OS ARQUIVOS NECESSÁRIOS DO SITE [ITEMS QUE ESTÁ DENTRO DO CSPROJ ex:(<Content Include="Administracao\Configuracoes\Configuracao\Busca.aspx" />)] -->
+	<Target Name="CopyProject" DependsOnTargets="Clean">
+	 <!-- Get list of CS and RES files -->
+		 <XmlPeek
+		 Namespaces="&lt;Namespace Prefix='msb' Uri='http://schemas.microsoft.com/developer/msbuild/2003'/&gt;"
+		 XmlInputPath="$(ProjectPath)"
+		 Query="/msb:Project/msb:ItemGroup/msb:Content/@Include|/msb:Project/msb:ItemGroup/msb:EmbeddedResource/@Include">
+
+		 <Output TaskParameter="Result" ItemName="Peeked" />
+
+		 </XmlPeek>
+		 <!-- Copy source and resource files -->
+		 <Copy
+		 SourceFiles="@(Peeked->'$(ProjectDir)%(RelativeDir)%(Filename)%(Extension)')"
+		 DestinationFiles="@(Peeked->'$(TargetDir)%(RelativeDir)%(Filename)%(Extension)')"/>
+		 <!-- Copy project file -->
+		 <Copy
+		 SourceFiles="$(ProjectPath)"
+		 DestinationFiles="$(ProjectDir)$(CSProjName)"/>
+
+		 <MSBuild Projects="$(ProjectDir)$(CSProjName)"/>
+
+	</Target>
+	
+	<!-- LIMPA A PASTA BIN DA PASTA AUXILIAR CASO EXISTA -->
+	<Target Name="CleanBin" DependsOnTargets="CopyProject">
+         <RemoveDir Directories="$(TargetBinDir)" />
+    </Target>
+	
+	<!-- REALIZA O BUILD DA SOLUÇÃO GERANDO AS DLL's -->
+	<Target Name="BuildCompile" DependsOnTargets="CleanBin">
+	<MSBuild Projects="@(ProjectsToBuild)" Targets="Rebuild"
+                  Properties="outdir=%(BuildArtifactsDir.FullPath);Configuration=$(Configuration)" />
+    </Target>
+	
+	<!-- REALIZA O ZIP DA PASTA AUXILIAR E JOGA PARA A PASTA PADRÃO ONDE FICARÁ O ZIP -->
+	<Target Name="Zip" DependsOnTargets="BuildCompile" >
+		<!-- <Zip SourceFolder="$(TargetDir)" OutputFileName="$(TargetBuildZip)\buil.zip" /> -->
+		<Zip SourceFolder="$(TargetDir)" OutputFileName="$(TargetBuildZip)\$(ProjectName)_$(Major).$(Minor).$(Revision).$(Build).zip" />
+    </Target>
+	
+	<!-- APAGA A PASTA AUXILIAR -->
+	<Target Name="Compile" DependsOnTargets="Zip">
+         <RemoveDir Directories="$(TargetDir)" />
+    </Target>
+
+</Project>

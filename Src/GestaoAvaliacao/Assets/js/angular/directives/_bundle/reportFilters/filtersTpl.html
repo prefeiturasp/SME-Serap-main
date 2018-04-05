@@ -1,0 +1,220 @@
+﻿<div id="panelGlobal" ng-if="filters.global === true">
+	<div class="col-seach" data-side-filters>
+		<div data-side-filters>
+			<label data-side-filters style="display:inline">Tipo de prova*:</label>
+			<div class="radio radio-primary" data-side-filters style="display: inline; margin-left: 25px;">
+				<input name="global" id="global" type="radio" ng-value="true" ng-model="filters.global" ng-change="refreshFilters();getYears();">
+				<label for="global">Global</label>
+			</div>
+			<div class="radio radio-primary" data-side-filters style="display: inline; margin-left: 25px;">
+				<input name="local" id="local" type="radio" ng-value="false" ng-model="filters.global" ng-change="refreshFilters();getDREs();">
+				<label for="local">Local</label>
+			</div>
+		</div>
+	</div>
+	<div class="col-seach" data-side-filters>
+		<label data-side-filters>Periodo de aplicação*:</label>
+		<br data-side-filters />
+		<div class="calendario-grafico" data-side-filters>
+			<label data-side-filters>de</label>
+			<button type="button" ng-click="datepicker('dateStart')" data-side-filters>
+				<i class="material-icons">event</i>
+			</button>
+			<input class="dateInput" type="text" placeholder="Data de Início" ng-change="clearByGlobalFilter('DateStart');" ng-model="filters.dateStart" id="dateStart" datepicker />
+		</div>
+		<div class="calendario-grafico" data-side-filters>
+			<label data-side-filters>até </label>
+			<button type="button" ng-click="datepicker('dateEnd')" data-side-filters>
+				<i class="material-icons">event</i>
+			</button>
+			<input class="dateInput" type="text" placeholder="Data de Término" ng-change="clearByGlobalFilter('DateEnd');" ng-model="filters.dateEnd" id="dateEnd" datepicker />
+		</div>
+	</div>
+	<div data-side-filters>
+		<div class="col-seach" data-side-filters>
+			<div data-side-filters>
+				<label data-side-filters>Ano*</label>
+                <select class="form-control"
+                        ng-model="filters.Year" 
+                        ng-change="clearByGlobalFilter('Year'); getTestByYear();" 
+                        ng-options="year as year.Description for year in listFilter.Years"
+                        ng-title="listFilter.Years"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected>
+                    <option value="">Todos os anos</option>
+                </select>
+			</div>
+		</div>
+		<div class="col-seach" data-side-filters>
+			<div data-side-filters>
+				<label data-side-filters>Prova*</label>
+                <select class="form-control"
+                        ng-change="clearByGlobalFilter('Test'); getDResByTest();" 
+                        ng-model="filters.Test" 
+                        ng-options="test as test.Description for test in listFilter.Tests"
+                        ng-title="listFilter.Tests"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected>
+                    <option value="">Todas as provas</option>
+                </select>
+			</div>
+		</div>
+		<div class="col-seach" data-side-filters>
+			<div data-side-filters>
+				<label data-side-filters>DRE</label>
+                <select class="form-control"
+                        ng-model="filters.DRE" 
+                        ng-change="clearByGlobalFilter('DRE'); getSchoolsByTest();" 
+                        ng-options="dre as dre.Description for dre in listFilter.DREs"
+                        ng-title="listFilter.DREs"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected>
+                    <option value="">Todas as DREs</option>
+                </select>
+			</div>
+		</div>
+		<div class="col-seach" data-side-filters>
+			<div data-side-filters>
+				<label data-side-filters>Escolas</label>
+                <select class="form-control"
+                        ng-change="clearByGlobalFilter('School'); getSectionsByTest();" 
+                        ng-model="filters.School" 
+                        ng-options="scholl as scholl.Description for scholl in listFilter.Schools"
+                        ng-title="listFilter.Schools"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected>
+                    <option value="">Todas as escolas</option>
+                </select>
+			</div>
+		</div>
+		<div class="col-seach" data-side-filters>
+			<div data-side-filters>
+				<label data-side-filters>Turma</label>
+                <select class="form-control"
+                        ng-model="filters.Class" 
+                        ng-options="classe as classe.Description for classe in listFilter.Classes"
+                        ng-title="listFilter.Classes"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected>
+                    <option value="">Todas as turmas</option>
+                </select>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div id="panelGlobal" ng-if="filters.global === false">
+	<div class="col-seach" data-side-filters>
+		<div data-side-filters>
+			<label data-side-filters style="display:inline">Tipo de prova*:</label>
+			<div class="radio radio-primary" data-side-filters style="display: inline; margin-left: 25px;">
+				<input name="global" id="global" type="radio" ng-value="true" ng-model="filters.global" ng-change="refreshFilters();getYears();">
+				<label for="global">Global</label>
+			</div>
+			<div class="radio radio-primary" data-side-filters style="display: inline; margin-left: 25px;">
+				<input name="local" id="local" type="radio" ng-value="false" ng-model="filters.global" ng-change="refreshFilters();getDREs();">
+				<label for="local">Local</label>
+			</div>
+		</div>
+	</div>
+	<div class="col-seach" data-side-filters>
+		<div data-side-filters>
+			<div data-side-filters>
+				<label data-side-filters>DRE*</label>
+                <select class="form-control"
+                        ng-change="getSchools(); clearByLocalFilter('DRE');" 
+                        ng-model="filters.DRE" 
+                        ng-options="dre as dre.Description for dre in listFilter.DREs"
+                        ng-title="listFilter.DREs"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected>
+                    <option value="">Todas as DREs</option>
+                </select>
+			</div>
+		</div>
+		<div data-side-filters>
+			<div data-side-filters>
+				<label data-side-filters>Escolas*</label>
+                <select class="form-control"
+                        ng-change="clearByLocalFilter('School');getYears();" 
+                        ng-model="filters.School" 
+                        ng-options="scholl as scholl.Description for scholl in listFilter.Schools"
+                        ng-title="listFilter.Schools"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected>
+                    <option value="">Todas as escolas</option>
+                </select>
+			</div>
+		</div>
+		<label data-side-filters>Período de aplicação*:</label>
+		<br data-side-filters />
+		<div class="calendario-grafico" data-side-filters>
+			<label data-side-filters>de</label>
+			<button type="button" ng-click="datepicker('dateStart')" data-side-filters>
+				<i class="material-icons">event</i>
+			</button>
+			<input class="dateInput" type="text" placeholder="Data de Início" ng-model="filters.dateStart" id="dateStart" datepicker ng-change="getYears();"/>
+		</div>
+		<div class="calendario-grafico" data-side-filters>
+			<label data-side-filters>até </label>
+			<button type="button" ng-click="datepicker('dateEnd')" data-side-filters>
+				<i class="material-icons">event</i>
+			</button>
+			<input class="dateInput" type="text" placeholder="Data de Término" ng-model="filters.dateEnd" id="dateEnd" datepicker ng-change="getYears();"/>
+		</div>
+	</div>
+	<div data-side-filters>
+		<div class="col-seach" data-side-filters>
+			<div data-side-filters>
+				<label data-side-filters>Ano*</label>
+                <select class="form-control"
+                        ng-change="clearByLocalFilter('Year');getTests();" 
+                        ng-model="filters.Year" 
+                        ng-options="year as year.Description for year in listFilter.Years"
+                        ng-title="listFilter.Years"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected>
+                    <option value="">Todos os anos</option>
+                </select>
+			</div>
+		</div>
+		<div class="col-seach" data-side-filters>
+			<div data-side-filters>
+				<label data-side-filters>Prova*</label>
+                <select class="form-control"
+                        ng-change="clearByLocalFilter('Test');getSectionsByTest();" 
+                        ng-model="filters.Test" 
+                        ng-options="test as test.Description for test in listFilter.Tests"
+                        ng-title="listFilter.Tests"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected>
+                    <option value="">Todas as provas</option>
+                </select>
+			</div>
+		</div>
+		<div class="col-seach" data-side-filters>
+			<div data-side-filters>
+				<label data-side-filters>Turma</label>
+                <select class="form-control"
+                        ng-model="filters.Class" 
+                        ng-options="classe as classe.Description for classe in listFilter.Classes"
+                        ng-title="listFilter.Classes"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected>
+                    <option value="">Todas as turmas</option>
+                </select>
+			</div>
+		</div>
+	</div>
+</div>

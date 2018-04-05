@@ -1,0 +1,199 @@
+﻿@using GestaoAvaliacao.Util;
+@{
+	ViewBag.Title = "IndexImport";
+}
+<alert></alert>
+<div class="wellCustom" ng-controller="TestImportController">
+	<div class="headerCustom">
+		<h4 class="ng-binding">Análise de dados de prova<span></span></h4>
+	</div>
+    <div class="pesquisa-codigo row">
+        <div class="filtrar-lista col-md-12">
+            <a ng-show="tab==1" href="javascript:void(0)" ng-click="open();" data-filters>
+                <i class="material-icons" data-side-filters>filter_list</i>
+                <label data-side-filters>Filtrar provas</label>
+                <div class="notificationFilter"
+                     data-trigger="hover"
+                     data-type="success"
+                     data-title="Filtros selecionados"
+                     data-placement="top"
+                     data-container="body"
+                     data-bs-tooltip>{{countFilter}}</div>
+            </a>
+        </div>
+    </div>
+	<div class="well well-large">
+		<ul class="nav nav-tabs" role="tablist">
+			<li class="active"><a href="#exportacao" role="tab" data-toggle="tab" ng-click="tab=1">Exportação</a></li>		
+			<form class="form-inline telaImagem" role="form" ng-show="tab==2">
+				<div class="omr-upload">
+					<div class="omr-input-block">
+						<a href="javascript:void(0);">
+							Escolha um arquivo <i class="material-icons">file_upload</i>
+						</a>
+						<input id="fileInport" type="file" data-ng-change-file="upload">
+					</div>
+					<div class="omr-progress-block">
+						<div class="progress">
+							<div class="progress-bar" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width:{{progress}}%;">
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</ul>
+		@* Painel Filtros *@
+		<div class="filters" data-filters>
+			<a href="javascript:void(0)" class="filtro-menu" data-ng-click="open();">
+				<i class="material-icons">filter_list</i>
+				<label class="filtroP">Filtrar provas</label>
+				<i class="material-icons fecha">arrow_forward</i>
+			</a>
+			<div class="col-seach" data-filters>
+				<div class="col-md-6" data-filters>
+					<label data-filters>Código da prova:</label>
+				</div>
+				<div class="col-md-6" data-filters>
+					<input type="text" class="form-control ng-pristine ng-valid ng-touched" size="6" placeholder="Código da prova" ng-model="filters.Code">
+				</div>
+			</div>
+			<br />
+			<div class="col-seach" data-filters>
+				<label data-side-filters>Período de aplicação*</label>
+				<br />
+				<div class="calendario-grafico" data-filters>
+					<label data-filters>De </label>
+					<button type="button" ng-click="datepicker('dateStart')" data-filters>
+						<i class="material-icons">event</i>
+					</button>
+					<input class="dateInput" type="text" placeholder="Dt. de Início" ng-model="filters.StartDate" id="dateStart" datepicker data-filters />
+				</div>
+				<div class="calendario-grafico" data-filters>
+					<label data-filters>até </label>
+					<button type="button" ng-click="datepicker('dateEnd')" data-filters>
+						<i class="material-icons">event</i>
+					</button>
+					<input class="dateInput" type="text" placeholder="Dt. de Término" ng-model="filters.EndDate" id="dateEnd" datepicker data-filters />
+				</div>
+			</div>
+			
+			<div class="col-seach" data-filters>
+				<div style="display: inline-block; width: 100%;" data-filters>
+					<button class="btnCancelar pull-right" ng-click="clear()">Limpar</button>
+					<button type="button" class="btnCancelar pull-right" ng-click="filterExport()">Pesquisar</button>
+				</div>
+			</div>
+		</div>
+		@* resultado da busca *@
+		<div class="tab-content">
+			@* Exportar *@
+			<div role="tabpanel" class="tab-pane fade active in" id="exportacao">
+				<table class="table table-hover" ng-show="filesExported.length">
+					<colgroup>
+						<col width="10%">
+						<col width="45%">
+						<col width="15%">
+						<col width="15%">
+						<col width="15%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th class="center">Código</th>
+							<th>Prova</th>
+							<th class="center">Última exportação</th>
+							<th class="center">Exportar</th>
+							<th class="right">Situação</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="(indexExport, file) in filesExported track by $index">
+							<td class="center">{{file.Test_Id}}</td>
+							<td class="">{{file.TestDescription}}</td>
+							<td class="">{{file.UpdateDate}}</td>
+							<td class="center">
+								<button class="btnCancelar2 pull-right" ng-click="exportFile(file)"
+										ng-if="file.StateExecution == @((Byte)EnumServiceState.NotRequest) || file.StateExecution == @((Byte)EnumServiceState.Error) || file.StateExecution == @((Byte)EnumServiceState.Success)">
+									<span>Exportar</span>
+								</button>
+							</td>
+							<td class="right nao-exportado" ng-if="file.StateExecution == @((Byte)EnumServiceState.NotRequest)"><a> <i class="material-icons">close</i> Não exportado</a></td>
+							<td class="right exportado" ng-if="file.StateExecution != @((Byte)EnumServiceState.NotRequest)">
+								<span ng-if="file.StateExecution == @((Byte)EnumServiceState.Pending)" data-trigger="hover" data-type="success" class="status-@(EnumServiceState.Pending.ToString())">
+									<span class="icone-cadastrar material-icons" aria-hidden="true">remove_circle_outline</span>@(EnumServiceState.Pending.GetDescription())
+								</span>
+								<span ng-if="file.StateExecution == @((Byte)EnumServiceState.Processing)" data-trigger="hover" data-type="success" data-placement="top"
+									  data-animation="am-fade" data-container="body" data-bs-tooltip class="status-@(EnumServiceState.Processing.ToString())">
+									<span class="icone-cadastrar material-icons" aria-hidden="true">timelapse</span>@(EnumServiceState.Processing.GetDescription())
+								</span>
+								<span ng-if="file.StateExecution == @((Byte)EnumServiceState.Error)" data-trigger="hover" data-type="success" class="status-@(EnumServiceState.Error.ToString())">
+									<span class="icone-cadastrar material-icons" aria-hidden="true">error_outline</span>@(EnumServiceState.Error.GetDescription())
+								</span>
+
+								<a ng-if="file.StateExecution == @((Byte)EnumServiceState.Success)" data-trigger="hover" class="status-@(EnumServiceState.Success.ToString())" ng-click="downloadFile(file.FileId)">
+									<span class="icone-cadastrar material-icons" aria-hidden="true">file_download</span>@(EnumServiceState.Success.GetDescription())
+								</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<page ng-show="filesExported.length" method="getFileExport(filters)" pager="export.pagination" total-pages="{{export.pages}}" total-itens="{{export.totalItens}}" page-size="export.pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+				<br />
+				<p class="nresultados" ng-show="filesExported==0">Nenhum resultado encontrado.</p>
+			</div>
+			@* Importar *@
+			<div role="tabpanel" class="tab-pane fade" id="importacao">
+				<table class="table table-hover">
+					<colgroup>
+						<col width="55%">
+						<col width="15%">
+						<col width="15%">
+						<col width="15%">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>Nome</th>
+							<th class="center">Data</th>
+							<th class="center">Processamento</th>
+							<th class="right">Exclusão </th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="(indexImport, file) in filesImported track by $index">
+							<td class="">{{file.Name}}</td>
+							<td class="center">{{file.CreateDate}}</td>
+							<td class="right exportado" ng-if="file"><a> <i class="material-icons">check</i> Sucesso</a></td>
+							<td class="right exportado" ng-if="file.State"><a> <i class="material-icons">check</i> Erro</a></td>
+							<td>
+								<button data-ng-click="setCurrent(file);"
+										class="btnMais"
+										data-placement="left"
+										data-trigger="focus"
+										data-custom-class="itemListPopover"
+										data-template="Assets/js/angular/controllers/test/menu-test-import-tpl.html"
+										data-animation="popover-fade"
+										data-container="body"
+										data-bs-popover="popover">
+									<i class="material-icons">view_list</i>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<page method="getFileImported('paginate')" pager="import.pagination" total-pages="{{import.pages}}" total-itens="{{import.totalItens}}" page-size="import.pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+				<p class="nresultados" ng-show="filesImported.length==0">Nenhum resultado encontrado.</p>
+			</div>
+		</div>
+	</div>
+	@* delete modal confirm *@
+	<modal id="modalExcluir" modal-title="Deseja realmente remover o arquivo {{currentfile.Name}} ?">
+		<div class="container-fluid">
+			<span></span>
+			<div class="row">
+				<div class="col-sm-12 text-right">
+					<button type="button" class="btnPadrao" ng-click="delete();">Excluir</button>
+					<button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+				</div>
+			</div>
+		</div>
+	</modal>
+</div>

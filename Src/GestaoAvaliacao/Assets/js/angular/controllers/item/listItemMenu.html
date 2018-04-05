@@ -1,0 +1,19 @@
+<div class="popover" tabindex="-1" ng-show="content">
+  <div class="arrow"></div>
+      <div class="popover-content">
+          <ul class="listaPopover">
+		  	<li>
+		  		<i class="material-icons">create</i>
+		  		<a href="javascript:void(0)" ng-click="popovermenu.editar(popovermenu.id); $hide()">Editar</a>
+		  	</li>
+		  	<li ng-hide="item.Item.ItemNarrated" ng-click="popovermenu.addItem(popovermenu.id); $hide()">
+		  		<i class="material-icons">add</i>
+		  		<a href="javascript:void(0)">Adicionar Item</a>
+		  	</li>
+		  	<li ng-click="popovermenu.excluir(popovermenu.id); $hide()">
+		  		<i class="material-icons">close</i>
+		  		<a href="javascript:void(0)">Excluir</a>
+		  	</li>
+          </ul>
+    </div>
+</div>

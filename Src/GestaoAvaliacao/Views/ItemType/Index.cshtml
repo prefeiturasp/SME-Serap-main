@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<alert></alert>
+
+<div class="wellCustom" ng-controller="ListCtrl">
+	<div class="headerCustom">
+		<h4>Tipo do item <span>Listagem</span></h4>
+	</div>
+	<div class="well well-large">
+
+		<form class="form-inline" role="form">
+
+			<div class="form-group">
+				<input type="text" class="form-pesquisa" placeholder="Tipo do item" ng-model="pesquisa">
+			</div>
+			<button class="btn-pesquisar" ng-click="Search()" title="Pesquisar"><i class="material-icons">search</i></button>
+		</form>
+
+		<br />
+
+		<table class="table table-hover" ng-show="itemTypeList != null">
+			<colgroup>
+				<col width="75%" />
+                <col width="25%" />
+				<col width="5%" />
+				<col width="5%" />
+			</colgroup>
+			<thead>
+				<tr>
+                    <th>Descrição</th>
+					<th class="center">Quantidade de alternativas</th>
+                    <th class="center">Padrão</th>
+					<th class="center">Editar</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="pesquisado in itemTypeList">
+					<td>{{pesquisado.Description}}</td>
+                    <td class="center"><div ng-if="pesquisado.QuantityAlternative != null && pesquisado.QuantityAlternative > 0">{{pesquisado.QuantityAlternative}}</div></td>
+					<td class="center"><div ng-if="pesquisado.IsDefault == true"><i class="material-icons">check</i></div></td>
+					<td class="center"><a href="~/ItemType/IndexForm/{{pesquisado.Id}}"><i class="material-icons">create</i></a></td>
+				</tr>
+			</tbody>
+		</table>
+
+        <page method="load()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+
+		<p class="nresultados" ng-hide="itemTypeList != null || !(message)" class="nresultados">Nenhum resultado encontrado.</p>
+	</div>
+</div>

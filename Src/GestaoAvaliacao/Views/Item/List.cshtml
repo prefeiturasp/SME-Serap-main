@@ -1,0 +1,379 @@
+﻿@using GestaoAvaliacao.WebProject.Facade
+@* Alertas *@
+<alert></alert>
+<div class="wellCustom" data-ng-controller="ListItemController">
+	<div class="headerCustom">
+		<h4>Banco de itens<span></span></h4>
+	</div>
+    @* Pesquisar por Código *@
+	<div class="pesquisa-codigo row">
+		<div class="col-md-8">
+			<form class="form-inline" role="form">
+				<div class="form-group">
+                    <input type="text" ng-model="codigo" class="form-pesquisa cinza" placeholder="Código do item" />
+				</div>
+				<button class="btn-pesquisar" ng-click="pesquisar(true)" title="Pesquisar"><i class="material-icons">search</i></button>
+			</form>  
+		</div>
+		<div class="filtrar-lista col-md-4">
+            <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                <i class="material-icons" data-side-filters>filter_list</i>
+                <label data-side-filters>Filtrar banco de itens</label>
+                <div class="notificationFilter"
+                     data-trigger="hover"
+                     data-type="success"
+                     data-title="Filtros selecionados"
+                     data-placement="top"
+                     data-container="body"
+                     data-bs-tooltip>{{countFilter}}</div>
+            </a>
+		</div>
+	</div>
+    @* Filtros *@
+    <div class="panel-search side-filters" data-side-filters>
+        <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+            <i class="material-icons">filter_list</i>
+            <label class="filtroP">Filtrar banco de itens</label>
+            <i class="material-icons fecha">arrow_forward</i>
+        </a>
+        @* filtro disciplinas *@
+        <div class="col-seach" data-side-filters>
+            <label data-side-filters>{{ materia.masterDescription }}: </label>
+            <div data-side-filters>
+                <select class="form-control"
+                        ng-options='materia as materia.Description for materia in materia.lista track by materia.Id' 
+                        ng-model='materia.objMateria' 
+                        ng-change='carregarMatriz()'
+                        ng-title="materia.lista"
+                        ng-title-propertie="Description"
+                        ng-title-index="0"
+                        ng-title-selected></select>
+            </div>
+        </div>
+        @* filtro matriz *@
+        <div class="col-seach" data-side-filters ng-if="matriz.loaded">
+            <label data-side-filters>{{ matriz.masterDescription }}: </label>
+            <div data-side-filters>
+                <select class="form-control" title="{{ matriz.objMatriz.Description }}"
+                        ng-options='matriz as (matriz.Description | minimize:35) for matriz in matriz.lista track by matriz.Id' 
+                        ng-model='matriz.objMatriz' 
+                        ng-change='carregarSkills()'
+                        ng-title="matriz.lista"
+                        ng-title-propertie="Description"
+                        ng-title-index="0"></select>
+            </div>
+        </div>
+        @* skills *@
+        <div class="col-seach" ng-repeat="($indexSkill, skill) in skills track by $indexSkill" data-side-filters>
+            <div data-side-filters>
+                <label data-side-filters>{{skill.Description}}: </label>
+                <div data-side-filters>
+                    <div data-side-filters>
+                        <select class="form-control" title="{{ skill.objSkill.Description }}"
+                                ng-options='childSkill as (childSkill.Description | minimize:35) for childSkill in skill.lista track by childSkill.Id'
+                                ng-model='skill.objSkill'
+                                ng-change="carregarCascadeSkill($indexSkill, skill.objSkill);"
+                                ng-title="skill.lista"
+                                ng-title-propertie="Description"
+                                ng-title-index="0"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Ano do curso *@
+		<div class="col-seach" ng-show="matriz.objMatriz" data-side-filters ng-if="skills.length">
+			<a href="javascript:void(0)" class="dropSearch" ng-click="periodoAccordion()" data-side-filters>
+				<i class="material-icons" ng-show="periodoCurso.show == false">keyboard_arrow_right</i>
+				<i class="material-icons" ng-show="periodoCurso.show == true">keyboard_arrow_down</i>
+				{{periodoCurso.masterDescription}}
+			</a>
+			<div style="padding-left: 30px;" data-side-filters>
+				<div ng-repeat="periodo in periodoCurso.lista" style="margin: 5px !important;"
+					 ng-show="periodoCurso.show == true" class="checkbox checkbox-primary checkbox-inline" data-side-filters>
+					<input id="checkbox_{{$index}}" type="checkbox" checklist-model="periodoCurso.selecionados" checklist-value="periodo" />
+					<label data-side-filters for="checkbox_{{$index}}">
+						{{periodo.Description}}
+					</label>
+				</div>
+			</div>
+		</div>
+		<form data-side-filters>
+			<div class="col-seach" data-side-filters>
+                <label data-side-filters>{{parameters.KEYWORDS.Value}}</label>
+				<tags-input ng-model="palavrasChave" style="padding-top: 0;" data-side-filters></tags-input>
+			</div>
+            <hr class="filtroLinha" data-side-filters />
+            @* Versionamento do item *@
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <label data-side-filters>{{ filtroVersao.masterDescription }} </label>
+                    <div class="switch" ng-click="filtroVersao.objFiltroVersao = !filtroVersao.objFiltroVersao" data-side-filters
+                         ng-class="{'off': !filtroVersao.objFiltroVersao}"><input type="button" /></div>
+                </div>
+            </div>
+            <hr class="filtroLinha" data-side-filters />
+            @* filtro Situação do item *@
+            <div class="col-seach" data-side-filters>
+                <label data-side-filters>{{parameters.ITEMSITUATION.Value}}</label>
+                <div data-side-filters>
+                    <div class="checkbox checkbox-colunas checkbox-primary" ng-repeat="filtroStatus in filtroStatusItem.lista" style="margin-left: 35px;" data-side-filters>
+                        <input id="f_checkbox_{{$index}}" type="checkbox" checklist-model="filtroStatusItem.selecionados" checklist-value="filtroStatus" />
+                        <label data-side-filters for="f_checkbox_{{$index}}" class="banco-item margin-left">{{filtroStatus.Description}}</label>
+                    </div>
+                </div>
+            </div>
+            <hr class="filtroLinha" data-side-filters />
+            @* filtro item narrado *@
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <label data-side-filters>Item anulado:</label>
+                    <div class="switch" ng-click="searchItemAnulado();"
+                         ng-class="{'off': !modelItemAnulado}" data-side-filters><input type="button" /></div>
+                </div>
+                <hr class="filtroLinha" data-side-filters />
+            </div>
+            @* filtro item narrado *@
+            <div class="col-seach" data-side-filters ng-if="showItemNarrated">
+                <div data-side-filters>
+                    <label data-side-filters>Item narrado:</label>
+                    <div class="switch" ng-click="searchItemNarrado();"
+                         ng-class="{'off': !searchItemNarrated}" data-side-filters><input type="button" /></div>
+                </div>
+                <hr class="filtroLinha" data-side-filters />
+            </div>
+            @* filtro proficiência *@
+            <div class="col-seach" data-side-filters>
+                <label data-side-filters for="profmin">{{parameters.PROFICIENCY.Value}}</label>
+                <div class="" data-side-filters>
+                    <div class="col-md-2" data-side-filters>
+                        <label data-side-filters>De:</label>
+                    </div>
+                    <div class="col-md-4" data-side-filters>
+                        <input type="text" ng-model="filtroProficiencia.min" class="form-control" placeholder="100" size="3" data-fieldinteger="">
+                    </div>
+                    <div class="col-md-2" data-side-filters>
+                        <label data-side-filters>Até:</label>
+                    </div>
+                    <div class="col-md-4" data-side-filters>
+                        <input type="text" ng-model="filtroProficiencia.max" class="form-control" placeholder="500" size="3" data-fieldinteger="">
+                    </div>
+                </div>
+            </div>
+            <br clear="all" data-side-filters />
+            <div class="col-seach" data-side-filters>
+                <div data-side-filters>
+                    <button data-side-filters class="btnCancelar pull-right" ng-click="limpar()"><span>Limpar</span> </button>
+                    <button data-side-filters class="btnCancelar pull-right" ng-click="pesquisar()"> Pesquisar </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    @* Pesquisa *@
+    <div class="well well-large" ng-class="{'': sideFilters == true,'': sideFilters == false }">
+			<div class="row">
+				<div class="col-md-8">
+					<p><b>Dicas:</b></p>
+					<p class="textoBase">*Texto base com vários itens.</p>
+					<p>*Clique sobre o texto base ou enunciado para visualizar o resumo.</p>
+				</div>
+				@if (SessionFacade.IsModuleAuthorized("Item/Form", GestaoAvaliacao.Util.Permission.CreateOrUpdate))
+                {
+                    <div class="col-md-4">
+                        <button class="btnPadrao pull-right" ng-click="novoItem()"><span> Novo Item</span> </button>
+                    </div>
+                }
+			</div>
+        @* Resultado *@
+			<div class="row" style="margin: 0;">
+				<div class="col-md-12 semPadding table-responsive">
+					<table class="table table-hover padding" style="margin-top: 18px;">
+						<colgroup>
+							<col width="1%" />
+							<col width="1%" />
+							<col width="25%" />
+							<col width="35%" />
+							<col width="4%" />
+							<col width="14%" />
+							<col width="10%" />
+                            <col width="1%" />
+							<col width="1%" />
+						</colgroup>
+						<thead class="noselect">
+							<tr ng-show="ItensList">
+                                <th>Cód.</th>
+                                <th>Versão</th>
+                                <th>Texto base</th>
+                                <th>Enunciado</th>
+                                <th>Componente curricular</th>
+                                <th>Matriz</th>
+								<th>Habilidade</th>
+                                <th>Preview</th>
+								@if (SessionFacade.IsModuleAuthorized("Item/Form", GestaoAvaliacao.Util.Permission.CreateOrUpdate))
+                                {
+                                    <th>Ação</th>
+                                }
+							</tr>
+						</thead>
+						<tbody>
+                            <tr ng-repeat="($indexItem, item) in ItensList track by $indexItem" class="tr-vertical-center" data-ng-class="{'revoked-temp': item.Item.Revoked}">
+                                <td>{{item.Item.ItemCode}}</td>
+                                <td>
+                                    {{item.Item.ItemVersion}}
+                                    <i class="material-icons" ng-if="item.Item.Revoked" data-trigger="hover" data-type="success" data-title="Item anulado" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">error</i>
+                                </td>
+                                <td>
+                                    <a href="" ng-click="carregarTextoBase(item.Item.ItemId, item.Item.ItemNarrated)" data-trigger="hover" data-type="success" data-title="{{item.Item.BaseTextDescription}}"
+                                       data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                        <span ng-class="{'bancoItemGreen': {{item.BaseTextHasItems == true}}}">
+                                            {{(item.Item.BaseTextDescription | tagToString:true) | minimize:29}}
+                                        </span>
+                                    </a>
+                                </td>
+                                <td style="width: 5%;">
+                                    <a href="" ng-click="carregarTextoBase(item.Item.ItemId,  item.Item.ItemNarrated)" data-trigger="hover" data-type="success" data-title="{{item.Item.Statement}}"
+                                       data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{(item.Item.Statement | tagToString:true) | minimize:29}}</a>
+                                </td>
+                                <td style="width: 20%;">
+                                    <span data-trigger="hover" data-type="success" data-title="{{item.Item.DisciplineDescription}}" data-placement="top"
+                                          data-animation="am-fade" data-container="body" data-bs-tooltip>
+                                        {{ (item.Item.DisciplineDescription) | minimize:22}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span data-trigger="hover" data-type="success" data-title="{{item.Item.MatrixDescription}}"
+                                          data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                        {{item.Item.MatrixDescription | minimize:20 }}
+                                    </span>
+                                </td>
+                                <td style="width: 11%;">
+                                    <span ng-repeat="s in item.Skills" data-trigger="hover" data-type="success" data-title="{{s.Description}}"
+                                          data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                        {{ s.Code | minimize:5}}
+                                    </span>
+                                </td>
+                                <td>
+									<item-brief item-id="{{item.Item.ItemId}}" can-print="{{!item.Item.ItemNarrated}}"></item-brief>
+                                </td>
+                                @if (SessionFacade.IsModuleAuthorized("Item/Form", GestaoAvaliacao.Util.Permission.CreateOrUpdate))
+                                {
+                                    <td>
+                                        <button class="btnMais"
+                                                type="button"
+                                                ng-click="setMenu(item.Item.ItemId, item.Item.LastVersion, item.Item.BaseTextId)"
+                                                data-placement="top" data-trigger="focus"
+                                                data-custom-class="itemListPopover"
+                                                data-template="Assets/js/angular/controllers/item/listItemMenu.html"
+                                                data-animation="popover-fade"
+                                                data-container="body"
+                                                data-bs-popover="popovermenu">
+                                            <i class="material-icons">view_list</i>
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+						</tbody>
+					</table>
+                @* footer paginação *@
+                    <page method="loadPagination()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+					<p class="nresultados" ng-hide="ItensList != null || !(message)">Nenhum resultado encontrado.</p>
+					<br />
+				</div>
+			</div>
+		</div>
+    @* Moda l*@
+    <div class="modal fade" id="modalVisualizar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modalBig">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"><b>Resumo do Item</b></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="campoLabel">
+                        <label><b>Texto base:</b></label>
+                        @if (SessionFacade.IsModuleAuthorized("Item/Form", GestaoAvaliacao.Util.Permission.CreateOrUpdate))
+                        {
+                            <div ng-hide="showAddItemNarrated">
+                                <button type="button" class="btnPadrao" ng-click="addItem(abstract.item.Id)">
+                                    Adicionar item ao Texto Base
+                                </button>
+                            </div>
+                        }
+                        <div>
+                            <button type="button"
+                                    class="btnPadrao ng-valid ng-dirty"
+                                    ng-hide="showAddItemNarrated"
+                                    ng-click="previewPrintBaseText(abstract.texbaseId)"
+                                    data-btn-checkbox=""
+                                    data-btn-checkbox-true="1"
+                                    data-btn-checkbox-false="0"
+                                    data-trigger="hover"
+                                    data-type="success"
+                                    data-title="Imprimir"
+                                    data-placement="top"
+                                    data-container="body"
+                                    data-bs-tooltip>
+                                Imprimir
+                            </button>
+                        </div>
+                    </div>
+                    <div class="campoLabel">
+                        <div class="imgResumo" alt="Responsive image" ng-bind-html="(abstract.textbase | changeBlankSpace) | trustedHtml"></div>
+                    </div>
+                    <div class="campoLabel">
+                        <div ng-show="abstract.listaItensID.length != 1">
+                            <form class="paginacaoModal" role="form">
+                                <button type="button" class="" ng-click="previus()">
+                                    <i class="material-icons">keyboard_arrow_left</i>
+                                </button>
+                                <div>
+                                    <label><b>{{(abstract.navigation + 1)}}</b> de {{abstract.listaItensID.length}}</label>
+                                </div>
+                                <button type="button" class="" ng-click="next()">
+                                    <i class="material-icons">keyboard_arrow_right</i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="campoLabel">
+                        <label><b>Código do item:</b></label>
+                        <span>{{abstract.item.ItemCode}}</span>
+                    </div>
+                    <div class="campoLabel">
+                        <label><b>Proficiência do item:</b></label>
+                        <span>{{abstract.item.proficiency}}</span>
+                    </div>
+                    <div class="campoLabel" ng-repeat="skill in abstract.item.ItemSkills">
+                        <label><b>{{skill.Skill.ModelSkillLevel.Description}}:</b></label>
+                        <span>{{skill.Skill.Description}}</span>
+                    </div>
+                    <hr class="separaTab" />
+                    <div class="campoLabel">
+                        <div ng-bind-html="(abstract.item.Statement | changeBlankSpace) | trustedHtml"></div>
+                    </div>
+                    <div class="campoLabel" ng-repeat="alt in abstract.item.Alternatives">
+                        <label style="max-width: 55px;">{{ alt.Numeration}} <i ng-show="alt.Correct" class="material-icons">check</i></label>
+                        <div alt="Responsive image" ng-bind-html="(alt.Description | changeBlankSpace) | trustedHtml"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Modal *@
+    <div class="modal fade" id="modaldelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir o item?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btnPadrao" ng-click="delete()">Excluir</button>
+                    <button type="button" class="btnCancelar2" ng-click="canceldelete()">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" defaultValue="$SiteName$" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" />
+  </parameter>
+
+ <parameter name="ConnectionString.CoreSSO" defaultValue="$ConnectionString.CoreSSO$"
+          description="Conexão com o banco de dado do CoreSSO." tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile"
+          scope="\\bin\\MSTech.Data.Common.dll.config$"
+          match="/configuration/connectionStrings/add[@name='CoreSSO']/@connectionString" />
+  </parameter>
+
+  <parameter name="ConnectionString.CoreSSOLog" defaultValue="$ConnectionString.MStech.Log$"
+             description="Conexão com o banco de dado do CoreSSO_Log." tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile"
+        scope="\\bin\\MSTech.Data.Common.dll.config$"
+        match="/configuration/connectionStrings/add[@name='MSTech.Log']/@connectionString" />
+  </parameter>
+
+    <parameter name="ConnectionString.GestaoAvaliacao" defaultValue="$ConnectionString.GestaoAvaliacao$"
+          description="Conexão com o banco de dado do Gestão Avaliação." tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile"
+          scope="\\bin\\MSTech.Data.Common.dll.config$"
+          match="/configuration/connectionStrings/add[@name='GestaoAvaliacao']/@connectionString" />
+  </parameter>
+
+   <parameter name="ConnectionString.GestaoEscolar" defaultValue="$ConnectionString.GestaoEscolar$"
+          description="Conexão com o banco de dado do Gestão Escolar." tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile"
+          scope="\\bin\\MSTech.Data.Common.dll.config$"
+          match="/configuration/connectionStrings/add[@name='GestaoEscolar']/@connectionString" />
+  </parameter>
+  
+  <parameter name="OMRService.uri" defaultvalue="$OMRService.uri$" description="OMRService uri description." tags="">
+    <parameterentry kind="XmlFile" match="/configuration/OMRService[@name='omrAuthentication']/@uri" scope="\\web.config$" />
+  </parameter>
+  <parameter name="OMRService.user" defaultvalue="$OMRService.user$" description="OMRService user description." tags="">
+    <parameterentry kind="XmlFile" match="/configuration/OMRService[@name='omrAuthentication']/@user" scope="\\web.config$" />
+  </parameter>
+  <parameter name="OMRService.password" defaultvalue="$OMRService.password$" description="OMRService password description." tags="">
+    <parameterentry kind="XmlFile" match="/configuration/OMRService[@name='omrAuthentication']/@password" scope="\\web.config$" />
+  </parameter>
+
+  <parameter name="ValidIssuer" defaultvalue="$ValidIssuer$" description="ValidIssuer description." tags="">
+    <parameterentry kind="XmlFile" match="/configuration/appSettings/add[@key='ValidIssuer']/@value" scope="\\web.config$" />
+  </parameter>
+  <parameter name="securityKey" defaultvalue="$securityKey$" description="securityKey description." tags="">
+    <parameterentry kind="XmlFile" match="/configuration/appSettings/add[@key='securityKey']/@value" scope="\\web.config$" />
+  </parameter>
+  <parameter name="StorageType" defaultvalue="$StorageType$" description="StorageType description." tags="">
+    <parameterentry kind="XmlFile" match="/configuration/appSettings/add[@key='StorageType']/@value" scope="\\web.config$" />
+  </parameter>
+  <parameter name="StoragePath" defaultvalue="$StoragePath$" description="StoragePath description." tags="">
+    <parameterentry kind="XmlFile" match="/configuration/appSettings/add[@key='StoragePath']/@value" scope="\\web.config$" />
+  </parameter>
+  <parameter name="MongoDB_Connection" defaultvalue="$MongoDB_Connection$" description="MongoDB_Connection description." tags="">
+    <parameterentry kind="XmlFile" match="/configuration/appSettings/add[@key='MongoDB_Connection']/@value" scope="\\web.config$" />
+  </parameter>
+  <parameter name="MongoDB_Database" defaultvalue="$MongoDB_Database$" description="MongoDB_Database description." tags="">
+    <parameterentry kind="XmlFile" match="/configuration/appSettings/add[@key='MongoDB_Database']/@value" scope="\\web.config$" />
+  </parameter>
+ 
+</parameters>

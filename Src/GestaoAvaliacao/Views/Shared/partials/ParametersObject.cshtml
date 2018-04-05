@@ -1,0 +1,41 @@
+﻿@using GestaoAvaliacao.WebProject.Facade
+@using GestaoAvaliacao.Util;
+
+var EnumState = {
+    ativo: 1,
+    inativo: 2,
+    excluido: 3
+};
+
+var settingsGeneral = @(Html.Raw(Json.Encode(ApplicationFacade.Parameters.Where(p => p.ParameterPage_Id == (long)EnumParameterPageId.Geral).Select(t => new { t.Key, t.Value}))))
+var settingsItem = @(Html.Raw(Json.Encode(ApplicationFacade.Parameters.Where(p => p.ParameterPage_Id == (long)EnumParameterPageId.Item).Select(t => new { t.Key, t.Value, t.Obligatory, t.Versioning, t.State}))))
+var settingsTest = @(Html.Raw(Json.Encode(ApplicationFacade.Parameters.Where(p => p.ParameterPage_Id == (long)EnumParameterPageId.Prova).Select(t => new { t.Key, t.Value }))))
+var allParameters = @(Html.Raw(Json.Encode(ApplicationFacade.Parameters.Select(t => new { t.Key, t.Value }))))
+var parameterKeys = (new Function("return [" + @(Html.Raw(Json.Encode(ApplicationFacade.ParameterKeys))) + "];")());
+var Parameters = {};
+var jsontoParse = [];
+jQuery.grep(settingsGeneral, function (s,i) { jsontoParse.push('\\"' +s.Key + '\\" : \\"' + s.Value + '\\"')});
+//jQuery.grep(settings, function (s,i) { jsontoParse.push(s.Key + ' : "' + s.Value + '"')});
+Parameters.General = JSON.parse(('{' + jsontoParse.join(',') + '}').replace(/\\/g, ''));
+
+jsontoParse = [];
+jQuery.grep(settingsItem, function (s,i) { jsontoParse.push('\\"' +s.Key + '\\" : { \\"Obligatory\\" : \\"' + s.Obligatory + '\\", \\"Value\\" : \\"' + s.Value + '\\", \\"Versioning\\" : \\"' + s.Versioning + '\\"  }')});
+
+Parameters.Item = JSON.parse(('{' + jsontoParse.join(',') + '}').replace(/\\/g, ''));
+
+jsontoParse = [];
+jQuery.grep(settingsTest, function (s,i) { jsontoParse.push('\\"' +s.Key + '\\" : \\"' + s.Value + '\\"')});
+
+Parameters.Test = JSON.parse(('{' + jsontoParse.join(',') + '}').replace(/\\/g, ''));
+
+function getParameterValue(key) {
+	var value;
+	allParameters.forEach(function(entry)
+	{
+		if(entry.Key == key) {
+			value = entry.Value;
+			return;
+		}
+	});
+	return value;
+}

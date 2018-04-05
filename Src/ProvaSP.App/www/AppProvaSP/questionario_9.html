@@ -1,0 +1,166 @@
+﻿<div>
+    <h3>
+        1. Escola Supervisionada:
+    </h3>
+    <select id="ddlDRE">
+        <option value="">Selecione a Diretoria Regional de Educação...</option>
+        <option value="CS">DIRETORIA REGIONAL DE EDUCACAO CAPELA DO SOCORRO</option>
+        <option value="CL">DIRETORIA REGIONAL DE EDUCACAO CAMPO LIMPO</option>
+        <option value="IQ">DIRETORIA REGIONAL DE EDUCACAO ITAQUERA</option>
+        <option value="FO">DIRETORIA REGIONAL DE EDUCACAO FREGUESIA/BRASILANDIA</option>
+        <option value="SM">DIRETORIA REGIONAL DE EDUCACAO SAO MATEUS</option>
+        <option value="G">DIRETORIA REGIONAL DE EDUCACAO GUAIANASES</option>
+        <option value="PE">DIRETORIA REGIONAL DE EDUCACAO PENHA</option>
+        <option value="SA">DIRETORIA REGIONAL DE EDUCACAO SANTO AMARO</option>
+        <option value="PJ">DIRETORIA REGIONAL DE EDUCACAO PIRITUBA/JARAGUA</option>
+        <option value="MP">DIRETORIA REGIONAL DE EDUCACAO SAO MIGUEL</option>
+        <option value="BT">DIRETORIA REGIONAL DE EDUCACAO BUTANTA</option>
+        <option value="IP">DIRETORIA REGIONAL DE EDUCACAO IPIRANGA</option>
+        <option value="JT">DIRETORIA REGIONAL DE EDUCACAO JACANA/TREMEMBE</option>
+    </select>
+    <select id="ddlEscola" disabled="disabled" name="Questionario_9_Questao_1"> 
+        <option value="">Selecione a Escola...</option>
+    </select>
+
+    <div id="divQuestionario9_questoes">
+        <fieldset data-role="controlgroup">
+            <h3>
+                2. Data da Vistoria:
+            </h3>
+            <!--
+            Datepicker Widget:
+            http://demos.jquerymobile.com/1.4.1/datepicker/
+            -->
+            <input id="Questionario_9_Questao_2_Data" data-role="date" data-inline="true" type="text" name="Questionario_9_Questao_2" />
+        </fieldset>
+
+        <fieldset data-role="controlgroup">
+            <h3>
+                3. Houve vistoria?
+                <input type="hidden" name="Questionario_9_Questao_3" value="default" />
+            </h3>
+            <label for="Questionario_9_Questao_3_Sim">
+                <input id="Questionario_9_Questao_3_Sim" type="radio" name="Questionario_9_Questao_3" value="Sim" />
+                Sim
+            </label>
+            <label for="Questionario_9_Questao_3_Nao">
+                <input id="Questionario_9_Questao_3_Nao" type="radio" name="Questionario_9_Questao_3" value="Não" />
+                Não
+            </label>
+        </fieldset>
+
+        <fieldset data-role="controlgroup">
+            <h3>
+                4. Houve aplicação?
+                <input type="hidden" name="Questionario_9_Questao_4" value="default" />
+            </h3>
+            <label for="Questionario_9_Questao_4_Sim">
+                <input id="Questionario_9_Questao_4_Sim" type="radio" name="Questionario_9_Questao_4" value="Sim" />
+                Sim
+            </label>
+            <label for="Questionario_9_Questao_4_Nao">
+                <input id="Questionario_9_Questao_4_Nao" type="radio" name="Questionario_9_Questao_4" value="Não" />
+                Não
+            </label>
+        </fieldset>
+
+        <fieldset data-role="controlgroup">
+            <h3>
+                5. Qual foi o motivo da não aplicação?
+            </h3>
+            <input id="Questionario_9_Questao_5_Descricao" type="text" name="Questionario_9_Questao_5" placeholder="Descreva aqui" />
+        </fieldset>
+
+        <fieldset data-role="controlgroup">
+            <h3>
+                6. Houve interrupção da aplicação das provas?
+                <input type="hidden" name="Questionario_9_Questao_6" value="default" />
+            </h3>
+            <label for="Questionario_9_Questao_6_Sim">
+                <input id="Questionario_9_Questao_6_Sim" type="radio" name="Questionario_9_Questao_6" value="Sim" />
+                Sim
+            </label>
+            <label for="Questionario_9_Questao_6_Nao">
+                <input id="Questionario_9_Questao_6_Nao" type="radio" name="Questionario_9_Questao_6" value="Não" />
+                Não
+            </label>
+        </fieldset>
+
+        <fieldset data-role="controlgroup">
+            <h3>
+                7. No caso de interrupção da aplicação, indique o período:
+                <input type="hidden" name="Questionario_9_Questao_7" value="default" />
+            </h3>
+            <label for="Questionario_9_Questao_7_Manha">
+                <input id="Questionario_9_Questao_7_Manha" type="radio" name="Questionario_9_Questao_7" value="Manhã" />
+                Manhã
+            </label>
+            <label for="Questionario_9_Questao_7_Tarde">
+                <input id="Questionario_9_Questao_7_Tarde" type="radio" name="Questionario_9_Questao_7" value="Tarde" />
+                Tarde
+            </label>
+            <label for="Questionario_9_Questao_7_Noite">
+                <input id="Questionario_9_Questao_7_Noite" type="radio" name="Questionario_9_Questao_7" value="Noite" />
+                Noite
+            </label>
+        </fieldset>
+
+        <fieldset data-role="controlgroup">
+            <h3>
+                8. No caso de interrupção da aplicação, indique o motivo da ocorrência:
+                <input type="hidden" name="Questionario_9_Questao_8" value="default" />
+            </h3>
+            <label for="Questionario_9_Questao_8_ChuvaForte">
+                <input id="Questionario_9_Questao_8_ChuvaForte" type="radio" name="Questionario_9_Questao_8" value="Chuva forte" />
+                Chuva forte
+            </label>
+            <label for="Questionario_9_Questao_8_FaltaDeEnergiaEletrica">
+                <input id="Questionario_9_Questao_8_FaltaDeEnergiaEletrica" type="radio" name="Questionario_9_Questao_8" value="Falta de Energia Elétrica" />
+                Falta de Energia Elétrica
+            </label>
+            <label for="Questionario_9_Questao_8_FaltaDeSegurançaNaEscola">
+                <input id="Questionario_9_Questao_8_FaltaDeSegurançaNaEscola" type="radio" name="Questionario_9_Questao_8" value="Falta de segurança na escola" />
+                Falta de segurança na escola
+            </label>
+            <label for="Questionario_9_Questao_8_Outros">
+                <input id="Questionario_9_Questao_8_Outros" type="radio" name="Questionario_9_Questao_8" value="Outros" />
+                Outros
+            </label>
+        </fieldset>
+
+        <fieldset data-role="controlgroup">
+            <h3>
+                9. A organização da aplicação da Prova na escola estava:
+                <input type="hidden" name="Questionario_9_Questao_9" value="default" />
+            </h3>
+            <label for="Questionario_9_Questao_9_Boa">
+                <input id="Questionario_9_Questao_9_Boa" type="radio" name="Questionario_9_Questao_9" value="Boa" />
+                Boa
+            </label>
+            <label for="Questionario_9_Questao_9_Regular">
+                <input id="Questionario_9_Questao_9_Regular" type="radio" name="Questionario_9_Questao_9" value="Regular" />
+                Regular
+            </label>
+            <label for="Questionario_9_Questao_9_Ruim">
+                <input id="Questionario_9_Questao_9_Ruim" type="radio" name="Questionario_9_Questao_9" value="Ruim" />
+                Ruim
+            </label>
+        </fieldset>
+
+        <fieldset data-role="controlgroup">
+            <h3>
+                10. Se respondeu Regular ou Ruim, justifique sua resposta.
+            </h3>
+            <input id="Questionario_9_Questao_10_Descricao" type="text" name="Questionario_9_Questao_10" placeholder="Descreva aqui" />
+        </fieldset>
+
+        <fieldset data-role="controlgroup">
+            <h3>
+                11. Observações / Comentários (Registre fatos relevantes ocorridos durante a aplicação).
+            </h3>
+            <input id="Questionario_9_Questao_11_Descricao" type="text" name="Questionario_9_Questao_11" placeholder="Descreva aqui" />
+        </fieldset>
+
+        <a href="#" class="ui-btn" style="color:green;" onclick="btnConcluirQuestionario()">Concluir</a>
+    </div>
+</div>

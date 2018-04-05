@@ -1,0 +1,18 @@
+﻿{
+  "SystemId": "204",
+  "DbSettings": [
+    {
+      "ProjectDatabase": "ProvaSP.Database",
+      "DeployConnectionString": "Data Source=.; Initial Catalog=ProvaSP_Teste; Integrated Security=SSPI;",
+      "InitialVersionRestoreType": "Script",
+      "BackupFilePath": "$BackupFilePathProvaSP$",
+      "Variables": {
+        "UserName": "user_gestaoavaliacao",
+        "UserPass": "gestaoavaliacao@adm",
+        "ProvaSP": "ProvaSP_Teste"
+      }
+    }
+  ],
+  "MongoSettings": [
+  ]
+}

@@ -1,0 +1,93 @@
+﻿<style>
+    .modal-body {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+</style>
+
+<img src="~/Assets/images/foto_fundo_provasp.jpg" style="width:100%;" />
+
+<div id="modalApp" class="modal fade modal-itens" tabindex="-1" role="dialog" aria-labelledby="modal" >
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <iframe id="ifrmModal" src="ProvaSp?App=1" style="width:100%; height:600px;" frameborder="0"></iframe>    
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalConfirmacaoDescarteInclusao" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 style="text-align: center;">Deseja fechar o aplicativo da Prova São Paulo? </h2>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <button id="btnFecharAppSim" class="btn btn-success btn-block" data-dismiss="modal"><strong>Sim</strong></button>
+                </div>
+                <div class="col-sm-3"></div>
+                <div class="col-sm-4">
+                    <button id="btnFecharAppNao" class="btn btn-danger btn-block" data-dismiss="modal"><strong>Não</strong></button>
+                </div>
+                <br />
+                <br />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    angular.element('#modalApp').modal('show');
+
+    function alertarSaidaApp()
+    {
+        angular.element('#modalConfirmacaoDescarteInclusao').modal('show');
+    }
+
+    $(document).ready(function ()
+    {
+        var alertarCancelamentoModal = true;
+        $('#modalApp').on('hide.bs.modal', function ()
+        {
+            if (alertarCancelamentoModal)
+            {
+                angular.element('#modalConfirmacaoDescarteInclusao').modal('show');
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                return false;
+            }
+        })
+
+        $('#modalApp').on('hidden.bs.modal', function ()
+        {
+            alertarCancelamentoModal = true;
+        })
+
+        $('#modalApp').on('hidden', function ()
+        {
+            alertarCancelamentoModal = true;
+        })
+
+        
+        $("#btnFecharAppSim").click(
+            function ()
+            {
+                alertarCancelamentoModal = false;
+                $('#modalApp').modal('toggle');
+                window.location.replace("/");
+            }
+        );
+    });
+
+
+    function ajustarModal()
+    { 
+        $("#ifrmModal").height(window.innerHeight -75);
+        setTimeout("ajustarModal()", 1000);
+    }
+
+    ajustarModal();
+    
+</script>

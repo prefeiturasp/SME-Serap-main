@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!--
+        Customize the content security policy in the meta tag below as needed. Add 'unsafe-inline' to default-src to enable inline JavaScript.
+        For details, see http://go.microsoft.com/fwlink/?LinkID=617521
+    -->
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <link rel="stylesheet" type="text/css" href="AppProvaSP/css/app.css" />
+    <link href="AppProvaSP/css/jquery.mobile-1.4.5.min.css" rel="stylesheet" />
+    <link href="AppProvaSP/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="AppProvaSP/css/sweetalert.css" rel="stylesheet" />
+    <title>Prova São Paulo</title>
+</head>
+
+
+<body>
+
+    <div id="login-page" data-role="page" style="text-align:center; background-image: url('AppProvaSP/images/img_bkg_login.jpg');" class="fundoCoreSSO">
+
+        <div class="container" style="background:none; margin-top:200px; text-align:center; ">
+
+            <div style="text-align:center">
+                <!--APP REJEITADO NO GOOGLE PLAY POR UTILIZAR O LOGO DA PREFEITURA DE SP-->
+                <!--
+                <img src="AppProvaSP/images/logo_sme.png" alt="Logo SMESP" />
+                    -->
+                <h1 style="color:white;">
+                    Prova São Paulo
+                </h1>
+                <div class="login">
+
+                    <table>
+                        <tr>
+                            <td>
+                                <i class="mdi mdi-light mdi-36px mdi-account"></i>
+                            </td>
+                            <td style='width:100%'>
+                                <input placeholder="Usuário" autofocus="" data-val="true" data-val-required="Login é obrigatório." id="Username" name="Username" value="" type="text" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <i class="mdi mdi-light mdi-36px mdi-lock"></i>
+                            </td>
+                            <td style='width:100%'>
+                                <input class="form-control" placeholder="Senha" autocomplete="off" data-val="true" data-val-required="Senha é obrigatório." id="Password" name="Password" type="password">
+                            </td>
+                        </tr>
+                    </table>
+
+
+                    <!-- BTN SUBMIT -->
+                    <input id="btnLoginEntrar" class="btn btn-primary btn-block" value="ENTRAR" type="button">
+
+                    <!--
+                    <p>
+                        <a style="color:white; font-weight:normal;" href="http://identity.sme.prefeitura.sp.gov.br/Account/ForgotPassword" target="_blank">Esqueci minha senha</a>
+                    </p>
+                        -->
+                </div>
+                
+
+
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+    
+
+    <script src="AppProvaSP/scripts/jquery-1.8.0.min.js"></script>
+    <script src="AppProvaSP/scripts/jquery.mobile-1.4.5.min.js"></script>
+    <script src="AppProvaSP/scripts/sha512.js"></script>
+    <script src="AppProvaSP/scripts/sweetalert.min.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="AppProvaSP/scripts/platformOverrides.js"></script>
+    <script type="text/javascript" src="AppProvaSP/scripts/global.js"></script>
+    <script type="text/javascript" src="AppProvaSP/scripts/index.js"></script>
+
+</body>
+</html>

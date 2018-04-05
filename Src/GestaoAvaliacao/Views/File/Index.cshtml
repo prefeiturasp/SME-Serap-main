@@ -1,0 +1,198 @@
+﻿
+@{
+	ViewBag.Title = "Index";
+}
+<alert></alert>
+<div class="wellCustom" ng-controller="FileController">
+	<div class="headerCustom">
+		<h4>{{title}}<span>Listagem</span></h4>
+	</div>
+	@* Informações *@
+	<div class="resumoAdesao" ng-if="linkArchive">
+		<div class="maxWidth">
+			<div class="dadosGerais">
+				<h2>
+					<strong>{{testName}}</strong>
+				</h2>
+				<div class="dadosResumo">
+					<div>
+						<span>{{totalTestLinked}}</span>
+						<i class="material-icons">description</i>
+						<p>Total de arquivos <br />vinculados</p>
+					</div>
+					<div>
+						<span>{{totalFiles}}</span>
+						<i class="material-icons">public</i>
+						<p>Total de arquivos</p>
+					</div>
+					<div style="text-align: right;">
+						<button class="btnPadrao" ng-click="saveFiles();">Salvar</button>
+						<button class="btnCancelar2" ng-click="cancel();">Cancelar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="pesquisa-upload row">
+		<div class="col-md-8">
+			<form class="form-inline">
+				<div class="form-group">
+					<input type="text" class="form-pesquisa cinza ng-pristine ng-valid" name="myText" placeholder="Nome do arquivo" ng-model="nameArquivo" maxlength="50">
+				</div>
+				<button class="btn-pesquisar" ng-click="searchFile(true)" title="Pesquisar"><i class="material-icons">search</i></button>
+			</form>
+		</div>
+        @* Gatilho Filtros *@
+		<div class="filtrar-lista col-md-4">
+            <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                <i class="material-icons" data-side-filters>filter_list</i>
+                <label data-side-filters>Filtrar arquivos</label>
+                <div class="notificationFilter"
+                     data-trigger="hover"
+                     data-type="success"
+                     data-title="Filtros selecionados"
+                     data-placement="top"
+                     data-container="body"
+                     data-bs-tooltip>
+                    {{countFilter}}
+                </div>
+            </a>
+		</div>
+	</div>
+    @* Filtros *@
+    <div class="panel-search side-filters" data-side-filters>
+        <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+            <i class="material-icons">filter_list</i>
+            <label class="filtroP">Filtrar arquivos</label>
+            <i class="material-icons fecha">arrow_forward</i>
+        </a>
+        <div class="col-seach" data-side-filters>
+            <label data-side-filters>Data de upload</label>
+            <br data-side-filters />
+            <div class="calendario-grafico" data-side-filters>
+                <label data-side-filters>de</label>
+                <button type="button" ng-click="datepicker('dateStart')" data-side-filters>
+                    <i class="material-icons">event</i>
+                </button>
+                <input class="dateInput" type="text" placeholder="Data de Início" ng-model="dateStart" id="dateStart" data-ng-change="changeDate()" datepicker />
+            </div>
+            <div class="calendario-grafico" data-side-filters>
+                <label data-side-filters>até </label>
+                <button type="button" ng-click="datepicker('dateEnd')" data-side-filters>
+                    <i class="material-icons">event</i>
+                </button>
+                <input class="dateInput" type="text" placeholder="Data de Término" ng-model="dateEnd" id="dateEnd" data-ng-change="changeDate()" datepicker />
+            </div>
+        </div>
+        <div class="col-seach" ng-if="linkArchive" data-side-filters>
+            <div data-side-filters>
+                <label data-side-filters>Exibir vinculadas:</label>
+                <div class="switch" ng-click="typeFilter.linked = !typeFilter.linked" data-side-filters
+                     ng-class="{'off': !typeFilter.linked}"><input type="button" /></div>
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div style="display: inline-block; width: 100%;">
+                <button class="btnCancelar pull-right" ng-click="LimparCampos()" data-side-filters><span>Limpar</span> </button>
+                <button type="button" class="btnCancelar pull-right" ng-click="searchFile()" data-side-filters>Pesquisar</button>
+            </div>
+        </div>
+    </div>
+
+    @* Pesquisa *@
+	<div class="well well-large">
+		<form class="form-inline telaImagem" role="form">
+			<div class="uploadImage">
+				<div upload="" type="File" trash="true" placeholder="um arquivo" callback="fileUploadSuccess" component="modelFile"></div>
+			</div>
+		</form>
+		<table class="table table-hover" ng-show="arquivosList.length != null" style=" margin-top: 0px;">
+			<colgroup ng-if="linkArchive">
+				<col width="10%" />
+				<col width="50%" />
+				<col width="15%" />
+				<col width="20%" />
+				<col width="5%" />
+			</colgroup>
+			<colgroup ng-if="!linkArchive">
+				<col width="60%" />
+				<col width="15%" />
+				<col width="20%" />
+				<col width="5%" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th ng-if="linkArchive">
+						<div class="checkbox checkbox-primary" style="text-align:center; margin: 0px 37px; top: -13px;">
+							<input id="check_All" type="checkbox" ng-model="selectedAll.CheckedAll" ng-click="selectedAllFiles();">
+							<label for="check_All"></label>
+						</div>
+					</th>
+					<th>Arquivo</th>
+					<th class="center">Data de upload</th>
+					<th class="center">Provas vinculadas</th>
+					<th class="center">Ação</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="arquivo in arquivosList">
+					<td ng-if="linkArchive">
+						<div class="checkbox checkbox-primary" style="text-align:center; margin: 0px 37px; top: -13px;">
+							<input id="check_{{arquivo.Id}}" type="checkbox" ng-model="arquivo.Checked" ng-click="removeSelectGlobal(arquivo);">
+							<label for="check_{{arquivo.Id}}"></label>
+						</div>
+					</td>
+					<td><a href="{{arquivo.Path}}" target="blank">{{arquivo.OriginalName}}</a></td>
+					<td class="center">{{arquivo.CreateDate }}</td>
+					<td class="center">
+						<p ng-hide="arquivo.AllLinks.length!=0">-</p>
+						<a href="" ng-click="activeModalLinked($index, arquivo.LinkedFiles)" ng-hide="arquivo.AllLinks.length==0">{{arquivo.AllLinks.length}}  <i class="material-icons">visibility</i></a>
+					</td>
+					<td class="center">
+						<button ng-click="changeFile(arquivo)" class="btnMais" data-placement="left" data-trigger="focus" data-custom-class="itemListPopover" data-template="Assets/js/angular/controllers/file/fileMenu.html" data-animation="popover-fade" data-container="body" data-bs-popover="popovermenu">
+							<i class="material-icons">view_list</i>
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+        <page method="getListFile('paginate')" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" ng-show="arquivosList != null" data-arr-page-size="[10,20,30,40,50,100]"></page>
+		<p class="nresultados" ng-show="arquivosList == null" class="nresultados">Nenhum resultado encontrado.</p>
+	</div>
+	<modal id="modalExcluir" modal-title="{{modelTest.Description}}">
+		<div class="container-fluid">
+			<span>{{message}}</span>
+			<div class="row">
+				<div class="col-sm-12 text-right">
+					<button type="button" class="btnPadrao" ng-click="deleteFile();">Excluir</button>
+					<button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+				</div>
+			</div>
+		</div>
+	</modal>
+	<modal id="modalVinculos" class="listagem-modal" modal-title="Provas vinculadas ao arquivo">
+		<div>
+			<div ng-repeat="prova in arquivosList[vinculoIndex].AllLinks" class="listagem">
+				<span>{{prova}}</span>
+			</div>
+			<br clear="all" /><br clear="all" />
+			<div class="row">
+				<div class="col-sm-12 text-right">
+					<button type="button" class="btnModal" data-dismiss="modal">Fechar</button>
+				</div>
+			</div>
+		</div>
+	</modal>
+	<modal id="modalAlert" class="listagem-modal" modal-title="<strong>Os vinculos ainda não foram salvos</strong>">
+		<div>
+			<span>As alteração feitas não foram salvas, deseja realmente atualizar a lista de arquivos?</span>
+			<div class="row">
+				<div class="col-sm-12 text-right">
+					<button type="button" class="btnModal" ng-click="newSearch();">Sim</button>
+					<button type="button" class="btnModal" data-dismiss="modal">Não</button>
+				</div>
+			</div>
+		</div>
+	</modal>
+</div>
+

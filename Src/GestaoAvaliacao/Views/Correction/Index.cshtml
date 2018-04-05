@@ -1,0 +1,434 @@
+﻿@using GestaoAvaliacao.WebProject.Facade
+
+@* Diretiva para alertas padrões do sistema *@
+<alert></alert>
+<div class="wellCustom" ng-controller="CorrectionResultController" ng-init='init()'>
+    <div ng-if="!blockPage">
+        @* Header da Adesão *@
+        <div class="headerCustom">
+            <h4>Resultados de avaliação<span>Listagem</span></h4>
+        </div>
+        @* Informações *@
+        <div class="resumoAdesao">
+            <div class="maxWidth">
+                <div class="dadosGerais">
+                    <h2>
+                        <strong>{{testInformation.Description}} </strong> {{testInformation.FrequencyApplication}} |  {{testInformation.Discipline}}
+                    </h2>
+                    <div class="dadosResumo">
+                        <div style="max-width: 260px;">
+                            <i class="material-icons">group</i>
+                            <span>{{testInformation.Team.Name}}</span>
+                        </div>
+                        <div>
+                            <i class="material-icons">school</i>
+                            <p style="max-width: 500px;min-width: 500px;">{{testInformation.SchoolName}}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <button class="btnCancelar2" data-toggle="modal" ng-click="arrivingStudentResponse()">Voltar</button>
+                            <!--<button class="btnCancelar2" data-toggle="modal" data-target="#cancelModal">Trocar Turma</button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-painel-tabela maxWidth">
+
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#painel" aria-controls="painel" role="tab" data-toggle="tab"><i class="fa fa-bar-chart" aria-hidden="true"></i> Painel</a></li>
+                <li role="presentation"><a href="#tabela" aria-controls="tabela" role="tab" data-toggle="tab"><i class="fa fa-table" aria-hidden="true"></i> Tabela</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="painel">
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <form class="menu-lateral">
+                                <select disabled="disabled" class="disabled" style="cursor: not-allowed">
+                                    <option value="">{{testInformation.Description}} | {{testInformation.FrequencyApplication}}</option>
+                                </select>
+                                <select ng-model="testInformation.Team.Id" ng-change="init()"
+                                        ng-options="Team.tur_id as Team.tur_codigo for Team in listTeams"></select>
+                                <select id="discipline" class="form-control"
+                                        ng-change="loadByDiscipline()"
+                                        ng-model="testInformation.discipline_id"
+                                        ng-options="discipline.Id as discipline.Description for discipline in listDiscipline"
+                                        ng-title="listDiscipline"
+                                        ng-title-propertie="Description"
+                                        ng-title-index="1"
+                                        ng-show="!oneDiscipline"
+                                        ng-title-selected>
+                                    <option value="">--Todas as disciplinas--</option>
+                                </select>
+                                <div ng-show="oneDiscipline"></div>
+                                <!--<button class="buscar"><i class="fa fa-search" aria-hidden="true"></i> Buscar</button>-->
+                                <div class="divisao">
+                                    <h3><strong>ITENS</strong></h3>
+                                    <p>Ordenação:</p>
+                                    <select id="orderSideItens" class="form-control" style="width: 55%"
+                                            ng-model="selectedOrderItem"
+                                            ng-options="opt.id as opt.label for opt in itemsOrderOptions"></select>
+                                    <i class="fa fa-sort" style="cursor: pointer;" aria-hidden="true" ng-click="resortItems();"></i>
+                                </div>
+                                <div style="height: 600px; overflow-y: auto;" ng-show="list.Statistics.Averages.length == itemsLoaded">
+                                    <div ng-repeat="discipline in itemsByDiscipline | orderBy: 'name'">
+                                        <h3 class="label-menu">{{discipline.name}}</h3>
+                                        <div class="divisao com-itens" data-toggle="modal" data-target="#modal" ng-repeat="item in discipline.items | orderBy: (orderItemByDesc == 0 ? '+' : '-')+(selectedOrderItem == 0 ? 'averages.rightChoose' : 'ItemOrder')"
+                                             ng-click="findItemById(discipline.id, item.Id)">
+                                            <div style="width:50%">
+                                                <h3>Item {{(item.ItemOrder)>9 ? (item.ItemOrder) : '0' + (item.ItemOrder)}}<br />{{item.ItemCode}}</h3>
+                                            </div>
+                                            <div style="width:50%;">
+                                                <div class="barra-progresso">
+                                                    <div class="progress {{getProgressColor(item.averages.rightChoose)}}">
+                                                        <div class="progress-bar" role="progressbar" aria-valuenow="{{item.averages.rightChoose}}" aria-valuemin="0" aria-valuemax="100" style="width: {{item.averages.rightChoose}}%;">
+                                                            <span class="sr-only">{{item.averages.rightChoose}} % Complete</span>
+                                                        </div>
+                                                    </div>
+                                                    <span>{{item.averages.rightChoose}}%</span>
+                                                </div>
+                                            </div>
+                                            <div class="popover-itens">
+                                                <h1>Habilidades</h1>
+                                                <p ng-repeat="s in item.ItemSkills"><span>{{s.Skill.Code}} </span><span> - </span>{{s.Skill.Description}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal -->
+                                <div class="modal fade modal-itens" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <ul class="nav nav-tabs" role="tablist">
+                                                    <li role="presentation" class="active" style="width: 50%;"><a href="#item" aria-controls="item" role="tab" data-toggle="tab">ITEM {{selectedItemModal.item.ItemCode}} <span>{{selectedItemModal.disciplineName}}</span></a></li>
+                                                    <li role="presentation" style="width: 50%;"><a href="#graficos" aria-controls="graficos" role="tab" data-toggle="tab">Gráficos de Escolhas</a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="tab-content">
+                                                    <div role="tabpanel" class="tab-pane active" id="item">
+                                                        <a ng-click="proximaQuestao(selectedItemModal.item)" class="pull-right">Próximo item <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                                                        <a ng-click="voltaQuestao(selectedItemModal.item)" class="pull-right" style="margin-right: 10px"><i class="fa fa-arrow-left" aria-hidden="true"></i> Item anterior</a>
+                                                        <table class="tableVideo">
+                                                            <colgroup>
+                                                                <col width="50%" />
+                                                                <col width="50%" />
+                                                            </colgroup>
+                                                            <tr>
+                                                                <td>
+                                                                    <h5>Habilidades</h5>
+                                                                    <p ng-repeat="s in selectedItemModal.item.ItemSkills"><span>{{s.Skill.Code}} </span><span> - </span>{{s.Skill.Description}}</p>
+                                                                    <h5>Texto base:</h5>
+                                                                    <div ng-bind-html="selectedItemModal.item.BaseText | trustedHtml"></div>
+                                                                    <h5>Enunciado:</h5>
+                                                                    <div ng-bind-html="selectedItemModal.item.Statement | trustedHtml"></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="playlistItem" ng-if="selectedItemModal.item.Videos.length > 0">
+                                                                        <video height="400" width="400" preload="none" controls poster="{{ videoDestaque.ThumbnailPath }}" src="{{ trustSrc(videoDestaque.Path) }}">
+                                                                            Seu navegador não suporta vídeos.
+                                                                        </video>
+                                                                        <h4 ng-if="selectedItemModal.item.Videos.length > 1">+ vídeos</h4>
+                                                                        <ul ng-if="selectedItemModal.item.Videos.length > 1" class="listaVideosItem">
+                                                                            <li ng-repeat="video in selectedItemModal.item.Videos">
+                                                                                <img ng-src="{{ video.ThumbnailPath }}" class="img-responsive" ng-click="loadVideo(video);" />
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <table>
+                                                            <tr>
+                                                                <th colspan="2">ALTERNATIVAS</th>
+                                                                <th>% de escolhas por alternativas</th>
+                                                            </tr>
+                                                            <tr ng-repeat="alt in selectedItemModal.item.Alternatives | orderBy: '+Order'">
+                                                                <td width="5%">
+                                                                    {{alt.Numeration}} <i class="fa fa-check" aria-hidden="true" ng-show="alt.Correct == 1"></i>
+                                                                    <br /> Justificativa:
+                                                                </td>
+                                                                <td>
+                                                                    <div ng-bind-html="alt.Description | trustedHtml"></div>
+                                                                    <div ng-bind-html="alt.Justificative  | trustedHtml"></div>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="barra-progresso">
+                                                                        <div class="progress {{getProgressColor(alt.average)}}">
+                                                                            <div class="progress-bar" role="progressbar" aria-valuenow="{{alt.average}}" aria-valuemin="0" aria-valuemax="100" style="width: {{alt.average}}%;">
+                                                                                <span class="sr-only">{{alt.average}}% Complete</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        {{alt.average}}%
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div role="tabpanel" class="tab-pane" id="graficos" style="min-height: 700px;">
+                                                        <a class="downloadChartCorrection"><i class="material-icons" ng-click="downloadChart('#gfcItem')">file_download</i></a>
+                                                        <div style="width: 400px; height: 240px; overflow-y: auto; overflow-x: hidden; margin: auto;">
+                                                            <canvas id="gfcItem" style="margin: auto;"></canvas>
+                                                        </div>
+                                                        <div class="col-sm-12 menu-lateral">
+                                                            <div class="col-sm-12 divisao">
+                                                                <p style="width: auto;">Turma : </p>
+                                                                <select ng-model="testInformation.Team.Id" ng-change="init();"
+                                                                        ng-options="Team.tur_id as Team.tur_codigo for Team in listTeams"
+                                                                        style="width: 80px; margin-left: 20px;"></select>
+                                                                <p style="float: left; width: auto; margin-left: 40px;">Desempenho entre  : </p>
+                                                                <input class="form-control" type="number" ng-model="testInformation.performanceGraph2Init" min="0" max="100"
+                                                                       style="width: 40px; height: 30px; float: left; text-align: center;" ng-change="carregaGrafico_DesempenhoPorDisciplina()" />
+
+                                                                <input class="form-control" type="number" ng-model="testInformation.performanceGraph2End" min="0" max="100"
+                                                                       style="width: 40px; height: 30px; float: left; text-align: center; margin-left: 10px;" ng-change="carregaGrafico_DesempenhoPorDisciplina()" />
+
+                                                                <p style="margin-left: 40px;  width: auto;">Ordenação : </p>
+                                                                <select id="orderSideItens" class="form-control"
+                                                                        ng-model="testInformation.selectedOrderGraph2" style="width: 180px;"
+                                                                        ng-change="carregaGrafico_DesempenhoPorDisciplina()"
+                                                                        ng-options="opt.id as opt.label for opt in itemsGraphOrderOptions"></select>
+                                                                <i class="fa fa-sort" style="cursor: pointer;" aria-hidden="true" ng-click="resortPerformanceByDisciplineGraph()"></i>
+                                                            </div>
+                                                        </div>
+                                                        <a class="downloadChartCorrection"><i class="material-icons" ng-click="downloadChart('#gfcPerformanceByAlternative')">file_download</i></a>
+                                                        <div style="overflow-y: auto; overflow-x: hidden; width: 850px; height: 400px; overflow-y: auto; overflow-x: hidden;">
+                                                            <canvas id="gfcPerformanceByAlternative" style="margin: auto;"></canvas>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-sm-8 menu-lateral">
+                            <div class="col-sm-12 divisao">
+                                <p style="float: left; width: auto; ">Desempenho entre  : </p>
+
+                                <input id="performanceGraph1Init" class="form-control" type="number" ng-model="testInformation.performanceGraph1Init" min="0" max="100"
+                                       style="width: 40px; height: 30px; float: left; text-align: center;" ng-change="carregaGrafico_Desempenho()" />
+
+                                <input id="performanceGraph1End" class="form-control" type="number" ng-model="testInformation.performanceGraph1End" min="0" max="100"
+                                       style="width: 40px; height: 30px; float: left; text-align: center; margin-left: 10px;" ng-change="carregaGrafico_Desempenho()" />
+
+                                <p style="margin-left: 40px; width: auto;">Ordenação : </p>
+                                <select id="orderSideItens" class="form-control"
+                                        ng-model="testInformation.selectedOrderGraph1" style="width: 180px;" ng-change="carregaGrafico_Desempenho()"
+                                        ng-options="opt.id as opt.label for opt in itemsGraphOrderOptions"></select>
+                                <i class="fa fa-sort" style="cursor: pointer;" aria-hidden="true" ng-click="resortPerformanceGraph();"></i>
+                            </div>
+                        </div>
+                        <a class="downloadChartCorrection"><i class="material-icons" ng-click="downloadChart('#gfcPerformance')">file_download</i></a>
+                        <div class="col-sm-8">
+                            <canvas id="gfcPerformance" style="max-width: 700px; width:700px; overflow-x: auto; overflow-y: hidden;"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+                <div role="tabpanel" class="tab-pane" id="tabela">
+
+                    @* Lista Alunos *@
+                    <div class="maxWidth" ng-if="list.Students">
+                        <div class="headerAdesao">
+                            <h4>
+                                <span style="display: inherit;">Resultados gerais da turma</span>
+                                <button class="btnPadrao pull-right" ng-click="exportMicrodata();">
+                                    <span>Exportar</span>
+                                </button>
+                                <button class="btnPadrao pull-right" ng-click="editResults();" ng-if="!testInformation.blockCorrection">
+                                    <span>Reabrir digitação</span>
+                                </button>
+                            </h4>
+                            <p style="float: left">* Clique sobre o nome do aluno para acessar o relatório de resultado do mesmo.</p>
+                        </div>
+                        <div class="campoLabel">
+                            @* Componente curricular *@
+                            <label class="" for="discipline">Componente curricular:</label>
+                            <div>
+                                <label ng-show="oneDiscipline">{{testInformation.discipline_name}}</label>
+                                <select id="discipline" class="form-control"
+                                        ng-change="loadByDiscipline()"
+                                        ng-model="testInformation.discipline_id"
+                                        ng-options="discipline.Id as discipline.Description for discipline in listDiscipline"
+                                        ng-title="listDiscipline"
+                                        ng-title-propertie="Description"
+                                        ng-title-index="1"
+                                        ng-show="!oneDiscipline"
+                                        ng-title-selected>
+                                    <option value="">--Todos--</option>
+                                </select>
+                                <div ng-show="oneDiscipline"></div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table tableCorrecao fixada tableSlide">
+                                <thead class="fixa">
+                                    <tr ng-show="{{totalAnswers}} > 30">
+                                        <th colspan="2"></th>
+                                        <th colspan="{{answers.length}}" class="navSlide">
+                                            <div class="pull-left">
+                                                @*begin*@
+                                                <i class="material-icons dois"
+                                                   ng-click="begin();"
+                                                   ng-class="{'correction-buttons-disabled': slider.current == 0, 'correction-buttons': slider.current>0}">keyboard_arrow_left<i class="material-icons">keyboard_arrow_left</i></i>
+                                                @*previus*@
+                                                <i class="material-icons"
+                                                   ng-click="previus();"
+                                                   ng-class="{'correction-buttons-disabled': slider.current == 0, 'correction-buttons': slider.current>0}">keyboard_arrow_left</i>
+                                            </div>
+                                            <div class="pull-right">
+                                                @*next*@
+                                                <i class="material-icons"
+                                                   ng-click="next();"
+                                                   ng-class="{'correction-buttons-disabled': slider.current == slider.max, 'correction-buttons': slider.current<slider.max}">keyboard_arrow_right</i>
+                                                @*end*@
+                                                <i class="material-icons dois"
+                                                   ng-click="end();"
+                                                   ng-class="{'correction-buttons-disabled': slider.current == slider.max, 'correction-buttons': slider.current<slider.max}">keyboard_arrow_right<i class="material-icons">keyboard_arrow_right</i></i>
+                                            </div>
+                                        </th>
+                                        <th colspan="2"></th>
+                                    </tr>
+                                    <tr>
+                                        <th class="off text-right">Nº</th>
+                                        <th class="off maxWidth-auto">Nome</th>
+
+                                        <th class="text-center thSlide" ng-repeat="($indexAnswers, answer) in answers track by $indexAnswers" ng-class="{'revoked' : answer.Revoked === true }">
+                                            {{(answer.Order+1)>9 ? (answer.Order+1) : '0' + (answer.Order+1)}}
+                                            <span class="alternativa">{{answer.RightChoice.replace(')', '')}}</span>
+                                        </th>
+
+                                        <th class="off text-center maxWidth-60">Acertos</th>
+                                        <th class="off text-center maxWidth-40">%</th>
+                                    </tr>
+                                </thead>
+                                <thead>
+                                    <tr class="turma">
+                                        <th></th>
+                                        <th class="nome">Toda a turma</th>
+                                        <th class="resultado text-center thSlide" ng-repeat="($indexStatistics, statistic) in statistics track by $indexStatistics" ng-class="{'revoked' : statistic.Revoked === true }">
+                                            {{(statistic.Average === 100) ? (statistic.Average | number:0) : (statistic.Average | number:1)}}
+                                        </th>
+                                        <th class="text-center maxWidth-60">{{list.Statistics.GeneralHits}}</th>
+                                        <th class="text-center maxWidth-40" style="padding: 0 !important"><strong>{{average.AvgTeam}}</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="($indexStudent, student) in list.Students track by $indexStudent"
+                                        ng-class="{'ocorrencia': student.AbsenceReason!==null}">
+                                        <td>{{student.mtu_numeroChamada}}</td>
+                                        <td class="nome">
+
+                                            <a ng-if="student.Alternatives && !student.AbsenceReason" href="/ReportStudentPerformance?dre_id={{params.dre_id}}&esc_id={{params.esc_id}}&team_id={{testInformation.Team.Id}}&alu_id={{student.alu_id}}&test_id={{testInformation.TestId}}">
+                                                {{student.alu_nome}}
+                                                <i class="material-icons">redo</i>
+                                            </a>
+
+                                            <a title="Aluno sem correção" ng-if="!student.Alternatives && !student.AbsenceReason">
+                                                {{student.alu_nome}}
+                                            </a>
+
+                                            <a ng-if="student.AbsenceReason">
+                                                {{student.alu_nome}}
+                                                <i class="material-icons"
+                                                   data-trigger="hover" data-type="success"
+                                                   data-title="{{student.AbsenceReason}}" data-animation="am-fade"
+                                                   data-placement="top" data-container="body" bs-tooltip="">error</i>
+                                            </a>
+
+                                        </td>
+                                        <td class="resultado text-center tdSlide"
+                                            ng-repeat="($indexStudentAnswer, studentAnswer) in student.Answers track by $indexStudentAnswer"
+                                            ng-class="{'revoked' : studentAnswer.Revoked === true, 'ocorrencia': (studentAnswer != null && !studentAnswer.Correct) || student.AbsenceReason!==null}">
+                                            {{removeBracket(studentAnswer.Numeration)}}
+                                        </td>
+                                        <td class="turma text-center">{{student.Hits}}</td>
+                                        <td class="turma text-center" style="padding: 0 !important"><strong>{{student.Performance}}</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if (SessionFacade.UsuarioLogado.Grupo.vis_id == (int)GestaoAvaliacao.Util.EnumSYS_Visao.Administracao)
+                        {
+                            <div class="blocoMedias">
+                                <div class="col-md-4 text-center">
+                                    <p><strong>Média da Escola</strong></p>
+                                    <p>{{average.AvgESC}} %</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <p><strong>Média da DRE</strong></p>
+                                    <p>{{average.AvgDRE}} %</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <p><strong>Média da SME</strong></p>
+                                    <p>{{average.AvgSME}} %</p>
+                                </div>
+                            </div>
+                        }
+                        else if (SessionFacade.UsuarioLogado.Grupo.vis_id == (int)GestaoAvaliacao.Util.EnumSYS_Visao.Gestao)
+                        {
+                            <div class="blocoMedias">
+                                <div class="col-md-6 text-center">
+                                    <p><strong>Média da Escola</strong></p>
+                                    <p>{{average.AvgESC}} %</p>
+                                </div>
+                                <div class="col-md-6 text-center">
+                                    <p><strong>Média da DRE</strong></p>
+                                    <p>{{average.AvgDRE}} %</p>
+                                </div>
+                            </div>
+                        }
+                        else if (SessionFacade.UsuarioLogado.Grupo.vis_id == (int)GestaoAvaliacao.Util.EnumSYS_Visao.UnidadeAdministrativa)
+                        {
+                            <div class="blocoMedias">
+                                <div class="col-md-12 text-center">
+                                    <p><strong>Média da Escola</strong></p>
+                                    <p>{{average.AvgESC}} %</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="cards maxWidth" ng-if="!list.Students">
+            <p class="nresultados">Nenhum resultado encontrado.</p>
+        </div>
+        @* confirmar Confirmar marcar/desmarcar *@
+        <modal id="cancelModal" modal-title="<p>Deseja realmente sair?</p>">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btnPadrao" ng-click="cancel();">Sim</button>
+                        <button type="button" class="btnCancelar2" data-dismiss="modal">Não</button>
+                    </div>
+                </div>
+            </div>
+        </modal>
+    </div>
+</div>
+
+<script>
+    $(window).scroll(function () {
+        var scroll = $(window).scrollTop();
+        var objectSelect = $(".headerAdesao");
+        if (objectSelect.offset() != null) {
+            var objectPosition = objectSelect.offset().top;
+            if (scroll > objectPosition) {
+                $(".fixa").addClass("mudaClasse");
+            } else {
+                $(".fixa").removeClass("mudaClasse");
+            }
+        }
+    });
+</script>

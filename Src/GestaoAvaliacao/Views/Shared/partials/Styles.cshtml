@@ -1,0 +1,48 @@
+﻿@using System.Web.Optimization
+
+
+@*CSS*@
+@Styles.Render("~/bundles/vendor_css")
+
+@*CSS*@
+@Styles.Render("~/bundles/angular_css")
+
+@*CSSSelect 2*@
+@Styles.Render("~/bundles/select2_css")
+
+@{ 
+	var controller = ViewContext.RouteData.GetRequiredString("controller");
+	var action = ViewContext.RouteData.GetRequiredString("action");    
+}
+
+@if (controller.Equals("Item") ||
+    controller.Equals("Test") ||
+     controller.Equals("ModelTest") ||
+     controller.Equals("ItemType") ||
+     controller.Equals("File") ||
+     controller.Equals("ModelEvaluationMatrix") ||
+     controller.Equals("EvaluationMatrix") ||
+     controller.Equals("Correction") ||
+     controller.Equals("AnswerSheet") ||
+     controller.Equals("AbsenceReason") ||
+     controller.Equals("CognitiveCompetence") ||
+     controller.Equals("CorrelatedSkill") ||
+     controller.Equals("Discipline") ||
+     controller.Equals("ItemLevel") ||
+     controller.Equals("PerformanceLevel") ||
+     controller.Equals("TestType") ||
+     controller.Equals("TestGroup") ||
+     controller.Equals("KnowledgeArea") ||
+     controller.Equals("Subject") ||
+     controller.Equals("ReportPerformance") ||
+     controller.Equals("ResponseChangeLog") ||
+     controller.Equals("ElectronicTest") ||
+     controller.Equals("PageConfiguration") ||
+     controller.Equals("AdministrativeUnitType")
+    )
+{
+    controller = String.Format("{0}_{1}", controller, action);
+}
+
+@*CSS*@
+@Styles.Render("~/bundles/{{controler}}_css".Replace("{{controler}}", controller))

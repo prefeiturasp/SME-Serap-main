@@ -1,0 +1,51 @@
+<div class="popover" tabindex="-1" style="width:240px">
+	<div class="arrow"></div>
+	<div class="popover-content">
+		<ul class="listaPopover">
+			<li ng-click="popovermenu.baixar(); $hide();">
+				<i class="material-icons">file_download</i>
+				<a href="javascript:void(0)">Anexos da prova</a>
+			</li>
+			<li ng-click="popovermenu.adherence(); $hide();">
+				<i class="material-icons">playlist_add</i>
+				<a href="javascript:void(0)">Aderir</a>
+			</li>
+			<li ng-click="popovermenu.application(); $hide();" ng-if="!popovermenu.selectedTest.ItemTypeUndefined">
+				<i class="material-icons">assignment</i>
+				<a href="javascript:void(0)">Folhas de respostas</a>
+			</li>
+			<li ng-click="popovermenu.studentResponses(); $hide();" ng-if="!popovermenu.selectedTest.ItemTypeUndefined">
+				<i class="material-icons">group</i>
+				<a href="javascript:void(0)">Respostas dos alunos</a>
+			</li>
+			<li ng-click="popovermenu.vincular(); $hide();" ng-if="popovermenu.selectedTest.TestOwner">
+				<i class="material-icons">swap_horiz</i>
+				<a href="javascript:void(0)">Vincular</a>
+			</li>
+			<li ng-click="popovermenu.editar(); $hide();" ng-if="popovermenu.selectedTest.TestOwner">
+				<i class="material-icons">create</i>
+				<a href="javascript:void(0)">Editar</a>
+			</li>
+			<li ng-click="popovermenu.excluir(); $hide();" ng-if="popovermenu.selectedTest.TestOwner">
+				<i class="material-icons">delete</i>
+				<a href="javascript:void(0)">Excluir</a>
+			</li>
+            <li ng-click="popovermenu.anular(); $hide();">
+                <i class="material-icons">block</i>
+                <a href="javascript:void(0)">Anular itens da prova</a>
+            </li>
+            <li ng-click="popovermenu.permissao(); $hide();" ng-if="popovermenu.profile == popovermenu.visAdmin">
+                <i class="material-icons">visibility_off</i>
+                <a href="javascript:void(0)">Permiss&ocirc;es</a>
+            </li>
+            <!--<li ng-click="popovermenu.hide(); $hide();" ng-if="popovermenu.selectedTest.Test.Visible && popovermenu.selectedTest.Test.Global && popovermenu.profile == popovermenu.visAdmin">
+                <i class="material-icons">visibility_off</i>
+                <a href="javascript:void(0)">Ocultar prova</a>
+            </li>
+            <li ng-click="popovermenu.show(); $hide();" ng-if="!popovermenu.selectedTest.Test.Visible && popovermenu.selectedTest.Test.Global && popovermenu.profile == popovermenu.visAdmin">
+                <i class="material-icons">visibility</i>
+                <a href="javascript:void(0)">Reexibir prova</a>
+            </li>-->
+		</ul>
+	</div>
+</div>

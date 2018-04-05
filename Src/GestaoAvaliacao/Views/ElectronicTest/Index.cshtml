@@ -1,0 +1,67 @@
+﻿@* Alertas *@
+<alert></alert>
+<div class="wellCustom" data-ng-controller="IndexElectronicTestController">
+    <div class="headerCustom">
+        <h4>Gerenciador de Provas Online <span>Receba e resolva provas, visualize provas realizadas e suas correções</span></h4>
+    </div>
+
+    <div class="accordion-prova">
+        <p class="nresultados" ng-show="!(eletronicTestListNaoIniciadas.length > 0 || eletronicTestListEmAndamento.length > 0 || eletronicTestFinalizadas.length > 0)">Nenhum resultado encontrado.</p>
+        <div class="a-gerenciar" ng-show="!admin && eletronicTestListNaoIniciadas.length > 0">
+            <label class="pull-left" style="margin:0;">Provas não iniciadas</label>
+        </div>
+        @*Accordion*@
+        <div class="panel-group" id="divProvasNaoIniciadas" ng-show="!admin && eletronicTestListNaoIniciadas.length > 0" ng-repeat="provaNaoIniciada in eletronicTestListNaoIniciadas">
+            <div class="panel panel-default cardNaoIniciado">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <div>
+                        <strong>{{ provaNaoIniciada.Description }}</strong> | {{ provaNaoIniciada.FrequencyApplicationText }} <a class="btnPadrao pull-right menor-btn" ng-click="abrirProvaNaoIniciada(provaNaoIniciada)">INICIAR</a>
+                    </div>
+                </div>
+                <div id="divInformacoesProvaNaoIniciada">
+                    <div class="panel-body cardNaoIniciado">
+                        <p>{{ provaNaoIniciada.NumberItem }} <i class="fa fa-file-text" aria-hidden="true"></i> <small>Questões totais</small></p>
+                        <p>{{ provaNaoIniciada.quantDiasRestantes }} <i class="fa fa-calendar-o" aria-hidden="true"></i> <small>{{ provaNaoIniciada.quantDiasRestantes > 1 ? 'Dias restantes' : 'Dia restante' }}</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="a-gerenciar" ng-show="eletronicTestListEmAndamento.length > 0">
+            <label class="pull-left" style="margin:0;">Provas em andamento</label>
+        </div>
+        <div class="panel-group" id="divProvasEmAndamento" ng-show="eletronicTestListEmAndamento.length > 0" ng-repeat="provaEmAndamento in eletronicTestListEmAndamento">
+            <div class="panel panel-default cardEmAndamento" >
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <div>
+                        <strong>{{ provaEmAndamento.Description }}</strong> | {{ provaEmAndamento.FrequencyApplicationText }}<a class="btnPadrao pull-right menor-btn" ng-click="abrirProvaEmProgresso(provaEmAndamento)"> {{admin ? 'VISUALIZAR' : 'CONTINUAR'}}</a>
+                    </div>
+                </div>
+                <div id="divInformacoesProvaEmAndamento">
+                    <div class="panel-body cardEmAndamento">
+                        <p>{{ provaEmAndamento.NumberItem }} <i class="fa fa-file-text" aria-hidden="true"></i> <small>Questões totais</small></p>
+                        <p>{{ provaEmAndamento.quantDiasRestantes }} <i class="fa fa-calendar-o" aria-hidden="true"></i> <small>{{ provaEmAndamento.quantDiasRestantes > 1 ? 'Dias restantes' : 'Dia restante' }}</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="a-gerenciar" ng-show="eletronicTestFinalizadas.length > 0">
+            <label class="pull-left" style="margin:0;">Provas finalizadas</label>
+        </div>
+        <div class="panel-group" id="divProvasFinalizadas" ng-show="eletronicTestFinalizadas.length > 0" ng-repeat="provaFinalizada in eletronicTestFinalizadas">
+            <div class="panel panel-default cardFinalizada" >
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <div>
+                        <strong>{{ provaFinalizada.Description }}</strong> | {{ provaFinalizada.FrequencyApplicationText }} <a class="btnPadrao pull-right menor-btn" ng-click="abrirProvaFinalizada(provaFinalizada)">VISUALIZAR</a>
+                    </div>
+                </div>
+                <div id="divInformacoesProvaFinalizada">
+                    <div class="panel-body cardFinalizada">
+                        <p>{{ provaFinalizada.NumberItem }} <i class="fa fa-file-text" aria-hidden="true"></i> <small>Questões totais</small></p>
+                        <data>{{ provaFinalizada.ApplicationEndDate | moment:"DD/MM/YYYY" }} <i class="fa fa-calendar-o" aria-hidden="true"></i> <small>Data final da aplicação</small></data>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@{ Layout = null; }
+
+@using System.Web.Optimization
+
+
+@model IList<MSTech.CoreSSO.Entities.SYS_Grupo>
+
+@*CSS*@
+@Styles.Render("~/bundles/Account_css")
+
+<div class="selecao">
+
+    <h3>Seleção de grupo</h3> 
+
+    @if (@Html.ValidationSummary(true) != null)
+    {
+        @Html.ValidationSummary(true)
+        <a href="@Html.Action("UrlSistemaSso", "Account")" class="btn">Voltar</a>
+    }
+
+    <div>
+        @if (Model != null)
+        {
+            <ul>
+                @foreach (MSTech.CoreSSO.Entities.SYS_Grupo item in Model)
+                {
+                    <li>
+                        @Html.ActionLink(item.gru_nome.ToUpper(), "LoginUsuarioGrupo", new { id = item.gru_id })
+                    </li>
+            }
+            </ul>
+        }
+    </div>
+
+</div>
+
+<style>
+	body {
+		margin: 0;
+	}
+</style>

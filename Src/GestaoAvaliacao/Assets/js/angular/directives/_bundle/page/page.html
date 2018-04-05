@@ -1,0 +1,24 @@
+﻿<div id="pagination">
+    <span ng-show="total_itens > 0">Resultados: ({{total_itens}})</span>
+    <ul>
+        <li class="pull-right">
+            <select class='input-mini' 
+                    title='Itens por página' 
+                    ng-options='size as size for size in arrPageSize' 
+                    ng-model='page_size' 
+                    ng-change='change_total_page()' 
+                    ng-show='pages.length > 0'
+                    ng-title="arrPageSize"
+                    ng-title-propertie=""
+                    ng-title-index="0"></select>
+        </li>
+        <li ng-show="page_start() >= page_offset" title="Ver páginas anteriores">
+            <a ng-click="prev_offset()">...</a>
+        </li>
+        <li ng-show="pages.length > 1" ng-repeat="page in pages | between:page_start():page_end()" ng-class="{ active: page.active, disabled: page.disabled}">
+            <a ng-click="paginacao(page.number)"><span>{{page.number}}</span></a> 
+        </li>
+        <li ng-show="total_pages > page_end()" title="Ver próximas páginas"><a ng-click="next_offset()">...</a></li>
+    </ul>
+    <br ng-show="pages.length < 2"/>
+</div>

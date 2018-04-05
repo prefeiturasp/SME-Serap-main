@@ -1,0 +1,1241 @@
+﻿/* Estilos gerais do editor de fórmulas */
+#redactor-modal-box {
+    z-index:10000 !important;
+}
+#editor-equations {
+    height:260px;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+.redactor-editor .eq-redactor {
+    background: #d5e3f4;
+    padding: 3px;
+}
+.mathEditor ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    text-align: center;
+}
+.mathEditor ul li {
+    cursor:pointer;
+    float: left;
+    display: inline-block;
+    margin-right:3px;
+}
+.mathEditor ul li:hover {
+    border: 1px solid #ff0808;
+    padding-right:5px;
+}
+.equation-space {
+    margin: 10px;
+}
+
+
+
+/* icons - operações complexas*/
+/*operações complexas 1ª linha */
+.function_1 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) 0 0;
+}
+.function_2 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -28px 0;
+}
+.function_3 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -56px 0;
+}
+.function_4 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -84px 0;
+}
+.function_5 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -112px 0;
+}
+.function_6 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -140px 0;
+}
+/*operações complexas 2ª linha */
+.function_7 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) 0 -28px;
+}
+.function_8 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -28px -28px;
+}
+.function_9 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -56px -28px;
+}
+.function_10 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -84px -28px;
+}
+.function_11 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -112px -28px;
+}
+.function_12 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -140px -28px;
+}
+/*operações complexas 3ª linha */
+.function_13 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) 0 -56px;
+}
+.function_14 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -28px -56px;
+}
+.function_15 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -56px -56px;
+}
+.function_16 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -84px -56px;
+}
+.function_17 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -112px -56px;
+}
+.function_18 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -140px -56px;
+}
+/*operações complexas 4ª linha */
+.function_19 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) 0 -84px;
+}
+.function_20 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -28px -84px;
+}
+.function_21 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -56px -84px;
+}
+.function_22 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -84px -84px;
+}
+.function_23 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -112px -84px;
+}
+.function_24 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -140px -84px;
+}
+/*operações complexas 5ª linha */
+.function_25 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) 0 -112px;
+}
+.function_26 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -28px -112px;
+}
+.function_27 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -56px -112px;
+}
+.function_28 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/operators.gif) -84px -112px;
+}
+
+
+
+
+/* icons - Brackets */
+/* Brackets 1ª linha */
+.bracket_1 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/brackets.gif) 0 0;
+}
+.bracket_2 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/brackets.gif) -28px 0;
+}
+/* Brackets 2ª linha */
+.bracket_3 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/brackets.gif) 0 -28px;
+}
+.bracket_4 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/brackets.gif) -28px -28px;
+}
+/* Brackets 3ª linha */
+.bracket_5 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/brackets.gif) 0 -56px;
+}
+.bracket_6 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/brackets.gif) -28px -56px;
+}
+/* Brackets 4ª linha */
+.bracket_7 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/brackets.gif) 0 -84px;
+}
+.bracket_8 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/brackets.gif) -28px -84px;
+}
+/* Brackets 5ª linha */
+.bracket_9 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/brackets.gif) 0 -112px;
+}
+.bracket_10 {
+    width: 28px;
+    height: 28px;
+    background: url(/Assets/js/vendor/redactor/brackets.gif) -28px -112px;
+}
+
+
+
+/* icons - Greeklower */
+/* Greeklower 1ª linha */
+.greeklower_1 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) 0 0;
+}
+.greeklower_2 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -17px 0;
+}
+.greeklower_3 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -34px 0;
+}
+.greeklower_4 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -51px 0;
+}
+/* Greeklower 2ª linha */
+.greeklower_5 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) 0 -17px;
+}
+.greeklower_6 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -17px -17px;
+}
+.greeklower_7 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -34px -17px;
+}
+.greeklower_8 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -51px -17px;
+}
+/* Greeklower 3ª linha */
+.greeklower_9 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) 0 -34px;
+}
+.greeklower_10 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -17px -34px;
+}
+.greeklower_11 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -34px -34px;
+}
+.greeklower_12 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -51px -34px;
+}
+/* Greeklower 4ª linha */
+.greeklower_13 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) 0 -51px;
+}
+.greeklower_14 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -17px -51px;
+}
+.greeklower_15 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -34px -51px;
+}
+.greeklower_16 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -51px -51px;
+}
+/* Greeklower 5ª linha */
+.greeklower_17 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) 0 -68px;
+}
+.greeklower_18 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -17px -68px;
+}
+.greeklower_19 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -34px -68px;
+}
+.greeklower_20 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -51px -68px;
+}
+/* Greeklower 6ª linha */
+.greeklower_21 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) 0 -85px;
+}
+.greeklower_22 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -17px -85px;
+}
+.greeklower_23 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -34px -85px;
+}
+.greeklower_24 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -51px -85px;
+}
+/* Greeklower 7ª linha */
+.greeklower_25 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) 0 -102px;
+}
+.greeklower_26 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -17px -102px;
+}
+.greeklower_27 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -34px -102px;
+}
+.greeklower_28 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) -51px -102px;
+}
+.greeklower_29 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greeklower.gif) 0 -119px;
+}
+
+
+/* icons - Greekupper */
+/* Greekupper 1ª linha */
+.greekupper_1 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) 0 0;
+}
+.greekupper_2 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) -17px 0;
+}
+/* Greekupper 2ª linha */
+.greekupper_3 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) 0 -17px;
+}
+.greekupper_4 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) -17px -17px;
+}
+/* Greekupper 3ª linha */
+.greekupper_5 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) 0 -34px;
+}
+.greekupper_6 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) -17px -34px;
+}
+/* Greekupper 4ª linha */
+.greekupper_7 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) 0 -51px;
+}
+.greekupper_8 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) -17px -51px;
+}
+/* Greekupper 5ª linha */
+.greekupper_9 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) 0 -68px;
+}
+.greekupper_10 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) -17px -68px;
+}
+/* Greekupper 6ª linha */
+.greekupper_11 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/greekupper.gif) 0 -85px;
+}
+
+
+
+/* icons - Relations */
+/* Relations 1ª linha */
+.relations_1 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 0;
+}
+.relations_2 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px 0;
+}
+.relations_3 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px 0;
+}
+/* Relations 2ª linha */
+.relations_4 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -17px;
+}
+.relations_5 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -17px;
+}
+.relations_6 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -17px;
+}
+/* Relations 3ª linha */
+.relations_7 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -34px;
+}
+.relations_8 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -34px;
+}
+.relations_9 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -34px;
+}
+/* Relations 4ª linha */
+.relations_10 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -51px;
+}
+.relations_11 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -51px;
+}
+.relations_12 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -51px;
+}
+/* Relations 5ª linha */
+.relations_13 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -68px;
+}
+.relations_14 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -68px;
+}
+.relations_15 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -68px;
+}
+/* Relations 6ª linha */
+.relations_16 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -85px;
+}
+.relations_17 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -85px;
+}
+.relations_18 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -85px;
+}
+/* Relations 7ª linha */
+.relations_19 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -102px;
+}
+.relations_20 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -102px;
+}
+.relations_21 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -102px;
+}
+/* Relations 7ª linha */
+.relations_22 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -119px;
+}
+.relations_23 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -119px;
+}
+.relations_24 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -119px;
+}
+/* Relations 8ª linha */
+.relations_25 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -136px;
+}
+.relations_26 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -136px;
+}
+.relations_27 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -136px;
+}
+/* Relations 9ª linha */
+.relations_28 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -153px;
+}
+.relations_29 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -153px;
+}
+.relations_30 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -153px;
+}
+/* Relations 10ª linha */
+.relations_31 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -170px;
+}
+.relations_32 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -170px;
+}
+.relations_33 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -170px;
+}
+/* Relations 11ª linha */
+.relations_34 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -187px;
+}
+.relations_35 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -187px;
+}
+.relations_36 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -34px -187px;
+}
+/* Relations 12ª linha */
+.relations_37 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) 0 -204px;
+}
+.relations_38 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/relations.gif) -17px -204px;
+}
+
+
+/* icons - Arrows */
+/* Arrows 1ª linha */
+.arrow_1 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) 0 0;
+}
+.arrow_2 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) -28px 0;
+}
+/* Arrows 2ª linha */
+.arrow_3 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) 0 -17px;
+}
+.arrow_4 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) -28px -17px;
+}
+/* Arrows 3ª linha */
+.arrow_5 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) 0 -34px;
+}
+.arrow_6 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) -28px -34px;
+}
+/* Arrows 4ª linha */
+.arrow_7 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) 0 -51px;
+}
+.arrow_8 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) -28px -51px;
+}
+/* Arrows 5ª linha */
+.arrow_9 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) 0 -68px;
+}
+.arrow_10 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) -28px -68px;
+}
+/* Arrows 6ª linha */
+.arrow_11 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) 0 -85px;
+}
+.arrow_12 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) -28px -85px;
+}
+/* Arrows 7ª linha */
+.arrow_13 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) 0 -102px;
+}
+.arrow_14 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) -28px -102px;
+}
+/* Arrows 8ª linha */
+.arrow_15 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) 0 -119px;
+}
+.arrow_16 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) -28px -119px;
+}
+/* Arrows 9ª linha */
+.arrow_17 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) 0 -136px;
+}
+.arrow_18 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) -28px -136px;
+}
+/* Arrows 9ª linha */
+.arrow_19 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) 0 -153px;
+}
+.arrow_20 {
+    width: 28px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/arrows.gif) -28px -153px;
+}
+
+
+/* icons - Accents_ext */
+/* Accents_ext 1ª linha */
+.accents_ext_1 {
+    width: 25px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents_ext.gif) 0 0;
+}
+.accents_ext_2 {
+    width: 25px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents_ext.gif) 0 -17px;
+}
+.accents_ext_3 {
+    width: 25px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents_ext.gif) 0 -34px;
+}
+.accents_ext_4 {
+    width: 25px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents_ext.gif) 0 -51px;
+}
+.accents_ext_5 {
+    width: 25px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents_ext.gif) 0 -68px;
+}
+.accents_ext_6 {
+    width: 25px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents_ext.gif) 0 -85px;
+}
+.accents_ext_7 {
+    width: 25px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents_ext.gif) 0 -102px;
+}
+.accents_ext_8 {
+    width: 25px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents_ext.gif) 0 -119px;
+}
+.accents_ext_9 {
+    width: 25px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents_ext.gif) 0 -136px;
+}
+.accents_ext_10 {
+    width: 25px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents_ext.gif) 0 -153px;
+}
+
+
+
+
+/* icons - Accents */
+/* Accents 1ª linha */
+.accents_1 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) 0 0;
+}
+.accents_2 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) -17px 0;
+}
+/* Accents 2ª linha */
+.accents_3 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) 0 -17px;
+}
+.accents_4 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) -17px -17px;
+}
+/* Accents 3ª linha */
+.accents_5 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) 0 -34px;
+}
+.accents_6 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) -17px -34px;
+}
+/* Accents 4ª linha */
+.accents_7 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) 0 -51px;
+}
+.accents_8 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) -17px -51px;
+}
+/* Accents 5ª linha */
+.accents_9 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) 0 -68px;
+}
+.accents_10 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) -17px -68px;
+}
+/* Accents 6ª linha */
+.accents_11 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) 0 -85px;
+}
+.accents_12 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) -17px -85px;
+}
+/* Accents 7ª linha */
+.accents_13 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) 0 -102px;
+}
+.accents_14 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/accents.gif) -17px -102px;
+}
+
+
+
+
+/* icons - Subsupset */
+/* Subsupset 1ª linha */
+.subsupset_1 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) 0 0;
+}
+.subsupset_2 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) -17px 0;
+}
+/* Accents 2ª linha */
+.subsupset_3 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) 0 -17px;
+}
+.subsupset_4 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) -17px -17px;
+}
+/* Accents 3ª linha */
+.subsupset_5 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) 0 -34px;
+}
+.subsupset_6 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) -17px -34px;
+}
+/* Accents 4ª linha */
+.subsupset_7 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) 0 -51px;
+}
+.subsupset_8 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) -17px -51px;
+}
+/* Accents 5ª linha */
+.subsupset_9 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) 0 -68px;
+}
+.subsupset_10 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) -17px -68px;
+}
+/* Accents 6ª linha */
+.subsupset_11 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) 0 -85px;
+}
+.subsupset_12 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) -17px -85px;
+}
+/* Accents 7ª linha */
+.subsupset_13 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) 0 -102px;
+}
+.subsupset_14 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) -17px -102px;
+}
+/* Accents 8ª linha */
+.subsupset_15 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) 0 -119px;
+}
+.subsupset_16 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) -17px -119px;
+}
+/* Accents 9ª linha */
+.subsupset_17 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/subsupset.gif) 0 -136px;
+}
+
+
+/* icons - Symbols */
+/* Symbols 1ª linha */
+.symbols_1 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) 0 0;
+}
+.symbols_2 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -17px 0;
+}
+.symbols_3 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -34px 0;
+}
+.symbols_4 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -51px 0;
+}
+/* Symbols 2ª linha */
+.symbols_5 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) 0 -17px;
+}
+.symbols_6 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -17px -17px;
+}
+.symbols_7 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -34px -17px;
+}
+.symbols_8 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -51px -17px;
+}
+/* Symbols 3ª linha */
+.symbols_9 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) 0 -34px;
+}
+.symbols_10 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -17px -34px;
+}
+.symbols_11 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -34px -34px;
+}
+.symbols_12 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -51px -34px;
+}
+/* Symbols 4ª linha */
+.symbols_13 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) 0 -51px;
+}
+.symbols_14 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -17px -51px;
+}
+.symbols_15 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -34px -51px;
+}
+.symbols_16 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -51px -51px;
+}
+/* Symbols 5ª linha */
+.symbols_17 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) 0 -68px;
+}
+.symbols_18 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -17px -68px;
+}
+.symbols_19 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -34px -68px;
+}
+.symbols_20 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -51px -68px;
+}
+/* Symbols 6ª linha */
+.symbols_21 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) 0 -85px;
+}
+.symbols_22 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -17px -85px;
+}
+.symbols_23 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -34px -85px;
+}
+.symbols_24 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -51px -85px;
+}
+/* Symbols 7ª linha */
+.symbols_26 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -17px -102px;
+}
+.symbols_27 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -34px -102px;
+}
+.symbols_28 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -51px -102px;
+}
+/* Symbols 8ª linha */
+.symbols_30 {
+    width: 17px;
+    height: 17px;
+    background: url(/Assets/js/vendor/redactor/symbols.gif) -17px -119px;
+}
+
+
+
+/* icons - Matrix */
+/* Matrix 1ª linha */
+.matrix_1 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) 0 0;
+}
+.matrix_2 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) -34px 0;
+}
+.matrix_3 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) -68px 0;
+}
+/* Matrix 2ª linha */
+.matrix_4 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) 0 -34px;
+}
+.matrix_5 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) -34px -34px;
+}
+.matrix_6 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) -68px -34px;
+}
+/* Matrix 3ª linha */
+.matrix_7 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) 0 -68px;
+}
+.matrix_8 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) -34px -68px;
+}
+.matrix_9 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) -68px -68px;
+}
+/* Matrix 4ª linha */
+.matrix_10 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) 0 -102px;
+}
+.matrix_11 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) -34px -102px;
+}
+/* Matrix 4ª linha */
+.matrix_12 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) 0 -136px;
+}
+.matrix_13 {
+    width: 34px;
+    height: 34px;
+    background: url(/Assets/js/vendor/redactor/matrix.gif) -34px -136px;
+}

@@ -1,0 +1,166 @@
+﻿<alert></alert>
+<div class="wellCustom" data-ng-controller="ReportAnswerSheetDREController">
+    <div class="headerCustom">
+        <h4>Relatório de envio de folhas de respostas<span>Acompanhamento do envio de folhas de respostas</span></h4>
+    </div>
+    <div class="resumoAdesao">
+        <div class="maxWidth">
+            <div class="dadosGerais">
+                <h2>
+                    <strong>{{info.DRE.Description}} </strong><br />
+                </h2>
+                <div class="dadosResumo">
+                    <div style="text-align: left;" data-ng-if="filters.StartDate || filters.EndDate">
+                        <strong data-ng-if="FilterDateUpdate">Período de correção</strong>
+                        <strong data-ng-if="!FilterDateUpdate">Período de envio</strong>
+                        <br/>
+                        <label>{{filters.StartDate | moment:"DD/MM/YYYY": true}} - {{filters.EndDate | moment:"DD/MM/YYYY": true}}</label>
+                    </div>
+                    <div style="text-align: right;" data-ng-if="listResult">
+                        <button class="btnPadrao" data-toggle="modal" data-ng-click="generateReport()">Exportar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Gatilho Filtros *@
+    <div class="pesquisa-upload row">
+        <div class="col-md-8"></div>
+        <div class="filtrar-lista col-md-4" data-side-filters style="width:80px !important;">
+            <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                <i class="material-icons" data-side-filters>filter_list</i>
+                <label data-side-filters>Filtrar DREs</label>
+                <div class="notificationFilter"
+                     data-trigger="hover"
+                     data-type="success"
+                     data-title="Filtros selecionados"
+                     data-placement="top"
+                     data-container="body"
+                     data-bs-tooltip>
+                    {{countFilter}}
+                </div>
+            </a>
+        </div>
+    </div>
+    @* Painel de Filtros *@
+    <div class="panel-search side-filters" data-side-filters>
+        <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+            <i class="material-icons">filter_list</i>
+            <label class="filtroP">Filtrar DREs</label>
+            <i class="material-icons fecha">arrow_forward</i>
+        </a>
+        <div class="col-seach" data-side-filters>
+            <label data-side-filters>Período*</label>
+            <div data-side-filters class="radio radio-primary">
+                <input data-side-filters id="FilterDateUpdate1" name="FilterDateUpdate" ng-value="false" class="col-xs-1" type="radio" ng-model="filters.FilterDateUpdate" />
+                <label data-side-filters for="FilterDateUpdate1" class="col-xs-8" style="width: 180px; margin-left:42px;">Data de envio</label>
+            </div>
+            <div data-side-filters class="radio radio-primary">
+                <input data-side-filters id="FilterDateUpdate2" name="FilterDateUpdate" ng-value="true" class="col-xs-1" type="radio" ng-model="filters.FilterDateUpdate" />
+                <label data-side-filters for="FilterDateUpdate2" class="col-xs-8" style="width: 180px; margin-left:42px;">Data de correção</label>
+            </div>
+            <br />
+            <div class="calendario-grafico" data-side-filters>
+                <label data-side-filters>De </label>
+                <button type="button" data-ng-click="datepicker('dateStart')" data-side-filters>
+                    <i class="material-icons">event</i>
+                </button>
+                <input class="dateInput" type="text" placeholder="Data de Início" data-ng-model="filters.StartDate" id="dateStart" datepicker data-side-filters />
+            </div>
+            <div class="calendario-grafico" data-side-filters>
+                <label data-side-filters>até </label>
+                <button type="button" data-ng-click="datepicker('dateEnd')" data-side-filters>
+                    <i class="material-icons">event</i>
+                </button>
+                <input class="dateInput" type="text" placeholder="Data de Término" data-ng-model="filters.EndDate" id="dateEnd" datepicker data-side-filters />
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <label data-side-filters>DREs</label>
+                <select class="form-control"
+                        ng-model="filters.SupAdmUnitId" 
+                        ng-options="dre.Id as dre.Description for dre in listFilter.DREs"
+                        ng-title="listFilter.DREs"
+                        ng-title-propertie="Description"
+                        ng-title-index="1"
+                        ng-title-selected
+                        data-side-filters>
+                    <option value="">Todas as DREs</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <button data-side-filters class="btnCancelar pull-right" data-ng-click="clearFilters();">Limpar</button>
+                <button data-side-filters class="btnCancelar pull-right" data-ng-click="search();">Pesquisar</button>
+            </div>
+        </div>
+    </div>
+    @* Paginação *@
+    <div class="cards maxWidth" data-ng-if="listResult">
+        <table class="table table-hover tableCorrecao ng-scope">
+            <colgroup>
+                <col width="20%" />
+                <col width="12%" />
+                <col width="11%" />
+                <col width="15%" />
+                <col width="15%" />
+                <col width="16%" />
+                <col width="5%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="tr-vertical-center">DRE</th>
+                    <th class="center">Qtde. de arquivos enviados</th>
+                    <th class="center">Na fila para identificação</th>
+                    <th class="center">Qtde. de arquivos identificados</th>
+                    <th class="center">Qtde. de arquivos não identificados (erro)</th>
+                    <th class="center">Qtde. de arquivos fora da faixa ideal de resolução</th>
+                    <th class="center tr-vertical-center">Escolas</th>
+                </tr>
+                <tr class="tr-vertical-center" data-ng-if="totalFiles">
+                    <th style="text-align: right;">{{totalFiles.Name}}</th>
+                    <th class="center">{{totalFiles.TotalSent}}</th>
+                    <th class="center">{{totalFiles.TotalPendingIdentification}}</th>
+                    <th class="center">{{totalFiles.TotalIdentified}}</th>
+                    <th class="center">{{totalFiles.TotalNotIdentified}}</th>
+                    <th class="center">{{totalFiles.TotalResolutionNotOk != null ? totalFiles.TotalResolutionNotOk : ' - '}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="($indexDre, dre) in listResult track by $indexDre">
+                    <td>
+                        <span data-trigger="hover" 
+                           data-type="success" 
+                           data-title="{{dre.Name}}" 
+                           data-animation="am-fade" 
+                           data-placement="top" 
+                           data-container="body" 
+                           data-bs-tooltip>{{dre.Name | minimize:28}}</span>
+                    </td>
+                    <td class="center">{{dre.TotalSent}}</td>
+                    <td class="center">{{dre.TotalPendingIdentification}}</td>
+                    <td class="center">{{dre.TotalIdentified}}</td>
+                    <td class="center">{{dre.TotalNotIdentified}}</td>
+                    <th class="center">{{dre.TotalResolutionNotOk != null ? dre.TotalResolutionNotOk : ' - '}}</th>
+                    <td class="center">
+                        <a href="/ReportAnswerSheet/FollowUpIdentificationSchool?dre_id={{dre.Id}}&startDate={{filters.StartDate}}&endDate={{filters.EndDate}}&FilterDateUpdate={{FilterDateUpdate}}">
+                            <i class="material-icons">zoom_in</i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="nresultados">
+            <page method="Paginate()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+        </div>
+    </div>
+    @* Results not found *@
+    <div class="cards maxWidth" data-ng-if="!listResult">
+        <p class="nresultados">Nenhum resultado encontrado.</p>
+    </div>
+</div>
+
+

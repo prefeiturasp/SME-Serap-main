@@ -1,0 +1,13 @@
+USE GestaoAvaliacao
+GO
+
+--Iniciar transação
+BEGIN TRANSACTION
+SET XACT_ABORT ON
+
+	ALTER TABLE ACA_Aluno
+	ADD pes_id UNIQUEIDENTIFIER NULL;
+
+-- Fechar transação
+SET XACT_ABORT OFF
+COMMIT TRANSACTION	

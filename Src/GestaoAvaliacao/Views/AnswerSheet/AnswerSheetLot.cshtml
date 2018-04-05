@@ -1,0 +1,599 @@
+﻿@using GestaoAvaliacao.Util;
+<alert></alert>
+<div class="wellCustom answerSheetLotPage" ng-controller="AnswerSheetLotController">
+    <div>
+        @* Header *@
+        <div class="headerCustom">
+            <h4>Prova<span>Gerar folha de resposta em lote</span></h4>
+        </div>
+        <div class="pesquisa-codigo row">
+            <div class="col-md-8">
+                <form class="form-inline ng-pristine ng-valid" role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-pesquisa cinza" name="myText" placeholder="Código do lote" ng-model="filters.Lot_Id" fieldinteger ng-show="tab==1">
+                        <input type="text" class="form-pesquisa cinza" name="myText" placeholder="Código da prova" ng-model="filters.Test_Id" fieldinteger ng-show="tab==2">                        
+                    </div>
+                    <button class="btn-pesquisar" ng-click="searchFilter()" title="Pesquisar"><i class="material-icons">search</i></button>
+                </form>
+            </div>
+            <div class="filtrar-lista col-md-4">
+                <a href="javascript:void(0)" ng-click="open();" data-filters>
+                    <i class="material-icons">filter_list</i>
+                    <label>Filtrar lotes</label>
+                    <div class="notificationFilter"
+                         data-trigger="hover"
+                         data-type="success"
+                         data-title="Filtros selecionados"
+                         data-placement="top"
+                         data-container="body"
+                         data-bs-tooltip>{{countFilter}}</div>
+                </a>
+            </div>
+        </div>
+        <div class="well well-large">
+            @* tabs *@
+            <ul class="nav nav-tabs abas-lot" role="tablist">
+                <li class="active"><a href="#escola" role="tab" data-toggle="tab" ng-click="setTab(1)">Escola</a></li>
+                <li class=""><a href="#prova" role="tab" data-toggle="tab" ng-click="setTab(2)">Prova</a></li>                                    
+                <button class="btnPadrao pull-right bt-novo-lote" ng-show="tab==1" ng-click="openNovoLote();"><span>Novo Lote</span></button>
+            </ul>
+            @* Painel Filtros *@
+            <div class="filters" data-filters>
+                <a href="javascript:void(0)" class="filtro-menu" data-ng-click="open();">
+                    <i class="material-icons">filter_list</i>
+                    <label class="filtroP">Filtrar lotes</label>
+                    <i class="material-icons fecha">arrow_forward</i>
+                </a>     
+                <div style="margin-top:10px;" class="col-seach" data-ng-show="tab==1" data-filters>
+                    <div class="calendario-grafico" data-filters>
+                        <label data-filters>Criação</label>
+                    </div>
+                </div>           
+                <div class="col-seach" data-ng-show="tab==1" data-filters>
+                    <div class="calendario-grafico" data-filters>
+                        <label data-filters>de</label>
+                        <button type="button" ng-click="datepicker('dateStart')" data-filters>
+                            <i class="material-icons">event</i>
+                        </button>
+                        <input class="dateInput" type="text" placeholder="Data de Início" ng-model="filters.StartDate" id="dateStart" datepicker data-filters />
+                    </div>
+                    <div class="calendario-grafico" data-filters>
+                        <label data-filters>até</label>
+                        <button type="button" ng-click="datepicker('dateEnd')" data-filters>
+                            <i class="material-icons">event</i>
+                        </button>
+                        <input class="dateInput" type="text" placeholder="Data de Término" ng-model="filters.EndDate" id="dateEnd" datepicker data-filters />
+                    </div>
+                </div>
+                <div class="col-seach">
+                    <div data-filters>
+                        <label data-filters>Situação</label>
+                        <select class="form-control" ng-model="filters.StateExecution">
+                            <option value="" selected="selected">-- Selecione --</option>
+                            <option ng-repeat="state in statesFilter" value="{{state.Id}}">{{state.Description}}</option>
+                        </select>                        
+                    </div>
+                </div>
+                <div class="col-seach">
+                    <div style="display: inline-block; width: 100%;">
+                        <button class="btnCancelar pull-right" ng-click="clear()" data-filters><span>Limpar</span> </button>
+                        <button type="button" class="btnCancelar pull-right" ng-click="searchFilter('filter')" data-filters>Pesquisar</button>
+                    </div>
+                </div>
+            </div>
+
+            @* tabs content *@
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade active in" id="escola">
+                    @* NOVA *@
+                    <div class="maxWidth table-responsive" ng-if="listLots && listLots.length>0">
+                        @* Tabela *@
+                        <table class="table table-hover" style="margin-top: 0px;">
+                            <thead>
+                                <tr>
+                                    <th class="center">Lote</th>
+                                    <th class="center">Criação</th>
+                                    <th class="center">Total de provas</th>
+                                    <th class="center">Solicitação</th>
+                                    <th class="center">Situação</th>
+                                    <th class="center">Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="($indexLots, lot) in listLots track by $indexLots">                                    
+                                    <td class="center">
+                                        <span data-title="{{lot.Lot_Id}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.Lot_Id}}</span>
+                                    </td>                                    
+                                    <td class="center">
+                                        <span data-title="{{lot.CreateDate}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.CreateDate}}</span>
+                                    </td>                                    
+                                    <td class="center">
+                                        <a ng-click="modalTotalProvas(lot);">
+                                            <span data-title="Visualizar provas" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.TestCount}} <i type="button" class="material-icons">visibility</i></span>
+                                        </a>                                        
+                                    </td>                                    
+                                    <td class="center">
+                                        <span data-title="{{lot.RequestDate}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.RequestDate}}</span>
+                                    </td>                                    
+                                    <td class="center">
+                                        <span ng-if="lot.StateExecution == @((Byte)EnumServiceState.NotRequest)" class="status-@(EnumServiceState.NotRequest.ToString()) botao">@(EnumServiceState.NotRequest.GetDescription())</span>
+                                        <span ng-if="lot.StateExecution == @((Byte)EnumServiceState.Pending)" class="status-@(EnumServiceState.Pending.ToString()) botao">@(EnumServiceState.Pending.GetDescription())</span>
+                                        <span ng-if="lot.StateExecution == @((Byte)EnumServiceState.Processing)" class="status-@(EnumServiceState.Processing.ToString()) botao">@(EnumServiceState.Processing.GetDescription())</span>
+                                        <span ng-if="lot.StateExecution == @((Byte)EnumServiceState.Success)" class="status-@(EnumServiceState.Success.ToString()) botao">@(EnumServiceState.Success.GetDescription())</span>
+                                        <span ng-if="lot.StateExecution == @((Byte)EnumServiceState.Error)" class="status-@(EnumServiceState.Error.ToString()) botao">@(EnumServiceState.Error.GetDescription())</span>
+                                        <span ng-if="lot.StateExecution == @((Byte)EnumServiceState.Canceled)" class="status-@(EnumServiceState.Canceled.ToString()) botao">@(EnumServiceState.Canceled.GetDescription())</span>
+                                    </td>                                    
+                                    <td class="center">
+                                        <button class="btnMais" data-placement="left" data-trigger="focus" data-custom-class="itemListPopover" data-template="Assets/js/angular/controllers/answerSheet/schoolLotMenu.html" data-animation="popover-fade" data-container="body" bs-popover="popovermenu">
+                                            <i class="material-icons">view_list</i>
+                                        </button>
+                                    </td>                            
+                                </tr>
+                            </tbody>
+                        </table>
+                        @* Pagination controll *@
+                        <div class="nresultados">
+                            <page method="search()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                        </div>
+                    </div>
+                    @* Results not found *@
+                    <div class="maxWidth" ng-if="(listLots === null || message) && tab==1">
+                        <p class="nresultados">Nenhum resultado encontrado.</p>
+                    </div>  
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="prova">
+                    @* ANTIGA *@                    
+                    <div class="maxWidth table-responsive" ng-if="listTests && listTests.length>0">
+                        @* Tabela *@
+                        <table class="table table-hover" style="margin-top: 0px;">
+                            <thead>
+                                <tr>
+                                    <th class="center">Código da prova</th>
+                                    <th class="center">Tipo de prova</th>
+                                    <th class="center">Prova</th>
+                                    <th class="center">Situação</th>
+                                    <th class="center">Ação</th>
+                                    <th class="center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="($indexTest, test) in listTests track by $indexTest">
+                                    @* Código *@
+                                    <td class="center">
+                                        <span data-title="{{test.TestCode}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{test.TestCode != null ? test.TestCode : ' - '}}</span>
+                                    </td>
+                                    @* Tipo de Prova *@
+                                    <td class="center">
+                                        <span data-title="{{test.TestTypeDescription}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{test.TestTypeDescription}}</span>
+                                    </td>
+                                    @* Prova *@
+                                    <td class="center">
+                                        <span data-title="{{test.Description}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{test.Description}}</span>
+                                    </td>
+                                    @* Status Lote  *@
+                                    <td class="center">
+                                        <span ng-if="test.StateExecution == @((Byte)EnumServiceState.NotRequest)" class="status-@(EnumServiceState.NotRequest.ToString()) botao">@(EnumServiceState.NotRequest.GetDescription())</span>
+                                        <span ng-if="test.StateExecution == @((Byte)EnumServiceState.Pending)" class="status-@(EnumServiceState.Pending.ToString()) botao">@(EnumServiceState.Pending.GetDescription())</span>
+                                        <span ng-if="test.StateExecution == @((Byte)EnumServiceState.Processing)" class="status-@(EnumServiceState.Processing.ToString()) botao">@(EnumServiceState.Processing.GetDescription())</span>
+                                        <span ng-if="test.StateExecution == @((Byte)EnumServiceState.Success)" class="status-@(EnumServiceState.Success.ToString()) botao">@(EnumServiceState.Success.GetDescription())</span>
+                                        <span ng-if="test.StateExecution == @((Byte)EnumServiceState.Error)" class="status-@(EnumServiceState.Error.ToString()) botao">@(EnumServiceState.Error.GetDescription())</span>
+                                        <span ng-if="test.StateExecution == @((Byte)EnumServiceState.Canceled)" class="status-@(EnumServiceState.Canceled.ToString()) botao">@(EnumServiceState.Canceled.GetDescription())</span>
+                                    </td>    
+                                    <td class="center">
+                                        <button class="btnMais" data-placement="left" data-trigger="focus" data-custom-class="itemListPopover" data-template="Assets/js/angular/controllers/answerSheet/testLotMenu.html" data-animation="popover-fade" data-container="body" bs-popover="popovermenu">
+                                            <i class="material-icons">view_list</i>
+                                        </button>
+                                    </td> 
+                                </tr>
+                            </tbody>
+                        </table>                                           
+                        @* Pagination controll *@
+                        <div class="nresultados">
+                            <page method="search()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                        </div>
+                    </div>
+                    @* Results not found *@
+                    <div class="maxWidth" ng-if="(listTests === null || message) && tab==2">
+                        <p class="nresultados">Nenhum resultado encontrado.</p>
+                    </div>  
+                </div>
+            </div>
+        </div>
+
+        @* Cadastrar Lote *@
+        <modal id="modalLote" modal-title="<h4 class='modal-title padding-6'><strong>Solicitar agendamento</strong></h4>">
+            <div class="container-fluid">
+                <div class="row campoLabel">
+                    <div class="col-md-6">
+                        <span>Escolha as unidades que deseja gerar os lotes:</span>
+                    </div>
+                </div>
+                <div class="campoLabel">
+                    <label>DREs</label>
+                    <select class="form-control"
+                            ng-change="getSchools(); clearByFilter('DRE');" 
+                            ng-model="answerSheet.DRE" 
+                            ng-options="dre as dre.Description for dre in listFilters.DREs"
+                            ng-title="listFilters.DREs"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected>
+                        <option value="">Todas as DREs</option>
+                    </select>
+                </div>
+                <div class="campoLabel">
+                    <label>Escolas</label>
+                    <select class="form-control"
+                            ng-model="answerSheet.School" 
+                            ng-options="scholl as scholl.Description for scholl in listFilters.Schools"
+                            ng-title="listFilters.Schools"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected>
+                        <option value="">Todas as escolas</option>
+                    </select>
+                </div>
+                <div class="campoLabel">
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btnPadrao" ng-click="save();">Solicitar</button>
+                        <button type="button" class="btnCancelar2" ng-click="clearCombos();">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </modal>
+
+        @* Cancelar agendamento *@
+        <modal id="modalCancelar" modal-title="<h4 class='modal-title padding-6'><strong>Desfazer agendamento</strong></h4>">
+            <div class="container-fluid">
+                <div class="row campoLabel">
+                    <div class="col-md-6">
+                        <span>Deseja realmente desfazer o agendamento?</span>
+                    </div>
+                </div>
+                <div class="row campoLabel">
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btnPadrao" ng-click="modalCancelSim()">Sim</button>
+                        <button type="button" class="btnCancelar2" ng-click="modalCancelNao();">Não</button>
+                    </div>
+                </div>
+            </div>
+        </modal>
+        
+        @* Novo lote *@
+        <modal id="modalNovoLote" modal-title="<h4 class='modal-title padding-6'><strong>Novo lote</strong></h4>" size="lg" onclosemodal="clearModalNovoLote()">
+            <div class="container-fluid">    
+                <div class="row campoLabel">                    
+                    <div class="col-md-6">
+                        <label class="label-cod"><strong>Código da prova</strong></label>
+                        <div class="container-cod">
+                            <input type="text"
+                                   class="form-control numbers"
+                                   style="width: 80%; float: left;"
+                                   size="5"
+                                   maxlength="9"
+                                   placeholder="Digite aqui o código da prova"
+                                   ng-model="$parent.$parent.codNovoLote"
+                                   fieldinteger />
+                            <button class="btn-pesquisar" ng-click="searchModalNewLot()" title="Pesquisar"><i class="material-icons">search</i></button>
+                        </div>
+                    </div>
+                </div>
+                                                               
+                <div class="row calendario-pagina campoLabel">
+                    <div class="col-md-6">
+                        <label class="label-cod"><strong>Criação</strong></label>
+                        @* Data 1 *@
+                        <label><b>de</b></label>
+                        <div class="container-date">
+                            <button type="button" class="" ng-click="datepicker('dataStartNovoLote');">
+                                <i class="material-icons">event</i>
+                            </button>
+                            <input class="dateInput"
+                                   type="text"
+                                   placeholder="Data de Início"
+                                   ng-model="$parent.$parent.dataStartNovoLote"                                   
+                                   id="dataStartNovoLote"
+                                   datepicker />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        @* Data 2 *@
+                        <label><b>até</b></label>
+                        <div class="container-date">
+                            <button type="button" class="t" ng-click="datepicker('dataEndNovoLote');">
+                                <i class="material-icons">event</i>
+                            </button>
+                            <input class="dateInput"
+                                   type="text"
+                                   placeholder="Data de Término"
+                                   ng-model="$parent.$parent.dataEndNovoLote"                                   
+                                   id="dataEndNovoLote"
+                                   datepicker />
+                        </div>
+                    </div>                       
+                </div>                                                                          
+
+                <div class="campoLabel">
+                    @* tipoprova *@
+                    <label class="" for="tipoprova"><b>Tipo de prova</b></label>
+                    <select class="form-control" ng-model="$parent.$parent.tipoprova">
+                        <option value="" selected="selected">-- Selecione --</option>
+                        <option ng-repeat="tipo in tipoProvaCombo" value="{{tipo.Id}}">{{tipo.Description}}</option>
+                    </select>                                            
+                </div>
+
+                <div class="campoCodigo" style="text-align: right;">
+                    @* BOTÃO PESQUISAR *@
+                    <button type="button" class="btnCancelar2" style="margin: 0 20px 20px;" ng-click="searchModalNewLot()"><i class="material-icons">search</i> Pesquisar</button>
+                </div>
+
+                <div class="maxWidth table-responsive table-lotes" ng-if="listModalNewLot && listModalNewLot.length>0">
+                    @* Tabela *@
+                    <table class="table table-hover" style="margin-top: 0px;">
+                        <thead>
+                            <tr>
+                                <th class="center">Selecionar</th>
+                                <th class="center">Código da prova</th>
+                                <th class="center">Prova</th>
+                                <th class="center">Tipo de prova</th>
+                                <th class="center">Criação</th>
+                                <th class="center">Escolas Aderidas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="newLot in listModalNewLot">
+                                <td class="center" ng-click="e2_CheckedItem(newLot, $event)">
+                                    <div class="checkbox checkbox-primary check-parameter">
+                                        <div class="blockCheckClick" style="margin: 0 -9px;"></div>
+                                        <input id="i_ch_{{newLot.Code}}" type="checkbox" ng-model="newLot.check" ng-click="e2_CheckedItem(newLot, $event)">
+                                        <label for="i_ch_{{newLot.Code}}" class="gerar-prova label-top" style="margin-bottom: 12px;">
+                                            <div style="margin-top: -3px; position:absolute;" ng-if="newLot.Revoked">
+                                                <i class="material-icons" ng-if="!newLot.ItemLastVersion" data-trigger="hover" data-type="success" data-title="Item anulado" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>error</i>
+                                            </div>
+                                        </label>
+
+                                    </div>
+                                </td>
+                                <td class="center" ng-click="e2_CheckedItem(newLot, $event)">
+                                    <span data-title="{{newLot.Code}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{newLot.Code}}</span>
+                                </td>
+                                <td class="center" ng-click="e2_CheckedItem(newLot, $event)">
+                                    <span data-title="{{newLot.Description}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{newLot.Description}}</span>
+                                </td>
+                                <td class="center" ng-click="e2_CheckedItem(newLot, $event)">
+                                    <span data-title="{{newLot.TestType}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{newLot.TestType}}</span>
+                                </td>
+                                <td class="center" ng-click="e2_CheckedItem(newLot, $event)">
+                                    <span data-title="{{newLot.CreateDate}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{newLot.CreateDate}}</span>
+                                </td>
+                                <td class="center" ng-click="e2_CheckedItem(newLot, $event)">
+                                    <span data-title="{{newLot.TotalAdherence}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{newLot.TotalAdherence}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    @* Pagination controll *@
+                    <div class="nresultados">
+                        <page method="searchNewLot()" varkey="pageSearchNewLot" total-pages="{{pagesModalNewLot}}" total-itens="{{totalItensModalNewLot}}" page-size="pageSizeNewLot" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                    </div>                    
+                </div>
+
+                @* Results not found *@
+                <div class="maxWidth" ng-if="(listModalNewLot === null || messageModalNewLot)">
+                    <p class="nresultados">Nenhum resultado encontrado.</p>
+                </div>
+
+                <h4 class="title-lotes-selected" ng-if="lotsSelecteds && lotsSelecteds.length>0"><strong>Provas selecionadas</strong></h4>
+
+                <div class="maxWidth table-responsive" ng-if="lotsSelecteds && lotsSelecteds.length>0">
+                    @* Tabela *@
+                    <table class="table table-hover" style="margin-top: 0px;">
+                        <thead>
+                            <tr>                                
+                                <th class="center">Código da prova</th>
+                                <th class="center">Prova</th>
+                                <th class="center">Tipo de prova</th>
+                                <th class="center">Criação</th>
+                                <th class="center">Escolas Aderidas</th>
+                                <th class="center">Excluir</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="lot in lotsSelecteds">                                
+                                <td class="center">
+                                    <span data-title="{{lot.Code}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.Code}}</span>
+                                </td>
+                                <td class="center">
+                                    <span data-title="{{lot.Description}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.Description}}</span>
+                                </td>
+                                <td class="center">
+                                    <span data-title="{{lot.TestType}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.TestType}}</span>
+                                </td>
+                                <td class="center">
+                                    <span data-title="{{lot.CreateDate}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.CreateDate}}</span>
+                                </td>
+                                <td class="center">
+                                    <span data-title="{{lot.TotalAdherence}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.TotalAdherence}}</span>
+                                </td>
+                                <td class="center">
+                                    <a ng-click="removeLotSelected(lot, $index)"><span data-title="Excluir" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip><i class="material-icons">delete</i></span></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <div class="modal-footer footerCustom">
+                    <button type="button" class="btnPadrao" ng-click="saveLot('updateList'); clearModalNovoLote();">Salvar</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal" ng-click="clearModalNovoLote()">Cancelar</button>
+                </div>
+            </div>
+        </modal>
+
+        @* Baixar lotes *@
+        <modal id="modalBaixar" modal-title="<h4 class='modal-title padding-6'><strong>Lote: {{lotId}}</strong></h4>" size="lg" onclosemodal="closeModalBaixarLote()">
+            <div class="container-fluid">    
+                <div class="campoLabel">
+                    @* DRE *@
+                    <label class="" for="dre"><b>DRE</b></label>                    
+                    <select class="form-control" ng-model="$parent.$parent.dre" ng-change="getSchoolsTabEscola(dre)">
+                        <option value="" selected="selected">-- Selecione --</option>
+                        <option ng-repeat="dre in listDres" value="{{dre.Id}}">{{dre.Description}}</option>
+                    </select>
+                </div>     
+
+                <div class="campoLabel">
+                    @* Escola *@
+                    <label class="" for="escola"><b>Escola</b></label>
+                    <select id="escola" class="form-control"
+                            ng-model="escola" 
+                            ng-options="scholl as scholl.Description for scholl in listSchools"
+                            ng-title="listSchools"
+                            ng-title-propertie="Description"
+                            ng-title-index="1"
+                            ng-title-selected>
+                        <option value="">-- Selecione --</option>
+                    </select>
+                </div>     
+
+                <div class="campoCodigo" style="text-align: right;">
+                    @* BOTÃO PESQUISAR *@
+                    <button type="button" class="btnCancelar2" style="margin: 0 20px 20px;" ng-click="searchFilterBaixarLote()"><i class="material-icons">search</i> Pesquisar</button>
+                </div>   
+                
+                <div class="maxWidth table-responsive" ng-if="lotFiles && lotFiles.length>0">
+                    @* Tabela *@
+                    <table class="table table-hover" style="margin-top: 0px;">
+                        <thead>
+                            <tr>
+                                <th class="center">Local</th>
+                                <th class="center">DRE</th>                                
+                                <th class="center">Baixar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="($lotFiles, file) in lotFiles track by $lotFiles">
+                                <td class="center">
+                                    <span data-title="{{file.Local}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{file.Local}}</span>
+                                </td>
+                                <td class="center">
+                                    <span data-title="{{file.DRE}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{file.DRE}}</span>
+                                </td>                                
+                                <td class="center">
+                                    <a ng-click="downloadFile(file.FileId)"><span data-title="Baixar" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip><i class="material-icons">file_download</i></span></a>
+                                </td>                                
+                            </tr>
+                        </tbody>
+                    </table>
+                    @* Pagination controll *@
+                    <div class="nresultados">
+                        <page method="searchLotFiles()" varkey="paginateLotFiles" total-pages="{{pagesBaixarLote}}" total-itens="{{totalItensBaixarLote}}" page-size="pageSizeLotFiles" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                    </div>
+                </div> 
+                
+                @* Results not found *@
+                <div class="maxWidth" ng-if="lotFiles === null || messageBaixarLote">
+                    <p class="nresultados">Nenhum resultado encontrado.</p>
+                </div>    
+                
+                <div class="modal-footer footerCustom">
+                    <button type="button" class="btnCancelar2" data-dismiss="modal" ng-click="closeModalBaixarLote()">Cancelar</button>
+                </div>
+            </div>
+        </modal>        
+
+        @* Total provas *@
+        <modal id="modalTotalProvas" modal-title="<h4 class='modal-title padding-6'><strong>Lote: {{lotIdTotalProvas}}</strong></h4>" size="lg">
+            <div class="container-fluid">                
+                <div class="maxWidth table-responsive" ng-if="totalProvas && totalProvas.length>0">
+                    @* Tabela *@
+                    <table class="table table-hover" style="margin-top: 0px;">
+                        <thead>
+                            <tr>
+                                <th class="center">Código da prova</th>
+                                <th class="center">Prova</th>                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="prova in totalProvas">
+                                <td class="center">
+                                    <span data-title="{{prova.Id}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{prova.Id}}</span>
+                                </td>
+                                <td class="center">
+                                    <span data-title="{{prova.Description}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{prova.Description}}</span>
+                                </td>                                
+                            </tr>
+                        </tbody>
+                    </table>                    
+                </div>
+
+                @* Results not found *@
+                <div class="maxWidth" ng-if="totalProvas === null || messageTotalProvas">
+                    <p class="nresultados">Nenhum resultado encontrado.</p>
+                </div>
+
+                <div class="modal-footer footerCustom">
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </modal>        
+
+        @* Acompanhamento Lote *@
+        <modal id="modalAcompanhamentoLote" modal-title="<h4 class='modal-title padding-6'><strong>Acompanhamento</strong></h4>" size="lg">
+            <div class="container-fluid">
+                <div class="campoLabel">
+                    <span ng-show="tab==1"><b>Lote:</b> {{acompanhamentoLoteId}}</span>
+                    <span ng-show="tab==2"><b>Prova:</b> {{acompanhamentoLoteId}}</span>
+                </div>
+                <div class="campoLabel">
+                    <span><b>Tamanho da pasta em andamento:</b> {{tamanhoPastaLote}}</span>
+                </div>
+                <div class="campoLabel">
+                    <span><b>Tamanho da pasta principal:</b> {{tamanhoPastaPrincipal}}</span>
+                </div>
+                <div class="campoLabel">
+                    <span><b>Serviço:</b> {{ownerLote}}</span>
+                </div>
+                </br>
+                <div class="maxWidth table-responsive" ng-if="acompanhamentoLote && acompanhamentoLote.length>0">
+                    @* Tabela *@
+                    <table class="table table-hover" style="margin-top: 0px;">
+                        <thead>
+                            <tr>
+                                <th class="center">Etapa</th>
+                                <th class="center">Início</th>
+                                <th class="center">Fim</th>
+                                <th class="center">Situação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="lot in acompanhamentoLote">
+                                <td class="center">
+                                    <span data-title="{{lot.Step}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.Step}}</span>
+                                </td>
+                                <td class="center">
+                                    <span data-title="{{lot.StartDate}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.StartDate}}</span>
+                                </td>
+                                <td class="center">
+                                    <span data-title="{{lot.EndDate}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.EndDate}}</span>
+                                </td>
+                                <td class="center">
+                                    <span data-title="{{lot.Situation}}" data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>{{lot.Situation}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                @* Results not found *@
+                <div class="maxWidth" ng-if="acompanhamentoLote === null || messageAcompanhamentoLote">
+                    <p class="nresultados">Nenhum resultado encontrado.</p>
+                </div>
+
+                <div class="modal-footer footerCustom">
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </modal>        
+    </div>
+</div>

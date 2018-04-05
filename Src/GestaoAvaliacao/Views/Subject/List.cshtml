@@ -1,0 +1,115 @@
+﻿<alert></alert>
+<section class="wellCustom" data-ng-controller="ListSubjectController">
+    <div class="headerCustom ">
+        <h4>Assunto e subassunto <span> Listagem</span></h4>
+    </div>
+    <div class="well well-large">
+        <div class="container-fluid">
+            <form class="row-fluid">
+                <div class="col-md-8 form-inline-page">
+                    <input class="form-pesquisa" ng-model="searchFieldAssunto" type="text" placeholder="Nome do assunto">
+                    <input class="form-pesquisa" ng-model="searchFieldSubassunto" type="text" placeholder="Nome do subassunto">
+                    <button class="btn-pesquisar" ng-click="loadPage(0)"><i class="material-icons">search</i></button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btnPadrao pull-right" ng-click="create()"> Novo assunto e subassunto</button>
+                </div>
+            </form>
+        </div>
+        <div ng-if="searchResult">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th width="10%"></th>
+                            <th>Componente curricular</th>
+                            <th>Tipo de nível de ensino</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="revoked" ng-repeat-start="($indexItem, item) in searchResult">
+                            <td ng-click="collapse($index)">
+                                <a class="material-icons" ng-show="!item.Discipline.expanded && !expandir" ng-click="item.Discipline.expanded = true">expand_more</a>
+                                <a class="material-icons" ng-show="item.Discipline.expanded || expandir" ng-click="item.Discipline.expanded = false; expandir = false;">expand_less</a>
+                            </td>
+                            <td>{{item.Discipline.Description}}</td>
+                            <td>{{item.Discipline.tne_nome}}</td>
+                        </tr>
+                        <tr ng-repeat-start="($indexSubject, subject) in item.Discipline.Subjects" ng-if="item.Discipline.expanded || expandir">
+                            <td colspan="3">
+                                <table class="table table-hover">
+                                    <colgroup>
+                                        <col width="10%" />
+                                        <col width="30%" />
+                                        <col width="30%" />
+                                        <col width="15%" />
+                                        <col width="15%" />
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center" ng-click="collapse($index)">
+                                                <a class="material-icons" ng-if="!subject.expanded" ng-click="subject.expanded = true">expand_more</a>
+                                                <a class="material-icons" ng-if="subject.expanded" ng-click="subject.expanded = false">expand_less</a>
+                                            </td>
+                                            <td>{{subject.Description}}</td>
+                                            <td>{{subject.KnowledgeArea_Description}}</td>
+                                            <td class="center">
+                                                <a type="button" class="material-icons" ng-click="edit(subject)">
+                                                    edite
+                                                </a>
+                                            </td>
+                                            <td class="center">
+                                                <a type="button" class="material-icons" ng-click="callModal(subject)">
+                                                    delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr ng-repeat="($indexSubsubject, subsubject) in subject.SubSubjects" ng-if="(item.Discipline.expanded || expandir) && subject.expanded">
+                            <td colspan="3">
+                                <div style="margin-left:10%">
+                                    {{subsubject.Description}}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-repeat-end=""></tr>
+                        <tr ng-repeat-end=""></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>      
+        <div class="panel-body">
+            <page method="getSearchResult()" ng-show="searchResult" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+            <p class="nresultados" ng-hide="searchResult">Nenhum resultado encontrado.</p>
+        </div>
+    </div>
+
+    @*Modal*@
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">{{ itemDeletado.Description }}</h4>
+                </div>
+
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir o grupo de prova <b>{{itemDeletado.Description}}</b> ? </span>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btnPadrao" ng-click="delete()">Excluir</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @*fim modal*@
+
+</section>

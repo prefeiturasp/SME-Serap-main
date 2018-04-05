@@ -1,0 +1,117 @@
+﻿@using GestaoAvaliacao.Entities.Enumerator;
+
+@* Diretiva para alertas padrões do sistema *@
+<alert></alert>
+<div class="wellCustom" ng-controller="CorrectionController" ng-init='init()'>
+	<div ng-if="!blockPage">
+		@* Header da Adesão *@
+		<div class="headerCustom">
+			<h4>Folhas de respostas<span>Obtenha as folhas de respostas por aluno.</span></h4>
+		</div>
+		@* Informações *@
+		<div class="resumoAdesao">
+			<div class="maxWidth">
+				<div class="dadosGerais">
+					<h2>
+						<strong>{{testInformation.Description}} </strong> {{testInformation.FrequencyApplication}} |  {{testInformation.Discipline}}<br/>
+						<label><strong>Cód:</strong>{{params.test_id}}</label>
+					</h2>
+					<div class="dadosResumo">
+						<div style="max-width: 260px;">
+							<i class="material-icons">group</i>
+							<span>{{testInformation.Team.Name}}</span>
+						</div>
+						<div>
+							<i class="material-icons">school</i>
+							<p>{{testInformation.SchoolName}}</p>
+						</div>
+						<div style="text-align: right;">
+							<button class="btnCancelar2" data-toggle="modal" ng-click="arrivingIndexAdministrate()">Voltar</button>
+							<button class="btnCancelar2" data-toggle="modal" ng-click="cancel()">Trocar Turma</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		@* Lista Alunos *@
+		<div class="cards maxWidth" ng-if="list.displayed">
+			<div class="headerAdesao">
+				<h4>Folhas de respostas da turma</h4>
+			</div>
+			<table class="table tableCorrecao" ng-if="(list.displayed|filter:{fileGenerateLot:true}).length > 0">
+				<thead>
+					<tr>
+						<th class="right">Número</th>
+						<th>Nome</th>
+						<th class="center">Gerar folha de respostas</th>
+						<th class="center">Baixar folha de respostas</th>
+					</tr>
+				</thead>
+				<tbody ng-repeat="($indexStudent, student) in list.displayed | filter:{fileGenerateLot:true} track by $indexStudent">
+					<tr class="maisDados">
+						<td class="right" style="width:5%;">{{student.mtu_numeroChamada}}</td>
+						<td style="width:30%;">{{student.alu_nome}}{{student.blocked ? " (Realizou outra prova)": ""}}</td>
+						
+						@* Realizar upload de folha de resposta *@
+						<td class="center">
+
+							<div ng-if="!student.blocked">
+								<a ng-click="generateAnswerSheet(student, @((int)EnumIdentificationType.QRCode), testInformation.answerSheetBlocked);" ng-class="{'off':testInformation.answerSheetBlocked}" ng-disabled="testInformation.answerSheetBlocked" data-trigger="hover" data-type="success" data-title="Gerar folhas de resposta" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+									<i class="material-icons">assignment</i>
+								</a>
+							</div>
+						</td>
+						<td class="center">
+							@* 1º - folhas de resposta gerada *@
+							<div ng-if="!student.blocked">
+								<a ng-click="downloadFolhaResposta(student)" ng-class="{'off':student.FileAnswerSheet.Path==null}" data-trigger="hover" data-type="success" data-title="Baixar folha de resposta" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+									<i class="material-icons">file_download</i>
+								</a>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+            <div class="headerAdesao" ng-if="(list.displayed|filter:{fileGenerateLot:false}).length > 0 && (list.displayed|filter:{fileGenerateLot:true}).length > 0">
+                <h4>Alunos que não tiveram a folha gerada em lote</h4>
+            </div>
+            <table class="table tableCorrecao" ng-if="(list.displayed|filter:{fileGenerateLot:false}).length > 0">
+                <thead>
+                    <tr>
+                        <th class="right">Número</th>
+                        <th>Nome</th>
+                        <th class="center">Gerar folha de respostas</th>
+                        <th class="center">Baixar folha de respostas</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="($indexStudent, student) in list.displayed | filter:{fileGenerateLot:false} track by $indexStudent">
+                    <tr class="maisDados">
+                        <td class="right" style="width:5%;">{{student.mtu_numeroChamada}}</td>
+                        <td style="width:30%;">{{student.alu_nome}}{{student.blocked ? " (Realizou outra prova)": ""}}</td>
+
+                        @* Realizar upload de folha de resposta *@
+                        <td class="center">
+
+                            <div ng-if="!student.blocked">
+                                <a ng-click="generateAnswerSheet(student, @((int)EnumIdentificationType.QRCode), testInformation.answerSheetBlocked);" ng-class="{'off':testInformation.answerSheetBlocked}" ng-disabled="testInformation.answerSheetBlocked" data-trigger="hover" data-type="success" data-title="Gerar folhas de resposta" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+                                    <i class="material-icons">assignment</i>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="center">
+                            @* 1º - folhas de resposta gerada *@
+                            <div ng-if="!student.blocked">
+                                <a ng-click="downloadFolhaResposta(student)" ng-class="{'off':student.FileAnswerSheet.Path==null}" data-trigger="hover" data-type="success" data-title="Baixar folha de resposta" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+                                    <i class="material-icons">file_download</i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+		</div>
+        <div class="cards maxWidth" ng-show="!list.displayed">
+            <p class="nresultados">Nenhum resultado encontrado.</p>
+        </div>
+	</div>
+</div>

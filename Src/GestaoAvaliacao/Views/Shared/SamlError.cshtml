@@ -1,0 +1,11 @@
+﻿@{ Layout = null; }
+
+@model System.Web.Mvc.HandleErrorInfo
+
+@section TitlePage { <h2 id="dvIcon" class="Warning">Login SSO</h2>}
+
+<div style="margin-top: 20px; margin-bottom: 40px">
+    <h4>@Model.Exception.Message</h4>
+    <br />
+    <a href="@Html.Action("UrlSistemaSso", "Account")" class="btn">Voltar</a>
+</div>

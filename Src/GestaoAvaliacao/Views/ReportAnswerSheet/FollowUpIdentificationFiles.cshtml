@@ -1,0 +1,193 @@
+﻿@using GestaoAvaliacao.Util;
+<alert></alert>
+<div class="wellCustom" data-ng-controller="ReportAnswerSheetFilesController">
+    <div class="headerCustom">
+        <h4>Relatório de envio de folhas de respostas<span>Acompanhamento do envio de folhas de respostas</span></h4>
+    </div>
+    <div class="resumoAdesao">
+        <div class="maxWidth">
+            <div class="dadosGerais" ng-class="{'identificationReport-header' : batchFile }">
+                <h2>
+                    <strong>{{info.DRE.Description}} </strong><br/>
+                    <label><strong>{{info.School.Description}}</strong></label>
+                </h2>
+                <div class="dadosResumo">
+                    <div style="text-align: left;" data-ng-if="params.startDate || params.endDate">
+                        <strong data-ng-if="FilterDateUpdate">Período de correção</strong>
+                        <strong data-ng-if="!FilterDateUpdate">Período de envio</strong>
+                        <br/>
+                        <label>{{params.startDate | moment:"DD/MM/YYYY": true}} - {{params.endDate | moment:"DD/MM/YYYY": true}}</label>
+                    </div>
+                    <div style="text-align: right;">
+                        <a data-ng-click="prevRedirect()" class="btnPadrao">Voltar</a>
+                        <a href="/ReportAnswerSheet/FollowUpIdentification" class="btnCancelar2">Cancelar</a> 
+                        <button class="btnPadrao" data-toggle="modal" data-target="#modalDownload" data-ng-if="listResult">Baixar arquivos</button>
+                        <button class="btnPadrao" data-ng-click="generateReport()" data-ng-if="listResult">Exportar</button>
+                    </div>
+                </div>
+                <div ng-show="batchFile" class="dadosResumo pesquisa-upload batchInfo ng-scope">
+                    <span class="atencao">
+                        <label class="ng-binding">
+                            <i class="material-icons">warning</i>
+                            O parâmetro de exclusão dos arquivos da correção automática está habilitado, alguns arquivos podem não existir fisicamente, dessa forma não será possível baixá-los.
+                        </label>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Gatilho Filtros *@
+    <div class="pesquisa-upload row">
+        <div class="col-md-8"></div>
+        <div class="filtrar-lista col-md-4" data-side-filters style="width:80px !important;">
+            <a href="javascript:void(0)" data-ng-click="open();" data-side-filters>
+                <i class="material-icons" data-side-filters>filter_list</i>
+                <label data-side-filters>Filtrar arquivos</label>
+                <div class="notificationFilter"
+                     data-trigger="hover"
+                     data-type="success"
+                     data-title="Filtros selecionados"
+                     data-placement="top"
+                     data-container="body"
+                     data-bs-tooltip>
+                    {{countFilter}}
+                </div>
+            </a>
+        </div>
+    </div>
+    @* Filtros *@
+    <div class="panel-search side-filters" data-side-filters>
+        <a href="javascript:void(0)" data-ng-click="open();" class="filtro-menu">
+            <i class="material-icons">filter_list</i>
+            <label class="filtroP">Filtrar arquivos</label>
+            <i class="material-icons fecha">arrow_forward</i>
+        </a>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <label data-side-filters>Situação</label>
+                <div data-side-filters class="checkbox checkbox-primary lista-item" data-ng-repeat="processing in listFilter.Processing track by processing.Id" style="display: flex;">
+                    <input data-side-filters id="p{{processing.Description}}" class="col-xs-1" type="checkbox" ng-model="processing.state" />
+                    <label data-side-filters for="p{{processing.Description}}" class="col-xs-8 lista-item margin-left" style="width: 180px;">{{ processing.Description }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-seach" data-side-filters>
+            <div data-side-filters>
+                <button data-side-filters class="btnCancelar pull-right" ng-click="clearFilters();">Limpar</button>
+                <button data-side-filters class="btnCancelar pull-right" ng-click="search();">Pesquisar</button>
+            </div>
+        </div>
+    </div>
+    @* Paginação *@
+    <div class="cards maxWidth" data-ng-if="listResult">
+        <table class="table table-hover tableCorrecao ng-scope">
+            <colgroup>
+                <col width="25%" />
+                <col width="15%" />
+                <col width="15%" />
+                <col width="15%" />
+                <col width="20%" />
+                <col width="10%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Arquivo</th>
+                    <th class="center">Código da prova</th>
+                    <th class="center">Resolução da imagem</th>
+                    <th class="center">
+                        <span data-ng-if="FilterDateUpdate">Data de correção</span>
+                        <span data-ng-if="!FilterDateUpdate">Data de envio</span>
+                    </th>
+                    <th class="center">Situação</th>
+                    <th class="center">Baixar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="($indexFile, file) in listResult track by $indexFile">
+                    <td>
+                        <a href="{{file.FilePath}}" target="_blank"
+                           data-trigger="hover" 
+                           data-type="success" 
+                           data-title="{{file.Name}}" 
+                           data-animation="am-fade" 
+                           data-placement="top" 
+                           data-container="body" 
+                           data-bs-tooltip>{{file.Name | minimize:48}}</a></td>
+                    <td class="center">{{file.TestId ? file.TestId : " - "}}</td>
+                    <td class="center">{{file.Resolution ? file.Resolution : " - "}}</td>
+                    <td class="center">{{file.CreateDate | moment:"DD/MM/YYYY HH:mm:ss"}}</td>
+                    <td class="center">
+                        <div data-ng-if="file.Situation == @((Byte)EnumBatchSituation.Pending)" class="status-@(EnumBatchSituation.Success.ToString()) botao">Identificado</div>
+                        <div data-ng-if="file.Situation == @((Byte)EnumBatchSituation.Success)" class="status-@(EnumBatchSituation.Success.ToString()) botao">Identificado</div>
+                        <div data-ng-if="file.Situation == @((Byte)EnumBatchSituation.Error)" class="status-@(EnumBatchSituation.Success.ToString()) botao">Identificado</div>
+                        <div data-ng-if="file.Situation == @((Byte)EnumBatchSituation.Warning)" class="status-@(EnumBatchSituation.Success.ToString()) botao">Identificado</div>
+                        <div data-ng-if="file.Situation == @((Byte)EnumBatchSituation.PendingIdentification)" class="status-@(EnumBatchSituation.PendingIdentification.ToString()) botao">@(EnumBatchSituation.PendingIdentification.GetDescription())</div>
+                        <div data-ng-if="file.Situation == @((Byte)EnumBatchSituation.NotIdentified)" class="status-@(EnumBatchSituation.NotIdentified.ToString()) botao">@(EnumBatchSituation.NotIdentified.GetDescription())</div>
+                    </td>
+                    <td class="center"><a data-ng-click="downloadFile(file.Id)"><i class="material-icons">file_download</i></a></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="nresultados">
+            <page method="Paginate()" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+        </div>
+    </div>
+    @* Results not found *@
+    <div class="cards maxWidth" data-ng-if="!listResult">
+        <p class="nresultados">Nenhum resultado encontrado.</p>
+    </div>
+    @* Baixar arquivos *@
+    <div id="modalDownload" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="modalDownload">
+        <div class="modal-dialog modal-lg" role="document" style="width:60%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class='modal-title padding-6'><strong>Baixar Arquivos</strong></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="campoLabel">
+                            <h4>
+                                <strong>{{info.DRE.Description}}</strong><br />
+                                <label><strong>{{info.School.Description}}</strong></label>
+                            </h4>
+                            <div style="text-align: right;" data-ng-if="params.startDate || params.endDate">
+                                <strong data-ng-if="FilterDateUpdate">Período de correção</strong>
+                                <strong data-ng-if="!FilterDateUpdate">Período de envio</strong>
+                                <br />
+                                <label>{{params.startDate | moment:"DD/MM/YYYY": true}} - {{params.endDate | moment:"DD/MM/YYYY": true}}</label>
+                            </div>
+                        </div>
+                        <div class="campoLabel">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Opções de download</th>
+                                        <th>Situação</th>
+                                        <th>Baixar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="( indexList, lista ) in listModal track by lista.state">
+                                        <td>{{lista.Description}}</td>
+                                        <td>
+                                            <div data-ng-if="lista.state == @((Byte)EnumFollowUpIdentificationDataType.Identified)" class="status-@(EnumBatchSituation.Success.ToString()) botao">Identificado</div>
+                                            <div data-ng-if="lista.state == @((Byte)EnumFollowUpIdentificationDataType.NotIdentified)" class="status-@(EnumBatchSituation.NotIdentified.ToString()) botao">@(EnumBatchSituation.NotIdentified.GetDescription())</div>
+                                            <div data-ng-if="lista.state == @((Byte)EnumFollowUpIdentificationDataType.Pending)" class="status-@(EnumBatchSituation.PendingIdentification.ToString()) botao">@(EnumBatchSituation.PendingIdentification.GetDescription())</div>
+                                        </td>
+                                        <td>
+                                            <a data-ng-click="downloadAllFiles(lista.state)">
+                                                <i class="material-icons">file_download</i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
