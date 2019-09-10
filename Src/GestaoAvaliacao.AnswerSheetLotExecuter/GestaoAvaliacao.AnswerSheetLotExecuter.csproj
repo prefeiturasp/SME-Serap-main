@@ -71,6 +71,12 @@
     <Compile Include="CallServices.Designer.cs">
       <DependentUpon>CallServices.cs</DependentUpon>
     </Compile>
+    <Compile Include="Adjust.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Adjust.Designer.cs">
+      <DependentUpon>Adjust.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -91,6 +97,9 @@
   <ItemGroup>
     <EmbeddedResource Include="CallServices.resx">
       <DependentUpon>CallServices.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Adjust.resx">
+      <DependentUpon>Adjust.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
