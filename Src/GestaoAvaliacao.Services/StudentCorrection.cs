@@ -59,7 +59,7 @@ namespace GestaoAvaliacao.Services
 
                         if (tempCorrectionResult != null && !tempCorrectionResult.Processed)
                             continue;
-                        else
+                        else if (tempCorrectionResult == null)
                             tempCorrectionResult = new TempCorrectionResult(Guid.Parse(studentCorrection._id.Substring(0, 36)), studentCorrection.Test_Id, studentCorrection.tur_id);
 
                         if (!tempCorrectionResultList.Any(tcr => tcr.Tur_id.Equals(studentCorrection.tur_id)))
@@ -85,9 +85,43 @@ namespace GestaoAvaliacao.Services
                 tempCorrectionResultList.ForEach(async tcr =>
                 {
                     tcr.Processed = false;
-                    await testSectionStatusCorrectionBusiness.UpdateTempCorrection(tcr);                    
+                    await testSectionStatusCorrectionBusiness.UpdateTempCorrection(tcr);
                 });
             }
+        }
+
+        public async Task IncludeTestNewCorrectionResult(long testId, long? teamId)
+        {
+            if (testId < 1)
+                throw new InvalidOperationException("Informe o Id do teste.");
+
+            var studentCorrections = await this.studentCorrectionBusiness.GetByTest(new List<long>() { testId });
+
+            if (studentCorrections.Any())
+            {
+                if (teamId.HasValue)
+                    studentCorrections = studentCorrections.FindAll(sc => sc.tur_id.Equals(teamId.Value));
+
+                var testAndTeams = studentCorrections.Select(sc => new
+                {
+                    Test_Id = sc.Test_Id,
+                    Tur_id = sc.tur_id,
+                    Guid_Student_Correction = Guid.Parse(sc._id.Substring(0, 36))
+                }).Distinct();                
+
+                foreach (var item in testAndTeams)
+                {
+                    var tempCorrectionResult = await testSectionStatusCorrectionBusiness.GetTempCorrection(item.Test_Id, item.Tur_id);
+
+                    if (tempCorrectionResult != null && !tempCorrectionResult.Processed)
+                        continue;
+                    else if (tempCorrectionResult == null)
+                        tempCorrectionResult = new TempCorrectionResult(item.Guid_Student_Correction, item.Test_Id, item.Tur_id);
+
+                    tempCorrectionResult.Processed = false;
+                    await testSectionStatusCorrectionBusiness.UpdateTempCorrection(tempCorrectionResult);
+                }
+            }           
         }
     }
 }
