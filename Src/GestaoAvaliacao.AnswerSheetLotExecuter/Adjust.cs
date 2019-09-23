@@ -50,7 +50,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                 var service = container.Resolve<StudentCorrection>();
 
                 var testId = (long)numericUpDownTempCorrectionResultTestId.Value;
-                var teamId = numericUpDownTempCorrectionResultTeamId.Value > 0 ? (long?)numericUpDownTeamId.Value : null;
+                var teamId = numericUpDownTempCorrectionResultTeamId.Value > 0 ? (long?)numericUpDownTempCorrectionResultTeamId.Value : null;
 
                 await service.IncludeTestNewCorrectionResult(testId, teamId);
             }

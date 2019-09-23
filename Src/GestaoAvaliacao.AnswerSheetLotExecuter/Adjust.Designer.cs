@@ -48,12 +48,12 @@
             this.numericUpDownTestId = new System.Windows.Forms.NumericUpDown();
             this.labelTestId = new System.Windows.Forms.Label();
             this.tabPageTempCorrectionResult = new System.Windows.Forms.TabPage();
+            this.buttonIncludeNewCorrectionResult = new System.Windows.Forms.Button();
             this.groupBoxIncludeNewCorrectionResult = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.numericUpDownTempCorrectionResultTestId = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownTempCorrectionResultTeamId = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.buttonIncludeNewCorrectionResult = new System.Windows.Forms.Button();
+            this.numericUpDownTempCorrectionResultTestId = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             this.tabControlGeral.SuspendLayout();
             this.tabPageStudentCorrection.SuspendLayout();
             this.groupBoxAtualizarRespostasAlunos.SuspendLayout();
@@ -67,8 +67,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTestId)).BeginInit();
             this.tabPageTempCorrectionResult.SuspendLayout();
             this.groupBoxIncludeNewCorrectionResult.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTempCorrectionResultTestId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTempCorrectionResultTeamId)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTempCorrectionResultTestId)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControlGeral
@@ -302,6 +302,16 @@
             this.tabPageTempCorrectionResult.Text = "TempCorrectionResult";
             this.tabPageTempCorrectionResult.UseVisualStyleBackColor = true;
             // 
+            // buttonIncludeNewCorrectionResult
+            // 
+            this.buttonIncludeNewCorrectionResult.Location = new System.Drawing.Point(219, 71);
+            this.buttonIncludeNewCorrectionResult.Name = "buttonIncludeNewCorrectionResult";
+            this.buttonIncludeNewCorrectionResult.Size = new System.Drawing.Size(75, 23);
+            this.buttonIncludeNewCorrectionResult.TabIndex = 1;
+            this.buttonIncludeNewCorrectionResult.Text = "Incluir";
+            this.buttonIncludeNewCorrectionResult.UseVisualStyleBackColor = true;
+            this.buttonIncludeNewCorrectionResult.Click += new System.EventHandler(this.ButtonIncludeNewCorrectionResult_Click);
+            // 
             // groupBoxIncludeNewCorrectionResult
             // 
             this.groupBoxIncludeNewCorrectionResult.Controls.Add(this.numericUpDownTempCorrectionResultTeamId);
@@ -316,33 +326,11 @@
             this.groupBoxIncludeNewCorrectionResult.TabStop = false;
             this.groupBoxIncludeNewCorrectionResult.Text = "Incluir prova para geração de novos resultados";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Prova:";
-            // 
-            // numericUpDownTempCorrectionResultTestId
-            // 
-            this.numericUpDownTempCorrectionResultTestId.Location = new System.Drawing.Point(11, 32);
-            this.numericUpDownTempCorrectionResultTestId.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
-            this.numericUpDownTempCorrectionResultTestId.Name = "numericUpDownTempCorrectionResultTestId";
-            this.numericUpDownTempCorrectionResultTestId.Size = new System.Drawing.Size(120, 20);
-            this.numericUpDownTempCorrectionResultTestId.TabIndex = 1;
-            this.numericUpDownTempCorrectionResultTestId.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
             // numericUpDownTempCorrectionResultTeamId
             // 
             this.numericUpDownTempCorrectionResultTeamId.Location = new System.Drawing.Point(137, 32);
             this.numericUpDownTempCorrectionResultTeamId.Maximum = new decimal(new int[] {
-            100000,
+            10000000,
             0,
             0,
             0});
@@ -360,15 +348,27 @@
             this.label3.TabIndex = 2;
             this.label3.Text = "Turma:";
             // 
-            // buttonIncludeNewCorrectionResult
+            // numericUpDownTempCorrectionResultTestId
             // 
-            this.buttonIncludeNewCorrectionResult.Location = new System.Drawing.Point(219, 71);
-            this.buttonIncludeNewCorrectionResult.Name = "buttonIncludeNewCorrectionResult";
-            this.buttonIncludeNewCorrectionResult.Size = new System.Drawing.Size(75, 23);
-            this.buttonIncludeNewCorrectionResult.TabIndex = 1;
-            this.buttonIncludeNewCorrectionResult.Text = "Incluir";
-            this.buttonIncludeNewCorrectionResult.UseVisualStyleBackColor = true;
-            this.buttonIncludeNewCorrectionResult.Click += new System.EventHandler(this.ButtonIncludeNewCorrectionResult_Click);
+            this.numericUpDownTempCorrectionResultTestId.Location = new System.Drawing.Point(11, 32);
+            this.numericUpDownTempCorrectionResultTestId.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.numericUpDownTempCorrectionResultTestId.Name = "numericUpDownTempCorrectionResultTestId";
+            this.numericUpDownTempCorrectionResultTestId.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownTempCorrectionResultTestId.TabIndex = 1;
+            this.numericUpDownTempCorrectionResultTestId.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(8, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(38, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Prova:";
             // 
             // Adjust
             // 
@@ -394,8 +394,8 @@
             this.tabPageTempCorrectionResult.ResumeLayout(false);
             this.groupBoxIncludeNewCorrectionResult.ResumeLayout(false);
             this.groupBoxIncludeNewCorrectionResult.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTempCorrectionResultTestId)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTempCorrectionResultTeamId)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTempCorrectionResultTestId)).EndInit();
             this.ResumeLayout(false);
 
         }
