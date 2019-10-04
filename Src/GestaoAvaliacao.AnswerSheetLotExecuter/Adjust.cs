@@ -42,5 +42,22 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                 MessageBox.Show(string.Concat("Erro ao realizar os ajustes.\n", ex.Message));
             }            
         }
+
+        private async void ButtonIncludeNewCorrectionResult_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var service = container.Resolve<StudentCorrection>();
+
+                var testId = (long)numericUpDownTempCorrectionResultTestId.Value;
+                var teamId = numericUpDownTempCorrectionResultTeamId.Value > 0 ? (long?)numericUpDownTempCorrectionResultTeamId.Value : null;
+
+                await service.IncludeTestNewCorrectionResult(testId, teamId);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Concat("Erro ao realizar os ajustes.\n", ex.Message));
+            }
+        }
     }
 }
