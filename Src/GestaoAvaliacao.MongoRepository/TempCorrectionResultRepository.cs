@@ -27,6 +27,18 @@ namespace GestaoAvaliacao.MongoRepository
             return await Count(filter);
         }
 
+        public async Task<TempCorrectionResult> GetByTestAndTeam(long test_id, long tur_id)
+        {
+            var filter1 = Builders<TempCorrectionResult>.Filter.In("Test_id", new List<long> { test_id });
+            var filter2 = Builders<TempCorrectionResult>.Filter.In("Tur_id", new List<long> { tur_id });
+            var filter = Builders<TempCorrectionResult>.Filter.And(filter1, filter2);
 
+            var count = await base.Count(filter);
+
+            if (count == 0)
+                return new TempCorrectionResult();
+            else
+                return await base.FindOne(filter);
+        }
     }
 }
