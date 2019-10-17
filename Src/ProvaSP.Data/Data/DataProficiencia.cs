@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using ProvaSP.Data.Funcionalidades;
+using ProvaSP.Model.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -148,6 +149,72 @@ namespace ProvaSP.Data
 
             
             return proficiencia;
+        }
+
+        public static List<Proficiencia> PesquisarPorCiclo(string CicloId)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                return conn.Query<Proficiencia>(
+                    sql: @"SELECT 
+	                            NivelProficienciaID, CicloId AS AnoCiclo, Nome, Descricao
+                            FROM 
+	                            NivelProficienciaCiclo WITH(NOLOCK)
+                            WHERE
+	                            CicloId = @CicloId"
+                    , param: new { CicloId }).ToList();
+            }
+        }
+
+        public static List<Proficiencia> PesquisarPorAnoLetivo(string AnoEscolar)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                return conn.Query<Proficiencia>(
+                    sql: @"SELECT 
+	                            NivelProficienciaID, AnoEscolar AS AnoCiclo, Nome, Descricao
+                            FROM 
+	                            NivelProficienciaAnoEscolar WITH(NOLOCK)
+                            WHERE
+	                            AnoEscolar = @AnoEscolar"
+                    , param: new { AnoEscolar }).ToList();
+            }
+        }
+
+        public static bool AtualizarProficienciaPorCiclo(Proficiencia proficiencia)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                int ret = conn.Execute(@"UPDATE NivelProficienciaCiclo 
+                                        SET Nome = @Nome, Descricao = @Descricao 
+                                        WHERE NivelProficienciaID = @NivelProficienciaID AND CicloId = @AnoCiclo",
+                            param: new
+                            {
+                                proficiencia.NivelProficienciaID,
+                                proficiencia.AnoCiclo,
+                                proficiencia.Nome,
+                                proficiencia.Descricao
+                            });
+                return ret > 0;
+            }
+        }
+
+        public static bool AtualizarProficienciaPorAnoEscolar(Proficiencia proficiencia)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                int ret = conn.Execute(@"UPDATE NivelProficienciaAnoEscolar 
+                                        SET Nome = @Nome, Descricao = @Descricao 
+                                        WHERE NivelProficienciaID = @NivelProficienciaID AND AnoEscolar = @AnoCiclo",
+                            param: new
+                            {
+                                proficiencia.NivelProficienciaID,
+                                proficiencia.AnoCiclo,
+                                proficiencia.Nome,
+                                proficiencia.Descricao
+                            });
+                return ret > 0;
+            }
         }
     }
 }

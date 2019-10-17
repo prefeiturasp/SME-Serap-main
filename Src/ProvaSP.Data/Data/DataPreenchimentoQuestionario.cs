@@ -43,12 +43,17 @@ namespace ProvaSP.Data
                                 //Do contrário a Escola é recuperada com base no vínculo do Usuário. O tipo de vínculo é inferido com base no tipo de Ficha/Questionário enviado.
                                 //OBS: Supervisor não tem vínculo com uma Escola específica. Seu vícnculo é com a DRE.
                                 int PerfilID = -1;
-                                if (tipoQuestionario == TipoQuestionario.FichaRegistroDiretor || tipoQuestionario == TipoQuestionario.QuestionarioDiretor)
+                                if (tipoQuestionario == TipoQuestionario.FichaRegistroDiretor || tipoQuestionario == TipoQuestionario.QuestionarioDiretor || tipoQuestionario == TipoQuestionario.QuestionarioAssistenteDiretoria)
                                     PerfilID = (int)TipoPerfil.Diretor;
                                 else if (tipoQuestionario == TipoQuestionario.FichaRegistroCoordenadorPedagogico || tipoQuestionario == TipoQuestionario.QuestionarioCoordenadorPedagogico)
                                     PerfilID = (int)TipoPerfil.CoordenadorPedagogico;
                                 else if (tipoQuestionario == TipoQuestionario.QuestionarioProfessor)
                                     PerfilID = (int)TipoPerfil.Professor;
+                                /* Edição 2018
+                                else if (tipoQuestionario == TipoQuestionario.QuestionarioAlunos3Ano || tipoQuestionario == TipoQuestionario.QuestionarioAlunos4AnoAo6Ano || tipoQuestionario == TipoQuestionario.QuestionarioAlunos7AnoAo9Ano)
+                                    PerfilID = (int)TipoPerfil.Aluno; */
+                                else if (tipoQuestionario == TipoQuestionario.QuestionarioAlunos3AnoAo6Ano || tipoQuestionario == TipoQuestionario.QuestionarioAlunos7AnoAo9Ano)
+                                    PerfilID = (int)TipoPerfil.Aluno;
                                 if (PerfilID>-1)
                                     preenchimentoDeQuestionario.esc_codigo = DataEscola.RecuperarCodigoEscolaComBaseNoPerfilDaPessoa(Edicao, preenchimentoDeQuestionario.usu_id, PerfilID, dbContextTransaction, conn);
                             }

@@ -13,6 +13,6 @@ namespace GestaoAvaliacao.IRepository
         void InsertMany(List<TempCorrectionResult> entity);
         Task<long> _GetCount();
         Task<TempCorrectionResult> Replace(TempCorrectionResult entity);
-        Task<TempCorrectionResult> GetByTestAndTeam(long test_id, long tur_id);
+
     }
 }

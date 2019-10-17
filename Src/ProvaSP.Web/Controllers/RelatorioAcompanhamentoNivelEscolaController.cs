@@ -23,9 +23,9 @@ namespace ProvaSP.Web.Controllers
                 ViewBag.Escola = escola;
                 ViewBag.Usuario = usuario;
                 var model = new RelatorioAcompanhamentoEscola();
-                model.IndicadoresEscola = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelEscola("2017", esc_codigo);
-                model.IndicadoresTurma = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoTurmaNivelEscola("2017", esc_codigo);
-                model.IndicadoresPessoa = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoPessoaNivelEscola("2017", esc_codigo);
+                model.IndicadoresEscola = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelEscola("2018", esc_codigo);
+                model.IndicadoresTurma = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoTurmaNivelEscola("2018", esc_codigo);
+                model.IndicadoresPessoa = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoPessoaNivelEscola("2018", esc_codigo);
                 return View(model);
             }
             else

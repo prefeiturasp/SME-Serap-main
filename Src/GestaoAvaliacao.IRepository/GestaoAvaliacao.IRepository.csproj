@@ -52,6 +52,7 @@
     <Compile Include="ICorrectionRepository.cs" />
     <Compile Include="ICorrectionResultsRepository.cs" />
     <Compile Include="IExportAnalysisRepository.cs" />
+    <Compile Include="IItemAudioRepository.cs" />
     <Compile Include="IItemFileRepository.cs" />
     <Compile Include="IKnowledgeAreaDisciplineRepository.cs" />
     <Compile Include="IKnowledgeAreaRepository.cs" />

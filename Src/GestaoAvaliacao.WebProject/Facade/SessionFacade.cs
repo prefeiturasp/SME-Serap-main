@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Web;
+using System.Web.Security;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
@@ -33,7 +34,7 @@ namespace GestaoAvaliacao.WebProject.Facade
 		public static UsuarioLogado UsuarioLogado
 		{
 			get
-			{
+            {
                 if (HttpContext.Current.User.Identity.IsAuthenticated)
                 {
                     if (HttpContext.Current.Session[USUARIO_LOGADO] == null)
@@ -260,6 +261,66 @@ namespace GestaoAvaliacao.WebProject.Facade
         /// <summary>
         /// Carrega na sessão a entidade UsuarioLogado, atráves do FormsIdentity.
         /// </summary>
+        private static void LoadUsuarioLogadoSAML()
+        {
+            try
+            {
+                if (HttpContext.Current.User.Identity.IsAuthenticated)
+                {
+                    UsuarioLogado usuLogado = new UsuarioLogado();
+
+                    var identity = HttpContext.Current.User.Identity as FormsIdentity;
+                    if (identity != null)
+                    {
+                        // Recupera Ticket de autenticação gravado em Cookie
+                        FormsIdentity id = identity;
+                        FormsAuthenticationTicket ticket = id.Ticket;
+
+                        // Carrega usuário pelo Ticket da authenticação
+                        usuLogado.Usuario = new SYS_Usuario
+                        {
+                            ent_id = new Guid(UtilBO.GetNameFormsAuthentication(ticket.Name, UtilBO.TypeName.Entidade))
+                            ,
+                            usu_login = UtilBO.GetNameFormsAuthentication(ticket.Name, UtilBO.TypeName.Login)
+                        };
+                        SYS_UsuarioBO.GetSelectBy_ent_id_usu_login(usuLogado.Usuario);
+
+                        // Carrega grupo na session através do ticket de autenticação
+                        string gru_id = UtilBO.GetNameFormsAuthentication(ticket.Name, UtilBO.TypeName.Grupo);
+                        if (!string.IsNullOrEmpty(gru_id))
+                        {
+                            usuLogado.Grupo = SYS_GrupoBO.GetEntity(new SYS_Grupo { gru_id = new Guid(gru_id) });
+                        }
+
+                        usuLogado.Nome = PES_PessoaBO.GetEntity(new PES_Pessoa { pes_id = usuLogado.Usuario.pes_id }).pes_nome ?? usuLogado.Usuario.usu_login;
+                        usuLogado.Sistemas = SYS_SistemaBO.GetSelectBy_usu_id(usuLogado.Usuario.usu_id);
+
+                        if (usuLogado.Usuario.pes_id != Guid.Empty)
+                        {
+                            ACA_AlunoBusiness alunoBO = new ACA_AlunoBusiness();
+                            ACA_Aluno aluno = alunoBO.GetStudentByPesId(usuLogado.Usuario.pes_id);
+
+                            if (aluno != null && aluno.alu_id > 0)
+                            {
+                                usuLogado.alu_id = aluno.alu_id;
+                            }
+                        }
+
+                        UsuarioLogado = usuLogado;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+            }
+        }
+
+
+        /// <summary>
+        /// Carrega na sessão a entidade UsuarioLogado, atráves do FormsIdentity.
+        /// </summary>
+        /// VOLTAR!!! TO DO
         private static void LoadUsuarioLogado()
         {
             try

@@ -953,6 +953,23 @@ namespace GestaoAvaliacao.Repository
                 entity.ItemFiles.RemoveAll(p => p.File != null);
                 entity.ItemFiles.AddRange(newItemFile);
 
+                List<ItemAudio> newItemAudio = new List<ItemAudio>();
+
+                foreach (var audioModel in entity.ItemAudios)
+                {
+                    var newAudio = new ItemAudio
+                    {
+                        State = (Byte)EnumState.ativo,
+                        CreateDate = dateNow,
+                        UpdateDate = dateNow,
+                        File = GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == audioModel.File.Id)
+                    };
+                    newItemAudio.Add(newAudio);
+                }
+
+                entity.ItemAudios.RemoveAll(p => p.File != null);
+                entity.ItemAudios.AddRange(newItemAudio);
+
                 GestaoAvaliacaoContext.Item.Add(entity);
 
                 var itemsToChangeItemFiles = GestaoAvaliacaoContext.Item.Include("ItemFiles").Where(x => x.ItemCodeVersion == entity.ItemCodeVersion && x.Id != entity.Id).ToList();
@@ -998,6 +1015,48 @@ namespace GestaoAvaliacao.Repository
                     GestaoAvaliacaoContext.Entry(entidade).State = System.Data.Entity.EntityState.Modified;
                 }
 
+                var itemsToChangeItemAudio = GestaoAvaliacaoContext.Item.Include("ItemAudios").Where(x => x.ItemCodeVersion == entity.ItemCodeVersion && x.Id != entity.Id).ToList();
+
+                foreach (var entidade in itemsToChangeItemAudio.ToList())
+                {
+                    foreach (var existingAudio in entidade.ItemAudios.ToList())
+                    {
+                        if (!entity.ItemFiles.Any(c => c.Id == existingAudio.Id))
+                        {
+                            existingAudio.State = (Byte)EnumState.excluido;
+                            existingAudio.UpdateDate = dateNow;
+                            GestaoAvaliacaoContext.Entry(existingAudio);
+                        }
+                    }
+
+                    List<ItemAudio> newItemAudioVersions = new List<ItemAudio>();
+
+                    foreach (var audioModel in entity.ItemAudios.Where(p => p.File != null))
+                    {
+                        var existingChild = entidade.ItemAudios.SingleOrDefault(c => c.Id == audioModel.Id);
+
+                        if (existingChild != null)
+                        {
+                            existingChild.UpdateDate = dateNow;
+                            GestaoAvaliacaoContext.Entry(existingChild).CurrentValues.SetValues(newItemAudioVersions);
+                        }
+                        else
+                        {
+                            var newAudio = new ItemAudio
+                            {
+                                State = (Byte)EnumState.ativo,
+                                CreateDate = dateNow,
+                                UpdateDate = dateNow,
+                                File = GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == audioModel.File.Id)
+                            };
+                            newItemAudioVersions.Add(newAudio);
+                        }
+                    }
+                    entidade.ItemAudios.AddRange(newItemAudioVersions);
+
+                    GestaoAvaliacaoContext.Entry(entidade).State = System.Data.Entity.EntityState.Modified;
+                }
+
                 #region Caso já tenha sido versionado altera o itemCode dos outros registros
                 var itemsToChangeItemCode = GestaoAvaliacaoContext.Item.Where(x => x.ItemCodeVersion == entity.ItemCodeVersion).ToList();
 
@@ -1022,7 +1081,7 @@ namespace GestaoAvaliacao.Repository
             {
                 DateTime dateNow = DateTime.Now;
 
-                Item _entity = GestaoAvaliacaoContext.Item.Include("ItemSkills.Skill").Include("Alternatives").Include("ItemCurriculumGrades").Include("ItemFiles").FirstOrDefault(a => a.Id == entity.Id);
+                Item _entity = GestaoAvaliacaoContext.Item.Include("ItemSkills.Skill").Include("Alternatives").Include("ItemCurriculumGrades").Include("ItemFiles").Include("ItemAudios").FirstOrDefault(a => a.Id == entity.Id);
 
                 _entity.Keywords = entity.Keywords;
                 _entity.ItemCode = entity.ItemCode;
@@ -1119,6 +1178,83 @@ namespace GestaoAvaliacao.Repository
                         }
                     }
                     entidade.ItemFiles.AddRange(newItemFileVersions);
+
+                    GestaoAvaliacaoContext.Entry(entidade).State = System.Data.Entity.EntityState.Modified;
+                }
+
+                foreach (var existingAudio in _entity.ItemAudios.ToList())
+                {
+                    if (!entity.ItemAudios.Any(c => c.Id == existingAudio.Id))
+                    {
+                        existingAudio.State = (Byte)EnumState.excluido;
+                        existingAudio.UpdateDate = dateNow;
+                        GestaoAvaliacaoContext.Entry(existingAudio);
+                    }
+                }
+
+                List<ItemAudio> newItemAudio = new List<ItemAudio>();
+
+                foreach (var audioModel in entity.ItemAudios)
+                {
+                    var existingChild = _entity.ItemAudios.SingleOrDefault(c => c.Id == audioModel.Id);
+
+                    if (existingChild != null)
+                    {
+                        existingChild.UpdateDate = dateNow;
+                        GestaoAvaliacaoContext.Entry(existingChild).CurrentValues.SetValues(newItemAudio);
+                    }
+                    else
+                    {
+                        var newAudio = new ItemAudio
+                        {
+                            State = (Byte)EnumState.ativo,
+                            CreateDate = dateNow,
+                            UpdateDate = dateNow,
+                            File = GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == audioModel.File.Id)
+                        };
+                        newItemAudio.Add(newAudio);
+                    }
+                }
+                _entity.ItemAudios.AddRange(newItemAudio);
+
+                var itemsToChangeItemAudios = GestaoAvaliacaoContext.Item.Include("ItemAudios").Where(x => x.ItemCodeVersion == entity.ItemCodeVersion && x.Id != _entity.Id).ToList();
+
+                foreach (var entidade in itemsToChangeItemAudios.ToList())
+                {
+                    foreach (var existingAudio in entidade.ItemAudios.ToList())
+                    {
+                        if (!entity.ItemFiles.Any(c => c.Id == existingAudio.Id))
+                        {
+                            existingAudio.State = (Byte)EnumState.excluido;
+                            existingAudio.UpdateDate = dateNow;
+                            GestaoAvaliacaoContext.Entry(existingAudio);
+                        }
+                    }
+
+                    List<ItemAudio> newItemAudioVersions = new List<ItemAudio>();
+
+                    foreach (var audioModel in entity.ItemAudios)
+                    {
+                        var existingChild = entidade.ItemAudios.SingleOrDefault(c => c.Id == audioModel.Id);
+
+                        if (existingChild != null)
+                        {
+                            existingChild.UpdateDate = dateNow;
+                            GestaoAvaliacaoContext.Entry(existingChild).CurrentValues.SetValues(newItemAudioVersions);
+                        }
+                        else
+                        {
+                            var newAudio = new ItemAudio
+                            {
+                                State = (Byte)EnumState.ativo,
+                                CreateDate = dateNow,
+                                UpdateDate = dateNow,
+                                File = GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == audioModel.File.Id)
+                            };
+                            newItemAudioVersions.Add(newAudio);
+                        }
+                    }
+                    entidade.ItemAudios.AddRange(newItemAudioVersions);
 
                     GestaoAvaliacaoContext.Entry(entidade).State = System.Data.Entity.EntityState.Modified;
                 }

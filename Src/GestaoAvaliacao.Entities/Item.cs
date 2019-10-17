@@ -14,6 +14,7 @@ namespace GestaoAvaliacao.Entities
 			IsRestrict = false;
 			BlockItems = new List<BlockItem>();
             ItemFiles = new List<ItemFile>();
+            ItemAudios = new List<ItemAudio>();
         }
 
         public Item ShalowCopy()
@@ -58,6 +59,7 @@ namespace GestaoAvaliacao.Entities
         public virtual SubSubject SubSubject { get; set; }
         public long? SubSubject_Id { get; set; }
         public virtual List<ItemFile> ItemFiles { get; set; }
+        public virtual List<ItemAudio> ItemAudios { get; set; }
 
         [NotMapped]
         public int ItemOrder { get; set; }

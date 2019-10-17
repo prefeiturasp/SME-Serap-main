@@ -81,10 +81,12 @@
     <Compile Include="AnswerSheetBatchRepository.cs" />
     <Compile Include="AnswerSheetBatchFilesRepository.cs" />
     <Compile Include="AnswerSheetBatchLogRepository.cs" />
+    <Compile Include="ItemAudioRepository.cs" />
     <Compile Include="ItemFileRepository.cs" />
     <Compile Include="KnowledgeAreaDisciplineRepository.cs" />
     <Compile Include="KnowledgeAreaRepository.cs" />
     <Compile Include="Map\AdministrativeUnitTypeMap.cs" />
+    <Compile Include="Map\ItemAudioMap.cs" />
     <Compile Include="Map\ItemFileMap.cs" />
     <Compile Include="Map\BlockKnowledgeAreaMap.cs" />
     <Compile Include="Map\KnowledgeAreaDisciplineMap.cs" />

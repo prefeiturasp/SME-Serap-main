@@ -19,7 +19,7 @@ namespace ProvaSP.Web.Controllers
             {
                 ViewBag.Usuario = usuario;
                 ViewBag.DRE = uad_codigo;
-                var indicadores = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelDRE("2017", uad_codigo);
+                var indicadores = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelDRE("2018", uad_codigo);
                 return View(indicadores);
             }
             else

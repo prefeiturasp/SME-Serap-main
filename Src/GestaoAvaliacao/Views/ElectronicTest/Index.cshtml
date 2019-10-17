@@ -5,6 +5,10 @@
         <h4>Gerenciador de Provas Online <span>Receba e resolva provas, visualize provas realizadas e suas correções</span></h4>
     </div>
 
+    <div class="panel-group" style="text-align:center;">
+        <a class="btnPadrao" href="/ProvaSP">Resultados Provinha/Prova São Paulo</a>
+    </div>
+
     <div class="accordion-prova">
         <p class="nresultados" ng-show="!(eletronicTestListNaoIniciadas.length > 0 || eletronicTestListEmAndamento.length > 0 || eletronicTestFinalizadas.length > 0)">Nenhum resultado encontrado.</p>
         <div class="a-gerenciar" ng-show="!admin && eletronicTestListNaoIniciadas.length > 0">

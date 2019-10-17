@@ -272,9 +272,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50671</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://dev-serapapi.sme.prefeitura.sp.gov.br</IISUrl>
+          <IISUrl>http://localhost/GestaoAvaliacaoAPI</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://dev-serapapi.sme.prefeitura.sp.gov.br</IISAppRootUrl>
+          <IISAppRootUrl>http://localhost/GestaoAvaliacaoAPI</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

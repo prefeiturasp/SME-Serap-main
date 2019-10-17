@@ -14,7 +14,7 @@
     <RootNamespace>GestaoAvaliacao</RootNamespace>
     <AssemblyName>GestaoAvaliacao</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -358,23 +358,48 @@
     <Content Include="AppProvaSP\css\jquery.mobile.theme-1.4.5.css" />
     <Content Include="AppProvaSP\css\jquery.mobile.theme-1.4.5.min.css" />
     <Content Include="AppProvaSP\css\materialdesignicons.min.css" />
+    <Content Include="AppProvaSP\css\selectize.css" />
+    <Content Include="AppProvaSP\css\selectize.default.css" />
     <Content Include="AppProvaSP\css\sweetalert.css" />
     <Content Include="AppProvaSP\fonts\materialdesignicons-webfont.svg" />
+    <Content Include="AppProvaSP\images\banner_provasp_1024x500.jpg" />
     <Content Include="AppProvaSP\images\bgSerap.png" />
+    <Content Include="AppProvaSP\images\bullet_ab.png" />
+    <Content Include="AppProvaSP\images\bullet_ad.png" />
+    <Content Include="AppProvaSP\images\bullet_av.png" />
+    <Content Include="AppProvaSP\images\bullet_ba.png" />
     <Content Include="AppProvaSP\images\codigoDeBarrasExemplo.png" />
     <Content Include="AppProvaSP\images\cordova.png" />
+    <Content Include="AppProvaSP\images\fa_background.png" />
+    <Content Include="AppProvaSP\images\google_play_print1.png" />
     <Content Include="AppProvaSP\images\identificacao_turma.png" />
     <Content Include="AppProvaSP\images\img_bkg_login.jpg" />
+    <Content Include="AppProvaSP\images\livro_cn.png" />
+    <Content Include="AppProvaSP\images\livro_mat.png" />
+    <Content Include="AppProvaSP\images\livro_port.png" />
+    <Content Include="AppProvaSP\images\Logo_Prova-São-Paulo_2017_512px.png" />
     <Content Include="AppProvaSP\images\logo_provaSP.png" />
     <Content Include="AppProvaSP\images\logo_provaSP_old.png" />
     <Content Include="AppProvaSP\images\logo_provaSP_small.png" />
     <Content Include="AppProvaSP\images\logo_sme - Copia.png" />
     <Content Include="AppProvaSP\images\logo_sme.png" />
+    <Content Include="AppProvaSP\images\provas.png" />
+    <Content Include="AppProvaSP\images\stripes.png" />
     <Content Include="AppProvaSP\questionario_1.html" />
     <Content Include="AppProvaSP\questionario_10.html" />
     <Content Include="AppProvaSP\questionario_11.html" />
     <Content Include="AppProvaSP\questionario_12.html" />
+    <Content Include="AppProvaSP\questionario_13.html" />
+    <Content Include="AppProvaSP\questionario_14.html" />
+    <Content Include="AppProvaSP\questionario_15.html" />
+    <Content Include="AppProvaSP\questionario_16.html" />
+    <Content Include="AppProvaSP\questionario_17.html" />
+    <Content Include="AppProvaSP\questionario_18.html" />
+    <Content Include="AppProvaSP\questionario_19.html" />
     <Content Include="AppProvaSP\questionario_2.html" />
+    <Content Include="AppProvaSP\questionario_20.html" />
+    <Content Include="AppProvaSP\questionario_21.html" />
+    <Content Include="AppProvaSP\questionario_22.html" />
     <Content Include="AppProvaSP\questionario_3.html" />
     <Content Include="AppProvaSP\questionario_9.html" />
     <Content Include="AppProvaSP\scripts\app.js" />
@@ -1520,6 +1545,8 @@
     <Content Include="Assets\tests\unit\controllers\formItemController.test.js" />
     <Content Include="Assets\tests\unit\controllers\fileController.test.js" />
     <Content Include="Assets\tests\unit\razor.js" />
+    <Content Include="cb.txt" />
+    <Content Include="cordova.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="samlcert.pfx" />
@@ -1613,11 +1640,13 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <Content Include="DeParaTurmas.csv" />
     <None Include="MvcSiteMapSchema.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\Site.pubxml" />
+    <Content Include="scripts\chart.js" />
     <Content Include="version.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -1890,9 +1919,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54127</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://dev-serap.sme.prefeitura.sp.gov.br</IISUrl>
-          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://dev-serap.sme.prefeitura.sp.gov.br</IISAppRootUrl>
+          <IISUrl>http://localhost:54127</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

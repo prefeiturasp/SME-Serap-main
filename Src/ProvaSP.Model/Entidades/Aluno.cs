@@ -13,5 +13,6 @@ namespace ProvaSP.Model.Entidades
         public string esc_codigo { get; set; }
         public string esc_nome { get; set; }
         public string Nome { get; set; }
+        public string AnoEscolar { get; set; }
     }
 }

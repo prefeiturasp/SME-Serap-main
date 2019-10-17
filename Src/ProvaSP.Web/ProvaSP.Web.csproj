@@ -159,7 +159,13 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AlunoParticipacaoEdicoesController.cs" />
     <Compile Include="Controllers\AlunoPossuiProficienciaController.cs" />
+    <Compile Include="Controllers\ConfiguracaoController.cs" />
+    <Compile Include="Controllers\FatorAssociadoController.cs" />
+    <Compile Include="Controllers\ImagemAlunoController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\NivelProficienciaAnoEscolarController.cs" />
+    <Compile Include="Controllers\NivelProficienciaCicloController.cs" />
+    <Compile Include="Controllers\ParticipacaoController.cs" />
     <Compile Include="Controllers\ProficienciaTurmaController.cs" />
     <Compile Include="Controllers\RelatorioAcompanhamentoController.cs" />
     <Compile Include="Controllers\RelatorioAcompanhamentoNivelDREController.cs" />
@@ -171,7 +177,9 @@
     <Compile Include="Controllers\ResultadoRecuperarAlunosController.cs" />
     <Compile Include="Controllers\ResultadoRecuperarTurmasController.cs" />
     <Compile Include="Controllers\RetornarAppJsonController.cs" />
+    <Compile Include="Controllers\SequenciaDidaticaController.cs" />
     <Compile Include="Controllers\SincronizarQuestionarioController.cs" />
+    <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -209,6 +217,7 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <Content Include="libman.json" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -242,9 +251,14 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Configuracao\" />
+    <Folder Include="Views\ImagemAluno\" />
+    <Folder Include="Views\NivelProficienciaAnoEscolar\" />
+    <Folder Include="Views\NivelProficienciaCiclo\" />
     <Folder Include="Views\ProficienciaTurma\" />
     <Folder Include="Views\ResultadoRecuperarAlunos\" />
     <Folder Include="Views\RetornarAppJson\" />
+    <Folder Include="Views\Usuario\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

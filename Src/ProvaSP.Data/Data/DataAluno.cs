@@ -23,6 +23,34 @@ namespace ProvaSP.Data
             return retorno;
         }
 
+        public static Aluno GetAluno(string Edicao, string alu_matricula)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                var retorno = new Aluno();
+
+                var parametros = new DynamicParameters();
+                parametros.Add("Edicao", Edicao, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 10);
+                parametros.Add("alu_matricula", alu_matricula, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input);
+
+                try
+                {
+                    retorno = conn.Query<Aluno>(
+                        sql: @"
+                            SELECT alu_matricula, alu_nome as Nome, AnoEscolar, tur_codigo
+                            FROM Aluno WITH (NOLOCK)
+                            WHERE Edicao = @Edicao AND alu_matricula = @alu_matricula",
+                        param: parametros
+                        ).FirstOrDefault();
+                    return retorno;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
         public static List<Aluno> RecuperarAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo, string lista_turmas)
         {
             var retorno = new List<Aluno>();
@@ -134,11 +162,7 @@ namespace ProvaSP.Data
                     }
                 }
             }
-
-            
-            
-        }
-
+        }       
     }
 }
 

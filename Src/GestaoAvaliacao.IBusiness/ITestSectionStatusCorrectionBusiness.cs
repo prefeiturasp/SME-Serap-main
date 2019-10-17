@@ -23,7 +23,6 @@ namespace GestaoAvaliacao.IBusiness
         Task<List<TempCorrectionResult>> TempCorrectionResults(Guid ent_id);
         Task<TempCorrectionResult> UpdateTempCorrection(TempCorrectionResult entity);
         Task<TempCorrectionResult> GetTempCorrection(Guid ent_id, long test_id, long tur_id);
-        Task<TempCorrectionResult> GetTempCorrection(long test_id, long tur_id);
         //Task<TempCorrectionResult> GenerateTempCorrectionResult(Guid ent_id, long test_id, long tur_id);
     }
 }

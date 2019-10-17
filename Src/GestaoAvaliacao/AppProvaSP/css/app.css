@@ -213,49 +213,555 @@ table.greyGridTable {
     border-collapse: collapse;
 }
 
-    table.greyGridTable td, table.greyGridTable th {
-        border: 1px solid #cccccc;
-        padding: 3px 4px;
-    }
+table.greyGridTable td, table.greyGridTable th {
+    border: 1px solid #cccccc;
+    padding: 3px 4px;
+}
 
-    table.greyGridTable tbody td {
-        font-size: 13px;
-    }
+table.greyGridTable tbody td {
+    font-size: 13px;
+}
 
-    table.greyGridTable td:nth-child(even) {
-        background: #EBEBEB;
-    }
+table.greyGridTable td:nth-child(even) {
+    background: #EBEBEB;
+}
 
-    table.greyGridTable thead {
-        background: #FFFFFF;
-        border-bottom: 2px solid #cccccc;
-    }
+table.greyGridTable thead {
+    background: #FFFFFF;
+    border-bottom: 2px solid #cccccc;
+}
 
-        table.greyGridTable thead th {
-            font-size: 15px;
-            font-weight: bold;
-            color: #333333;
-            text-align: center;
-            border-left: 2px solid #333333;
-        }
+table.greyGridTable thead th {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333333;
+    text-align: center;
+    border-left: 2px solid #333333;
+}
 
-            table.greyGridTable thead th:first-child {
-                border-left: none;
-            }
+table.greyGridTable thead th:first-child {
+    border-left: none;
+}
 
-    table.greyGridTable tfoot {
-        font-size: 14px;
-        font-weight: bold;
-        color: #333333;
-        border-top: 4px solid #333333;
-    }
+table.greyGridTable tfoot {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333333;
+    border-top: 4px solid #333333;
+}
 
-        table.greyGridTable tfoot td {
-            font-size: 14px;
-        }
+table.greyGridTable tfoot td {
+    font-size: 14px;
+}
+
+/*MSTECH - Estilo genérico aproveitável em diversas telas*/
+.generico_mainDiv {
+    padding: 0px 10px;
+}
+.generico_subDiv {
+    min-height: 100%;
+    text-align:center;
+    padding-bottom: 200px;
+}
+.generic_logo {
+    max-width: 180px;
+    display: block;
+    margin: 15px auto;
+}
+.generico_headerDiv {
+    padding: 20px 10px;
+    border: 1px solid #a0a0a0;
+    border-radius: 2.5px;
+    margin: 20px 0px;
+}
+.generico_headerTitle {
+    font-size: 20pt;
+    margin: 0px;
+    font-weight: bold;
+}
+.generico_headerText {
+    font-size: 10pt;
+    margin: 0px;
+}
+.genericoFixedDiv {
+    position: fixed;
+    top: 0;
+    z-index: 2000;
+    background: white;
+    margin: 0px;
+}
 
 
+/*MSTECH - Estilo das imagens em questionário*/
+.questionarioAlunoImg {
+    width: 100%;
+    max-width: 450px;
+    display: block;
+    margin: 10px auto;
+}
+
+/*MSTECH - Estilos para listagem de alunos*/
+.alunos_checkDiv {
+    display: inline-block;
+    vertical-align: middle;
+}
+.alunos_iconeDiv {
+    margin: 0px 5px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.alunos_iconeImg {
+    width: 35px;
+}
+
+/*MSTECH - Estilos para novas estruturas da tela de Resultados*/
+.resultados_checkOption {
+    padding: 20px 10px;
+    color: #606060;
+    margin: 0px;
+    text-align: left;
+}
+.resultados_headerTitle {
+    color: #606060;
+    font-size: 10pt;
+    background: #fff;
+    font-weight: bold;
+    margin: 15px 0px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #a0a0a0;
+}
+.resultados_botaoDownload {
+    display: inline-block;
+    background: #3388CC;
+    color: #fff;
+    text-align: center;
+    margin: 5px;
+    border-radius: 7.5px;
+    padding: 10px 20px;
+    font-size: 10pt;
+}
+.resultados_graficoAprendizagemDiv {
+    margin: 20px 0px;
+}
+.resultados_graficoAprendizagemChartDiv {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    margin: 20px 0px;
+}
+.resultados_graficoAprendizagemChartDiv2 {
+    width: 100%;
+    margin: 20px 0px;
+}
+.resultados_graficoAprendizagemChartDiv2Ano {
+    width: 100%;
+    height: 150px;
+    margin: 20px 0px;
+}
+.resultados_graficoSerieHistoricaMainDiv {
+    margin: 10px 0px;
+    padding: 20px 0px;
+    border-top: 1px solid #eee;
+}
+.resultados_graficoSerieHistorica {
+    max-height: 400px;
+    margin: 40px 0px;
+}
+.resultados_graficoAprendizagemTitle {
+    font-size: 11pt;
+    text-align: center;
+    margin: 10px 0px;
+    color: #707070;
+    font-weight: bold;
+}
+.resultados_graficoAprendizagemTooltip {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #808080;
+    font-size: 9pt;
+}
+.resultados_graficoCentro {
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, 0);
+}
+.resultados_graficoBlock {
+    display: inline-block;
+}
+
+.participacao_mainDiv {
+    padding: 20px 0px;
+}
+.participacao_btn {
+    text-align: center;
+    width: 200px;
+    margin-left: auto;
+    background: #f6f6f6;
+    color: #333;
+    border-radius: 15px;
+    padding: 10px 0px;
+    font-size: 9pt;
+    font-weight: bold;
+    border: 1px solid #ddd;
+    box-shadow: 0px 1px 2px #ddd;
+}
+.participacao_header {
+    margin: 0px;
+    color: #303030;
+    text-align: left;
+    font-weight: 500;
+    font-size: 14pt;
+    padding: 15px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+.participacao_subDiv {
+    padding: 10px;
+}
+.participacao_title{
+    max-width: 240px;
+    font-size: 9pt;
+    color: #303030;
+    text-align: left;
+    font-weight: 500;
+    margin: 0px 0px 5px 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+.participacao_blockDiv {
+    display: inline-block;
+    margin: 10px;
+}
+.participacao_defaultTD {
+    width: 65px;
+    padding: 0px 5px 0px 0px;
+    vertical-align: middle;
+}
+.participacao_coloredTD {
+    width: 90px;
+    padding: 0px;
+    vertical-align: middle;
+}
+.participacao_flagTD {
+    width: 21px;
+    padding: 0px;
+    vertical-align: middle;
+}
+.participacao_flagIconTip {
+    color: #68B6E5;
+    margin: 0px;
+    font-size: 14pt;
+    display: inline-block;
+    vertical-align: middle;
+}
+.participacao_flagIcon {
+    color: #68B6E5;
+    margin: 0px;
+    font-size: 16pt;
+}
+.participacao_coloredLine {
+    color: #68B6E5;
+    font-weight: bold;
+}
+.participacao_values {
+    font-size: 10pt;
+    color: #303030;
+    font-weight: bold;
+    margin: 0px;
+    padding: 5px 0px;
+    background: #f0f0f0;
+}
+.participacao_coloredTipDiv {
+    width: 100%;
+    text-align: right;
+}
+.participacao_coloredTip {
+    font-size: 9pt;
+    color: #fff;
+    font-weight: 400;
+    margin: 0px;
+    padding: 5px 10px;
+    background: #63B4E5;
+    border-radius: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.participacao_colored {
+    font-size: 10pt;
+    color: #303030;
+    font-weight: bold;
+    margin: 0px;
+    padding: 5px 0px;
+    background: #f0f0f0;
+}
+.participacao_coloredOK {
+    color: #fff;
+    font-weight: 400;
+    background: #63B4E5;
+}
+.participacao_text {
+    font-size: 7pt;
+    color: #808080;
+    font-weight: 500;
+    margin: 0px;
+}
 
 
+.fatoresassociados_headerDiv {
+    padding: 15px 0px;
+}
+.fatoresassociados_title {
+    color: #727272;
+    font-size: 11pt;
+    font-weight: bold;
+    text-align: center;
+    margin: 0px;
+}
+.fatoresassociados_text {
+    color: #333;
+    font-size: 11pt;
+    font-weight: bold;
+    text-align: center;
+    margin: 0px;
+}
+.fatoresassociados_quadrosDiv {
+    margin: 0px 0px 20px 0px;
+}
+.fatoresassociados_quadrosBlockDiv {
+    display: inline-block;
+    margin: 10px;
+}
+.fatoresassociados_quadrosBlockLeftDiv {
+    display: inline-block;
+    width: 10px;
+    vertical-align: bottom;
+}
+.fatoresassociados_quadrosVText {
+    transform: rotate(270deg);
+    font-size: 8pt;
+    color: #606060;
+    margin: 0px;
+}
+.fatoresassociados_quadrosBlockRightDiv {
+    width: 120px;
+    height: 100px;
+    display: inline-block;
+    border: 1px solid #808080;
+}
+.fatoresassociados_quadrosBlockHeight {
+    height: 50px;
+}
+.fatoresassociados_quadrosBlockHeader {
+    color: #fff;
+    text-align: center;
+    margin: 0px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    text-shadow: 0 0;
+}
+.fatoresassociados_quadrosBlockBody {
+    background: white;
+    font-size: 20pt;
+    font-weight: bold;
+    color: #303030;
+    text-align: center;
+    margin: 0px;
+    padding: 0px 5px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.fatoresassociados_variaveisDiv {
+    padding-bottom: 40px;
+}
+.fatoresassociados_variaveisBlockDiv {
+    display: none;
+    border: 1px solid #ccc;
+}
+.fatoresassociados_variaveisTable {
+    width: 100%;
+    background: #7A7A7A;
+}
+.fatoresassociados_variaveisTDLeft {
+    vertical-align: middle;
+}
+.fatoresassociados_variaveisTDLeftText {
+    color: #fff;
+    margin: 5px 5px 5px 10px;
+    font-weight: 300;
+    font-size: 11pt;
+    text-align: left;
+    text-shadow: 0 0;
+}
+.fatoresassociados_variaveisTDRight {
+    width: 50px;
+    vertical-align: bottom;
+}
+.fatoresassociados_variaveisTDRightImg {
+    width: 50px;
+}
+.fatoresassociados_variaveisOption {
+    background: #F7F7F7;
+    padding: 15px;
+    margin: 0px;
+    border: 2px solid #ccc;
+    border-top: 0;
+    color: #606060;
+    font-weight: bold;
+    text-align: left;
+}
+.fatoresassociados_variaveisText {
+    color: #fff;
+    font-weight: 300;
+    font-size: 11pt;
+    text-align: left;
+    margin: 0px;
+    padding: 10px;
+    text-shadow: 0 0;
+    background: #7A7A7A;
+}
+.fatoresassociados_resenha {
+    text-align: center;
+    margin: 20px 0px;
+    border: 1px solid #808080;
+    background: #eee;
+    border-radius: 5px;
+    padding: 15px 10px;
+    color: #606060;
+    font-size: 9pt;
+    text-shadow: 0 0;
+}
+
+/*MSTECH - Estilos da nova tela de Configurações*/
+.configuracoes_optionsMainDiv {
+    margin: 20px 0px;
+}
+.configuracoes_optionsDiv {
+    padding: 20px;
+    border-top: 1px solid #ccc;
+}
+.configuracoes_tabDiv {
+    padding: 0px 10px 20px 10px;
+}
+.configuracoes_optionsTitle {
+    font-size: 9pt;
+    margin: 0px 0px 5px 0px;
+    font-weight: bold;
+    color: #303030;
+}
+.configuracoes_optionsTitleLeft {
+    font-size: 9pt;
+    margin: 20px 0px 5px 0px;
+    font-weight: bold;
+    color: #303030;
+    text-align: left;
+}
+.configuracoes_optionsText {
+    font-size: 10pt;
+    color: #808080;
+    margin: 0px;
+}
+
+/*MSTECH - Estilos para a nova tela de Listagem das provas físicas do Aluno*/
+.provaaluno_div {
+    padding: 0px 10px;
+}
+.provaaluno_item {
+    margin: 30px 0px 5px 0px;
+    font-size: 12pt;
+    color: #303030;
+    font-weight: bold;
+    text-align: left;
+}
+.provaaluno_criterios {
+    margin: 15px 0px 30px 0px;
+    font-size: 12pt;
+    color: #808080;
+    text-align: left;
+    line-height: 1.5em;
+}
+.provaaluno_downloadBtn {
+    font-size: 10pt;
+    color: #303030;
+    background: #eee;
+    border-radius: 15px;
+    border: 1px solid #303030;
+    text-align: center;
+    margin: 0px 5px 0px 0px;
+    padding: 5px 15px;
+    line-height: 3.5em;
+}
+
+
+.sequenciadidatica_headerTitle {
+    font-size: 10pt;
+    color: #303030;
+    font-weight: bold;
+    font-style: italic;
+    margin: 20px 5px 0px 5px;
+    text-align: left;
+}
+.sequenciadidatica_mainDiv {
+    display: block;
+    text-align: left;
+}
+.sequenciadidatica_blockDiv {
+    width: 140px;
+    height: 180px;
+    display: inline-block;
+    margin: 5px;
+    background: #fff;
+    border: 1px solid #a0a0a0;
+    padding: 10px 5px;
+    border-radius: 2.5px;
+    vertical-align: middle;
+}
+.sequenciadidatica_blockTable {
+    width: 100%;
+}
+.sequenciadidatica_blockTDTitle {
+    vertical-align: middle;
+    padding: 0px 5px;
+}
+.sequenciadidatica_blockTitle {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #303030;
+    margin: 0px;
+    text-align: left;
+}
+.sequenciadidatica_blockTDIcon {
+    width: 30px;
+    vertical-align: middle;
+    padding: 0px 5px;
+}
+.sequenciadidatica_blockIcon {
+    font-size: 16pt;
+    color: #808080;
+    margin: 0px;
+    text-align: right;
+}
+.sequenciadidatica_blockTextDiv {
+    overflow-y: auto;
+    height: 150px;
+}
+.sequenciadidatica_blockText {
+    font-size: 9pt;
+    color: #808080;
+    text-align: left;
+    margin: 5px 0px;
+}
 
 

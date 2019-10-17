@@ -103,6 +103,7 @@
         function configInternalObjs() {
 
             $scope.listextensionsVideo = ['video/mp4', 'video/webm', 'video/ogg', 'application/ogg', 'video/x-flv', 'application/x-mpegURL', 'video/MP2T', 'video/3gpp', 'video/quicktime', 'video/x-msvideo', 'video/x-ms-wmv'];
+            $scope.listextensionsAudio = ['audio/mpeg', 'audio/mp4', 'audio/mp3', 'audio/vnd.wav', 'audio/x-ms-wma', 'audio/ogg'];
             $scope.listextensionsImage = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'];
             $scope.EnumState = EnumState; // -> razor
             $scope.IsValidCode = undefined;
@@ -247,6 +248,8 @@
 
             $scope.videos = [];
 
+            $scope.audios = [];
+
             $scope.alterouMatriz = false;
             $scope.$watchCollection('itens', $scope.travarEtapa1);
             $scope.parameters = {};
@@ -356,6 +359,108 @@
         };
 
         /**
+         * @function - Salva os elementos no servidor
+         * @public
+        * @params {integer} index Posição do elemento clicado.
+        * @return {boolean} se elemento é o ultimo da listaModal
+        */
+        $scope.lastAudio = function (index) {
+
+            return index === $scope.audios.length - 1;
+        };
+
+        /**
+         * @function - Altera um audio
+         * @public
+        * @params {integer} index Posição do elemento clicado.
+        */
+        $scope.altModalAudio = function (index) {
+
+            var q = $scope.audios[index];
+
+            if (q.Path)
+                q.lock = !q.lock;
+
+            if (q.lock)
+                aplicaCSS(q, 2);
+            else
+                aplicaCSS(q, 3);
+        };
+
+        /**
+         * @function - Adiciona um novo subassunto para o assunto.
+         * @public
+         * @params
+        */
+        $scope.addModalAudio = function () {
+
+            //Tranca(lock) se não estiver 
+            if ($scope.audios[$scope.ultimo])
+                if (!$scope.audios[$scope.ultimo].lock)
+                    $scope.altModalAudio($scope.ultimo);
+
+            var q = new Segmento();
+
+            q.Level = $scope.audios.length;
+
+            $scope.audios.push(q);
+
+            $scope.ultimo = $scope.audios.length - 1;
+        };
+
+        /**
+         * @function - Deleta áudio
+         * @public
+         * @params
+        */
+        $scope.delModalAudio = function () {
+
+            angular.element("#modalAudios").modal('hide');
+
+            var id = $scope.audios[$scope.itemDeletado].Id;
+
+            var q = $scope.audios[$scope.itemDeletado];
+
+            q.Description = undefined;
+            q.Id = 0;
+            q.lock = undefined;
+
+            delete q.Description;
+            delete q.Id;
+            delete q.lock;
+
+            q = null;
+            $scope.audios[$scope.itemDeletado] = null;
+            $scope.audios.splice($scope.itemDeletado, 1);
+
+            $scope.itemDeletado = undefined;
+
+
+            if ($scope.audios.length < 1)
+                $scope.addModalAudio();// inicia um elemento
+            else
+                $scope.ultimo = $scope.audios.length - 1;
+        };
+
+        /**
+        * @function - Cria nova lista para edição
+        * @public
+        * @params
+        */
+        function newModalAudio() {
+
+            $scope.audios = [];
+
+            if ($scope.audios.length < 1) {
+                $scope.audios.push(new Segmento());
+            }
+
+            $scope.ultimo = $scope.audios.length - 1;
+        };
+
+
+
+        /**
         * @function Object
         * @private
         * @param {Object} current
@@ -387,6 +492,17 @@
 
             $scope.itemDeletado = i;
             angular.element("#modalVideos").modal({ backdrop: 'static' });
+        };
+
+        /**
+      * @function - configura o item a ser deletado
+      * @public
+      * @params {int} i
+      */
+        $scope.callModalAudio = function (i) {
+
+            $scope.itemDeletado = i;
+            angular.element("#modalAudios").modal({ backdrop: 'static' });
         };
 
         /**
@@ -873,6 +989,12 @@
                             newModal();
                         }                      
 
+                        $scope.audios = _result.Audios;
+
+                        if ($scope.audios.length <= 0) {
+                            newModalAudio();
+                        }                      
+
                         if (_result.ItemType != null) {
                             var arr = jQuery.grep($scope.tipoItem.lista, function (n, i) {
                                 return (n.Id == _result.ItemType.Id);
@@ -949,6 +1071,12 @@
 
                 if ($scope.videos.length <= 0) {
                     newModal();
+                }
+
+                $scope.audios = _result.Audios;
+
+                if ($scope.audios.length <= 0) {
+                    newModalAudio();
                 }
 
                 if (_result.ItemType != null) {
@@ -1432,7 +1560,7 @@
             var wrapper = $scope.wrapper(item);
 
             ItemModel.save({
-                item: wrapper.item, files: wrapper.files, itemFiles: $scope.videos
+                item: wrapper.item, files: wrapper.files, itemFiles: $scope.videos, itemAudios: $scope.audios
             },
 
             function (result) {
@@ -1567,7 +1695,7 @@
 
             var wrapper = $scope.wrapper(item);
             ItemModel.save({
-                item: wrapper.item, files: wrapper.files, itemFiles: $scope.videos
+                item: wrapper.item, files: wrapper.files, itemFiles: $scope.videos, itemAudios: $scope.audios
             },
 
           function (result) {
@@ -1649,7 +1777,9 @@
             $scope.assunto = undefined;
             $scope.subassunto = undefined;
             $scope.videos = [];
+            $scope.audios = [];
             newModal();
+            newModalAudio();
 
             $(".comboAssunto").select2("val", "");
             $(".comboSubassunto").select2("val", "");
@@ -1708,7 +1838,8 @@
                 knowledgeArea: JSON.parse(JSON.stringify($scope.area.objArea)),
                 subassunto: JSON.parse(JSON.stringify($scope.subassunto)),
                 assunto: $scope.assunto,
-                videos: $scope.videos
+                videos: $scope.videos,
+                audios: $scope.audios
             };
 
             return item;
@@ -2274,6 +2405,7 @@
             }
             else if (_navigation == 3 && !$scope.editMode) {
                 newModal();
+                newModalAudio();
             }
 
             if ($scope.validade(_navigation)) {

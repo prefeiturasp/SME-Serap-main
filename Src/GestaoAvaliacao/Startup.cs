@@ -50,16 +50,16 @@ namespace GestaoAvaliacao
                         {
                             var claims_to_exclude = new[] { "aud", "iss", "nbf", "exp", "nonce", "iat", "at_hash" };
 
-                            //Exclude unnecessary claims
-                            var claims_to_keep =
+                                //Exclude unnecessary claims
+                                var claims_to_keep =
                                 n.AuthenticationTicket.Identity.Claims
                                 .Where(x => false == claims_to_exclude.Contains(x.Type)).ToList();
 
-                            //Add id_token to user claims
-                            claims_to_keep.Add(new Claim("id_token", n.ProtocolMessage.IdToken));
+                                //Add id_token to user claims
+                                claims_to_keep.Add(new Claim("id_token", n.ProtocolMessage.IdToken));
 
-                            //Search userinfo from IS Claims
-                            if (n.ProtocolMessage.AccessToken != null)
+                                //Search userinfo from IS Claims
+                                if (n.ProtocolMessage.AccessToken != null)
                             {
                                 claims_to_keep.Add(new Claim("access_token", n.ProtocolMessage.AccessToken));
                                 var userInfoClient = new UserInfoClient(new System.Uri(IDSSettings.EndpointUserInfo), n.ProtocolMessage.AccessToken);
@@ -92,11 +92,11 @@ namespace GestaoAvaliacao
                         {
                             if (context.Exception is OpenIdConnectProtocolInvalidNonceException)
                             {
-                                // Handle Microsoft.IdentityModel.Protocols.OpenIdConnectProtocolInvalidNonceException:
-                                // IDX10311: RequireNonce is 'true' (default) but validationContext.Nonce is null. A nonce
-                                // cannot be validated. If you don't need to check the nonce, set
-                                // OpenIdConnectProtocolValidator.RequireNonce to 'false'.
-                                if (context.Exception.Message.Contains("IDX10311"))
+                                    // Handle Microsoft.IdentityModel.Protocols.OpenIdConnectProtocolInvalidNonceException:
+                                    // IDX10311: RequireNonce is 'true' (default) but validationContext.Nonce is null. A nonce
+                                    // cannot be validated. If you don't need to check the nonce, set
+                                    // OpenIdConnectProtocolValidator.RequireNonce to 'false'.
+                                    if (context.Exception.Message.Contains("IDX10311"))
                                 {
                                     context.SkipToNextMiddleware();
                                 }
@@ -107,5 +107,5 @@ namespace GestaoAvaliacao
                 });
             }
         }
-    }
+        }
 }

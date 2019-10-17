@@ -50,7 +50,7 @@
       <HintPath>..\packages\Dapper.1.50.2\lib\net45\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="MSTech.Security.Cryptography">
-      <HintPath>..\..\..\..\Projetos\ProvaSP\coresso\Src\CoreSSO\bin\MSTech.Security.Cryptography.dll</HintPath>
+      <HintPath>..\MSTech.Library\MSTech\MSTech.Security.Cryptography.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -66,6 +66,9 @@
   <ItemGroup>
     <Compile Include="Data\DataAluno.cs" />
     <Compile Include="Data\DataConfiguracao.cs" />
+    <Compile Include="Data\DataFatorAssociado.cs" />
+    <Compile Include="Data\DataImagemAluno.cs" />
+    <Compile Include="Data\DataParticipacao.cs" />
     <Compile Include="Data\DataProficiencia.cs" />
     <Compile Include="Data\DataDRE.cs" />
     <Compile Include="Data\DataEscola.cs" />
@@ -73,6 +76,7 @@
     <Compile Include="Data\DataAcompanhamentoAplicacao.cs" />
     <Compile Include="Data\DataPreenchimentoQuestionario.cs" />
     <Compile Include="Data\DataResultado.cs" />
+    <Compile Include="Data\DataSequenciaDidatica.cs" />
     <Compile Include="Data\DataTurma.cs" />
     <Compile Include="Data\DataUsuario.cs" />
     <Compile Include="Data\Enum.cs" />

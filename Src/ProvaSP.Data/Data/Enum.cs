@@ -17,7 +17,21 @@ namespace ProvaSP.Data
         FichaRegistroSupervisor = 9,
         FichaRegistroDiretor = 10,
         FichaRegistroCoordenadorPedagogico = 11,
-        QuestionarioProfessor = 12
+        QuestionarioProfessor = 12,
+        QuestionarioAssistenteDiretoria = 13,
+        QuestionarioAuxiliarTecnicoEducacao = 14,
+        QuestionarioAgenteEscolarMerendeira = 15,
+        QuestionarioAgenteEscolarPortaria = 16,
+        QuestionarioAgenteEscolarZeladoria = 17,
+
+        /* Edição 2018
+        QuestionarioAlunos3Ano = 18,
+        QuestionarioAlunos4AnoAo6Ano = 19,
+        QuestionarioAlunos7AnoAo9Ano = 20 */
+
+        //Edição 2019
+        QuestionarioAlunos3AnoAo6Ano = 21,
+        QuestionarioAlunos7AnoAo9Ano = 22
     };
 
     public enum TipoPerfil : int
@@ -26,7 +40,8 @@ namespace ProvaSP.Data
         Diretor = 2,
         CoordenadorPedagogico = 3,
         Professor = 4,
-        AdministradorSERAp = 5
+        AdministradorSERAp = 5,
+        Aluno = 6
     };
 
     public enum DRE 
@@ -150,6 +165,78 @@ namespace ProvaSP.Data
 
         [Description("Número de Supervisores que preencheram o questionário:")]
         NumeroDeQuestionariosDeSupervisor_TotalPreenchidos = 55,
+
+        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher = 81,
+
+        [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
+        NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos = 82,
+
+        [Description("Questionário de Assistente de Diretor preenchido?")]
+        QuestionarioAssistenteDiretoriaPreenchido = 83,
+
+        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        NumeroDeQuestionariosAlunos3Ano_ParaPreencher = 84,
+
+        [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
+        NumeroDeQuestionariosAlunos3Ano_TotalPreenchidos = 85,
+
+        [Description("Questionário de Assistente de Diretor preenchido?")]
+        QuestionarioAlunos3AnoPreenchido = 86,
+
+        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        NumeroDeQuestionariosAlunos4AnoAo6Ano_ParaPreencher = 87,
+
+        [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
+        NumeroDeQuestionariosAlunos4AnoAo6Ano_TotalPreenchidos = 88,
+
+        [Description("Questionário de Assistente de Diretor preenchido?")]
+        QuestionarioAlunos4AnoAo6AnoPreenchido = 89,
+
+        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        NumeroDeQuestionariosAlunos7AnoAo9Ano_ParaPreencher = 90,
+
+        [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
+        NumeroDeQuestionariosAlunos7AnoAo9Ano_TotalPreenchidos = 91,
+
+        [Description("Questionário de Assistente de Diretor preenchido?")]
+        QuestionarioAlunos7AnoAo9AnoPreenchido = 92,
+
+        [Description("Número de Auxiliar Técnico da Educação que devem preencher o questionário:")]
+        NumeroDeQuestionariosDeAuxiliarTecnicoEducacao_ParaPreencher = 93,
+
+        [Description("Número de Auxiliar Técnico da Educação que preencheram o questionário:")]
+        NumeroDeQuestionariosDeAuxiliarTecnicoEducacao_TotalPreenchidos = 94,
+
+        [Description("Questionário de Auxiliar Técnico da Educação preenchido?")]
+        QuestionarioAuxiliarTecnicoEducacaoPreenchido = 95,
+
+        [Description("Número de Agente Escolar - Merendeira que devem preencher o questionário:")]
+        NumeroDeQuestionariosDeAgenteEscolarMerendeira_ParaPreencher = 96,
+
+        [Description("Número de Agente Escolar - Merendeira que preencheram o questionário:")]
+        NumeroDeQuestionariosDeAgenteEscolarMerendeira_TotalPreenchidos = 97,
+
+        [Description("Questionário de Agente Escolar - Merendeira preenchido?")]
+        QuestionarioAgenteEscolarMerendeiraPreenchido = 98,
+
+        [Description("Número de Agente Escolar - Portaria que devem preencher o questionário:")]
+        NumeroDeQuestionariosDeAgenteEscolarPortaria_ParaPreencher = 99,
+
+        [Description("Número de Agente Escolar - Portaria que preencheram o questionário:")]
+        NumeroDeQuestionariosDeAgenteEscolarPortaria_TotalPreenchidos = 100,
+
+        [Description("Questionário de Agente Escolar - Portaria preenchido?")]
+        QuestionarioAgenteEscolarPortariaPreenchido = 101,
+
+        [Description("Número de Agente Escolar - Zeladoria que devem preencher o questionário:")]
+        NumeroDeQuestionariosDeAgenteEscolarZeladoria_ParaPreencher = 102,
+
+        [Description("Número de Agente Escolar - Zeladoria que preencheram o questionário:")]
+        NumeroDeQuestionariosDeAgenteEscolarZeladoria_TotalPreenchidos = 103,
+
+        [Description("Questionário de Agente Escolar - Zeladoria preenchido?")]
+        QuestionarioAgenteEscolarZeladoriaPreenchido = 104
     };
 
     public static class EnumHelper<T>

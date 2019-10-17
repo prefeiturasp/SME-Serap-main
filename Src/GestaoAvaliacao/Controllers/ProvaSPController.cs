@@ -29,6 +29,17 @@ namespace GestaoAvaliacao.Controllers
                     gru_nome = SessionFacade.UsuarioLogado.Grupo.gru_nome.ToLower();
                 }
                 var usuario = ProvaSP.Data.DataUsuario.RetornarUsuario(usu_login, "");
+                if (usuario != null && usuario.Aluno)
+                {
+                    var dadosAluno = ProvaSP.Data.DataAluno.GetAluno("2019", usu_login.ToUpper().Replace("RA", ""));
+                    if (dadosAluno != null)
+                    {
+                        usuario.Turma = dadosAluno.tur_codigo;
+                        usuario.Ano = dadosAluno.AnoEscolar;
+                    }
+                }
+                var usuarioJson = Newtonsoft.Json.JsonConvert.SerializeObject(usuario);
+
                 var jsonUsuario = Newtonsoft.Json.JsonConvert.SerializeObject(usuario);
                 //var jsonUsuario = Newtonsoft.Json.JsonConvert.SerializeObject(SessionFacade.UsuarioLogado.Usuario);
                 var sbRetorno = new StringBuilder();
