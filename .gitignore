@@ -200,3 +200,5 @@
 /Src/GestaoAvaliacao/Files/Lote/2020
 /Src/GestaoAvaliacao/Files/Lote/2021
 /Src/GestaoAvaliacao/bin
+/Src/ProvaSP.App/www
+**/*.pubxml.user

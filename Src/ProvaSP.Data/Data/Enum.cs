@@ -17,7 +17,7 @@ namespace ProvaSP.Data
         FichaRegistroSupervisor = 9,
         FichaRegistroDiretor = 10,
         FichaRegistroCoordenadorPedagogico = 11,
-        QuestionarioProfessor = 12,
+
         QuestionarioAssistenteDiretoria = 13,
         QuestionarioAuxiliarTecnicoEducacao = 14,
         QuestionarioAgenteEscolarMerendeira = 15,
@@ -25,11 +25,13 @@ namespace ProvaSP.Data
         QuestionarioAgenteEscolarZeladoria = 17,
 
         /* Edição 2018
+        QuestionarioProfessor = 12,
         QuestionarioAlunos3Ano = 18,
         QuestionarioAlunos4AnoAo6Ano = 19,
         QuestionarioAlunos7AnoAo9Ano = 20 */
 
         //Edição 2019
+        QuestionarioProfessor = 23,
         QuestionarioAlunos3AnoAo6Ano = 21,
         QuestionarioAlunos7AnoAo9Ano = 22
     };
