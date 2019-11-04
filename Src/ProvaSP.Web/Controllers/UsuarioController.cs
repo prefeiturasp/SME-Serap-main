@@ -10,13 +10,13 @@ namespace ProvaSP.Web.Controllers
     public class UsuarioController : ApiController
     {
         [HttpGet]
-        public HttpResponseMessage RespondeuQuestionario(string edicao, string usu_id)
+        public HttpResponseMessage RespondeuQuestionario(string edicao, int questionarioID, string usu_id)
         {
             var retorno = false;
 
             try
             {
-                retorno = DataUsuario.RespondeuQuestionario(edicao, usu_id);
+                retorno = DataUsuario.RespondeuQuestionario(edicao, questionarioID, usu_id);
             }
             catch (Exception ex)
             {

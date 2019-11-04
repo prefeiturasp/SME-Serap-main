@@ -309,7 +309,7 @@ namespace ProvaSP.Data
             return RetornarUsuario(usu_id, "");
         }
 
-        public static bool RespondeuQuestionario(string edicao, string usu_id)
+        public static bool RespondeuQuestionario(string edicao, int questionarioID, string usu_id)
         {
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
             {
@@ -319,10 +319,12 @@ namespace ProvaSP.Data
                 sqlQuery.AppendLine("        INNER JOIN Questionario q");
                 sqlQuery.AppendLine("            ON qu.QuestionarioID = q.QuestionarioID");
                 sqlQuery.AppendLine("WHERE q.Edicao = @edicao AND");
+                sqlQuery.AppendLine("      q.QuestionarioID = @questionarioID AND");
                 sqlQuery.AppendLine("      qu.usu_id = @usu_id");
 
                 var parametros = new DynamicParameters();
                 parametros.Add("edicao", edicao, DbType.AnsiString, ParameterDirection.Input, 10);
+                parametros.Add("questionarioID", questionarioID, DbType.Int32, ParameterDirection.Input);
                 parametros.Add("usu_id", usu_id, DbType.AnsiString, ParameterDirection.Input);
 
                 try
