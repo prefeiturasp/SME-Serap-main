@@ -84,14 +84,14 @@ namespace GestaoAvaliacao
         {
             get
             {
-                if(!string.IsNullOrWhiteSpace(this.ClientId) 
+                if (!string.IsNullOrWhiteSpace(this.ClientId)
                     && !string.IsNullOrWhiteSpace(this.Authority))
                 {
                     return true;
                 }
                 return false;
             }
-        } 
+        }
     }
 
 }

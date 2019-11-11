@@ -51,7 +51,7 @@ namespace ProvaSP.Data
                                                         FROM SYS_UsuarioGrupoUA
                                                         WHERE gru_id=UG.gru_id AND usu_id=u.usu_id)
                                             )
-                                        WHEN g.gru_id IN(@Diretor, @Coordenador, @Professor) THEN /* uad_sigla COM BASE NA ESCOLA ASSOCIADA À PESSOA */
+                                        WHEN g.gru_id IN(@Diretor, @AssistenteDeDiretoria, @AgenteEscolar, @AuxiliarTecnicoEducacao, @Coordenador, @Professor) THEN /* uad_sigla COM BASE NA ESCOLA ASSOCIADA À PESSOA */
                                             (
                                                 SELECT TOP 1 u_n4.uad_sigla /* <-CÓDIGO DA DRE */
 				                                FROM SYS_UnidadeAdministrativa u_n1
@@ -69,7 +69,7 @@ namespace ProvaSP.Data
                                             )
                                     END AS uad_sigla,
                                     CASE
-                                        WHEN g.gru_id IN(@Diretor, @Coordenador, @Professor) THEN
+                                        WHEN g.gru_id IN(@Diretor, @AssistenteDeDiretoria, @AgenteEscolar, @AuxiliarTecnicoEducacao, @Coordenador, @Professor) THEN
 			                                (
 				                                SELECT TOP 1 uad_codigo /* <-CÓDIGO DA ESCOLA */
 				                                FROM SYS_UnidadeAdministrativa ua_n1
@@ -86,7 +86,7 @@ namespace ProvaSP.Data
                                 WHERE u.usu_situacao=1 AND g.gru_situacao=1 AND ug.usg_situacao=1 AND sis_id=204 AND g.gru_id IN(
                                                                                         @Administrador, @AdministradorNTA, @AdmSerapCOPEDLeitura, @GestaoSERApLeitura, --NÍVEL SME:
                                                                                         @AdmSerapDRE, @AdministradorSerapDRE, @TecnicoDRE, @Supervisor, --NÍVEL DRE
-                                                                                        @Diretor, @Coordenador, @Professor /* NÍVEL ESCOLA */)
+                                                                                        @Diretor, @AssistenteDeDiretoria, @AgenteEscolar, @AuxiliarTecnicoEducacao, @Coordenador, @Professor /* NÍVEL ESCOLA */)
 
                                 ORDER BY u.usu_login /* ORDENAÇÃO EM usu_login PARA PERMITIR PESQUISA BINÁRIA Θ(log2 n) NO PROCESSO DE LOGIN OFFLINE */
                                 ",
@@ -127,8 +127,11 @@ namespace ProvaSP.Data
                             TecnicoDRE = new DbString() { Value = Grupo.Perfil.TecnicoDRE, IsAnsi = true, Length = 40 },
                             Supervisor = new DbString() { Value = Grupo.Perfil.Supervisor, IsAnsi = true, Length = 40 },
                             Diretor = new DbString() { Value = Grupo.Perfil.Diretor, IsAnsi = true, Length = 40 },
+                            AssistenteDeDiretoria = new DbString() { Value = Grupo.Perfil.AssistenteDeDiretoria, IsAnsi = true, Length = 40 },
+                            AgenteEscolar = new DbString() { Value = Grupo.Perfil.AgenteEscolar, IsAnsi = true, Length = 40 },
+                            AuxiliarTecnicoEducacao = new DbString() { Value = Grupo.Perfil.AuxiliarTecnicoEducacao, IsAnsi = true, Length = 40 },
                             Coordenador = new DbString() { Value = Grupo.Perfil.Coordenador, IsAnsi = true, Length = 40 },
-                            Professor = new DbString() { Value = Grupo.Perfil.Professor, IsAnsi = true, Length = 40 }
+                            Professor = new DbString() { Value = Grupo.Perfil.Professor, IsAnsi = true, Length = 40 },
                         });
 
 
@@ -306,6 +309,54 @@ namespace ProvaSP.Data
             return RetornarUsuario(usu_id, "");
         }
 
-            
+        public static bool RespondeuQuestionario(string edicao, int questionarioID, string usu_id)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                StringBuilder sqlQuery = new StringBuilder();
+                sqlQuery.AppendLine("SELECT COUNT(0)");
+                sqlQuery.AppendLine("	FROM QuestionarioUsuario qu");
+                sqlQuery.AppendLine("        INNER JOIN Questionario q");
+                sqlQuery.AppendLine("            ON qu.QuestionarioID = q.QuestionarioID");
+                sqlQuery.AppendLine("WHERE q.Edicao = @edicao AND");
+                sqlQuery.AppendLine("      q.QuestionarioID = @questionarioID AND");
+                sqlQuery.AppendLine("      qu.usu_id = @usu_id");
+
+                var parametros = new DynamicParameters();
+                parametros.Add("edicao", edicao, DbType.AnsiString, ParameterDirection.Input, 10);
+                parametros.Add("questionarioID", questionarioID, DbType.Int32, ParameterDirection.Input);
+                parametros.Add("usu_id", usu_id, DbType.AnsiString, ParameterDirection.Input);
+
+                try
+                {
+                    return conn.Query<int>(sql: sqlQuery.ToString(), param: parametros).Single() > 0;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        public static bool PossuiPerfil(string edicao, string usu_id)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                var sqlQuery = "SELECT COUNT(0) FROM PessoaPerfil WHERE Edicao = @edicao AND usu_id = @usu_id";
+
+                var parametros = new DynamicParameters();
+                parametros.Add("edicao", edicao, DbType.AnsiString, ParameterDirection.Input, 10);
+                parametros.Add("usu_id", usu_id, DbType.AnsiString, ParameterDirection.Input);
+
+                try
+                {
+                    return conn.Query<int>(sql: sqlQuery.ToString(), param: parametros).Single() > 0;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
     }
 }

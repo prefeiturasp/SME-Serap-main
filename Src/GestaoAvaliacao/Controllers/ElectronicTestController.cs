@@ -20,13 +20,18 @@ namespace GestaoAvaliacao.Controllers
         private readonly IAlternativeBusiness alternativeBusiness;
         private readonly IStudentCorrectionBusiness _studentCorrectionBusiness;
         private readonly ICorrectionBusiness correctionBusiness;
+        private readonly IItemFileBusiness itemFileBusiness;
+        private readonly IItemAudioBusiness itemAudioBusiness;
 
-        public ElectronicTestController(ITestBusiness testBusiness, IAlternativeBusiness alternativeBusiness, IStudentCorrectionBusiness _studentCorrectionBusiness, ICorrectionBusiness correctionBusiness)
+        public ElectronicTestController(ITestBusiness testBusiness, IAlternativeBusiness alternativeBusiness, IStudentCorrectionBusiness _studentCorrectionBusiness, ICorrectionBusiness correctionBusiness,
+            IItemFileBusiness itemFileBusiness, IItemAudioBusiness itemAudioBusiness)
         {
             this.testBusiness = testBusiness;
             this.alternativeBusiness = alternativeBusiness;
             this._studentCorrectionBusiness = _studentCorrectionBusiness;
             this.correctionBusiness = correctionBusiness;
+            this.itemFileBusiness = itemFileBusiness;
+            this.itemAudioBusiness = itemAudioBusiness;
         }
 
         public ActionResult Index()
@@ -57,7 +62,7 @@ namespace GestaoAvaliacao.Controllers
 
             if ((EnumSYS_Visao)SessionFacade.UsuarioLogado.Grupo.vis_id == EnumSYS_Visao.Individual)
             {
-                if(AluId != SessionFacade.UsuarioLogado.alu_id)
+                if (AluId != SessionFacade.UsuarioLogado.alu_id)
                 {
                     return false;
                 }
@@ -132,6 +137,11 @@ namespace GestaoAvaliacao.Controllers
                         {
                             StudentCorrection studentCorrection = _studentCorrectionBusiness.GetStudentCorrectionByTestAluId(item.Id, item.alu_id);
 
+                            if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
+                            {
+                                studentCorrection.provaFinalizada = false;
+                            }
+
                             if (studentCorrection == null && item.quantDiasRestantes > 0)
                             {
                                 listaNaoIniciada.Add(item);
@@ -197,6 +207,11 @@ namespace GestaoAvaliacao.Controllers
             {
                 var blockItems = testBusiness.GetItemsByTest(test_id, SessionFacade.UsuarioLogado.Usuario.usu_id);
 
+                List<long> lstItens = blockItems.Select(x => x.Item.Id).Distinct().ToList();
+
+                var itemVideos = itemFileBusiness.GetVideosByLstItemId(lstItens);
+                var itemAudios = itemAudioBusiness.GetAudiosByLstItemId(lstItens);
+
                 var retorno = blockItems.Select(bi => new
                 {
                     Item_Id = bi.Item.Id,
@@ -210,7 +225,9 @@ namespace GestaoAvaliacao.Controllers
                     ItemSituation = bi.RequestRevokes != null ? bi.RequestRevokes.First().Situation : EnumSituation.NotRevoked,
                     RequestRevoke_Id = bi.RequestRevokes != null ? bi.RequestRevokes.First().Id : 0,
                     BlockItem_Id = bi.Id,
-                    Justification = bi.RequestRevokes != null ? bi.RequestRevokes.First().Justification : ""
+                    Justification = bi.RequestRevokes != null ? bi.RequestRevokes.First().Justification : "",
+                    Videos = itemVideos.Where(p => p.Item_Id == bi.Item.Id),
+                    Audios = itemAudios.Where(p => p.Item_Id == bi.Item.Id)
                 }).ToList();
 
                 return Json(new { success = true, itens = retorno }, JsonRequestBehavior.AllowGet);

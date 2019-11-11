@@ -19,7 +19,7 @@
             {
                 <tr>
                     <td style="padding-top:30px;">
-                        <a  href="RelatorioAcompanhamentoNivelEscola?esc_codigo=@item.Chave&usu_id=@ViewBag.Usuario.usu_id">
+                        <a  href="RelatorioAcompanhamentoNivelEscola?esc_codigo=@item.Chave&usu_id=@ViewBag.Usuario.usu_login">
                             <b>@item.Titulo</b>
                             <br />
                             (Clique aqui para ver mais detalhes)
@@ -46,18 +46,19 @@
 </table>
 
 @{
-    if (ViewBag.Usuario.AdmSERAp)
+    if (ViewBag.Usuario.AcessoNivelSME)
     {
         <br />
-        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelSME_PorDRE?usu_id=@ViewBag.Usuario.usu_id'">
+        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelSME_PorDRE?usu_id=@ViewBag.Usuario.usu_login'">
             Visualizar Nível SME por DRE
         </button>
     }
 
-    if (ViewBag.Usuario.grupos.Contains("Supervisão Escolar"))
+    List<Grupo> grupos = ViewBag.Usuario.grupos;
+    if (grupos.Any(p => p.gru_nome.Contains("Supervisão Escolar")))
     {
         <br />
-        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelDRE?usu_id=@ViewBag.Usuario.usu_id&uad_codigo=@ViewBag.DRE'">
+        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelDRE?usu_id=@ViewBag.Usuario.usu_login&uad_codigo=@ViewBag.DRE'">
             Visualizar Nível DRE
         </button>
     }

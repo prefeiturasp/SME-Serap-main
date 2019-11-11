@@ -27,12 +27,15 @@ namespace ProvaSP.Model.Entidades
             public static string AdmSerapDRE = "FAB1C330-87E8-E611-9541-782BCB3D218E";
             public static string AdministradorSerapDRE = "104F0759-87E8-E611-9541-782BCB3D218E";
             public static string TecnicoDRE = "48C0129A-9229-E611-8135-782BCB3D218E";
-            public static string Supervisor =  "A0B86A81-F233-E711-9541-782BCB3D218E" ;
+            public static string Supervisor = "66C70452-1A1E-E811-B259-782BCB3D2D76";
 
             //NÍVEL ESCOLA:
-            public static string Diretor =  "26552002-FD66-4D63-9FA7-E9B3993D110D" ;
-            public static string Coordenador =  "1321EDB1-2499-43CA-ADCB-1FC31D1674B1" ;
-            public static string Professor = "067D9B21-A1FF-E611-9541-782BCB3D218E";
+            public static string Diretor = "75DCAB30-2C1E-E811-B259-782BCB3D2D76";
+            public static string Coordenador = "D4026F2C-1A1E-E811-B259-782BCB3D2D76";
+            public static string Professor = "E77E81B1-191E-E811-B259-782BCB3D2D76";
+            public static string AssistenteDeDiretoria = "ECF7A20D-1A1E-E811-B259-782BCB3D2D76";
+            public static string AuxiliarTecnicoEducacao = "E4BD1012-5881-4F26-A365-7CED735C74F5";
+            public static string AgenteEscolar = "459C7911-C700-4592-9339-3839B46A0CB7";
 
             //NÍVEL ALUNO:
             public static string Aluno = "BD6D9CE6-9456-E711-9541-782BCB3D218E";
@@ -61,7 +64,7 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                string[] perfis = { Grupo.Perfil.Diretor, Grupo.Perfil.Coordenador, Grupo.Perfil.Professor };
+                string[] perfis = { Grupo.Perfil.Diretor, Grupo.Perfil.AssistenteDeDiretoria, Grupo.Perfil.AgenteEscolar, Grupo.Perfil.AuxiliarTecnicoEducacao, Grupo.Perfil.Coordenador, Grupo.Perfil.Professor };
                 return perfis.Contains(gru_id);
         }
         }
@@ -75,7 +78,15 @@ namespace ProvaSP.Model.Entidades
             FichaRegistroSupervisor = 9,
             FichaRegistroDiretor = 10,
             FichaRegistroCoordenadorPedagogico = 11,
-            QuestionarioProfessor = 12
+            QuestionarioProfessor = 12,
+            QuestionarioAssistenteDiretoria = 13,
+            QuestionarioAuxiliarTecnicoEducacao = 14,
+            QuestionarioAgenteEscolarMerendeira = 15,
+            QuestionarioAgenteEscolarPortaria = 16,
+            QuestionarioAgenteEscolarZeladoria = 17,
+            QuestionarioAlunos3Ano = 18,
+            QuestionarioAlunos4AnoAo6Ano = 19,
+            QuestionarioAlunos7AnoAo9Ano = 20
         };
 
     }

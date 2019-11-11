@@ -406,6 +406,11 @@ namespace GestaoAvaliacao.MappingDependence
                     .WithService.AllInterfaces()
                     .SetLifestyle(LifestylePerWebRequest));
 
+            container.Register(Classes.FromAssemblyContaining<ItemAudioBusiness>()
+                    .BasedOn(typeof(IItemAudioBusiness))
+                    .WithService.AllInterfaces()
+                    .SetLifestyle(LifestylePerWebRequest));
+
 
             #region GestaoEscolar
 

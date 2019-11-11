@@ -16,15 +16,15 @@ namespace ProvaSP.Web.Controllers
         [HttpPost]
         public HttpResponseMessage Post(FormDataCollection formData)
         {
-
-            string Nivel = formData["Nivel"].ToString();
-            string Edicao = formData["Edicao"].ToString();
-            int AreaConhecimentoID = int.Parse(formData["AreaConhecimentoID"].ToString());
-            string AnoEscolar = formData["AnoEscolar"].ToString();
-            string lista_uad_sigla = formData["lista_uad_sigla"].ToString();
-            string lista_esc_codigo = formData["lista_esc_codigo"].ToString();
-            string lista_turmas = formData["lista_turmas"].ToString();
-            string lista_alu_matricula = formData["lista_alu_matricula"].ToString();
+            string Nivel = Convert.ToString(formData["Nivel"]);
+            string Edicao = Convert.ToString(formData["Edicao"]);
+            int AreaConhecimentoID = int.Parse(Convert.ToString(formData["AreaConhecimentoID"]));
+            string AnoEscolar = Convert.ToString(formData["AnoEscolar"]);
+            string Ciclo = Convert.ToString(formData["Ciclo"]);
+            string lista_uad_sigla = Convert.ToString(formData["lista_uad_sigla"]);
+            string lista_esc_codigo = Convert.ToString(formData["lista_esc_codigo"]);
+            string lista_turmas = Convert.ToString(formData["lista_turmas"]);
+            string lista_alu_matricula = Convert.ToString(formData["lista_alu_matricula"]);
 
             var resultado = new Resultado();
 
@@ -32,28 +32,82 @@ namespace ProvaSP.Web.Controllers
             {
                 if (Edicao == "ENTURMACAO_ATUAL")
                 {
-                    resultado = DataResultado.RecuperarResultadoEnturmacaoAtual(Edicao, AreaConhecimentoID, AnoEscolar, lista_turmas);
+                    if (string.IsNullOrEmpty(Ciclo))
+                    {
+                        resultado = DataResultado.RecuperarResultadoEnturmacaoAtual(Edicao, AreaConhecimentoID, AnoEscolar, lista_turmas);
+                    }
+                    else
+                    {
+                        resultado = DataResultado.RecuperarResultadoCicloEnturmacaoAtual(Edicao, AreaConhecimentoID, Ciclo, lista_turmas);
+                    }
                 }
                 else if (Nivel == "SME")
                 {
-                    resultado = DataResultado.RecuperarResultadoSME(Edicao, AreaConhecimentoID, AnoEscolar);
+                    if (string.IsNullOrEmpty(Ciclo))
+                    {
+                        resultado = DataResultado.RecuperarResultadoSME(Edicao, AreaConhecimentoID, AnoEscolar);
+                    }
+                    else
+                    {
+                        resultado = DataResultado.RecuperarResultadoCicloSME(Edicao, AreaConhecimentoID, Ciclo);
+                    }
                 }
                 else if (Nivel == "DRE")
                 {
-                    resultado = DataResultado.RecuperarResultadoDRE(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+                    if (string.IsNullOrEmpty(Ciclo))
+                    {
+                        resultado = DataResultado.RecuperarResultadoDRE(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+                    }
+                    else
+                    {
+                        resultado = DataResultado.RecuperarResultadoCicloDRE(Edicao, AreaConhecimentoID, Ciclo, lista_uad_sigla);
+                    }
                 }
                 else if (Nivel == "ESCOLA")
                 {
-                    resultado = DataResultado.RecuperarResultadoEscola(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo);
+                    if (string.IsNullOrEmpty(Ciclo))
+                    {
+                        resultado = DataResultado.RecuperarResultadoEscola(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo);
+                    }
+                    else
+                    {
+                        resultado = DataResultado.RecuperarResultadoCicloEscola(Edicao, AreaConhecimentoID, Ciclo, lista_esc_codigo);
+                    }
                 }
                 else if (Nivel == "TURMA")
                 {
-                    resultado = DataResultado.RecuperarResultadoTurma(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo, lista_turmas);
+                    if (string.IsNullOrEmpty(Ciclo))
+                    {
+                        resultado = DataResultado.RecuperarResultadoTurma(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo, lista_turmas);
+                    }
+                    else
+                    {
+                        resultado = DataResultado.RecuperarResultadoCicloTurma(Edicao, AreaConhecimentoID, Ciclo, lista_esc_codigo, lista_turmas);
+                    }
                 }
                 else if (Nivel == "ALUNO")
                 {
                     bool IncluirSme_e_Dre = (formData["ExcluirSme_e_Dre"] == "1");
-                    resultado = DataResultado.RecuperarResultadoAluno(Edicao, AreaConhecimentoID, AnoEscolar, lista_alu_matricula, IncluirSme_e_Dre);
+                    if (string.IsNullOrEmpty(Ciclo))
+                    {
+                        resultado = DataResultado.RecuperarResultadoAluno(Edicao, AreaConhecimentoID, AnoEscolar, lista_alu_matricula, IncluirSme_e_Dre);
+                    }
+                    else
+                    {
+                        resultado = DataResultado.RecuperarResultadoCicloAluno(Edicao, AreaConhecimentoID, Ciclo, lista_alu_matricula, IncluirSme_e_Dre);
+                    }
+                }
+
+                if (resultado != null)
+                {
+                    if (string.IsNullOrEmpty(Ciclo))
+                    {
+                        resultado.Proficiencias = DataProficiencia.PesquisarPorAnoLetivo(AnoEscolar);
+                    }
+                    else
+                    {
+                        resultado.Proficiencias = DataProficiencia.PesquisarPorCiclo(Ciclo);
+                    }
                 }
             }
             catch (Exception ex)

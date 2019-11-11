@@ -8,7 +8,6 @@ namespace GestaoAvaliacao.App_Start
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
-
             if (filterContext.HttpContext.User.Identity.IsAuthenticated)
             {
                 if (!SessionFacade.UsuarioGrupoLogadoIsValid)
@@ -29,7 +28,7 @@ namespace GestaoAvaliacao.App_Start
                         System.Web.HttpContext.Current.ApplicationInstance.CompleteRequest();
                     }
                 }
-            }
+           }
         }
     }
 }

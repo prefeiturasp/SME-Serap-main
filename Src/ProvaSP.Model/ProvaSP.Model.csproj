@@ -60,12 +60,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entidades\Configuracao.cs" />
+    <Compile Include="Entidades\Constructo.cs" />
+    <Compile Include="Entidades\Corte.cs" />
+    <Compile Include="Entidades\FatorAssociado.cs" />
     <Compile Include="Entidades\Grupo.cs" />
     <Compile Include="Entidades\HabilidadeItem.cs" />
     <Compile Include="Entidades\HabilidadeTema.cs" />
+    <Compile Include="Entidades\ImagemAluno.cs" />
     <Compile Include="Entidades\ListaPresenca.cs" />
+    <Compile Include="Entidades\Proficiencia.cs" />
     <Compile Include="Entidades\Resultado.cs" />
     <Compile Include="Entidades\ResultadoItem.cs" />
+    <Compile Include="Entidades\SequenciaDidatica.cs" />
     <Compile Include="Entidades\Turma.cs" />
     <Compile Include="Entidades\Aluno.cs" />
     <Compile Include="Entidades\Escola.cs" />
@@ -75,6 +81,7 @@
     <Compile Include="Entidades\QuestionarioUsuario.cs" />
     <Compile Include="Entidades\RelatorioItem.cs" />
     <Compile Include="Entidades\Usuario.cs" />
+    <Compile Include="Participacao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

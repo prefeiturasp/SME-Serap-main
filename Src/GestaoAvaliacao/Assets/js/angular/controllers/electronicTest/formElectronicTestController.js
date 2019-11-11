@@ -17,10 +17,10 @@
         .controller("FormElectronicTestController", FormElectronicTestController);
 
 
-    FormElectronicTestController.$inject = ['$scope', '$notification', '$location', '$anchorScroll', '$util', '$timeout', 'ElectronicTestModel', '$window'];
+    FormElectronicTestController.$inject = ['$scope', '$notification', '$location', '$anchorScroll', '$util', '$timeout', 'ElectronicTestModel', '$window', '$sce'];
 
 
-    function FormElectronicTestController(ng, $notification, $location, $anchorScroll, $util, $timeout, ElectronicTestModel, $window) {
+    function FormElectronicTestController(ng, $notification, $location, $anchorScroll, $util, $timeout, ElectronicTestModel, $window, $sce) {
         Init();
 
         function Init() {
@@ -45,6 +45,9 @@
             ng.mensagemEntregaProva;
             ng.admin = getCurrentVision() != EnumVisions.INDIVIDUAL ? true : false;
             ng.provaFinalizada = false;
+
+            ng.videos = null;
+            ng.audios = null;
         };
 
         ng.abrirGabarito = function __abrirGabarito() {
@@ -312,5 +315,9 @@
 
 
         };
+
+        ng.trustSrc = function (src) {
+            return $sce.trustAsResourceUrl(src);
+        }
     };
 })(angular, jQuery);

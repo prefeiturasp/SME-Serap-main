@@ -93,6 +93,7 @@
     <Compile Include="Enumerator\EnumSituation.cs" />
     <Compile Include="ExportAnalysis.cs" />
     <Compile Include="FileFilter.cs" />
+    <Compile Include="ItemAudio.cs" />
     <Compile Include="ItemFile.cs" />
     <Compile Include="KnowledgeArea.cs" />
     <Compile Include="KnowledgeAreaDiscipline.cs" />

@@ -25,5 +25,19 @@ namespace ProvaSP.Data
             }
             
         }
+
+        public static bool AtualizarConfiguracao(Configuracao configuracao)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                int ret = conn.Execute("UPDATE Configuracao SET Valor = @Valor WHERE Chave = @Chave",
+                            param: new
+                            {
+                                configuracao.Valor,
+                                configuracao.Chave
+                            });
+                return ret > 0;
+            }
+        }
     }
 }

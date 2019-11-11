@@ -18,8 +18,6 @@ namespace ProvaSP.Web.Controllers
         [HttpPost]
         public HttpResponseMessage Post(FormDataCollection formData)
         {
-            
-
             string usu_login = formData["usu_login"].ToString();
             string usu_senha = formData["usu_senha"].ToString();
 
@@ -35,6 +33,15 @@ namespace ProvaSP.Web.Controllers
             }
 
             var usuario = DataUsuario.RetornarUsuario(usu_login, usu_senha);
+            if (usuario!= null && usuario.Aluno)
+            {
+                var dadosAluno = DataAluno.GetAluno("2018", usu_login.ToUpper().Replace("RA", ""));
+                if (dadosAluno != null)
+                {
+                    usuario.Turma = dadosAluno.tur_codigo;
+                    usuario.Ano = dadosAluno.AnoEscolar;
+                }
+            }
             var usuarioJson = Newtonsoft.Json.JsonConvert.SerializeObject(usuario);
 
             var response = this.Request.CreateResponse(HttpStatusCode.OK);

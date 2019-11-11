@@ -30,12 +30,13 @@ namespace GestaoAvaliacao.Controllers
         private readonly IEvaluationMatrixBusiness evaluationMatrixBusiness;
         private readonly ISubjectBusiness subjectBusiness;
         private readonly IItemFileBusiness itemFilesBusiness;
+        private readonly IItemAudioBusiness itemAudioBusiness;
         private readonly IBlockBusiness blockBusiness;        
 
         public ItemController(IItemBusiness itemBusiness, IFileBusiness fileBusiness, IACA_TipoNivelEnsinoBusiness levelEducationBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
             IItemSkillBusiness itemSkillBusiness, IItemSituationBusiness itemSituationBusiness, ICorrelatedSkillBusiness correlatedSkillBusiness, IKnowledgeAreaBusiness knowledgeAreaBusiness,
             IDisciplineBusiness disciplineBusiness, IEvaluationMatrixBusiness evaluationMatrixBusiness, ISubjectBusiness subjectBusiness, IItemFileBusiness itemFilesBusiness,
-            IBlockBusiness blockBusiness)
+            IBlockBusiness blockBusiness, IItemAudioBusiness itemAudioBusiness)
         {
             this.itemBusiness = itemBusiness;
             this.fileBusiness = fileBusiness;
@@ -50,6 +51,7 @@ namespace GestaoAvaliacao.Controllers
             this.subjectBusiness = subjectBusiness;
             this.itemFilesBusiness = itemFilesBusiness;
             this.blockBusiness = blockBusiness;
+            this.itemAudioBusiness = itemAudioBusiness;
         }
 
         [ActionAuthorizeAttribute(Permission.CreateOrUpdate)]
@@ -181,6 +183,8 @@ namespace GestaoAvaliacao.Controllers
 
                 var itemVideos = itemFilesBusiness.GetVideosByLstItemId(lstItens);
 
+                var itemAudios = itemAudioBusiness.GetAudiosByLstItemId(lstItens);
+
                 if (lstEntityItens != null && lstEntityItens.Count() > 0)
                 {
                     var ret = lstEntityItens.Select(entity => new
@@ -217,7 +221,8 @@ namespace GestaoAvaliacao.Controllers
                             Numeration = a.Numeration,
                             State = a.State
                         }).ToList(),
-                        Videos = itemVideos.Where(p => p.Item_Id == entity.Id).ToList()
+                        Videos = itemVideos.Where(p => p.Item_Id == entity.Id).ToList(),
+                        Audios = itemAudios.Where(p => p.Item_Id == entity.Id).ToList()
                     });
 
                     return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
@@ -625,6 +630,15 @@ namespace GestaoAvaliacao.Controllers
                                 Name = v.ThumbnailName,
                                 Path = v.ThumbnailPath
                             },
+                        }).ToList(),
+                        Audios = itemAudioBusiness.GetAudiosByItemId(itemId).Select(a => new
+                        {
+                            File = new
+                            {
+                                Id = a.FileId,
+                                Name = a.Name,
+                                Path = a.Path
+                            }
                         }).ToList()
                     };
 
@@ -807,7 +821,7 @@ namespace GestaoAvaliacao.Controllers
         #region Cadastro de Itens
 
         [HttpPost]
-        public JsonResult Save(Item item, List<EntityFile> files, List<ItemFile> itemFiles)
+        public JsonResult Save(Item item, List<EntityFile> files, List<ItemFile> itemFiles, List<ItemAudio> itemAudios)
         {
             Item entity = new Item();
             object auxItem = null;
@@ -815,6 +829,7 @@ namespace GestaoAvaliacao.Controllers
             try
             {
                 item.ItemFiles = itemFiles;
+                item.ItemAudios = itemAudios;
 
                 if (item.Id > 0)
                 {

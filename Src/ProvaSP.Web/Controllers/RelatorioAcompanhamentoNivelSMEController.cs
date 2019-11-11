@@ -17,7 +17,7 @@ namespace ProvaSP.Web.Controllers
             if (usuario.AcessoNivelSME)
             {
                 ViewBag.Usuario = usuario;
-                var indicadores = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelSME("2017");
+                var indicadores = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelSME("2018");
                 return View(indicadores);
             }
             else

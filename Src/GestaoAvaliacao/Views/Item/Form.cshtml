@@ -340,7 +340,6 @@
                                                 </table>
                                             </div>
                                         </div>
-
                                         @* Propriedades Item *@
                                         <div class="col-md-6">
                                             <div class="cards">
@@ -548,14 +547,12 @@
                                                     <td>
                                                         <div class="uploadImage">
                                                             <div ng-show="v.File.Id <= 0" upload="" type="@(EnumFileType.Video)" component="v.File" placeholder="um vídeo" data-listextensions="listextensionsVideo"></div>
-
                                                             <label ng-show="v.File.Id > 0">{{(v.File.Name != undefined ? v.File.Name : v.File.Path) | minimize:50}}</label>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="uploadImage">
                                                             <div ng-show="v.Thumbnail.Id <= 0" upload="" type="@(EnumFileType.ThumbnailVideo)" component="v.Thumbnail" placeholder="uma imagem" data-listextensions="listextensionsImage"></div>
-
                                                             <label ng-show="v.Thumbnail.Id > 0">{{(v.Thumbnail.Name != undefined ? v.Thumbnail.Name : v.Thumbnail.Path) | minimize:50}}</label>
                                                         </div>
                                                     </td>
@@ -565,9 +562,50 @@
                                                            ng-click="addModal()">
                                                             <i class="material-icons">add</i>
                                                         </a>
-                                                    </td>                                                   
+                                                    </td>
                                                     <td>
                                                         <a ng-click="callModal($index)">
+                                                            <i class="material-icons">delete</i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @* Audios *@
+                        <div class="boxConteudo">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-12 cards">
+                                        <table class="table table-responsive" style="margin:0;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Áudio</th>
+                                                    <th>Adicionar</th>
+                                                    <th>Excluir</th>
+                                                </tr>
+                                            </thead>
+                                            @*Lista gerada*@
+                                            <tbody>
+                                                <tr ng-repeat="a in audios track by $index">
+                                                    <td>
+                                                        <div class="uploadImage">
+                                                            <div ng-show="a.File.Id <= 0" upload="" type="@(EnumFileType.Audio)" component="a.File" placeholder="um áudio" data-listextensions="listextensionsAudio"></div>
+                                                            <label ng-show="a.File.Id > 0">{{(a.File.Name != undefined ? a.File.Name : a.File.Path) | minimize:50}}</label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a role="button"
+                                                           ng-show="lastAudio($index)"
+                                                           ng-click="addModalAudio()">
+                                                            <i class="material-icons">add</i>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a ng-click="callModalAudio($index)">
                                                             <i class="material-icons">delete</i>
                                                         </a>
                                                     </td>
@@ -1005,7 +1043,6 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-
                 <div class="modal-body">
                     <span>Você tem certeza que deseja excluir o item <b>code: {{targetDelete.code}}</b>?</span>
                 </div>
@@ -1029,6 +1066,24 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btnPadrao" ng-click="delModal()">Excluir</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*modalAudios*@
+    <div class="modal fade" id="modalAudios" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Exclusão de áudios</h4>
+                </div>
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir o áudio? </span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btnPadrao" ng-click="delModalAudio()">Excluir</button>
                     <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
@@ -1068,7 +1123,6 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-
                 <div class="modal-body">
                     <span>Você tem certeza que deseja modificar o campo <b>{{parameters.BASETEXT.Value}}</b>?</span>
                 </div>

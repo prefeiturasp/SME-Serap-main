@@ -60,6 +60,7 @@
     <Compile Include="ICorrectionResultsBusiness.cs" />
     <Compile Include="IExportAnalysisBusiness.cs" />
     <Compile Include="IGenerateHtmlBusiness.cs" />
+    <Compile Include="IItemAudioBusiness.cs" />
     <Compile Include="IItemFileBusiness.cs" />
     <Compile Include="IKnowledgeAreaBusiness.cs" />
     <Compile Include="IKnowledgeAreaDisciplineBusiness.cs" />

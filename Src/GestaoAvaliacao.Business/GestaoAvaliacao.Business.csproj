@@ -82,6 +82,7 @@
     <Compile Include="CorrectionResultsBusiness.cs" />
     <Compile Include="ExportAnalysisBusiness.cs" />
     <Compile Include="GenerateHtmlBusiness.cs" />
+    <Compile Include="ItemAudioBusiness.cs" />
     <Compile Include="ItemFileBusiness.cs" />
     <Compile Include="KnowledgeAreaBusiness.cs" />
     <Compile Include="KnowledgeAreaDisciplineBusiness.cs" />

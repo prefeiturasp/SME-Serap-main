@@ -20,7 +20,7 @@
             {
                 <tr>
                     <td style="padding-top:30px;">
-                        <a href="RelatorioAcompanhamentoNivelDRE_PorEscola?uad_codigo=@item.Titulo&usu_id=@ViewBag.Usuario.usu_id ">
+                        <a href="RelatorioAcompanhamentoNivelDRE_PorEscola?uad_codigo=@item.Titulo&usu_id=@ViewBag.Usuario.usu_login ">
                             <b>@Html.Raw(EnumHelper<DRE>.GetEnumDescription(item.Titulo))</b>
                             <br />
                             (Clique aqui para ver mais detalhes)
@@ -43,6 +43,6 @@
     }
 </table>
 <br />
-<button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelSME?usu_id=@ViewBag.Usuario.usu_id'">
+<button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelSME?usu_id=@ViewBag.Usuario.usu_login'">
     Visualizar Nível SME
 </button>

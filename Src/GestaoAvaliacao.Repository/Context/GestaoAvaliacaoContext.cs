@@ -86,6 +86,7 @@ namespace GestaoAvaliacao.Repository.Context
             modelBuilder.Configurations.Add(new AdministrativeUnitTypeMap());
             modelBuilder.Configurations.Add(new ItemFileMap());
             modelBuilder.Configurations.Add(new BlockKnowledgeAreaMap());
+            modelBuilder.Configurations.Add(new ItemAudioMap());
 
             modelBuilder.Entity<Subject>()
                 .HasMany<Discipline>(s => s.Disciplines)
@@ -168,5 +169,6 @@ namespace GestaoAvaliacao.Repository.Context
         public DbSet<PageConfiguration> PageConfiguration { get; set; }
         public DbSet<AdministrativeUnitType> AdministrativeUnitType { get; set; }
         public DbSet<ItemFile> ItemFile { get; set; }
+        public DbSet<ItemAudio> ItemAudio { get; set; }
     }
 }

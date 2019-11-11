@@ -18,6 +18,8 @@ namespace ProvaSP.Model.Entidades
         public string usu_id { get; set; }
         public string usu_login { get; set; }
         public string usu_senha { get; set; }
+        public string Ano { get; set; }
+        public string Turma { get; set; }
         [JsonIgnore]
         public string usu_criptografia { get; set; }
         public List<Grupo> grupos { get; set; }
@@ -39,6 +41,30 @@ namespace ProvaSP.Model.Entidades
             get
             {
                 return grupos.Where(x => x.gru_id == Grupo.Perfil.Diretor).Count() > 0;
+            }
+        }
+
+        public bool AssistenteDeDiretoria
+        {
+            get
+            {
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.AssistenteDeDiretoria).Count() > 0;
+            }
+        }
+
+        public bool AgenteEscolar
+        {
+            get
+            {
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.AgenteEscolar).Count() > 0;
+            }
+        }
+
+        public bool AuxiliarTecnicoEducacao
+        {
+            get
+            {
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.AuxiliarTecnicoEducacao).Count() > 0;
             }
         }
 

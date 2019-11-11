@@ -1,5 +1,7 @@
 ﻿@using ProvaSP.Web.ViewModel
 @using ProvaSP.Data
+@using System.Linq
+@using ProvaSP.Model.Entidades
 @model RelatorioAcompanhamentoEscola
 
 @{
@@ -64,7 +66,8 @@
     @{
         foreach (var item in Model.IndicadoresPessoa)
         {
-            if (!(item.Atributo.Contains("Diretor") && ViewBag.Usuario.grupos.Contains("Coordenador Pedagógico")))
+            List<Grupo> grupos = ViewBag.Usuario.grupos;
+            if (!(item.Atributo.Contains("Diretor") && grupos.Any(p => p.gru_nome.Contains("Coordenador Pedagógico"))))
             {
                 <tr style="@(item.Valor == "SIM" ? "color:green" : "color:red")">
 
@@ -85,10 +88,11 @@
 </table>
 
 @{
-    if (ViewBag.Usuario.AdmSERAp || ViewBag.Usuario.grupos.Contains("Supervisão Escolar"))
+    List<Grupo> gruposSE = ViewBag.Usuario.grupos;
+    if (ViewBag.Usuario.AcessoNivelSME || gruposSE.Any(p => p.gru_nome.Contains("Supervisão Escolar")))
     {
         <br />
-        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelDRE_PorEscola?usu_id=@ViewBag.Usuario.usu_id&uad_codigo=@ViewBag.Escola.uad_codigo'">
+        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelDRE_PorEscola?usu_id=@ViewBag.Usuario.usu_login&uad_codigo=@ViewBag.Escola.uad_codigo'">
             Visualizar DRE <br /> por Escola 
         </button>
     }

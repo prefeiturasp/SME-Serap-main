@@ -9,6 +9,7 @@ namespace ProvaSP.Model.Entidades
     public class ResultadoItem
     {
         public string AnoEscolar { get; set; }
+        public string CicloId { get; set; }
         public int NivelProficienciaID { get; set; }
         public int TotalAlunos { get; set; }
         public string ChavePai { get; set; }
@@ -20,5 +21,11 @@ namespace ProvaSP.Model.Entidades
         public float PercentualAdequado { get; set; }
         public float PercentualAvancado { get; set; }
         public float PercentualSemProficiencia { get; set; }
+        public float PercentualAlfabetizado { get; set; }
+        public float REDQ1 { get; set; }
+        public float REDQ2 { get; set; }
+        public float REDQ3 { get; set; }
+        public float REDQ4 { get; set; }
+        public float REDQ5 { get; set; }
     }
 }

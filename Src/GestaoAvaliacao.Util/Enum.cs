@@ -115,7 +115,9 @@ namespace GestaoAvaliacao.Util
         [Description("Video")]
         Video = 29,
         [Description("Thumbnail_Video")]
-        ThumbnailVideo = 30
+        ThumbnailVideo = 30,
+        [Description("Audio")]
+        Audio = 31
     }
 
 	public enum EnumSYS_Visao

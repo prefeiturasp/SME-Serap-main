@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ProvaSP.Model.Entidades
+﻿namespace ProvaSP.Model.Entidades
 {
     public class Questionario
     {

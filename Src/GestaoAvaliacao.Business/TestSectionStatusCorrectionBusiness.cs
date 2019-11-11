@@ -132,11 +132,6 @@ namespace GestaoAvaliacao.Business
 
             return await tempCorrectionResultRepository.Insert(entity);
         }
-
-        public async Task<TempCorrectionResult> GetTempCorrection(long test_id, long tur_id)
-        {
-            return await tempCorrectionResultRepository.GetByTestAndTeam(test_id, tur_id);
-        }
         #endregion
 
         #endregion
