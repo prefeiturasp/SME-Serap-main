@@ -1,4 +1,5 @@
 ﻿using global::GestaoAvaliacao.WebProject.Facade;
+using System.Web;
 using System.Web.Mvc;
 
 namespace GestaoAvaliacao.App_Start
@@ -12,7 +13,11 @@ namespace GestaoAvaliacao.App_Start
             {
                 if (!SessionFacade.UsuarioGrupoLogadoIsValid)
                 {
-                    filterContext.HttpContext.Response.Redirect(IdentitySettingsConfig.IDSSettings.RedirectUri);
+                    try
+                    {
+                        filterContext.HttpContext.Response.Redirect(IdentitySettingsConfig.IDSSettings.RedirectUri);
+                    }
+                    catch (HttpException) { }//se der erro de HTTP então o Response já foi encerrado
                 }
 
                 if (!filterContext.IsChildAction && SessionFacade.UsuarioGrupoLogadoIsValid)
