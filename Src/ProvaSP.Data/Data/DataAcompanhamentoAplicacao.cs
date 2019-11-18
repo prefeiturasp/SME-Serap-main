@@ -47,7 +47,40 @@ namespace ProvaSP.Data
             sbAtributos.Append((int)Atributo.NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher);
             sbAtributos.Append(",");
             sbAtributos.Append((int)Atributo.NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos);
+            sbAtributos.Append(",");
+            sbAtributos.Append((int)Atributo.NumeroDeQuestionariosAlunos4AnoAo6Ano_ParaPreencher);
+            sbAtributos.Append(",");
+            sbAtributos.Append((int)Atributo.NumeroDeQuestionariosAlunos4AnoAo6Ano_TotalPreenchidos);
+            sbAtributos.Append(",");
+            sbAtributos.Append((int)Atributo.NumeroDeQuestionariosAlunos7AnoAo9Ano_ParaPreencher);
+            sbAtributos.Append(",");
+            sbAtributos.Append((int)Atributo.NumeroDeQuestionariosAlunos7AnoAo9Ano_TotalPreenchidos);
             return sbAtributos.ToString();
+        }
+
+        private static string OrdenacaoAtributosAcompanhamentoEscola()
+        {
+            return @"CASE
+                        WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_ParaPreencher' THEN 1
+                        WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_TotalPreenchidos' THEN 2
+                        WHEN a.Nome = 'NumeroDeFichasDeDiretor_TotalPreenchidos' THEN 3
+                        WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_ParaPreencher' THEN 4
+                        WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_TotalPreenchidos' THEN 5
+                        WHEN a.Nome = 'NumeroDeFichasDeCoordenador_TotalPreenchidos' THEN 6
+                        WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher' THEN 7
+                        WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos' THEN 8
+                        WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_ParaPreencher' THEN 9
+                        WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_TotalPreenchidos' THEN 10
+                        WHEN a.Nome = 'NumeroDeFichasDeAplicacao_ParaPreencherPorDia' THEN 11
+                        WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia1' THEN 12
+                        WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 13
+                        WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia3' THEN 14
+                        WHEN a.Nome = 'NumeroDeQuestionariosAlunos4AnoAo6Ano_ParaPreencher' THEN 15
+                        WHEN a.Nome = 'NumeroDeQuestionariosAlunos4AnoAo6Ano_TotalPreenchidos' THEN 16
+                        WHEN a.Nome = 'NumeroDeQuestionariosAlunos7AnoAo9Ano_ParaPreencher' THEN 17
+                        WHEN a.Nome = 'NumeroDeQuestionariosAlunos7AnoAo9Ano_TotalPreenchidos' THEN 18
+                        ELSE 99
+                    END";
         }
 
         private static string AtributosAcompanhamentoTurma()
@@ -93,24 +126,7 @@ namespace ProvaSP.Data
                         JOIN Atributo a WITH (NOLOCK) ON a.AtributoID=aae.AtributoID
                         WHERE aae.Edicao=@Edicao AND a.AtributoID IN (" + AtributosAcompanhamentoEscola() + @")
                         GROUP BY a.Nome
-                        ORDER BY CASE
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_ParaPreencher' THEN 1
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_TotalPreenchidos' THEN 2
-                                    WHEN a.Nome = 'NumeroDeFichasDeDiretor_TotalPreenchidos' THEN 3
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_ParaPreencher' THEN 4
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_TotalPreenchidos' THEN 5
-                                    WHEN a.Nome = 'NumeroDeFichasDeCoordenador_TotalPreenchidos' THEN 6
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_ParaPreencher' THEN 7
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_TotalPreenchidos' THEN 8
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_ParaPreencherPorDia' THEN 9
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia1' THEN 10
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 11
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 12
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher' THEN 81
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos' THEN 82
-                                    ELSE 13
-                                END
-                    ",
+                        ORDER BY " + OrdenacaoAtributosAcompanhamentoEscola(),
                 param: new
                 {
                     Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 }
@@ -143,24 +159,7 @@ namespace ProvaSP.Data
                         WHERE aae.Edicao=@Edicao AND a.AtributoID IN (" + AtributosAcompanhamentoEscola() + @")
                         GROUP BY e.uad_codigo, a.AtributoID, a.Nome
                         ORDER BY e.uad_codigo, 
-                                CASE
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_ParaPreencher' THEN 1
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_TotalPreenchidos' THEN 2
-                                    WHEN a.Nome = 'NumeroDeFichasDeDiretor_TotalPreenchidos' THEN 3
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_ParaPreencher' THEN 4
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_TotalPreenchidos' THEN 5
-                                    WHEN a.Nome = 'NumeroDeFichasDeCoordenador_TotalPreenchidos' THEN 6
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_ParaPreencher' THEN 7
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_TotalPreenchidos' THEN 8
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_ParaPreencherPorDia' THEN 9
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia1' THEN 10
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 11
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 12
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher' THEN 81
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos' THEN 82
-                                    ELSE 13
-                                END
-                    ",
+                                " + OrdenacaoAtributosAcompanhamentoEscola(),
                 param: new
                 {
                     Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 }
@@ -190,24 +189,7 @@ namespace ProvaSP.Data
                         JOIN Atributo a WITH (NOLOCK) ON a.AtributoID=aae.AtributoID
                         WHERE aae.Edicao=@Edicao AND a.AtributoID IN (" + AtributosAcompanhamentoEscola() + @") AND e.uad_codigo=@uad_codigo
                         GROUP BY a.Nome
-                        ORDER BY CASE
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_ParaPreencher' THEN 1
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_TotalPreenchidos' THEN 2
-                                    WHEN a.Nome = 'NumeroDeFichasDeDiretor_TotalPreenchidos' THEN 3
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_ParaPreencher' THEN 4
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_TotalPreenchidos' THEN 5
-                                    WHEN a.Nome = 'NumeroDeFichasDeCoordenador_TotalPreenchidos' THEN 6
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_ParaPreencher' THEN 7
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_TotalPreenchidos' THEN 8
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_ParaPreencherPorDia' THEN 9
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia1' THEN 10
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 11
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 12
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher' THEN 81
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos' THEN 82
-                                    ELSE 13
-                                END
-                    ",
+                        ORDER BY " + OrdenacaoAtributosAcompanhamentoEscola(),
                 param: new
                 {
                     Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 },
@@ -239,24 +221,7 @@ namespace ProvaSP.Data
                         WHERE aae.Edicao=@Edicao AND a.AtributoID IN (" + AtributosAcompanhamentoEscola() + @") AND e.uad_codigo=@uad_codigo
                         GROUP BY e.esc_codigo,e.esc_nome, a.AtributoID, a.Nome
                         ORDER BY e.esc_nome,
-                                CASE
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_ParaPreencher' THEN 1
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_TotalPreenchidos' THEN 2
-                                    WHEN a.Nome = 'NumeroDeFichasDeDiretor_TotalPreenchidos' THEN 3
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_ParaPreencher' THEN 4
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_TotalPreenchidos' THEN 5
-                                    WHEN a.Nome = 'NumeroDeFichasDeCoordenador_TotalPreenchidos' THEN 6
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_ParaPreencher' THEN 7
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_TotalPreenchidos' THEN 8
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_ParaPreencherPorDia' THEN 9
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia1' THEN 10
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 11
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 12
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher' THEN 81
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos' THEN 82
-                                    ELSE 13
-                                END
-                    ",
+                                " + OrdenacaoAtributosAcompanhamentoEscola(),
                 param: new
                 {
                     Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 },
@@ -285,24 +250,7 @@ namespace ProvaSP.Data
                         FROM AcompanhamentoAplicacaoEscola aae WITH (NOLOCK)
                         JOIN Atributo a WITH (NOLOCK) ON a.AtributoID=aae.AtributoID
                         WHERE aae.Edicao=@Edicao AND a.AtributoID IN (" + AtributosAcompanhamentoEscola() + @") AND aae.esc_codigo=@esc_codigo
-                        ORDER BY CASE
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_ParaPreencher' THEN 1
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeDiretor_TotalPreenchidos' THEN 2
-                                    WHEN a.Nome = 'NumeroDeFichasDeDiretor_TotalPreenchidos' THEN 3
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_ParaPreencher' THEN 4
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeCoordenador_TotalPreenchidos' THEN 5
-                                    WHEN a.Nome = 'NumeroDeFichasDeCoordenador_TotalPreenchidos' THEN 6
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_ParaPreencher' THEN 7
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeProfessor_TotalPreenchidos' THEN 8
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_ParaPreencherPorDia' THEN 9
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia1' THEN 10
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 11
-                                    WHEN a.Nome = 'NumeroDeFichasDeAplicacao_TotalPreenchidasDia2' THEN 12
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher' THEN 81
-                                    WHEN a.Nome = 'NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos' THEN 82
-                                    ELSE 13
-                                END
-                    ",
+                        ORDER BY " + OrdenacaoAtributosAcompanhamentoEscola(),
                 param: new
                 {
                     Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 },
