@@ -389,15 +389,14 @@ namespace ProvaSP.Data
 
         public static void ProcessarInclusaoQuestionario(string Edicao, DateTime DataInicioAplicacao, QuestionarioUsuario preenchimentoDeQuestionario, SqlTransaction dbContextTransaction, SqlConnection conn)
         {
-            string nomeAtributoEscolaIncremento = "";
+            Atributo? atributoEscolaIncremento = null;
 
             TipoQuestionario tipoQuestionario = (TipoQuestionario)preenchimentoDeQuestionario.QuestionarioID;
-            if (tipoQuestionario == TipoQuestionario.FichaRegistroAplicadorProva)
+            if (tipoQuestionario == TipoQuestionario.FichaRegistroAplicadorProva && preenchimentoDeQuestionario.tur_id != null)
             {
-                DateTime DataAplicacao = System.DateTime.Today;
-                int DiaDoPreenchimentoDuranteAplicacao=1;
+                Atributo atributoTurma = Atributo.FichaAplicacaoPreenchidaDia1;
 
-                foreach(var resposta in preenchimentoDeQuestionario.Respostas)
+                foreach (var resposta in preenchimentoDeQuestionario.Respostas)
                 {
                     //ACREDITAR QUE O USUÁRIO SELECIONOU A DATA CORRETA DA APLICAÇÃO DA PROVA CAUSOU PROBLEMAS. O INDICADOR AGORA SE BASEIA NA PROVA SELECIONADA
                     //if (resposta.Numero == "2") //Data de Aplicação
@@ -405,20 +404,25 @@ namespace ProvaSP.Data
                     //    DataAplicacao = Convert.ToDateTime(resposta.Valor);
                     //}
 
-                    if (resposta.Numero=="3") //Disciplina
+                    if (resposta.Numero == "3") //Disciplina
                     {
-                        if (resposta.Valor== "Português")
+                        if (resposta.Valor == "Português")
                         {
-                            DiaDoPreenchimentoDuranteAplicacao = 1;
+                            atributoTurma = Atributo.FichaAplicacaoPreenchidaDia1;
+                            atributoEscolaIncremento = Atributo.NumeroDeFichasDeAplicacao_TotalPreenchidasDia1;
                         }
                         else if (resposta.Valor == "Matemática")
                         {
-                            DiaDoPreenchimentoDuranteAplicacao = 2;
+                            atributoTurma = Atributo.FichaAplicacaoPreenchidaDia2;
+                            atributoEscolaIncremento = Atributo.NumeroDeFichasDeAplicacao_TotalPreenchidasDia2;
                         }
                         else if (resposta.Valor == "Ciências")
                         {
-                            DiaDoPreenchimentoDuranteAplicacao = 3;
+                            atributoTurma = Atributo.FichaAplicacaoPreenchidaDia3;
+                            atributoEscolaIncremento = Atributo.NumeroDeFichasDeAplicacao_TotalPreenchidasDia3;
                         }
+
+                        break;
                     }
                 }
 
@@ -432,32 +436,30 @@ namespace ProvaSP.Data
                 //if (DiaDoPreenchimentoDuranteAplicacao <= 0)
                 //    DiaDoPreenchimentoDuranteAplicacao = 1;
 
-                string nomeAtributoTurma = "FichaAplicacaoPreenchidaDia" + DiaDoPreenchimentoDuranteAplicacao.ToString();
-                if (preenchimentoDeQuestionario.tur_id != null)
+                if (TurmaAtributoRetornarValor(Edicao, (int)preenchimentoDeQuestionario.tur_id, atributoTurma, dbContextTransaction, conn) == "0")
                 {
-                    if (TurmaAtributoRetornarValor(Edicao, (int)preenchimentoDeQuestionario.tur_id, nomeAtributoTurma, dbContextTransaction, conn) == "0")
-                    {
-                        //Registro do recebimento da ficha de aplicação para a Turma
-                        DataAcompanhamentoAplicacao.TurmaAtributoMarcarVerdadeiro(Edicao, (int)preenchimentoDeQuestionario.tur_id, nomeAtributoTurma, dbContextTransaction, conn);
-                        nomeAtributoEscolaIncremento = "NumeroDeFichasDeAplicacao_TotalPreenchidasDia" + DiaDoPreenchimentoDuranteAplicacao.ToString();
-                    }
+                    //Registro do recebimento da ficha de aplicação para a Turma
+                    DataAcompanhamentoAplicacao.TurmaAtributoMarcarVerdadeiro(Edicao, (int)preenchimentoDeQuestionario.tur_id, atributoTurma, dbContextTransaction, conn);
                 }
-
             }
             else if (tipoQuestionario == TipoQuestionario.FichaRegistroCoordenadorPedagogico && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "FichaAplicacaoDeCoordenadorPreenchida", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.FichaAplicacaoDeCoordenadorPreenchida, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.CoordenadorPedagogico, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "FichaAplicacaoDeCoordenadorPreenchida", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeFichasDeCoordenador_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.CoordenadorPedagogico, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.FichaAplicacaoDeCoordenadorPreenchida, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeFichasDeCoordenador_TotalPreenchidos;
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.FichaRegistroDiretor && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "FichaAplicacaoDeDiretorPreenchida", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.FichaAplicacaoDeDiretorPreenchida, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "FichaAplicacaoDeDiretorPreenchida", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeFichasDeDiretor_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.FichaAplicacaoDeDiretorPreenchida, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeFichasDeDiretor_TotalPreenchidos;
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.FichaRegistroSupervisor)
@@ -467,88 +469,107 @@ namespace ProvaSP.Data
                     if (resposta.Numero == "2") //" Escola Supervisionada. [esc_codigo]" (QuestionarioItemID=10)
                     {
                         preenchimentoDeQuestionario.esc_codigo = resposta.Valor;
+                        break;
                     }
                 }
 
                 if (!string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
                 {
-                    DataAcompanhamentoAplicacao.EscolaAtributoMarcarVerdadeiro(Edicao, preenchimentoDeQuestionario.esc_codigo, "EscolaSupervisionada", dbContextTransaction, conn);
+                    DataAcompanhamentoAplicacao.EscolaAtributoMarcarVerdadeiro(Edicao, preenchimentoDeQuestionario.esc_codigo,
+                        Atributo.EscolaSupervisionada, dbContextTransaction, conn);
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.QuestionarioCoordenadorPedagogico)
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioDeCoordenadorPreenchido", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.QuestionarioDeCoordenadorPreenchido, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.CoordenadorPedagogico, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioDeCoordenadorPreenchido", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeQuestionariosDeCoordenador_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.CoordenadorPedagogico, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.QuestionarioDeCoordenadorPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosDeCoordenador_TotalPreenchidos;
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.QuestionarioDiretor && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                    if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioDeDiretorPreenchido", dbContextTransaction, conn) == "0")
-                    {
-                        DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor,  preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioDeDiretorPreenchido", dbContextTransaction, conn);
-                        nomeAtributoEscolaIncremento = "NumeroDeQuestionariosDeDiretor_TotalPreenchidos";
-                    }
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.QuestionarioDeDiretorPreenchido, dbContextTransaction, conn) == "0")
+                {
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.QuestionarioDeDiretorPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosDeDiretor_TotalPreenchidos;
+                }
             }
             else if (tipoQuestionario == TipoQuestionario.QuestionarioAssistenteDiretoria && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAssistenteDiretoriaPreenchido", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.QuestionarioAssistenteDiretoriaPreenchido, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAssistenteDiretoriaPreenchido", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.QuestionarioAssistenteDiretoriaPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos;
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.QuestionarioAuxiliarTecnicoEducacao && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAuxiliarTecnicoEducacaoPreenchido", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.QuestionarioAuxiliarTecnicoEducacaoPreenchido, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAuxiliarTecnicoEducacaoPreenchido", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeQuestionariosDeAuxiliarTecnicoEducacao_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.QuestionarioAuxiliarTecnicoEducacaoPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosDeAuxiliarTecnicoEducacao_TotalPreenchidos;
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.QuestionarioAgenteEscolarMerendeira && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAgenteEscolarMerendeiraPreenchido", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.QuestionarioAgenteEscolarMerendeiraPreenchido, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAgenteEscolarMerendeiraPreenchido", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeQuestionariosDeAgenteEscolarMerendeira_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.QuestionarioAgenteEscolarMerendeiraPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosDeAgenteEscolarMerendeira_TotalPreenchidos;
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.QuestionarioAgenteEscolarPortaria && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAgenteEscolarPortariaPreenchido", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.QuestionarioAgenteEscolarPortariaPreenchido, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAgenteEscolarPortariaPreenchido", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeQuestionariosDeAgenteEscolarPortaria_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.QuestionarioAgenteEscolarPortariaPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosDeAgenteEscolarPortaria_TotalPreenchidos;
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.QuestionarioAgenteEscolarZeladoria && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAgenteEscolarZeladoriaPreenchido", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.QuestionarioAgenteEscolarZeladoriaPreenchido, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAgenteEscolarZeladoriaPreenchido", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeQuestionariosDeAgenteEscolarZeladoria_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Diretor, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.QuestionarioAgenteEscolarZeladoriaPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosDeAgenteEscolarZeladoria_TotalPreenchidos;
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.QuestionarioSupervisor)
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, "0", "QuestionarioDeSupervisorPreenchido", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, "0", Atributo.QuestionarioDeSupervisorPreenchido, dbContextTransaction, conn) == "0")
                 {
                     preenchimentoDeQuestionario.esc_codigo = "0";
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Supervisor, preenchimentoDeQuestionario.usu_id, "0", "QuestionarioDeSupervisorPreenchido", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeQuestionariosDeSupervisor_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Supervisor, preenchimentoDeQuestionario.usu_id,
+                        "0", Atributo.QuestionarioDeSupervisorPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosDeSupervisor_TotalPreenchidos;
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.QuestionarioProfessor && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioDeProfessorPreenchido", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.QuestionarioDeProfessorPreenchido, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Professor, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioDeProfessorPreenchido", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeQuestionariosDeProfessor_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Professor, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.QuestionarioDeProfessorPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosDeProfessor_TotalPreenchidos;
                 }
             }
-            /* Edição 2018
+            /* Edição 2k18
             else if (tipoQuestionario == TipoQuestionario.QuestionarioAlunos3Ano && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
                 if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAlunos3AnoPreenchido", dbContextTransaction, conn) == "0")
@@ -567,31 +588,34 @@ namespace ProvaSP.Data
             }*/
             else if (tipoQuestionario == TipoQuestionario.QuestionarioAlunos3AnoAo6Ano && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAlunos4AnoAo6AnoPreenchido", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.QuestionarioAlunos4AnoAo6AnoPreenchido, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Aluno, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAlunos4AnoAo6AnoPreenchido", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeQuestionariosAlunos4AnoAo6Ano_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Aluno, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.QuestionarioAlunos4AnoAo6AnoPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosAlunos4AnoAo6Ano_TotalPreenchidos;
                 }
             }
             else if (tipoQuestionario == TipoQuestionario.QuestionarioAlunos7AnoAo9Ano && !string.IsNullOrEmpty(preenchimentoDeQuestionario.esc_codigo))
             {
-                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAlunos7AnoAo9AnoPreenchido", dbContextTransaction, conn) == "0")
+                if (PessoaAtributoRetornarValor(Edicao, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo,
+                    Atributo.QuestionarioAlunos7AnoAo9AnoPreenchido, dbContextTransaction, conn) == "0")
                 {
-                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Aluno, preenchimentoDeQuestionario.usu_id, preenchimentoDeQuestionario.esc_codigo, "QuestionarioAlunos7AnoAo9AnoPreenchido", dbContextTransaction, conn);
-                    nomeAtributoEscolaIncremento = "NumeroDeQuestionariosAlunos7AnoAo9Ano_TotalPreenchidos";
+                    DataAcompanhamentoAplicacao.PessoaAtributoMarcarVerdadeiro(Edicao, (int)TipoPerfil.Aluno, preenchimentoDeQuestionario.usu_id,
+                        preenchimentoDeQuestionario.esc_codigo, Atributo.QuestionarioAlunos7AnoAo9AnoPreenchido, dbContextTransaction, conn);
+                    atributoEscolaIncremento = Atributo.NumeroDeQuestionariosAlunos7AnoAo9Ano_TotalPreenchidos;
                 }
             }
 
-            if (!string.IsNullOrEmpty(nomeAtributoEscolaIncremento))
+            if (atributoEscolaIncremento.HasValue)
             {
                 //Contabilização do preenchimento do questionário/ficha para a Escola
-                DataAcompanhamentoAplicacao.EscolaAtributoIncrementar(Edicao, preenchimentoDeQuestionario.esc_codigo, nomeAtributoEscolaIncremento, dbContextTransaction, conn);
+                DataAcompanhamentoAplicacao.EscolaAtributoIncrementar(Edicao, preenchimentoDeQuestionario.esc_codigo, atributoEscolaIncremento.Value, dbContextTransaction, conn);
             }
         }
 
-        private static void EscolaAtributoMarcarVerdadeiro(string Edicao, string esc_codigo, string AtributoNome, SqlTransaction dbContextTransaction, SqlConnection conn)
+        private static void EscolaAtributoMarcarVerdadeiro(string Edicao, string esc_codigo, Atributo atributoID, SqlTransaction dbContextTransaction, SqlConnection conn)
         {
-            int AtributoID = DataAtributo.RecuperarID(AtributoNome, dbContextTransaction, conn);
             conn.Execute(
                         sql: @"
                     IF (NOT EXISTS(SELECT * FROM AcompanhamentoAplicacaoEscola WITH (NOLOCK) WHERE Edicao=@Edicao AND esc_codigo=@esc_codigo AND AtributoID=@AtributoID))
@@ -603,14 +627,13 @@ namespace ProvaSP.Data
                         {
                             Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 },
                             esc_codigo = new DbString() { Value = esc_codigo, IsAnsi = true, Length = 20 },
-                            AtributoID = AtributoID
+                            AtributoID = (int)atributoID
                         },
                         transaction: dbContextTransaction);
         }
 
-        private static void EscolaAtributoIncrementar(string Edicao, string esc_codigo, string AtributoNome, SqlTransaction dbContextTransaction, SqlConnection conn)
+        private static void EscolaAtributoIncrementar(string Edicao, string esc_codigo, Atributo atributoID, SqlTransaction dbContextTransaction, SqlConnection conn)
         {
-            int AtributoID = DataAtributo.RecuperarID(AtributoNome, dbContextTransaction, conn);
             conn.Execute(
                         sql: @"
                     IF (NOT EXISTS(SELECT * FROM AcompanhamentoAplicacaoEscola WITH (NOLOCK) WHERE Edicao=@Edicao AND esc_codigo=@esc_codigo AND AtributoID=@AtributoID))
@@ -622,14 +645,13 @@ namespace ProvaSP.Data
                         {
                             Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 },
                             esc_codigo = new DbString() { Value = esc_codigo, IsAnsi = true, Length = 20 },
-                            AtributoID = AtributoID
+                            AtributoID = (int)atributoID
                         },
                         transaction: dbContextTransaction);
         }
 
-        private static void TurmaAtributoMarcarVerdadeiro(string Edicao, int tur_id, string AtributoNome, SqlTransaction dbContextTransaction, SqlConnection conn)
+        private static void TurmaAtributoMarcarVerdadeiro(string Edicao, int tur_id, Atributo atributoID, SqlTransaction dbContextTransaction, SqlConnection conn)
         {
-            int AtributoID = DataAtributo.RecuperarID(AtributoNome, dbContextTransaction, conn);
             conn.Execute(
                         sql: @"
                     IF (NOT EXISTS(SELECT * FROM AcompanhamentoAplicacaoTurma WITH (NOLOCK) WHERE Edicao=@Edicao AND tur_id=@tur_id AND AtributoID=@AtributoID))
@@ -641,14 +663,13 @@ namespace ProvaSP.Data
                         {
                             Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 },
                             tur_id = tur_id,
-                            AtributoID = AtributoID
+                            AtributoID = (int)atributoID
                         },
                         transaction: dbContextTransaction);
         }
 
-        private static string TurmaAtributoRetornarValor(string Edicao, int tur_id, string AtributoNome, SqlTransaction dbContextTransaction, SqlConnection conn)
+        private static string TurmaAtributoRetornarValor(string Edicao, int tur_id, Atributo atributoID, SqlTransaction dbContextTransaction, SqlConnection conn)
         {
-            int AtributoID = DataAtributo.RecuperarID(AtributoNome, dbContextTransaction, conn);
             return conn.ExecuteScalar<string>(
                         sql: @"
                                 IF EXISTS(SELECT * FROM AcompanhamentoAplicacaoTurma WITH (NOLOCK) WHERE Edicao=@Edicao AND tur_id=@tur_id AND AtributoID=@AtributoID)
@@ -660,14 +681,13 @@ namespace ProvaSP.Data
                         {
                             Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 },
                             tur_id = tur_id,
-                            AtributoID = AtributoID
+                            AtributoID = (int)atributoID
                         },
                         transaction: dbContextTransaction);
         }
 
-        private static string PessoaAtributoRetornarValor(string Edicao, string usu_id, string esc_codigo, string AtributoNome, SqlTransaction dbContextTransaction, SqlConnection conn)
+        private static string PessoaAtributoRetornarValor(string Edicao, string usu_id, string esc_codigo, Atributo atributoID, SqlTransaction dbContextTransaction, SqlConnection conn)
         {
-            int AtributoID = DataAtributo.RecuperarID(AtributoNome, dbContextTransaction, conn);
             return conn.ExecuteScalar<string>(
                         sql: @"
                                 IF EXISTS(SELECT Valor FROM AcompanhamentoAplicacaoPessoa WITH (NOLOCK) WHERE Edicao=@Edicao AND esc_codigo=@esc_codigo AND usu_id=@usu_id AND AtributoID=@AtributoID)
@@ -680,17 +700,16 @@ namespace ProvaSP.Data
                             Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 },
                             esc_codigo = new DbString() { Value = esc_codigo, IsAnsi = true, Length = 20 },
                             usu_id = usu_id,
-                            AtributoID = AtributoID
+                            AtributoID = (int)atributoID
                         },
                         transaction: dbContextTransaction);
         }
 
-        private static void PessoaAtributoMarcarVerdadeiro(string Edicao, int PerfilID, string usu_id, string esc_codigo, string AtributoNome, SqlTransaction dbContextTransaction, SqlConnection conn)
+        private static void PessoaAtributoMarcarVerdadeiro(string Edicao, int PerfilID, string usu_id, string esc_codigo, Atributo atributoID, SqlTransaction dbContextTransaction, SqlConnection conn)
         {
-            int AtributoID = DataAtributo.RecuperarID(AtributoNome, dbContextTransaction, conn);
             conn.Execute(
                         sql: @"
-                    IF (NOT EXISTS(SELECT * FROM AcompanhamentoAplicacaoPessoa WITH (NOLOCK) WHERE Edicao=@Edicao AND esc_codigo=@esc_codigo AND usu_id=@usu_id AND AtributoID=@AtributoID))
+                    IF (NOT EXISTS(SELECT Valor FROM AcompanhamentoAplicacaoPessoa WITH (NOLOCK) WHERE Edicao=@Edicao AND esc_codigo=@esc_codigo AND usu_id=@usu_id AND AtributoID=@AtributoID))
                         INSERT INTO AcompanhamentoAplicacaoPessoa (Edicao, esc_codigo, usu_id, PerfilID, AtributoID, Valor) VALUES (@Edicao, @esc_codigo, @usu_id, @PerfilID, @AtributoID, '1')
                     ELSE
                         UPDATE AcompanhamentoAplicacaoPessoa SET Valor = '1' WHERE Edicao=@Edicao AND esc_codigo=@esc_codigo AND usu_id=@usu_id AND AtributoID=@AtributoID
@@ -700,7 +719,7 @@ namespace ProvaSP.Data
                             Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 },
                             esc_codigo = new DbString() { Value = esc_codigo, IsAnsi = true, Length = 20 },
                             usu_id = usu_id,
-                            AtributoID = AtributoID,
+                            AtributoID = (int)atributoID,
                             PerfilID = PerfilID
                         },
                         transaction: dbContextTransaction);

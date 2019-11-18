@@ -24,12 +24,12 @@ namespace ProvaSP.Web.Controllers
                 else if (usuario.Supervisor)
                 {
                     //RecuperarCodigoComBaseNoPerfilDaPessoa
-                    string uad_codigo = DataDRE.RecuperarCodigoDREComBaseNoPerfilDaPessoa("2018", usuario.usu_id);
+                    string uad_codigo = DataDRE.RecuperarCodigoDREComBaseNoPerfilDaPessoa(Data.Funcionalidades.Prova.Edicao, usuario.usu_id);
                     return RedirectToAction("Index", "RelatorioAcompanhamentoNivelDRE", new { usu_id = usu_id, uad_codigo = uad_codigo });
                 }
                 else if (usuario.Diretor || usuario.Coordenador)
                 {
-                    string esc_codigo = DataEscola.RecuperarPrimeiroCodigoEscola("2018", usuario.usu_id);
+                    string esc_codigo = DataEscola.RecuperarPrimeiroCodigoEscola(Data.Funcionalidades.Prova.Edicao, usuario.usu_id);
                     return RedirectToAction("Index", "RelatorioAcompanhamentoNivelEscola", new { usu_id = usu_id, esc_codigo = esc_codigo });
                 }
             }

@@ -11,29 +11,32 @@ namespace ProvaSP.Data
     public enum TipoQuestionario : int
     {
         QuestionarioSupervisor = 1,
-        QuestionarioDiretor = 2,
         QuestionarioCoordenadorPedagogico = 3,
         FichaRegistroAplicadorProva = 8,
         FichaRegistroSupervisor = 9,
         FichaRegistroDiretor = 10,
         FichaRegistroCoordenadorPedagogico = 11,
 
-        QuestionarioAssistenteDiretoria = 13,
         QuestionarioAuxiliarTecnicoEducacao = 14,
         QuestionarioAgenteEscolarMerendeira = 15,
         QuestionarioAgenteEscolarPortaria = 16,
         QuestionarioAgenteEscolarZeladoria = 17,
 
         /* Edição 2018
+        QuestionarioDiretor = 2,
         QuestionarioProfessor = 12,
+        QuestionarioAssistenteDiretoria = 13,
         QuestionarioAlunos3Ano = 18,
         QuestionarioAlunos4AnoAo6Ano = 19,
         QuestionarioAlunos7AnoAo9Ano = 20 */
 
         //Edição 2019
-        QuestionarioProfessor = 23,
         QuestionarioAlunos3AnoAo6Ano = 21,
-        QuestionarioAlunos7AnoAo9Ano = 22
+        QuestionarioAlunos7AnoAo9Ano = 22,
+        QuestionarioProfessor = 23,
+        QuestionarioDiretor = 24,
+        QuestionarioAssistenteDiretoria = 25
+
     };
 
     public enum TipoPerfil : int
@@ -177,31 +180,32 @@ namespace ProvaSP.Data
         [Description("Questionário de Assistente de Diretor preenchido?")]
         QuestionarioAssistenteDiretoriaPreenchido = 83,
 
-        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        // Prova de 2k18
+        /*[Description("Número de Alunos do 3 ano que devem preencher o questionário:")]
         NumeroDeQuestionariosAlunos3Ano_ParaPreencher = 84,
 
-        [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
+        [Description("Número de Alunos do 3 ano que preencheram o questionário:")]
         NumeroDeQuestionariosAlunos3Ano_TotalPreenchidos = 85,
 
-        [Description("Questionário de Assistente de Diretor preenchido?")]
-        QuestionarioAlunos3AnoPreenchido = 86,
+        [Description("Questionário de Alunos do 3 ano preenchido?")]
+        QuestionarioAlunos3AnoPreenchido = 86,*/
 
-        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        [Description("Número de Alunos do 3 ao 6 ano que devem preencher o questionário:")]
         NumeroDeQuestionariosAlunos4AnoAo6Ano_ParaPreencher = 87,
 
-        [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
+        [Description("Número de Alunos do 3 ao 6 ano que preencheram o questionário:")]
         NumeroDeQuestionariosAlunos4AnoAo6Ano_TotalPreenchidos = 88,
 
-        [Description("Questionário de Assistente de Diretor preenchido?")]
+        [Description("Questionário de Alunos do 3 ao 6 ano preenchido?")]
         QuestionarioAlunos4AnoAo6AnoPreenchido = 89,
 
-        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        [Description("Número de Alunos do 7 ao 9 ano que devem preencher o questionário:")]
         NumeroDeQuestionariosAlunos7AnoAo9Ano_ParaPreencher = 90,
 
-        [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
+        [Description("Número de Alunos do 7 ao 9 ano que preencheram o questionário:")]
         NumeroDeQuestionariosAlunos7AnoAo9Ano_TotalPreenchidos = 91,
 
-        [Description("Questionário de Assistente de Diretor preenchido?")]
+        [Description("Questionário de Alunos do 7 ao 9 ano preenchido?")]
         QuestionarioAlunos7AnoAo9AnoPreenchido = 92,
 
         [Description("Número de Auxiliar Técnico da Educação que devem preencher o questionário:")]
