@@ -64,7 +64,7 @@ namespace GestaoAvaliacao.Services
                         answer.Correct = answerCorrect ?? answerCorrect.Value;
                         studentCorrection.Hits = studentCorrection.Answers.Count(a => a.Correct);
 
-                        var tempCorrectionResult = await testSectionStatusCorrectionBusiness.GetTempCorrection(testId, studentCorrection.tur_id);
+                        var tempCorrectionResult = await testSectionStatusCorrectionBusiness.GetTempCorrection(Guid.Parse(studentCorrection._id.Substring(0, 36)), testId, studentCorrection.tur_id);
 
                         if (tempCorrectionResult != null && !tempCorrectionResult.Processed)
                             continue;
@@ -125,7 +125,7 @@ namespace GestaoAvaliacao.Services
 
                 foreach (var item in testAndTeams)
                 {
-                    var tempCorrectionResult = await testSectionStatusCorrectionBusiness.GetTempCorrection(item.Test_Id, item.Tur_id);
+                    var tempCorrectionResult = await testSectionStatusCorrectionBusiness.GetTempCorrection(item.Guid_Student_Correction, item.Test_Id, item.Tur_id);
 
                     if (tempCorrectionResult != null && !tempCorrectionResult.Processed)
                         continue;

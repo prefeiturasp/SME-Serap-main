@@ -54,6 +54,14 @@
             this.label3 = new System.Windows.Forms.Label();
             this.numericUpDownTempCorrectionResultTestId = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.tabPageImportStudent = new System.Windows.Forms.TabPage();
+            this.buttonImpAlunos = new System.Windows.Forms.Button();
+            this.groupBoxDadosImportStudents = new System.Windows.Forms.GroupBox();
+            this.numericUpDownImpAlunoAnoLetivo = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.comboBoxTipoEscolaImpAluno = new System.Windows.Forms.ComboBox();
+            this.progressBarImportAlunos = new System.Windows.Forms.ProgressBar();
             this.tabControlGeral.SuspendLayout();
             this.tabPageStudentCorrection.SuspendLayout();
             this.groupBoxAtualizarRespostasAlunos.SuspendLayout();
@@ -69,12 +77,16 @@
             this.groupBoxIncludeNewCorrectionResult.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTempCorrectionResultTeamId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTempCorrectionResultTestId)).BeginInit();
+            this.tabPageImportStudent.SuspendLayout();
+            this.groupBoxDadosImportStudents.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownImpAlunoAnoLetivo)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControlGeral
             // 
             this.tabControlGeral.Controls.Add(this.tabPageStudentCorrection);
             this.tabControlGeral.Controls.Add(this.tabPageTempCorrectionResult);
+            this.tabControlGeral.Controls.Add(this.tabPageImportStudent);
             this.tabControlGeral.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlGeral.Location = new System.Drawing.Point(0, 0);
             this.tabControlGeral.Name = "tabControlGeral";
@@ -370,6 +382,101 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Prova:";
             // 
+            // tabPageImportStudent
+            // 
+            this.tabPageImportStudent.Controls.Add(this.buttonImpAlunos);
+            this.tabPageImportStudent.Controls.Add(this.groupBoxDadosImportStudents);
+            this.tabPageImportStudent.Location = new System.Drawing.Point(4, 22);
+            this.tabPageImportStudent.Name = "tabPageImportStudent";
+            this.tabPageImportStudent.Size = new System.Drawing.Size(302, 267);
+            this.tabPageImportStudent.TabIndex = 2;
+            this.tabPageImportStudent.Text = "Importar Estudantes";
+            this.tabPageImportStudent.UseVisualStyleBackColor = true;
+            // 
+            // buttonImpAlunos
+            // 
+            this.buttonImpAlunos.Location = new System.Drawing.Point(219, 131);
+            this.buttonImpAlunos.Name = "buttonImpAlunos";
+            this.buttonImpAlunos.Size = new System.Drawing.Size(75, 23);
+            this.buttonImpAlunos.TabIndex = 1;
+            this.buttonImpAlunos.Text = "Importar";
+            this.buttonImpAlunos.UseVisualStyleBackColor = true;
+            this.buttonImpAlunos.Click += new System.EventHandler(this.ButtonImpAlunos_Click);
+            // 
+            // groupBoxDadosImportStudents
+            // 
+            this.groupBoxDadosImportStudents.Controls.Add(this.progressBarImportAlunos);
+            this.groupBoxDadosImportStudents.Controls.Add(this.numericUpDownImpAlunoAnoLetivo);
+            this.groupBoxDadosImportStudents.Controls.Add(this.label5);
+            this.groupBoxDadosImportStudents.Controls.Add(this.label4);
+            this.groupBoxDadosImportStudents.Controls.Add(this.comboBoxTipoEscolaImpAluno);
+            this.groupBoxDadosImportStudents.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBoxDadosImportStudents.Location = new System.Drawing.Point(0, 0);
+            this.groupBoxDadosImportStudents.Name = "groupBoxDadosImportStudents";
+            this.groupBoxDadosImportStudents.Size = new System.Drawing.Size(302, 125);
+            this.groupBoxDadosImportStudents.TabIndex = 0;
+            this.groupBoxDadosImportStudents.TabStop = false;
+            this.groupBoxDadosImportStudents.Text = "Dados";
+            // 
+            // numericUpDownImpAlunoAnoLetivo
+            // 
+            this.numericUpDownImpAlunoAnoLetivo.Location = new System.Drawing.Point(13, 84);
+            this.numericUpDownImpAlunoAnoLetivo.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUpDownImpAlunoAnoLetivo.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownImpAlunoAnoLetivo.Name = "numericUpDownImpAlunoAnoLetivo";
+            this.numericUpDownImpAlunoAnoLetivo.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownImpAlunoAnoLetivo.TabIndex = 3;
+            this.numericUpDownImpAlunoAnoLetivo.Value = new decimal(new int[] {
+            2019,
+            0,
+            0,
+            0});
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(13, 68);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(61, 13);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "Ano Letivo:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 20);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(66, 13);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Tipo Escola:";
+            // 
+            // comboBoxTipoEscolaImpAluno
+            // 
+            this.comboBoxTipoEscolaImpAluno.DisplayMember = "Descricao";
+            this.comboBoxTipoEscolaImpAluno.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxTipoEscolaImpAluno.FormattingEnabled = true;
+            this.comboBoxTipoEscolaImpAluno.Location = new System.Drawing.Point(13, 36);
+            this.comboBoxTipoEscolaImpAluno.Name = "comboBoxTipoEscolaImpAluno";
+            this.comboBoxTipoEscolaImpAluno.Size = new System.Drawing.Size(165, 21);
+            this.comboBoxTipoEscolaImpAluno.TabIndex = 0;
+            this.comboBoxTipoEscolaImpAluno.ValueMember = "ID";
+            // 
+            // progressBarImportAlunos
+            // 
+            this.progressBarImportAlunos.Location = new System.Drawing.Point(184, 36);
+            this.progressBarImportAlunos.Name = "progressBarImportAlunos";
+            this.progressBarImportAlunos.Size = new System.Drawing.Size(112, 21);
+            this.progressBarImportAlunos.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBarImportAlunos.TabIndex = 4;
+            // 
             // Adjust
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -377,7 +484,9 @@
             this.ClientSize = new System.Drawing.Size(310, 293);
             this.Controls.Add(this.tabControlGeral);
             this.Name = "Adjust";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ajustes Gerais";
+            this.Load += new System.EventHandler(this.Adjust_Load);
             this.tabControlGeral.ResumeLayout(false);
             this.tabPageStudentCorrection.ResumeLayout(false);
             this.groupBoxAtualizarRespostasAlunos.ResumeLayout(false);
@@ -396,6 +505,10 @@
             this.groupBoxIncludeNewCorrectionResult.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTempCorrectionResultTeamId)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTempCorrectionResultTestId)).EndInit();
+            this.tabPageImportStudent.ResumeLayout(false);
+            this.groupBoxDadosImportStudents.ResumeLayout(false);
+            this.groupBoxDadosImportStudents.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownImpAlunoAnoLetivo)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -428,5 +541,13 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown numericUpDownTempCorrectionResultTestId;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TabPage tabPageImportStudent;
+        private System.Windows.Forms.GroupBox groupBoxDadosImportStudents;
+        private System.Windows.Forms.NumericUpDown numericUpDownImpAlunoAnoLetivo;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox comboBoxTipoEscolaImpAluno;
+        private System.Windows.Forms.Button buttonImpAlunos;
+        private System.Windows.Forms.ProgressBar progressBarImportAlunos;
     }
 }
