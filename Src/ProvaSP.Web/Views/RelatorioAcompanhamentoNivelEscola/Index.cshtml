@@ -34,32 +34,34 @@
     }
 </table>
 
-<h2>Turmas</h2>
+@if (Model.IndicadoresTurma.Any()) { 
+    <h2>Turmas</h2>
 
-<table cellpadding="5">
-    @{
-        foreach (var item in Model.IndicadoresTurma)
-        {
+    <table cellpadding="5">
+        @{
+            foreach (var item in Model.IndicadoresTurma)
+            {
 
-            <tr style="@(item.Valor == "SIM" ? "color:green" : "color:red")">
+                <tr style="@(item.Valor == "SIM" ? "color:green" : "color:red")">
 
-                <td>
-                    @item.Titulo
-                </td>
-                <td>
-                    @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
-                </td>
-                <td>
-                    @item.Valor
-                </td>
+                    <td>
+                        @item.Titulo
+                    </td>
+                    <td>
+                        @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                    </td>
+                    <td>
+                        @item.Valor
+                    </td>
 
-            </tr>
+                </tr>
+            }
         }
-    }
-</table>
+    </table>
+}
 
 
-<h2>Docentes</h2>
+<h2>Respondentes</h2>
 
 <table cellpadding="5">
 

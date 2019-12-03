@@ -14,14 +14,14 @@ namespace ProvaSP.Data
 
         public static List<string> Sincronizar(List<QuestionarioUsuario> preenchimentosDeQuestionario, string ip, string userAgent)
         {
-            string Edicao = Funcionalidades.Prova.Edicao;
+            string edicao = Funcionalidades.Prova.Edicao;
             DateTime DataInicioAplicacao;
             var guidsSincronizados = new List<string>();
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
             {
                 conn.Open();
                 //Primeiro recupera a data do primeiro dia da aplicação
-                DataInicioAplicacao = conn.ExecuteScalar<DateTime>(sql: "SELECT DataInicioAplicacao FROM ProvaEdicao WITH (NOLOCK) WHERE Edicao=@Edicao", param: new { Edicao = Edicao });
+                DataInicioAplicacao = conn.ExecuteScalar<DateTime>(sql: "SELECT DataInicioAplicacao FROM ProvaEdicao WITH (NOLOCK) WHERE Edicao=@Edicao", param: new { Edicao = edicao });
                 using (SqlTransaction dbContextTransaction = conn.BeginTransaction())
                 {
                     try
@@ -55,7 +55,7 @@ namespace ProvaSP.Data
                                 else if (tipoQuestionario == TipoQuestionario.QuestionarioAlunos3AnoAo6Ano || tipoQuestionario == TipoQuestionario.QuestionarioAlunos7AnoAo9Ano)
                                     PerfilID = (int)TipoPerfil.Aluno;
                                 if (PerfilID>-1)
-                                    preenchimentoDeQuestionario.esc_codigo = DataEscola.RecuperarCodigoEscolaComBaseNoPerfilDaPessoa(Edicao, preenchimentoDeQuestionario.usu_id, PerfilID, dbContextTransaction, conn);
+                                    preenchimentoDeQuestionario.esc_codigo = DataEscola.RecuperarCodigoEscolaComBaseNoPerfilDaPessoa(edicao, preenchimentoDeQuestionario.usu_id, PerfilID, dbContextTransaction, conn);
                             }
 
                             if (string.IsNullOrEmpty(preenchimentoDeQuestionario.DataPreenchimento))
@@ -83,13 +83,13 @@ namespace ProvaSP.Data
                                             DataPreenchimento = Convert.ToDateTime(preenchimentoDeQuestionario.DataPreenchimento),
                                             IP = new DbString() { Value = ip, IsAnsi = true, Length = 50 },
                                             UserAgent = new DbString() { Value = userAgent, IsAnsi = true, Length = 200 },
-                                            Edicao = new DbString() { Value = Edicao, IsAnsi = true, Length = 10 }
+                                            Edicao = new DbString() { Value = edicao, IsAnsi = true, Length = 10 }
                                         },
                                         transaction: dbContextTransaction);
                             if (QuestionarioUsuarioID > 0)
                             {
 
-                                DataAcompanhamentoAplicacao.ProcessarInclusaoQuestionario(Edicao, DataInicioAplicacao, preenchimentoDeQuestionario, dbContextTransaction, conn);
+                                DataAcompanhamentoAplicacao.ProcessarInclusaoQuestionario(edicao, DataInicioAplicacao, preenchimentoDeQuestionario, dbContextTransaction, conn);
 
                                 foreach (var resposta in preenchimentoDeQuestionario.Respostas)
                                 {
