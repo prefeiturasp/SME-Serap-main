@@ -49,6 +49,13 @@
       <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MSTech.Security.Cryptography, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MSTech.Library\MSTech\MSTech.Security.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -65,6 +72,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adjust.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Adjust.Designer.cs">
+      <DependentUpon>Adjust.cs</DependentUpon>
+    </Compile>
     <Compile Include="CallServices.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,12 +96,19 @@
       <Project>{be1e5a8f-69d3-4b9d-b6b4-a71f94fb7840}</Project>
       <Name>GestaoAvaliacao.MappingDependence</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.MongoEntities\GestaoAvaliacao.MongoEntities.csproj">
+      <Project>{5AB49EE2-F4EA-428D-8EC1-257D1EE4EA37}</Project>
+      <Name>GestaoAvaliacao.MongoEntities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.Services\GestaoAvaliacao.Services.csproj">
       <Project>{cfc2dcd1-7a99-4a97-aa75-76b97d8a5537}</Project>
       <Name>GestaoAvaliacao.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Adjust.resx">
+      <DependentUpon>Adjust.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CallServices.resx">
       <DependentUpon>CallServices.cs</DependentUpon>
     </EmbeddedResource>
