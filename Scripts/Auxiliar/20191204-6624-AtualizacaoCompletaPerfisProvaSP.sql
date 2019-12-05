@@ -920,6 +920,7 @@ Recalcula a quantidade de profissionais que responderam os questionários e os t
 				INNER JOIN GestaoAvaliacao_SGP.dbo.MTR_MatriculaTurma m
 					ON a.alu_id = m.alu_id
 			WHERE pf.Edicao = @Edicao AND
+				m.mtu_situacao = 1 AND
 				m.crp_id BETWEEN 3 AND 6
 			GROUP BY pf.Edicao,
 				pf.esc_codigo
@@ -938,6 +939,7 @@ Recalcula a quantidade de profissionais que responderam os questionários e os t
 				INNER JOIN GestaoAvaliacao_SGP.dbo.MTR_MatriculaTurma m
 					ON a.alu_id = m.alu_id
 			WHERE pf.Edicao = @Edicao AND
+				m.mtu_situacao = 1 AND
 				m.crp_id BETWEEN 7 AND 9
 			GROUP BY pf.Edicao,
 				pf.esc_codigo
