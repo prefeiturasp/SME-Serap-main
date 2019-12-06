@@ -93,7 +93,7 @@ namespace ProvaSP.Data
 
     public enum Atributo : int
     {
-        [Description("Total esperado de Diretores que devem preencher questionário e ficha:")]
+        [Description("Total esperado de Diretores que devem preencher questionário:")]
         NumeroDeQuestionariosDeDiretor_ParaPreencher = 1,
 
         [Description("Número de Diretores que preencheram o questionário:")]
@@ -171,7 +171,7 @@ namespace ProvaSP.Data
         [Description("Número de Supervisores que preencheram o questionário:")]
         NumeroDeQuestionariosDeSupervisor_TotalPreenchidos = 55,
 
-        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        [Description("Total esperado de Assistentes de Diretores que devem preencher o questionário:")]
         NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher = 81,
 
         [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
@@ -181,7 +181,7 @@ namespace ProvaSP.Data
         QuestionarioAssistenteDiretoriaPreenchido = 83,
 
         // Prova de 2k18
-        /*[Description("Número de Alunos do 3 ano que devem preencher o questionário:")]
+        /*[Description("Total esperado de Alunos do 3 ano que devem preencher o questionário:")]
         NumeroDeQuestionariosAlunos3Ano_ParaPreencher = 84,
 
         [Description("Número de Alunos do 3 ano que preencheram o questionário:")]
@@ -190,7 +190,7 @@ namespace ProvaSP.Data
         [Description("Questionário de Alunos do 3 ano preenchido?")]
         QuestionarioAlunos3AnoPreenchido = 86,*/
 
-        [Description("Número de Alunos do 3 ao 6 ano que devem preencher o questionário:")]
+        [Description("Total esperado de Alunos do 3 ao 6 ano que devem preencher o questionário:")]
         NumeroDeQuestionariosAlunos4AnoAo6Ano_ParaPreencher = 87,
 
         [Description("Número de Alunos do 3 ao 6 ano que preencheram o questionário:")]
@@ -199,7 +199,7 @@ namespace ProvaSP.Data
         [Description("Questionário de Alunos do 3 ao 6 ano preenchido?")]
         QuestionarioAlunos4AnoAo6AnoPreenchido = 89,
 
-        [Description("Número de Alunos do 7 ao 9 ano que devem preencher o questionário:")]
+        [Description("Total esperado de Alunos do 7 ao 9 ano que devem preencher o questionário:")]
         NumeroDeQuestionariosAlunos7AnoAo9Ano_ParaPreencher = 90,
 
         [Description("Número de Alunos do 7 ao 9 ano que preencheram o questionário:")]
@@ -208,7 +208,7 @@ namespace ProvaSP.Data
         [Description("Questionário de Alunos do 7 ao 9 ano preenchido?")]
         QuestionarioAlunos7AnoAo9AnoPreenchido = 92,
 
-        [Description("Número de Auxiliar Técnico da Educação que devem preencher o questionário:")]
+        [Description("Total esperado de Auxiliar Técnico da Educação que devem preencher o questionário:")]
         NumeroDeQuestionariosDeAuxiliarTecnicoEducacao_ParaPreencher = 93,
 
         [Description("Número de Auxiliar Técnico da Educação que preencheram o questionário:")]
@@ -217,7 +217,7 @@ namespace ProvaSP.Data
         [Description("Questionário de Auxiliar Técnico da Educação preenchido?")]
         QuestionarioAuxiliarTecnicoEducacaoPreenchido = 95,
 
-        [Description("Número de Agente Escolar - Merendeira que devem preencher o questionário:")]
+        [Description("Total esperado de Agente Escolar - Merendeira que devem preencher o questionário:")]
         NumeroDeQuestionariosDeAgenteEscolarMerendeira_ParaPreencher = 96,
 
         [Description("Número de Agente Escolar - Merendeira que preencheram o questionário:")]
@@ -226,7 +226,7 @@ namespace ProvaSP.Data
         [Description("Questionário de Agente Escolar - Merendeira preenchido?")]
         QuestionarioAgenteEscolarMerendeiraPreenchido = 98,
 
-        [Description("Número de Agente Escolar - Portaria que devem preencher o questionário:")]
+        [Description("Total esperado de Agente Escolar - Portaria que devem preencher o questionário:")]
         NumeroDeQuestionariosDeAgenteEscolarPortaria_ParaPreencher = 99,
 
         [Description("Número de Agente Escolar - Portaria que preencheram o questionário:")]
@@ -235,7 +235,7 @@ namespace ProvaSP.Data
         [Description("Questionário de Agente Escolar - Portaria preenchido?")]
         QuestionarioAgenteEscolarPortariaPreenchido = 101,
 
-        [Description("Número de Agente Escolar - Zeladoria que devem preencher o questionário:")]
+        [Description("Total esperado de Agente Escolar - Zeladoria que devem preencher o questionário:")]
         NumeroDeQuestionariosDeAgenteEscolarZeladoria_ParaPreencher = 102,
 
         [Description("Número de Agente Escolar - Zeladoria que preencheram o questionário:")]
