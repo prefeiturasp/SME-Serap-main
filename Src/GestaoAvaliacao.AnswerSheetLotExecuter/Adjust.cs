@@ -249,10 +249,10 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                         sqlQuery.AppendLine("		INNER JOIN SGP_ACA_TipoTurno tt");
                                         sqlQuery.AppendLine("			ON t.ttn_id = tt.ttn_id");
                                         sqlQuery.AppendLine("WHERE e.esc_codigo = @esc_codigo AND");
-                                        sqlQuery.AppendLine("	  t.tur_tipo = @tur_tipo AND");
-                                        sqlQuery.AppendLine("	  t.cal_id = @cal_id AND");
-                                        sqlQuery.AppendLine("	  tt.ttn_nome = @ttn_nome AND");
-                                        sqlQuery.AppendLine("	  t.tur_codigo = @tur_codigo");
+                                        sqlQuery.AppendLine("	   t.tur_tipo = @tur_tipo AND");
+                                        sqlQuery.AppendLine("	   t.cal_id = @cal_id AND");
+                                        sqlQuery.AppendLine("	   tt.ttn_nome = @ttn_nome AND");
+                                        sqlQuery.AppendLine("	   t.tur_codigo = @tur_codigo");
 
                                         idCalendarioAnual = ObterIdCalendario(dadosCompletosTurma.DescricaoTipoPeridiocidade, conGestaoAvaliacao, transactionGestaoAvaliacao);
 
@@ -280,16 +280,16 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                                 sqlQuery.Clear();
                                                 sqlQuery.AppendLine("DECLARE @tur_id BIGINT = (SELECT TOP 1 tur_id FROM TUR_Turma ORDER BY tur_id DESC) + 1");
                                                 sqlQuery.AppendLine("INSERT INTO TUR_Turma");
-                                                sqlQuery.AppendLine("SELECT @tur_id,");
-                                                sqlQuery.AppendLine("	    esc_id,");
-                                                sqlQuery.AppendLine("	    @tur_codigo,");
-                                                sqlQuery.AppendLine("	    NULL,");
-                                                sqlQuery.AppendLine("	    @cal_id,");
-                                                sqlQuery.AppendLine("	    tt.ttn_id,");
-                                                sqlQuery.AppendLine("	    1,");
-                                                sqlQuery.AppendLine("	    GETDATE(),");
-                                                sqlQuery.AppendLine("	    GETDATE(),");
-                                                sqlQuery.AppendLine("	    1");
+                                                sqlQuery.AppendLine("SELECT DISTINCT @tur_id,");
+                                                sqlQuery.AppendLine("	             esc_id,");
+                                                sqlQuery.AppendLine("	             @tur_codigo,");
+                                                sqlQuery.AppendLine("	             NULL,");
+                                                sqlQuery.AppendLine("	             @cal_id,");
+                                                sqlQuery.AppendLine("	             tt.ttn_id,");
+                                                sqlQuery.AppendLine("	             1,");
+                                                sqlQuery.AppendLine("	             GETDATE(),");
+                                                sqlQuery.AppendLine("	             GETDATE(),");
+                                                sqlQuery.AppendLine("	             1");
                                                 sqlQuery.AppendLine("	FROM ESC_Escola e,");
                                                 sqlQuery.AppendLine("		 ACA_TipoTurno tt");
                                                 sqlQuery.AppendLine("WHERE e.esc_codigo = @esc_codigo AND");
@@ -303,6 +303,14 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                                     commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@esc_codigo", dadosCompletosTurma.CodigoEscola.ToString().PadLeft(6, '0'));
                                                     commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@ttn_nome", dadosCompletosTurma.DescricaoTipoTurno.Trim());
                                                     tur_id = (long?)commandGestaoAvaliacaoSgp.ExecuteScalar();
+                                                }
+                                            }
+                                            else
+                                            {
+                                                using (var commandGestaoAvaliacaoSgp = new SqlCommand("UPDATE TUR_Turma SET tur_situacao = 1 WHERE tur_id = @tur_id", conGestaoAvaliacao_SGP, transactionGestaoAvaliacaoSgp))
+                                                {
+                                                    commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@tur_id", tur_id.Value);
+                                                    commandGestaoAvaliacaoSgp.ExecuteNonQuery();
                                                 }
                                             }
 
@@ -593,9 +601,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                             sqlQuery.AppendLine("				   FROM TUR_TurmaCurriculo");
                                             sqlQuery.AppendLine("				   WHERE tur_id = t.tur_id AND");
                                             sqlQuery.AppendLine("						 cur_id = @cur_id AND");
-                                            sqlQuery.AppendLine("						 crr_id = 1 AND");
-                                            sqlQuery.AppendLine("						 crp_id = @crp_id AND");
-                                            sqlQuery.AppendLine("						 tcp_id = @tcp_id)");
+                                            sqlQuery.AppendLine("						 crr_id = 1)");
 
                                             using (var commandGestaoAvaliacaoSgp = new SqlCommand(sqlQuery.ToString(), conGestaoAvaliacao_SGP, transactionGestaoAvaliacaoSgp))
                                             {
@@ -612,7 +618,16 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                         if (response.IsSuccessStatusCode)
                                         {
                                             var jsonAlunosString = await response.Content.ReadAsStringAsync();
-                                            var alunos = JsonConvert.DeserializeObject<Aluno[]>(jsonAlunosString);
+                                            var alunos = JsonConvert.DeserializeObject<Aluno[]>(jsonAlunosString)
+                                                .Where(a => !a.situacaoMatricula.Equals("Desistente", StringComparison.InvariantCultureIgnoreCase) &&
+                                                            !a.situacaoMatricula.Equals("Reclassificado Saída", StringComparison.InvariantCultureIgnoreCase) &&
+                                                            !a.situacaoMatricula.Equals("Vínculo Indevido", StringComparison.InvariantCultureIgnoreCase) &&
+                                                            !a.situacaoMatricula.Equals("Remanejado Saída", StringComparison.InvariantCultureIgnoreCase) &&
+                                                            !a.situacaoMatricula.Equals("Transferido", StringComparison.InvariantCultureIgnoreCase) &&
+                                                            !a.situacaoMatricula.Equals("Não Compareceu", StringComparison.InvariantCultureIgnoreCase) &&
+                                                            !a.situacaoMatricula.Equals("Deslocamento", StringComparison.InvariantCultureIgnoreCase))
+                                                .Distinct();
+
                                             if (alunos.Any())
                                             {
                                                 using (var connCoreSSO = new SqlConnection(Decrypt(ConfigurationManager.ConnectionStrings["CoreSSO"].ConnectionString)))
@@ -679,26 +694,30 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                                                 sqlQuery.AppendLine("	             NULL,");
                                                                 sqlQuery.AppendLine("	             @pes_id");
                                                                 sqlQuery.AppendLine("INSERT INTO MTR_MatriculaTurma");
-                                                                sqlQuery.AppendLine("SELECT DISTINCT @alu_id,");
-                                                                sqlQuery.AppendLine("                1,");
-                                                                sqlQuery.AppendLine("	             e.esc_id,");
-                                                                sqlQuery.AppendLine("	             t.tur_id,");
-                                                                sqlQuery.AppendLine("	             @cur_id,");
-                                                                sqlQuery.AppendLine("	             1,");
-                                                                sqlQuery.AppendLine("	             @crp_id,");
-                                                                sqlQuery.AppendLine("	             1,");
-                                                                sqlQuery.AppendLine("	             GETDATE(),");
-                                                                sqlQuery.AppendLine("	             GETDATE(),");
-                                                                sqlQuery.AppendLine("	             @mtu_numeroChamada,");
-                                                                sqlQuery.AppendLine("	             @mtu_dataMtricula,");
-                                                                sqlQuery.AppendLine("	             NULL,");
-                                                                sqlQuery.AppendLine("	             @tcp_id");
+                                                                sqlQuery.AppendLine("SELECT TOP 1 @alu_id,");
+                                                                sqlQuery.AppendLine("             1,");
+                                                                sqlQuery.AppendLine("	          e.esc_id,");
+                                                                sqlQuery.AppendLine("	          t.tur_id,");
+                                                                sqlQuery.AppendLine("	          @cur_id,");
+                                                                sqlQuery.AppendLine("	          1,");
+                                                                sqlQuery.AppendLine("	          tc.crp_id,");
+                                                                sqlQuery.AppendLine("	          1,");
+                                                                sqlQuery.AppendLine("	          GETDATE(),");
+                                                                sqlQuery.AppendLine("	          GETDATE(),");
+                                                                sqlQuery.AppendLine("	          @mtu_numeroChamada,");
+                                                                sqlQuery.AppendLine("	          @mtu_dataMtricula,");
+                                                                sqlQuery.AppendLine("	          NULL,");
+                                                                sqlQuery.AppendLine("	          tc.tcp_id");
                                                                 sqlQuery.AppendLine("FROM ESC_Escola e,");
-                                                                sqlQuery.AppendLine("     TUR_Turma t");
+                                                                sqlQuery.AppendLine("     TUR_Turma t,");
+                                                                sqlQuery.AppendLine("     TUR_TurmaCurriculo tc");
                                                                 sqlQuery.AppendLine("WHERE e.esc_codigo = @esc_codigo AND");
                                                                 sqlQuery.AppendLine("      t.tur_codigo = @tur_codigo AND");
+                                                                sqlQuery.AppendLine("      tc.cur_id = @cur_id AND");
                                                                 sqlQuery.AppendLine("      t.esc_id = e.esc_id AND");
+                                                                sqlQuery.AppendLine("      t.tur_id = tc.tur_id AND");
                                                                 sqlQuery.AppendLine("      t.cal_id = @cal_id");
+                                                                sqlQuery.AppendLine("ORDER BY t.tur_id");
 
                                                                 foreach (var alunoInclusao in alunosInclusao)
                                                                 {
@@ -767,14 +786,12 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_nome", alunoInclusao.nomeAluno);
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_matricula", alunoInclusao.codigoAluno);
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@pes_id", pes_id);
-                                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cur_id", cur_id);
-                                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@crp_id", dadosCompletosTurma.NumeroOrdemSerie);
+                                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cur_id", cur_id);                                                                        
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_numeroChamada", alunoInclusao.numeroChamada);
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_dataMtricula", dataMatricula);
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@esc_codigo", dadosCompletosTurma.CodigoEscola.ToString().PadLeft(6, '0'));
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@tur_codigo", string.Concat("EJA-", dadosCompletosTurma.DescricaoTurma));
-                                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cal_id", idCalendarioAnual);
-                                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@tcp_id", tcp_id.Value);
+                                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cal_id", idCalendarioAnual);                                                                        
                                                                         commandGestaoAvaliacaoSgp.ExecuteNonQuery();
                                                                     }
                                                                 }
@@ -792,6 +809,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                                             {
                                                                 transaction.Rollback();
                                                                 MessageBox.Show(string.Concat("Erro: ", ex.Message));
+                                                                throw;
                                                             }
                                                         }
                                                     }
@@ -842,9 +860,9 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
             sqlQuery.AppendLine("WHERE cal_ano = @cal_ano AND");
             sqlQuery.AppendLine("      cal_descricao LIKE '%EJA%' AND");
 
-            if (descricaoTipoPeridiocidade.Contains("SEMESTRAL") && descricaoTipoPeridiocidade.Contains("1° SEMESTRE"))
+            if (descricaoTipoPeridiocidade.Contains("SEMESTRAL") && descricaoTipoPeridiocidade.Contains("1º SEMESTRE"))
                 sqlQuery.AppendLine("cal_descricao LIKE '%1° Semestre%'");
-            else if (descricaoTipoPeridiocidade.Contains("SEMESTRAL") && descricaoTipoPeridiocidade.Contains("2° SEMESTRE"))
+            else if (descricaoTipoPeridiocidade.Contains("SEMESTRAL") && descricaoTipoPeridiocidade.Contains("2º SEMESTRE"))
                 sqlQuery.AppendLine("cal_descricao LIKE '%2° Semestre%'");
             else
             {

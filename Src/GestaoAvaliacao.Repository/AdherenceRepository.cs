@@ -31,9 +31,9 @@ namespace GestaoAvaliacao.Repository
             tabelas.AppendLine("INNER JOIN AdministrativeUnitType AS AUT WITH(NOLOCK) ON AUT.AdministrativeUnitTypeId = e.tua_id AND AUT.State = @state ");
             tabelas.AppendLine("INNER JOIN SGP_SYS_UnidadeAdministrativa uad WITH (NOLOCK) ON e.uad_idSuperiorGestao = uad.uad_id  AND uad.uad_situacao = @state ");
 			tabelas.AppendLine("INNER JOIN (SELECT DISTINCT tur.esc_id ");
-			tabelas.AppendLine("FROM SGP_TUR_Turma tur WITH (NOLOCK) ");
+			tabelas.AppendLine("FROM SGP_TUR_Turma tur WITH (NOLOCK) ");            
 
-			if (pes_id.HasValue)
+            if (pes_id.HasValue)
 			{
 				tabelas.AppendLine("INNER JOIN ( SELECT DISTINCT (tud.tur_id) FROM SGP_TUR_TurmaDisciplina tud WITH (NOLOCK) ");
 				tabelas.AppendLine("INNER JOIN SGP_TUR_TurmaDocente tdt WITH (NOLOCK) ON tdt.tud_id = tud.tud_id ");
@@ -42,17 +42,42 @@ namespace GestaoAvaliacao.Repository
 				tabelas.Append("AS tud ON tud.tur_id = tur.tur_id ");
 			}
 
-			tabelas.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON tur.tur_id = ttcp.tur_id AND ttcp.tur_id = tur.tur_id AND ttcp.ttcr_situacao = @state ");
-			tabelas.AppendLine("INNER JOIN SGP_ACA_TipoCurriculoPeriodo tcg WITH (NOLOCK) ON tcg.tcp_ordem = ttcp.crp_ordem AND tcg.tme_id = ttcp.tme_id AND tcg.tne_id = ttcp.tne_id  ");
-			tabelas.AppendLine("INNER JOIN TestTypeCourse ttc WITH (NOLOCK) ON ttc.CourseId = ttcp.cur_id AND TestType_Id = @testType AND ttc.State = @state ");
-			tabelas.AppendLine("INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) ON tcc.TypeCurriculumGradeId = tcg.tcp_id AND tcc.State = @state AND tcc.Test_Id = @test_id ");
+            tabelas.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp (nolock)");
+            tabelas.AppendLine("		       ON tur.tur_id = ttcp.tur_id AND");
+            tabelas.AppendLine("				  ttcp.ttcr_situacao = @state");
+            tabelas.AppendLine("	   INNER JOIN SGP_TUR_TurmaCurriculo tc (nolock)");
+            tabelas.AppendLine("			   ON ttcp.tur_id = tc.tur_id AND");
+            tabelas.AppendLine("				  ttcp.crp_ordem = tc.crp_id AND");
+            tabelas.AppendLine("				  tc.tcr_situacao = @state");
+            tabelas.AppendLine("       INNER JOIN sgp_aca_tipocurriculoperiodo tcg (nolock)");
+            tabelas.AppendLine("               ON tcg.tcp_id = tc.tcp_id AND tc.tcr_situacao = @state");
+            tabelas.AppendLine("       INNER JOIN testtypecourse ttc (nolock)");
+            tabelas.AppendLine("	           ON tc.cur_id = ttc.CourseId AND");
+            tabelas.AppendLine("				  testtype_id = @testType AND");
+            tabelas.AppendLine("				  ttc.state = @state");
+            tabelas.AppendLine("       INNER JOIN sgp_aca_curso cur (nolock)");
+            tabelas.AppendLine("               ON cur.cur_id = tc.cur_id AND");
+            tabelas.AppendLine("				  ttcp.tme_id = cur.tme_id");            
+            tabelas.AppendLine("       INNER JOIN sgp_aca_curriculoperiodo crp (nolock)");
+            tabelas.AppendLine("               ON crp.cur_id = cur.cur_id AND");
+            tabelas.AppendLine("				  crp.crp_ordem = tcg.tcp_ordem AND");
+            tabelas.AppendLine("				  crp.tcp_id = tcg.tcp_id");
+            tabelas.AppendLine("       INNER JOIN testcurriculumgrade tcc (nolock)");
+            tabelas.AppendLine("               ON tcc.typecurriculumgradeid = tcg.tcp_id AND");
+            tabelas.AppendLine("				  tcc.state = @state AND");
+            tabelas.AppendLine("				  tcc.test_id = @test_id");
+            tabelas.AppendLine("	   INNER JOIN [Test] t (nolock)");
+            tabelas.AppendLine("			   ON tcc.Test_Id = t.Id AND");
+            tabelas.AppendLine("				  t.[State] = @state");
+            tabelas.AppendLine("	   INNER JOIN SGP_ACA_CalendarioAnual ca (nolock)");
+            tabelas.AppendLine("			   ON tur.cal_id = ca.cal_id AND");
+            tabelas.AppendLine("				  ca.cal_situacao = @state");
 
+            tabelas.AppendLine("WHERE tur.tur_situacao = @state AND");
+            tabelas.AppendLine("      YEAR(t.ApplicationStartDate) = ca.cal_ano AND");
+            tabelas.AppendLine("      CONVERT(DATE, t.ApplicationStartDate) < CONVERT(DATE, ca.cal_dataFim)");
 
-
-
-			tabelas.AppendLine("WHERE tur.tur_situacao = @state ");
-
-			if (crp_ordem > 0)
+            if (crp_ordem > 0)
 				tabelas.AppendLine("AND ttcp.crp_ordem = @crp_ordem ");
 
 			if (esc_id > 0)
@@ -474,7 +499,7 @@ namespace GestaoAvaliacao.Repository
         public IEnumerable<AdherenceGrid> LoadSectionGrid(int esc_id, long test_id, long TestType_Id, bool AllAdhered, int ttn_id = 0, int crp_ordem = 0, Guid? pes_id = null, Guid? ent_id = null)
         {
             #region Query
-            var sql = new StringBuilder(string.Format("SELECT tur.tur_id AS esc_id, tur.tur_codigo AS esc_nome, ' (' + tcg.tcp_descricao + ' - ' + ttn.ttn_nome + ' - ' + cur.cur_nome +') '  AS uad_nome, ISNULL(a.TypeSelection, {0}) AS TypeSelection ",
+            var sql = new StringBuilder(string.Format("SELECT DISTINCT tur.tur_id AS esc_id, tur.tur_codigo AS esc_nome, ' (' + tcg.tcp_descricao + ' - ' + ttn.ttn_nome + ' - ' + cur.cur_nome +') '  AS uad_nome, ISNULL(a.TypeSelection, {0}) AS TypeSelection ",
                 AllAdhered ? (byte)EnumAdherenceSelection.Selected : (byte)EnumAdherenceSelection.NotSelected));
 
 			sql.Append(this.GetSectionsDisponibleTestQuery(ttn_id, crp_ordem, pes_id));
@@ -576,16 +601,43 @@ namespace GestaoAvaliacao.Repository
 
 		private string GetSectionsDisponibleTestQuery(int ttn_id, int crp_ordem, Guid? pes_id)
 		{
-			var sql = new StringBuilder("FROM SGP_TUR_Turma tur WITH (NOLOCK) ");
-			sql.AppendLine("INNER JOIN SGP_ACA_TipoTurno ttn WITH (NOLOCK) ON ttn.ttn_id = tur.ttn_id ");
-			sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON tur.tur_id = ttcp.tur_id AND ttcp.tur_id = tur.tur_id AND ttcp.ttcr_situacao = @state ");
-			sql.AppendLine("INNER JOIN SGP_ACA_TipoCurriculoPeriodo tcg WITH (NOLOCK) ON tcg.tcp_ordem = ttcp.crp_ordem AND tcg.tme_id = ttcp.tme_id AND tcg.tne_id = ttcp.tne_id ");
-			sql.AppendLine("INNER JOIN TestTypeCourse ttc WITH (NOLOCK) ON ttc.CourseId = ttcp.cur_id AND TestType_Id = @testType AND ttc.State = @state ");
-			sql.AppendLine("INNER JOIN SGP_ACA_Curso cur WITH (NOLOCK) ON cur.cur_id = ttc.CourseId ");
-			sql.AppendLine("INNER JOIN SGP_ACA_CurriculoPeriodo crp WITH(NOLOCK) ON crp.cur_id = cur.cur_id AND crp.crp_ordem = ttcp.crp_ordem AND crp.tcp_id = tcg.tcp_id ");
-			sql.AppendLine("INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) ON tcc.TypeCurriculumGradeId = tcg.tcp_id AND tcc.State = @state AND tcc.Test_Id = @test_id ");
+            var sql = new StringBuilder();
+            sql.AppendLine("FROM   sgp_tur_turma tur (nolock)");
+            sql.AppendLine("    INNER JOIN sgp_aca_tipoturno ttn (nolock)");
+            sql.AppendLine("        ON ttn.ttn_id = tur.ttn_id");
+            sql.AppendLine("    INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp (nolock)");
+            sql.AppendLine("        ON tur.tur_id = ttcp.tur_id AND");
+            sql.AppendLine("           ttcp.ttcr_situacao = @state");
+            sql.AppendLine("    INNER JOIN SGP_TUR_TurmaCurriculo tc (nolock)");
+            sql.AppendLine("        ON ttcp.tur_id = tc.tur_id AND");
+            sql.AppendLine("           ttcp.crp_ordem = tc.crp_id AND");
+            sql.AppendLine("           tc.tcr_situacao = @state");
+            sql.AppendLine("    INNER JOIN sgp_aca_tipocurriculoperiodo tcg (nolock)");
+            sql.AppendLine("        ON tcg.tcp_id = tc.tcp_id AND");
+            sql.AppendLine("           tc.tcr_situacao = @state");
+            sql.AppendLine("    INNER JOIN testtypecourse ttc (nolock)");
+            sql.AppendLine("        ON tc.cur_id = ttc.CourseId AND");
+            sql.AppendLine("           testtype_id = @testType AND");
+            sql.AppendLine("           ttc.state = @state");
+            sql.AppendLine("    INNER JOIN sgp_aca_curso cur (nolock)");
+            sql.AppendLine("        ON cur.cur_id = tc.cur_id AND");
+            sql.AppendLine("           ttcp.tme_id = cur.tme_id");            
+            sql.AppendLine("    INNER JOIN sgp_aca_curriculoperiodo crp (nolock)");
+            sql.AppendLine("        ON crp.cur_id = cur.cur_id AND");
+            sql.AppendLine("           crp.crp_ordem = tcg.tcp_ordem AND");
+            sql.AppendLine("           crp.tcp_id = tcg.tcp_id");
+            sql.AppendLine("    INNER JOIN testcurriculumgrade tcc (nolock)");
+            sql.AppendLine("        ON tcc.typecurriculumgradeid = tcg.tcp_id AND");
+            sql.AppendLine("           tcc.state = @state AND");
+            sql.AppendLine("           tcc.test_id = @test_id");
+            sql.AppendLine("    INNER JOIN [Test] t (nolock)");
+            sql.AppendLine("        ON tcc.Test_Id = t.Id AND");
+            sql.AppendLine("           t.[State] = @state");
+            sql.AppendLine("    INNER JOIN SGP_ACA_CalendarioAnual ca (nolock)");
+            sql.AppendLine("        ON tur.cal_id = ca.cal_id AND");
+            sql.AppendLine("           ca.cal_situacao = @state");            
 
-			if (pes_id.HasValue)
+            if (pes_id.HasValue)
 			{
 				sql.AppendLine("INNER JOIN ( SELECT DISTINCT (tud.tur_id) FROM SGP_TUR_TurmaDisciplina tud WITH (NOLOCK) ");
 				sql.AppendLine("INNER JOIN SGP_TUR_TurmaDocente tdt WITH (NOLOCK) ON tdt.tud_id = tud.tud_id ");
@@ -596,9 +648,12 @@ namespace GestaoAvaliacao.Repository
 
 			sql.AppendLine("LEFT JOIN Adherence a WITH (NOLOCK) ON a.EntityId = tur.tur_id AND a.TypeEntity = @typeEntity AND a.Test_Id = tcc.Test_Id ");
 
-			sql.Append("WHERE tur.esc_id = @esc_id AND tur.tur_situacao = @state ");
+			sql.AppendLine("WHERE tur.esc_id = @esc_id AND");
+            sql.AppendLine("      tur.tur_situacao = @state AND");
+            sql.AppendLine("      YEAR(t.ApplicationStartDate) = ca.cal_ano AND");
+            sql.AppendLine("      CONVERT(DATE, t.ApplicationStartDate) < CONVERT(DATE, ca.cal_dataFim)");
 
-			if (ttn_id > 0)
+            if (ttn_id > 0)
 				sql.AppendLine("AND tur.ttn_id = @ttn_id ");
 
 			if (crp_ordem > 0)
