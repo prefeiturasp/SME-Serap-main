@@ -465,6 +465,90 @@ Importação de DIRETORES
 			ROLLBACK
 		END CATCH
 		--FIM DIRETORES
+		
+/*
+Importação de SUPERVISORES
+*/
+		BEGIN TRY
+
+			PRINT('Importação de SUPERVISORES')
+			PRINT(CONVERT( VARCHAR(24), GETDATE(), 121))
+			BEGIN TRAN;
+
+			WITH supervisor_prova_sp AS 
+			(
+				SELECT DISTINCT @Edicao Edicao,
+							u.usu_id,
+							0 esc_codigo,
+							1 PerfilID, -- Supervisor
+							MIN(ua.uad_sigla) uad_sigla,
+							null esc_nome,
+							p.pes_nome,
+							u.usu_login
+					FROM CoreSSO.dbo.SYS_Usuario u
+						INNER JOIN CoreSSO.dbo.PES_Pessoa p						ON u.pes_id = p.pes_id
+						INNER JOIN CoreSSO.dbo.SYS_UsuarioGrupo ug				ON u.usu_id = ug.usu_id
+						INNER JOIN CoreSSO.dbo.SYS_UsuarioGrupoUA ugUA			ON ugUA.gru_id = ug.gru_id AND ugUA.usu_ID = u.usu_id
+						INNER JOIN GestaoAvaliacao_SGP.dbo.SYS_UnidadeAdministrativa ua ON ugUA.uad_id = ua.uad_id
+						LEFT JOIN ProvaSP.dbo.PessoaPerfil pf					ON pf.Edicao = @Edicao AND pf.PerfilID = 1 AND pf.usu_id = u.usu_id
+					WHERE ug.gru_id = '66C70452-1A1E-E811-B259-782BCB3D2D76' --Supervisor
+						AND ug.usg_situacao = 1
+						AND u.usu_situacao = 1
+						AND ua.uad_situacao = 1
+						AND pf.usu_id IS NULL
+					GROUP BY u.usu_id,
+							p.pes_nome,
+							u.usu_login
+			)
+
+			SELECT Edicao,
+				   usu_id,
+				   esc_codigo,
+				   PerfilID,
+				   uad_sigla,	   
+				   esc_nome,
+				   pes_nome,
+				   usu_login
+			INTO #PessoasPerfilSupervisor
+			FROM supervisor_prova_sp
+			ORDER BY usu_id
+
+			SELECT DISTINCT pp.usu_id,
+							pp.pes_nome,
+							pp.usu_login
+			INTO #PessoasSupervisor
+			FROM #PessoasPerfilSupervisor pp
+				LEFT JOIN Pessoa p
+					ON pp.usu_id = p.usu_id
+			WHERE p.usu_id IS NULL
+
+			INSERT INTO Pessoa
+			SELECT usu_id,
+				   pes_nome,
+				   usu_login
+			FROM #PessoasSupervisor
+
+			INSERT INTO PessoaPerfil
+			SELECT Edicao,
+				   usu_id,
+				   esc_codigo,
+				   PerfilID,
+				   uad_sigla
+			FROM #PessoasPerfilSupervisor
+
+			IF OBJECT_ID('tempdb..#PessoasPerfilSupervisor') IS NOT NULL
+				DROP TABLE #PessoasPerfilSupervisor
+
+			IF OBJECT_ID('tempdb..#PessoasSupervisor') IS NOT NULL
+				DROP TABLE #PessoasSupervisor
+
+			COMMIT--ROLLBACK
+		END TRY
+		BEGIN CATCH
+			PRINT (ERROR_MESSAGE());
+			ROLLBACK
+		END CATCH
+		--FIM SUPERVISOR
 
 /*
 Faz o vínculo de Diretores, Assistentes e Professores às escolas
