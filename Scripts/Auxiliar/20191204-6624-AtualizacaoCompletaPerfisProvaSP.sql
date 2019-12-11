@@ -160,7 +160,7 @@ Importação de PROFESSORES
 				--INNER JOIN GestaoPedagogica.dbo.ESC_TipoClassificacaoEscola tce ON ec.tce_id = tce.tce_id
 				INNER JOIN CoreSSO.dbo.PES_Pessoa p
 					ON u.pes_id = p.pes_id
-			WHERE pf.Edicao = '2019' AND 
+			WHERE pf.Edicao = @Edicao AND 
 				pf.PerfilID = 4 AND
 				(d.doc_situacao <> 1 OR
 				e.esc_situacao <> 1 OR
@@ -309,7 +309,7 @@ Importação de ASSISTENTE DE DIRETORES
 				LEFT JOIN GestaoAvaliacao_SGP.dbo.SYS_UnidadeAdministrativa ua ON e.uad_idSuperiorGestao = ua.uad_id
 				LEFT JOIN GestaoPedagogica.dbo.ESC_EscolaClassificacao ec ON e.esc_id = ec.esc_id
 				LEFT JOIN GestaoPedagogica.dbo.ESC_TipoClassificacaoEscola tce ON ec.tce_id = tce.tce_id --AND tce.tce_nome IN ('EMEF', 'EMEFM', 'EMEBS', 'CEU EMEF')
-			WHERE pf.Edicao = '2019'
+			WHERE pf.Edicao = @Edicao
 				AND pf.PerfilID = 2
 				AND (ug.usg_situacao IS NULL OR 
 					  ug.usg_situacao <> 1 OR
@@ -455,7 +455,7 @@ Importação de DIRETORES
 				LEFT JOIN GestaoAvaliacao_SGP.dbo.SYS_UnidadeAdministrativa ua ON e.uad_idSuperiorGestao = ua.uad_id
 				LEFT JOIN GestaoPedagogica.dbo.ESC_EscolaClassificacao ec ON e.esc_id = ec.esc_id
 				LEFT JOIN GestaoPedagogica.dbo.ESC_TipoClassificacaoEscola tce ON ec.tce_id = tce.tce_id --AND tce.tce_nome IN ('EMEF', 'EMEFM', 'EMEBS', 'CEU EMEF')
-			WHERE pf.Edicao = '2019'
+			WHERE pf.Edicao = @Edicao
 				AND pf.PerfilID = 2
 				AND (ug.usg_situacao IS NULL OR 
 					  ug.usg_situacao <> 1 OR
@@ -1181,7 +1181,7 @@ Recalcula a quantidade de profissionais que responderam os questionários e os t
 				COUNT(1) Valor
 			FROM QuestionarioUsuario qu
 			WHERE qu.Edicao=@Edicao
-			  AND qu.QuestionarioID IN (21,22,23,24,25)--2019
+			  AND qu.QuestionarioID IN (21,22,23,24,25)--2k19
 			  AND esc_codigo is not null
 			GROUP BY qu.esc_codigo,
 				qu.QuestionarioID
