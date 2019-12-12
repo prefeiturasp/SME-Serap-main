@@ -140,6 +140,31 @@ Importação de PROFESSORES
 			PRINT('Importação de PROFESSORES')
 			PRINT(CONVERT( VARCHAR(24), GETDATE(), 121))
 			BEGIN TRAN;
+			
+			DELETE pf
+			--SELECT DISTINCT u.usu_id, p.pes_nome, u.usu_login, d.doc_situacao, e.esc_situacao, u.usu_situacao
+			FROM ProvaSP.dbo.PessoaPerfil pf
+				INNER JOIN CoreSSO.dbo.SYS_Usuario u ON pf.usu_id = u.usu_id
+				INNER JOIN GestaoAvaliacao_SGP.dbo.ACA_Docente d
+					ON u.pes_id = d.pes_id
+				INNER JOIN GestaoAvaliacao_SGP.dbo.TUR_TurmaDocente td
+					ON d.doc_id = td.doc_id
+				INNER JOIN GestaoAvaliacao_SGP.dbo.TUR_TurmaDisciplina tud
+					ON td.tud_id = tud.tud_id
+				INNER JOIN GestaoAvaliacao_SGP.dbo.TUR_Turma t
+					ON tud.tur_id = t.tur_id
+				INNER JOIN GestaoAvaliacao.dbo.SGP_ESC_Escola e
+					ON t.esc_id = e.esc_id
+				--INNER JOIN GestaoAvaliacao_SGP.dbo.SYS_UnidadeAdministrativa ua ON e.uad_idSuperiorGestao = ua.uad_id
+				--INNER JOIN GestaoPedagogica.dbo.ESC_EscolaClassificacao ec ON e.esc_id = ec.esc_id
+				--INNER JOIN GestaoPedagogica.dbo.ESC_TipoClassificacaoEscola tce ON ec.tce_id = tce.tce_id
+				INNER JOIN CoreSSO.dbo.PES_Pessoa p
+					ON u.pes_id = p.pes_id
+			WHERE pf.Edicao = @Edicao AND 
+				pf.PerfilID = 4 AND
+				(d.doc_situacao <> 1 OR
+				e.esc_situacao <> 1 OR
+				u.usu_situacao <> 1);
 
 			WITH professores_prova_sp AS 
 			(
@@ -256,6 +281,43 @@ Importação de ASSISTENTE DE DIRETORES
 			PRINT('Importação de ASSIST. DIRETORES')
 			PRINT(CONVERT( VARCHAR(24), GETDATE(), 121))
 			BEGIN TRAN;
+			
+			--Remove os assistente de diretores que não tem mais vínculo com escola
+			DELETE pf
+			--SELECT DISTINCT u.usu_id, e.esc_codigo, ua.uad_sigla, e.esc_nome, p.pes_nome, u.usu_login, ug.usg_situacao, u.usu_situacao, cc.coc_vigenciaFim,  cc.coc_situacao, aap.Valor
+			FROM ProvaSP.dbo.PessoaPerfil pf
+				INNER JOIN ProvaSP.dbo.AcompanhamentoAplicacaoPessoa aap
+					ON aap.Edicao = pf.Edicao AND 
+						aap.PerfilID = pf.PerfilID AND 
+						aap.usu_id = pf.usu_id AND
+						aap.esc_codigo = pf.esc_codigo AND
+						aap.AtributoID = 83 AND --QuestionarioAssistenteDiretoriaPreenchido
+						aap.Valor IN ('0', '1')
+				INNER JOIN CoreSSO.dbo.SYS_Usuario u ON pf.usu_id = u.usu_id
+				INNER JOIN CoreSSO.dbo.PES_Pessoa p	ON u.pes_id = p.pes_id
+				LEFT JOIN CoreSSO.dbo.SYS_UsuarioGrupo ug
+					ON u.usu_id = ug.usu_id
+						AND ug.gru_id = 'ECF7A20D-1A1E-E811-B259-782BCB3D2D76' --Assistente Diretor
+				LEFT JOIN GestaoPedagogica.dbo.RHU_Colaborador c ON p.pes_id = c.pes_id AND c.col_situacao = 1
+				LEFT JOIN GestaoPedagogica.dbo.RHU_ColaboradorCargo cc 
+					ON c.col_id = cc.col_id AND
+						cc.coc_vigenciaInicio <= getDate() AND
+						(cc.coc_vigenciaFim IS NULL OR cc.coc_vigenciaFim > getDate()) AND
+						cc.coc_situacao = 1 AND
+						crg_id in (75, 76, 304)-- Assistente de Diretor
+				LEFT JOIN GestaoPedagogica.dbo.ESC_Escola e	ON e.uad_id = cc.uad_id --AND e.esc_codigo = pf.esc_codigo
+				LEFT JOIN GestaoAvaliacao_SGP.dbo.SYS_UnidadeAdministrativa ua ON e.uad_idSuperiorGestao = ua.uad_id
+				LEFT JOIN GestaoPedagogica.dbo.ESC_EscolaClassificacao ec ON e.esc_id = ec.esc_id
+				LEFT JOIN GestaoPedagogica.dbo.ESC_TipoClassificacaoEscola tce ON ec.tce_id = tce.tce_id --AND tce.tce_nome IN ('EMEF', 'EMEFM', 'EMEBS', 'CEU EMEF')
+			WHERE pf.Edicao = @Edicao
+				AND pf.PerfilID = 2
+				AND (ug.usg_situacao IS NULL OR 
+					  ug.usg_situacao <> 1 OR
+					  u.usu_situacao <> 1 OR
+					  cc.coc_id IS NULL
+					  --OR (e.esc_codigo <> pf.esc_codigo OR tce.tce_nome NOT IN ('EMEF', 'EMEFM', 'EMEBS', 'CEU EMEF'))
+					);
+					
 
 			WITH assistenteDir_prova_sp AS 
 			(
@@ -365,6 +427,43 @@ Importação de DIRETORES
 			PRINT('Importação de DIRETORES')
 			PRINT(CONVERT( VARCHAR(24), GETDATE(), 121))
 			BEGIN TRAN;
+			
+			--Remove os diretores que não tem mais vínculo com escola
+			DELETE pf
+			--SELECT DISTINCT u.usu_id, e.esc_codigo, ua.uad_sigla, e.esc_nome, p.pes_nome, u.usu_login, ug.usg_situacao, u.usu_situacao, cc.coc_vigenciaFim,  cc.coc_situacao, aap.Valor
+			FROM ProvaSP.dbo.PessoaPerfil pf
+				INNER JOIN ProvaSP.dbo.AcompanhamentoAplicacaoPessoa aap
+					ON aap.Edicao = pf.Edicao AND 
+						aap.PerfilID = pf.PerfilID AND 
+						aap.usu_id = pf.usu_id AND
+						aap.esc_codigo = pf.esc_codigo AND
+						aap.AtributoID = 30 AND --Diretor preenchido
+						aap.Valor IN ('0', '1')
+				INNER JOIN CoreSSO.dbo.SYS_Usuario u ON pf.usu_id = u.usu_id
+				INNER JOIN CoreSSO.dbo.PES_Pessoa p	ON u.pes_id = p.pes_id
+				LEFT JOIN CoreSSO.dbo.SYS_UsuarioGrupo ug
+					ON u.usu_id = ug.usu_id
+						AND ug.gru_id = '75DCAB30-2C1E-E811-B259-782BCB3D2D76' --Diretor
+				LEFT JOIN GestaoPedagogica.dbo.RHU_Colaborador c ON p.pes_id = c.pes_id AND c.col_situacao = 1
+				LEFT JOIN GestaoPedagogica.dbo.RHU_ColaboradorCargo cc 
+					ON c.col_id = cc.col_id AND
+						cc.coc_vigenciaInicio <= getDate() AND
+						(cc.coc_vigenciaFim IS NULL OR cc.coc_vigenciaFim > getDate()) AND
+						cc.coc_situacao = 1 AND
+						cc.crg_id in (316, 115) -- Diretor 
+				LEFT JOIN GestaoPedagogica.dbo.ESC_Escola e	ON e.uad_id = cc.uad_id --AND e.esc_codigo = pf.esc_codigo
+				LEFT JOIN GestaoAvaliacao_SGP.dbo.SYS_UnidadeAdministrativa ua ON e.uad_idSuperiorGestao = ua.uad_id
+				LEFT JOIN GestaoPedagogica.dbo.ESC_EscolaClassificacao ec ON e.esc_id = ec.esc_id
+				LEFT JOIN GestaoPedagogica.dbo.ESC_TipoClassificacaoEscola tce ON ec.tce_id = tce.tce_id --AND tce.tce_nome IN ('EMEF', 'EMEFM', 'EMEBS', 'CEU EMEF')
+			WHERE pf.Edicao = @Edicao
+				AND pf.PerfilID = 2
+				AND (ug.usg_situacao IS NULL OR 
+					  ug.usg_situacao <> 1 OR
+					  u.usu_situacao <> 1 OR
+					  cc.coc_id IS NULL
+					  --(e.esc_codigo <> pf.esc_codigo OR tce.tce_nome NOT IN ('EMEF', 'EMEFM', 'EMEBS', 'CEU EMEF'))
+					);
+			
 
 			WITH diretores_prova_sp AS 
 			(
@@ -465,6 +564,90 @@ Importação de DIRETORES
 			ROLLBACK
 		END CATCH
 		--FIM DIRETORES
+		
+/*
+Importação de SUPERVISORES
+*/
+		BEGIN TRY
+
+			PRINT('Importação de SUPERVISORES')
+			PRINT(CONVERT( VARCHAR(24), GETDATE(), 121))
+			BEGIN TRAN;
+
+			WITH supervisor_prova_sp AS 
+			(
+				SELECT DISTINCT @Edicao Edicao,
+							u.usu_id,
+							0 esc_codigo,
+							1 PerfilID, -- Supervisor
+							MIN(ua.uad_sigla) uad_sigla,
+							null esc_nome,
+							p.pes_nome,
+							u.usu_login
+					FROM CoreSSO.dbo.SYS_Usuario u
+						INNER JOIN CoreSSO.dbo.PES_Pessoa p						ON u.pes_id = p.pes_id
+						INNER JOIN CoreSSO.dbo.SYS_UsuarioGrupo ug				ON u.usu_id = ug.usu_id
+						INNER JOIN CoreSSO.dbo.SYS_UsuarioGrupoUA ugUA			ON ugUA.gru_id = ug.gru_id AND ugUA.usu_ID = u.usu_id
+						INNER JOIN GestaoAvaliacao_SGP.dbo.SYS_UnidadeAdministrativa ua ON ugUA.uad_id = ua.uad_id
+						LEFT JOIN ProvaSP.dbo.PessoaPerfil pf					ON pf.Edicao = @Edicao AND pf.PerfilID = 1 AND pf.usu_id = u.usu_id
+					WHERE ug.gru_id = '66C70452-1A1E-E811-B259-782BCB3D2D76' --Supervisor
+						AND ug.usg_situacao = 1
+						AND u.usu_situacao = 1
+						AND ua.uad_situacao = 1
+						AND pf.usu_id IS NULL
+					GROUP BY u.usu_id,
+							p.pes_nome,
+							u.usu_login
+			)
+
+			SELECT Edicao,
+				   usu_id,
+				   esc_codigo,
+				   PerfilID,
+				   uad_sigla,	   
+				   esc_nome,
+				   pes_nome,
+				   usu_login
+			INTO #PessoasPerfilSupervisor
+			FROM supervisor_prova_sp
+			ORDER BY usu_id
+
+			SELECT DISTINCT pp.usu_id,
+							pp.pes_nome,
+							pp.usu_login
+			INTO #PessoasSupervisor
+			FROM #PessoasPerfilSupervisor pp
+				LEFT JOIN Pessoa p
+					ON pp.usu_id = p.usu_id
+			WHERE p.usu_id IS NULL
+
+			INSERT INTO Pessoa
+			SELECT usu_id,
+				   pes_nome,
+				   usu_login
+			FROM #PessoasSupervisor
+
+			INSERT INTO PessoaPerfil
+			SELECT Edicao,
+				   usu_id,
+				   esc_codigo,
+				   PerfilID,
+				   uad_sigla
+			FROM #PessoasPerfilSupervisor
+
+			IF OBJECT_ID('tempdb..#PessoasPerfilSupervisor') IS NOT NULL
+				DROP TABLE #PessoasPerfilSupervisor
+
+			IF OBJECT_ID('tempdb..#PessoasSupervisor') IS NOT NULL
+				DROP TABLE #PessoasSupervisor
+
+			COMMIT--ROLLBACK
+		END TRY
+		BEGIN CATCH
+			PRINT (ERROR_MESSAGE());
+			ROLLBACK
+		END CATCH
+		--FIM SUPERVISOR
 
 /*
 Faz o vínculo de Diretores, Assistentes e Professores às escolas
@@ -651,9 +834,36 @@ Recalcula a quantidade de profissionais que responderam os questionários e os t
 */
 		BEGIN TRY
 
-			PRINT('Criar vínculos de questionários para acompanhamentos')
+			PRINT('Ajustes de vínculos com perfis e questionários')
 			PRINT(CONVERT( VARCHAR(24), GETDATE(), 121))
 			BEGIN TRAN;
+
+			UPDATE qu SET qu.esc_codigo = '0'
+			--select * 
+			from QuestionarioUsuario qu
+			  LEFT JOIN PessoaPerfil pf ON pf.Edicao = qu.Edicao AND pf.usu_id = qu.usu_id AND pf.PerfilID = 4
+			WHERE qu.Edicao = @Edicao AND
+			  qu.QuestionarioID = 23 AND
+			  pf.usu_id IS NULL AND
+			  (qu.esc_codigo IS NULL OR qu.esc_codigo <> '0')
+
+			UPDATE qu SET qu.esc_codigo = '0'
+			--select * 
+			from QuestionarioUsuario qu
+			  LEFT JOIN PessoaPerfil pf ON pf.Edicao = qu.Edicao AND pf.usu_id = qu.usu_id AND pf.PerfilID = 2
+			WHERE qu.Edicao = @Edicao AND
+			  qu.QuestionarioID = 24 AND
+			  pf.usu_id IS NULL AND
+			  (qu.esc_codigo IS NULL OR qu.esc_codigo <> '0')
+
+			UPDATE qu SET qu.esc_codigo = '0'
+			--select * 
+			from QuestionarioUsuario qu
+			  LEFT JOIN PessoaPerfil pf ON pf.Edicao = qu.Edicao AND pf.usu_id = qu.usu_id AND pf.PerfilID = 2
+			WHERE qu.Edicao = @Edicao AND
+			  qu.QuestionarioID = 25 AND
+			  pf.usu_id IS NULL AND
+			  (qu.esc_codigo IS NULL OR qu.esc_codigo <> '0')
 			
 			UPDATE qu SET
 				qu.esc_codigo = pf.esc_codigo
@@ -776,7 +986,20 @@ Recalcula a quantidade de profissionais que responderam os questionários e os t
 			  AND aap.AtributoID = 83 --QuestionarioAssistenteDiretoriaPreenchido
 			  AND qu.usu_id IS NULL
 			  AND pf.usu_id IS NULL
+	  
+			COMMIT--ROLLBACK
+		END TRY
+		BEGIN CATCH
+			PRINT (ERROR_MESSAGE());
+			ROLLBACK
+		END CATCH
+		--Fim de ajustes para os cálculos
 
+		BEGIN TRY
+
+			PRINT('Criar vínculos de questionários para acompanhamentos')
+			PRINT(CONVERT( VARCHAR(24), GETDATE(), 121))
+			BEGIN TRAN;
 
 			/*
 			  Inclusão da lista de profissionais que ainda não responderam os questionários
@@ -958,7 +1181,7 @@ Recalcula a quantidade de profissionais que responderam os questionários e os t
 				COUNT(1) Valor
 			FROM QuestionarioUsuario qu
 			WHERE qu.Edicao=@Edicao
-			  AND qu.QuestionarioID IN (21,22,23,24,25)--2019
+			  AND qu.QuestionarioID IN (21,22,23,24,25)--2k19
 			  AND esc_codigo is not null
 			GROUP BY qu.esc_codigo,
 				qu.QuestionarioID

@@ -245,6 +245,46 @@ namespace ProvaSP.Data
         QuestionarioAgenteEscolarZeladoriaPreenchido = 104
     };
 
+    public enum TipoRespondenteQuestionario
+    {
+        [Description("Diretor")]
+        DIRETOR,
+
+        [Description("Assistente de Diretor")]
+        ASSISTENTE_DIRETOR,
+
+        [Description("Coordenador")]
+        COORDENADOR,
+
+        [Description("Professor")]
+        PROFESSOR,
+
+        [Description("Supervisor")]
+        SUPERVISOR,
+
+        [Description("Aluno do 3º ano")]
+        ALUNO_3_ANO,
+
+        [Description("Aluno do 3º ao 6º ano")]
+        ALUNO_3_6_ANO,
+
+        [Description("Aluno do 7º ao 9º ano")]
+        ALUNO_7_9_ANO,
+
+        [Description("Auxiliar Técnico")]
+        AUXILIAR_TECNICO,
+
+        [Description("Agente Escolar - Merendeira")]
+        AGENTE_ESCOLAR_MERENDEIRA,
+
+        [Description("Agente Escolar - Portaria")]
+        AGENTE_ESCOLAR_PORTARIA,
+
+        [Description("Agente Escolar - Zeladoria")]
+        AGENTE_ESCOLAR_ZELADORIA,
+
+    }
+
     public static class EnumHelper<T>
     {
         public static string GetEnumDescription(string value)
@@ -258,7 +298,14 @@ namespace ProvaSP.Data
             }
             var field = type.GetField(name);
             var customAttribute = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            return customAttribute.Length > 0 ? ((DescriptionAttribute)customAttribute[0]).Description : name;
+            return customAttribute.Any() ? ((DescriptionAttribute)customAttribute[0]).Description : name;
+        }
+
+        public static string GetEnumDescription(T value)
+        {
+            var fi = value.GetType().GetField(value.ToString());
+            var customAttribute = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+            return customAttribute.Any() ? ((DescriptionAttribute)customAttribute[0]).Description : value.ToString();
         }
     }
 

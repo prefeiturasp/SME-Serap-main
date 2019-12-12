@@ -1,4 +1,5 @@
 ﻿using ProvaSP.Data;
+using ProvaSP.Web.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,10 @@ namespace ProvaSP.Web.Controllers
             if (usuario.AcessoNivelSME)
             {
                 ViewBag.Usuario = usuario;
-                var indicadores = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelSME(Data.Funcionalidades.Prova.Edicao);
-                return View(indicadores);
+                var model = new RelatorioAcompanhamentoEscola();
+                var indicadoresSME = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelSME(Data.Funcionalidades.Prova.Edicao);
+                model.IndicadoresAgrupadosChave = Data.DataAcompanhamentoAplicacao.MontarGridQuantidadeRespondentes(indicadoresSME);
+                return View(model);
             }
             else
                 return RedirectToAction("Index", "RelatorioAcompanhamento");

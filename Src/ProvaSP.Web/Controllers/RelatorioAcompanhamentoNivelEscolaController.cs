@@ -23,7 +23,8 @@ namespace ProvaSP.Web.Controllers
                 ViewBag.Escola = escola;
                 ViewBag.Usuario = usuario;
                 var model = new RelatorioAcompanhamentoEscola();
-                model.IndicadoresEscola = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelEscola(Data.Funcionalidades.Prova.Edicao, esc_codigo);
+                var indicadoresEscola = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelEscola(Data.Funcionalidades.Prova.Edicao, esc_codigo);
+                model.IndicadoresAgrupadosChave = Data.DataAcompanhamentoAplicacao.MontarGridQuantidadeRespondentes(indicadoresEscola);
                 model.IndicadoresTurma = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoTurmaNivelEscola(Data.Funcionalidades.Prova.Edicao, esc_codigo);
                 model.IndicadoresPessoa = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoPessoaNivelEscola(Data.Funcionalidades.Prova.Edicao, esc_codigo);
                 return View(model);

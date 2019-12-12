@@ -120,12 +120,12 @@ namespace ProvaSP.Data
                 {
                     List<RelatorioItem> retorno = conn.Query<RelatorioItem>(
                 sql: @"
-                        SELECT '' AS Titulo, a.Nome AS Atributo, SUM(CAST(aae.Valor AS int)) AS Valor
+                        SELECT '' AS Titulo, a.AtributoID, a.Nome AS Atributo, SUM(CAST(aae.Valor AS int)) AS Valor
                         FROM Escola e WITH (NOLOCK)
                         JOIN AcompanhamentoAplicacaoEscola aae WITH (NOLOCK) ON e.esc_codigo=aae.esc_codigo
                         JOIN Atributo a WITH (NOLOCK) ON a.AtributoID=aae.AtributoID
                         WHERE aae.Edicao=@Edicao AND a.AtributoID IN (" + AtributosAcompanhamentoEscola() + @")
-                        GROUP BY a.Nome
+                        GROUP BY a.AtributoID, a.Nome
                         ORDER BY " + OrdenacaoAtributosAcompanhamentoEscola(),
                 param: new
                 {
@@ -152,7 +152,7 @@ namespace ProvaSP.Data
                 {
                     List<RelatorioItem> retorno = conn.Query<RelatorioItem>(
                 sql: @"
-                        SELECT e.uad_codigo AS Titulo, a.Nome AS Atributo, SUM(CAST(aae.Valor AS int)) AS Valor
+                        SELECT e.uad_codigo AS Titulo, a.AtributoID, a.Nome AS Atributo, SUM(CAST(aae.Valor AS int)) AS Valor
                         FROM Escola e WITH (NOLOCK)
                         JOIN AcompanhamentoAplicacaoEscola aae WITH (NOLOCK) ON e.esc_codigo=aae.esc_codigo
                         JOIN Atributo a WITH (NOLOCK) ON a.AtributoID=aae.AtributoID
@@ -183,12 +183,12 @@ namespace ProvaSP.Data
                 {
                     List<RelatorioItem> retorno = conn.Query<RelatorioItem>(
                 sql: @"
-                        SELECT '' AS Titulo, a.Nome AS Atributo, SUM(CAST(aae.Valor AS int)) AS Valor
+                        SELECT '' AS Titulo, a.AtributoID, a.Nome AS Atributo, SUM(CAST(aae.Valor AS int)) AS Valor
                         FROM Escola e WITH (NOLOCK)
                         JOIN AcompanhamentoAplicacaoEscola aae WITH (NOLOCK) ON e.esc_codigo=aae.esc_codigo
                         JOIN Atributo a WITH (NOLOCK) ON a.AtributoID=aae.AtributoID
                         WHERE aae.Edicao=@Edicao AND a.AtributoID IN (" + AtributosAcompanhamentoEscola() + @") AND e.uad_codigo=@uad_codigo
-                        GROUP BY a.Nome
+                        GROUP BY a.AtributoID, a.Nome
                         ORDER BY " + OrdenacaoAtributosAcompanhamentoEscola(),
                 param: new
                 {
@@ -214,7 +214,7 @@ namespace ProvaSP.Data
                 {
                     List<RelatorioItem> retorno = conn.Query<RelatorioItem>(
                 sql: @"
-                        SELECT e.esc_codigo AS Chave, e.esc_nome AS Titulo, a.Nome AS Atributo, SUM(CAST(aae.Valor AS int)) AS Valor
+                        SELECT e.esc_codigo AS Chave, e.esc_nome AS Titulo, a.AtributoID, a.Nome AS Atributo, SUM(CAST(aae.Valor AS int)) AS Valor
                         FROM Escola e WITH (NOLOCK)
                         JOIN AcompanhamentoAplicacaoEscola aae WITH (NOLOCK) ON e.esc_codigo=aae.esc_codigo
                         JOIN Atributo a WITH (NOLOCK) ON a.AtributoID=aae.AtributoID
@@ -246,7 +246,7 @@ namespace ProvaSP.Data
                 {
                     List<RelatorioItem> retorno = conn.Query<RelatorioItem>(
                 sql: @"
-                        SELECT '' AS Titulo, a.Nome AS Atributo, aae.Valor
+                        SELECT '' AS Titulo, a.AtributoID, a.Nome AS Atributo, aae.Valor
                         FROM AcompanhamentoAplicacaoEscola aae WITH (NOLOCK)
                         JOIN Atributo a WITH (NOLOCK) ON a.AtributoID=aae.AtributoID
                         WHERE aae.Edicao=@Edicao AND a.AtributoID IN (" + AtributosAcompanhamentoEscola() + @") AND aae.esc_codigo=@esc_codigo
@@ -267,6 +267,116 @@ namespace ProvaSP.Data
 
         }
 
+        /// <summary>
+        /// Cria um agrupamento por Escola ou DRE para exibir as grids com quantidades de respostas de forma agrupada.
+        /// Nos casos onde não existe agrupamento, será considerado como um agrupamento único para a Chave="".
+        /// </summary>
+        public static IList<RelatorioAgrupamento> MontarGridQuantidadeRespondentes(List<RelatorioItem> pIndicadoresRel)
+        {
+            IList<RelatorioAgrupamento> listaAgrupada = new List<RelatorioAgrupamento>();
+
+            IDictionary<TipoRespondenteQuestionario, RelatorioItemAgrupado> gridRespondentes = null;
+            RelatorioAgrupamento agrupamentoAtual = null;
+
+            /* marcos remover for (int i = pIndicadoresRel.Count - 1; i >= 0; i--)
+            {
+                var relatorioItem = pIndicadoresRel[i];*/
+            foreach (var relatorioItem in pIndicadoresRel)
+            {
+                //se mudou o titulo, cria um novo item de agrupamento
+                if (agrupamentoAtual == null || relatorioItem.Titulo != agrupamentoAtual.Titulo)
+                {
+                    if (agrupamentoAtual != null)
+                        agrupamentoAtual.GridIndicadoresEscola = gridRespondentes.Values.OrderBy(r => r.TipoRespondente).ToList();
+                    agrupamentoAtual = new RelatorioAgrupamento()
+                    {
+                        Chave = relatorioItem.Chave,
+                        Titulo = relatorioItem.Titulo
+                    };
+                    listaAgrupada.Add(agrupamentoAtual);
+                    gridRespondentes = new Dictionary<TipoRespondenteQuestionario, RelatorioItemAgrupado>();
+                }
+
+                TipoRespondenteQuestionario tipoRespondente = TipoRespondenteQuestionario.ALUNO_3_6_ANO;
+
+                Atributo atributo = (Atributo)relatorioItem.AtributoID;
+                switch (atributo)
+                {
+                    case Atributo.NumeroDeQuestionariosDeDiretor_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosDeDiretor_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.DIRETOR;
+                        break;
+                    case Atributo.NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosDeAssistenteDiretoria_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.ASSISTENTE_DIRETOR;
+                        break;
+                    case Atributo.NumeroDeQuestionariosDeCoordenador_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosDeCoordenador_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.COORDENADOR;
+                        break;
+                    case Atributo.NumeroDeQuestionariosDeProfessor_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosDeProfessor_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.PROFESSOR;
+                        break;
+                    case Atributo.NumeroDeQuestionariosDeSupervisor_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosDeSupervisor_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.SUPERVISOR;
+                        break;
+                    case Atributo.NumeroDeQuestionariosAlunos4AnoAo6Ano_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosAlunos4AnoAo6Ano_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.ALUNO_3_6_ANO;
+                        break;
+                    case Atributo.NumeroDeQuestionariosAlunos7AnoAo9Ano_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosAlunos7AnoAo9Ano_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.ALUNO_7_9_ANO;
+                        break;
+                    case Atributo.NumeroDeQuestionariosDeAuxiliarTecnicoEducacao_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosDeAuxiliarTecnicoEducacao_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.AUXILIAR_TECNICO;
+                        break;
+                    case Atributo.NumeroDeQuestionariosDeAgenteEscolarMerendeira_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosDeAgenteEscolarMerendeira_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.AGENTE_ESCOLAR_MERENDEIRA;
+                        break;
+                    case Atributo.NumeroDeQuestionariosDeAgenteEscolarPortaria_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosDeAgenteEscolarPortaria_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.AGENTE_ESCOLAR_PORTARIA;
+                        break;
+                    case Atributo.NumeroDeQuestionariosDeAgenteEscolarZeladoria_ParaPreencher:
+                    case Atributo.NumeroDeQuestionariosDeAgenteEscolarZeladoria_TotalPreenchidos:
+                        tipoRespondente = TipoRespondenteQuestionario.AGENTE_ESCOLAR_ZELADORIA;
+                        break;
+
+                    default:
+                        agrupamentoAtual.IndicadoresEscola.Add(relatorioItem);
+                        continue;
+                }
+
+                if (!gridRespondentes.TryGetValue(tipoRespondente, out RelatorioItemAgrupado linhaRespondente))
+                {
+                    linhaRespondente = new RelatorioItemAgrupado()
+                    {
+                        TipoRespondente = (int)tipoRespondente,
+                        DescricaoRespondente = EnumHelper<TipoRespondenteQuestionario>.GetEnumDescription(tipoRespondente),
+                    };
+                    gridRespondentes.Add(tipoRespondente, linhaRespondente);
+                }
+
+                if (EnumHelper<Atributo>.GetEnumDescription(atributo).IndexOf("Total esperado") == 0)
+                    linhaRespondente.TotalEsperado = Convert.ToInt32(relatorioItem.Valor);
+                else
+                    linhaRespondente.QuantidadePreenchido = Convert.ToInt32(relatorioItem.Valor);
+
+                if (linhaRespondente.TotalEsperado > 0)
+                    linhaRespondente.PercentualPreenchido = (int)Math.Round((linhaRespondente.QuantidadePreenchido * 100d) / linhaRespondente.TotalEsperado);
+            }
+
+            if (agrupamentoAtual != null)
+                agrupamentoAtual.GridIndicadoresEscola = gridRespondentes.Values.OrderBy(r => r.TipoRespondente).ToList();
+
+            return listaAgrupada;
+        }
+
         #endregion
 
         public static List<RelatorioItem> RecuperarAcompanhamentoTurmaNivelEscola(string Edicao, string esc_codigo)
@@ -277,7 +387,7 @@ namespace ProvaSP.Data
                 {
                     List<RelatorioItem> retorno = conn.Query<RelatorioItem>(
                 sql: @"
-                        SELECT t.tur_codigo AS Titulo, a.Nome AS Atributo, CASE WHEN aat.Valor='0' THEN 'NÃO' ELSE 'SIM' END AS Valor
+                        SELECT t.tur_codigo AS Titulo, a.AtributoID, a.Nome AS Atributo, CASE WHEN aat.Valor='0' THEN 'NÃO' ELSE 'SIM' END AS Valor
                         FROM AcompanhamentoAplicacaoTurma aat WITH (NOLOCK)
                         JOIN Turma t WITH (NOLOCK) ON t.tur_id=aat.tur_id
                         JOIN Atributo a WITH (NOLOCK) ON a.AtributoID=aat.AtributoID
@@ -308,7 +418,7 @@ namespace ProvaSP.Data
                 {
                     List<RelatorioItem> retorno = conn.Query<RelatorioItem>(
                 sql: @"
-                        SELECT p.Nome AS Titulo, a.Nome AS Atributo, CASE WHEN aap.Valor='0' THEN 'NÃO' ELSE 'SIM' END AS Valor
+                        SELECT p.Nome AS Titulo, a.AtributoID, a.Nome AS Atributo, CASE WHEN aap.Valor='0' THEN 'NÃO' ELSE 'SIM' END AS Valor
                         FROM AcompanhamentoAplicacaoPessoa aap WITH (NOLOCK)
                         JOIN Pessoa p WITH (NOLOCK) ON p.usu_id=aap.usu_id
                         JOIN Atributo a WITH (NOLOCK) ON a.AtributoID=aap.AtributoID
