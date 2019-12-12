@@ -753,11 +753,34 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<AdherenceGrid> LoadOnlySelectedSchool(long test_id, ref Util.Pager pager, bool AllSelected, Guid uad_id, int esc_id, int ttn_id = 0, int crp_ordem = 0,
 			Guid? pes_id = null, Guid? ent_id = null, IEnumerable<string> uadGestor = null, IEnumerable<string> uadCoordenador = null)
 		{
-			var tables = new StringBuilder("FROM SGP_ESC_Escola e WITH (NOLOCK) ");
-            tables.AppendLine("INNER JOIN AdministrativeUnitType AS AUT WITH(NOLOCK) ON AUT.AdministrativeUnitTypeId = e.tua_id AND AUT.State = @state ");
-            tables.Append("INNER JOIN SGP_SYS_UnidadeAdministrativa uad WITH (NOLOCK) ON uad.uad_id = e.uad_idSuperiorGestao ");
+            var tables = new StringBuilder();
+            tables.AppendLine("FROM TestCurriculumGrade tcg (NOLOCK)");
+            tables.AppendLine("		INNER JOIN SGP_ACA_TipoCurriculoPeriodo tpcp");
+            tables.AppendLine("			ON tcg.TypeCurriculumGradeId = tpcp.tcp_id AND");
+            tables.AppendLine("			   tpcp.[tcp_situacao] = @state");
+            tables.AppendLine("		INNER JOIN SGP_TUR_TurmaCurriculo tc (NOLOCK)");
+            tables.AppendLine("			ON tpcp.tcp_id = tc.tcp_id AND");
+            tables.AppendLine("			   tpcp.tcp_ordem = tc.crp_id AND");
+            tables.AppendLine("			   tc.tcr_situacao = @state");
+            tables.AppendLine("		INNER JOIN SGP_TUR_Turma t (NOLOCK)");
+            tables.AppendLine("			ON tc.tur_id = t.tur_id AND");
+            tables.AppendLine("			   t.tur_situacao = @state");
+            tables.AppendLine("		INNER JOIN SGP_ESC_Escola e (NOLOCK)");
+            tables.AppendLine("			on t.esc_id = e.esc_id AND");
+            tables.AppendLine("			   e.esc_situacao = @state");
+            tables.AppendLine("		INNER JOIN AdministrativeUnitType aut (NOLOCK)");
+            tables.AppendLine("			ON e.tua_id = aut.AdministrativeUnitTypeId AND");
+            tables.AppendLine("			   aut.[State] = @state");
+            tables.AppendLine("		INNER JOIN SGP_SYS_UnidadeAdministrativa ua (NOLOCK)");
+            tables.AppendLine("			ON e.uad_idSuperiorGestao = ua.uad_id");
+            tables.AppendLine("     INNER JOIN [Test] tst (NOLOCK)");
+            tables.AppendLine("			ON tcg.Test_Id = tst.Id AND");
+            tables.AppendLine("			   tst.[State] = @state");
+            tables.AppendLine("		INNER JOIN SGP_ACA_CalendarioAnual ca (NOLOCK)");
+            tables.AppendLine("			ON t.cal_id = ca.cal_id AND");
+            tables.AppendLine("			   ca.cal_situacao = @state");
 
-			if (pes_id.HasValue && ent_id.HasValue)
+            if (pes_id.HasValue && ent_id.HasValue)
 			{
 				tables.AppendLine("INNER JOIN (SELECT DISTINCT t.esc_id FROM SGP_TUR_Turma t WITH (NOLOCK) ");
 				tables.AppendLine("INNER JOIN SGP_TUR_TurmaDisciplina tud WITH (NOLOCK) ON tud.tur_id = t.tur_id AND tud.tud_situacao = @state ");
@@ -784,13 +807,20 @@ namespace GestaoAvaliacao.Repository
 				tables.AppendLine("WHERE tur.tur_situacao = @state AND tur.esc_id = @esc_id AND cpr.crp_ordem = @crp_ordem) t ON t.esc_id = e.esc_id ");
 			}
 
-			//Se a prova for para todas as escolas selecionadas, remover as que estão salvas como não selecionadas
-			if (AllSelected)
-			{
-				tables.Append("LEFT JOIN Adherence a WITH (NOLOCK) ON a.EntityId = e.esc_id AND a.Test_Id = @test_id AND a.TypeEntity = @typeEntity ");
-				tables.Append(string.Format("WHERE (a.Id IS NULL OR a.TypeSelection = {0}) ", (byte)EnumAdherenceSelection.Partial));
+            tables.AppendLine("WHERE tcg.Test_Id = @test_id AND");
+            tables.AppendLine("      tcg.[State] = @state AND");
+            tables.AppendLine("      YEAR(tst.ApplicationStartDate) = ca.cal_ano AND");
+            tables.AppendLine("      CONVERT(DATE, tst.ApplicationStartDate) < CONVERT(DATE, ca.cal_dataFim);");
 
-				if (uad_id != Guid.Empty)
+            var clausule = new StringBuilder();
+            clausule.AppendLine("FROM @schools s");
+            //Se a prova for para todas as escolas selecionadas, remover as que estão salvas como não selecionadas
+            if (AllSelected)
+			{
+                clausule.Append("LEFT JOIN Adherence a WITH (NOLOCK) ON a.EntityId = s.esc_id AND a.Test_Id = @test_id AND a.TypeEntity = @typeEntity ");
+				clausule.Append(string.Format("WHERE (a.Id IS NULL OR a.TypeSelection = {0}) ", (byte)EnumAdherenceSelection.Partial));                
+
+                if (uad_id != Guid.Empty)
 					tables.Append("AND e.uad_idSuperiorGestao = @uad_idSuperiorGestao ");
 
 				if (uadGestor != null)
@@ -805,14 +835,12 @@ namespace GestaoAvaliacao.Repository
 			//Senão, trazer apenas as que estão salvas como selecionadas/parcial
 			else
 			{
-				tables.Append("INNER JOIN Adherence a WITH (NOLOCK) ON a.EntityId = e.esc_id AND a.Test_Id = @test_id AND a.TypeEntity = @typeEntity ");
+				clausule.Append("INNER JOIN Adherence a WITH (NOLOCK) ON a.EntityId = s.esc_id AND a.Test_Id = @test_id AND a.TypeEntity = @typeEntity ");
 
 				if (uad_id != Guid.Empty || esc_id > 0)
 				{
-					tables.Append("WHERE ");
-
 					if (uad_id != Guid.Empty)
-						tables.Append("e.uad_idSuperiorGestao = @uad_idSuperiorGestao ");
+						tables.Append("AND e.uad_idSuperiorGestao = @uad_idSuperiorGestao ");
 
 					if (uadGestor != null)
 						tables.AppendFormat("AND e.uad_idSuperiorGestao IN ({0}) ", string.Join(",", uadGestor));
@@ -822,19 +850,27 @@ namespace GestaoAvaliacao.Repository
 				}
 			}
 
-			var sql = new StringBuilder("WITH CounteredSchools AS ( ");
-			sql.Append("SELECT e.esc_id, e.esc_nome, uad.uad_nome, a.TypeSelection, ");
-			sql.Append("ROW_NUMBER() OVER (ORDER BY uad.uad_nome, esc_nome ASC) AS RowNumber ");
-			sql.Append(tables.ToString());
-			sql.Append(" ) ");
-			sql.AppendFormat("SELECT esc_id, esc_nome, uad_nome, ISNULL(TypeSelection, {0}) AS TypeSelection ", (byte)EnumAdherenceSelection.Selected);
-			sql.Append("FROM CounteredSchools ");
-			sql.Append("WHERE RowNumber > ( @pageSize * @page ) ");
-			sql.Append("AND RowNumber <= ( ( @page + 1 ) * @pageSize )  ");
-			sql.Append("ORDER BY RowNumber ");
+            var sql = new StringBuilder();
+            sql.AppendLine("DECLARE @schools TABLE(esc_id INT,");
+            sql.AppendLine("                       esc_nome VARCHAR(200),");
+            sql.AppendLine("                       uad_nome VARCHAR(200))");
+            sql.AppendLine("INSERT INTO @schools");
+            sql.AppendLine("SELECT DISTINCT e.esc_id,");
+            sql.AppendLine("				e.esc_nome,");
+            sql.AppendLine("				ua.uad_nome");
+            sql.AppendLine(string.Concat(tables.ToString(), ";"));
+            sql.AppendLine("WITH CounteredSchools AS ( ");
+			sql.AppendLine("SELECT s.esc_id, s.esc_nome, s.uad_nome, a.TypeSelection, ");
+			sql.AppendLine("ROW_NUMBER() OVER (ORDER BY s.uad_nome, s.esc_nome ASC) AS RowNumber ");
+			sql.AppendLine(clausule.ToString());
+			sql.AppendLine(" ) ");
+			sql.AppendLine($"SELECT esc_id, esc_nome, uad_nome, ISNULL(TypeSelection, {(byte)EnumAdherenceSelection.Selected}) AS TypeSelection");
+			sql.AppendLine("FROM CounteredSchools ");
+			sql.AppendLine("WHERE RowNumber > ( @pageSize * @page ) ");
+			sql.AppendLine("AND RowNumber <= ( ( @page + 1 ) * @pageSize )  ");
+			sql.AppendLine("ORDER BY RowNumber ");
 
-			sql.Append("SELECT COUNT(e.esc_id) ");
-			sql.Append(tables.ToString());
+            sql.AppendLine("SELECT COUNT(0) FROM @schools");
 
 			using (IDbConnection cn = Connection)
 			{
