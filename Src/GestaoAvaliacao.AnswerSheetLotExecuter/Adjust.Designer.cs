@@ -57,11 +57,13 @@
             this.tabPageImportStudent = new System.Windows.Forms.TabPage();
             this.buttonImpAlunos = new System.Windows.Forms.Button();
             this.groupBoxDadosImportStudents = new System.Windows.Forms.GroupBox();
+            this.progressBarImportAlunos = new System.Windows.Forms.ProgressBar();
             this.numericUpDownImpAlunoAnoLetivo = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.comboBoxTipoEscolaImpAluno = new System.Windows.Forms.ComboBox();
-            this.progressBarImportAlunos = new System.Windows.Forms.ProgressBar();
+            this.tabPercentualRespostas = new System.Windows.Forms.TabPage();
+            this.buttonGerarPercentualRespostas = new System.Windows.Forms.Button();
             this.tabControlGeral.SuspendLayout();
             this.tabPageStudentCorrection.SuspendLayout();
             this.groupBoxAtualizarRespostasAlunos.SuspendLayout();
@@ -80,6 +82,7 @@
             this.tabPageImportStudent.SuspendLayout();
             this.groupBoxDadosImportStudents.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownImpAlunoAnoLetivo)).BeginInit();
+            this.tabPercentualRespostas.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControlGeral
@@ -87,6 +90,7 @@
             this.tabControlGeral.Controls.Add(this.tabPageStudentCorrection);
             this.tabControlGeral.Controls.Add(this.tabPageTempCorrectionResult);
             this.tabControlGeral.Controls.Add(this.tabPageImportStudent);
+            this.tabControlGeral.Controls.Add(this.tabPercentualRespostas);
             this.tabControlGeral.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlGeral.Location = new System.Drawing.Point(0, 0);
             this.tabControlGeral.Name = "tabControlGeral";
@@ -418,6 +422,14 @@
             this.groupBoxDadosImportStudents.TabStop = false;
             this.groupBoxDadosImportStudents.Text = "Dados";
             // 
+            // progressBarImportAlunos
+            // 
+            this.progressBarImportAlunos.Location = new System.Drawing.Point(184, 36);
+            this.progressBarImportAlunos.Name = "progressBarImportAlunos";
+            this.progressBarImportAlunos.Size = new System.Drawing.Size(112, 21);
+            this.progressBarImportAlunos.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBarImportAlunos.TabIndex = 4;
+            // 
             // numericUpDownImpAlunoAnoLetivo
             // 
             this.numericUpDownImpAlunoAnoLetivo.Location = new System.Drawing.Point(13, 84);
@@ -469,13 +481,25 @@
             this.comboBoxTipoEscolaImpAluno.TabIndex = 0;
             this.comboBoxTipoEscolaImpAluno.ValueMember = "ID";
             // 
-            // progressBarImportAlunos
+            // tabPercentualRespostas
             // 
-            this.progressBarImportAlunos.Location = new System.Drawing.Point(184, 36);
-            this.progressBarImportAlunos.Name = "progressBarImportAlunos";
-            this.progressBarImportAlunos.Size = new System.Drawing.Size(112, 21);
-            this.progressBarImportAlunos.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.progressBarImportAlunos.TabIndex = 4;
+            this.tabPercentualRespostas.Controls.Add(this.buttonGerarPercentualRespostas);
+            this.tabPercentualRespostas.Location = new System.Drawing.Point(4, 22);
+            this.tabPercentualRespostas.Name = "tabPercentualRespostas";
+            this.tabPercentualRespostas.Size = new System.Drawing.Size(302, 267);
+            this.tabPercentualRespostas.TabIndex = 3;
+            this.tabPercentualRespostas.Text = "Percentual Respostas";
+            this.tabPercentualRespostas.UseVisualStyleBackColor = true;
+            // 
+            // buttonGerarPercentualRespostas
+            // 
+            this.buttonGerarPercentualRespostas.Location = new System.Drawing.Point(8, 6);
+            this.buttonGerarPercentualRespostas.Name = "buttonGerarPercentualRespostas";
+            this.buttonGerarPercentualRespostas.Size = new System.Drawing.Size(75, 23);
+            this.buttonGerarPercentualRespostas.TabIndex = 0;
+            this.buttonGerarPercentualRespostas.Text = "Gerar";
+            this.buttonGerarPercentualRespostas.UseVisualStyleBackColor = true;
+            this.buttonGerarPercentualRespostas.Click += new System.EventHandler(this.ButtonGerarPercentualRespostas_Click);
             // 
             // Adjust
             // 
@@ -509,6 +533,7 @@
             this.groupBoxDadosImportStudents.ResumeLayout(false);
             this.groupBoxDadosImportStudents.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownImpAlunoAnoLetivo)).EndInit();
+            this.tabPercentualRespostas.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -549,5 +574,7 @@
         private System.Windows.Forms.ComboBox comboBoxTipoEscolaImpAluno;
         private System.Windows.Forms.Button buttonImpAlunos;
         private System.Windows.Forms.ProgressBar progressBarImportAlunos;
+        private System.Windows.Forms.TabPage tabPercentualRespostas;
+        private System.Windows.Forms.Button buttonGerarPercentualRespostas;
     }
 }

@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -138,7 +139,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
 
                             using (var conGestaoAvaliacao = new SqlConnection(Decrypt(ConfigurationManager.ConnectionStrings["GestaoAvaliacao"].ConnectionString)))
                             {
-                                conGestaoAvaliacao.Open();                                
+                                conGestaoAvaliacao.Open();
 
                                 var provas = new List<Prova>();
                                 using (var command = new SqlCommand(sqlQuery.ToString(), conGestaoAvaliacao))
@@ -485,7 +486,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                             sqlQuery.AppendLine("					GETDATE(),");
                                             sqlQuery.AppendLine("					GETDATE(),");
                                             sqlQuery.AppendLine("					1,");
-                                            sqlQuery.AppendLine("					@Test_Id");                                            
+                                            sqlQuery.AppendLine("					@Test_Id");
                                             sqlQuery.AppendLine("	WHERE NOT EXISTS (SELECT Id");
                                             sqlQuery.AppendLine("						FROM TestCurriculumGrade");
                                             sqlQuery.AppendLine("					  WHERE TypeCurriculumGradeId = @tcp_id AND");
@@ -550,11 +551,11 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                             sqlQuery.AppendLine("				    NULL,");
                                             sqlQuery.AppendLine("				    1,");
                                             sqlQuery.AppendLine("				    GETDATE(),");
-                                            sqlQuery.AppendLine("				    GETDATE()");                                            
+                                            sqlQuery.AppendLine("				    GETDATE()");
                                             sqlQuery.AppendLine("	WHERE NOT EXISTS (SELECT cur_id");
                                             sqlQuery.AppendLine("					  FROM ACA_Curriculo");
                                             sqlQuery.AppendLine("					  WHERE cur_id = @cur_id AND");
-                                            sqlQuery.AppendLine("							crr_id = 1)");                                            
+                                            sqlQuery.AppendLine("							crr_id = 1)");
                                             sqlQuery.AppendLine("	INSERT INTO ACA_CurriculoPeriodo");
                                             sqlQuery.AppendLine("	SELECT @cur_id,");
                                             sqlQuery.AppendLine("		   1,");
@@ -564,7 +565,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                             sqlQuery.AppendLine("		   1,");
                                             sqlQuery.AppendLine("		   GETDATE(),");
                                             sqlQuery.AppendLine("		   GETDATE(),");
-                                            sqlQuery.AppendLine("		   @tcp_id");                                            
+                                            sqlQuery.AppendLine("		   @tcp_id");
                                             sqlQuery.AppendLine("	WHERE NOT EXISTS (SELECT cur_id");
                                             sqlQuery.AppendLine("						FROM ACA_CurriculoPeriodo");
                                             sqlQuery.AppendLine("					  WHERE cur_id = @cur_id AND");
@@ -755,7 +756,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                                                             {
                                                                                 dadosMatricula.Add(new Matricula()
                                                                                 {
-                                                                                    cd_aluno = dr.GetDouble(0),    
+                                                                                    cd_aluno = dr.GetDouble(0),
                                                                                     dt_status_matricula = Convert.ToDateTime(dr.GetString(1)),
                                                                                     st_matricula = dr.GetDouble(2)
                                                                                 });
@@ -786,12 +787,12 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_nome", alunoInclusao.nomeAluno);
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_matricula", alunoInclusao.codigoAluno);
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@pes_id", pes_id);
-                                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cur_id", cur_id);                                                                        
+                                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cur_id", cur_id);
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_numeroChamada", alunoInclusao.numeroChamada);
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_dataMtricula", dataMatricula);
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@esc_codigo", dadosCompletosTurma.CodigoEscola.ToString().PadLeft(6, '0'));
                                                                         commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@tur_codigo", string.Concat("EJA-", dadosCompletosTurma.DescricaoTurma));
-                                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cal_id", idCalendarioAnual);                                                                        
+                                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cal_id", idCalendarioAnual);
                                                                         commandGestaoAvaliacaoSgp.ExecuteNonQuery();
                                                                     }
                                                                 }
@@ -940,6 +941,145 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
             public double cd_aluno { get; set; }
             public DateTime dt_status_matricula { get; set; }
             public double st_matricula { get; set; }
+        }
+
+        private async void ButtonGerarPercentualRespostas_Click(object sender, EventArgs e)
+        {
+            var provas = new[]
+            {
+                new
+                {
+                    prova = 496,
+                    itens = new [] { "'2100208'", "'2100209'", "'2100210'", "'2100211'", "'2100212'" },
+                    alternativas = new [] { "'A)'", "'B)'" }
+                },
+                new
+                {
+                    prova = 497,
+                    itens = new [] { "'2100215'" },
+                    alternativas = new [] { "'A)'", "'B)'" }
+                },
+            };
+
+            var sqlQuery = new StringBuilder();
+            sqlQuery.AppendLine("SELECT DISTINCT i.Id [Item_Id],");
+            sqlQuery.AppendLine("                i.ItemCode,");
+            sqlQuery.AppendLine("				 bi.[Order],");
+            sqlQuery.AppendLine("				 bi.[State],");
+            sqlQuery.AppendLine("				 a.[Id] [Alternative_Id],");
+            sqlQuery.AppendLine("				 a.[Numeration],");
+            sqlQuery.AppendLine("				 e.esc_id,");
+            sqlQuery.AppendLine("				 e.esc_nome,");
+            sqlQuery.AppendLine("				 tur.tur_id,");
+            sqlQuery.AppendLine("				 tur.tur_codigo");
+            sqlQuery.AppendLine("	FROM [Test] t (NOLOCK)");
+            sqlQuery.AppendLine("		INNER JOIN [Block] b (NOLOCK)");
+            sqlQuery.AppendLine("			ON t.Id = b.Test_Id");
+            sqlQuery.AppendLine("		INNER JOIN [BlockItem] bi (NOLOCK)");
+            sqlQuery.AppendLine("			ON b.Id = bi.Block_Id");
+            sqlQuery.AppendLine("		INNER JOIN [Item] i (NOLOCK)");
+            sqlQuery.AppendLine("			ON bi.Item_Id = i.Id");
+            sqlQuery.AppendLine("		inner join [Alternative] a (NOLOCK)");
+            sqlQuery.AppendLine("			on i.Id = a.Item_Id");
+            sqlQuery.AppendLine("		INNER JOIN TestCurriculumGrade tcg (NOLOCK)");
+            sqlQuery.AppendLine("			ON t.Id = tcg.Test_Id");
+            sqlQuery.AppendLine("		INNER JOIN SGP_TUR_TurmaCurriculo tc (NOLOCK)");
+            sqlQuery.AppendLine("			ON tcg.TypeCurriculumGradeId = tc.tcp_id");
+            sqlQuery.AppendLine("		INNER JOIN SGP_TUR_Turma tur (NOLOCK)");
+            sqlQuery.AppendLine("			ON tc.tur_id = tur.tur_id AND");
+            sqlQuery.AppendLine("			   tur.tur_situacao <> @stateDelete");
+            sqlQuery.AppendLine("		INNER JOIN SGP_ESC_Escola e (NOLOCK)");
+            sqlQuery.AppendLine("			ON tur.esc_id = e.esc_id");
+            sqlQuery.AppendLine("       INNER JOIN SGP_ACA_CalendarioAnual ca");
+            sqlQuery.AppendLine("			ON tur.cal_id = ca.cal_id");
+            sqlQuery.AppendLine("WHERE t.Id = @test_id AND");
+            sqlQuery.AppendLine("	   i.ItemCode IN (@itemsCode) AND");
+            sqlQuery.AppendLine("	   a.[Numeration] IN (@alternatives) AND");
+            sqlQuery.AppendLine("	   bi.[State] <> @stateDelete AND");
+            sqlQuery.AppendLine("      ca.cal_ano = @ano");
+            sqlQuery.AppendLine("ORDER BY e.esc_id,");
+            sqlQuery.AppendLine("         tur.tur_id,");
+            sqlQuery.AppendLine("		  bi.[Order],");
+            sqlQuery.AppendLine("		  a.Id");
+
+            using (var conexaoGestaoAvaliacao = new SqlConnection(Decrypt(ConfigurationManager.ConnectionStrings["GestaoAvaliacao"].ConnectionString)))
+            {
+                conexaoGestaoAvaliacao.Open();               
+
+                var service = container.Resolve<StudentCorrection>();
+                var conteudoArquivo = new StringBuilder();
+                conteudoArquivo.AppendLine("prova;nro item;codigo item;escola;turma;total resp. item;qtde altern. A;% altern. A;qtde altern. B;% alternativa B");
+
+                foreach (var p in provas)
+                {
+                    var command = new SqlCommand(sqlQuery.ToString()
+                        .Replace("@itemsCode", string.Join(",", p.itens))
+                        .Replace("@alternatives", string.Join(",", p.alternativas)), conexaoGestaoAvaliacao);
+
+                    command.Parameters.AddWithValue("@stateDelete", 3);
+                    command.Parameters.AddWithValue("@test_id", p.prova);
+                    command.Parameters.AddWithValue("@ano", 2019);
+
+                    var datatableResultado = new DataTable();
+
+                    try
+                    {
+                        using (var dr = command.ExecuteReader())
+                            datatableResultado.Load(dr);
+
+                        for (int i = 0; i < datatableResultado.Rows.Count; i += 2)
+                        {
+                            var tur_id = (long)datatableResultado.Rows[i]["tur_id"];                            
+
+                            var studentCorrections = await service.GetByTest(p.prova, tur_id);
+                            var linhaConteudo = $"{p.prova};{datatableResultado.Rows[i]["Order"]};{datatableResultado.Rows[i]["ItemCode"]};{datatableResultado.Rows[i]["esc_nome"]};{datatableResultado.Rows[i]["tur_codigo"]};";
+
+                            if (studentCorrections.Any())
+                            {
+                                var itemId = (long)datatableResultado.Rows[i]["Item_Id"];
+
+                                Debug.WriteLine($"Turma: {tur_id} - Item: {itemId}");
+
+                                var totalRespostaItem = studentCorrections.Count(x => x.Answers.Any(y => y.Item_Id == itemId));
+                                var quantidadeRepostasAlternativaA = studentCorrections.Count(x => x.Answers.Any(y => y.Item_Id == itemId && y.AnswerChoice == (long)datatableResultado.Rows[i]["Alternative_Id"]));
+                                var quantidadeRepostasAlternativaB = studentCorrections.Count(x => x.Answers.Any(y => y.Item_Id == itemId && y.AnswerChoice == (long)datatableResultado.Rows[i + 1]["Alternative_Id"]));
+                                var percentualRespostasAlternativaA = (decimal)((quantidadeRepostasAlternativaA * 100) / (totalRespostaItem == 0 ? 1 : totalRespostaItem));
+                                var percentualRespostasAlternativaB = (decimal)((quantidadeRepostasAlternativaB * 100) / (totalRespostaItem == 0 ? 1 : totalRespostaItem));
+
+                                if (percentualRespostasAlternativaB >= 50 || (percentualRespostasAlternativaB < 50 && quantidadeRepostasAlternativaB > quantidadeRepostasAlternativaA))
+                                {
+                                    var alternativeIdOld = (long)datatableResultado.Rows[i + 1]["Alternative_Id"];
+                                    var alternativeIdNew = (long)datatableResultado.Rows[i]["Alternative_Id"];
+                                    await service.UpdateAnswersTest(p.prova, tur_id, itemId, null, alternativeIdOld, alternativeIdNew, true);
+                                }
+
+                                linhaConteudo += string.Concat(totalRespostaItem, ";");
+                                linhaConteudo += string.Concat(quantidadeRepostasAlternativaA.ToString(), ";");
+                                linhaConteudo += string.Concat(percentualRespostasAlternativaA.ToString("#0.00"), ";");
+                                linhaConteudo += string.Concat(quantidadeRepostasAlternativaB.ToString(), ";");
+                                linhaConteudo += percentualRespostasAlternativaB.ToString("#0.00");
+
+                                conteudoArquivo.AppendLine(linhaConteudo);
+                            }
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+
+                try
+                {
+                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "percentuais_v2.csv"), conteudoArquivo.ToString());
+                    MessageBox.Show("Processo finalizado.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
     }
 }
