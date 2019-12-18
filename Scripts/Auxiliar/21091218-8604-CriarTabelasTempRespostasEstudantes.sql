@@ -260,7 +260,7 @@ FROM QuestionarioUsuario qu
 		ON t.esc_id = e.esc_id AND e.esc_codigo = qu.esc_codigo
 	INNER JOIN GestaoAvaliacao_SGP.dbo.SYS_UnidadeAdministrativa ua 
 		ON e.uad_idSuperiorGestao = ua.uad_id
-	INNER JOIN GestaoPedagogica.dbo.ESC_EscolaClassificacao ec
+	INNER JOIN GestaoPedagogica.dbo.ESC_EscolaClassificacao ec	
 		ON e.esc_id = ec.esc_id
 	INNER JOIN GestaoPedagogica.dbo.ESC_TipoClassificacaoEscola tce
 		ON ec.tce_id = tce.tce_id
@@ -273,6 +273,11 @@ FROM QuestionarioUsuario qu
 WHERE (m.mtu_situacao = 1 
 		OR (m.mtu_dataMatricula <= CONVERT(varchar(10),'2019.12.01',102) 
 			AND (m.mtu_dataSaida IS NULL OR m.mtu_dataSaida >= CONVERT(varchar(10),'2019.12.01',102) ))) AND
+	m.mtu_id = (SELECt MAX(m2.mtu_id) FROM GestaoAvaliacao_SGP.dbo.MTR_MatriculaTurma m2
+					WHERE a.alu_id = m2.alu_id AND
+						(m2.mtu_situacao = 1 
+							OR (m2.mtu_dataMatricula <= CONVERT(varchar(10),'2019.12.01',102) 
+								AND (m2.mtu_dataSaida IS NULL OR m2.mtu_dataSaida >= CONVERT(varchar(10),'2019.12.01',102) )))) AND
 	qu.Edicao = '2019' AND
 	qu.QuestionarioID = 22 AND
 	m.crp_id BETWEEN 7 AND 9 AND
