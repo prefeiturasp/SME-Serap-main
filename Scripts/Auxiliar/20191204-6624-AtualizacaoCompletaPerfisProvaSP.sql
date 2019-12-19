@@ -185,6 +185,8 @@ Importação de PROFESSORES
 						ON td.tud_id = tud.tud_id
 					INNER JOIN GestaoAvaliacao_SGP.dbo.TUR_Turma t
 						ON tud.tur_id = t.tur_id
+					INNER JOIN  GestaoAvaliacao_SGP.dbo.ACA_CalendarioAnual ca
+						ON ca.cal_id = t.cal_id
 					INNER JOIN GestaoAvaliacao.dbo.SGP_ESC_Escola e
 						ON t.esc_id = e.esc_id
 					INNER JOIN GestaoAvaliacao_SGP.dbo.SYS_UnidadeAdministrativa ua
@@ -200,6 +202,7 @@ Importação de PROFESSORES
 				WHERE d.doc_situacao = 1 AND
 					  e.esc_situacao = 1 AND
 					  u.usu_situacao = 1 AND
+					  ca.cal_ano = @Edicao AND
 					  tce.tce_nome IN ('EMEF', 'EMEFM', 'EMEBS', 'CEU EMEF') AND
 					  pf.usu_id IS NULL
 			)
@@ -725,6 +728,7 @@ Faz o vínculo de Diretores, Assistentes e Professores às escolas
 				INNER JOIN GestaoAvaliacao_SGP.dbo.TUR_TurmaDocente td ON d.doc_id = td.doc_id
 				INNER JOIN GestaoAvaliacao_SGP.dbo.TUR_TurmaDisciplina tud ON td.tud_id = tud.tud_id
 				INNER JOIN GestaoAvaliacao_SGP.dbo.TUR_Turma t ON tud.tur_id = t.tur_id
+				INNER JOIN GestaoAvaliacao_SGP.dbo.ACA_CalendarioAnual ca ON ca.cal_id = t.cal_id
 				INNER JOIN GestaoAvaliacao.dbo.SGP_ESC_Escola e ON t.esc_id = e.esc_id
 				INNER JOIN GestaoAvaliacao_SGP.dbo.SYS_UnidadeAdministrativa ua ON e.uad_idSuperiorGestao = ua.uad_id
 				INNER JOIN CoreSSO.dbo.SYS_Usuario u				ON u.pes_id = d.pes_id
@@ -733,6 +737,7 @@ Faz o vínculo de Diretores, Assistentes e Professores às escolas
 				INNER JOIN GestaoPedagogica.dbo.ESC_EscolaClassificacao ec ON e.esc_id = ec.esc_id
 				INNER JOIN GestaoPedagogica.dbo.ESC_TipoClassificacaoEscola tce ON ec.tce_id = tce.tce_id
 			WHERE d.doc_situacao = 1
+			  AND ca.cal_ano = @Edicao
 			  AND (pf.esc_codigo IS NULL OR pf.esc_codigo = 0)
 			  AND tce.tce_nome IN ('EMEF', 'EMEFM', 'EMEBS', 'CEU EMEF')
 
