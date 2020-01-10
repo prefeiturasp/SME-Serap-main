@@ -32,7 +32,7 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                return grupos.Where(x => x.gru_id == Grupo.Perfil.Supervisor).Count() > 0;
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.Supervisor).Any();
             }
         }
 
@@ -40,7 +40,7 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                return grupos.Where(x => x.gru_id == Grupo.Perfil.Diretor).Count() > 0;
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.Diretor).Any();
             }
         }
 
@@ -48,7 +48,7 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                return grupos.Where(x => x.gru_id == Grupo.Perfil.AssistenteDeDiretoria).Count() > 0;
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.AssistenteDeDiretoria).Any();
             }
         }
 
@@ -56,7 +56,7 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                return grupos.Where(x => x.gru_id == Grupo.Perfil.AgenteEscolar).Count() > 0;
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.AgenteEscolar).Any();
             }
         }
 
@@ -64,7 +64,7 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                return grupos.Where(x => x.gru_id == Grupo.Perfil.AuxiliarTecnicoEducacao).Count() > 0;
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.AuxiliarTecnicoEducacao).Any();
             }
         }
 
@@ -72,7 +72,7 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                return grupos.Where(x => x.gru_id == Grupo.Perfil.Coordenador).Count() > 0;
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.Coordenador).Any();
             }
         }
 
@@ -80,7 +80,7 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                return grupos.Where(x => x.gru_id == Grupo.Perfil.Professor).Count() > 0;
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.Professor).Any();
             }
         }
 
@@ -88,7 +88,7 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                return grupos.Where(x => x.gru_id == Grupo.Perfil.Aluno).Count() > 0;
+                return grupos.Where(x => x.gru_id == Grupo.Perfil.Aluno).Any();
             }
         }
 
@@ -96,7 +96,7 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                return grupos.Where(x => x.AcessoNivelSME).Count() > 0;
+                return grupos.Where(x => x.AcessoNivelSME).Any();
             }
         }
 
@@ -104,7 +104,15 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                return grupos.Where(x => x.AcessoNivelDRE).Count() > 0;
+                return grupos.Where(x => x.AcessoNivelDRE).Any();
+            }
+        }
+
+        public bool AcessoNivelEscola
+        {
+            get
+            {
+                return grupos.Where(x => x.AcessoNivelEscola).Any();
             }
         }
     }
