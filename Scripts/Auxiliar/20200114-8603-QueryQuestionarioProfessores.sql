@@ -45,6 +45,7 @@ SELECT
     ua.uad_nome [Nome UA],    
 	pe.esc_codigo [Cod. Escolas],
 	pe.esc_nome [Escolas],
+	pe.tur_codigo [Ano Escolar],
     (substring(u.usu_login, PatIndex('%[0-9]%', u.usu_login), len(u.usu_login)) % 6) + 1 NumCaderno,
     rc.*
 FROM QuestionarioUsuario qu (NOLOCK)
@@ -62,7 +63,7 @@ FROM QuestionarioUsuario qu (NOLOCK)
         ON ec.tce_id = tce.tce_id	
     INNER JOIN #Questionarios23_2019 rc
         ON rc.QuestionarioUsuarioID = qu.QuestionarioUsuarioID		
-	INNER JOIN ##ProfessoresEscolas pe
+	INNER JOIN ##ProfessoresEscolas2 pe
 		ON p.pes_id = pe.pes_id
 WHERE
     qu.Edicao = '2019' AND
