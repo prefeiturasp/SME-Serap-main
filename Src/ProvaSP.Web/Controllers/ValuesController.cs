@@ -18,7 +18,7 @@ namespace ProvaSP.Web.Controllers
         // GET api/values/5
         public string Get(int id)
         {
-            return Data.DataDRE.RecuperarCodigoDREComBaseNoPerfilDaPessoa("2018", Guid.NewGuid().ToString());
+            return Data.DataDRE.RecuperarCodigoDREComBaseNoPerfilDaPessoa("2019", Guid.NewGuid().ToString());
         }
 
         // POST api/values
