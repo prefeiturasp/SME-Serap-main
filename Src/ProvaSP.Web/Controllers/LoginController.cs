@@ -35,7 +35,7 @@ namespace ProvaSP.Web.Controllers
             var usuario = DataUsuario.RetornarUsuario(usu_login, usu_senha);
             if (usuario!= null && usuario.Aluno)
             {
-                var dadosAluno = DataAluno.GetAluno("2018", usu_login.ToUpper().Replace("RA", ""));
+                var dadosAluno = DataAluno.GetAluno("2019", usu_login.ToUpper().Replace("RA", ""));
                 if (dadosAluno != null)
                 {
                     usuario.Turma = dadosAluno.tur_codigo;
