@@ -330,6 +330,7 @@ table.greyGridTable tfoot td {
     padding: 15px;
     text-align: center;
     border: 1px solid #a0a0a0;
+    cursor: pointer;
 }
 .resultados_botaoDownload {
     display: inline-block;
@@ -391,6 +392,7 @@ table.greyGridTable tfoot td {
 .resultados_graficoBlock {
     display: inline-block;
 }
+
 
 .participacao_mainDiv {
     padding: 20px 0px;
