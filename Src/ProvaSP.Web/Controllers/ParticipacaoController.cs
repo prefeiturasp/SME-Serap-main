@@ -15,9 +15,10 @@ namespace ProvaSP.Web.Controllers
         [HttpPost]
         public HttpResponseMessage Get(FormDataCollection formData)
         {
-            string Nivel = Convert.ToString(formData["Nivel"]).ToUpper();
-            string Edicao = Convert.ToString(formData["Edicao"]);
-            string AnoEscolar = Convert.ToString(formData["AnoEscolar"]);
+            string nivel = Convert.ToString(formData["Nivel"]).ToUpper();
+            string edicao = Convert.ToString(formData["Edicao"]);
+            int.TryParse(formData["AreaConhecimento"], out int areaConhecimento);
+            string anoEscolar = Convert.ToString(formData["AnoEscolar"]);
             string lista_uad_sigla = Convert.ToString(formData["lista_uad_sigla"]);
             string lista_esc_codigo = Convert.ToString(formData["lista_esc_codigo"]);
             string lista_turmas = Convert.ToString(formData["lista_turmas"]);
@@ -26,21 +27,21 @@ namespace ProvaSP.Web.Controllers
 
             try
             {
-                if (Nivel == "SME")
+                if (nivel == "SME")
                 {
-                    resultado = DataParticipacao.ParticipacaoSME(Edicao, AnoEscolar);
+                    resultado = DataParticipacao.ParticipacaoSME(edicao, areaConhecimento, anoEscolar);
                 }
-                else if (Nivel == "DRE")
+                else if (nivel == "DRE")
                 {
-                    resultado = DataParticipacao.ParticipacaoDRE(Edicao, AnoEscolar, lista_uad_sigla, true);
+                    resultado = DataParticipacao.ParticipacaoDRE(edicao, areaConhecimento, anoEscolar, lista_uad_sigla, true);
                 }
-                else if (Nivel == "ESCOLA")
+                else if (nivel == "ESCOLA")
                 {
-                    resultado = DataParticipacao.ParticipacaoEscola(Edicao, AnoEscolar, null, lista_esc_codigo, true);
+                    resultado = DataParticipacao.ParticipacaoEscola(edicao, areaConhecimento, anoEscolar, null, lista_esc_codigo, true);
                 }
-                else if (Nivel == "TURMA")
+                else if (nivel == "TURMA")
                 {
-                    resultado = DataParticipacao.ParticipacaoTurma(Edicao, AnoEscolar, lista_esc_codigo, lista_turmas);
+                    resultado = DataParticipacao.ParticipacaoTurma(edicao, areaConhecimento, anoEscolar, lista_esc_codigo, lista_turmas, true);
                 }
             }
             catch (Exception ex)

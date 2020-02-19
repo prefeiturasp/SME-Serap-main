@@ -425,6 +425,7 @@ table.greyGridTable tfoot td {
     font-weight: bold;
     border: 1px solid #ddd;
     box-shadow: 0px 1px 2px #ddd;
+    cursor: pointer;
 }
 .participacao_header {
     margin: 0px;
@@ -452,7 +453,6 @@ table.greyGridTable tfoot td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
 }
 .participacao_blockDiv {
     display: inline-block;
@@ -495,6 +495,14 @@ table.greyGridTable tfoot td {
     font-weight: bold;
     margin: 0px;
     padding: 5px 0px;
+    background: #f0f0f0;
+}
+.participacao_descricao {
+    font-size: 8pt;
+    color: #303030;
+    font-weight: bold;
+    margin: 0px;
+    padding: 2px 0px;
     background: #f0f0f0;
 }
 .participacao_coloredTipDiv {
