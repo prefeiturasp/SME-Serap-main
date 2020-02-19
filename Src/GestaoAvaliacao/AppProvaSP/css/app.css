@@ -114,6 +114,22 @@ form {
     font-size: 10pt;
 }
 
+.revistasBoletinsInfoSelecaoDRE {
+    float: right;
+}
+
+.revistasBoletinsInfoSelecao {
+    font-size: 10pt;
+}
+
+DIV.revistasBoletins-escola-lbl {
+    white-space: pre-wrap;
+}
+
+.revistasBoletins-escola-lnk {
+    float: right;
+}
+
 .btnSair {
     /*
     background-color: rgb(255,240,240) !important;
