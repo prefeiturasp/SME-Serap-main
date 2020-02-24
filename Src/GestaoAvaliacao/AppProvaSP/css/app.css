@@ -114,22 +114,6 @@ form {
     font-size: 10pt;
 }
 
-.revistasBoletinsInfoSelecaoDRE {
-    float: right;
-}
-
-.revistasBoletinsInfoSelecao {
-    font-size: 10pt;
-}
-
-DIV.revistasBoletins-escola-lbl {
-    white-space: pre-wrap;
-}
-
-.revistasBoletins-escola-lnk {
-    float: right;
-}
-
 .btnSair {
     /*
     background-color: rgb(255,240,240) !important;
@@ -346,7 +330,6 @@ table.greyGridTable tfoot td {
     padding: 15px;
     text-align: center;
     border: 1px solid #a0a0a0;
-    cursor: pointer;
 }
 .resultados_botaoDownload {
     display: inline-block;
@@ -408,7 +391,6 @@ table.greyGridTable tfoot td {
 .resultados_graficoBlock {
     display: inline-block;
 }
-
 
 .participacao_mainDiv {
     padding: 20px 0px;
