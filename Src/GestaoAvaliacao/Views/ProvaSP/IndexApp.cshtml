@@ -1,0 +1,2070 @@
+<!--
+não exclua esse comentário.
+@{
+    Layout = null;
+}
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+
+    <link rel="stylesheet" href="/AppProvaSP/css/app.css" type="text/css" />
+    <link rel="stylesheet" href="/AppProvaSP/css/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" href="/AppProvaSP/css/jquery.mobile.theme-1.4.5.min.css" />
+    <link rel="stylesheet" href="/AppProvaSP/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="/AppProvaSP/css/sweetalert.css" />
+    <link rel="stylesheet" href="/AppProvaSP/css/jquery.mobile.datepicker.css" />
+    <link rel="stylesheet" href="/AppProvaSP/css/jquery.mobile.datepicker.theme.css" />
+
+    <link href="/AppProvaSP/css/selectize.css" rel="stylesheet" type="text/css">
+    <link href="/AppProvaSP/css/selectize.default.css" rel="stylesheet" type="text/css">
+
+    <title>Prova Sao Paulo</title>
+
+    <script type="text/javascript">
+            @Html.Raw(ViewBag.JsSerap) // NÃO EXCLUA ESSA LINHA
+    </script>
+</head>
+
+
+<body style="height:100%;" data-role="page">
+    <!--MSTECH
+    *Estrutura de loading
+    *
+    -->
+    <div id="aguarde-page" class="page" style="display:inline;">
+        <div class="container" style="text-align:center;">
+            <img src="/AppProvaSP/images/logo_provaSP.png" alt="Prova São Paulo" style="margin:20px; width:70%;" />
+            <p id="loadingLabelPrincipal">
+                Aguarde...
+            </p>
+        </div>
+    </div>
+
+    <!--MSTECH
+    *Menu do App - Botão alinhados na vertical com as opções a serem selecionadas de acordo com o
+    tipo de usuário logado.
+    *
+    -->
+    <div id="menu-page" class="page generico_mainDiv" style="display:none;">
+
+        <div class="container generico_subDiv" style="text-align:center;">
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">MENU</p>
+                <p class="generico_headerText">BEM-VINDO(A)!</p>
+            </div>
+            <!--<div style="text-align:center">-->
+            <!--<img src="/AppProvaSP/images/logo_provaSP.png" alt="Prova São Paulo" style="margin:20px; width:70%;" />-->
+            <!--</div>-->
+            <div role="main" class="ui-content" style="padding: 1em 0em;">
+                <div id="divCodigoTurma" style="display:none;">
+                    <label for="txtCodigoTurma">Digite código da turma. Ele é informado na lista de presença impressa:</label>
+                    <img src="/AppProvaSP/images/identificacao_turma.png" style="width:90%;" />
+                    <input id="txtCodigoTurma" placeholder="Digite aqui o código" type="number" required="required" />
+                    <button id="btnCodigoTurmaProsseguir" data-role="button">Prosseguir</button>
+                    <button id="btnCodigoTurmaVoltar" data-role="button">Voltar</button>
+                </div>
+
+                <!--MSTECH
+                *Assinatura do termo de compromisso
+
+                *Termo de compromisso atualizado
+                -->
+                <div id="divQuestionario8_TermoDeCompromisso" style="text-align:left; display:none;">
+                    <h3>
+                        TERMO DE COMPROMISSO E SIGILO DO APLICADOR
+                    </h3>
+                    <ul>
+                        <li>Assegurar o sigilo absoluto das provas;</li>
+                        <li>
+                            Seguir, rigorosamente, as orientações constantes do Manual do
+                            Aplicador, para garantir a uniformidade dos procedimentos da
+                            aplicação;
+                        </li>
+                        <li>
+                            Assegurar que os estudantes respondam às questões das provas com
+                            seus próprios esforços e conhecimentos, sem quaisquer
+                            interferências.
+                        </li>
+                    </ul>
+                    <button id="btnTermoAplicadorConcordo" data-role="button">Concordo</button>
+                    <button id="btnTermoAplicadorDiscordo" data-role="button">Discordo</button>
+                </div>
+
+
+                <div id="divMenuPrincipal" style="margin-top:15px;">
+                    <div id="provaSP_disponivel">
+                        <div id="div_fichasderegistro">
+                            <label for="codigo-turma">Controle da Aplicação:</label>
+
+                            <div id="divAbrirQuestionarioID_9" class="button-abrir-questionario" style="display:none;">
+                                <button id="btnAbrirQuestionarioID_9" data-role="button">Ficha de Registro - Supervisor Escolar</button>
+                            </div>
+
+                            <div id="divAbrirQuestionarioID_10" class="button-abrir-questionario" style="display:none;">
+                                <button id="btnAbrirQuestionarioID_10" data-role="button">Ficha de Registro - Diretor(a) de Escola</button>
+                            </div>
+
+                            <div id="divAbrirQuestionarioID_11" class="button-abrir-questionario" style="display:none;">
+                                <button id="btnAbrirQuestionarioID_11" data-role="button">Ficha de Registro - Coordenador(a) Pedagógico(a)</button>
+                            </div>
+
+                            <!-- TODOS DOCENTES DEVEM TER ACESSO PARA A FICHA DE APLICAÇÃO DE PROVA: -->
+                            <!-- // Desabilitar temporariamente a ficha de registro dos professores 22/10/19
+                            <button id="btnAbrirFichaAplicadorProvaOuChamada" data-role="button">Ficha de Registro - Aplicador de Prova / Chamada</button>
+                            -->
+                            <!-- O relatório de acompanhamento depende da Configuração RelatorioAcompanhamentoVisivel=true -->
+                            <button id="btnAbrirRelatorioAcompanhamento" data-role="button" style="display:none;">Relatório de Acompanhamento</button>
+                            <!--
+                            <button id="btnAbrirRelatorioAcompanhamento_9" data-role="button" style="display:none;">Relatório de Acompanhamento (Supervisor)</button>
+                            <button id="btnAbrirRelatorioAcompanhamento_10" data-role="button" style="display:none;">Relatório de Acompanhamento (Diretor)</button>
+                            <button id="btnAbrirRelatorioAcompanhamento_11" data-role="button" style="display:none;">Relatório de Acompanhamento (Coordenador)</button>
+                            -->
+                        </div>
+
+                        <label for="codigo-turma" style="margin-top:15px;">Questionário(s):</label>
+
+                        <div id="divAbrirQuestionarioID_1" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_1" data-role="button" style="display:none;">Supervisor Escolar</button>
+                        </div>
+
+                        <div id="divAbrirQuestionarioID_24" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_24" data-role="button" style="display:none;">Diretor de Escola</button>
+                        </div>
+
+                        <div id="divAbrirQuestionarioID_3" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_3" data-role="button" style="display:none;">Coordenador Pedagógico</button>
+                        </div>
+
+                        <div id="divAbrirQuestionarioID_23" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_23" data-role="button" style="display:none;">Professor</button>
+                        </div>
+
+                        <!--AMCOM
+                        *ID 25: Assistente do Diretor
+                        -->
+                        <div id="divAbrirQuestionarioID_25" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_25" data-role="button" style="display:none;">Assistente do Diretor</button>
+                        </div>
+                        <!--MSTECH
+                        *ID 14: Auxiliar técnico da educação
+                        -->
+                        <div id="divAbrirQuestionarioID_14" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_14" data-role="button" style="display:none;">Auxiliar Técnico da Educação</button>
+                        </div>
+                        <!--MSTECH
+                        *ID 15: Agente escolar - Merendeira
+                        -->
+                        <div id="divAbrirQuestionarioID_15" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_15" data-role="button" style="display:none;">Agente Escolar - Merendeira</button>
+                        </div>
+                        <!--MSTECH
+                        *ID 16: Agente escolar - Portaria
+                        -->
+                        <div id="divAbrirQuestionarioID_16" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_16" data-role="button" style="display:none;">Agente Escolar - Portaria</button>
+                        </div>
+                        <!--MSTECH
+                        *ID 17: Agente escolar - Zeladoria
+                        -->
+                        <div id="divAbrirQuestionarioID_17" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_17" data-role="button" style="display:none;">Agente Escolar - Zeladoria</button>
+                        </div>
+
+                        <!--MSTECH
+                        *ID 21: Alunos do 3º ao 6º ano
+                        *ID 22: Alunos do 7º ao 9º ano
+                        -->
+                        <div id="divAbrirQuestionarioID_21" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_21" data-role="button" style="display:none;">Aluno (3º ao 6º ano)</button>
+                        </div>
+                        <div id="divAbrirQuestionarioID_22" class="button-abrir-questionario" style="display:none;">
+                            <button id="btnAbrirQuestionarioID_22" data-role="button" style="display:none;">Aluno (7º ao 9º ano)</button>
+                        </div>
+                    </div>
+
+                    <!--MSTECH
+                    *Agora esta opção é específica para Acesso SME
+                    -->
+                    <div id="provaSP_resultados" style="display: none;">
+                        <label for="codigo-turma" style="margin-top:15px;">Resultados:</label>
+                        <button id="btnAbrirResultados" data-role="button">Resultados da Prova São Paulo</button>
+                    </div>
+
+                    <!--MSTECH
+                    *Novo botão para configurar estados do servidor (Configurações)
+                    -->
+                    <button id="btnConfiguracoes" style="display: none;" data-role="button">Configurações</button>
+
+                    <a id="btnSair" class="ui-btn" style="color: rgb(205,0,0) !important;">Sair</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--MSTECH
+    *Termo de compromisso. O usuário deve "assinar" o termo de compromisso antes de continuar.
+    *ESTE TRECHO E TERMO DE COMPROMISSO NUNCA SÃO MOSTRADOS. O termo de compromisso correto é
+    *mostrado antes da criação do questionário do tipo 8
+    -->
+    <!--<div id="termo-compromisso-page" class="page">-->
+    <!--<div class="container" style="text-align:center;">-->
+    <!--<div data-role="header" class="header">-->
+    <!--<p id="app-title" style="font-size:12pt; ">TERMO DE COMPROMISSO<br />E SIGILO DO APLICADOR</p>-->
+    <!--</div>-->
+    <!--<div role="main" class="ui-content">-->
+    <!--<p style="margin-top:20px; margin-bottom:20px; text-align:left">Assumo o compromisso com a Secretaria Municipal de Educação do Município de São Paulo de realizar com seriedade todas as tarefas pertinentes à minha função na aplicação das provas, tais como:</p>-->
+    <!--<ul style="text-align:left;">-->
+    <!--<li style="padding:10px;">Assegurar o sigilo absoluto das provas;</li>-->
+    <!--<li style="padding:10px;">Seguir, rigorosamente, as orientações constantes do Manual do Aplicador, para garantir a uniformidade dos procedimentos da aplicação;</li>-->
+    <!--<li style="padding:10px;">Assegurar que os alunos respondam às questões das provas com seus próprios esforços e conhecimentos, sem quaisquer interferências.</li>-->
+    <!--</ul>-->
+    <!--<button id="btnTermoCompromissoConcordo" data-role="button">Concordo</button>-->
+    <!--<button id="btnTermoCompromissoDiscordo" data-role="button">Discordo</button>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--MSTECH
+    *Resultado do ProvaSP destinado aos estudantes ou usuários de tipo ALUNO.
+
+    OBS: Reparar que são montados gráficos específicos para os usuários ALUNOS
+    *
+    -->
+    <div id="resultado-aluno-page" class="page generico_mainDiv">
+        <div class="container generico_subDiv" style="text-align:center;">
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">RESULTADOS</p>
+                <p id="label_resultadoAluno" class="generico_headerText">Consulta de Resultado</p>
+            </div>
+
+            <form>
+                <select id="ddlResultadoAlunoAreaConhecimento" data-mini="true">
+                    <option value="" selected="selected">(Área de Conhecimento...)</option>
+                    <option value="1">Ciências da Natureza</option>
+                    <option value="2">Língua Portuguesa</option>
+                    <option value="4">Redação</option>
+                    <option value="3">Matemática</option>
+                </select>
+
+                <select id="ddlResultadoAlunoEdicao" data-mini="true">
+                    <option value="" selected="selected">(Edição...)</option>
+                </select>
+            </form>
+
+
+            <div id="divResultadoApresentacaoAluno" style="display:none; margin-top:15px;">
+                <span class="lblResultadoTituloEscalaSaeb_1"></span>
+
+                <div class="divChartResultadoEscalaSaeb_1"></div>
+
+                <img class="imgChartResultadoDetalhe" />
+
+                <div class="divChartResultadoDetalhe" style=""></div>
+
+                <span class="lblResultadoTituloEscalaSaeb_2"></span>
+                <div class="divChartResultadoEscalaSaeb_2"></div>
+
+                <button id="btnProvaAlunoPopup" data-role="button" style="margin-top: 20px;">
+                    Prova do Aluno<span class='mdi mdi-open-in-new'></span>
+                </button>
+            </div>
+
+            <button id="btnAlunoVoltar" data-role="button" style="display: none;">Voltar</button>
+        </div>
+    </div>
+
+    <!--MSTECH
+    *Nova Div para configurações. Esta página terá as opções hoje determinadas por script no servidor
+    da ProvaSP. Basicamente alterando duas configurações básicas.
+    -->
+    <div id="configuracoes-page" class="page generico_mainDiv" style="display: none;">
+        <div class="container generico_subDiv">
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">CONFIGURAÇÕES</p>
+                <p class="generico_headerText">ACESSO NÍVEL SME</p>
+            </div>
+
+            <div class="configuracoes_optionsMainDiv">
+                <!--Tab Configuração dos Níveis de Proficiência-->
+                <p id="configuracoes_tab0" class="resultados_headerTitle" onclick="divConfiguracoes(0)">
+                    NÍVEIS DE PROFICIÊNCIA
+                    <span id="configuracoes_icone0">
+                        <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
+                    </span>
+                </p>
+                <div id="configuracoes_div0" class="configuracoes_tabDiv" style="display: none;">
+                    <!--Ano ou Ciclo da Proficiência-->
+                    <p class="configuracoes_optionsTitleLeft">SELECIONAR ANO OU CICLO</p>
+                    <select id="confAnoCiclo" data-mini="true">
+                        <option value="" selected="selected">(Ano ou Ciclo...)</option>
+                        <option value="2">2º Ano</option>
+                        <option value="3">3º Ano</option>
+                        <option value="4">4º Ano</option>
+                        <option value="5">5º Ano</option>
+                        <option value="6">6º Ano</option>
+                        <option value="7">7º Ano</option>
+                        <option value="8">8º Ano</option>
+                        <option value="9">9º Ano</option>
+                        <option value="c1">Ciclo de Alfabetização</option>
+                        <option value="c2">Ciclo Interdisciplinar</option>
+                        <option value="c3">Ciclo Autoral</option>
+                    </select>
+                    <!--Nível da Proficiência-->
+                    <p class="configuracoes_optionsTitleLeft">SELECIONAR NÍVEL DA PROFICIÊNCIA</p>
+                    <select id="confNivelProficiência" data-mini="true">
+                        <option value="" selected="selected">(Nível de proficiência...)</option>
+                        <option value="0">Nível indefinido</option>
+                        <option value="1">Primeiro nível</option>
+                        <option value="2">Segundo nível</option>
+                        <option value="3">Terceiro nível</option>
+                        <option value="4">Quarto nível</option>
+                    </select>
+
+                    <!--Nome-->
+                    <p class="configuracoes_optionsTitleLeft">NOME DA PROFICIÊNCIA</p>
+                    <input id="confProficienciaNome" type="text" placeholder="Ex: Nível Básico" />
+                    <!--Descrição-->
+                    <p class="configuracoes_optionsTitleLeft">DESCRIÇÃO DA PROFICIÊNCIA</p>
+                    <textarea id="confProficienciaDescricao" placeholder="Ex: Desempenho padrão."></textarea>
+
+                    <!--Enviar Proficiência-->
+                    <button id="btnEnviarProficiencia" style="margin-top: 20px;"
+                            data-role="button">
+                        Atualizar proficiência
+                    </button>
+                </div>
+
+                <!--Tab Configurações gerais-->
+                <p id="configuracoes_tab1" class="resultados_headerTitle" onclick="divConfiguracoes(1)">
+                    OPÇÕES PROVASP
+                    <span id="configuracoes_icone1">
+                        <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
+                    </span>
+                </p>
+                <div id="configuracoes_div1" class="configuracoes_tabDiv" style="display: none;">
+                    <div class="configuracoes_optionsDiv"
+                         onclick="alterarConfiguracao('DisponibilizarPreenchimentoQuestionariosFichas')">
+                        <p class="configuracoes_optionsTitle">
+                            PREENCHIMENTO DE QUESTIONÁRIOS: <span id="opcaoPreenchimentoQuestionarios"></span>
+                        </p>
+                        <p class="configuracoes_optionsText">
+                            Permite o acesso às telas de preenchimento de questionários, sejam eles socioeconômicos
+                            ou mesmo questionário de aplicação da ProvaSP. Desative esta opção para direcionar os usuários
+                            à tela de <b>Resultados.</b>
+                        </p>
+                    </div>
+
+                    <div class="configuracoes_optionsDiv"
+                         onclick="alterarConfiguracao('RelatorioAcompanhamentoVisivel')">
+                        <p class="configuracoes_optionsTitle">
+                            RELATÓRIO ACOMPANHAMENTO: <span id="opcaoRelatorioAcompanhamento"></span>
+                        </p>
+                        <p class="configuracoes_optionsText">
+                            Ative esta opção para permitir que o <b>Relatório de Acompanhamento</b> seja acessado pelos
+                            usuários correspondentes. Geralmente esta opção deve ser habilitada durante a ProvaSP.
+                        </p>
+                    </div>
+
+                    <div class="configuracoes_optionsDiv">
+                        <p class="configuracoes_optionsTitle">
+                            REPRESENTATIVIDADE SEGUNDO O INEP: <span id="opcaoRepresentatividadeSegundoINEP"></span>
+                        </p>
+                        <p class="configuracoes_optionsText">
+                            Informe abaixo a porcentagem mínima para que os dados de participação da ProvaSP sejam
+                            representativos. (de 0 a 100)
+                        </p>
+                        <input id="confRepresentatividadeSegundoINEP" style="text-align: center;" type="number" placeholder="Ex: 90" />
+                    </div>
+
+                    <!--Sync-->
+                    <button id="btnSincronizarOpcoes" data-role="button">Sincronizar opções</button>
+                </div>
+
+                <p id="configuracoes_tab2" class="resultados_headerTitle" onclick="obterCorte()">
+                    SEQUÊNCIA DE ATIVIDADES
+                    <span id="configuracoes_icone2">
+                        <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
+                    </span>
+                </p>
+                <div id="configuracoes_div2" class="configuracoes_tabDiv" style="display: none;">
+                    <!--IMPORTANTE: ConfSD = Configuração de Sequência de Atividades-->
+                    <table style="width:100%;">
+                        <tr>
+                            <td>
+                                <select id="ddlConfSDEdicao" data-mini="true">
+                                    <option value="" selected="selected">(Edição...)</option>
+                                    <option value="2019">Edição 2019</option>
+                                    <option value="2018">Edição 2018</option>
+                                    <option value="2017">Edição 2017</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="ddlConfSDAno" data-mini="true">
+                                    <option value="" selected="selected">(Ano...)</option>
+                                    <option value="2">2º Ano</option>
+                                    <option value="3">3º Ano</option>
+                                    <option value="4">4º Ano</option>
+                                    <option value="5">5º Ano</option>
+                                    <option value="6">6º Ano</option>
+                                    <option value="7">7º Ano</option>
+                                    <option value="8">8º Ano</option>
+                                    <option value="9">9º Ano</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table style="width:100%;">
+                        <tr>
+                            <td>
+                                <select id="ddlConfSDAreaConhecimento" data-mini="true">
+                                    <option value="" selected="selected">(Área de Conhecimento...)</option>
+                                    <option value="1">Ciências da Natureza</option>
+                                    <option value="2">Língua Portuguesa</option>
+                                    <option value="4">Redação</option>
+                                    <option value="3">Matemática</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select id="ddlConfSDCorte" data-mini="true">
+                                    <option value="" selected="selected">(Corte...)</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <button id="btnObterSequenciaDidatica" data-role="button" disabled="disabled">
+                        Visualizar Sequência de Atividades
+                    </button>
+
+                    <!--Detalhes da Sequência de Atividades - CADASTRAR/ATUALIZAR -->
+                    <div id="detalhesSD" style="display: none;">
+                        <!--Título-->
+                        <p class="configuracoes_optionsTitleLeft">Título da Sequência de Atividades</p>
+                        <input id="tituloSD" type="text" placeholder="Ex: Título aqui..." />
+                        <!--Text-->
+                        <p class="configuracoes_optionsTitleLeft">Texto da Sequência de Atividades</p>
+                        <textarea id="textSD" placeholder="Ex: Texto aqui..."></textarea>
+                        <!--Link-->
+                        <p class="configuracoes_optionsTitleLeft">Link</p>
+                        <input id="linkSD" type="url" placeholder="Ex: Link aqui..." />
+
+                        <!--Voltar das configurações-->
+                        <button id="btnCommitSD" data-role="button">Cadastrar Sequência de Atividades</button>
+                    </div>
+                </div>
+
+                <!--Voltar das configurações-->
+                <button id="btnConfiguracoesSair"
+                        data-role="button" style="color: rgb(205,0,0) !important;">
+                    Voltar ao menu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!--MSTECH
+    *Nova div de popup da prova do aluno. Nela será possível abrir o link com a prova física.
+    -->
+    <div id="provaalunopopup-page" class="page generico_mainDiv" style="display: none;">
+        <div class="container generico_subDiv">
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">PROVAS DO ALUNO</p>
+                <p class="generico_headerText">
+                    ALUNO: <span id="provaAluno_NomeAluno"></span>
+                </p>
+            </div>
+            <!--Div que comporta as URLs para as imagens da prova física-->
+            <div id="provaaluno_urlsDiv" class="provaaluno_div"></div>
+            <button id="btnProvaAlunoCriterios" data-role="button">Descrição dos critérios</button>
+            <button id="btnProvaAlunoVoltar" data-role="button">Voltar</button>
+        </div>
+    </div>
+
+    <!--MSTECH
+    *Resultado por nível de filtragem. Todos os filtros aplicados estão, a princípio no método
+    resultado_configurarControles.
+
+    *Reparar também que esta mesma Main div comporta também as estruturas de questionários.
+    *
+    -->
+    <div id="resultado-page" class="page generico_mainDiv">
+        <div class="container generico_subDiv" style="text-align:center;">
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">RESULTADOS</p>
+                <p class="generico_headerText">DA PROVA/PROVINHA SÃO PAULO</p>
+            </div>
+
+            <!--MSTECH
+            *Opções de filtragem
+            -->
+            <form id="formResultadoOpcoes">
+                <div id="resultados_tabEdit">
+                    <!--OPÇÃO 1 - RESULTADOS DA PROVA-->
+                    <p id="resultados_tab0" class="resultados_headerTitle" onclick="divResultadoProva(0)">
+                        DESEMPENHO E PARTICIPAÇÃO DOS ESTUDANTES
+                        <span id="resultados_icone0">
+                            <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
+                        </span>
+                    </p>
+                    <!--MSTECH - Nova div com opções de resultado da prova. Esta div comportará os resultados
+                    da ProvaSP e ProvinhaSP, bem como os respectivos gráficos e tabelas.-->
+                    <div id="resultados_div0" style="display: none;">
+                        <table style="width:100%;">
+                            <tr>
+                                <td>
+                                    <select id="ddlResultadoNivel" data-mini="true">
+                                        <option value="" selected="selected">(Resultado por...)</option>
+                                        <option id="ddlResultadoNivel_SME" value="SME">SME detalhando DREs</option>
+                                        <option id="ddlResultadoNivel_DRE" value="DRE">DRE detalhando Escolas</option>
+                                        <option value="ESCOLA">Escola detalhando Turmas</option>
+                                        <option value="TURMA" id="ddlResultadoNivel_optionTurma">Turma detalhando Alunos</option>
+                                        <option value="ALUNO">Aluno</option>
+                                    </select>
+
+                                </td>
+                                <td>
+                                    <select id="ddlResultadoEdicao" data-mini="true" disabled="disabled">
+                                        <option value="" selected="selected">(Edição)</option>
+                                        <option value="ENTURMACAO_ATUAL" id="ddlResultadoEdicao_item_ENTURMACAO_ATUAL">Enturmação atual</option>
+                                        <option value="2019">Edição 2019</option>
+                                        <option value="2018">Edição 2018</option>
+                                        <option value="2017">Edição 2017</option>
+                                        <option value="2012" class="edicao-resultado-legado">Edição 2012</option>
+                                        <option value="2011" class="edicao-resultado-legado">Edição 2011</option>
+                                        <option value="2010" class="edicao-resultado-legado">Edição 2010</option>
+                                        <option value="2009" class="edicao-resultado-legado">Edição 2009</option>
+                                        <option value="2008" class="edicao-resultado-legado">Edição 2008</option>
+                                        <option value="2007" class="edicao-resultado-legado">Edição 2007</option>
+                                        <!--
+                                        <option value="HISTORICO">Histórico</option>
+                                        -->
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!--MSTECH - Selecionar resultado por Ciclo de Aprendizagem ou por Disciplina/Ano -->
+                        <p id="resultados_opcaoCicloAprendizagem" class="resultados_checkOption" style="display: none;">
+                            <span id="resultados_opcaoCicloAprendizagemSpan">
+                                <span class="mdi mdi-checkbox-blank-outline"></span>
+                            </span>
+                            Resultado por Ciclo de Aprendizagem
+                        </p>
+
+                        <table style="width:100%;">
+                            <tr>
+                                <td id="resultado_selectCiclo" style="display: none;">
+                                    <select id="ddlResultadoCiclo" data-mini="true" disabled="disabled">
+                                        <option value="" selected="selected">(Ciclo...)</option>
+                                        <option id="ddlResultadoCicloItem_Ciclo1" value="1">Alfabetização</option>
+                                        <option id="ddlResultadoCicloItem_Ciclo2" value="2">Interdisciplinar</option>
+                                        <option id="ddlResultadoCicloItem_Ciclo3" value="3">Autoral</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select id="ddlResultadoAreaConhecimento" data-mini="true" disabled="disabled">
+                                        <option value="" selected="selected">(Área de Conhecimento...)</option>
+                                        <option value="1">Ciências da Natureza</option>
+                                        <option value="2">Língua Portuguesa</option>
+                                        <option value="4">Redação</option>
+                                        <option value="3">Matemática</option>
+                                    </select>
+                                </td>
+                                <td id="resultado_selectAno">
+                                    <select id="ddlResultadoAno" data-mini="true" disabled="disabled">
+                                        <option value="" selected="selected">(Ano...)</option>
+                                        <option id="ddlResultadoAnoItem_Ano2" value="2">2º Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano3" value="3">3º Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano4" value="4">4º Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano5" value="5">5º Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano6" value="6">6º Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano7" value="7">7º Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano8" value="8">8º Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano9" value="9">9º Ano</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="width:100%;" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td>
+                                    <div id="divResultadoDRE" style="overflow:auto; height:200px; display:none;">
+                                        <label for="chkResultadoTodasDREs" id="lblResultadoTodasDREs">
+                                            <input id="chkResultadoTodasDREs" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk" value="TD" data-mini="true" />
+                                            (TODAS DREs)
+                                        </label>
+                                        <label for="chkResultadoBT">
+                                            <input id="chkResultadoBT" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="BT" data-mini="true" />
+                                            BUTANTA
+                                        </label>
+                                        <label for="chkResultadoCL">
+                                            <input id="chkResultadoCL" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="CL" data-mini="true" />
+                                            CAMPO LIMPO
+                                        </label>
+                                        <label for="chkResultadoCS">
+                                            <input id="chkResultadoCS" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="CS" data-mini="true" />
+                                            CAPELA DO SOCORRO
+                                        </label>
+                                        <label for="chkResultadoFO">
+                                            <input id="chkResultadoFO" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="FO" data-mini="true" />
+                                            FREGUESIA/BRASILANDIA
+                                        </label>
+                                        <label for="chkResultadoG">
+                                            <input id="chkResultadoG" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="G" data-mini="true" />
+                                            GUAIANASES
+                                        </label>
+                                        <label for="chkResultadoIP">
+                                            <input id="chkResultadoIP" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="IP" data-mini="true" />
+                                            IPIRANGA
+                                        </label>
+                                        <label for="chkResultadoIQ">
+                                            <input id="chkResultadoIQ" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="IQ" data-mini="true" />
+                                            ITAQUERA
+                                        </label>
+                                        <label for="chkResultadoJT">
+                                            <input id="chkResultadoJT" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="JT" data-mini="true" />
+                                            JACANA/TREMEMBE
+                                        </label>
+                                        <label for="chkResultadoPE">
+                                            <input id="chkResultadoPE" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="PE" data-mini="true" />
+                                            PENHA
+                                        </label>
+                                        <label for="chkResultadoPJ">
+                                            <input id="chkResultadoPJ" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="PJ" data-mini="true" />
+                                            PIRITUBA/JARAGUA
+                                        </label>
+                                        <label for="chkResultadoSA">
+                                            <input id="chkResultadoSA" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="SA" data-mini="true" />
+                                            SANTO AMARO
+                                        </label>
+                                        <label for="chkResultadoSM">
+                                            <input id="chkResultadoSM" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="SM" data-mini="true" />
+                                            SAO MATEUS
+                                        </label>
+                                        <label for="chkResultadoMP">
+                                            <input id="chkResultadoMP" type="checkbox" name="chkResultadoDRE" class="resultado-dre-chk resultado-dre-item-chk" value="MP" data-mini="true" />
+                                            SAO MIGUEL
+                                        </label>
+                                    </div>
+                                    <span id="lblResultadoSelecaoTotalDRE" class="resultadoInfoSelecao"></span>
+
+                                </td>
+                                <td>
+                                    <div id="divResultadoEscola" style="display:none;">
+                                        <input type="search" id="txtResultadoEscolaFiltro" data-mini="true" placeholder="Filtrar escolas deselecionadas" />
+                                        <div id="divResultadoEscolaItens" style="overflow:auto; height:155px;"></div>
+                                        <span id="lblResultadoSelecaoTotalEscola" class="resultadoInfoSelecao"></span>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div id="divResultadoTurma" style="display:none;">
+                            <input id="txtResultadoTurma" placeholder="Informe uma ou mais turmas, ex: 4A, 4B, 4C..." style="display:none;" />
+                            <button id="btnResultadoBuscarTurmas" data-role="button" type="button">Buscar Turmas</button>
+                            <div id="divResultadoTurmaItens" style="overflow:auto; height:155px;"></div>
+                            <span id="lblResultadoSelecaoTotalTurma" class="resultadoInfoSelecao"></span>
+                        </div>
+
+                        <div id="divResultadoAluno" style="display:none;">
+                            <button id="btnResultadoBuscarAlunos" data-role="button" type="button">Buscar Alunos</button>
+                            <div id="divResultadoAlunoItens" style="overflow:auto; height:155px;"></div>
+                            <span id="lblResultadoSelecaoTotalAluno" class="resultadoInfoSelecao"></span>
+                        </div>
+
+                        <!--Abrir Popup de Participação-->
+                        <p id="btnParticipacaoApresentar" class="participacao_btn" onclick="popupParticipacao()">
+                            Dados de participação<span class="mdi mdi-arrow-top-right"></span>
+                        </p>
+                        <button id="btnResultadoApresentar" data-role="button" type="button">Apresentar resultado</button>
+                    </div>
+
+                    <!--OPÇÃO 5 - REVISTAS PEDAGÓGICAS E BOLETINS DAS ESCOLAS-->
+                    <p id="resultados_tab4" class="resultados_headerTitle" onclick="abrirConsultaRevistasBoletins()">
+                        REVISTAS PEDAGÓGICAS E BOLETINS DAS ESCOLAS
+                        <span id="configuracoes_icone4">
+                            <span class="mdi mdi-arrow-right-drop-circle-outline"></span>
+                        </span>
+                    </p>
+
+                    <!--OPÇÃO 4 - SEQUÊNCIA DE ATIVIDADES-->
+                    <p id="resultados_tab3" class="resultados_headerTitle" onclick="divResultadoProva(3)">
+                        SEQUÊNCIA DE ATIVIDADES
+                        <span id="resultados_icone3">
+                            <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
+                        </span>
+                    </p>
+                    <div id="resultados_div3" style="display: none;">
+                        <table style="width:100%;">
+                            <tr>
+                                <td>
+                                    <select id="ddlSDEdicao" data-mini="true">
+                                        <option value="" selected="selected">(Edição...)</option>
+                                        <option value="2019">Edição 2019</option>
+                                        <option value="2018">Edição 2018</option>
+                                        <option value="2017">Edição 2017</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select id="ddlSDCiclo" data-mini="true" disabled="disabled">
+                                        <option value="" selected="selected">(Ciclo...)</option>
+                                        <option value="1">Ciclo de Alfabetização</option>
+                                        <option value="2">Ciclo Interdisciplinar</option>
+                                        <option value="3">Ciclo Autoral</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table style="width:100%;">
+                            <tr>
+                                <td>
+                                    <select id="ddlSDAreaConhecimento" data-mini="true" disabled="disabled">
+                                        <option value="" selected="selected">(Área de Conhecimento...)</option>
+                                        <option value="1">Ciências da Natureza</option>
+                                        <option value="2">Língua Portuguesa</option>
+                                        <option value="4">Redação</option>
+                                        <option value="3">Matemática</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div id="SDResultados" style="display: none;">
+                            <div id="SDResultadosBlocos"></div>
+                        </div>
+                    </div>
+
+
+                    <!--OPÇÃO 2 - QUESTIONÁRIOS - FATORES ASSOCIADOS-->
+                    <p id="resultados_tab1" class="resultados_headerTitle" onclick="divResultadoProva(1)">
+                        QUESTIONÁRIO - FATORES ASSOCIADOS
+                        <span id="resultados_icone1">
+                            <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
+                        </span>
+                    </p>
+                    <div id="resultados_div1" style="display: none;">
+                        <div style="padding: 10px 0px;">
+                            <table style="width:100%;">
+                                <tr>
+                                    <td>
+                                        <select id="ddlFAEdicao" data-mini="true">
+                                            <option value="" selected="selected">(Edição)</option>
+                                            <option value="2018">Edição 2018</option>
+                                            <option value="2019">Edição 2019</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select id="ddlFACiclo" data-mini="true" disabled="disabled">
+                                            <option value="" selected="selected">(Ciclo)</option>
+                                            <option value="1">Ciclo de Alfabetização</option>
+                                            <option value="2">Ciclo Interdisciplinar</option>
+                                            <option value="3">Ciclo Autoral</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <select id="ddlFAQuestionario" data-mini="true" disabled="disabled">
+                                <option value="" selected="selected">(Questionário)</option>
+                            </select>
+
+                            <select id="ddlFAConstructo" data-mini="true" disabled="disabled">
+                                <option value="" selected="selected">(Constructo)</option>
+                            </select>
+                        </div>
+
+                        <button id="btnFAApresentar" data-role="button" type="button" disabled="disabled">
+                            Apresentar resultado
+                        </button>
+                    </div>
+
+                    <!--OPÇÃO 3 - QUESTIONÁRIOS - Caracterização das famílias e escolas-->
+                    <p id="resultados_tab2" class="resultados_headerTitle" onclick="divResultadoProva(2)">
+                        QUESTIONÁRIO - CARACTERIZAÇÃO DAS FAMÍLIAS E ESCOLAS
+                        <span id="resultados_icone2">
+                            <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
+                        </span>
+                    </p>
+                    <div id="resultados_div2" style="display: none;">
+                        <div style="padding: 10px 0px;">
+                            <!--Selecionar nível-->
+                            <select id="ddlCFENivel" data-mini="true">
+                                <option value="" selected="selected">(Nível)</option>
+                                <option value="SME">SME</option>
+                                <option value="DRE">DRE</option>
+                                <option value="ESCOLA">Escola</option>
+                            </select>
+
+                            <table style="width: 100%;" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td>
+                                        <div id="divCFEDRE" style="overflow:auto; height: 200px; display: none;">
+                                            <label for="chkResultadoBT">
+                                                <input id="radioCFEBT" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="BT" data-mini="true" />
+                                                BUTANTA
+                                            </label>
+                                            <label for="radioCFECL">
+                                                <input id="radioCFECL" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="CL" data-mini="true" />
+                                                CAMPO LIMPO
+                                            </label>
+                                            <label for="radioCFECS">
+                                                <input id="radioCFECS" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="CS" data-mini="true" />
+                                                CAPELA DO SOCORRO
+                                            </label>
+                                            <label for="radioCFEFO">
+                                                <input id="radioCFEFO" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="FO" data-mini="true" />
+                                                FREGUESIA/BRASILANDIA
+                                            </label>
+                                            <label for="radioCFEG">
+                                                <input id="radioCFEG" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="G" data-mini="true" />
+                                                GUAIANASES
+                                            </label>
+                                            <label for="radioCFEIP">
+                                                <input id="radioCFEIP" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="IP" data-mini="true" />
+                                                IPIRANGA
+                                            </label>
+                                            <label for="radioCFEIQ">
+                                                <input id="radioCFEIQ" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="IQ" data-mini="true" />
+                                                ITAQUERA
+                                            </label>
+                                            <label for="radioCFEJT">
+                                                <input id="radioCFEJT" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="JT" data-mini="true" />
+                                                JACANA/TREMEMBE
+                                            </label>
+                                            <label for="radioCFEPE">
+                                                <input id="radioCFEPE" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="PE" data-mini="true" />
+                                                PENHA
+                                            </label>
+                                            <label for="radioCFEPJ">
+                                                <input id="radioCFEPJ" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="PJ" data-mini="true" />
+                                                PIRITUBA/JARAGUA
+                                            </label>
+                                            <label for="radioCFESA">
+                                                <input id="radioCFESA" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="SA" data-mini="true" />
+                                                SANTO AMARO
+                                            </label>
+                                            <label for="radioCFESM">
+                                                <input id="radioCFESM" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="SM" data-mini="true" />
+                                                SAO MATEUS
+                                            </label>
+                                            <label for="radioCFEMP">
+                                                <input id="radioCFEMP" type="radio" name="radioCFEDRE" class="cfe-dre-radio cfe-dre-item-radio" value="MP" data-mini="true" />
+                                                SAO MIGUEL
+                                            </label>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <div id="divCFEEscola" style="display:none;">
+                                            <div id="divCFEEscolaItens" style="overflow:auto; height: 200px;"></div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </table>
+
+
+                            <table style="width:100%;">
+                                <tr>
+                                    <td>
+                                        <select id="ddlCFEEdicao" data-mini="true" disabled="disabled">
+                                            <option value="" selected="selected">(Edição)</option>
+                                            <option value="2019">Edição 2019</option>
+                                            <option value="2018">Edição 2018</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select id="ddlCFECiclo" data-mini="true" disabled="disabled">
+                                            <option value="" selected="selected">(Ciclo)</option>
+                                            <option value="1">Ciclo de Alfabetização</option>
+                                            <option value="2">Ciclo Interdisciplinar</option>
+                                            <option value="3">Ciclo Autoral</option>
+                                        </select>
+                                    </td>
+
+                                </tr>
+                            </table>
+
+                            <select id="ddlCFEQuestionario" data-mini="true" disabled="disabled">
+                                <option value="" selected="selected">(Questionário)</option>
+                            </select>
+                        </div>
+
+                        <button id="btnCFEApresentar" data-role="button" type="button" disabled="disabled">
+                            Apresentar resultado
+                        </button>
+                    </div>
+
+                    <!--VOLTAR AO MENU-->
+                    <p id="btnResultadoFechar" class="ui-btn btnSair" style="display: none;">Voltar</p>
+                </div>
+            </form>
+
+            <!--MSTECH
+            *Resultado de fato marcos origem
+            -->
+            <div id="divResultadoApresentacao" style="display:none;">
+
+                <div style="font-weight:bold; margin-top:25px;">
+                    <span id="lblResultadoTitulo" class="lblResultadoTitulo">
+                    </span>
+                </div>
+
+                <ul id="lblResultadoSubTitulo"
+                    style="margin: 0px 0px 5px 0px; padding: 0px; text-align: center;">
+                    <li style="display:inline">
+                        <span id="lblResultadoEdicao"></span> -
+                    </li>
+                    <li style="display:inline">
+                        <span id="lblResultadoAreaConhecimento"></span>
+                    </li>
+                    <li style="display:inline">
+                        - <span id="lblResultadoAno"></span>
+                    </li>
+                </ul>
+
+                <a href="#" onclick="document.getElementById('divChartResultadoDetalhe').style.overflow='visible'; document.getElementById('divChartResultadoDetalhe').style.height='100%'; window.print();">Imprimir</a>
+
+                <div id="divResultadoTituloAgregacao" style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
+                    <span id="lblResultadoTituloAgregacao"></span>
+                </div>
+
+                <!--MSTECH
+                    *Principais gráficos - Agregação e Ciclo de Aprendizagem.
+                    OBS: O gráfico de Ciclo de Aprendizagem deve aparecer somente quando existe
+                    a informação do ciclo e quando for nível SME ou DRE
+
+                    ATUALIZAÇÃO: Agora os gráficos de Ciclo de Aprendizagem são também adicionados aos
+                    gráficos legados de agregação. Desta maneira, pode-se montar N gráficos de
+                    Ciclo de Aprendizagem, dependendo do filtro selecionado
+                -->
+                <div id="divChartResultadoAgregacao"></div>
+
+                <div id="divResultadoTituloAmostral" style="background-color:rgb(255,215,215); color:rgb(255,50,50); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none; display:none;">
+                    <span>Por falta de representatividade das turmas amostrais, não existe cálculo de média nem tão pouco percentuais de acertos por habilidade para os níveis Escola e Turma.</span>
+                </div>
+
+
+                <div data-role="tabs" id="tabs" style="margin-top:15px;">
+                    <div id="divTabsProficienciaHabilidade" data-role="navbar">
+                        <ul>
+                            <li><a id="#linkResultadoTabProficiencias" href="#divResultadoTabProficiencias">Proficiência em detalhe</a></li>
+                            <li><a id="#linkResultadoTabHabilidades" href="#divResultadoTabHabilidades">Habilidade</a></li>
+                        </ul>
+                    </div>
+
+                    <div id="divResultadoTabProficiencias" class="ui-body-d ui-content">
+
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="width:50%;">
+                                    <label for="chkResultadoFiltroAbaixoDoBasico">
+                                        <input id="chkResultadoFiltroAbaixoDoBasico" type="checkbox" class="resultado-filtro-proficiencia" checked="checked" value="1" data-mini="true" />
+                                        Abaixo do Básico
+                                    </label>
+                                </td>
+                                <td style="width:50%;">
+                                    <label for="chkResultadoFiltroBasico">
+                                        <input id="chkResultadoFiltroBasico" type="checkbox" class="resultado-filtro-proficiencia" checked="checked" value="2" data-mini="true" />
+                                        Básico
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:50%;">
+                                    <label for="chkResultadoFiltroAdequado">
+                                        <input id="chkResultadoFiltroAdequado" type="checkbox" class="resultado-filtro-proficiencia" checked="checked" value="3" data-mini="true" />
+                                        Adequado
+                                    </label>
+                                </td>
+                                <td style="width:50%;">
+                                    <label for="chkResultadoFiltroAvancado">
+                                        <input id="chkResultadoFiltroAvancado" type="checkbox" class="resultado-filtro-proficiencia" checked="checked" value="4" data-mini="true" />
+                                        Avançado
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div id="divResultadoTituloDetalhe" class="infoBox" style="margin:15px;">
+                            <span id="lblResultadoTituloDetalhe"></span>
+                        </div>
+
+                        <span class="lblResultadoTituloEscalaSaeb_1"></span>
+                        <div class="divChartResultadoEscalaSaeb_1"></div>
+                        <img class="imgChartResultadoDetalhe" />
+                        <div id="divChartResultadoDetalhe" class="divChartResultadoDetalhe" style="border:1px solid rgb(230,230,230);"></div>
+                        <span class="lblResultadoTituloEscalaSaeb_2"></span>
+                        <div class="divChartResultadoEscalaSaeb_2"></div>
+
+                    </div>
+
+                    <div id="divResultadoTabHabilidades" class="ui-body-d ui-content">
+                        <div class="infoBox" style="margin:15px;">
+                            <span>
+                                Abaixo seguem os percentuais de acertos por cada habilidade.
+                            </span>
+                        </div>
+                        <div id="divResultadoTabHabilidades_conteudoDinamico"></div>
+                    </div>
+                    <a href="#" data-role="button" class="btnInfo" id="btnResultadoAlterarParametros2">Voltar às opções</a>
+                    <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+                        <a id="btnResultadoAlterarParametros" style="width:50%;" href="#" data-role="button" class="btnInfo">Voltar às opções</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!--MSTECH
+            *Popup para mostrar dados de participação da ProvaSP
+            -->
+            <div id="divResultadoFA" class="page generico_mainDiv" style="display: none;">
+                <div class="container generico_subDiv">
+                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+                    <div class="generico_headerDiv">
+                        <p class="generico_headerTitle">SME</p>
+                        <p id="faHeaderText" class="generico_headerText"></p>
+                    </div>
+
+                    <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
+                        O gráfico abaixo apresenta a influência do fator selecionado no desempenho dos estudantes, por componente curricular.<br /><br />
+                        Toque em uma variável específica para mais informações.
+                    </div>
+
+                    <div class="fatoresassociados_headerDiv">
+                        <p class="fatoresassociados_title">INFLUÊNCIA DO FATOR DO DESEMPENHO</p>
+                        <p id="faHeaderTitle" class="fatoresassociados_text"></p>
+                    </div>
+
+                    <!--Quadros-->
+                    <div class="fatoresassociados_quadrosDiv">
+                        <!--LÍNGUA PORTUGUESA-->
+                        <div class="fatoresassociados_quadrosBlockDiv">
+                            <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                            </div>
+                            <div class="fatoresassociados_quadrosBlockRightDiv">
+                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #F4CB01;">
+                                    <p id="faTitle2" class="fatoresassociados_quadrosBlockHeader"></p>
+                                </div>
+                                <div class="fatoresassociados_quadrosBlockHeight">
+                                    <p id="faValor2" class="fatoresassociados_quadrosBlockBody">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--MATEMÁTICA-->
+                        <div class="fatoresassociados_quadrosBlockDiv">
+                            <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                            </div>
+                            <div class="fatoresassociados_quadrosBlockRightDiv">
+                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #EA7458;">
+                                    <p id="faTitle3" class="fatoresassociados_quadrosBlockHeader"></p>
+                                </div>
+                                <div class="fatoresassociados_quadrosBlockHeight">
+                                    <p id="faValor3" class="fatoresassociados_quadrosBlockBody">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--CIÊNCIA NATURAIS-->
+                        <div class="fatoresassociados_quadrosBlockDiv">
+                            <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                            </div>
+                            <div class="fatoresassociados_quadrosBlockRightDiv">
+                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #6B91A8;">
+                                    <p id="faTitle1" class="fatoresassociados_quadrosBlockHeader"></p>
+                                </div>
+                                <div class="fatoresassociados_quadrosBlockHeight">
+                                    <p id="faValor1" class="fatoresassociados_quadrosBlockBody">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="fatoresassociados_resenha">
+                        O fator (variável contextual) que não apresentou impacto significativo sobre
+                        o desempenho do estudante no componente curricular e/ou sobre a média
+                        escolar é representado por um traço (-).
+                    </p>
+
+                    <!--Variáveis-->
+                    <div class="fatoresassociados_variaveisDiv">
+                        <!--Variáveis Table HEADER-->
+                        <!--MSTECH - Tabela removida para retirar imagem do estado de SP-->
+                        <!--<table class="fatoresassociados_variaveisTable"><tr>-->
+                        <!--<td class="fatoresassociados_variaveisTDLeft">-->
+                        <!--<p class="fatoresassociados_variaveisTDLeftText">-->
+                        <!--Observe abaixo as variáveis que compõem o constructo<br />-->
+                        <!--<b>-->
+                        <!--<span class='mdi mdi-chevron-right'></span>-->
+                        <!--<span id="faVarsConstructo"></span>-->
+                        <!--</b>-->
+                        <!--</p>-->
+                        <!--</td>-->
+                        <!--<td class="fatoresassociados_variaveisTDRight">-->
+                        <!--<img class="fatoresassociados_variaveisTDRightImg" src="/AppProvaSP/images/fa_background.png" />-->
+                        <!--</td>-->
+                        <!--</tr></table>-->
+                        <p class="fatoresassociados_variaveisText">
+                            Observe abaixo as variáveis que compõem o constructo<br />
+                            <b>
+                                <span class='mdi mdi-chevron-right'></span>
+                                <span id="faVarsConstructo"></span>
+                            </b>
+                        </p>
+
+                        <!--Variáveis em si-->
+                        <div id="fa_variaveisDoConstructo"></div>
+                    </div>
+
+                    <!--BOTÃO VOLTAR-->
+                    <button id="btnFAVoltar" data-role="button">Voltar às opções</button>
+                </div>
+            </div>
+
+            <!--MSTECH
+            *Popup para mostrar dados de participação da ProvaSP
+            -->
+            <div id="divResultadoConstructo" class="page generico_mainDiv" style="display: none;">
+                <div class="container generico_subDiv">
+                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+                    <div class="generico_headerDiv">
+                        <p id="constructoHeaderTitle" class="generico_headerTitle"></p>
+                        <p id="constructoHeaderText" class="generico_headerText"></p>
+                    </div>
+
+                    <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
+                        Nos gráficos abaixo são mostrados os dados de caracterização das famílias e das escolas
+                    </div>
+
+                    <!--Conteúdo do contructo em si-->
+                    <div id="constructDivContent"></div>
+
+                    <!--BOTÃO VOLTAR-->
+                    <button id="btnConstructoVoltar" data-role="button">Voltar</button>
+                </div>
+            </div>
+        </div>
+        <!--MSTECH
+        *Adicionado DIV de fechamento que estava faltando
+        -->
+    </div>
+
+
+    <!--AMCOM
+    *Popup para consulta de revistas pedagógicas e boletins
+    -->
+    <div id="revistasBoletins-page" class="page generico_mainDiv" style="display: none;">
+        <div class="container generico_subDiv">
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">REVISTAS PEDAGÓGICAS E BOLETINS</p>
+                <p class="generico_headerText">DAS ESCOLAS</p>
+            </div>
+
+            <!-- Marcos -->
+            <!--AMCOM
+            *Opções de filtragem
+            -->
+            <form id="formRevistasBoletinsOpcoes">
+                <table style="width:100%;">
+                    <tr>
+                        <td style="width: 40%">
+                            <select id="ddlRevistasBoletinsEdicao" data-mini="true">
+                                <option value="2019" selected="selected">Edição 2019</option>
+                                <option value="2018">Edição 2018</option>
+                                <option value="2017">Edição 2017</option>
+                            </select>
+                        </td>
+                        <td style="width: 60%">
+                            <select id="ddlRevistasBoletinsAreaConhecimento" data-mini="true">
+                                <option value="" selected="selected">(Área de Conhecimento...)</option>
+                                <option value="1">Ciências da Natureza</option>
+                                <option value="2">Língua Portuguesa</option>
+                                <option value="4">Redação</option>
+                                <option value="3">Matemática</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="width:100%;">
+                    <tr id="revistasBoletins_selectCiclo">
+                        <td>
+                            <select id="ddlRevistasBoletinsCiclo" data-mini="true" style="width: 100%">
+                                <option value="" selected="selected">(Ciclo de Aprendizagem...)</option>
+                                <option id="ddlRevistasBoletinsCicloItem_Ciclo1" value="1">Alfabetização</option>
+                                <option id="ddlRevistasBoletinsCicloItem_Ciclo2" value="2">Interdisciplinar</option>
+                                <option id="ddlRevistasBoletinsCicloItem_Ciclo3" value="3">Autoral</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+
+                <table style="width:100%;" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td>
+                            <section id="divRevistasBoletinsDRE" style="display:none;">
+                                <div style="overflow:auto; height:180px;">
+                                    <label for="chkRevistasBoletinsTodasDREs" id="lblRevistasBoletinsTodasDREs">
+                                        <input id="chkRevistasBoletinsTodasDREs" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk" value="TD" data-mini="true" />
+                                        (TODAS DREs)
+                                    </label>
+                                    <label for="chkRevistasBoletinsBT">
+                                        <input id="chkRevistasBoletinsBT" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="BT" data-mini="true" />
+                                        BUTANTA
+                                    </label>
+                                    <label for="chkRevistasBoletinsCL">
+                                        <input id="chkRevistasBoletinsCL" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="CL" data-mini="true" />
+                                        CAMPO LIMPO
+                                    </label>
+                                    <label for="chkRevistasBoletinsCS">
+                                        <input id="chkRevistasBoletinsCS" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="CS" data-mini="true" />
+                                        CAPELA DO SOCORRO
+                                    </label>
+                                    <label for="chkRevistasBoletinsFO">
+                                        <input id="chkRevistasBoletinsFO" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="FO" data-mini="true" />
+                                        FREGUESIA/BRASILANDIA
+                                    </label>
+                                    <label for="chkRevistasBoletinsG">
+                                        <input id="chkRevistasBoletinsG" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="G" data-mini="true" />
+                                        GUAIANASES
+                                    </label>
+                                    <label for="chkRevistasBoletinsIP">
+                                        <input id="chkRevistasBoletinsIP" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="IP" data-mini="true" />
+                                        IPIRANGA
+                                    </label>
+                                    <label for="chkRevistasBoletinsIQ">
+                                        <input id="chkRevistasBoletinsIQ" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="IQ" data-mini="true" />
+                                        ITAQUERA
+                                    </label>
+                                    <label for="chkRevistasBoletinsJT">
+                                        <input id="chkRevistasBoletinsJT" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="JT" data-mini="true" />
+                                        JACANA/TREMEMBE
+                                    </label>
+                                    <label for="chkRevistasBoletinsPE">
+                                        <input id="chkRevistasBoletinsPE" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="PE" data-mini="true" />
+                                        PENHA
+                                    </label>
+                                    <label for="chkRevistasBoletinsPJ">
+                                        <input id="chkRevistasBoletinsPJ" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="PJ" data-mini="true" />
+                                        PIRITUBA/JARAGUA
+                                    </label>
+                                    <label for="chkRevistasBoletinsSA">
+                                        <input id="chkRevistasBoletinsSA" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="SA" data-mini="true" />
+                                        SANTO AMARO
+                                    </label>
+                                    <label for="chkRevistasBoletinsSM">
+                                        <input id="chkRevistasBoletinsSM" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="SM" data-mini="true" />
+                                        SAO MATEUS
+                                    </label>
+                                    <label for="chkRevistasBoletinsMP">
+                                        <input id="chkRevistasBoletinsMP" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="MP" data-mini="true" />
+                                        SAO MIGUEL
+                                    </label>
+                                </div>
+                                <span id="lblRevistasBoletinsSelecaoTotalDRE" class="revistasBoletinsInfoSelecao revistasBoletinsInfoSelecaoDRE"></span>
+                            </section>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <section id="divRevistasBoletinsEscola" class="ui-mini" style="display:none;">
+                                <span id="lblRevistasBoletinsSelecaoTotalEscola" class="revistasBoletinsInfoSelecao">Escolas:</span>
+                                <input type="search" id="txtRevistasBoletinsEscolaFiltro" data-mini="true" placeholder="Filtrar escolas" />
+                                <div id="divRevistasBoletinsEscolaItens" style="overflow:auto; height:180px;"></div>
+                            </section>
+                        </td>
+                    </tr>
+                </table>
+
+            </form>
+
+            <button id="btnRevistasBoletinsVoltar" data-role="button">Voltar</button>
+        </div>
+    </div>
+
+    <!--MSTECH
+    *Popup para mostrar dados de participação da ProvaSP
+    -->
+    <div id="participacao-page" class="page generico_mainDiv" style="display: none;">
+        <div class="container generico_subDiv">
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">PARTICIPAÇÃO</p>
+                <p class="generico_headerText">Relatório de participação dos estudantes na prova</p>
+            </div>
+
+            <div class="participacao_coloredTipDiv">
+                <p class='participacao_coloredTip'>Dados representativos segundo os critérios do INEP</p>
+                <p class='participacao_flagIconTip'><span class='mdi mdi-flag-variant'></span></p>
+            </div>
+
+            <div id="participacaoConteudo" class="participacao_mainDiv"></div>
+            <button id="btnParticipacaoVoltar" data-role="button">Voltar</button>
+        </div>
+    </div>
+
+    <!--MSTECH
+    *Questionários do ProvaSP dividiros por tipo.
+    *Esta div estava posicionada de maneira errada dentro da div de resultado-page nuinca
+    sendo mostrada por este motivo. Sendoa assim, separamos a div para que funciona corretamente.
+    -->
+    <div id="questionario-page" class="page">
+        <div class="container" style="text-align:center;">
+            <div id="divTituloQuestionario" data-role="header" class="header" style="text-align:center; padding:10px; ">
+                <span id="tituloQuestionario" style="font-size:13pt; ">Ficha de Registro - Coordenador(a) Pedagógico(a)</span>
+            </div>
+
+            <div role="main" class="ui-content">
+                <div id="Questionarios">
+
+                    <!--MSTECH
+                    *Questionário Supervisor
+                    -->
+                    <form id="Questionario1">
+                        <input id="tituloQuestionario1" type="hidden" value="Questionário do Supervisor Escolar" />
+
+                        <div id="divQuestionario1_Intro" style="text-align:left;">
+                            <p>Caro(a) Supervisor(a),</p>
+                            <p>
+                                Este questionário tem como objetivo coletar informações quanto à organização e condições de seu trabalho, à realidade das escolas e ao aproveitamento dos alunos.
+                                As informações fornecidas por você são importantes para a pesquisa que estamos realizando, neste ano, sobre clima escolar, práticas pedagógicas e de gestão.
+                                Solicitamos que, ao respondê-lo, procure contemplar o conjunto das escolas que você supervisiona. Os dados produzidos serão sigilosos e os resultados dessa
+                                pesquisa serão divulgados no 1º semestre de 2020.
+                            </p>
+                            <p>Contamos com sua colaboração respondendo às perguntas a seguir, garantindo a qualidade da pesquisa e a eficiência da Edição 2019 da Provinha e da Prova São Paulo. </p>
+                            <p>Não existem respostas certas ou erradas. Assinale apenas as alternativas que mais condizem com a sua realidade. Solicitamos que responda todas as questões.</p>
+                            <a id="btnQuestionario1_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario1_Questoes" style="display:none;"></div>
+                    </form>
+                    <!--MSTECH
+                    *Questionário Diretor
+                    -->
+                    <form id="Questionario24">
+                        <input id="tituloQuestionario24" type="hidden" value="Questionário do Diretor de Escola" />
+
+                        <div id="divQuestionario24_Intro" style="text-align:left;">
+                            <p>Caro(a) Diretor(a),</p>
+                            <p>
+                                Este questionário busca conhecer suas opiniões a respeito da sua escola.
+                                As informações fornecidas por você são importantes para a pesquisa que estamos realizando,
+                                neste ano, sobre clima escolar, práticas pedagógicas e de gestão. Os dados produzidos
+                                serão sigilosos e os resultados dessa pesquisa serão divulgados no 1º semestre de 2020.<br><br>
+                                Contamos com sua ajuda para responder às perguntas a seguir, garantindo a qualidade da
+                                pesquisa e o sucesso da Edição 2019 da Prova São Paulo.
+                            </p>
+                            <a id="btnQuestionario24_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario24_Questoes" style="display:none;"></div>
+                    </form>
+                    <!--MSTECH
+                    *Questionário Coordenador
+                    -->
+                    <form id="Questionario3">
+                        <input id="tituloQuestionario3" type="hidden" value="Questionário do Coordenador Pedagógico" />
+
+                        <div id="divQuestionario3_Intro" style="text-align:left;">
+                            <p>Caro(a) Coordenador(a) Pedagógico(a),</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Coordenador(a) Pedagógico(a). As informações fornecidas
+                                por você são importantes para a compreensão e o mapeamento de
+                                políticas relacionadas a clima escolar e práticas pedagógicas e
+                                de gestão. Suas respostas não serão analisadas ou divulgadas
+                                individualmente e os resultados dessa pesquisa serão publicizados
+                                no 1º semestre de 2019.<br /><br />
+                                Contamos com sua ajuda para responder às perguntas a seguir,
+                                garantindo a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2018.
+                            </p>
+                            <a id="btnQuestionario3_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario3_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionários dos tipos 4 ao 7 não devem existir no ProvaSP
+                    -->
+                    <form id="divQuestionario4">
+                        <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
+                        <input id="tituloQuestionario4" type="hidden" value="Questionário do Professor de Matemática" />
+                    </form>
+
+                    <form id="Questionario5">
+                        <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
+                        <input id="tituloQuestionario5" type="hidden" value="Questionário do Professor de Ciências Naturais" />
+                    </form>
+
+                    <form id="Questionario6">
+                        <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
+                        <input id="tituloQuestionario6" type="hidden" value="Questionário do Professor de Língua Portuguesa" />
+                    </form>
+
+                    <form id="Questionario7">
+                        <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
+                        <input id="tituloQuestionario7" type="hidden" value="Questionário do Professor do Ensino Fundamental I" />
+                    </form>
+                    <!--MSTECH
+                    *Questionário Controle da Prova a ser aplicada
+                    -->
+                    <form id="Questionario8">
+                        <input id="tituloQuestionario8" type="hidden" value="Ficha de Registro - Aplicador de Prova" />
+
+                        <div id="divQuestionario8_Questoes">
+                            <h3>
+                                1. Identificação da Turma:
+                            </h3>
+                            <fieldset>
+                                <input id="Questionario_8_Questao_1_tur_id" type="text" name="Questionario_8_Questao_1" readonly="readonly" />
+                            </fieldset>
+
+
+                            <h3>
+                                2. Data de Aplicação:
+                            </h3>
+                            <fieldset>
+                                <!--
+                                Datepicker Widget:
+                                http://demos.jquerymobile.com/1.4.1/datepicker/
+                                -->
+                                <input id="Questionario_8_Questao_2_Data" data-role="date" data-inline="true" type="text" name="Questionario_8_Questao_2" />
+                            </fieldset>
+
+
+                            <h3>
+                                3. Disciplina:
+                            </h3>
+                            <fieldset>
+                                <label for="Questionario_8_Questao_3_Portugues">
+                                    <input id="Questionario_8_Questao_3_Portugues" type="radio" name="Questionario_8_Questao_3" value="Português" />
+                                    Português
+                                </label>
+                                <label for="Questionario_8_Questao_3_Matematica">
+                                    <input id="Questionario_8_Questao_3_Matematica" type="radio" name="Questionario_8_Questao_3" value="Matemática" />
+                                    Matemática
+                                </label>
+                                <label for="Questionario_8_Questao_3_Ciencias">
+                                    <input id="Questionario_8_Questao_3_Ciencias" type="radio" name="Questionario_8_Questao_3" value="Ciências" />
+                                    Ciências da Natureza
+                                </label>
+                            </fieldset>
+
+
+                            <!-- CHAMADA -->
+                            <h3>
+                                4. Registros sobre a Frequência da turma.<br />Marque apenas os estudantes <b style="color:red;">ausentes:</b>
+                            </h3>
+                            <fieldset id="divChamadaAlunos" data-role="controlgroup"></fieldset>
+
+                            <h3>
+                                5. Registros sobre a Frequência da turma.<br />Número de estudantes <b>presentes</b>:
+                            </h3>
+                            <fieldset>
+                                <input id="Questionario_8_Questao_5_Presentes" type="number" name="Questionario_8_Questao_5" />
+                            </fieldset>
+
+                            <h3>
+                                6. Registros sobre a Frequência da turma.<br />Número de estudantes <b>ausentes</b>:
+                            </h3>
+                            <fieldset>
+                                <input id="Questionario_8_Questao_6_Ausentes" type="number" name="Questionario_8_Questao_6" />
+                            </fieldset>
+
+                            <h3>
+                                7.Quantidade de atestados médicos recebidos:
+                            </h3>
+                            <fieldset>
+                                <input id="Questionario_8_Questao_7_Ausentes" type="number" name="Questionario_8_Questao_7" placeholder="Informe aqui" />
+                            </fieldset>
+
+                            <h3>
+                                8. Registro sobre os Instrumentos.
+                            </h3>
+                            <fieldset>
+                                <h4>Número de Cadernos de Prova no pacote, incluindo os reservas:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroCadernosProvaIncluindoReservas" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaIncluindoReservas" placeholder="Informe aqui" />
+                                <h4>Número de Cadernos de Prova <b>não</b> utilizados:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroCadernosProvaNaoUtilizados" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaNaoUtilizados" placeholder="Informe aqui" />
+
+                                <h4>Número de Cadernos de Prova com falhas de impressão:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroCadernosProvaComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaComFalhasImpressao" placeholder="Informe aqui" />
+
+                                <h4>Número de Folhas de Respostas preenchidas:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroFolhasRespostaPreenchidas" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaPreenchidas" placeholder="Informe aqui" />
+
+                                <h4>Número de Folhas de Respostas não utilizadas:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroFolhasRespostaNaoUtilizadas" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaNaoUtilizadas" placeholder="Informe aqui" />
+
+                                <h4>Número de Folhas de Respostas com falhas de impressão:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroFolhasRespostaComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaComFalhasImpressao" placeholder="Informe aqui" />
+
+                                <div id="Questionario_8_QuestoesInstrumentoPortugues">
+                                    <h4>Número de Folhas – Produção de Texto preenchidas:</h4>
+                                    <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoPreenchidas" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoPreenchidas" placeholder="Informe aqui" />
+
+                                    <h4>Número de Folhas – Produção de Texto não utilizadas:</h4>
+                                    <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoNaoUtilizadas" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoNaoUtilizadas" placeholder="Informe aqui" />
+
+                                    <h4>Número de Folhas – Produção de Texto com falhas de impressão:</h4>
+                                    <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoComFalhasImpressao" placeholder="Informe aqui" />
+                                </div>
+
+                                <!--<div id="Questionario_8_QuestoesInstrumentoCiencias">-->
+                                <!--<h4>Número de Folhas de Respostas do Questionário de Hábitos de Estudos preenchidas:</h4>-->
+                                <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosPreenchidas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosPreenchidas" placeholder="Informe aqui" />-->
+                                <!--<h4>Número de Folhas de Respostas do Questionário de Hábitos de Estudos não utilizadas:</h4>-->
+                                <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosNaoUtilizadas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosNaoUtilizadas" placeholder="Informe aqui" />-->
+                                <!--<h4>Número de Folhas de Respostas do Questionário de Hábitos de Estudos com falhas de impressão:</h4>-->
+                                <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosComFalhasImpressao" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosComFalhasImpressao" placeholder="Informe aqui" />-->
+                                <!--<h4>Número de Folhas de Respostas do Questionário para pais/mães ou responsáveis devolvidas pelos alunos:</h4>-->
+                                <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioPaisDevolvidas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioPaisDevolvidas" placeholder="Informe aqui" />-->
+                                <!--</div>-->
+                            </fieldset>
+
+                            <h3>
+                                9. A quantidade de tablets para atendimento a estudantes com surdez foi suficiente?
+                            </h3>
+                            <fieldset>
+                                <label for="Questionario_8_Questao_9_Sim">
+                                    <input id="Questionario_8_Questao_9_Sim" type="radio" name="Questionario_8_Questao_9" value="Sim" />
+                                    Sim
+                                </label>
+                                <label for="Questionario_8_Questao_9_Nao">
+                                    <input id="Questionario_8_Questao_9_Nao" type="radio" name="Questionario_8_Questao_9" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_9_NaoSeAplica">
+                                    <input id="Questionario_8_Questao_9_NaoSeAplica" type="radio" name="Questionario_8_Questao_9" value="Não se aplica" />
+                                    Não se aplica
+                                </label>
+                            </fieldset>
+
+                            <h3>
+                                10. O número de Cadernos de provas em braile e/ou ampliadas correspondeu ao número de estudantes com deficiência da turma?
+                            </h3>
+                            <fieldset>
+                                <label for="Questionario_8_Questao_10_Sim">
+                                    <input id="Questionario_8_Questao_10_Sim" type="radio" name="Questionario_8_Questao_10" value="Sim" />
+                                    Sim
+                                </label>
+                                <label for="Questionario_8_Questao_10_Nao">
+                                    <input id="Questionario_8_Questao_10_Nao" type="radio" name="Questionario_8_Questao_10" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_10_NaoSeAplica">
+                                    <input id="Questionario_8_Questao_10_NaoSeAplica" type="radio" name="Questionario_8_Questao_10" value="Não se aplica" />
+                                    Não se aplica
+                                </label>
+                            </fieldset>
+
+                            <h3>
+                                11. Recebeu lacrado o pacote com os Cadernos de prova?
+                            </h3>
+                            <fieldset>
+                                <label for="Questionario_8_Questao_11_Sim">
+                                    <input id="Questionario_8_Questao_11_Sim" type="radio" name="Questionario_8_Questao_11" value="Sim" />
+                                    Sim
+                                </label>
+                                <label for="Questionario_8_Questao_11_Nao">
+                                    <input id="Questionario_8_Questao_11_Nao" type="radio" name="Questionario_8_Questao_11" value="Não" />
+                                    Não
+                                </label>
+                            </fieldset>
+
+                            <h3>
+                                12. Na sala de aplicação estavam você, os estudantes e, quando necessário, o estagiário para auxiliar os estudantes com deficiência?
+                            </h3>
+                            <fieldset>
+                                <label for="Questionario_8_Questao_12_Sim">
+                                    <input id="Questionario_8_Questao_12_Sim" type="radio" name="Questionario_8_Questao_12" value="Sim" />
+                                    Sim
+                                </label>
+                                <label for="Questionario_8_Questao_12_Nao">
+                                    <input id="Questionario_8_Questao_12_Nao" type="radio" name="Questionario_8_Questao_12" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_12_Terceiro">
+                                    <input id="Questionario_8_Questao_12_Terceiro" type="radio" name="Questionario_8_Questao_12" value="Não se aplica" />
+                                    Não se aplica
+                                </label>
+                            </fieldset>
+
+                            <h3>13. Para cada Caderno reserva utilizado, informe o valor do Código de Barras da Folha de Respostas e o Código EOL do Aluno:</h3>
+                            <img src="/AppProvaSP/images/codigoDeBarrasExemplo.png" style="width:50%;" />
+                            <fieldset>
+                                <table id="tblCadernoReserva" style="width:100%; margin-top:15px;">
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            Valor do Código de Barras:
+                                        </td>
+                                        <td>
+                                            Código EOL do Aluno:
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(1);" value="Escanear" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva1" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva1" placeholder="Código de Barras" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva1" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva1" placeholder="EOL do Aluno" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(2);" value="Escanear" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva2" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva2" placeholder="Código de Barras" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva2" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva2" placeholder="EOL do Aluno" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(3);" value="Escanear" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva3" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva3" placeholder="Código de Barras" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva3" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva3" placeholder="EOL do Aluno" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(4);" value="Escanear" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva4" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva4" placeholder="Código de Barras" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva4" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva4" placeholder="EOL do Aluno" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+
+
+                            <h3>14. Fatos relevantes ocorridos durante a aplicação:</h3>
+                            <fieldset>
+                                <h4>14.1. Ocorreu atraso de estudante(s), impedindo a participação na avaliação:</h4>
+                                <label for="Questionario_8_Questao_14_1_Nao">
+                                    <input id="Questionario_8_Questao_14_1_Nao" type="radio" name="Questionario_8_Questao_14_1" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_1_Sim">
+                                    <input id="Questionario_8_Questao_14_1_Sim" type="radio" name="Questionario_8_Questao_14_1" value="Sim" />
+                                    Sim
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.2. Ocorreu saída definitiva de estudante, durante a aplicação, sem terminar a avaliação:</h4>
+                                <label for="Questionario_8_Questao_14_2_Nao">
+                                    <input id="Questionario_8_Questao_14_2_Nao" type="radio" name="Questionario_8_Questao_14_2" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_2_Sim">
+                                    <input id="Questionario_8_Questao_14_2_Sim" type="radio" name="Questionario_8_Questao_14_2" value="Sim" />
+                                    Sim
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.3. Ocorreu falta de material:</h4>
+                                <label for="Questionario_8_Questao_14_3_Nao">
+                                    <input id="Questionario_8_Questao_14_3_Nao" type="radio" name="Questionario_8_Questao_14_3" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_3_Sim">
+                                    <input id="Questionario_8_Questao_14_3_Sim" type="radio" name="Questionario_8_Questao_14_3" value="Sim" />
+                                    Sim. Especifique a solução adotada em 14.8
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.4. Ocorreu paralisação de transporte público, retardando o início da aplicação:</h4>
+                                <label for="Questionario_8_Questao_14_4_Nao">
+                                    <input id="Questionario_8_Questao_14_4_Nao" type="radio" name="Questionario_8_Questao_14_4" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_4_Sim">
+                                    <input id="Questionario_8_Questao_14_4_Sim" type="radio" name="Questionario_8_Questao_14_4" value="Sim" />
+                                    Sim. Especifique a solução adotada em 14.8
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.5. Ocorreu falta de energia elétrica durante a aplicação e afetou a avaliação:</h4>
+                                <label for="Questionario_8_Questao_14_5_Nao">
+                                    <input id="Questionario_8_Questao_14_5_Nao" type="radio" name="Questionario_8_Questao_14_5" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_5_Sim">
+                                    <input id="Questionario_8_Questao_14_5_Sim" type="radio" name="Questionario_8_Questao_14_5" value="Sim" />
+                                    Sim. Especifique a solução adotada em 14.8
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.6. Tablet apresentou falha:</h4>
+                                <label for="Questionario_8_Questao_14_6_NaoSeAplica">
+                                    <input id="Questionario_8_Questao_14_6_NaoSeAplica" type="radio" name="Questionario_8_Questao_14_6" value="Não se aplica" />
+                                    Não se aplica
+                                </label>
+                                <label for="Questionario_8_Questao_14_6_Nao">
+                                    <input id="Questionario_8_Questao_14_6_Nao" type="radio" name="Questionario_8_Questao_14_6" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_6_Sim">
+                                    <input id="Questionario_8_Questao_14_6_Sim" type="radio" name="Questionario_8_Questao_14_6" value="Sim" />
+                                    Sim. Especifique a falha
+                                </label>
+                                <h4>Se SIM, registre a falha</h4>
+                                <input id="Questionario_8_Questao_14_6_Motivos" type="text" name="Questionario_8_Questao_14_6.Motivos" placeholder="Descreva aqui" disabled="disabled" />
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.7. PenDrive apresentou falha:</h4>
+                                <label for="Questionario_8_Questao_14_7_NaoSeAplica">
+                                    <input id="Questionario_8_Questao_14_7_NaoSeAplica" type="radio" name="Questionario_8_Questao_14_7" value="Não se aplica" />
+                                    Não se aplica
+                                </label>
+                                <label for="Questionario_8_Questao_14_7_Nao">
+                                    <input id="Questionario_8_Questao_14_7_Nao" type="radio" name="Questionario_8_Questao_14_7" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_7_Sim">
+                                    <input id="Questionario_8_Questao_14_7_Sim" type="radio" name="Questionario_8_Questao_14_7" value="Sim" />
+                                    Sim. Especifique a falha
+                                </label>
+                                <h4>Se SIM, registre a falha</h4>
+                                <input id="Questionario_8_Questao_14_7_Motivos" type="text" name="Questionario_8_Questao_14_7.Motivos" placeholder="Descreva aqui" disabled="disabled" />
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.8. Outros fatos relevantes não citados acima e/ou especificação dos subitens 11.3 a 11.5:</h4>
+                                <input id="Questionario_8_Questao_14_8_FatosRelevantes" type="text" name="Questionario_8_Questao_14_8_FatosRelevantes" placeholder="Descreva aqui" />
+                            </fieldset>
+
+                            <h3>15. Deixe sugestão de melhoria para a aplicação da próxima Edição:</h3>
+                            <fieldset>
+                                <input id="Questionario_8_Questao_15_Observacoes" type="text" name="Questionario_8_Questao_15" placeholder="Descreva aqui" />
+                            </fieldset>
+
+                            <a href="#" class="ui-btn" style="color:green;" onclick="btnConcluirQuestionario()">Concluir</a>
+                        </div>
+                    </form>
+                    <!--MSTECH
+                    *Ficha de registro - Supervidor
+                    -->
+                    <form id="Questionario9">
+                        <input id="tituloQuestionario9" type="hidden" value="Ficha de Registro - Supervisor Escolar" />
+
+                        <div id="divQuestionario9_Questoes"></div>
+                    </form>
+                    <!--MSTECH
+                    *Ficha de registro - Diretor
+                    -->
+                    <form id="Questionario10">
+                        <input id="tituloQuestionario10" type="hidden" value="Ficha de Registro - Diretor(a) de Escola" />
+
+                        <div id="divQuestionario10_Questoes"></div>
+                    </form>
+                    <!--MSTECH
+                    *Ficha de registro - Coordenador
+                    -->
+                    <form id="Questionario11">
+                        <input id="tituloQuestionario11" type="hidden" value="Ficha de Registro - Coordenador(a) Pedagógico(a)" />
+
+                        <div id="divQuestionario11_Questoes"></div>
+                    </form>
+                    <!--MSTECH
+                    *Questionário - Professor
+                    -->
+                    <form id="Questionario23">
+                        <input id="tituloQuestionario23" type="hidden" value="Questionário do(a) Professor(a)" />
+
+                        <div id="divQuestionario23_Intro" style="text-align:left;">
+                            <p>Caro(a) Professor(a),</p>
+                            <p>
+                                Este questionário busca conhecer suas opiniões a respeito da sua escola.
+                                As informações fornecidas por você são importantes para a pesquisa que estamos realizando, neste ano,
+                                sobre clima escolar, práticas pedagógicas e de gestão. Os dados produzidos serão sigilosos e os
+                                resultados dessa pesquisa serão divulgados no 1º semestre de 2020.
+                            </p>
+                            <a id="btnQuestionario23_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario23_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Assistente do Diretor
+                    -->
+                    <form id="Questionario25">
+                        <input id="tituloQuestionario25" type="hidden" value="Questionário do Assistente do Diretor(a)" />
+
+                        <div id="divQuestionario25_Intro" style="text-align:left;">
+                            <p>Caro(a) Assistente de Diretor(a),</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Assistente de Diretor(a). As informações fornecidas por
+                                você são importantes para a compreensão e o mapeamento de
+                                políticas relacionadas a clima escolar e práticas pedagógicas e
+                                de gestão. Os dados coletados serão analisados de forma
+                                agrupada, nunca de forma individualizada, a fim de garantir o
+                                sigilo. Os resultados dessa pesquisa serão divulgados no 1º
+                                semestre de 2020.
+                                <br /><br />
+                                Contamos com sua ajuda para responder às perguntas a seguir,
+                                garantindo a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2019.
+                            </p>
+                            <a id="btnQuestionario25_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario25_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário dos Agentes Escolares e do Auxiliar Técnico da Educação
+                    -->
+                    <form id="Questionario14">
+                        <input id="tituloQuestionario14" type="hidden" value="Questionário do(a) auxiliar técnico(a) de educação" />
+
+                        <div id="divQuestionario14_Intro" style="text-align:left;">
+                            <p>Caro(a) Auxiliar Técnico(a) de Educação,</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Auxiliar Técnico(a) de Educação. As informações fornecidas
+                                por você são importantes para a compreensão e o mapeamento de
+                                políticas relacionadas à qualidade da educação fornecida pela
+                                Secretaria Municipal de Educação de São Paulo. Os dados coletados
+                                serão analisados de forma agrupada, nunca de forma individualizada,
+                                a fim de garantir o sigilo e anonimato das informações. Os resultados
+                                dessa pesquisa serão divulgados no 1º semestre de 2019.
+                                <br /><br />
+                                Contamos com sua ajuda para responder às perguntas a seguir,
+                                garantindo a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2018.
+                            </p>
+                            <a id="btnQuestionario14_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario14_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Agente Escolar - Merendeira
+                    -->
+                    <form id="Questionario15">
+                        <input id="tituloQuestionario15" type="hidden" value="Questionário do(a) agente escolar" />
+
+                        <div id="divQuestionario15_Intro" style="text-align:left;">
+                            <p>Caro(a) Agente Escolar,</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Agente Escolar. As informações fornecidas por você são
+                                importantes para a compreensão e o mapeamento de políticas
+                                relacionadas à qualidade da educação fornecida pela secretaria
+                                de educação do município de São Paulo. Os dados coletados serão
+                                analisados de forma agrupada, nunca de forma individualizada,
+                                a fim de garantir o sigilo e anonimato das informações.
+                                Os resultados dessa pesquisa serão divulgados no 1º semestre de 2019.
+                                <br /><br />
+                                Contamos com a sua ajuda para responder as perguntas a seguir,
+                                e assim garantir a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2018.
+                            </p>
+                            <a id="btnQuestionario15_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario15_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Agente Escolar - Portaria
+                    -->
+                    <form id="Questionario16">
+                        <input id="tituloQuestionario16" type="hidden" value="Questionário do(a) agente escolar" />
+
+                        <div id="divQuestionario16_Intro" style="text-align:left;">
+                            <p>Caro(a) Agente Escolar,</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Agente Escolar. As informações fornecidas por você são
+                                importantes para a compreensão e o mapeamento de políticas
+                                relacionadas à qualidade da educação fornecida pela secretaria
+                                de educação do município de São Paulo. Os dados coletados serão
+                                analisados de forma agrupada, nunca de forma individualizada,
+                                a fim de garantir o sigilo e anonimato das informações.
+                                Os resultados dessa pesquisa serão divulgados no 1º semestre de 2019.
+                                <br /><br />
+                                Contamos com a sua ajuda para responder as perguntas a seguir,
+                                e assim garantir a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2018.
+                            </p>
+                            <a id="btnQuestionario16_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario16_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Agente Escolar - Zeladoria
+                    -->
+                    <form id="Questionario17">
+                        <input id="tituloQuestionario17" type="hidden" value="Questionário do(a) agente escolar" />
+
+                        <div id="divQuestionario17_Intro" style="text-align:left;">
+                            <p>Caro(a) Agente Escolar,</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Agente Escolar. As informações fornecidas por você são
+                                importantes para a compreensão e o mapeamento de políticas
+                                relacionadas à qualidade da educação fornecida pela secretaria
+                                de educação do município de São Paulo. Os dados coletados serão
+                                analisados de forma agrupada, nunca de forma individualizada,
+                                a fim de garantir o sigilo e anonimato das informações.
+                                Os resultados dessa pesquisa serão divulgados no 1º semestre de 2019.
+                                <br /><br />
+                                Contamos com a sua ajuda para responder as perguntas a seguir,
+                                e assim garantir a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2018.
+                            </p>
+                            <a id="btnQuestionario17_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario17_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Aluno do 3º ano
+                    -->
+                    <form id="Questionario18">
+                        <input id="tituloQuestionario18" type="hidden" value="Questionário do Estudante" />
+
+                        <div id="divQuestionario18_Intro" style="text-align:left;">
+                            <p>Caro(a) estudante,</p>
+                            <p>
+                                Este questionário coleta informações sobre você, seus hábitos de
+                                estudo e como você se sente na escola, entre seus colegas e seus
+                                professores. O sucesso deste trabalho depende da sua resposta.
+                            </p>
+                            <a id="btnQuestionario18_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario18_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Aluno dp 4º ao 6º ano
+                    -->
+                    <form id="Questionario21">
+                        <input id="tituloQuestionario21" type="hidden" value="Questionário do Estudante" />
+
+                        <div id="divQuestionario21_Intro" style="text-align:left;">
+                            <p>Caro(a) estudante,</p>
+                            <p>
+                                Este questionário coleta informações sobre você, seus hábitos de
+                                estudo e como você se sente na escola, entre seus colegas e seus
+                                professores. Da sua resposta depende o sucesso deste trabalho.
+                            </p>
+                            <p>Muito obrigado por sua participação!</p>
+                            <a id="btnQuestionario21_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario21_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Aluno dp 7º ao 9º ano
+                    -->
+                    <form id="Questionario22">
+                        <input id="tituloQuestionario22" type="hidden" value="Questionário do Estudante" />
+
+                        <div id="divQuestionario22_Intro" style="text-align:left;">
+                            <p>Caro(a) estudante,</p>
+                            <p>
+                                Este questionário coleta informações sobre você, seus hábitos de
+                                estudo e como você se sente na escola, entre seus colegas e seus
+                                professores. Suas respostas são confidenciais e delas depende o
+                                sucesso deste trabalho.
+                            </p>
+                            <p>Muito obrigado por sua participação!</p>
+                            <a id="btnQuestionario22_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario22_Questoes" style="display:none;"></div>
+                    </form>
+                </div>
+
+                <a id="btnQuestionarioSair" href="#" class="ui-btn btnSair">Cancelar</a>
+            </div>
+        </div>
+    </div>
+
+    <!--SCRIPTS_VERSAO_MOBILE_INICIO-->
+    <script src="cordova.js" type="text/javascript"></script>
+    <!--SCRIPTS_VERSAO_MOBILE_TERMINO-->
+
+    <script src="/AppProvaSP/scripts/jquery-1.8.0.min.js"></script>
+    <script src="/AppProvaSP/scripts/jquery.mobile-1.4.5.min.js"></script>
+
+
+    <!--SWEETALERT_INICIO-->
+    <script src="/AppProvaSP/scripts/sha512.js"></script>
+    <script src="/AppProvaSP/scripts/sweetalert.min.js"></script>
+    <!--SWEETALERT_TERMINO-->
+
+    <script src="/AppProvaSP/scripts/platformOverrides.js" type="text/javascript"></script>
+
+    <!--DATEPICKER_INICIO-->
+    <script src="/AppProvaSP/scripts/external/jquery-ui/datepicker.js"></script>
+    <script src="/AppProvaSP/scripts/jquery.mobile.datepicker.js"></script>
+    <script src="/AppProvaSP/scripts/datepicker-pt-BR.js"></script>
+    <!--DATEPICKER_INICIO-->
+
+    <script type="text/javascript" src="/AppProvaSP/scripts/global.js?v=1.30.4.1"></script>
+    <script src="/AppProvaSP/scripts/model/QuestionarioUsuario.js?v=1.30.4.1"></script>
+    <script src="/AppProvaSP/scripts/model/QuestionarioRespostaItem.js?v=1.30.4.1"></script>
+
+    <script src="/AppProvaSP/scripts/app.js?v=1.30.4.0" type="text/javascript"></script>
+
+
+    <script src="scripts/chart.js"></script>
+    <script>
+            if (window.MSInputMethodContext != null) {
+                alert("ATENÇÃO! Você está utilizando o Internet Explorer e este aplicativo não funcionará de forma adequada. Por gentileza utilize o Google Chrome.");
+            }
+    </script>
+</body>
+</html>
