@@ -58,6 +58,7 @@ var corteCache = [];
  Fichas de registro: Perguntas aos diretores e responsáveis sobre andamento técnico da ProvaSP
 */
 var edicoesComTurmasAmostrais = ["2017", "2018", "2019"];
+var edicoesRevistasPedagogicas = ["2018", "2019"]; // ["2017"] é Boletim
 var questionarios = [
     "1",/*Questionário Supervisor*/
     //"2",/*Questionário Diretor 2018*/
@@ -2752,10 +2753,10 @@ function revistasBoletins_configurarControles() {
         var areaConhecimento = $("#ddlRevistasBoletinsAreaConhecimento").val();
         var cicloAprendizagem = $("#ddlRevistasBoletinsCiclo").val();
 
-        if (edicao !== '2018') {
-            $("#ddlRevistasBoletinsCiclo").selectmenu("disable");
-        } else {
+        if (edicao && edicoesRevistasPedagogicas.includes(edicao)) {
             $("#ddlRevistasBoletinsCiclo").selectmenu("enable");
+        } else {
+            $("#ddlRevistasBoletinsCiclo").selectmenu("disable");
         }
         $("#ddlRevistasBoletinsCiclo").selectmenu("refresh");
 
@@ -2779,7 +2780,7 @@ function revistasBoletins_configurarControles() {
          *Esta validação acontece quando Nível, Edição, Área de Conhecimento e Ano já foram selecionados e
          dentre as opções de Nível, a escolhida foi: DRE/ESCOLA/TURMA/ALUNO, excluindo-se SME
         */
-        if (edicao != "" && areaConhecimento != "" && (edicao !== '2018' || cicloAprendizagem != "")) {
+        if (edicao != "" && areaConhecimento != "" && (!edicoesRevistasPedagogicas.includes(edicao) || cicloAprendizagem != "")) {
             $("#divRevistasBoletinsDRE").show();
 
             /**
@@ -3030,7 +3031,7 @@ function abrirLinkRevistaBoletim(source) {
     let descCicloAprendizagem = compCiclo.options[compCiclo.selectedIndex].text;
 
     let url;
-    if (edicao === '2018') {
+    if (edicao && edicoesRevistasPedagogicas.includes(edicao)) {
         //REVISTA
         let urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
             + "Revistas Pedagógicas/" + descAreaConhecimento
