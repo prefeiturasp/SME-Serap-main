@@ -60,6 +60,7 @@ var corteCache = [];
  Fichas de registro: Perguntas aos diretores e responsáveis sobre andamento técnico da ProvaSP
 */
 var edicoesComTurmasAmostrais = ["2017", "2018", "2019"];
+var edicoesRevistasPedagogicas = ["2018", "2019"]; // ["2017"] é Boletim
 var questionarios = [
     "1",/*Questionário Supervisor*/
     //"2",/*Questionário Diretor 2018*/
@@ -173,8 +174,8 @@ function onDeviceReady() {
         if (!mobile) {
             var url = window.location.href.toLocaleLowerCase().split("provasp")[0].replace("serap.sme", "provasp.sme");
             if (url.indexOf("file") == -1) {
-                if (window.location.href.indexOf('localhost') >= 0)
-                    urlBackEnd = "http://localhost:52912/";//url DEV
+                if (window.location.href.indexOf('54127') >= 0)
+                    urlBackEnd = url.replace("54127", "52912");//url DEV
                 else
                     urlBackEnd = window.location.href.toLocaleLowerCase().split("provasp")[0].replace("serap.sme", "provasp.sme");
             }
@@ -333,7 +334,7 @@ function onDeviceReady() {
                         */
                         $("#provaSP_resultados").show();
                     } else {
-                        abrirResultados();
+                        abrirResultados(true);
                     }
                     $("#btnConfiguracoes").hide();
                 }
@@ -384,7 +385,7 @@ function onDeviceReady() {
         //        }
         //        else
         //        {
-        //            abrirResultados();
+        //            abrirResultados(true);
         //        }
         //    })
         //    .fail(function (erro)
@@ -1310,31 +1311,49 @@ function recuperarCodigoENomeDaEscolaParaQuestionario(questionarioId) {
  retorno.
 */
 function carregarDataEscola(callback, opcoes) {
-    try {
-        if (dataEscola.length == 0) {
-            /**
-            -----MSTECH-----
-             *Converte o conteúdo do arquivo CSV em um vetor cujas posição são as linhas do arquivo original.
-            */
-            $.ajax({
-                type: "GET",
-                url: "/AppProvaSP/escola.csv",
-                dataType: "text",
-                success: function (data) {
-                    if (data.indexOf("\r\n") > 0) {
-                        data = data.replace(/\r\n/g, "\n");
+    return new Promise((resolve, reject) => {
+        try {
+            if (dataEscola.length == 0) {
+                /**
+                -----MSTECH-----
+                 *Converte o conteúdo do arquivo CSV em um vetor cujas posição são as linhas do arquivo original.
+                */
+                $.ajax({
+                    type: "GET",
+                    url: "/AppProvaSP/escola.csv",
+                    dataType: "text",
+                    success: function (data) {
+                        if (data.indexOf("\r\n") > 0) {
+                            data = data.replace(/\r\n/g, "\n");
+                        }
+                        dataEscola = data.split("\n");
+
+                        if (typeof callback === 'function') {
+                            callback(opcoes);
+                            resolve();
+                        } else {
+                            callback.then(() => {
+                                resolve();
+                            });
+                        }
+
                     }
-                    dataEscola = data.split("\n");
+                });
+            } else {
+                if (typeof callback === 'function') {
                     callback(opcoes);
+                    resolve();
+                } else {
+                    callback.then(() => {
+                        resolve();
+                    });
                 }
-            });
-        } else {
-            callback(opcoes);
+            }
         }
-    }
-    catch (error) {
-        console.log(error);
-    }
+        catch (error) {
+            console.log(error);
+        }
+    });
 }
 
 /**
@@ -2736,10 +2755,10 @@ function revistasBoletins_configurarControles() {
         var areaConhecimento = $("#ddlRevistasBoletinsAreaConhecimento").val();
         var cicloAprendizagem = $("#ddlRevistasBoletinsCiclo").val();
 
-        if (edicao !== '2018') {
-            $("#ddlRevistasBoletinsCiclo").selectmenu("disable");
-        } else {
+        if (edicao && edicoesRevistasPedagogicas.includes(edicao)) {
             $("#ddlRevistasBoletinsCiclo").selectmenu("enable");
+        } else {
+            $("#ddlRevistasBoletinsCiclo").selectmenu("disable");
         }
         $("#ddlRevistasBoletinsCiclo").selectmenu("refresh");
 
@@ -2763,7 +2782,7 @@ function revistasBoletins_configurarControles() {
          *Esta validação acontece quando Nível, Edição, Área de Conhecimento e Ano já foram selecionados e
          dentre as opções de Nível, a escolhida foi: DRE/ESCOLA/TURMA/ALUNO, excluindo-se SME
         */
-        if (edicao != "" && areaConhecimento != "" && (edicao !== '2018' || cicloAprendizagem != "")) {
+        if (edicao != "" && areaConhecimento != "" && (!edicoesRevistasPedagogicas.includes(edicao) || cicloAprendizagem != "")) {
             $("#divRevistasBoletinsDRE").show();
 
             /**
@@ -2838,6 +2857,7 @@ function carregarListaEscolaRevistasBoletins() {
          *Em seguida executa o método geral de reset.
         */
         $("#divRevistasBoletinsEscolaItens").html("");
+        $("#txtRevistasBoletinsEscolaFiltro").val("");
 
         revistasBoletins_configurarControles();
 
@@ -2868,8 +2888,8 @@ function carregarListaEscolaRevistasBoletins() {
              *Para carregar as escolas com base nas DREs escolhidas, vamos novamente carregar
              o arquivo escolas.CSV e, a partir dele, obter as informações necessárias.
             */
-            carregarDataEscola(
-                function () {
+            let promiseCarga = carregarDataEscola(
+                new Promise ((resolve, reject) => {
                     setTimeout(function () {
                         try {
                             /**
@@ -2940,13 +2960,14 @@ function carregarListaEscolaRevistasBoletins() {
                                 $("#lblRevistasBoletinsSelecaoTotalEscola").text(`Escolas (${escolasEncontradas}):`);
                             }
                             $.mobile.loading("hide");
+                            resolve();
                         }
                         catch (error) {
                             console.log(error);
                         }
                     }, 100);
                     //$("#ddlRevistasBoletinsEscola").selectmenu("refresh", true);
-                }, ""
+                })/*fim promise*/, ""
             );
 
             /**
@@ -2989,11 +3010,14 @@ function carregarListaEscolaRevistasBoletins() {
                     console.log(error);
                 }
             });
+
+            return promiseCarga;
         }
     }
     catch (error) {
         console.log(error);
     }
+    return null;
 }
 
 function abrirLinkRevistaBoletim(source) {
@@ -3009,7 +3033,7 @@ function abrirLinkRevistaBoletim(source) {
     let descCicloAprendizagem = compCiclo.options[compCiclo.selectedIndex].text;
 
     let url;
-    if (edicao === '2018') {
+    if (edicao && edicoesRevistasPedagogicas.includes(edicao)) {
         //REVISTA
         let urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
             + "Revistas Pedagógicas/" + descAreaConhecimento
@@ -3299,7 +3323,7 @@ function definirEventHandlers() {
                 adicionarItemBackButton("btnResultadoFechar");
                 $("#btnResultadoFechar").show();
             }
-            abrirResultados();
+            abrirResultados(true);
         }
         catch (error) {
             console.log(error);
@@ -3981,6 +4005,8 @@ function definirEventHandlers() {
             //$("#divResultadoApresentacao").hide();
             divResultadosFixada(true);
             mostrarTelaResultados(false, "divResultadoApresentacao", -1);
+            divResultadoProva(0);
+
             $.mobile.silentScroll(0);
 
             if (caminhoBackButton.indexOf("btnResultadoAlterarParametros") != -1) {
@@ -4383,10 +4409,10 @@ function definirEventHandlers() {
                     */
                     $.mobile.loading("hide");
                     resultadoApresentar(
-                        $("#ddlResultadoCiclo").val(),
-                        $("#ddlResultadoEdicao").val(),
-                        $("#ddlResultadoAreaConhecimento").val(),
-                        $("#ddlResultadoAno").val(),
+                        ciclo,
+                        edicao,
+                        areaConhecimentoId,
+                        anoEscolar,
                         "divResultadoApresentacao",
                         dataResultado,
                         objEnvio);
@@ -4465,9 +4491,6 @@ function definirEventHandlers() {
             $("#lblResultadoTituloDetalhe").html("");
 
             var nivel = $("#ddlResultadoNivel").val();
-            edicao = $("#ddlResultadoEdicao").val();
-            var areaConhecimento = $("#ddlResultadoAreaConhecimento").val();
-            var lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get();
 
             /**
             -----MSTECH-----
@@ -4626,7 +4649,6 @@ function definirEventHandlers() {
                 reguaProficiencia["9"] = [50, 65, 90]; //9° Ano
             }
 
-            //var anoSelecionado = $("#ddlResultadoAno").val();
             /**
             -----MSTECH-----
              *Determinando os intervalos do gráfico com base nos valores preestabelecidos
@@ -4808,30 +4830,19 @@ function definirEventHandlers() {
                  da mesma, gerado em arquivo PDF.
                 */
                 if (nivel == "ESCOLA") {
-                    //BOLETIM
-                    var areaConhecimentoBoletim = areaConhecimento;
-                    if (areaConhecimentoBoletim == 4) areaConhecimentoBoletim = 2
-                    var urlBoletim = urlBackEnd + "boletim_escola/" + edicao + "/" +
-                        areaConhecimentoBoletim + "/" + agregacao.Chave + ".pdf";
+                    let cicloRevistaBoletim = ciclo;
+                    if (!cicloRevistaBoletim && ano) {
+                        // busca o ciclo com base no ano letivo, assim facilita a exibição dos dados ao consultar boletins/revistas
+                        cicloRevistaBoletim = buscarCicloPeloAnoLetivo(ano).toString();
+                    }
+
+                    //informações dos filtros selecionados + nome da escola(Titulo)
+                    let scriptRevistaEscola = `abrirConsultaRevistasBoletins(); `
+                        + `aplicarFiltrosRevistasBoletins('${edicao}', '${areaConhecimentoId}', '${cicloRevistaBoletim}', '${agregacao.Titulo}');`;
 
                     $("#divChartResultadoAgregacao").append(
-                        "<a id='btnResultadoBoletimEscola" + i + "' class='ui-btn' href='" +
-                        urlBoletim + "' target='blank'>Baixar boletim da Escola</a>"
+                        `<a id="btnResultadoBoletimEscola${i}" class="ui-btn" href="#" onclick="${scriptRevistaEscola}">Consultar Revista/Boletim da Escola</a>`
                     );
-
-                    if (ciclo != "") {
-                        //REVISTA
-                        var urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
-                            "Revistas Pedagógicas/" +
-                            $("#ddlResultadoAreaConhecimento option:selected").text() + "/" +
-                            "Ciclo " + $("#ddlResultadoCiclo option:selected").text() +
-                            "/" + parseInt(agregacao.Chave) + ".pdf";
-
-                        $("#divChartResultadoAgregacao").append(
-                            "<a  class='ui-btn' href='" + encodeURI(urlRevista) +
-                            "' target='blank'>Baixar Revista Pedagógica</a>"
-                        );
-                    }
                 }
             }
 
@@ -6891,9 +6902,7 @@ function definirEventHandlers() {
 
     /**
     -----AMCOM-----
-     *Evento CHANGE do select de ESCOLA. Primeiramente executa o método revistasBoletins_configurarControles
-     para limpar todos os elementos da seleção. Em seguida trata a possibilidade do valor do SELECT
-     de edições ser vazio.
+     * Controla a visualização das DREs e escolas
     */
     $("#ddlRevistasBoletinsEdicao").unbind("change").change(function () {
         try {
@@ -6906,8 +6915,7 @@ function definirEventHandlers() {
 
     /**
     -----AMCOM-----
-     *Assim como o EDIÇÃO, ao alterar a ÁREA de CONHECIMENTO, os filtros para o revistasBoletins da
-     ProvaSP são resetados e abaixo é tratada a situação de SELECT vazio.
+     * Controla a visualização das DREs e escolas
     */
     $("#ddlRevistasBoletinsAreaConhecimento").unbind("change").change(function () {
         try {
@@ -6948,26 +6956,12 @@ function definirEventHandlers() {
 
     /**
     -----AMCOM-----
-     *Evento dos checks de DREs. A diferença crucial entre este método e o próximo é a iserção da
-     opção TODAS AS DRES.
+     *Evento dos checks de DREs.
     */
     $(".revistasBoletins-dre-chk").unbind("change").change(function () {
-        carregarListaEscolaRevistasBoletins();
-    });
-
-    /**
-    -----AMCOM-----
-     *Ao selecionar qualquer uma das DREs específicas, desmarca a opção padrão TODAS AS DREs e reseta
-     todos os elementos da filtragem
-    */
-    $(".revistasBoletins-dre-item-lnk").unbind("click").click(function () {
-        try {
+        if (!this.checked)
             $("#chkRevistasBoletinsTodasDREs").prop('checked', false).checkboxradio('refresh');
-            revistasBoletins_configurarControles();
-        }
-        catch (error) {
-            console.log(error);
-        }
+        carregarListaEscolaRevistasBoletins();
     });
 
     /**
@@ -7111,7 +7105,7 @@ function mostrarTelaResultados(isShow, divResultados, opcaoTab) {
  ATUALIZAÇÃO - Criamos um método para a chamada do botão visando atender à duas situações no momento
  do clique no botão. Ou seja, quando não há clique no botão, não devemos permitir o BACKBUTTON
 */
-function abrirResultados() {
+function abrirResultados(limparFiltros) {
     try {
         /**
         -----MSTECH-----
@@ -7146,34 +7140,28 @@ function abrirResultados() {
             $(".page").hide();
             $("#resultado-page").show();
 
-            //$("#formResultadoOpcoes").show();
-            //$("#divResultadoApresentacao").hide();
+            if (limparFiltros) {
+                $("#ddlResultadoNivel").val("");
+                $("#ddlResultadoNivel").selectmenu("refresh");
 
-            //$("#ddlResultadoNivel").unbind("change").change();
-            $("#ddlResultadoNivel").val("");
-            $("#ddlResultadoNivel").selectmenu("refresh");
+                $("#ddlResultadoAreaConhecimento").val("");
+                $("#ddlResultadoAreaConhecimento").selectmenu("refresh");
 
-            $("#ddlResultadoAreaConhecimento").val("");
-            $("#ddlResultadoAreaConhecimento").selectmenu("refresh");
+                $("#ddlResultadoAno").val("");
+                $("#ddlResultadoAno").selectmenu("refresh");
 
-            $("#ddlResultadoAno").val("");
-            $("#ddlResultadoAno").selectmenu("refresh");
+                $("#divResultadoDRE").hide();
+                $(".resultado-dre-chk").prop('checked', false).checkboxradio('refresh');
 
-            $("#divResultadoDRE").hide();
-            $(".resultado-dre-chk").prop('checked', false).checkboxradio('refresh');
+                $("#divResultadoEscola").hide();
+                $(".resultado-escola-chk").prop('checked', false).checkboxradio('refresh');
 
-            $("#divResultadoEscola").hide();
-            $(".resultado-escola-chk").prop('checked', false).checkboxradio('refresh');
-
-            $("#divResultadoTurma").hide();
-            //$("#txtResultadoTurma").val("");
-            //$("#txtResultadoTurma")[0].selectize.clear();
-            //$("#txtResultadoTurma")[0].selectize.clearOptions();
-            $("#divResultadoAluno").hide();
-            $("#divResultadoAlunoItens").html("");
+                $("#divResultadoTurma").hide();
+                $("#divResultadoAluno").hide();
+                $("#divResultadoAlunoItens").html("");
+            }
 
             $("#ddlResultadoNivel").trigger("change");
-            //$("#divResultadoApresentacao").hide();
 
             $("#btnResultadoApresentar").prop("disabled", true);
         }
@@ -7184,7 +7172,6 @@ function abrirResultados() {
     }
 };
 
-//marcos
 /* 
     Funcionalidades para Revistas Pedagógicas e Boletins
  */
@@ -7202,7 +7189,8 @@ function abrirConsultaRevistasBoletins() {
         $(".page").hide();
         $("#revistasBoletins-page").show();
 
-        $(".revistasBoletins-dre-chk").trigger("change");
+        $(".revistasBoletins-dre-chk").prop('checked', false).checkboxradio('refresh');
+        carregarListaEscolaRevistasBoletins();
 
         $("#ddlRevistasBoletinsEdicao").selectmenu("enable");
         $("#ddlRevistasBoletinsEdicao").selectmenu("refresh");
@@ -7216,10 +7204,44 @@ function abrirConsultaRevistasBoletins() {
     }
 }
 
+function aplicarFiltrosRevistasBoletins(edicao, areaConhecimentoId, ciclo, esc_nome) {
+    //modifica os filtros de Edição, Área de Conhecimento e Ciclo
+    $("#ddlRevistasBoletinsEdicao").val(edicao ? edicao : "");
+    $("#ddlRevistasBoletinsEdicao").selectmenu("refresh");
+
+    $("#ddlRevistasBoletinsAreaConhecimento").val(areaConhecimentoId ? areaConhecimentoId : "");
+    $("#ddlRevistasBoletinsAreaConhecimento").selectmenu("refresh");
+
+    $("#ddlRevistasBoletinsCiclo").val(ciclo ? ciclo : "");
+    $("#ddlRevistasBoletinsCiclo").selectmenu("refresh");
+
+    //cria os componentes de DREs
+    revistasBoletins_configurarControles();
+
+    //marca as DREs da consulta de Revistas/Boletins da mesma forma que a consulta de Resultados
+    let lista_uad_sigla = $(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get();
+    $(".revistasBoletins-dre-chk").each(function (index) {
+        $(this).prop('checked', lista_uad_sigla.includes(this.value)).checkboxradio('refresh');
+    });
+
+    //exibe as escolas conforme as DREs selecionadas logo acima
+    let promiseCargaEscolas = carregarListaEscolaRevistasBoletins();
+
+    if (esc_nome && promiseCargaEscolas) {
+        promiseCargaEscolas.then(() => {
+            let _txtRevistasBoletinsEscolaFiltro = $("#txtRevistasBoletinsEscolaFiltro");
+            _txtRevistasBoletinsEscolaFiltro.val(esc_nome);
+            _txtRevistasBoletinsEscolaFiltro.trigger("change");
+            _txtRevistasBoletinsEscolaFiltro.trigger("focus");
+        });
+    }
+}
+
 $("#btnRevistasBoletinsVoltar").unbind("click").click(function () {
     try {
-        removerItemBackButton();
-        abrirResultados();
+        if (caminhoBackButton && caminhoBackButton.includes("btnRevistasBoletinsVoltar"))
+            removerItemBackButton();
+        abrirResultados(false);
     }
     catch (error) {
         console.log(error);
@@ -7285,18 +7307,18 @@ function voltarMenu_deConfiguracoes() {
 function carregarConfiguracoes() {
     try {
         if (Usuario.AcessoNivelSME) {
-            var labelPreenchimentoQuestionários = document.getElementById("opcaoPreenchimentoQuestionarios");
+            var labelPreenchimentoQuestionarios = document.getElementById("opcaoPreenchimentoQuestionarios");
             var labelRelatorioAcompanhamento = document.getElementById("opcaoRelatorioAcompanhamento");
 
             //Opção para disponibilização de questionários (sejam eles socioeconômicos ou
             //mesmo aplicações de prova)
             if (provaSP_configuracoes.configuracoes.DisponibilizarPreenchimentoQuestionariosFichas) {
-                labelPreenchimentoQuestionários.innerText = "ATIVADO";
-                labelPreenchimentoQuestionários.style.color = "green";
+                labelPreenchimentoQuestionarios.innerText = "ATIVADO";
+                labelPreenchimentoQuestionarios.style.color = "green";
             }
             else {
-                labelPreenchimentoQuestionários.innerText = "DESATIVADO";
-                labelPreenchimentoQuestionários.style.color = "red";
+                labelPreenchimentoQuestionarios.innerText = "DESATIVADO";
+                labelPreenchimentoQuestionarios.style.color = "red";
             }
 
             //Opção para disponibilização de acesso aos relatórios de acompanhamento
@@ -7876,14 +7898,18 @@ function popupProvaAlunoObtemCiclo() {
             else { anoCorrespondente = parseInt($("#ddlResultadoAno").val()); } //Filtro de ano
         }
 
-        if (anoCorrespondente == 2 || anoCorrespondente == 3) { return 1; } //Alfabetização
-        else if (anoCorrespondente >= 4 && anoCorrespondente <= 6) { return 2; } //Interdisciplinar
-        else if (anoCorrespondente >= 7 && anoCorrespondente <= 9) { return 3; } //Autoral
+        return buscarCicloPeloAnoLetivo(anoCorrespondente);
     }
     catch (error) {
         console.log(error);
     }
     return 1;
+}
+
+function buscarCicloPeloAnoLetivo(anoLetivo) {
+    if (anoLetivo == 2 || anoLetivo == 3) { return 1; } //Alfabetização
+    else if (anoLetivo >= 4 && anoLetivo <= 6) { return 2; } //Interdisciplinar
+    else if (anoLetivo >= 7 && anoLetivo <= 9) { return 3; } //Autoral
 }
 
 $("#btnProvaAlunoCriterios").unbind("click").click(function () {

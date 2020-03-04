@@ -278,9 +278,6 @@ namespace ProvaSP.Data
             IDictionary<TipoRespondenteQuestionario, RelatorioItemAgrupado> gridRespondentes = null;
             RelatorioAgrupamento agrupamentoAtual = null;
 
-            /* marcos remover for (int i = pIndicadoresRel.Count - 1; i >= 0; i--)
-            {
-                var relatorioItem = pIndicadoresRel[i];*/
             foreach (var relatorioItem in pIndicadoresRel)
             {
                 //se mudou o titulo, cria um novo item de agrupamento
