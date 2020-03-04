@@ -407,7 +407,12 @@
     <Content Include="AppProvaSP\questionario_9.html" />
     <Content Include="AppProvaSP\scripts\app.js" />
     <Content Include="AppProvaSP\scripts\datepicker-pt-BR.js" />
+    <Content Include="AppProvaSP\scripts\external\DomToImage-2.6\dom-to-image.js" />
+    <Content Include="AppProvaSP\scripts\external\DomToImage-2.6\dom-to-image.min.js" />
+    <Content Include="AppProvaSP\scripts\external\FileSaver\FileSaver.min.js" />
     <Content Include="AppProvaSP\scripts\external\jquery-ui\datepicker.js" />
+    <Content Include="AppProvaSP\scripts\external\jsPDF-2.1.1\html2canvas.min.js" />
+    <Content Include="AppProvaSP\scripts\external\jsPDF-2.1.1\jspdf.min.js" />
     <Content Include="AppProvaSP\scripts\global.js" />
     <Content Include="AppProvaSP\scripts\index.js" />
     <None Include="AppProvaSP\scripts\jquery-1.8.0.intellisense.js" />

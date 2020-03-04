@@ -1,5 +1,5 @@
-<!--
-n„o exclua esse coment·rio.
+Ôªø<!--
+n√£o exclua esse coment√°rio.
 @{
     Layout = null;
 }
@@ -26,7 +26,7 @@ n„o exclua esse coment·rio.
     <title>Prova Sao Paulo</title>
 
     <script type="text/javascript">
-            @Html.Raw(ViewBag.JsSerap) // N√O EXCLUA ESSA LINHA
+            @Html.Raw(ViewBag.JsSerap) // N√ÉO EXCLUA ESSA LINHA
     </script>
 </head>
 
@@ -38,7 +38,7 @@ n„o exclua esse coment·rio.
     -->
     <div id="aguarde-page" class="page" style="display:inline;">
         <div class="container" style="text-align:center;">
-            <img src="/AppProvaSP/images/logo_provaSP.png" alt="Prova S„o Paulo" style="margin:20px; width:70%;" />
+            <img src="/AppProvaSP/images/logo_provaSP.png" alt="Prova S√£o Paulo" style="margin:20px; width:70%;" />
             <p id="loadingLabelPrincipal">
                 Aguarde...
             </p>
@@ -46,27 +46,27 @@ n„o exclua esse coment·rio.
     </div>
 
     <!--MSTECH
-    *Menu do App - Bot„o alinhados na vertical com as opÁıes a serem selecionadas de acordo com o
-    tipo de usu·rio logado.
+    *Menu do App - Bot√£o alinhados na vertical com as op√ß√µes a serem selecionadas de acordo com o
+    tipo de usu√°rio logado.
     *
     -->
     <div id="menu-page" class="page generico_mainDiv" style="display:none;">
 
         <div class="container generico_subDiv" style="text-align:center;">
-            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S„o Paulo" />
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S√£o Paulo" />
 
             <div class="generico_headerDiv">
                 <p class="generico_headerTitle">MENU</p>
                 <p class="generico_headerText">BEM-VINDO(A)!</p>
             </div>
             <!--<div style="text-align:center">-->
-            <!--<img src="/AppProvaSP/images/logo_provaSP.png" alt="Prova S„o Paulo" style="margin:20px; width:70%;" />-->
+            <!--<img src="/AppProvaSP/images/logo_provaSP.png" alt="Prova S√£o Paulo" style="margin:20px; width:70%;" />-->
             <!--</div>-->
             <div role="main" class="ui-content" style="padding: 1em 0em;">
                 <div id="divCodigoTurma" style="display:none;">
-                    <label for="txtCodigoTurma">Digite cÛdigo da turma. Ele È informado na lista de presenÁa impressa:</label>
+                    <label for="txtCodigoTurma">Digite c√≥digo da turma. Ele √© informado na lista de presen√ßa impressa:</label>
                     <img src="/AppProvaSP/images/identificacao_turma.png" style="width:90%;" />
-                    <input id="txtCodigoTurma" placeholder="Digite aqui o cÛdigo" type="number" required="required" />
+                    <input id="txtCodigoTurma" placeholder="Digite aqui o c√≥digo" type="number" required="required" />
                     <button id="btnCodigoTurmaProsseguir" data-role="button">Prosseguir</button>
                     <button id="btnCodigoTurmaVoltar" data-role="button">Voltar</button>
                 </div>
@@ -83,14 +83,14 @@ n„o exclua esse coment·rio.
                     <ul>
                         <li>Assegurar o sigilo absoluto das provas;</li>
                         <li>
-                            Seguir, rigorosamente, as orientaÁıes constantes do Manual do
+                            Seguir, rigorosamente, as orienta√ß√µes constantes do Manual do
                             Aplicador, para garantir a uniformidade dos procedimentos da
-                            aplicaÁ„o;
+                            aplica√ß√£o;
                         </li>
                         <li>
-                            Assegurar que os estudantes respondam ‡s questıes das provas com
-                            seus prÛprios esforÁos e conhecimentos, sem quaisquer
-                            interferÍncias.
+                            Assegurar que os estudantes respondam √†s quest√µes das provas com
+                            seus pr√≥prios esfor√ßos e conhecimentos, sem quaisquer
+                            interfer√™ncias.
                         </li>
                     </ul>
                     <button id="btnTermoAplicadorConcordo" data-role="button">Concordo</button>
@@ -101,7 +101,7 @@ n„o exclua esse coment·rio.
                 <div id="divMenuPrincipal" style="margin-top:15px;">
                     <div id="provaSP_disponivel">
                         <div id="div_fichasderegistro">
-                            <label for="codigo-turma">Controle da AplicaÁ„o:</label>
+                            <label for="codigo-turma">Controle da Aplica√ß√£o:</label>
 
                             <div id="divAbrirQuestionarioID_9" class="button-abrir-questionario" style="display:none;">
                                 <button id="btnAbrirQuestionarioID_9" data-role="button">Ficha de Registro - Supervisor Escolar</button>
@@ -112,23 +112,23 @@ n„o exclua esse coment·rio.
                             </div>
 
                             <div id="divAbrirQuestionarioID_11" class="button-abrir-questionario" style="display:none;">
-                                <button id="btnAbrirQuestionarioID_11" data-role="button">Ficha de Registro - Coordenador(a) PedagÛgico(a)</button>
+                                <button id="btnAbrirQuestionarioID_11" data-role="button">Ficha de Registro - Coordenador(a) Pedag√≥gico(a)</button>
                             </div>
 
-                            <!-- TODOS DOCENTES DEVEM TER ACESSO PARA A FICHA DE APLICA«√O DE PROVA: -->
+                            <!-- TODOS DOCENTES DEVEM TER ACESSO PARA A FICHA DE APLICA√á√ÉO DE PROVA: -->
                             <!-- // Desabilitar temporariamente a ficha de registro dos professores 22/10/19
                             <button id="btnAbrirFichaAplicadorProvaOuChamada" data-role="button">Ficha de Registro - Aplicador de Prova / Chamada</button>
                             -->
-                            <!-- O relatÛrio de acompanhamento depende da ConfiguraÁ„o RelatorioAcompanhamentoVisivel=true -->
-                            <button id="btnAbrirRelatorioAcompanhamento" data-role="button" style="display:none;">RelatÛrio de Acompanhamento</button>
+                            <!-- O relat√≥rio de acompanhamento depende da Configura√ß√£o RelatorioAcompanhamentoVisivel=true -->
+                            <button id="btnAbrirRelatorioAcompanhamento" data-role="button" style="display:none;">Relat√≥rio de Acompanhamento</button>
                             <!--
-                            <button id="btnAbrirRelatorioAcompanhamento_9" data-role="button" style="display:none;">RelatÛrio de Acompanhamento (Supervisor)</button>
-                            <button id="btnAbrirRelatorioAcompanhamento_10" data-role="button" style="display:none;">RelatÛrio de Acompanhamento (Diretor)</button>
-                            <button id="btnAbrirRelatorioAcompanhamento_11" data-role="button" style="display:none;">RelatÛrio de Acompanhamento (Coordenador)</button>
+                            <button id="btnAbrirRelatorioAcompanhamento_9" data-role="button" style="display:none;">Relat√≥rio de Acompanhamento (Supervisor)</button>
+                            <button id="btnAbrirRelatorioAcompanhamento_10" data-role="button" style="display:none;">Relat√≥rio de Acompanhamento (Diretor)</button>
+                            <button id="btnAbrirRelatorioAcompanhamento_11" data-role="button" style="display:none;">Relat√≥rio de Acompanhamento (Coordenador)</button>
                             -->
                         </div>
 
-                        <label for="codigo-turma" style="margin-top:15px;">Question·rio(s):</label>
+                        <label for="codigo-turma" style="margin-top:15px;">Question√°rio(s):</label>
 
                         <div id="divAbrirQuestionarioID_1" class="button-abrir-questionario" style="display:none;">
                             <button id="btnAbrirQuestionarioID_1" data-role="button" style="display:none;">Supervisor Escolar</button>
@@ -139,7 +139,7 @@ n„o exclua esse coment·rio.
                         </div>
 
                         <div id="divAbrirQuestionarioID_3" class="button-abrir-questionario" style="display:none;">
-                            <button id="btnAbrirQuestionarioID_3" data-role="button" style="display:none;">Coordenador PedagÛgico</button>
+                            <button id="btnAbrirQuestionarioID_3" data-role="button" style="display:none;">Coordenador Pedag√≥gico</button>
                         </div>
 
                         <div id="divAbrirQuestionarioID_23" class="button-abrir-questionario" style="display:none;">
@@ -153,10 +153,10 @@ n„o exclua esse coment·rio.
                             <button id="btnAbrirQuestionarioID_25" data-role="button" style="display:none;">Assistente do Diretor</button>
                         </div>
                         <!--MSTECH
-                        *ID 14: Auxiliar tÈcnico da educaÁ„o
+                        *ID 14: Auxiliar t√©cnico da educa√ß√£o
                         -->
                         <div id="divAbrirQuestionarioID_14" class="button-abrir-questionario" style="display:none;">
-                            <button id="btnAbrirQuestionarioID_14" data-role="button" style="display:none;">Auxiliar TÈcnico da EducaÁ„o</button>
+                            <button id="btnAbrirQuestionarioID_14" data-role="button" style="display:none;">Auxiliar T√©cnico da Educa√ß√£o</button>
                         </div>
                         <!--MSTECH
                         *ID 15: Agente escolar - Merendeira
@@ -178,29 +178,29 @@ n„o exclua esse coment·rio.
                         </div>
 
                         <!--MSTECH
-                        *ID 21: Alunos do 3∫ ao 6∫ ano
-                        *ID 22: Alunos do 7∫ ao 9∫ ano
+                        *ID 21: Alunos do 3¬∫ ao 6¬∫ ano
+                        *ID 22: Alunos do 7¬∫ ao 9¬∫ ano
                         -->
                         <div id="divAbrirQuestionarioID_21" class="button-abrir-questionario" style="display:none;">
-                            <button id="btnAbrirQuestionarioID_21" data-role="button" style="display:none;">Aluno (3∫ ao 6∫ ano)</button>
+                            <button id="btnAbrirQuestionarioID_21" data-role="button" style="display:none;">Aluno (3¬∫ ao 6¬∫ ano)</button>
                         </div>
                         <div id="divAbrirQuestionarioID_22" class="button-abrir-questionario" style="display:none;">
-                            <button id="btnAbrirQuestionarioID_22" data-role="button" style="display:none;">Aluno (7∫ ao 9∫ ano)</button>
+                            <button id="btnAbrirQuestionarioID_22" data-role="button" style="display:none;">Aluno (7¬∫ ao 9¬∫ ano)</button>
                         </div>
                     </div>
 
                     <!--MSTECH
-                    *Agora esta opÁ„o È especÌfica para Acesso SME
+                    *Agora esta op√ß√£o √© espec√≠fica para Acesso SME
                     -->
                     <div id="provaSP_resultados" style="display: none;">
                         <label for="codigo-turma" style="margin-top:15px;">Resultados:</label>
-                        <button id="btnAbrirResultados" data-role="button">Resultados da Prova S„o Paulo</button>
+                        <button id="btnAbrirResultados" data-role="button">Resultados da Prova S√£o Paulo</button>
                     </div>
 
                     <!--MSTECH
-                    *Novo bot„o para configurar estados do servidor (ConfiguraÁıes)
+                    *Novo bot√£o para configurar estados do servidor (Configura√ß√µes)
                     -->
-                    <button id="btnConfiguracoes" style="display: none;" data-role="button">ConfiguraÁıes</button>
+                    <button id="btnConfiguracoes" style="display: none;" data-role="button">Configura√ß√µes</button>
 
                     <a id="btnSair" class="ui-btn" style="color: rgb(205,0,0) !important;">Sair</a>
                 </div>
@@ -209,9 +209,9 @@ n„o exclua esse coment·rio.
     </div>
 
     <!--MSTECH
-    *Termo de compromisso. O usu·rio deve "assinar" o termo de compromisso antes de continuar.
-    *ESTE TRECHO E TERMO DE COMPROMISSO NUNCA S√O MOSTRADOS. O termo de compromisso correto È
-    *mostrado antes da criaÁ„o do question·rio do tipo 8
+    *Termo de compromisso. O usu√°rio deve "assinar" o termo de compromisso antes de continuar.
+    *ESTE TRECHO E TERMO DE COMPROMISSO NUNCA S√ÉO MOSTRADOS. O termo de compromisso correto √©
+    *mostrado antes da cria√ß√£o do question√°rio do tipo 8
     -->
     <!--<div id="termo-compromisso-page" class="page">-->
     <!--<div class="container" style="text-align:center;">-->
@@ -219,11 +219,11 @@ n„o exclua esse coment·rio.
     <!--<p id="app-title" style="font-size:12pt; ">TERMO DE COMPROMISSO<br />E SIGILO DO APLICADOR</p>-->
     <!--</div>-->
     <!--<div role="main" class="ui-content">-->
-    <!--<p style="margin-top:20px; margin-bottom:20px; text-align:left">Assumo o compromisso com a Secretaria Municipal de EducaÁ„o do MunicÌpio de S„o Paulo de realizar com seriedade todas as tarefas pertinentes ‡ minha funÁ„o na aplicaÁ„o das provas, tais como:</p>-->
+    <!--<p style="margin-top:20px; margin-bottom:20px; text-align:left">Assumo o compromisso com a Secretaria Municipal de Educa√ß√£o do Munic√≠pio de S√£o Paulo de realizar com seriedade todas as tarefas pertinentes √† minha fun√ß√£o na aplica√ß√£o das provas, tais como:</p>-->
     <!--<ul style="text-align:left;">-->
     <!--<li style="padding:10px;">Assegurar o sigilo absoluto das provas;</li>-->
-    <!--<li style="padding:10px;">Seguir, rigorosamente, as orientaÁıes constantes do Manual do Aplicador, para garantir a uniformidade dos procedimentos da aplicaÁ„o;</li>-->
-    <!--<li style="padding:10px;">Assegurar que os alunos respondam ‡s questıes das provas com seus prÛprios esforÁos e conhecimentos, sem quaisquer interferÍncias.</li>-->
+    <!--<li style="padding:10px;">Seguir, rigorosamente, as orienta√ß√µes constantes do Manual do Aplicador, para garantir a uniformidade dos procedimentos da aplica√ß√£o;</li>-->
+    <!--<li style="padding:10px;">Assegurar que os alunos respondam √†s quest√µes das provas com seus pr√≥prios esfor√ßos e conhecimentos, sem quaisquer interfer√™ncias.</li>-->
     <!--</ul>-->
     <!--<button id="btnTermoCompromissoConcordo" data-role="button">Concordo</button>-->
     <!--<button id="btnTermoCompromissoDiscordo" data-role="button">Discordo</button>-->
@@ -231,14 +231,14 @@ n„o exclua esse coment·rio.
     <!--</div>-->
     <!--</div>-->
     <!--MSTECH
-    *Resultado do ProvaSP destinado aos estudantes ou usu·rios de tipo ALUNO.
+    *Resultado do ProvaSP destinado aos estudantes ou usu√°rios de tipo ALUNO.
 
-    OBS: Reparar que s„o montados gr·ficos especÌficos para os usu·rios ALUNOS
+    OBS: Reparar que s√£o montados gr√°ficos espec√≠ficos para os usu√°rios ALUNOS
     *
     -->
     <div id="resultado-aluno-page" class="page generico_mainDiv">
         <div class="container generico_subDiv" style="text-align:center;">
-            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S„o Paulo" />
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S√£o Paulo" />
 
             <div class="generico_headerDiv">
                 <p class="generico_headerTitle">RESULTADOS</p>
@@ -247,15 +247,15 @@ n„o exclua esse coment·rio.
 
             <form>
                 <select id="ddlResultadoAlunoAreaConhecimento" data-mini="true">
-                    <option value="" selected="selected">(¡rea de Conhecimento...)</option>
-                    <option value="1">CiÍncias da Natureza</option>
-                    <option value="2">LÌngua Portuguesa</option>
-                    <option value="4">RedaÁ„o</option>
-                    <option value="3">Matem·tica</option>
+                    <option value="" selected="selected">(√Årea de Conhecimento...)</option>
+                    <option value="1">Ci√™ncias da Natureza</option>
+                    <option value="2">L√≠ngua Portuguesa</option>
+                    <option value="4">Reda√ß√£o</option>
+                    <option value="3">Matem√°tica</option>
                 </select>
 
                 <select id="ddlResultadoAlunoEdicao" data-mini="true">
-                    <option value="" selected="selected">(EdiÁ„o...)</option>
+                    <option value="" selected="selected">(Edi√ß√£o...)</option>
                 </select>
             </form>
 
@@ -282,71 +282,71 @@ n„o exclua esse coment·rio.
     </div>
 
     <!--MSTECH
-    *Nova Div para configuraÁıes. Esta p·gina ter· as opÁıes hoje determinadas por script no servidor
-    da ProvaSP. Basicamente alterando duas configuraÁıes b·sicas.
+    *Nova Div para configura√ß√µes. Esta p√°gina ter√° as op√ß√µes hoje determinadas por script no servidor
+    da ProvaSP. Basicamente alterando duas configura√ß√µes b√°sicas.
     -->
     <div id="configuracoes-page" class="page generico_mainDiv" style="display: none;">
         <div class="container generico_subDiv">
-            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S„o Paulo" />
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S√£o Paulo" />
 
             <div class="generico_headerDiv">
-                <p class="generico_headerTitle">CONFIGURA«’ES</p>
-                <p class="generico_headerText">ACESSO NÕVEL SME</p>
+                <p class="generico_headerTitle">CONFIGURA√á√ïES</p>
+                <p class="generico_headerText">ACESSO N√çVEL SME</p>
             </div>
 
             <div class="configuracoes_optionsMainDiv">
-                <!--Tab ConfiguraÁ„o dos NÌveis de ProficiÍncia-->
+                <!--Tab Configura√ß√£o dos N√≠veis de Profici√™ncia-->
                 <p id="configuracoes_tab0" class="resultados_headerTitle" onclick="divConfiguracoes(0)">
-                    NÕVEIS DE PROFICI NCIA
+                    N√çVEIS DE PROFICI√äNCIA
                     <span id="configuracoes_icone0">
                         <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
                     </span>
                 </p>
                 <div id="configuracoes_div0" class="configuracoes_tabDiv" style="display: none;">
-                    <!--Ano ou Ciclo da ProficiÍncia-->
+                    <!--Ano ou Ciclo da Profici√™ncia-->
                     <p class="configuracoes_optionsTitleLeft">SELECIONAR ANO OU CICLO</p>
                     <select id="confAnoCiclo" data-mini="true">
                         <option value="" selected="selected">(Ano ou Ciclo...)</option>
-                        <option value="2">2∫ Ano</option>
-                        <option value="3">3∫ Ano</option>
-                        <option value="4">4∫ Ano</option>
-                        <option value="5">5∫ Ano</option>
-                        <option value="6">6∫ Ano</option>
-                        <option value="7">7∫ Ano</option>
-                        <option value="8">8∫ Ano</option>
-                        <option value="9">9∫ Ano</option>
-                        <option value="c1">Ciclo de AlfabetizaÁ„o</option>
+                        <option value="2">2¬∫ Ano</option>
+                        <option value="3">3¬∫ Ano</option>
+                        <option value="4">4¬∫ Ano</option>
+                        <option value="5">5¬∫ Ano</option>
+                        <option value="6">6¬∫ Ano</option>
+                        <option value="7">7¬∫ Ano</option>
+                        <option value="8">8¬∫ Ano</option>
+                        <option value="9">9¬∫ Ano</option>
+                        <option value="c1">Ciclo de Alfabetiza√ß√£o</option>
                         <option value="c2">Ciclo Interdisciplinar</option>
                         <option value="c3">Ciclo Autoral</option>
                     </select>
-                    <!--NÌvel da ProficiÍncia-->
-                    <p class="configuracoes_optionsTitleLeft">SELECIONAR NÕVEL DA PROFICI NCIA</p>
-                    <select id="confNivelProficiÍncia" data-mini="true">
-                        <option value="" selected="selected">(NÌvel de proficiÍncia...)</option>
-                        <option value="0">NÌvel indefinido</option>
-                        <option value="1">Primeiro nÌvel</option>
-                        <option value="2">Segundo nÌvel</option>
-                        <option value="3">Terceiro nÌvel</option>
-                        <option value="4">Quarto nÌvel</option>
+                    <!--N√≠vel da Profici√™ncia-->
+                    <p class="configuracoes_optionsTitleLeft">SELECIONAR N√çVEL DA PROFICI√äNCIA</p>
+                    <select id="confNivelProfici√™ncia" data-mini="true">
+                        <option value="" selected="selected">(N√≠vel de profici√™ncia...)</option>
+                        <option value="0">N√≠vel indefinido</option>
+                        <option value="1">Primeiro n√≠vel</option>
+                        <option value="2">Segundo n√≠vel</option>
+                        <option value="3">Terceiro n√≠vel</option>
+                        <option value="4">Quarto n√≠vel</option>
                     </select>
 
                     <!--Nome-->
-                    <p class="configuracoes_optionsTitleLeft">NOME DA PROFICI NCIA</p>
-                    <input id="confProficienciaNome" type="text" placeholder="Ex: NÌvel B·sico" />
-                    <!--DescriÁ„o-->
-                    <p class="configuracoes_optionsTitleLeft">DESCRI«√O DA PROFICI NCIA</p>
-                    <textarea id="confProficienciaDescricao" placeholder="Ex: Desempenho padr„o."></textarea>
+                    <p class="configuracoes_optionsTitleLeft">NOME DA PROFICI√äNCIA</p>
+                    <input id="confProficienciaNome" type="text" placeholder="Ex: N√≠vel B√°sico" />
+                    <!--Descri√ß√£o-->
+                    <p class="configuracoes_optionsTitleLeft">DESCRI√á√ÉO DA PROFICI√äNCIA</p>
+                    <textarea id="confProficienciaDescricao" placeholder="Ex: Desempenho padr√£o."></textarea>
 
-                    <!--Enviar ProficiÍncia-->
+                    <!--Enviar Profici√™ncia-->
                     <button id="btnEnviarProficiencia" style="margin-top: 20px;"
                             data-role="button">
-                        Atualizar proficiÍncia
+                        Atualizar profici√™ncia
                     </button>
                 </div>
 
-                <!--Tab ConfiguraÁıes gerais-->
+                <!--Tab Configura√ß√µes gerais-->
                 <p id="configuracoes_tab1" class="resultados_headerTitle" onclick="divConfiguracoes(1)">
-                    OP«’ES PROVASP
+                    OP√á√ïES PROVASP
                     <span id="configuracoes_icone1">
                         <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
                     </span>
@@ -355,23 +355,23 @@ n„o exclua esse coment·rio.
                     <div class="configuracoes_optionsDiv"
                          onclick="alterarConfiguracao('DisponibilizarPreenchimentoQuestionariosFichas')">
                         <p class="configuracoes_optionsTitle">
-                            PREENCHIMENTO DE QUESTION¡RIOS: <span id="opcaoPreenchimentoQuestionarios"></span>
+                            PREENCHIMENTO DE QUESTION√ÅRIOS: <span id="opcaoPreenchimentoQuestionarios"></span>
                         </p>
                         <p class="configuracoes_optionsText">
-                            Permite o acesso ‡s telas de preenchimento de question·rios, sejam eles socioeconÙmicos
-                            ou mesmo question·rio de aplicaÁ„o da ProvaSP. Desative esta opÁ„o para direcionar os usu·rios
-                            ‡ tela de <b>Resultados.</b>
+                            Permite o acesso √†s telas de preenchimento de question√°rios, sejam eles socioecon√¥micos
+                            ou mesmo question√°rio de aplica√ß√£o da ProvaSP. Desative esta op√ß√£o para direcionar os usu√°rios
+                            √† tela de <b>Resultados.</b>
                         </p>
                     </div>
 
                     <div class="configuracoes_optionsDiv"
                          onclick="alterarConfiguracao('RelatorioAcompanhamentoVisivel')">
                         <p class="configuracoes_optionsTitle">
-                            RELAT”RIO ACOMPANHAMENTO: <span id="opcaoRelatorioAcompanhamento"></span>
+                            RELAT√ìRIO ACOMPANHAMENTO: <span id="opcaoRelatorioAcompanhamento"></span>
                         </p>
                         <p class="configuracoes_optionsText">
-                            Ative esta opÁ„o para permitir que o <b>RelatÛrio de Acompanhamento</b> seja acessado pelos
-                            usu·rios correspondentes. Geralmente esta opÁ„o deve ser habilitada durante a ProvaSP.
+                            Ative esta op√ß√£o para permitir que o <b>Relat√≥rio de Acompanhamento</b> seja acessado pelos
+                            usu√°rios correspondentes. Geralmente esta op√ß√£o deve ser habilitada durante a ProvaSP.
                         </p>
                     </div>
 
@@ -380,45 +380,45 @@ n„o exclua esse coment·rio.
                             REPRESENTATIVIDADE SEGUNDO O INEP: <span id="opcaoRepresentatividadeSegundoINEP"></span>
                         </p>
                         <p class="configuracoes_optionsText">
-                            Informe abaixo a porcentagem mÌnima para que os dados de participaÁ„o da ProvaSP sejam
+                            Informe abaixo a porcentagem m√≠nima para que os dados de participa√ß√£o da ProvaSP sejam
                             representativos. (de 0 a 100)
                         </p>
                         <input id="confRepresentatividadeSegundoINEP" style="text-align: center;" type="number" placeholder="Ex: 90" />
                     </div>
 
                     <!--Sync-->
-                    <button id="btnSincronizarOpcoes" data-role="button">Sincronizar opÁıes</button>
+                    <button id="btnSincronizarOpcoes" data-role="button">Sincronizar op√ß√µes</button>
                 </div>
 
                 <p id="configuracoes_tab2" class="resultados_headerTitle" onclick="obterCorte()">
-                    SEQU NCIA DE ATIVIDADES
+                    SEQU√äNCIA DE ATIVIDADES
                     <span id="configuracoes_icone2">
                         <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
                     </span>
                 </p>
                 <div id="configuracoes_div2" class="configuracoes_tabDiv" style="display: none;">
-                    <!--IMPORTANTE: ConfSD = ConfiguraÁ„o de SequÍncia de Atividades-->
+                    <!--IMPORTANTE: ConfSD = Configura√ß√£o de Sequ√™ncia de Atividades-->
                     <table style="width:100%;">
                         <tr>
                             <td>
                                 <select id="ddlConfSDEdicao" data-mini="true">
-                                    <option value="" selected="selected">(EdiÁ„o...)</option>
-                                    <option value="2019">EdiÁ„o 2019</option>
-                                    <option value="2018">EdiÁ„o 2018</option>
-                                    <option value="2017">EdiÁ„o 2017</option>
+                                    <option value="" selected="selected">(Edi√ß√£o...)</option>
+                                    <option value="2019">Edi√ß√£o 2019</option>
+                                    <option value="2018">Edi√ß√£o 2018</option>
+                                    <option value="2017">Edi√ß√£o 2017</option>
                                 </select>
                             </td>
                             <td>
                                 <select id="ddlConfSDAno" data-mini="true">
                                     <option value="" selected="selected">(Ano...)</option>
-                                    <option value="2">2∫ Ano</option>
-                                    <option value="3">3∫ Ano</option>
-                                    <option value="4">4∫ Ano</option>
-                                    <option value="5">5∫ Ano</option>
-                                    <option value="6">6∫ Ano</option>
-                                    <option value="7">7∫ Ano</option>
-                                    <option value="8">8∫ Ano</option>
-                                    <option value="9">9∫ Ano</option>
+                                    <option value="2">2¬∫ Ano</option>
+                                    <option value="3">3¬∫ Ano</option>
+                                    <option value="4">4¬∫ Ano</option>
+                                    <option value="5">5¬∫ Ano</option>
+                                    <option value="6">6¬∫ Ano</option>
+                                    <option value="7">7¬∫ Ano</option>
+                                    <option value="8">8¬∫ Ano</option>
+                                    <option value="9">9¬∫ Ano</option>
                                 </select>
                             </td>
                         </tr>
@@ -428,11 +428,11 @@ n„o exclua esse coment·rio.
                         <tr>
                             <td>
                                 <select id="ddlConfSDAreaConhecimento" data-mini="true">
-                                    <option value="" selected="selected">(¡rea de Conhecimento...)</option>
-                                    <option value="1">CiÍncias da Natureza</option>
-                                    <option value="2">LÌngua Portuguesa</option>
-                                    <option value="4">RedaÁ„o</option>
-                                    <option value="3">Matem·tica</option>
+                                    <option value="" selected="selected">(√Årea de Conhecimento...)</option>
+                                    <option value="1">Ci√™ncias da Natureza</option>
+                                    <option value="2">L√≠ngua Portuguesa</option>
+                                    <option value="4">Reda√ß√£o</option>
+                                    <option value="3">Matem√°tica</option>
                                 </select>
                             </td>
                         </tr>
@@ -445,27 +445,27 @@ n„o exclua esse coment·rio.
                         </tr>
                     </table>
                     <button id="btnObterSequenciaDidatica" data-role="button" disabled="disabled">
-                        Visualizar SequÍncia de Atividades
+                        Visualizar Sequ√™ncia de Atividades
                     </button>
 
-                    <!--Detalhes da SequÍncia de Atividades - CADASTRAR/ATUALIZAR -->
+                    <!--Detalhes da Sequ√™ncia de Atividades - CADASTRAR/ATUALIZAR -->
                     <div id="detalhesSD" style="display: none;">
-                        <!--TÌtulo-->
-                        <p class="configuracoes_optionsTitleLeft">TÌtulo da SequÍncia de Atividades</p>
-                        <input id="tituloSD" type="text" placeholder="Ex: TÌtulo aqui..." />
+                        <!--T√≠tulo-->
+                        <p class="configuracoes_optionsTitleLeft">T√≠tulo da Sequ√™ncia de Atividades</p>
+                        <input id="tituloSD" type="text" placeholder="Ex: T√≠tulo aqui..." />
                         <!--Text-->
-                        <p class="configuracoes_optionsTitleLeft">Texto da SequÍncia de Atividades</p>
+                        <p class="configuracoes_optionsTitleLeft">Texto da Sequ√™ncia de Atividades</p>
                         <textarea id="textSD" placeholder="Ex: Texto aqui..."></textarea>
                         <!--Link-->
                         <p class="configuracoes_optionsTitleLeft">Link</p>
                         <input id="linkSD" type="url" placeholder="Ex: Link aqui..." />
 
-                        <!--Voltar das configuraÁıes-->
-                        <button id="btnCommitSD" data-role="button">Cadastrar SequÍncia de Atividades</button>
+                        <!--Voltar das configura√ß√µes-->
+                        <button id="btnCommitSD" data-role="button">Cadastrar Sequ√™ncia de Atividades</button>
                     </div>
                 </div>
 
-                <!--Voltar das configuraÁıes-->
+                <!--Voltar das configura√ß√µes-->
                 <button id="btnConfiguracoesSair"
                         data-role="button" style="color: rgb(205,0,0) !important;">
                     Voltar ao menu
@@ -475,11 +475,11 @@ n„o exclua esse coment·rio.
     </div>
 
     <!--MSTECH
-    *Nova div de popup da prova do aluno. Nela ser· possÌvel abrir o link com a prova fÌsica.
+    *Nova div de popup da prova do aluno. Nela ser√° poss√≠vel abrir o link com a prova f√≠sica.
     -->
     <div id="provaalunopopup-page" class="page generico_mainDiv" style="display: none;">
         <div class="container generico_subDiv">
-            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S„o Paulo" />
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S√£o Paulo" />
 
             <div class="generico_headerDiv">
                 <p class="generico_headerTitle">PROVAS DO ALUNO</p>
@@ -487,43 +487,43 @@ n„o exclua esse coment·rio.
                     ALUNO: <span id="provaAluno_NomeAluno"></span>
                 </p>
             </div>
-            <!--Div que comporta as URLs para as imagens da prova fÌsica-->
+            <!--Div que comporta as URLs para as imagens da prova f√≠sica-->
             <div id="provaaluno_urlsDiv" class="provaaluno_div"></div>
-            <button id="btnProvaAlunoCriterios" data-role="button">DescriÁ„o dos critÈrios</button>
+            <button id="btnProvaAlunoCriterios" data-role="button">Descri√ß√£o dos crit√©rios</button>
             <button id="btnProvaAlunoVoltar" data-role="button">Voltar</button>
         </div>
     </div>
 
     <!--MSTECH
-    *Resultado por nÌvel de filtragem. Todos os filtros aplicados est„o, a princÌpio no mÈtodo
+    *Resultado por n√≠vel de filtragem. Todos os filtros aplicados est√£o, a princ√≠pio no m√©todo
     resultado_configurarControles.
 
-    *Reparar tambÈm que esta mesma Main div comporta tambÈm as estruturas de question·rios.
+    *Reparar tamb√©m que esta mesma Main div comporta tamb√©m as estruturas de question√°rios.
     *
     -->
     <div id="resultado-page" class="page generico_mainDiv">
         <div class="container generico_subDiv" style="text-align:center;">
-            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S„o Paulo" />
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S√£o Paulo" />
 
             <div class="generico_headerDiv">
                 <p class="generico_headerTitle">RESULTADOS</p>
-                <p class="generico_headerText">DA PROVA/PROVINHA S√O PAULO</p>
+                <p class="generico_headerText">DA PROVA/PROVINHA S√ÉO PAULO</p>
             </div>
 
             <!--MSTECH
-            *OpÁıes de filtragem
+            *Op√ß√µes de filtragem
             -->
             <form id="formResultadoOpcoes">
                 <div id="resultados_tabEdit">
-                    <!--OP«√O 1 - RESULTADOS DA PROVA-->
+                    <!--OP√á√ÉO 1 - RESULTADOS DA PROVA-->
                     <p id="resultados_tab0" class="resultados_headerTitle" onclick="divResultadoProva(0)">
-                        DESEMPENHO E PARTICIPA«√O DOS ESTUDANTES
+                        DESEMPENHO E PARTICIPA√á√ÉO DOS ESTUDANTES
                         <span id="resultados_icone0">
                             <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
                         </span>
                     </p>
-                    <!--MSTECH - Nova div com opÁıes de resultado da prova. Esta div comportar· os resultados
-                    da ProvaSP e ProvinhaSP, bem como os respectivos gr·ficos e tabelas.-->
+                    <!--MSTECH - Nova div com op√ß√µes de resultado da prova. Esta div comportar√° os resultados
+                    da ProvaSP e ProvinhaSP, bem como os respectivos gr√°ficos e tabelas.-->
                     <div id="resultados_div0" style="display: none;">
                         <table style="width:100%;">
                             <tr>
@@ -540,19 +540,19 @@ n„o exclua esse coment·rio.
                                 </td>
                                 <td>
                                     <select id="ddlResultadoEdicao" data-mini="true" disabled="disabled">
-                                        <option value="" selected="selected">(EdiÁ„o)</option>
-                                        <option value="ENTURMACAO_ATUAL" id="ddlResultadoEdicao_item_ENTURMACAO_ATUAL">EnturmaÁ„o atual</option>
-                                        <option value="2019">EdiÁ„o 2019</option>
-                                        <option value="2018">EdiÁ„o 2018</option>
-                                        <option value="2017">EdiÁ„o 2017</option>
-                                        <option value="2012" class="edicao-resultado-legado">EdiÁ„o 2012</option>
-                                        <option value="2011" class="edicao-resultado-legado">EdiÁ„o 2011</option>
-                                        <option value="2010" class="edicao-resultado-legado">EdiÁ„o 2010</option>
-                                        <option value="2009" class="edicao-resultado-legado">EdiÁ„o 2009</option>
-                                        <option value="2008" class="edicao-resultado-legado">EdiÁ„o 2008</option>
-                                        <option value="2007" class="edicao-resultado-legado">EdiÁ„o 2007</option>
+                                        <option value="" selected="selected">(Edi√ß√£o)</option>
+                                        <option value="ENTURMACAO_ATUAL" id="ddlResultadoEdicao_item_ENTURMACAO_ATUAL">Enturma√ß√£o atual</option>
+                                        <option value="2019">Edi√ß√£o 2019</option>
+                                        <option value="2018">Edi√ß√£o 2018</option>
+                                        <option value="2017">Edi√ß√£o 2017</option>
+                                        <option value="2012" class="edicao-resultado-legado">Edi√ß√£o 2012</option>
+                                        <option value="2011" class="edicao-resultado-legado">Edi√ß√£o 2011</option>
+                                        <option value="2010" class="edicao-resultado-legado">Edi√ß√£o 2010</option>
+                                        <option value="2009" class="edicao-resultado-legado">Edi√ß√£o 2009</option>
+                                        <option value="2008" class="edicao-resultado-legado">Edi√ß√£o 2008</option>
+                                        <option value="2007" class="edicao-resultado-legado">Edi√ß√£o 2007</option>
                                         <!--
-                                        <option value="HISTORICO">HistÛrico</option>
+                                        <option value="HISTORICO">Hist√≥rico</option>
                                         -->
                                     </select>
                                 </td>
@@ -572,31 +572,31 @@ n„o exclua esse coment·rio.
                                 <td id="resultado_selectCiclo" style="display: none;">
                                     <select id="ddlResultadoCiclo" data-mini="true" disabled="disabled">
                                         <option value="" selected="selected">(Ciclo...)</option>
-                                        <option id="ddlResultadoCicloItem_Ciclo1" value="1">AlfabetizaÁ„o</option>
+                                        <option id="ddlResultadoCicloItem_Ciclo1" value="1">Alfabetiza√ß√£o</option>
                                         <option id="ddlResultadoCicloItem_Ciclo2" value="2">Interdisciplinar</option>
                                         <option id="ddlResultadoCicloItem_Ciclo3" value="3">Autoral</option>
                                     </select>
                                 </td>
                                 <td>
                                     <select id="ddlResultadoAreaConhecimento" data-mini="true" disabled="disabled">
-                                        <option value="" selected="selected">(¡rea de Conhecimento...)</option>
-                                        <option value="1">CiÍncias da Natureza</option>
-                                        <option value="2">LÌngua Portuguesa</option>
-                                        <option value="4">RedaÁ„o</option>
-                                        <option value="3">Matem·tica</option>
+                                        <option value="" selected="selected">(√Årea de Conhecimento...)</option>
+                                        <option value="1">Ci√™ncias da Natureza</option>
+                                        <option value="2">L√≠ngua Portuguesa</option>
+                                        <option value="4">Reda√ß√£o</option>
+                                        <option value="3">Matem√°tica</option>
                                     </select>
                                 </td>
                                 <td id="resultado_selectAno">
                                     <select id="ddlResultadoAno" data-mini="true" disabled="disabled">
                                         <option value="" selected="selected">(Ano...)</option>
-                                        <option id="ddlResultadoAnoItem_Ano2" value="2">2∫ Ano</option>
-                                        <option id="ddlResultadoAnoItem_Ano3" value="3">3∫ Ano</option>
-                                        <option id="ddlResultadoAnoItem_Ano4" value="4">4∫ Ano</option>
-                                        <option id="ddlResultadoAnoItem_Ano5" value="5">5∫ Ano</option>
-                                        <option id="ddlResultadoAnoItem_Ano6" value="6">6∫ Ano</option>
-                                        <option id="ddlResultadoAnoItem_Ano7" value="7">7∫ Ano</option>
-                                        <option id="ddlResultadoAnoItem_Ano8" value="8">8∫ Ano</option>
-                                        <option id="ddlResultadoAnoItem_Ano9" value="9">9∫ Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano2" value="2">2¬∫ Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano3" value="3">3¬∫ Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano4" value="4">4¬∫ Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano5" value="5">5¬∫ Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano6" value="6">6¬∫ Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano7" value="7">7¬∫ Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano8" value="8">8¬∫ Ano</option>
+                                        <option id="ddlResultadoAnoItem_Ano9" value="9">9¬∫ Ano</option>
                                     </select>
                                 </td>
                             </tr>
@@ -690,24 +690,24 @@ n„o exclua esse coment·rio.
                             <span id="lblResultadoSelecaoTotalAluno" class="resultadoInfoSelecao"></span>
                         </div>
 
-                        <!--Abrir Popup de ParticipaÁ„o-->
+                        <!--Abrir Popup de Participa√ß√£o-->
                         <p id="btnParticipacaoApresentar" class="participacao_btn" onclick="popupParticipacao()">
-                            Dados de participaÁ„o<span class="mdi mdi-arrow-top-right"></span>
+                            Dados de participa√ß√£o<span class="mdi mdi-arrow-top-right"></span>
                         </p>
                         <button id="btnResultadoApresentar" data-role="button" type="button">Apresentar resultado</button>
                     </div>
 
-                    <!--OP«√O 5 - REVISTAS PEDAG”GICAS E BOLETINS DAS ESCOLAS-->
+                    <!--OP√á√ÉO 5 - REVISTAS PEDAG√ìGICAS E BOLETINS DAS ESCOLAS-->
                     <p id="resultados_tab4" class="resultados_headerTitle" onclick="abrirConsultaRevistasBoletins()">
-                        REVISTAS PEDAG”GICAS E BOLETINS DAS ESCOLAS
+                        REVISTAS PEDAG√ìGICAS E BOLETINS DAS ESCOLAS
                         <span id="configuracoes_icone4">
                             <span class="mdi mdi-arrow-right-drop-circle-outline"></span>
                         </span>
                     </p>
 
-                    <!--OP«√O 4 - SEQU NCIA DE ATIVIDADES-->
+                    <!--OP√á√ÉO 4 - SEQU√äNCIA DE ATIVIDADES-->
                     <p id="resultados_tab3" class="resultados_headerTitle" onclick="divResultadoProva(3)">
-                        SEQU NCIA DE ATIVIDADES
+                        SEQU√äNCIA DE ATIVIDADES
                         <span id="resultados_icone3">
                             <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
                         </span>
@@ -717,16 +717,16 @@ n„o exclua esse coment·rio.
                             <tr>
                                 <td>
                                     <select id="ddlSDEdicao" data-mini="true">
-                                        <option value="" selected="selected">(EdiÁ„o...)</option>
-                                        <option value="2019">EdiÁ„o 2019</option>
-                                        <option value="2018">EdiÁ„o 2018</option>
-                                        <option value="2017">EdiÁ„o 2017</option>
+                                        <option value="" selected="selected">(Edi√ß√£o...)</option>
+                                        <option value="2019">Edi√ß√£o 2019</option>
+                                        <option value="2018">Edi√ß√£o 2018</option>
+                                        <option value="2017">Edi√ß√£o 2017</option>
                                     </select>
                                 </td>
                                 <td>
                                     <select id="ddlSDCiclo" data-mini="true" disabled="disabled">
                                         <option value="" selected="selected">(Ciclo...)</option>
-                                        <option value="1">Ciclo de AlfabetizaÁ„o</option>
+                                        <option value="1">Ciclo de Alfabetiza√ß√£o</option>
                                         <option value="2">Ciclo Interdisciplinar</option>
                                         <option value="3">Ciclo Autoral</option>
                                     </select>
@@ -738,11 +738,11 @@ n„o exclua esse coment·rio.
                             <tr>
                                 <td>
                                     <select id="ddlSDAreaConhecimento" data-mini="true" disabled="disabled">
-                                        <option value="" selected="selected">(¡rea de Conhecimento...)</option>
-                                        <option value="1">CiÍncias da Natureza</option>
-                                        <option value="2">LÌngua Portuguesa</option>
-                                        <option value="4">RedaÁ„o</option>
-                                        <option value="3">Matem·tica</option>
+                                        <option value="" selected="selected">(√Årea de Conhecimento...)</option>
+                                        <option value="1">Ci√™ncias da Natureza</option>
+                                        <option value="2">L√≠ngua Portuguesa</option>
+                                        <option value="4">Reda√ß√£o</option>
+                                        <option value="3">Matem√°tica</option>
                                     </select>
                                 </td>
                             </tr>
@@ -754,9 +754,9 @@ n„o exclua esse coment·rio.
                     </div>
 
 
-                    <!--OP«√O 2 - QUESTION¡RIOS - FATORES ASSOCIADOS-->
+                    <!--OP√á√ÉO 2 - QUESTION√ÅRIOS - FATORES ASSOCIADOS-->
                     <p id="resultados_tab1" class="resultados_headerTitle" onclick="divResultadoProva(1)">
-                        QUESTION¡RIO - FATORES ASSOCIADOS
+                        QUESTION√ÅRIO - FATORES ASSOCIADOS
                         <span id="resultados_icone1">
                             <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
                         </span>
@@ -767,15 +767,15 @@ n„o exclua esse coment·rio.
                                 <tr>
                                     <td>
                                         <select id="ddlFAEdicao" data-mini="true">
-                                            <option value="" selected="selected">(EdiÁ„o)</option>
-                                            <option value="2018">EdiÁ„o 2018</option>
-                                            <option value="2019">EdiÁ„o 2019</option>
+                                            <option value="" selected="selected">(Edi√ß√£o)</option>
+                                            <option value="2018">Edi√ß√£o 2018</option>
+                                            <option value="2019">Edi√ß√£o 2019</option>
                                         </select>
                                     </td>
                                     <td>
                                         <select id="ddlFACiclo" data-mini="true" disabled="disabled">
                                             <option value="" selected="selected">(Ciclo)</option>
-                                            <option value="1">Ciclo de AlfabetizaÁ„o</option>
+                                            <option value="1">Ciclo de Alfabetiza√ß√£o</option>
                                             <option value="2">Ciclo Interdisciplinar</option>
                                             <option value="3">Ciclo Autoral</option>
                                         </select>
@@ -784,7 +784,7 @@ n„o exclua esse coment·rio.
                             </table>
 
                             <select id="ddlFAQuestionario" data-mini="true" disabled="disabled">
-                                <option value="" selected="selected">(Question·rio)</option>
+                                <option value="" selected="selected">(Question√°rio)</option>
                             </select>
 
                             <select id="ddlFAConstructo" data-mini="true" disabled="disabled">
@@ -797,18 +797,18 @@ n„o exclua esse coment·rio.
                         </button>
                     </div>
 
-                    <!--OP«√O 3 - QUESTION¡RIOS - CaracterizaÁ„o das famÌlias e escolas-->
+                    <!--OP√á√ÉO 3 - QUESTION√ÅRIOS - Caracteriza√ß√£o das fam√≠lias e escolas-->
                     <p id="resultados_tab2" class="resultados_headerTitle" onclick="divResultadoProva(2)">
-                        QUESTION¡RIO - CARACTERIZA«√O DAS FAMÕLIAS E ESCOLAS
+                        QUESTION√ÅRIO - CARACTERIZA√á√ÉO DAS FAM√çLIAS E ESCOLAS
                         <span id="resultados_icone2">
                             <span class="mdi mdi-arrow-down-drop-circle-outline"></span>
                         </span>
                     </p>
                     <div id="resultados_div2" style="display: none;">
                         <div style="padding: 10px 0px;">
-                            <!--Selecionar nÌvel-->
+                            <!--Selecionar n√≠vel-->
                             <select id="ddlCFENivel" data-mini="true">
-                                <option value="" selected="selected">(NÌvel)</option>
+                                <option value="" selected="selected">(N√≠vel)</option>
                                 <option value="SME">SME</option>
                                 <option value="DRE">DRE</option>
                                 <option value="ESCOLA">Escola</option>
@@ -887,15 +887,15 @@ n„o exclua esse coment·rio.
                                 <tr>
                                     <td>
                                         <select id="ddlCFEEdicao" data-mini="true" disabled="disabled">
-                                            <option value="" selected="selected">(EdiÁ„o)</option>
-                                            <option value="2019">EdiÁ„o 2019</option>
-                                            <option value="2018">EdiÁ„o 2018</option>
+                                            <option value="" selected="selected">(Edi√ß√£o)</option>
+                                            <option value="2019">Edi√ß√£o 2019</option>
+                                            <option value="2018">Edi√ß√£o 2018</option>
                                         </select>
                                     </td>
                                     <td>
                                         <select id="ddlCFECiclo" data-mini="true" disabled="disabled">
                                             <option value="" selected="selected">(Ciclo)</option>
-                                            <option value="1">Ciclo de AlfabetizaÁ„o</option>
+                                            <option value="1">Ciclo de Alfabetiza√ß√£o</option>
                                             <option value="2">Ciclo Interdisciplinar</option>
                                             <option value="3">Ciclo Autoral</option>
                                         </select>
@@ -905,7 +905,7 @@ n„o exclua esse coment·rio.
                             </table>
 
                             <select id="ddlCFEQuestionario" data-mini="true" disabled="disabled">
-                                <option value="" selected="selected">(Question·rio)</option>
+                                <option value="" selected="selected">(Question√°rio)</option>
                             </select>
                         </div>
 
@@ -949,43 +949,52 @@ n„o exclua esse coment·rio.
                 </div>
 
                 <!--MSTECH
-                    *Principais gr·ficos - AgregaÁ„o e Ciclo de Aprendizagem.
-                    OBS: O gr·fico de Ciclo de Aprendizagem deve aparecer somente quando existe
-                    a informaÁ„o do ciclo e quando for nÌvel SME ou DRE
+                    *Principais gr√°ficos - Agrega√ß√£o e Ciclo de Aprendizagem.
+                    OBS: O gr√°fico de Ciclo de Aprendizagem deve aparecer somente quando existe
+                    a informa√ß√£o do ciclo e quando for n√≠vel SME ou DRE
 
-                    ATUALIZA«√O: Agora os gr·ficos de Ciclo de Aprendizagem s„o tambÈm adicionados aos
-                    gr·ficos legados de agregaÁ„o. Desta maneira, pode-se montar N gr·ficos de
+                    ATUALIZA√á√ÉO: Agora os gr√°ficos de Ciclo de Aprendizagem s√£o tamb√©m adicionados aos
+                    gr√°ficos legados de agrega√ß√£o. Desta maneira, pode-se montar N gr√°ficos de
                     Ciclo de Aprendizagem, dependendo do filtro selecionado
                 -->
                 <div id="divChartResultadoAgregacao"></div>
 
                 <div id="divResultadoTituloAmostral" style="background-color:rgb(255,215,215); color:rgb(255,50,50); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none; display:none;">
-                    <span>Por falta de representatividade das turmas amostrais, n„o existe c·lculo de mÈdia nem t„o pouco percentuais de acertos por habilidade para os nÌveis Escola e Turma.</span>
+                    <span>Por falta de representatividade das turmas amostrais, n√£o existe c√°lculo de m√©dia nem t√£o pouco percentuais de acertos por habilidade para os n√≠veis Escola e Turma.</span>
                 </div>
 
 
                 <div data-role="tabs" id="tabs" style="margin-top:15px;">
                     <div id="divTabsProficienciaHabilidade" data-role="navbar">
                         <ul>
-                            <li><a id="#linkResultadoTabProficiencias" href="#divResultadoTabProficiencias">ProficiÍncia em detalhe</a></li>
+                            <li><a id="#linkResultadoTabProficiencias" href="#divResultadoTabProficiencias">Profici√™ncia em detalhe</a></li>
                             <li><a id="#linkResultadoTabHabilidades" href="#divResultadoTabHabilidades">Habilidade</a></li>
                         </ul>
                     </div>
 
                     <div id="divResultadoTabProficiencias" class="ui-body-d ui-content">
 
-                        <table style="width:100%;">
+                        <p id="exportar_div" class="resultados_headerTitle" style="display:block" data-html2canvas-ignore="true">
+                            Exportar:
+                            <a href="#" onclick="exportarPDF()">PDF</a>
+                            <text>,</text>
+                            <a id="linkExportarPNG" href="#">PNG</a>
+                            <text>,</text>
+                            <a id="linkExportarJPG" href="#">JPG</a>
+                        </p>
+
+                        <table style="width:100%;" data-html2canvas-ignore="true">
                             <tr>
                                 <td style="width:50%;">
                                     <label for="chkResultadoFiltroAbaixoDoBasico">
                                         <input id="chkResultadoFiltroAbaixoDoBasico" type="checkbox" class="resultado-filtro-proficiencia" checked="checked" value="1" data-mini="true" />
-                                        Abaixo do B·sico
+                                        Abaixo do B√°sico
                                     </label>
                                 </td>
                                 <td style="width:50%;">
                                     <label for="chkResultadoFiltroBasico">
                                         <input id="chkResultadoFiltroBasico" type="checkbox" class="resultado-filtro-proficiencia" checked="checked" value="2" data-mini="true" />
-                                        B·sico
+                                        B√°sico
                                     </label>
                                 </td>
                             </tr>
@@ -999,7 +1008,7 @@ n„o exclua esse coment·rio.
                                 <td style="width:50%;">
                                     <label for="chkResultadoFiltroAvancado">
                                         <input id="chkResultadoFiltroAvancado" type="checkbox" class="resultado-filtro-proficiencia" checked="checked" value="4" data-mini="true" />
-                                        AvanÁado
+                                        Avan√ßado
                                     </label>
                                 </td>
                             </tr>
@@ -1015,7 +1024,7 @@ n„o exclua esse coment·rio.
                         <div id="divChartResultadoDetalhe" class="divChartResultadoDetalhe" style="border:1px solid rgb(230,230,230);"></div>
                         <span class="lblResultadoTituloEscalaSaeb_2"></span>
                         <div class="divChartResultadoEscalaSaeb_2"></div>
-
+                        <canvas id="canvasExportImage" style="display:none"></canvas>
                     </div>
 
                     <div id="divResultadoTabHabilidades" class="ui-body-d ui-content">
@@ -1026,20 +1035,20 @@ n„o exclua esse coment·rio.
                         </div>
                         <div id="divResultadoTabHabilidades_conteudoDinamico"></div>
                     </div>
-                    <a href="#" data-role="button" class="btnInfo" id="btnResultadoAlterarParametros2">Voltar ‡s opÁıes</a>
+                    <a href="#" data-role="button" class="btnInfo" id="btnResultadoAlterarParametros2">Voltar √†s op√ß√µes</a>
                     <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-                        <a id="btnResultadoAlterarParametros" style="width:50%;" href="#" data-role="button" class="btnInfo">Voltar ‡s opÁıes</a>
+                        <a id="btnResultadoAlterarParametros" style="width:50%;" href="#" data-role="button" class="btnInfo">Voltar √†s op√ß√µes</a>
                     </div>
                 </div>
 
             </div>
 
             <!--MSTECH
-            *Popup para mostrar dados de participaÁ„o da ProvaSP
+            *Popup para mostrar dados de participa√ß√£o da ProvaSP
             -->
             <div id="divResultadoFA" class="page generico_mainDiv" style="display: none;">
                 <div class="container generico_subDiv">
-                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S„o Paulo" />
+                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S√£o Paulo" />
 
                     <div class="generico_headerDiv">
                         <p class="generico_headerTitle">SME</p>
@@ -1047,18 +1056,18 @@ n„o exclua esse coment·rio.
                     </div>
 
                     <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
-                        O gr·fico abaixo apresenta a influÍncia do fator selecionado no desempenho dos estudantes, por componente curricular.<br /><br />
-                        Toque em uma vari·vel especÌfica para mais informaÁıes.
+                        O gr√°fico abaixo apresenta a influ√™ncia do fator selecionado no desempenho dos estudantes, por componente curricular.<br /><br />
+                        Toque em uma vari√°vel espec√≠fica para mais informa√ß√µes.
                     </div>
 
                     <div class="fatoresassociados_headerDiv">
-                        <p class="fatoresassociados_title">INFLU NCIA DO FATOR DO DESEMPENHO</p>
+                        <p class="fatoresassociados_title">INFLU√äNCIA DO FATOR DO DESEMPENHO</p>
                         <p id="faHeaderTitle" class="fatoresassociados_text"></p>
                     </div>
 
                     <!--Quadros-->
                     <div class="fatoresassociados_quadrosDiv">
-                        <!--LÕNGUA PORTUGUESA-->
+                        <!--L√çNGUA PORTUGUESA-->
                         <div class="fatoresassociados_quadrosBlockDiv">
                             <div class="fatoresassociados_quadrosBlockLeftDiv">
                                 <p class="fatoresassociados_quadrosVText">PONTOS</p>
@@ -1072,7 +1081,7 @@ n„o exclua esse coment·rio.
                                 </div>
                             </div>
                         </div>
-                        <!--MATEM¡TICA-->
+                        <!--MATEM√ÅTICA-->
                         <div class="fatoresassociados_quadrosBlockDiv">
                             <div class="fatoresassociados_quadrosBlockLeftDiv">
                                 <p class="fatoresassociados_quadrosVText">PONTOS</p>
@@ -1086,7 +1095,7 @@ n„o exclua esse coment·rio.
                                 </div>
                             </div>
                         </div>
-                        <!--CI NCIA NATURAIS-->
+                        <!--CI√äNCIA NATURAIS-->
                         <div class="fatoresassociados_quadrosBlockDiv">
                             <div class="fatoresassociados_quadrosBlockLeftDiv">
                                 <p class="fatoresassociados_quadrosVText">PONTOS</p>
@@ -1103,19 +1112,19 @@ n„o exclua esse coment·rio.
                     </div>
 
                     <p class="fatoresassociados_resenha">
-                        O fator (vari·vel contextual) que n„o apresentou impacto significativo sobre
-                        o desempenho do estudante no componente curricular e/ou sobre a mÈdia
-                        escolar È representado por um traÁo (-).
+                        O fator (vari√°vel contextual) que n√£o apresentou impacto significativo sobre
+                        o desempenho do estudante no componente curricular e/ou sobre a m√©dia
+                        escolar √© representado por um tra√ßo (-).
                     </p>
 
-                    <!--Vari·veis-->
+                    <!--Vari√°veis-->
                     <div class="fatoresassociados_variaveisDiv">
-                        <!--Vari·veis Table HEADER-->
+                        <!--Vari√°veis Table HEADER-->
                         <!--MSTECH - Tabela removida para retirar imagem do estado de SP-->
                         <!--<table class="fatoresassociados_variaveisTable"><tr>-->
                         <!--<td class="fatoresassociados_variaveisTDLeft">-->
                         <!--<p class="fatoresassociados_variaveisTDLeftText">-->
-                        <!--Observe abaixo as vari·veis que compıem o constructo<br />-->
+                        <!--Observe abaixo as vari√°veis que comp√µem o constructo<br />-->
                         <!--<b>-->
                         <!--<span class='mdi mdi-chevron-right'></span>-->
                         <!--<span id="faVarsConstructo"></span>-->
@@ -1127,28 +1136,28 @@ n„o exclua esse coment·rio.
                         <!--</td>-->
                         <!--</tr></table>-->
                         <p class="fatoresassociados_variaveisText">
-                            Observe abaixo as vari·veis que compıem o constructo<br />
+                            Observe abaixo as vari√°veis que comp√µem o constructo<br />
                             <b>
                                 <span class='mdi mdi-chevron-right'></span>
                                 <span id="faVarsConstructo"></span>
                             </b>
                         </p>
 
-                        <!--Vari·veis em si-->
+                        <!--Vari√°veis em si-->
                         <div id="fa_variaveisDoConstructo"></div>
                     </div>
 
-                    <!--BOT√O VOLTAR-->
-                    <button id="btnFAVoltar" data-role="button">Voltar ‡s opÁıes</button>
+                    <!--BOT√ÉO VOLTAR-->
+                    <button id="btnFAVoltar" data-role="button">Voltar √†s op√ß√µes</button>
                 </div>
             </div>
 
             <!--MSTECH
-            *Popup para mostrar dados de participaÁ„o da ProvaSP
+            *Popup para mostrar dados de participa√ß√£o da ProvaSP
             -->
             <div id="divResultadoConstructo" class="page generico_mainDiv" style="display: none;">
                 <div class="container generico_subDiv">
-                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S„o Paulo" />
+                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S√£o Paulo" />
 
                     <div class="generico_headerDiv">
                         <p id="constructoHeaderTitle" class="generico_headerTitle"></p>
@@ -1156,13 +1165,13 @@ n„o exclua esse coment·rio.
                     </div>
 
                     <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
-                        Nos gr·ficos abaixo s„o mostrados os dados de caracterizaÁ„o das famÌlias e das escolas
+                        Nos gr√°ficos abaixo s√£o mostrados os dados de caracteriza√ß√£o das fam√≠lias e das escolas
                     </div>
 
-                    <!--Conte˙do do contructo em si-->
+                    <!--Conte√∫do do contructo em si-->
                     <div id="constructDivContent"></div>
 
-                    <!--BOT√O VOLTAR-->
+                    <!--BOT√ÉO VOLTAR-->
                     <button id="btnConstructoVoltar" data-role="button">Voltar</button>
                 </div>
             </div>
@@ -1174,38 +1183,38 @@ n„o exclua esse coment·rio.
 
 
     <!--AMCOM
-    *Popup para consulta de revistas pedagÛgicas e boletins
+    *Popup para consulta de revistas pedag√≥gicas e boletins
     -->
     <div id="revistasBoletins-page" class="page generico_mainDiv" style="display: none;">
         <div class="container generico_subDiv">
-            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S„o Paulo" />
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S√£o Paulo" />
 
             <div class="generico_headerDiv">
-                <p class="generico_headerTitle">REVISTAS PEDAG”GICAS E BOLETINS</p>
+                <p class="generico_headerTitle">REVISTAS PEDAG√ìGICAS E BOLETINS</p>
                 <p class="generico_headerText">DAS ESCOLAS</p>
             </div>
 
             <!-- Marcos -->
             <!--AMCOM
-            *OpÁıes de filtragem
+            *Op√ß√µes de filtragem
             -->
             <form id="formRevistasBoletinsOpcoes">
                 <table style="width:100%;">
                     <tr>
                         <td style="width: 40%">
                             <select id="ddlRevistasBoletinsEdicao" data-mini="true">
-                                <option value="2019" selected="selected">EdiÁ„o 2019</option>
-                                <option value="2018">EdiÁ„o 2018</option>
-                                <option value="2017">EdiÁ„o 2017</option>
+                                <option value="2019" selected="selected">Edi√ß√£o 2019</option>
+                                <option value="2018">Edi√ß√£o 2018</option>
+                                <option value="2017">Edi√ß√£o 2017</option>
                             </select>
                         </td>
                         <td style="width: 60%">
                             <select id="ddlRevistasBoletinsAreaConhecimento" data-mini="true">
-                                <option value="" selected="selected">(¡rea de Conhecimento...)</option>
-                                <option value="1">CiÍncias da Natureza</option>
-                                <option value="2">LÌngua Portuguesa</option>
-                                <option value="4">RedaÁ„o</option>
-                                <option value="3">Matem·tica</option>
+                                <option value="" selected="selected">(√Årea de Conhecimento...)</option>
+                                <option value="1">Ci√™ncias da Natureza</option>
+                                <option value="2">L√≠ngua Portuguesa</option>
+                                <option value="4">Reda√ß√£o</option>
+                                <option value="3">Matem√°tica</option>
                             </select>
                         </td>
                     </tr>
@@ -1216,7 +1225,7 @@ n„o exclua esse coment·rio.
                         <td>
                             <select id="ddlRevistasBoletinsCiclo" data-mini="true" style="width: 100%">
                                 <option value="" selected="selected">(Ciclo de Aprendizagem...)</option>
-                                <option id="ddlRevistasBoletinsCicloItem_Ciclo1" value="1">AlfabetizaÁ„o</option>
+                                <option id="ddlRevistasBoletinsCicloItem_Ciclo1" value="1">Alfabetiza√ß√£o</option>
                                 <option id="ddlRevistasBoletinsCicloItem_Ciclo2" value="2">Interdisciplinar</option>
                                 <option id="ddlRevistasBoletinsCicloItem_Ciclo3" value="3">Autoral</option>
                             </select>
@@ -1308,19 +1317,19 @@ n„o exclua esse coment·rio.
     </div>
 
     <!--MSTECH
-    *Popup para mostrar dados de participaÁ„o da ProvaSP
+    *Popup para mostrar dados de participa√ß√£o da ProvaSP
     -->
     <div id="participacao-page" class="page generico_mainDiv" style="display: none;">
         <div class="container generico_subDiv">
-            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S„o Paulo" />
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova S√£o Paulo" />
 
             <div class="generico_headerDiv">
-                <p class="generico_headerTitle">PARTICIPA«√O</p>
-                <p class="generico_headerText">RelatÛrio de participaÁ„o dos estudantes na prova</p>
+                <p class="generico_headerTitle">PARTICIPA√á√ÉO</p>
+                <p class="generico_headerText">Relat√≥rio de participa√ß√£o dos estudantes na prova</p>
             </div>
 
             <div class="participacao_coloredTipDiv">
-                <p class='participacao_coloredTip'>Dados representativos segundo os critÈrios do INEP</p>
+                <p class='participacao_coloredTip'>Dados representativos segundo os crit√©rios do INEP</p>
                 <p class='participacao_flagIconTip'><span class='mdi mdi-flag-variant'></span></p>
             </div>
 
@@ -1330,118 +1339,118 @@ n„o exclua esse coment·rio.
     </div>
 
     <!--MSTECH
-    *Question·rios do ProvaSP dividiros por tipo.
+    *Question√°rios do ProvaSP dividiros por tipo.
     *Esta div estava posicionada de maneira errada dentro da div de resultado-page nuinca
     sendo mostrada por este motivo. Sendoa assim, separamos a div para que funciona corretamente.
     -->
     <div id="questionario-page" class="page">
         <div class="container" style="text-align:center;">
             <div id="divTituloQuestionario" data-role="header" class="header" style="text-align:center; padding:10px; ">
-                <span id="tituloQuestionario" style="font-size:13pt; ">Ficha de Registro - Coordenador(a) PedagÛgico(a)</span>
+                <span id="tituloQuestionario" style="font-size:13pt; ">Ficha de Registro - Coordenador(a) Pedag√≥gico(a)</span>
             </div>
 
             <div role="main" class="ui-content">
                 <div id="Questionarios">
 
                     <!--MSTECH
-                    *Question·rio Supervisor
+                    *Question√°rio Supervisor
                     -->
                     <form id="Questionario1">
-                        <input id="tituloQuestionario1" type="hidden" value="Question·rio do Supervisor Escolar" />
+                        <input id="tituloQuestionario1" type="hidden" value="Question√°rio do Supervisor Escolar" />
 
                         <div id="divQuestionario1_Intro" style="text-align:left;">
                             <p>Caro(a) Supervisor(a),</p>
                             <p>
-                                Este question·rio tem como objetivo coletar informaÁıes quanto ‡ organizaÁ„o e condiÁıes de seu trabalho, ‡ realidade das escolas e ao aproveitamento dos alunos.
-                                As informaÁıes fornecidas por vocÍ s„o importantes para a pesquisa que estamos realizando, neste ano, sobre clima escolar, pr·ticas pedagÛgicas e de gest„o.
-                                Solicitamos que, ao respondÍ-lo, procure contemplar o conjunto das escolas que vocÍ supervisiona. Os dados produzidos ser„o sigilosos e os resultados dessa
-                                pesquisa ser„o divulgados no 1∫ semestre de 2020.
+                                Este question√°rio tem como objetivo coletar informa√ß√µes quanto √† organiza√ß√£o e condi√ß√µes de seu trabalho, √† realidade das escolas e ao aproveitamento dos alunos.
+                                As informa√ß√µes fornecidas por voc√™ s√£o importantes para a pesquisa que estamos realizando, neste ano, sobre clima escolar, pr√°ticas pedag√≥gicas e de gest√£o.
+                                Solicitamos que, ao respond√™-lo, procure contemplar o conjunto das escolas que voc√™ supervisiona. Os dados produzidos ser√£o sigilosos e os resultados dessa
+                                pesquisa ser√£o divulgados no 1¬∫ semestre de 2020.
                             </p>
-                            <p>Contamos com sua colaboraÁ„o respondendo ‡s perguntas a seguir, garantindo a qualidade da pesquisa e a eficiÍncia da EdiÁ„o 2019 da Provinha e da Prova S„o Paulo. </p>
-                            <p>N„o existem respostas certas ou erradas. Assinale apenas as alternativas que mais condizem com a sua realidade. Solicitamos que responda todas as questıes.</p>
-                            <a id="btnQuestionario1_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <p>Contamos com sua colabora√ß√£o respondendo √†s perguntas a seguir, garantindo a qualidade da pesquisa e a efici√™ncia da Edi√ß√£o 2019 da Provinha e da Prova S√£o Paulo. </p>
+                            <p>N√£o existem respostas certas ou erradas. Assinale apenas as alternativas que mais condizem com a sua realidade. Solicitamos que responda todas as quest√µes.</p>
+                            <a id="btnQuestionario1_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario1_Questoes" style="display:none;"></div>
                     </form>
                     <!--MSTECH
-                    *Question·rio Diretor
+                    *Question√°rio Diretor
                     -->
                     <form id="Questionario24">
-                        <input id="tituloQuestionario24" type="hidden" value="Question·rio do Diretor de Escola" />
+                        <input id="tituloQuestionario24" type="hidden" value="Question√°rio do Diretor de Escola" />
 
                         <div id="divQuestionario24_Intro" style="text-align:left;">
                             <p>Caro(a) Diretor(a),</p>
                             <p>
-                                Este question·rio busca conhecer suas opiniıes a respeito da sua escola.
-                                As informaÁıes fornecidas por vocÍ s„o importantes para a pesquisa que estamos realizando,
-                                neste ano, sobre clima escolar, pr·ticas pedagÛgicas e de gest„o. Os dados produzidos
-                                ser„o sigilosos e os resultados dessa pesquisa ser„o divulgados no 1∫ semestre de 2020.<br><br>
-                                Contamos com sua ajuda para responder ‡s perguntas a seguir, garantindo a qualidade da
-                                pesquisa e o sucesso da EdiÁ„o 2019 da Prova S„o Paulo.
+                                Este question√°rio busca conhecer suas opini√µes a respeito da sua escola.
+                                As informa√ß√µes fornecidas por voc√™ s√£o importantes para a pesquisa que estamos realizando,
+                                neste ano, sobre clima escolar, pr√°ticas pedag√≥gicas e de gest√£o. Os dados produzidos
+                                ser√£o sigilosos e os resultados dessa pesquisa ser√£o divulgados no 1¬∫ semestre de 2020.<br><br>
+                                Contamos com sua ajuda para responder √†s perguntas a seguir, garantindo a qualidade da
+                                pesquisa e o sucesso da Edi√ß√£o 2019 da Prova S√£o Paulo.
                             </p>
-                            <a id="btnQuestionario24_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <a id="btnQuestionario24_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario24_Questoes" style="display:none;"></div>
                     </form>
                     <!--MSTECH
-                    *Question·rio Coordenador
+                    *Question√°rio Coordenador
                     -->
                     <form id="Questionario3">
-                        <input id="tituloQuestionario3" type="hidden" value="Question·rio do Coordenador PedagÛgico" />
+                        <input id="tituloQuestionario3" type="hidden" value="Question√°rio do Coordenador Pedag√≥gico" />
 
                         <div id="divQuestionario3_Intro" style="text-align:left;">
-                            <p>Caro(a) Coordenador(a) PedagÛgico(a),</p>
+                            <p>Caro(a) Coordenador(a) Pedag√≥gico(a),</p>
                             <p>
-                                Este question·rio busca conhecer melhor vocÍ e sua experiÍncia
-                                como Coordenador(a) PedagÛgico(a). As informaÁıes fornecidas
-                                por vocÍ s„o importantes para a compreens„o e o mapeamento de
-                                polÌticas relacionadas a clima escolar e pr·ticas pedagÛgicas e
-                                de gest„o. Suas respostas n„o ser„o analisadas ou divulgadas
-                                individualmente e os resultados dessa pesquisa ser„o publicizados
-                                no 1∫ semestre de 2019.<br /><br />
-                                Contamos com sua ajuda para responder ‡s perguntas a seguir,
-                                garantindo a qualidade da pesquisa e o sucesso da EdiÁ„o
-                                da Provinha e Prova S„o Paulo 2018.
+                                Este question√°rio busca conhecer melhor voc√™ e sua experi√™ncia
+                                como Coordenador(a) Pedag√≥gico(a). As informa√ß√µes fornecidas
+                                por voc√™ s√£o importantes para a compreens√£o e o mapeamento de
+                                pol√≠ticas relacionadas a clima escolar e pr√°ticas pedag√≥gicas e
+                                de gest√£o. Suas respostas n√£o ser√£o analisadas ou divulgadas
+                                individualmente e os resultados dessa pesquisa ser√£o publicizados
+                                no 1¬∫ semestre de 2019.<br /><br />
+                                Contamos com sua ajuda para responder √†s perguntas a seguir,
+                                garantindo a qualidade da pesquisa e o sucesso da Edi√ß√£o
+                                da Provinha e Prova S√£o Paulo 2018.
                             </p>
-                            <a id="btnQuestionario3_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <a id="btnQuestionario3_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario3_Questoes" style="display:none;"></div>
                     </form>
 
                     <!--MSTECH
-                    *Question·rios dos tipos 4 ao 7 n„o devem existir no ProvaSP
+                    *Question√°rios dos tipos 4 ao 7 n√£o devem existir no ProvaSP
                     -->
                     <form id="divQuestionario4">
-                        <!-- QUESTION¡RIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFER NCIA -->
-                        <input id="tituloQuestionario4" type="hidden" value="Question·rio do Professor de Matem·tica" />
+                        <!-- QUESTION√ÅRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFER√äNCIA -->
+                        <input id="tituloQuestionario4" type="hidden" value="Question√°rio do Professor de Matem√°tica" />
                     </form>
 
                     <form id="Questionario5">
-                        <!-- QUESTION¡RIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFER NCIA -->
-                        <input id="tituloQuestionario5" type="hidden" value="Question·rio do Professor de CiÍncias Naturais" />
+                        <!-- QUESTION√ÅRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFER√äNCIA -->
+                        <input id="tituloQuestionario5" type="hidden" value="Question√°rio do Professor de Ci√™ncias Naturais" />
                     </form>
 
                     <form id="Questionario6">
-                        <!-- QUESTION¡RIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFER NCIA -->
-                        <input id="tituloQuestionario6" type="hidden" value="Question·rio do Professor de LÌngua Portuguesa" />
+                        <!-- QUESTION√ÅRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFER√äNCIA -->
+                        <input id="tituloQuestionario6" type="hidden" value="Question√°rio do Professor de L√≠ngua Portuguesa" />
                     </form>
 
                     <form id="Questionario7">
-                        <!-- QUESTION¡RIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFER NCIA -->
-                        <input id="tituloQuestionario7" type="hidden" value="Question·rio do Professor do Ensino Fundamental I" />
+                        <!-- QUESTION√ÅRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFER√äNCIA -->
+                        <input id="tituloQuestionario7" type="hidden" value="Question√°rio do Professor do Ensino Fundamental I" />
                     </form>
                     <!--MSTECH
-                    *Question·rio Controle da Prova a ser aplicada
+                    *Question√°rio Controle da Prova a ser aplicada
                     -->
                     <form id="Questionario8">
                         <input id="tituloQuestionario8" type="hidden" value="Ficha de Registro - Aplicador de Prova" />
 
                         <div id="divQuestionario8_Questoes">
                             <h3>
-                                1. IdentificaÁ„o da Turma:
+                                1. Identifica√ß√£o da Turma:
                             </h3>
                             <fieldset>
                                 <input id="Questionario_8_Questao_1_tur_id" type="text" name="Questionario_8_Questao_1" readonly="readonly" />
@@ -1449,7 +1458,7 @@ n„o exclua esse coment·rio.
 
 
                             <h3>
-                                2. Data de AplicaÁ„o:
+                                2. Data de Aplica√ß√£o:
                             </h3>
                             <fieldset>
                                 <!--
@@ -1465,42 +1474,42 @@ n„o exclua esse coment·rio.
                             </h3>
                             <fieldset>
                                 <label for="Questionario_8_Questao_3_Portugues">
-                                    <input id="Questionario_8_Questao_3_Portugues" type="radio" name="Questionario_8_Questao_3" value="PortuguÍs" />
-                                    PortuguÍs
+                                    <input id="Questionario_8_Questao_3_Portugues" type="radio" name="Questionario_8_Questao_3" value="Portugu√™s" />
+                                    Portugu√™s
                                 </label>
                                 <label for="Questionario_8_Questao_3_Matematica">
-                                    <input id="Questionario_8_Questao_3_Matematica" type="radio" name="Questionario_8_Questao_3" value="Matem·tica" />
-                                    Matem·tica
+                                    <input id="Questionario_8_Questao_3_Matematica" type="radio" name="Questionario_8_Questao_3" value="Matem√°tica" />
+                                    Matem√°tica
                                 </label>
                                 <label for="Questionario_8_Questao_3_Ciencias">
-                                    <input id="Questionario_8_Questao_3_Ciencias" type="radio" name="Questionario_8_Questao_3" value="CiÍncias" />
-                                    CiÍncias da Natureza
+                                    <input id="Questionario_8_Questao_3_Ciencias" type="radio" name="Questionario_8_Questao_3" value="Ci√™ncias" />
+                                    Ci√™ncias da Natureza
                                 </label>
                             </fieldset>
 
 
                             <!-- CHAMADA -->
                             <h3>
-                                4. Registros sobre a FrequÍncia da turma.<br />Marque apenas os estudantes <b style="color:red;">ausentes:</b>
+                                4. Registros sobre a Frequ√™ncia da turma.<br />Marque apenas os estudantes <b style="color:red;">ausentes:</b>
                             </h3>
                             <fieldset id="divChamadaAlunos" data-role="controlgroup"></fieldset>
 
                             <h3>
-                                5. Registros sobre a FrequÍncia da turma.<br />N˙mero de estudantes <b>presentes</b>:
+                                5. Registros sobre a Frequ√™ncia da turma.<br />N√∫mero de estudantes <b>presentes</b>:
                             </h3>
                             <fieldset>
                                 <input id="Questionario_8_Questao_5_Presentes" type="number" name="Questionario_8_Questao_5" />
                             </fieldset>
 
                             <h3>
-                                6. Registros sobre a FrequÍncia da turma.<br />N˙mero de estudantes <b>ausentes</b>:
+                                6. Registros sobre a Frequ√™ncia da turma.<br />N√∫mero de estudantes <b>ausentes</b>:
                             </h3>
                             <fieldset>
                                 <input id="Questionario_8_Questao_6_Ausentes" type="number" name="Questionario_8_Questao_6" />
                             </fieldset>
 
                             <h3>
-                                7.Quantidade de atestados mÈdicos recebidos:
+                                7.Quantidade de atestados m√©dicos recebidos:
                             </h3>
                             <fieldset>
                                 <input id="Questionario_8_Questao_7_Ausentes" type="number" name="Questionario_8_Questao_7" placeholder="Informe aqui" />
@@ -1510,42 +1519,42 @@ n„o exclua esse coment·rio.
                                 8. Registro sobre os Instrumentos.
                             </h3>
                             <fieldset>
-                                <h4>N˙mero de Cadernos de Prova no pacote, incluindo os reservas:</h4>
+                                <h4>N√∫mero de Cadernos de Prova no pacote, incluindo os reservas:</h4>
                                 <input id="Questionario_8_Questao_8_NumeroCadernosProvaIncluindoReservas" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaIncluindoReservas" placeholder="Informe aqui" />
-                                <h4>N˙mero de Cadernos de Prova <b>n„o</b> utilizados:</h4>
+                                <h4>N√∫mero de Cadernos de Prova <b>n√£o</b> utilizados:</h4>
                                 <input id="Questionario_8_Questao_8_NumeroCadernosProvaNaoUtilizados" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaNaoUtilizados" placeholder="Informe aqui" />
 
-                                <h4>N˙mero de Cadernos de Prova com falhas de impress„o:</h4>
+                                <h4>N√∫mero de Cadernos de Prova com falhas de impress√£o:</h4>
                                 <input id="Questionario_8_Questao_8_NumeroCadernosProvaComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaComFalhasImpressao" placeholder="Informe aqui" />
 
-                                <h4>N˙mero de Folhas de Respostas preenchidas:</h4>
+                                <h4>N√∫mero de Folhas de Respostas preenchidas:</h4>
                                 <input id="Questionario_8_Questao_8_NumeroFolhasRespostaPreenchidas" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaPreenchidas" placeholder="Informe aqui" />
 
-                                <h4>N˙mero de Folhas de Respostas n„o utilizadas:</h4>
+                                <h4>N√∫mero de Folhas de Respostas n√£o utilizadas:</h4>
                                 <input id="Questionario_8_Questao_8_NumeroFolhasRespostaNaoUtilizadas" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaNaoUtilizadas" placeholder="Informe aqui" />
 
-                                <h4>N˙mero de Folhas de Respostas com falhas de impress„o:</h4>
+                                <h4>N√∫mero de Folhas de Respostas com falhas de impress√£o:</h4>
                                 <input id="Questionario_8_Questao_8_NumeroFolhasRespostaComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaComFalhasImpressao" placeholder="Informe aqui" />
 
                                 <div id="Questionario_8_QuestoesInstrumentoPortugues">
-                                    <h4>N˙mero de Folhas ñ ProduÁ„o de Texto preenchidas:</h4>
+                                    <h4>N√∫mero de Folhas ‚Äì Produ√ß√£o de Texto preenchidas:</h4>
                                     <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoPreenchidas" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoPreenchidas" placeholder="Informe aqui" />
 
-                                    <h4>N˙mero de Folhas ñ ProduÁ„o de Texto n„o utilizadas:</h4>
+                                    <h4>N√∫mero de Folhas ‚Äì Produ√ß√£o de Texto n√£o utilizadas:</h4>
                                     <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoNaoUtilizadas" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoNaoUtilizadas" placeholder="Informe aqui" />
 
-                                    <h4>N˙mero de Folhas ñ ProduÁ„o de Texto com falhas de impress„o:</h4>
+                                    <h4>N√∫mero de Folhas ‚Äì Produ√ß√£o de Texto com falhas de impress√£o:</h4>
                                     <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoComFalhasImpressao" placeholder="Informe aqui" />
                                 </div>
 
                                 <!--<div id="Questionario_8_QuestoesInstrumentoCiencias">-->
-                                <!--<h4>N˙mero de Folhas de Respostas do Question·rio de H·bitos de Estudos preenchidas:</h4>-->
+                                <!--<h4>N√∫mero de Folhas de Respostas do Question√°rio de H√°bitos de Estudos preenchidas:</h4>-->
                                 <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosPreenchidas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosPreenchidas" placeholder="Informe aqui" />-->
-                                <!--<h4>N˙mero de Folhas de Respostas do Question·rio de H·bitos de Estudos n„o utilizadas:</h4>-->
+                                <!--<h4>N√∫mero de Folhas de Respostas do Question√°rio de H√°bitos de Estudos n√£o utilizadas:</h4>-->
                                 <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosNaoUtilizadas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosNaoUtilizadas" placeholder="Informe aqui" />-->
-                                <!--<h4>N˙mero de Folhas de Respostas do Question·rio de H·bitos de Estudos com falhas de impress„o:</h4>-->
+                                <!--<h4>N√∫mero de Folhas de Respostas do Question√°rio de H√°bitos de Estudos com falhas de impress√£o:</h4>-->
                                 <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosComFalhasImpressao" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosComFalhasImpressao" placeholder="Informe aqui" />-->
-                                <!--<h4>N˙mero de Folhas de Respostas do Question·rio para pais/m„es ou respons·veis devolvidas pelos alunos:</h4>-->
+                                <!--<h4>N√∫mero de Folhas de Respostas do Question√°rio para pais/m√£es ou respons√°veis devolvidas pelos alunos:</h4>-->
                                 <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioPaisDevolvidas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioPaisDevolvidas" placeholder="Informe aqui" />-->
                                 <!--</div>-->
                             </fieldset>
@@ -1559,17 +1568,17 @@ n„o exclua esse coment·rio.
                                     Sim
                                 </label>
                                 <label for="Questionario_8_Questao_9_Nao">
-                                    <input id="Questionario_8_Questao_9_Nao" type="radio" name="Questionario_8_Questao_9" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_9_Nao" type="radio" name="Questionario_8_Questao_9" value="N√£o" />
+                                    N√£o
                                 </label>
                                 <label for="Questionario_8_Questao_9_NaoSeAplica">
-                                    <input id="Questionario_8_Questao_9_NaoSeAplica" type="radio" name="Questionario_8_Questao_9" value="N„o se aplica" />
-                                    N„o se aplica
+                                    <input id="Questionario_8_Questao_9_NaoSeAplica" type="radio" name="Questionario_8_Questao_9" value="N√£o se aplica" />
+                                    N√£o se aplica
                                 </label>
                             </fieldset>
 
                             <h3>
-                                10. O n˙mero de Cadernos de provas em braile e/ou ampliadas correspondeu ao n˙mero de estudantes com deficiÍncia da turma?
+                                10. O n√∫mero de Cadernos de provas em braile e/ou ampliadas correspondeu ao n√∫mero de estudantes com defici√™ncia da turma?
                             </h3>
                             <fieldset>
                                 <label for="Questionario_8_Questao_10_Sim">
@@ -1577,12 +1586,12 @@ n„o exclua esse coment·rio.
                                     Sim
                                 </label>
                                 <label for="Questionario_8_Questao_10_Nao">
-                                    <input id="Questionario_8_Questao_10_Nao" type="radio" name="Questionario_8_Questao_10" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_10_Nao" type="radio" name="Questionario_8_Questao_10" value="N√£o" />
+                                    N√£o
                                 </label>
                                 <label for="Questionario_8_Questao_10_NaoSeAplica">
-                                    <input id="Questionario_8_Questao_10_NaoSeAplica" type="radio" name="Questionario_8_Questao_10" value="N„o se aplica" />
-                                    N„o se aplica
+                                    <input id="Questionario_8_Questao_10_NaoSeAplica" type="radio" name="Questionario_8_Questao_10" value="N√£o se aplica" />
+                                    N√£o se aplica
                                 </label>
                             </fieldset>
 
@@ -1595,13 +1604,13 @@ n„o exclua esse coment·rio.
                                     Sim
                                 </label>
                                 <label for="Questionario_8_Questao_11_Nao">
-                                    <input id="Questionario_8_Questao_11_Nao" type="radio" name="Questionario_8_Questao_11" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_11_Nao" type="radio" name="Questionario_8_Questao_11" value="N√£o" />
+                                    N√£o
                                 </label>
                             </fieldset>
 
                             <h3>
-                                12. Na sala de aplicaÁ„o estavam vocÍ, os estudantes e, quando necess·rio, o estagi·rio para auxiliar os estudantes com deficiÍncia?
+                                12. Na sala de aplica√ß√£o estavam voc√™, os estudantes e, quando necess√°rio, o estagi√°rio para auxiliar os estudantes com defici√™ncia?
                             </h3>
                             <fieldset>
                                 <label for="Questionario_8_Questao_12_Sim">
@@ -1609,26 +1618,26 @@ n„o exclua esse coment·rio.
                                     Sim
                                 </label>
                                 <label for="Questionario_8_Questao_12_Nao">
-                                    <input id="Questionario_8_Questao_12_Nao" type="radio" name="Questionario_8_Questao_12" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_12_Nao" type="radio" name="Questionario_8_Questao_12" value="N√£o" />
+                                    N√£o
                                 </label>
                                 <label for="Questionario_8_Questao_12_Terceiro">
-                                    <input id="Questionario_8_Questao_12_Terceiro" type="radio" name="Questionario_8_Questao_12" value="N„o se aplica" />
-                                    N„o se aplica
+                                    <input id="Questionario_8_Questao_12_Terceiro" type="radio" name="Questionario_8_Questao_12" value="N√£o se aplica" />
+                                    N√£o se aplica
                                 </label>
                             </fieldset>
 
-                            <h3>13. Para cada Caderno reserva utilizado, informe o valor do CÛdigo de Barras da Folha de Respostas e o CÛdigo EOL do Aluno:</h3>
+                            <h3>13. Para cada Caderno reserva utilizado, informe o valor do C√≥digo de Barras da Folha de Respostas e o C√≥digo EOL do Aluno:</h3>
                             <img src="/AppProvaSP/images/codigoDeBarrasExemplo.png" style="width:50%;" />
                             <fieldset>
                                 <table id="tblCadernoReserva" style="width:100%; margin-top:15px;">
                                     <tr>
                                         <td></td>
                                         <td>
-                                            Valor do CÛdigo de Barras:
+                                            Valor do C√≥digo de Barras:
                                         </td>
                                         <td>
-                                            CÛdigo EOL do Aluno:
+                                            C√≥digo EOL do Aluno:
                                         </td>
                                     </tr>
                                     <tr>
@@ -1636,7 +1645,7 @@ n„o exclua esse coment·rio.
                                             <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(1);" value="Escanear" />
                                         </td>
                                         <td>
-                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva1" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva1" placeholder="CÛdigo de Barras" />
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva1" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva1" placeholder="C√≥digo de Barras" />
                                         </td>
                                         <td>
                                             <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva1" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva1" placeholder="EOL do Aluno" />
@@ -1647,7 +1656,7 @@ n„o exclua esse coment·rio.
                                             <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(2);" value="Escanear" />
                                         </td>
                                         <td>
-                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva2" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva2" placeholder="CÛdigo de Barras" />
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva2" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva2" placeholder="C√≥digo de Barras" />
                                         </td>
                                         <td>
                                             <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva2" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva2" placeholder="EOL do Aluno" />
@@ -1658,7 +1667,7 @@ n„o exclua esse coment·rio.
                                             <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(3);" value="Escanear" />
                                         </td>
                                         <td>
-                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva3" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva3" placeholder="CÛdigo de Barras" />
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva3" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva3" placeholder="C√≥digo de Barras" />
                                         </td>
                                         <td>
                                             <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva3" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva3" placeholder="EOL do Aluno" />
@@ -1669,7 +1678,7 @@ n„o exclua esse coment·rio.
                                             <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(4);" value="Escanear" />
                                         </td>
                                         <td>
-                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva4" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva4" placeholder="CÛdigo de Barras" />
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva4" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva4" placeholder="C√≥digo de Barras" />
                                         </td>
                                         <td>
                                             <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva4" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva4" placeholder="EOL do Aluno" />
@@ -1679,12 +1688,12 @@ n„o exclua esse coment·rio.
                             </fieldset>
 
 
-                            <h3>14. Fatos relevantes ocorridos durante a aplicaÁ„o:</h3>
+                            <h3>14. Fatos relevantes ocorridos durante a aplica√ß√£o:</h3>
                             <fieldset>
-                                <h4>14.1. Ocorreu atraso de estudante(s), impedindo a participaÁ„o na avaliaÁ„o:</h4>
+                                <h4>14.1. Ocorreu atraso de estudante(s), impedindo a participa√ß√£o na avalia√ß√£o:</h4>
                                 <label for="Questionario_8_Questao_14_1_Nao">
-                                    <input id="Questionario_8_Questao_14_1_Nao" type="radio" name="Questionario_8_Questao_14_1" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_14_1_Nao" type="radio" name="Questionario_8_Questao_14_1" value="N√£o" />
+                                    N√£o
                                 </label>
                                 <label for="Questionario_8_Questao_14_1_Sim">
                                     <input id="Questionario_8_Questao_14_1_Sim" type="radio" name="Questionario_8_Questao_14_1" value="Sim" />
@@ -1692,10 +1701,10 @@ n„o exclua esse coment·rio.
                                 </label>
                             </fieldset>
                             <fieldset>
-                                <h4>14.2. Ocorreu saÌda definitiva de estudante, durante a aplicaÁ„o, sem terminar a avaliaÁ„o:</h4>
+                                <h4>14.2. Ocorreu sa√≠da definitiva de estudante, durante a aplica√ß√£o, sem terminar a avalia√ß√£o:</h4>
                                 <label for="Questionario_8_Questao_14_2_Nao">
-                                    <input id="Questionario_8_Questao_14_2_Nao" type="radio" name="Questionario_8_Questao_14_2" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_14_2_Nao" type="radio" name="Questionario_8_Questao_14_2" value="N√£o" />
+                                    N√£o
                                 </label>
                                 <label for="Questionario_8_Questao_14_2_Sim">
                                     <input id="Questionario_8_Questao_14_2_Sim" type="radio" name="Questionario_8_Questao_14_2" value="Sim" />
@@ -1705,45 +1714,45 @@ n„o exclua esse coment·rio.
                             <fieldset>
                                 <h4>14.3. Ocorreu falta de material:</h4>
                                 <label for="Questionario_8_Questao_14_3_Nao">
-                                    <input id="Questionario_8_Questao_14_3_Nao" type="radio" name="Questionario_8_Questao_14_3" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_14_3_Nao" type="radio" name="Questionario_8_Questao_14_3" value="N√£o" />
+                                    N√£o
                                 </label>
                                 <label for="Questionario_8_Questao_14_3_Sim">
                                     <input id="Questionario_8_Questao_14_3_Sim" type="radio" name="Questionario_8_Questao_14_3" value="Sim" />
-                                    Sim. Especifique a soluÁ„o adotada em 14.8
+                                    Sim. Especifique a solu√ß√£o adotada em 14.8
                                 </label>
                             </fieldset>
                             <fieldset>
-                                <h4>14.4. Ocorreu paralisaÁ„o de transporte p˙blico, retardando o inÌcio da aplicaÁ„o:</h4>
+                                <h4>14.4. Ocorreu paralisa√ß√£o de transporte p√∫blico, retardando o in√≠cio da aplica√ß√£o:</h4>
                                 <label for="Questionario_8_Questao_14_4_Nao">
-                                    <input id="Questionario_8_Questao_14_4_Nao" type="radio" name="Questionario_8_Questao_14_4" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_14_4_Nao" type="radio" name="Questionario_8_Questao_14_4" value="N√£o" />
+                                    N√£o
                                 </label>
                                 <label for="Questionario_8_Questao_14_4_Sim">
                                     <input id="Questionario_8_Questao_14_4_Sim" type="radio" name="Questionario_8_Questao_14_4" value="Sim" />
-                                    Sim. Especifique a soluÁ„o adotada em 14.8
+                                    Sim. Especifique a solu√ß√£o adotada em 14.8
                                 </label>
                             </fieldset>
                             <fieldset>
-                                <h4>14.5. Ocorreu falta de energia elÈtrica durante a aplicaÁ„o e afetou a avaliaÁ„o:</h4>
+                                <h4>14.5. Ocorreu falta de energia el√©trica durante a aplica√ß√£o e afetou a avalia√ß√£o:</h4>
                                 <label for="Questionario_8_Questao_14_5_Nao">
-                                    <input id="Questionario_8_Questao_14_5_Nao" type="radio" name="Questionario_8_Questao_14_5" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_14_5_Nao" type="radio" name="Questionario_8_Questao_14_5" value="N√£o" />
+                                    N√£o
                                 </label>
                                 <label for="Questionario_8_Questao_14_5_Sim">
                                     <input id="Questionario_8_Questao_14_5_Sim" type="radio" name="Questionario_8_Questao_14_5" value="Sim" />
-                                    Sim. Especifique a soluÁ„o adotada em 14.8
+                                    Sim. Especifique a solu√ß√£o adotada em 14.8
                                 </label>
                             </fieldset>
                             <fieldset>
                                 <h4>14.6. Tablet apresentou falha:</h4>
                                 <label for="Questionario_8_Questao_14_6_NaoSeAplica">
-                                    <input id="Questionario_8_Questao_14_6_NaoSeAplica" type="radio" name="Questionario_8_Questao_14_6" value="N„o se aplica" />
-                                    N„o se aplica
+                                    <input id="Questionario_8_Questao_14_6_NaoSeAplica" type="radio" name="Questionario_8_Questao_14_6" value="N√£o se aplica" />
+                                    N√£o se aplica
                                 </label>
                                 <label for="Questionario_8_Questao_14_6_Nao">
-                                    <input id="Questionario_8_Questao_14_6_Nao" type="radio" name="Questionario_8_Questao_14_6" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_14_6_Nao" type="radio" name="Questionario_8_Questao_14_6" value="N√£o" />
+                                    N√£o
                                 </label>
                                 <label for="Questionario_8_Questao_14_6_Sim">
                                     <input id="Questionario_8_Questao_14_6_Sim" type="radio" name="Questionario_8_Questao_14_6" value="Sim" />
@@ -1755,12 +1764,12 @@ n„o exclua esse coment·rio.
                             <fieldset>
                                 <h4>14.7. PenDrive apresentou falha:</h4>
                                 <label for="Questionario_8_Questao_14_7_NaoSeAplica">
-                                    <input id="Questionario_8_Questao_14_7_NaoSeAplica" type="radio" name="Questionario_8_Questao_14_7" value="N„o se aplica" />
-                                    N„o se aplica
+                                    <input id="Questionario_8_Questao_14_7_NaoSeAplica" type="radio" name="Questionario_8_Questao_14_7" value="N√£o se aplica" />
+                                    N√£o se aplica
                                 </label>
                                 <label for="Questionario_8_Questao_14_7_Nao">
-                                    <input id="Questionario_8_Questao_14_7_Nao" type="radio" name="Questionario_8_Questao_14_7" value="N„o" />
-                                    N„o
+                                    <input id="Questionario_8_Questao_14_7_Nao" type="radio" name="Questionario_8_Questao_14_7" value="N√£o" />
+                                    N√£o
                                 </label>
                                 <label for="Questionario_8_Questao_14_7_Sim">
                                     <input id="Questionario_8_Questao_14_7_Sim" type="radio" name="Questionario_8_Questao_14_7" value="Sim" />
@@ -1770,11 +1779,11 @@ n„o exclua esse coment·rio.
                                 <input id="Questionario_8_Questao_14_7_Motivos" type="text" name="Questionario_8_Questao_14_7.Motivos" placeholder="Descreva aqui" disabled="disabled" />
                             </fieldset>
                             <fieldset>
-                                <h4>14.8. Outros fatos relevantes n„o citados acima e/ou especificaÁ„o dos subitens 11.3 a 11.5:</h4>
+                                <h4>14.8. Outros fatos relevantes n√£o citados acima e/ou especifica√ß√£o dos subitens 11.3 a 11.5:</h4>
                                 <input id="Questionario_8_Questao_14_8_FatosRelevantes" type="text" name="Questionario_8_Questao_14_8_FatosRelevantes" placeholder="Descreva aqui" />
                             </fieldset>
 
-                            <h3>15. Deixe sugest„o de melhoria para a aplicaÁ„o da prÛxima EdiÁ„o:</h3>
+                            <h3>15. Deixe sugest√£o de melhoria para a aplica√ß√£o da pr√≥xima Edi√ß√£o:</h3>
                             <fieldset>
                                 <input id="Questionario_8_Questao_15_Observacoes" type="text" name="Questionario_8_Questao_15" placeholder="Descreva aqui" />
                             </fieldset>
@@ -1802,225 +1811,225 @@ n„o exclua esse coment·rio.
                     *Ficha de registro - Coordenador
                     -->
                     <form id="Questionario11">
-                        <input id="tituloQuestionario11" type="hidden" value="Ficha de Registro - Coordenador(a) PedagÛgico(a)" />
+                        <input id="tituloQuestionario11" type="hidden" value="Ficha de Registro - Coordenador(a) Pedag√≥gico(a)" />
 
                         <div id="divQuestionario11_Questoes"></div>
                     </form>
                     <!--MSTECH
-                    *Question·rio - Professor
+                    *Question√°rio - Professor
                     -->
                     <form id="Questionario23">
-                        <input id="tituloQuestionario23" type="hidden" value="Question·rio do(a) Professor(a)" />
+                        <input id="tituloQuestionario23" type="hidden" value="Question√°rio do(a) Professor(a)" />
 
                         <div id="divQuestionario23_Intro" style="text-align:left;">
                             <p>Caro(a) Professor(a),</p>
                             <p>
-                                Este question·rio busca conhecer suas opiniıes a respeito da sua escola.
-                                As informaÁıes fornecidas por vocÍ s„o importantes para a pesquisa que estamos realizando, neste ano,
-                                sobre clima escolar, pr·ticas pedagÛgicas e de gest„o. Os dados produzidos ser„o sigilosos e os
-                                resultados dessa pesquisa ser„o divulgados no 1∫ semestre de 2020.
+                                Este question√°rio busca conhecer suas opini√µes a respeito da sua escola.
+                                As informa√ß√µes fornecidas por voc√™ s√£o importantes para a pesquisa que estamos realizando, neste ano,
+                                sobre clima escolar, pr√°ticas pedag√≥gicas e de gest√£o. Os dados produzidos ser√£o sigilosos e os
+                                resultados dessa pesquisa ser√£o divulgados no 1¬∫ semestre de 2020.
                             </p>
-                            <a id="btnQuestionario23_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <a id="btnQuestionario23_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario23_Questoes" style="display:none;"></div>
                     </form>
 
                     <!--MSTECH
-                    *Question·rio do Assistente do Diretor
+                    *Question√°rio do Assistente do Diretor
                     -->
                     <form id="Questionario25">
-                        <input id="tituloQuestionario25" type="hidden" value="Question·rio do Assistente do Diretor(a)" />
+                        <input id="tituloQuestionario25" type="hidden" value="Question√°rio do Assistente do Diretor(a)" />
 
                         <div id="divQuestionario25_Intro" style="text-align:left;">
                             <p>Caro(a) Assistente de Diretor(a),</p>
                             <p>
-                                Este question·rio busca conhecer melhor vocÍ e sua experiÍncia
-                                como Assistente de Diretor(a). As informaÁıes fornecidas por
-                                vocÍ s„o importantes para a compreens„o e o mapeamento de
-                                polÌticas relacionadas a clima escolar e pr·ticas pedagÛgicas e
-                                de gest„o. Os dados coletados ser„o analisados de forma
+                                Este question√°rio busca conhecer melhor voc√™ e sua experi√™ncia
+                                como Assistente de Diretor(a). As informa√ß√µes fornecidas por
+                                voc√™ s√£o importantes para a compreens√£o e o mapeamento de
+                                pol√≠ticas relacionadas a clima escolar e pr√°ticas pedag√≥gicas e
+                                de gest√£o. Os dados coletados ser√£o analisados de forma
                                 agrupada, nunca de forma individualizada, a fim de garantir o
-                                sigilo. Os resultados dessa pesquisa ser„o divulgados no 1∫
+                                sigilo. Os resultados dessa pesquisa ser√£o divulgados no 1¬∫
                                 semestre de 2020.
                                 <br /><br />
-                                Contamos com sua ajuda para responder ‡s perguntas a seguir,
-                                garantindo a qualidade da pesquisa e o sucesso da EdiÁ„o
-                                da Provinha e Prova S„o Paulo 2019.
+                                Contamos com sua ajuda para responder √†s perguntas a seguir,
+                                garantindo a qualidade da pesquisa e o sucesso da Edi√ß√£o
+                                da Provinha e Prova S√£o Paulo 2019.
                             </p>
-                            <a id="btnQuestionario25_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <a id="btnQuestionario25_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario25_Questoes" style="display:none;"></div>
                     </form>
 
                     <!--MSTECH
-                    *Question·rio dos Agentes Escolares e do Auxiliar TÈcnico da EducaÁ„o
+                    *Question√°rio dos Agentes Escolares e do Auxiliar T√©cnico da Educa√ß√£o
                     -->
                     <form id="Questionario14">
-                        <input id="tituloQuestionario14" type="hidden" value="Question·rio do(a) auxiliar tÈcnico(a) de educaÁ„o" />
+                        <input id="tituloQuestionario14" type="hidden" value="Question√°rio do(a) auxiliar t√©cnico(a) de educa√ß√£o" />
 
                         <div id="divQuestionario14_Intro" style="text-align:left;">
-                            <p>Caro(a) Auxiliar TÈcnico(a) de EducaÁ„o,</p>
+                            <p>Caro(a) Auxiliar T√©cnico(a) de Educa√ß√£o,</p>
                             <p>
-                                Este question·rio busca conhecer melhor vocÍ e sua experiÍncia
-                                como Auxiliar TÈcnico(a) de EducaÁ„o. As informaÁıes fornecidas
-                                por vocÍ s„o importantes para a compreens„o e o mapeamento de
-                                polÌticas relacionadas ‡ qualidade da educaÁ„o fornecida pela
-                                Secretaria Municipal de EducaÁ„o de S„o Paulo. Os dados coletados
-                                ser„o analisados de forma agrupada, nunca de forma individualizada,
-                                a fim de garantir o sigilo e anonimato das informaÁıes. Os resultados
-                                dessa pesquisa ser„o divulgados no 1∫ semestre de 2019.
+                                Este question√°rio busca conhecer melhor voc√™ e sua experi√™ncia
+                                como Auxiliar T√©cnico(a) de Educa√ß√£o. As informa√ß√µes fornecidas
+                                por voc√™ s√£o importantes para a compreens√£o e o mapeamento de
+                                pol√≠ticas relacionadas √† qualidade da educa√ß√£o fornecida pela
+                                Secretaria Municipal de Educa√ß√£o de S√£o Paulo. Os dados coletados
+                                ser√£o analisados de forma agrupada, nunca de forma individualizada,
+                                a fim de garantir o sigilo e anonimato das informa√ß√µes. Os resultados
+                                dessa pesquisa ser√£o divulgados no 1¬∫ semestre de 2019.
                                 <br /><br />
-                                Contamos com sua ajuda para responder ‡s perguntas a seguir,
-                                garantindo a qualidade da pesquisa e o sucesso da EdiÁ„o
-                                da Provinha e Prova S„o Paulo 2018.
+                                Contamos com sua ajuda para responder √†s perguntas a seguir,
+                                garantindo a qualidade da pesquisa e o sucesso da Edi√ß√£o
+                                da Provinha e Prova S√£o Paulo 2018.
                             </p>
-                            <a id="btnQuestionario14_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <a id="btnQuestionario14_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario14_Questoes" style="display:none;"></div>
                     </form>
 
                     <!--MSTECH
-                    *Question·rio do Agente Escolar - Merendeira
+                    *Question√°rio do Agente Escolar - Merendeira
                     -->
                     <form id="Questionario15">
-                        <input id="tituloQuestionario15" type="hidden" value="Question·rio do(a) agente escolar" />
+                        <input id="tituloQuestionario15" type="hidden" value="Question√°rio do(a) agente escolar" />
 
                         <div id="divQuestionario15_Intro" style="text-align:left;">
                             <p>Caro(a) Agente Escolar,</p>
                             <p>
-                                Este question·rio busca conhecer melhor vocÍ e sua experiÍncia
-                                como Agente Escolar. As informaÁıes fornecidas por vocÍ s„o
-                                importantes para a compreens„o e o mapeamento de polÌticas
-                                relacionadas ‡ qualidade da educaÁ„o fornecida pela secretaria
-                                de educaÁ„o do municÌpio de S„o Paulo. Os dados coletados ser„o
+                                Este question√°rio busca conhecer melhor voc√™ e sua experi√™ncia
+                                como Agente Escolar. As informa√ß√µes fornecidas por voc√™ s√£o
+                                importantes para a compreens√£o e o mapeamento de pol√≠ticas
+                                relacionadas √† qualidade da educa√ß√£o fornecida pela secretaria
+                                de educa√ß√£o do munic√≠pio de S√£o Paulo. Os dados coletados ser√£o
                                 analisados de forma agrupada, nunca de forma individualizada,
-                                a fim de garantir o sigilo e anonimato das informaÁıes.
-                                Os resultados dessa pesquisa ser„o divulgados no 1∫ semestre de 2019.
+                                a fim de garantir o sigilo e anonimato das informa√ß√µes.
+                                Os resultados dessa pesquisa ser√£o divulgados no 1¬∫ semestre de 2019.
                                 <br /><br />
                                 Contamos com a sua ajuda para responder as perguntas a seguir,
-                                e assim garantir a qualidade da pesquisa e o sucesso da EdiÁ„o
-                                da Provinha e Prova S„o Paulo 2018.
+                                e assim garantir a qualidade da pesquisa e o sucesso da Edi√ß√£o
+                                da Provinha e Prova S√£o Paulo 2018.
                             </p>
-                            <a id="btnQuestionario15_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <a id="btnQuestionario15_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario15_Questoes" style="display:none;"></div>
                     </form>
 
                     <!--MSTECH
-                    *Question·rio do Agente Escolar - Portaria
+                    *Question√°rio do Agente Escolar - Portaria
                     -->
                     <form id="Questionario16">
-                        <input id="tituloQuestionario16" type="hidden" value="Question·rio do(a) agente escolar" />
+                        <input id="tituloQuestionario16" type="hidden" value="Question√°rio do(a) agente escolar" />
 
                         <div id="divQuestionario16_Intro" style="text-align:left;">
                             <p>Caro(a) Agente Escolar,</p>
                             <p>
-                                Este question·rio busca conhecer melhor vocÍ e sua experiÍncia
-                                como Agente Escolar. As informaÁıes fornecidas por vocÍ s„o
-                                importantes para a compreens„o e o mapeamento de polÌticas
-                                relacionadas ‡ qualidade da educaÁ„o fornecida pela secretaria
-                                de educaÁ„o do municÌpio de S„o Paulo. Os dados coletados ser„o
+                                Este question√°rio busca conhecer melhor voc√™ e sua experi√™ncia
+                                como Agente Escolar. As informa√ß√µes fornecidas por voc√™ s√£o
+                                importantes para a compreens√£o e o mapeamento de pol√≠ticas
+                                relacionadas √† qualidade da educa√ß√£o fornecida pela secretaria
+                                de educa√ß√£o do munic√≠pio de S√£o Paulo. Os dados coletados ser√£o
                                 analisados de forma agrupada, nunca de forma individualizada,
-                                a fim de garantir o sigilo e anonimato das informaÁıes.
-                                Os resultados dessa pesquisa ser„o divulgados no 1∫ semestre de 2019.
+                                a fim de garantir o sigilo e anonimato das informa√ß√µes.
+                                Os resultados dessa pesquisa ser√£o divulgados no 1¬∫ semestre de 2019.
                                 <br /><br />
                                 Contamos com a sua ajuda para responder as perguntas a seguir,
-                                e assim garantir a qualidade da pesquisa e o sucesso da EdiÁ„o
-                                da Provinha e Prova S„o Paulo 2018.
+                                e assim garantir a qualidade da pesquisa e o sucesso da Edi√ß√£o
+                                da Provinha e Prova S√£o Paulo 2018.
                             </p>
-                            <a id="btnQuestionario16_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <a id="btnQuestionario16_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario16_Questoes" style="display:none;"></div>
                     </form>
 
                     <!--MSTECH
-                    *Question·rio do Agente Escolar - Zeladoria
+                    *Question√°rio do Agente Escolar - Zeladoria
                     -->
                     <form id="Questionario17">
-                        <input id="tituloQuestionario17" type="hidden" value="Question·rio do(a) agente escolar" />
+                        <input id="tituloQuestionario17" type="hidden" value="Question√°rio do(a) agente escolar" />
 
                         <div id="divQuestionario17_Intro" style="text-align:left;">
                             <p>Caro(a) Agente Escolar,</p>
                             <p>
-                                Este question·rio busca conhecer melhor vocÍ e sua experiÍncia
-                                como Agente Escolar. As informaÁıes fornecidas por vocÍ s„o
-                                importantes para a compreens„o e o mapeamento de polÌticas
-                                relacionadas ‡ qualidade da educaÁ„o fornecida pela secretaria
-                                de educaÁ„o do municÌpio de S„o Paulo. Os dados coletados ser„o
+                                Este question√°rio busca conhecer melhor voc√™ e sua experi√™ncia
+                                como Agente Escolar. As informa√ß√µes fornecidas por voc√™ s√£o
+                                importantes para a compreens√£o e o mapeamento de pol√≠ticas
+                                relacionadas √† qualidade da educa√ß√£o fornecida pela secretaria
+                                de educa√ß√£o do munic√≠pio de S√£o Paulo. Os dados coletados ser√£o
                                 analisados de forma agrupada, nunca de forma individualizada,
-                                a fim de garantir o sigilo e anonimato das informaÁıes.
-                                Os resultados dessa pesquisa ser„o divulgados no 1∫ semestre de 2019.
+                                a fim de garantir o sigilo e anonimato das informa√ß√µes.
+                                Os resultados dessa pesquisa ser√£o divulgados no 1¬∫ semestre de 2019.
                                 <br /><br />
                                 Contamos com a sua ajuda para responder as perguntas a seguir,
-                                e assim garantir a qualidade da pesquisa e o sucesso da EdiÁ„o
-                                da Provinha e Prova S„o Paulo 2018.
+                                e assim garantir a qualidade da pesquisa e o sucesso da Edi√ß√£o
+                                da Provinha e Prova S√£o Paulo 2018.
                             </p>
-                            <a id="btnQuestionario17_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <a id="btnQuestionario17_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario17_Questoes" style="display:none;"></div>
                     </form>
 
                     <!--MSTECH
-                    *Question·rio do Aluno do 3∫ ano
+                    *Question√°rio do Aluno do 3¬∫ ano
                     -->
                     <form id="Questionario18">
-                        <input id="tituloQuestionario18" type="hidden" value="Question·rio do Estudante" />
+                        <input id="tituloQuestionario18" type="hidden" value="Question√°rio do Estudante" />
 
                         <div id="divQuestionario18_Intro" style="text-align:left;">
                             <p>Caro(a) estudante,</p>
                             <p>
-                                Este question·rio coleta informaÁıes sobre vocÍ, seus h·bitos de
-                                estudo e como vocÍ se sente na escola, entre seus colegas e seus
+                                Este question√°rio coleta informa√ß√µes sobre voc√™, seus h√°bitos de
+                                estudo e como voc√™ se sente na escola, entre seus colegas e seus
                                 professores. O sucesso deste trabalho depende da sua resposta.
                             </p>
-                            <a id="btnQuestionario18_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <a id="btnQuestionario18_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario18_Questoes" style="display:none;"></div>
                     </form>
 
                     <!--MSTECH
-                    *Question·rio do Aluno dp 4∫ ao 6∫ ano
+                    *Question√°rio do Aluno dp 4¬∫ ao 6¬∫ ano
                     -->
                     <form id="Questionario21">
-                        <input id="tituloQuestionario21" type="hidden" value="Question·rio do Estudante" />
+                        <input id="tituloQuestionario21" type="hidden" value="Question√°rio do Estudante" />
 
                         <div id="divQuestionario21_Intro" style="text-align:left;">
                             <p>Caro(a) estudante,</p>
                             <p>
-                                Este question·rio coleta informaÁıes sobre vocÍ, seus h·bitos de
-                                estudo e como vocÍ se sente na escola, entre seus colegas e seus
+                                Este question√°rio coleta informa√ß√µes sobre voc√™, seus h√°bitos de
+                                estudo e como voc√™ se sente na escola, entre seus colegas e seus
                                 professores. Da sua resposta depende o sucesso deste trabalho.
                             </p>
-                            <p>Muito obrigado por sua participaÁ„o!</p>
-                            <a id="btnQuestionario21_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <p>Muito obrigado por sua participa√ß√£o!</p>
+                            <a id="btnQuestionario21_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario21_Questoes" style="display:none;"></div>
                     </form>
 
                     <!--MSTECH
-                    *Question·rio do Aluno dp 7∫ ao 9∫ ano
+                    *Question√°rio do Aluno dp 7¬∫ ao 9¬∫ ano
                     -->
                     <form id="Questionario22">
-                        <input id="tituloQuestionario22" type="hidden" value="Question·rio do Estudante" />
+                        <input id="tituloQuestionario22" type="hidden" value="Question√°rio do Estudante" />
 
                         <div id="divQuestionario22_Intro" style="text-align:left;">
                             <p>Caro(a) estudante,</p>
                             <p>
-                                Este question·rio coleta informaÁıes sobre vocÍ, seus h·bitos de
-                                estudo e como vocÍ se sente na escola, entre seus colegas e seus
-                                professores. Suas respostas s„o confidenciais e delas depende o
+                                Este question√°rio coleta informa√ß√µes sobre voc√™, seus h√°bitos de
+                                estudo e como voc√™ se sente na escola, entre seus colegas e seus
+                                professores. Suas respostas s√£o confidenciais e delas depende o
                                 sucesso deste trabalho.
                             </p>
-                            <p>Muito obrigado por sua participaÁ„o!</p>
-                            <a id="btnQuestionario22_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question·rio</a>
+                            <p>Muito obrigado por sua participa√ß√£o!</p>
+                            <a id="btnQuestionario22_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o question√°rio</a>
                         </div>
 
                         <div id="divQuestionario22_Questoes" style="display:none;"></div>
@@ -2058,13 +2067,15 @@ n„o exclua esse coment·rio.
     <script src="/AppProvaSP/scripts/model/QuestionarioRespostaItem.js?v=1.30.4.1"></script>
 
     <script src="/AppProvaSP/scripts/app.js?v=1.30.4.0" type="text/javascript"></script>
-
-
+    <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/jspdf.min.js"></script>
+    <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/html2canvas.min.js"></script>
+    <script src="/AppProvaSP/scripts/external/DomToImage-2.6/dom-to-image.js"></script>
+    <script src="/AppProvaSP/scripts/external/FileSaver/FileSaver.min.js"></script>
     <script src="scripts/chart.js"></script>
     <script>
-            if (window.MSInputMethodContext != null) {
-                alert("ATEN«√O! VocÍ est· utilizando o Internet Explorer e este aplicativo n„o funcionar· de forma adequada. Por gentileza utilize o Google Chrome.");
-            }
+        if (window.MSInputMethodContext != null) {
+            alert("ATEN√á√ÉO! Voc√™ est√° utilizando o Internet Explorer e este aplicativo n√£o funcionar√° de forma adequada. Por gentileza utilize o Google Chrome.");
+        }        
     </script>
 </body>
 </html>

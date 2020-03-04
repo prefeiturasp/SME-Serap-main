@@ -1,4 +1,4 @@
-// For an introduction to the Blank template, see the following documentation:
+Ôªø// For an introduction to the Blank template, see the following documentation:
 // http://go.microsoft.com/fwlink/?LinkID=397704
 // To debug code on page load in cordova-simulate or on Android devices/emulators: launch your app, set breakpoints,
 // and then run "window.location.reload()" in the JavaScript Console.
@@ -9,11 +9,13 @@ var db = null;
 var mobile = false;
 var opcaoResultadoSelecionada = -1;
 var opcaoConfiguracoesSelecionada = -1;
+var imagemDivResultadoTituloDetalhe;
+
 
 /**
 -----MSTECH-----
- *Novas vari·veis globais. A primeira armazena as configuraÁıes do App. A segunda
- a definiÁ„o dos ciclos de aprendizagem
+ *Novas vari√°veis globais. A primeira armazena as configura√ß√µes do App. A segunda
+ a defini√ß√£o dos ciclos de aprendizagem
 */
 var provaAlunoCicloSelecionado = -1;
 var provaSP_configuracoes = {
@@ -28,96 +30,96 @@ var provaSP_configuracoes = {
 };
 var cicloTotalAlunos = {};
 var modeloCiclos = { Ciclo1: [-1, 2, 3], Ciclo2: [4, 5, 6], Ciclo3: [7, 8, 9] };
-//MSTECH - Objeto para salvar os dados de agraÁ„o de SÈrie HistÛrica - Ano atual e Ano anterior
+//MSTECH - Objeto para salvar os dados de agra√ß√£o de S√©rie Hist√≥rica - Ano atual e Ano anterior
 var serieHistorica = { anoAtual: {}, anoAnterior: {} };
 /**
 -----MSTECH-----
- *Flag para identificar notificaÁıes locais (quando dados precisam ser sincronizados)
+ *Flag para identificar notifica√ß√µes locais (quando dados precisam ser sincronizados)
 */
 var notificacaoSincroniaAtivada = false;
 /**
 -----MSTECH-----
- *Objeto para armazenar os IDs e a DescriÁ„o dos contructos e suas vari·veis
+ *Objeto para armazenar os IDs e a Descri√ß√£o dos contructos e suas vari√°veis
 */
 //var graficosVariaveis = false;
 var variaveisConstructo = {};
 /**
 -----MSTECH-----
- *Cache das informaÁıes de corte - Em ConfiguraÁıes
+ *Cache das informa√ß√µes de corte - Em Configura√ß√µes
 */
 var corteCache = [];
 
 /**
 -----MSTECH-----
- *Question·rios por tipo de usu·rio
+ *Question√°rios por tipo de usu√°rio
 
- OBS: Perceba que professor n„o tem Ficha de Registro
+ OBS: Perceba que professor n√£o tem Ficha de Registro
 
- Question·rios: Perguntas pessoais e administrativas para o usu·rio;
- Question·rio 8: Funcionalidades de acompanhamento da ProvaSP no dia da mesma;
- Fichas de registro: Perguntas aos diretores e respons·veis sobre andamento tÈcnico da ProvaSP
+ Question√°rios: Perguntas pessoais e administrativas para o usu√°rio;
+ Question√°rio 8: Funcionalidades de acompanhamento da ProvaSP no dia da mesma;
+ Fichas de registro: Perguntas aos diretores e respons√°veis sobre andamento t√©cnico da ProvaSP
 */
 var edicoesComTurmasAmostrais = ["2017", "2018", "2019"];
 var questionarios = [
-    "1",/*Question·rio Supervisor*/
-    //"2",/*Question·rio Diretor 2018*/
-    "3",/*Question·rio Coordenador*/
+    "1",/*Question√°rio Supervisor*/
+    //"2",/*Question√°rio Diretor 2018*/
+    "3",/*Question√°rio Coordenador*/
     "8",/*Controle da Prova a ser aplicada*/
     "9",/*Ficha de registro Supervisor*/
     "10",/*Ficha de registro Diretor*/
     "11",/*Ficha de registro Coordenador*/
-    //"12",/*Question·rio Professor 2018*/
-    //"13",/*Question·rio Assistente de Diretoria 2018*/
-    "14",/*Question·rio do Auxiliar TÈcnico da EducaÁ„o*/
-    "15",/*Question·rio do Agente Escolar: Merendeira*/
-    "16",/*Question·rio do Agente Escolar: Portaria*/
-    "17",/*Question·rio do Agente Escolar: Zeladoria*/
-    //"18",/*Question·rio dos Alunos do 3∫ ano 2018*/
-    //"19",/*Question·rio dos Alunos do 4∫ ao 6∫ ano 2018*/
-    //"20",/*Question·rio dos Alunos do 7∫ ao 9∫ ano ID 2018*/
-    "21",/*NOVO Question·rio dos Alunos do 3∫ ao 6∫ ano 2019*/
-    "22",/*NOVO Question·rio dos Alunos do 7∫ ao 9∫ ano 2019*/
-    "23",/*NOVO Question·rio Professor 2019*/
-    "24",/*NOVO Question·rio Diretor 2019*/
-    "25",/*NOVO Question·rio Assistente de Diretoria 2019*/
+    //"12",/*Question√°rio Professor 2018*/
+    //"13",/*Question√°rio Assistente de Diretoria 2018*/
+    "14",/*Question√°rio do Auxiliar T√©cnico da Educa√ß√£o*/
+    "15",/*Question√°rio do Agente Escolar: Merendeira*/
+    "16",/*Question√°rio do Agente Escolar: Portaria*/
+    "17",/*Question√°rio do Agente Escolar: Zeladoria*/
+    //"18",/*Question√°rio dos Alunos do 3¬∫ ano 2018*/
+    //"19",/*Question√°rio dos Alunos do 4¬∫ ao 6¬∫ ano 2018*/
+    //"20",/*Question√°rio dos Alunos do 7¬∫ ao 9¬∫ ano ID 2018*/
+    "21",/*NOVO Question√°rio dos Alunos do 3¬∫ ao 6¬∫ ano 2019*/
+    "22",/*NOVO Question√°rio dos Alunos do 7¬∫ ao 9¬∫ ano 2019*/
+    "23",/*NOVO Question√°rio Professor 2019*/
+    "24",/*NOVO Question√°rio Diretor 2019*/
+    "25",/*NOVO Question√°rio Assistente de Diretoria 2019*/
 ];
 /**
 -----MSTECH-----
- *Comporta o ID do question·rio selecionado. Tudo indica que o vetor qustionario È modificado para
- comportar tambÈm o cÛdigo da escola. Este trecho est· faltando
+ *Comporta o ID do question√°rio selecionado. Tudo indica que o vetor qustionario √© modificado para
+ comportar tamb√©m o c√≥digo da escola. Este trecho est√° faltando
 
- Verificar se existe um cÛdigo atualizado que complementa os IDs dos questionarios. Apenas os Ìndices
- do vetor inicial n„o funcionar„o corretamente.
- RESPONDIDO: A identificaÁ„o dos question·rios era diferente na vers„o anterior do App (publicada na
- Play Store). Esta, portanto, È a vers„o atualizada e deve-se implementar os trechos que identificavam
- os question·rios por uma string com base no vetor de Ìndices de question·rios.
+ Verificar se existe um c√≥digo atualizado que complementa os IDs dos questionarios. Apenas os √≠ndices
+ do vetor inicial n√£o funcionar√£o corretamente.
+ RESPONDIDO: A identifica√ß√£o dos question√°rios era diferente na vers√£o anterior do App (publicada na
+ Play Store). Esta, portanto, √© a vers√£o atualizada e deve-se implementar os trechos que identificavam
+ os question√°rios por uma string com base no vetor de √≠ndices de question√°rios.
 */
 var questionarioId_atual = "";
 /**
 -----MSTECH-----
- *… preciso manter o cÛdigo da turma numa vari·vel global por haver a possibilidade dele estar
- associado a um cÛdigo diferente, impresso nas provas.
+ *√â preciso manter o c√≥digo da turma numa vari√°vel global por haver a possibilidade dele estar
+ associado a um c√≥digo diferente, impresso nas provas.
 */
 var codigoTurma_atual = "";
 /**
 -----MSTECH-----
- *Vetor que comporta os elementos DOM, geralmente botıes, que tÍm o evento para voltar ‡ uma funcionalidade.
- *Ou seja, ao disparar o mÈtodo de volta, o App dispara em seguida o evento do bot„o armazenado.
+ *Vetor que comporta os elementos DOM, geralmente bot√µes, que t√™m o evento para voltar √† uma funcionalidade.
+ *Ou seja, ao disparar o m√©todo de volta, o App dispara em seguida o evento do bot√£o armazenado.
 */
 var caminhoBackButton = null;
 /**
 -----MSTECH-----
- *Esta vari·vel comportar· o vetor de registros das escolas, obtidos atravÈs do arquivo escolas.CSV
+ *Esta vari√°vel comportar√° o vetor de registros das escolas, obtidos atrav√©s do arquivo escolas.CSV
 */
 var dataEscola = [];
 /**
 -----MSTECH-----
- *Armazena os Ìndices dos question·rios carregados.
+ *Armazena os √≠ndices dos question√°rios carregados.
 */
 var questionarioCarregado = {};
 /**
 -----MSTECH-----
- *Vetor com todos os question·rios ainda n„o enviados. Tais question·rios s„o salvos no banco de dados
+ *Vetor com todos os question√°rios ainda n√£o enviados. Tais question√°rios s√£o salvos no banco de dados
  local SQLite.
 */
 var listaQuestionariosNaoEnviados;
@@ -136,25 +138,25 @@ else {
 
 /**
 -----MSTECH-----
- *MÛdulo 1 - InÌcio
- *Este mÛdulo determina as primeiras execuÁıes do App quando o usu·rio loga com sucesso.
- *S„o feitas aÁıes como:
- -Montar interface com base no tipo de usu·rio;
- -Baixar informaÁıes sobre fase atual da ediÁ„o do ProvaSP;
- -Veiricar dados n„o sincronizados (notificaÁıes locais).
+ *M√≥dulo 1 - In√≠cio
+ *Este m√≥dulo determina as primeiras execu√ß√µes do App quando o usu√°rio loga com sucesso.
+ *S√£o feitas a√ß√µes como:
+ -Montar interface com base no tipo de usu√°rio;
+ -Baixar informa√ß√µes sobre fase atual da edi√ß√£o do ProvaSP;
+ -Veiricar dados n√£o sincronizados (notifica√ß√µes locais).
 */
 
 /**
 -----MSTECH-----
- *Primeiro mÈtodo executado depois do login
+ *Primeiro m√©todo executado depois do login
 */
 function onDeviceReady() {
     try {
-        //INÕCIO
+        //IN√çCIO
 
         /**
         -----MSTECH-----
-         *Recarrega o mÈtodo inicial assÌncrono se o Jquery n„o for carregado a tempo
+         *Recarrega o m√©todo inicial ass√≠ncrono se o Jquery n√£o for carregado a tempo
         */
         if (typeof window.jQuery == "undefined") {
             //As vezes onDeviceReady dispara antes da carga do jQuery...
@@ -164,7 +166,7 @@ function onDeviceReady() {
 
         /**
         -----MSTECH-----
-         *Primeiro mÈtodo executado depois do login
+         *Primeiro m√©todo executado depois do login
         */
         var apresentarLoading = true;
 
@@ -180,7 +182,7 @@ function onDeviceReady() {
         else {
             /**
             -----MSTECH-----
-             *Sendo mobile e sem conex„o, n„o necessita mostrar Loading
+             *Sendo mobile e sem conex√£o, n√£o necessita mostrar Loading
             */
             if (!(navigator.connection.type == Connection.NONE || navigator.connection.type == Connection.UNKNOWN)) {
                 apresentarLoading = false;
@@ -189,7 +191,7 @@ function onDeviceReady() {
 
         /**
         -----MSTECH-----
-         *Loading enquanto carrega informaÁıes do servidor ProvaSP
+         *Loading enquanto carrega informa√ß√µes do servidor ProvaSP
         */
         if (apresentarLoading) {
             $.mobile.loading('show');
@@ -197,8 +199,8 @@ function onDeviceReady() {
         else {
             /**
             -----MSTECH-----
-             *Comportamento padr„o Offline - Apenas Mobile APP.
-             *Como n„o h· conex„o, n„o tem que fazer requisiÁıes ao server, mostra a tela de Menu diretamente
+             *Comportamento padr√£o Offline - Apenas Mobile APP.
+             *Como n√£o h√° conex√£o, n√£o tem que fazer requisi√ß√µes ao server, mostra a tela de Menu diretamente
             */
             $("#aguarde-page").hide();
             $("#menu-page").show();
@@ -206,14 +208,14 @@ function onDeviceReady() {
 
         /**
         -----MSTECH-----
-         *Primeira requisiÁ„o do App - Verifica a condiÁ„o atual do ProvaSP. De acordo com as flags retornadas,
-         o App se molda de tal maneira a mostrar apenas as funcionalidades necess·rias.
-         *EX: Na ocasi„o da an·lise do cÛdigo de 2017, apenas a verificaÁ„o de resultados È possÌvel
-         -RelatorioAcompanhamentoVisivel: Verifica se existe a possibilidade de utilizar o RelatÛrio de
+         *Primeira requisi√ß√£o do App - Verifica a condi√ß√£o atual do ProvaSP. De acordo com as flags retornadas,
+         o App se molda de tal maneira a mostrar apenas as funcionalidades necess√°rias.
+         *EX: Na ocasi√£o da an√°lise do c√≥digo de 2017, apenas a verifica√ß√£o de resultados √© poss√≠vel
+         -RelatorioAcompanhamentoVisivel: Verifica se existe a possibilidade de utilizar o Relat√≥rio de
          acompanhamento do ProvaSP (apenas no dia da Prova)
-         -DisponibilizarPreenchimentoQuestionariosFichas: indica a possibilidade de preencher question·rios
+         -DisponibilizarPreenchimentoQuestionariosFichas: indica a possibilidade de preencher question√°rios
 
-         *Basicamente esta primeira requisiÁ„o determina a visibilidade de dois botıes do App, referentes ‡s
+         *Basicamente esta primeira requisi√ß√£o determina a visibilidade de dois bot√µes do App, referentes √†s
          funcionalidades controladas pelas Flags
         */
         Usuario = ObterUsuario();
@@ -226,7 +228,7 @@ function onDeviceReady() {
             crossDomain: true,
             cache: false,
             success: function (data) {
-                //MSTECH - Atribuindo novos valores vindos do servidor ao objeto de configuraÁıes
+                //MSTECH - Atribuindo novos valores vindos do servidor ao objeto de configura√ß√µes
                 provaSP_configuracoes.configuracoes.DisponibilizarPreenchimentoQuestionariosFichas =
                     (data.DisponibilizarPreenchimentoQuestionariosFichas === 'true');
 
@@ -244,10 +246,10 @@ function onDeviceReady() {
 
                 /**
                 -----MSTECH-----
-                 *Sendo o usu·rio um aluno, ele ter· acesso apenas ao seu resultado de prova, quando disponÌvel.
-                 *Sendo assim, os valores das flags s„o irrelevantes para este tipo de usu·rio
+                 *Sendo o usu√°rio um aluno, ele ter√° acesso apenas ao seu resultado de prova, quando dispon√≠vel.
+                 *Sendo assim, os valores das flags s√£o irrelevantes para este tipo de usu√°rio
 
-                 *Quando n„o est· mais em tempo de preenchimento de question·rios, permitir apenas
+                 *Quando n√£o est√° mais em tempo de preenchimento de question√°rios, permitir apenas
                  que os alunos vejam o resultado da ProvaSP.
                 */
                 if (Usuario.Aluno) {
@@ -259,11 +261,11 @@ function onDeviceReady() {
 
                 /**
                 -----MSTECH-----
-                 *A funcionalidade de RelatÛrio de Acompanhamento n„o deve ser mostrada aos professores.
-                 *Ele sÛ deve estar disponÌvel quando a flag RelatorioAcompanhamentoVisivel for TRUE
-                 *Na vers„o atual, tal relatÛrio È mostrado de acordo com o ID do usu·rio.
+                 *A funcionalidade de Relat√≥rio de Acompanhamento n√£o deve ser mostrada aos professores.
+                 *Ele s√≥ deve estar dispon√≠vel quando a flag RelatorioAcompanhamentoVisivel for TRUE
+                 *Na vers√£o atual, tal relat√≥rio √© mostrado de acordo com o ID do usu√°rio.
                 */
-                //O usu·rio tem acesso apenas ao question·rio 23 (Professor). Ele n„o deve acessar o relatÛrio de acompanhamento.
+                //O usu√°rio tem acesso apenas ao question√°rio 23 (Professor). Ele n√£o deve acessar o relat√≥rio de acompanhamento.
                 if (provaSP_configuracoes.configuracoes.RelatorioAcompanhamentoVisivel &&
                     (Usuario.AcessoNivelDRE || Usuario.AcessoNivelSME || Usuario.Diretor || Usuario.AssistenteDeDiretoria || Usuario.Supervisor)) {
                     $("#btnAbrirRelatorioAcompanhamento").show();
@@ -276,22 +278,22 @@ function onDeviceReady() {
 
                 /**
                 -----AMCOM-----
-                 *Bot„o que determina o preenchimento de question·rios
-                 *Os question·rios estarem disponÌveis ou n„o depende da flag vinda do servidor ProvaSP
-                 *Se estiver fora do perÌodo de preenchimento de question·rios,
-                 o ProvaSP mostra a tela de resultados. Dependendo do tipo de usu·rio,
-                 È necess·rio filtrar a informaÁ„o.
-                 *… importante destacar que esta permiss„o  DisponibilizarPreenchimentoQuestionariosFichas
-                 sendo falsa, a permiss„o RelatorioAcompanhamentoVisivel torna-se irrelevante
+                 *Bot√£o que determina o preenchimento de question√°rios
+                 *Os question√°rios estarem dispon√≠veis ou n√£o depende da flag vinda do servidor ProvaSP
+                 *Se estiver fora do per√≠odo de preenchimento de question√°rios,
+                 o ProvaSP mostra a tela de resultados. Dependendo do tipo de usu√°rio,
+                 √© necess√°rio filtrar a informa√ß√£o.
+                 *√â importante destacar que esta permiss√£o  DisponibilizarPreenchimentoQuestionariosFichas
+                 sendo falsa, a permiss√£o RelatorioAcompanhamentoVisivel torna-se irrelevante
                 */
                 if (Usuario.AcessoNivelSME) {
                     /**
                     -----AMCOM-----
-                      *Agora È possÌvel acessar o menu independentemente do estado da ProvaSP para usu·rios
-                      com nÌvel SME. Isso se d· pelo fato de existir uma nova tela de configuraÁ„o acessÌvel
+                      *Agora √© poss√≠vel acessar o menu independentemente do estado da ProvaSP para usu√°rios
+                      com n√≠vel SME. Isso se d√° pelo fato de existir uma nova tela de configura√ß√£o acess√≠vel
                       pelo menu principal.
-                      *Para tal, escondemos as opÁıes de acesso ‡s funcionalidades da ProvaSP e disponibilizamos
-                      apenas acesso ao resultado (padr„o) e ‡ tela de configuraÁ„o.
+                      *Para tal, escondemos as op√ß√µes de acesso √†s funcionalidades da ProvaSP e disponibilizamos
+                      apenas acesso ao resultado (padr√£o) e √† tela de configura√ß√£o.
                     */
                     if (provaSP_configuracoes.configuracoes.DisponibilizarPreenchimentoQuestionariosFichas) {
                         $("#provaSP_disponivel").show();
@@ -307,7 +309,7 @@ function onDeviceReady() {
                     $.mobile.loading('hide');
                     $("#divMenuPrincipal").show();
                 } else {
-                    //quando n„o tem perfil, n„o vai responder nenhum question·rio
+                    //quando n√£o tem perfil, n√£o vai responder nenhum question√°rio
                     if (!provaSP_configuracoes.configuracoes.PossuiPerfilEdicaoAtual)
                         $("button-abrir-questionario").hide();
 
@@ -326,8 +328,8 @@ function onDeviceReady() {
 
                         /**
                         -----AMCOM-----
-                        Os resultados das provas estar„o disponÌveis inclusive durante uma prova ativa.
-                        Assim ser· possÌvel continuar analisando os resultados antigos durante a prova atual.
+                        Os resultados das provas estar√£o dispon√≠veis inclusive durante uma prova ativa.
+                        Assim ser√° poss√≠vel continuar analisando os resultados antigos durante a prova atual.
                         */
                         $("#provaSP_resultados").show();
                     } else {
@@ -341,13 +343,13 @@ function onDeviceReady() {
 
                 /**
                 -----MSTECH-----
-                 *Quando n„o h· conex„o, o App deve funcionar em modo OFFLINE
+                 *Quando n√£o h√° conex√£o, o App deve funcionar em modo OFFLINE
                 */
                 if (erro.status == 0) {
                     $("#aguarde-page").hide();
                     $("#menu-page").show();
                     $("#divMenuPrincipal").show();
-                    ProvaSP_Erro("Erro " + erro.status, "Sem conex„o");
+                    ProvaSP_Erro("Erro " + erro.status, "Sem conex√£o");
                 }
                 else { ProvaSP_Erro("Erro " + erro.status, erro.statusText); }
             }
@@ -363,7 +365,7 @@ function onDeviceReady() {
         //            return;
         //        }
 
-        //        if (data.RelatorioAcompanhamentoVisivel && Usuario.questionarios != "23") //O usu·rio tem acesso apenas ao question·rio 23 (Professor). Ele n„o deve acessar o relatÛrio de acompanhamento.
+        //        if (data.RelatorioAcompanhamentoVisivel && Usuario.questionarios != "23") //O usu√°rio tem acesso apenas ao question√°rio 23 (Professor). Ele n√£o deve acessar o relat√≥rio de acompanhamento.
         //        {
         //            $("#btnAbrirRelatorioAcompanhamento").show();
         //        }
@@ -393,10 +395,10 @@ function onDeviceReady() {
 
         /**
         -----MSTECH-----
-         *MÈtodo n„o utilizado
+         *M√©todo n√£o utilizado
 
-         MÈtodo realmente n„o utilizado?
-         RESPONDIDO: Realmente o mÈtodo n„o È utilizado nem tampouco tem um equivalente na vers„o Web em C#.
+         M√©todo realmente n√£o utilizado?
+         RESPONDIDO: Realmente o m√©todo n√£o √© utilizado nem tampouco tem um equivalente na vers√£o Web em C#.
          Manteremos para fins de registro.
         */
         //function resultadoAlunoApresentar(dataResultado) {
@@ -405,9 +407,9 @@ function onDeviceReady() {
 
         /**
         -----MSTECH-----
-         *Aqui foi utilizado um truque do JQuery Mobile para evitar que, ao comeÁar uma sincronizaÁ„o
-         o usu·rio possa tocar de novo na interface para iniciar uma segunda sync em paralelo.
-         *De fato, È uma forma de bloquear a interface enquanto a requisiÁ„o È processada.
+         *Aqui foi utilizado um truque do JQuery Mobile para evitar que, ao come√ßar uma sincroniza√ß√£o
+         o usu√°rio possa tocar de novo na interface para iniciar uma segunda sync em paralelo.
+         *De fato, √© uma forma de bloquear a interface enquanto a requisi√ß√£o √© processada.
         */
         $(document).on("mobileinit", function () {
             $.mobile.loader.prototype.options.text = "loading...";
@@ -431,34 +433,34 @@ function onDeviceReady() {
 
         /**
         -----MSTECH-----
-         *MÈtodo absurdamente extenso que determina as aÁıes de todos os elementos do App.
-         *O mÈtodo È muito grande por conter, alÈm dos handlers dos eventos, as implementaÁıes
+         *M√©todo absurdamente extenso que determina as a√ß√µes de todos os elementos do App.
+         *O m√©todo √© muito grande por conter, al√©m dos handlers dos eventos, as implementa√ß√µes
          dos mesmos.
 
-         OBS: An·lise mais detalhada na implementaÁ„o do evento.
+         OBS: An√°lise mais detalhada na implementa√ß√£o do evento.
         */
         definirEventHandlers();
 
         /**
         -----MSTECH-----
-         *ImplementaÁ„o sem sentido.
-         *Aparentemente quando È Web e o App È aberto num dispositivo mobile, utilizar o Usu·rio salvo em
+         *Implementa√ß√£o sem sentido.
+         *Aparentemente quando √© Web e o App √© aberto num dispositivo mobile, utilizar o Usu√°rio salvo em
          LocalStorage.
-         *Se for o caso de um browser, usa o mÈtodo ConfigurarUsuarioSerap abaixo. Mas tal mÈtodo n„o tem
-         implementaÁ„o concluÌda no global.js
+         *Se for o caso de um browser, usa o m√©todo ConfigurarUsuarioSerap abaixo. Mas tal m√©todo n√£o tem
+         implementa√ß√£o conclu√≠da no global.js
 
-         OBS: Reparar que n„o existe abertura do SQLite no modo Web
+         OBS: Reparar que n√£o existe abertura do SQLite no modo Web
 
-         ConfigurarUsuarioSerap È mais completo em outro repositÛrio atualizado?
-         RESPONDIDO: N„o h· mais necessidade de utilizar o mÈtodo ConfigurarUsuarioSerap da maneira original
-         concebida. Ele era utilizado na vers„o anterior do App (publicada na GooglePlay).
+         ConfigurarUsuarioSerap √© mais completo em outro reposit√≥rio atualizado?
+         RESPONDIDO: N√£o h√° mais necessidade de utilizar o m√©todo ConfigurarUsuarioSerap da maneira original
+         concebida. Ele era utilizado na vers√£o anterior do App (publicada na GooglePlay).
         */
         if (mobile) {
             Usuario = JSON.parse(localStorage.getItem("Usuario"));
 
             /**
             -----MSTECH-----
-             *No caso do mobile App, verifica as notificaÁıes locais pendentes. Se houver, muda flag para
+             *No caso do mobile App, verifica as notifica√ß√µes locais pendentes. Se houver, muda flag para
              true.
             */
             cordova.plugins.notification.local.getScheduledIds(function (scheduledIds) {
@@ -467,9 +469,9 @@ function onDeviceReady() {
 
             /**
             -----MSTECH-----
-             *Este trecho cria um banco de dados simples SQLite para armazenar as informaÁıes de question·rios
-             ou mesmo dos detalhes da prova aplicada quando o usu·rio n„o tem conex„o com a internet.
-             *Sendo assim, mesmo sem conex„o, as informaÁıes ficam salvas e ser„o sincronizadas posteriormente.
+             *Este trecho cria um banco de dados simples SQLite para armazenar as informa√ß√µes de question√°rios
+             ou mesmo dos detalhes da prova aplicada quando o usu√°rio n√£o tem conex√£o com a internet.
+             *Sendo assim, mesmo sem conex√£o, as informa√ß√µes ficam salvas e ser√£o sincronizadas posteriormente.
             */
             try {
                 db = window.sqlitePlugin.openDatabase(
@@ -490,10 +492,10 @@ function onDeviceReady() {
                             console.log("db - tabelas criadas.");
                             /**
                             -----MSTECH-----
-                             *Tenta enviar informaÁıes pendentes com base na flag notificacaoSincroniaAtivada
-                             obtida atravÈs da an·lise das notificaÁıes locais disponÌveis.
-                             *O Loop ser· repetido a cada 20 segundos e executado mediante a flag mencionada
-                             acima e conex„o com a internet.
+                             *Tenta enviar informa√ß√µes pendentes com base na flag notificacaoSincroniaAtivada
+                             obtida atrav√©s da an√°lise das notifica√ß√µes locais dispon√≠veis.
+                             *O Loop ser√° repetido a cada 20 segundos e executado mediante a flag mencionada
+                             acima e conex√£o com a internet.
                             */
                             sincronizarLoop();
 
@@ -523,13 +525,13 @@ function onDeviceReady() {
                     function (er) { ProvaSP_Erro("Alerta", er); }
                 );
             }
-            catch (er) { ProvaSP_Erro("Alerta", "N„o foi possÌvel abrir o banco de dados: " + er); }
+            catch (er) { ProvaSP_Erro("Alerta", "N√£o foi poss√≠vel abrir o banco de dados: " + er); }
         }
 
         /**
         -----AMCOM-----
-         *Mostrando divs de question·rios para tipos especÌficos de usu·rio
-         *Question·rio do Supervisor foi descontinuado em 2018
+         *Mostrando divs de question√°rios para tipos espec√≠ficos de usu√°rio
+         *Question√°rio do Supervisor foi descontinuado em 2018
         */
         if (Usuario.Diretor) {
             $("#divAbrirQuestionarioID_24").show();
@@ -547,7 +549,7 @@ function onDeviceReady() {
             if (turma_ano >= 3 && turma_ano <= 6) { $("#divAbrirQuestionarioID_21").show(); }
             else if (turma_ano >= 7 && turma_ano <= 9) { $("#divAbrirQuestionarioID_22").show(); }
 
-            //Estudante n„o deve ser capaz de "aplicar prova" 4904227
+            //Estudante n√£o deve ser capaz de "aplicar prova" 4904227
             $("#btnAbrirFichaAplicadorProvaOuChamada").hide();
         }
         if (Usuario.AssistenteDeDiretoria) {
@@ -573,9 +575,9 @@ function onDeviceReady() {
 
         /**
         -----MSTECH-----
-         *Apesar dos botıes referentes aos question·rios serem determinados pelo tipo de usu·rio acima,
-         O trecho abaixo determina o evento de click de cada um dos botıes de question·rios com Ìndice
-         presente no Array questionarios. Ou seja, mesmo que o bot„o jamais seja clicado, ele recebe um
+         *Apesar dos bot√µes referentes aos question√°rios serem determinados pelo tipo de usu√°rio acima,
+         O trecho abaixo determina o evento de click de cada um dos bot√µes de question√°rios com √≠ndice
+         presente no Array questionarios. Ou seja, mesmo que o bot√£o jamais seja clicado, ele recebe um
          evento correspondente.
         */
         for (var i = 0; i < questionarios.length; i++) {
@@ -584,14 +586,14 @@ function onDeviceReady() {
             $(btn).show();
             /**
             -----MSTECH-----
-             *Evento de CLICK do bot„o selecionado
+             *Evento de CLICK do bot√£o selecionado
             */
             $(btn).click(
                 function () {
                     /**
                     -----MSTECH-----
-                     *Obtendo o ID do question·rio atravÈs do ID do elemento DOM
-                     *Mostrando tela de question·rio
+                     *Obtendo o ID do question√°rio atrav√©s do ID do elemento DOM
+                     *Mostrando tela de question√°rio
                     */
                     var questionarioId = parseInt(this.id.replace("btnAbrirQuestionarioID_", ""));
                     $(".page").hide();
@@ -599,15 +601,15 @@ function onDeviceReady() {
 
                     /**
                     -----MSTECH-----
-                     *Configurando question·rio bem como atribuindo mensagens oportunas de acordo com o tipo
-                     de question·rio carregado.
+                     *Configurando question√°rio bem como atribuindo mensagens oportunas de acordo com o tipo
+                     de question√°rio carregado.
                     */
                     selecionarQuestionario(questionarioId);
 
                     if (questionarioCarregado[questionarioId] == null) {
                         /**
                         -----MSTECH-----
-                         *O HTML da div que receber· o question·rio È temporariamente substituido por uma
+                         *O HTML da div que receber√° o question√°rio √© temporariamente substituido por uma
                          mensagem de carregamento
                         */
                         $("#divQuestionario" + questionarioId + "_Questoes").html("Aguarde...");
@@ -620,18 +622,18 @@ function onDeviceReady() {
 
                         /**
                         -----MSTECH-----
-                         *Em seguida È carregado no mesmo div da mensagem de espera um dos arquivos HTML
-                         referentes ao question·rio selecionado.
+                         *Em seguida √© carregado no mesmo div da mensagem de espera um dos arquivos HTML
+                         referentes ao question√°rio selecionado.
 
-                         IMPORTANTE: … neste trecho que os question·rios s„o carregados.
+                         IMPORTANTE: √â neste trecho que os question√°rios s√£o carregados.
                         */
                         $("#divQuestionario" + questionarioId + "_Questoes").load("/AppProvaSP/questionario_" + questionarioId + ".html?guid=" + newGuid(), function () {
                             $.mobile.loading("hide");
 
                             /**
                             -----MSTECH-----
-                             *Notar que, depois que um question·rio È criado, o mÈtodo definirEventHandlers
-                             È chamado novamente.
+                             *Notar que, depois que um question√°rio √© criado, o m√©todo definirEventHandlers
+                             √© chamado novamente.
                             */
                             $("#divQuestionario" + questionarioId + "_Questoes").trigger("create");
                             questionarioCarregado[questionarioId] = true;
@@ -639,8 +641,8 @@ function onDeviceReady() {
 
                             /**
                             -----MSTECH-----
-                             *Aplicamos uma lÛgica de BIB diferente para os question·rios dos alunos,
-                             tendo em vista a estruturaÁ„o dos mesmos.
+                             *Aplicamos uma l√≥gica de BIB diferente para os question√°rios dos alunos,
+                             tendo em vista a estrutura√ß√£o dos mesmos.
                             */
                             if (questionarioId != 14) { aplicarBIB(); }
                             else {
@@ -652,7 +654,7 @@ function onDeviceReady() {
 
                             /**
                             -----MSTECH-----
-                             *Quando for question·rio 9 ou 10, colocar o identificador do
+                             *Quando for question√°rio 9 ou 10, colocar o identificador do
                              supervidor/diretor no primeiro item.
                             */
                             if (questionarioId >= 9 && questionarioId <= 11) {
@@ -662,8 +664,8 @@ function onDeviceReady() {
                     }
                     /**
                     -----MSTECH-----
-                     *Manipulando bot„o voltar no dispositivo para executar uma aÁ„o especÌfica.
-                     *Neste caso, sair do question·rio.
+                     *Manipulando bot√£o voltar no dispositivo para executar uma a√ß√£o espec√≠fica.
+                     *Neste caso, sair do question√°rio.
                     */
                     adicionarItemBackButton("btnQuestionarioSair");
                 }
@@ -701,10 +703,10 @@ function ObterUsuario() {
 
 /**
 -----MSTECH-----
- *MÈtodo para preparar a visualizaÁ„o do Aluno. Sobretudo para obter os resultados das
- ediÁıes do ProvaSP que ele participou.
+ *M√©todo para preparar a visualiza√ß√£o do Aluno. Sobretudo para obter os resultados das
+ edi√ß√µes do ProvaSP que ele participou.
 
- *MÈtodo reposicionado para funcionar na aplicaÁ„o inteira
+ *M√©todo reposicionado para funcionar na aplica√ß√£o inteira
 */
 function resultadoAlunoConfigurarInterface() {
     try {
@@ -720,8 +722,8 @@ function resultadoAlunoConfigurarInterface() {
 
         /**
         -----MSTECH-----
-         *Busca no servidor ProvaSP as participaÁıes do aluno em ediÁıes do ProvaSP.
-         Tais opıes s„o disponibilizadas num SELECT para visualizaÁ„o dos resultados
+         *Busca no servidor ProvaSP as participa√ß√µes do aluno em edi√ß√µes do ProvaSP.
+         Tais op√µes s√£o disponibilizadas num SELECT para visualiza√ß√£o dos resultados
         */
         $.post(urlBackEnd + "api/AlunoParticipacaoEdicoes?guid=" + newGuid(), { alu_matricula: Usuario.usu_login })
             .done(function (edicoes) {
@@ -738,15 +740,15 @@ function resultadoAlunoConfigurarInterface() {
 }
 /**
 -----MSTECH-----
- *Fim do MÛdulo 1 - InÌcio
+ *Fim do M√≥dulo 1 - In√≠cio
 */
 
 
 
 /**
 -----MSTECH-----
- *MÛdulo 2 - MÈtodos auxiliares
- *Os trecho de cÛdigo abaixo possuem a definiÁ„o de mÈtodos auxiliares para funcionamento de
+ *M√≥dulo 2 - M√©todos auxiliares
+ *Os trecho de c√≥digo abaixo possuem a defini√ß√£o de m√©todos auxiliares para funcionamento de
  diversos detalhes do App como:
  -BackButton;
  -GUID;
@@ -755,14 +757,14 @@ function resultadoAlunoConfigurarInterface() {
 
 /**
 -----MSTECH-----
- *O BIB È um identificador especial, baseado no n˙mero de login do usu·rio que determina
- se alguns itens especÌficos dos question·rios ser„o mostrados.
- *Aparentemente, de acordo com o usu_login, usu·rio responder„o questıes diferentes aleatoriamente.
+ *O BIB √© um identificador especial, baseado no n√∫mero de login do usu√°rio que determina
+ se alguns itens espec√≠ficos dos question√°rios ser√£o mostrados.
+ *Aparentemente, de acordo com o usu_login, usu√°rio responder√£o quest√µes diferentes aleatoriamente.
 
- Continuar aplicando BIB da forma descrita abaixo? Ou seja, bloquear itens dos question·rios
- para usu·rios especÌficos atravÈs do usu_login?
- RESPONDIDO: Sim, continuaremos utilizando o mÈtodo de Blocos Incompletos Balanceados, inclusive
- incrementando um pouco a implementaÁ„o para os question·rios de alunos.
+ Continuar aplicando BIB da forma descrita abaixo? Ou seja, bloquear itens dos question√°rios
+ para usu√°rios espec√≠ficos atrav√©s do usu_login?
+ RESPONDIDO: Sim, continuaremos utilizando o m√©todo de Blocos Incompletos Balanceados, inclusive
+ incrementando um pouco a implementa√ß√£o para os question√°rios de alunos.
 */
 function aplicarBIB() {
     try {
@@ -771,14 +773,14 @@ function aplicarBIB() {
 
         /**
         -----AMCOM-----
-         *Question·rio dos alunos.
+         *Question√°rio dos alunos.
         */
-        // LÛgica aplicada para ediÁ„o 2019
+        // L√≥gica aplicada para edi√ß√£o 2019
         if (questionarioId_atual == 21 || questionarioId_atual == 22) { // Alunos 3-6 anos e 7-9 anos
             var turma_ano = parseInt(Usuario.Ano);
             if (Usuario.Ano == null) { turma_ano = 0 }
 
-            //Aplica o BIB correto baseado no RF do usu·rio. Cada BIB corresponde a um caderno de respostas.
+            //Aplica o BIB correto baseado no RF do usu√°rio. Cada BIB corresponde a um caderno de respostas.
             qtdCadernos = 6;
         }
         else if (questionarioId_atual == 23) { qtdCadernos = 6; } // Professor
@@ -787,7 +789,7 @@ function aplicarBIB() {
 
         /**
         -----AMCOM-----
-         *Faz um c·lculo do BIB com base no Usuario.usu_login
+         *Faz um c√°lculo do BIB com base no Usuario.usu_login
          *Determinando o caderno correto e os blocos correspondentes
         */
         let usuLoginNum = parseInt(Usuario.usu_login.replace(/\D/g, ""));
@@ -800,7 +802,7 @@ function aplicarBIB() {
         $(".BIB_B" + bloco).show();
 
         /** -----AMCOM-----
-         * Aplica de forma autom·tica a numeraÁ„o das questıes visÌveis.
+         * Aplica de forma autom√°tica a numera√ß√£o das quest√µes vis√≠veis.
          */
         let bibVisivel = $(".BIB_TODOS, .BIB_B" + bloco);
         let numeroQuestoes = bibVisivel.find('.num-questao');
@@ -818,8 +820,8 @@ function aplicarBIB() {
 
 /**
 -----MSTECH-----
- *Adicionado BIB para o question·rio 14 de Auxiliar TÈcnico da EducaÁ„o
- *O BIB È determinado de acordo com a seleÁ„o do primeiro ITEM.
+ *Adicionado BIB para o question√°rio 14 de Auxiliar T√©cnico da Educa√ß√£o
+ *O BIB √© determinado de acordo com a sele√ß√£o do primeiro ITEM.
  -Se for A: Secretaria
  -Se for B: Inspetoria
 */
@@ -841,36 +843,36 @@ function aplicarBIBQuestionario14(ASelecionado) {
 
 /**
 -----MSTECH-----
- *MÈtodo para excluir todas as notificaÁıes locais do ProvaSP.
- *A execuÁ„o se d· apenas quando os dados s„o sincronizados com sucesso.
+ *M√©todo para excluir todas as notifica√ß√µes locais do ProvaSP.
+ *A execu√ß√£o se d√° apenas quando os dados s√£o sincronizados com sucesso.
 
- OBS: Na verdade existir· apenas uma notificaÁ„o quando houver dados a serem sincronizados.
- Tal notificaÁ„o È di·ria e persiste atÈ o correto envio das informaÁıes.
+ OBS: Na verdade existir√° apenas uma notifica√ß√£o quando houver dados a serem sincronizados.
+ Tal notifica√ß√£o √© di√°ria e persiste at√© o correto envio das informa√ß√µes.
 */
 function excluirNotificacaoLocal() {
     cordova.plugins.notification.local.cancelAll(
         function () {
             notificacaoSincroniaAtivada = false;
-            console.log("NotificaÁ„o local cancelada.");
+            console.log("Notifica√ß√£o local cancelada.");
         }, this);
 
     //cordova.plugins.notification.local.clear(0, function ()
     //{
     //    notificacaoSincroniaAtivada = false;
-    //    console.log("NotificaÁ„o local cancelada.");
+    //    console.log("Notifica√ß√£o local cancelada.");
     //});
 
     /*
     cordova.plugins.notification.local.clearAll(function ()
     {
-        console.log("NotificaÁ„o local cancelada.");
+        console.log("Notifica√ß√£o local cancelada.");
     }, this);
     */
 }
 
 /**
 -----MSTECH-----
- *MÈtodos para tratamento do BackButton do Android nas telas de funcionalidades
+ *M√©todos para tratamento do BackButton do Android nas telas de funcionalidades
 */
 
 //document.addEventListener('deviceready', function (event)
@@ -885,8 +887,8 @@ function excluirNotificacaoLocal() {
 
 /**
 -----MSTECH-----
- *Parte da lÛgica do backbutton foi trasnferida para o global.js
- *Assim, antes de encerrar o App, uma dialogo È mostrado e o backButton se aplica tambÈm ‡ tela index.
+ *Parte da l√≥gica do backbutton foi trasnferida para o global.js
+ *Assim, antes de encerrar o App, uma dialogo √© mostrado e o backButton se aplica tamb√©m √† tela index.
 */
 function voltarCaminhoBackButton() {
     try {
@@ -895,7 +897,7 @@ function voltarCaminhoBackButton() {
 
         /**
         -----MSTECH-----
-         *Se n„o existe caminho para Back, fecha o App
+         *Se n√£o existe caminho para Back, fecha o App
         */
         if (caminhoBackButton.length == 0) {
             if (window.location.href.indexOf("#") == -1)
@@ -915,9 +917,9 @@ function voltarCaminhoBackButton() {
 
 /**
 -----MSTECH-----
- *Abaixo mÈtodos para manipular os eventos de BackButton do Android
- *Reparar que o backbutton foi construÌdo adicionando o elemento do bot„o ao vetor de armazenamento
- *e, atravÈs do JQuery, chamando o evento do bot„o correspondente.
+ *Abaixo m√©todos para manipular os eventos de BackButton do Android
+ *Reparar que o backbutton foi constru√≠do adicionando o elemento do bot√£o ao vetor de armazenamento
+ *e, atrav√©s do JQuery, chamando o evento do bot√£o correspondente.
 */
 function removerItemBackButton() {
     try {
@@ -959,7 +961,7 @@ $(document).keyup(function (e) {
 
 /**
 -----MSTECH-----
- *MÈtodos para criar identificador ˙nico GUID
+ *M√©todos para criar identificador √∫nico GUID
 */
 function newGuid() {
     try {
@@ -973,7 +975,7 @@ function newGuid() {
     }
 }
 /*
-//a funÁ„o uuidv4() n„o roda em android 4 (dispositivo testado Samsung Tab E)
+//a fun√ß√£o uuidv4() n√£o roda em android 4 (dispositivo testado Samsung Tab E)
 //https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
 function uuidv4()
 {
@@ -997,26 +999,26 @@ function guidPart() {
 
 /**
 -----MSTECH-----
- *Os mÈtodos a seguir servem para validar os cÛdigos das provas aplicadas.
- *… um algoritmo de c·lculo matem·tico que fornece a validaÁ„o necess·ria para verificar,
- por exemplo se o cÛdigo das provas obtido pelo leitor de cÛdigos de barras È realmente v·lido.
- *Outra situaÁ„o para validaÁ„o dos cÛdigos das provas È quando o aplicador erra um n˙mero
+ *Os m√©todos a seguir servem para validar os c√≥digos das provas aplicadas.
+ *√â um algoritmo de c√°lculo matem√°tico que fornece a valida√ß√£o necess√°ria para verificar,
+ por exemplo se o c√≥digo das provas obtido pelo leitor de c√≥digos de barras √© realmente v√°lido.
+ *Outra situa√ß√£o para valida√ß√£o dos c√≥digos das provas √© quando o aplicador erra um n√∫mero
  ao digitar manualmente.
 
- *O algoritmo retorna um dÌgito calculado de acordo com o cÛdigo de entrada. Tal dÌgito deve ser
- igual ao dÌgito validador do cÛdigo.
+ *O algoritmo retorna um d√≠gito calculado de acordo com o c√≥digo de entrada. Tal d√≠gito deve ser
+ igual ao d√≠gito validador do c√≥digo.
  POR EXEMPLO:
-    -Os 7 primeiros dÌgitos do cÛdigo da prova s„o o n˙mero de inscriÁ„o.
-    -O oitavo dÌgito È o dÌgito validador;
-    -Os 7 primeiros dÌgitos s„o analisados pelo algoritmo abaixo;
-    -O retorno da funÁ„o deve ser igual ao dÌgito validator  (o oitavo dÌgito do cÛdigo
-    de identificaÁ„o da prova).
+    -Os 7 primeiros d√≠gitos do c√≥digo da prova s√£o o n√∫mero de inscri√ß√£o.
+    -O oitavo d√≠gito √© o d√≠gito validador;
+    -Os 7 primeiros d√≠gitos s√£o analisados pelo algoritmo abaixo;
+    -O retorno da fun√ß√£o deve ser igual ao d√≠gito validator  (o oitavo d√≠gito do c√≥digo
+    de identifica√ß√£o da prova).
 
- Sendo assim, tais mÈtodos de validaÁ„o garantem a coerÍncia dos dados das provas.
+ Sendo assim, tais m√©todos de valida√ß√£o garantem a coer√™ncia dos dados das provas.
 
 
- ATUALIZA«√O: MÈtodo descontinuados. ValidaÁıes da vers„o de 2018 n„o s„o mais feitas
- atravÈs de dÌgito validador.
+ ATUALIZA√á√ÉO: M√©todo descontinuados. Valida√ß√µes da vers√£o de 2018 n√£o s√£o mais feitas
+ atrav√©s de d√≠gito validador.
 */
 //function calculaDigito(dado) {
 //    try {
@@ -1029,11 +1031,11 @@ function guidPart() {
 //}
 
 /**
- * Retorna o(s) numDig DÌgitos de Controle MÛdulo 11 do
- * dado, limitando o Valor de MultiplicaÁ„o em limMult,
+ * Retorna o(s) numDig D√≠gitos de Controle M√≥dulo 11 do
+ * dado, limitando o Valor de Multiplica√ß√£o em limMult,
  * multiplicando a soma por 10, se indicado:
  *
- *    N˙meros Comuns:   numDig:   limMult:   x10:
+ *    N√∫meros Comuns:   numDig:   limMult:   x10:
  *      CPF                2         12      true
  *      CNPJ               2          9      true
  *      PIS,C/C,Age        1          9      true
@@ -1041,11 +1043,11 @@ function guidPart() {
  *
  * @version                V5.0 - Mai/2001~Out/2015
  * @author                 CJDinfo
- * @param  string  dado    String dado contendo o n˙mero (sem o DV)
- * @param  int     numDig  N˙mero de dÌgitos a calcular
- * @param  int     limMult Limite de multiplicaÁ„o
+ * @param  string  dado    String dado contendo o n√∫mero (sem o DV)
+ * @param  int     numDig  N√∫mero de d√≠gitos a calcular
+ * @param  int     limMult Limite de multiplica√ß√£o
  * @param  boolean x10     Se true multiplica soma por 10
- * @return string          DÌgitos calculados
+ * @return string          D√≠gitos calculados
  */
 //function calculaDigitoMod11(dado, numDig, limMult, x10) {
 //    try {
@@ -1082,23 +1084,23 @@ function guidPart() {
 
 /**
 -----MSTECH-----
- *Fim do MÛdulo 2 - MÈtodos auxiliares
+ *Fim do M√≥dulo 2 - M√©todos auxiliares
 */
 
 
 /**
 -----MSTECH-----
- *MÛdulo 3 - Question·rios
- -Envio de question·rio;
- -Salvamento de question·rios localmente;
- -CriaÁ„o de notificaÁ„o lembrete;
- -ManipulaÁ„o de elementos dos question·rios com base no tipo de usu·rio.
+ *M√≥dulo 3 - Question√°rios
+ -Envio de question√°rio;
+ -Salvamento de question√°rios localmente;
+ -Cria√ß√£o de notifica√ß√£o lembrete;
+ -Manipula√ß√£o de elementos dos question√°rios com base no tipo de usu√°rio.
 */
 
 /**
 -----MSTECH-----
- *Este mÈtodo determina a seleÁ„o de question·rios.
- *Perceber que podemos identificar o objetivo de cada um dos tipos de question·rio
+ *Este m√©todo determina a sele√ß√£o de question√°rios.
+ *Perceber que podemos identificar o objetivo de cada um dos tipos de question√°rio
  *
 */
 function selecionarQuestionario(questionarioId) {
@@ -1107,14 +1109,14 @@ function selecionarQuestionario(questionarioId) {
         $("#tituloQuestionario").html($("#tituloQuestionario" + questionarioId).val());
         /**
         -----MSTECH-----
-         *Aparentemente n„o existe uma div de nome divQuestionarios
+         *Aparentemente n√£o existe uma div de nome divQuestionarios
          *
         */
         $("#divQuestionarios").children("div").each(function () { $(this).hide() });
 
         /**
         -----MSTECH-----
-         *Esconde todos os question·rios e depois mostra apenas o selecionado
+         *Esconde todos os question√°rios e depois mostra apenas o selecionado
          *
         */
         $("#Questionarios form").hide();
@@ -1122,26 +1124,26 @@ function selecionarQuestionario(questionarioId) {
 
         /**
         -----MSTECH-----
-         *Question·rios 1, 24, 3 e 23 s„o question·rios padr„o sobre dados pessoais e dia a dia das
+         *Question√°rios 1, 24, 3 e 23 s√£o question√°rios padr√£o sobre dados pessoais e dia a dia das
          pessoas atuantes nas escolas. Veja detalhes:
-         -Question·rios 1: Question·rio do Supervisor Escolar
-         -Question·rios 24: Question·rio do Diretor de Escola
-         -Question·rios 3: Question·rio do Coordenador PedagÛgico
-         -Question·rios 13: Question·rio Assistente de Diretoria
-         -Question·rios 23: Question·rio do(a) Professor(a)
+         -Question√°rios 1: Question√°rio do Supervisor Escolar
+         -Question√°rios 24: Question√°rio do Diretor de Escola
+         -Question√°rios 3: Question√°rio do Coordenador Pedag√≥gico
+         -Question√°rios 13: Question√°rio Assistente de Diretoria
+         -Question√°rios 23: Question√°rio do(a) Professor(a)
 
-         -Question·rios 18: Question·rio dos alunos do 3∫ ano
-         -Question·rios 19: Question·rio dos alunos do 4∫ ao 6∫ ano
-         -Question·rios 20: Question·rio dos alunos do 7∫ ao 9∫ ano
+         -Question√°rios 18: Question√°rio dos alunos do 3¬∫ ano
+         -Question√°rios 19: Question√°rio dos alunos do 4¬∫ ao 6¬∫ ano
+         -Question√°rios 20: Question√°rio dos alunos do 7¬∫ ao 9¬∫ ano
 
-         *OBS: Apesar de usarem a mesma estrutura base, como existem question·rios muito distintos
-         (veremos abaixo) cada tipo de question·rio exige manipulaÁ„o dos elementos da UI
+         *OBS: Apesar de usarem a mesma estrutura base, como existem question√°rios muito distintos
+         (veremos abaixo) cada tipo de question√°rio exige manipula√ß√£o dos elementos da UI
         */
         if ((questionarioId >= 1 && questionarioId <= 3) ||
             (questionarioId >= 14 && questionarioId <= 25)) {
             /**
             -----MSTECH-----
-             *Com base no usu_login do usu·ro, determina itens especÌficos do question·rios selecionado
+             *Com base no usu_login do usu√°ro, determina itens espec√≠ficos do question√°rios selecionado
             */
             if (questionarioId != 14) { aplicarBIB(); }
 
@@ -1151,12 +1153,12 @@ function selecionarQuestionario(questionarioId) {
         }
         /**
         -----MSTECH-----
-         *Question·rios do tipo 8 s„o, de fato, o acompanhamento do ProvaSP no dia da aplicaÁ„o.
-         *… atravÈs desses question·rios que o usu·rio aplicar· a prova, utilizando todas as funcionalidades
+         *Question√°rios do tipo 8 s√£o, de fato, o acompanhamento do ProvaSP no dia da aplica√ß√£o.
+         *√â atrav√©s desses question√°rios que o usu√°rio aplicar√° a prova, utilizando todas as funcionalidades
          para tal, como:
-          -Fornecimento do cÛdigo da prova e do candidato;
-          -Lista de presenÁa;
-          -ObservaÁıes;
+          -Fornecimento do c√≥digo da prova e do candidato;
+          -Lista de presen√ßa;
+          -Observa√ß√µes;
           -E etc.
         */
         else if (questionarioId == 8) {
@@ -1167,29 +1169,29 @@ function selecionarQuestionario(questionarioId) {
         }
         /**
         -----MSTECH-----
-         *Question·rios dos tipos 9, 10 e 11 s„o Fichas de registro. Seguem:
-         -Question·rio 9: Ficha de Registro - Supervisor Escolar
-         -Question·rio 10: Ficha de Registro - Diretor(a) de Escola
-         -Question·rio 11: Ficha de Registro - Coordenador(a) PedagÛgico(a)
+         *Question√°rios dos tipos 9, 10 e 11 s√£o Fichas de registro. Seguem:
+         -Question√°rio 9: Ficha de Registro - Supervisor Escolar
+         -Question√°rio 10: Ficha de Registro - Diretor(a) de Escola
+         -Question√°rio 11: Ficha de Registro - Coordenador(a) Pedag√≥gico(a)
 
-         *Ficha de registro 9 n„o È tratada? TambÈm n„o È tratada na vers„o publicada do App
+         *Ficha de registro 9 n√£o √© tratada? Tamb√©m n√£o √© tratada na vers√£o publicada do App
         */
         else if (/*questionarioId == 9 || */questionarioId == 10 || questionarioId == 11) {
-            //Question·rio 9, ficha de registro de Supervisor Escolar n„o È carregada?
-            //RESPONDIDO: … carregada, apenas n„o existe uma mensagem indicando que deva ser respondida
-            //apÛs o tÈrmino do ˙ltimo dia de aplicaÁ„o.
+            //Question√°rio 9, ficha de registro de Supervisor Escolar n√£o √© carregada?
+            //RESPONDIDO: √â carregada, apenas n√£o existe uma mensagem indicando que deva ser respondida
+            //ap√≥s o t√©rmino do √∫ltimo dia de aplica√ß√£o.
             /**
             -----MSTECH-----
-             *Alerta apenas para orientar o usu·rio sobre o preenchimento do question·rio ao fim da ProvaSP
-             *Aparentemente n„o existe forma de impedir o preenchimento antes da data correta.
+             *Alerta apenas para orientar o usu√°rio sobre o preenchimento do question√°rio ao fim da ProvaSP
+             *Aparentemente n√£o existe forma de impedir o preenchimento antes da data correta.
             */
             swal({
-                title: "AtenÁ„o!",
-                text: "Essa ficha deve ser preenchida apÛs o tÈrmino do ˙ltimo dia de aplicaÁ„o. Deseja continuar?",
+                title: "Aten√ß√£o!",
+                text: "Essa ficha deve ser preenchida ap√≥s o t√©rmino do √∫ltimo dia de aplica√ß√£o. Deseja continuar?",
                 type: "warning",
                 showCancelButton: true,
 
-                confirmButtonText: "N„o",
+                confirmButtonText: "N√£o",
                 cancelButtonText: "Sim",
                 closeOnConfirm: false
             },
@@ -1204,16 +1206,16 @@ function selecionarQuestionario(questionarioId) {
 
         /**
         -----MSTECH-----
-         *Trecho especÌfico para professores e na WEB
+         *Trecho espec√≠fico para professores e na WEB
         */
         //if (questionarioId == 23 && !mobile) {
         /**
         -----MSTECH-----
          *Idem ao alerta anterior.
-         *N„o existe forma de identificar se o professor n„o È regente do 3∫ ao 5∫ anos.
+         *N√£o existe forma de identificar se o professor n√£o √© regente do 3¬∫ ao 5¬∫ anos.
 
-         Atualizado: Removido dialog de confirmaÁ„o. Todos os docentes devem responder ao
-         question·rio em 2018
+         Atualizado: Removido dialog de confirma√ß√£o. Todos os docentes devem responder ao
+         question√°rio em 2018
         */
         //window.location = "menu.html";
         //    removerItemBackButton();
@@ -1229,11 +1231,11 @@ function selecionarQuestionario(questionarioId) {
 
 /**
 -----MSTECH-----
- *FunÁ„o Callback para requisiÁ„o local e carregamento do arquivo escolas.csv.
- *Basicamente o aquivo escolas.csv È aberto e com base no ID do question·rio, busca-se
- o nome e o cÛdigo da escola correspondente.
+ *Fun√ß√£o Callback para requisi√ß√£o local e carregamento do arquivo escolas.csv.
+ *Basicamente o aquivo escolas.csv √© aberto e com base no ID do question√°rio, busca-se
+ o nome e o c√≥digo da escola correspondente.
 
- Este mÈtodo È irrelevante (N„o È usado)
+ Este m√©todo √© irrelevante (N√£o √© usado)
  *
 */
 function recuperarCodigoENomeDaEscolaParaQuestionario(questionarioId) {
@@ -1245,15 +1247,15 @@ function recuperarCodigoENomeDaEscolaParaQuestionario(questionarioId) {
 
                 /**
                 -----MSTECH-----
-                 *Lembrando que array de question·rio È [1,2,3,8,9,10,11,23].
-                 *Aparentemente est· faltando um trecho do cÛdigo aqui para determinar o valor da chave
-                 do question·rio
-                 *No que diz respeito ao cÛdigo abaixo, o valor de esc_codigo vai ser vazio
+                 *Lembrando que array de question√°rio √© [1,2,3,8,9,10,11,23].
+                 *Aparentemente est√° faltando um trecho do c√≥digo aqui para determinar o valor da chave
+                 do question√°rio
+                 *No que diz respeito ao c√≥digo abaixo, o valor de esc_codigo vai ser vazio
 
-                 OBS: Aparentemente a vari·vel "r" n„o È utilizada
+                 OBS: Aparentemente a vari√°vel "r" n√£o √© utilizada
 
-                 Faltando complemento dos Ìndices de questionarios
-                 RESPONDIDO: MÈtodo n„o utilizado. Desconsiderado em relaÁ„o a vers„o anterior.
+                 Faltando complemento dos √≠ndices de questionarios
+                 RESPONDIDO: M√©todo n√£o utilizado. Desconsiderado em rela√ß√£o a vers√£o anterior.
                 */
                 for (var i = 0; i < questionarios.length; i++) {
                     var r = questionarios[i];
@@ -1266,13 +1268,13 @@ function recuperarCodigoENomeDaEscolaParaQuestionario(questionarioId) {
 
                 /**
                 -----MSTECH-----
-                 *Depois de atribuir o cÛdigo da escola automaticamente, atravÈs dele ser· possÌvel obter
-                 tambÈm o nome da escola.
+                 *Depois de atribuir o c√≥digo da escola automaticamente, atrav√©s dele ser√° poss√≠vel obter
+                 tamb√©m o nome da escola.
 
-                 OBS: dataEscola È o objeto gerado apÛs a leitura do arquivo escolas.csv
-                 OBS2: Perceber que o nome da escola È obtivo atravÈs do r[2], pois no arquivo CSV,
-                 separando as informaÁıes por ";", o nome da escola est· na posiÁ„o 2
-                 OBS3: Foi adiciona um "break" pois n„o h· necessidade de percorrer o cÛdigo inteiro
+                 OBS: dataEscola √© o objeto gerado ap√≥s a leitura do arquivo escolas.csv
+                 OBS2: Perceber que o nome da escola √© obtivo atrav√©s do r[2], pois no arquivo CSV,
+                 separando as informa√ß√µes por ";", o nome da escola est√° na posi√ß√£o 2
+                 OBS3: Foi adiciona um "break" pois n√£o h√° necessidade de percorrer o c√≥digo inteiro
                  depois de obter o valor buscado.
                 */
                 var l = dataEscola.length;
@@ -1293,7 +1295,7 @@ function recuperarCodigoENomeDaEscolaParaQuestionario(questionarioId) {
         }
         /**
         -----MSTECH-----
-         *N„o h· opÁıes adicionais.
+         *N√£o h√° op√ß√µes adicionais.
         */
         , ""
     );
@@ -1301,10 +1303,10 @@ function recuperarCodigoENomeDaEscolaParaQuestionario(questionarioId) {
 
 /**
 -----MSTECH-----
- *MÈtodo respons·vel por obter o conte˙do do arquivo escola.csv utilizando requisiÁ„o AJAX.
- *O mÈtodo seta a vari·vel global dataEscola.
- *Reparar que opÁıes È, na verdade, o mÈtodo de retorna da chamada a este mÈtodo. Ou seja, ao buscar
- as informaÁıes do arquivo escola.csv, recursivamente o mÈtodo da chamada È executado em seguida como
+ *M√©todo respons√°vel por obter o conte√∫do do arquivo escola.csv utilizando requisi√ß√£o AJAX.
+ *O m√©todo seta a vari√°vel global dataEscola.
+ *Reparar que op√ß√µes √©, na verdade, o m√©todo de retorna da chamada a este m√©todo. Ou seja, ao buscar
+ as informa√ß√µes do arquivo escola.csv, recursivamente o m√©todo da chamada √© executado em seguida como
  retorno.
 */
 function carregarDataEscola(callback, opcoes) {
@@ -1312,7 +1314,7 @@ function carregarDataEscola(callback, opcoes) {
         if (dataEscola.length == 0) {
             /**
             -----MSTECH-----
-             *Converte o conte˙do do arquivo CSV em um vetor cujas posiÁ„o s„o as linhas do arquivo original.
+             *Converte o conte√∫do do arquivo CSV em um vetor cujas posi√ß√£o s√£o as linhas do arquivo original.
             */
             $.ajax({
                 type: "GET",
@@ -1337,9 +1339,9 @@ function carregarDataEscola(callback, opcoes) {
 
 /**
 -----MSTECH-----
- *Popula o SELECT de nomes das escolas com base na DRE do question·rio 9
- *Reparar que "Selecione a Escola" È uma opÁ„o do select, mas sem trigger
- *Reparar ainda que se a uad_sigla for vazia, n„o mostra o select
+ *Popula o SELECT de nomes das escolas com base na DRE do question√°rio 9
+ *Reparar que "Selecione a Escola" √© uma op√ß√£o do select, mas sem trigger
+ *Reparar ainda que se a uad_sigla for vazia, n√£o mostra o select
 */
 function selecionarDRE(uad_sigla) {
     try {
@@ -1355,8 +1357,8 @@ function selecionarDRE(uad_sigla) {
 
         /**
         -----MSTECH-----
-         *Adicionando as opÁıes ao SELECT com base nas escolas obtidas no arquivo escolas.csv.
-         *S„o adicionadas apenas escolas da DRE correspondente com base na uad_sigla
+         *Adicionando as op√ß√µes ao SELECT com base nas escolas obtidas no arquivo escolas.csv.
+         *S√£o adicionadas apenas escolas da DRE correspondente com base na uad_sigla
         */
         $("#ddlEscola").selectmenu("enable");
         for (var i = 0; i < l; i++) {
@@ -1375,14 +1377,14 @@ function selecionarDRE(uad_sigla) {
 
 /**
 -----MSTECH-----
- *Esconde itens especÌficos do question·rio 8 (acompanhamento da ProvaSP) referente ‡s disciplinas de
- PortuguÍs e CiÍncias.
+ *Esconde itens espec√≠ficos do question√°rio 8 (acompanhamento da ProvaSP) referente √†s disciplinas de
+ Portugu√™s e Ci√™ncias.
 */
 function resetInstrumento() {
     try {
         /**
         -----MSTECH-----
-         *Removidos itens extras de CiÍncias em 2018
+         *Removidos itens extras de Ci√™ncias em 2018
         */
         //$("#Questionario_8_QuestoesInstrumentoPortugues,#Questionario_8_QuestoesInstrumentoCiencias").hide();
         $("#Questionario_8_QuestoesInstrumentoPortugues").hide();
@@ -1394,12 +1396,12 @@ function resetInstrumento() {
 
 /**
 -----MSTECH-----
- *MÈtodo simples de manipulaÁ„o da interface de usu·rio.
+ *M√©todo simples de manipula√ß√£o da interface de usu√°rio.
  *Marca um aluno como ausente e recalcula a quantidade de alunos presentes e ausentes.
 
- OBS: Reparar que as informaÁıes que o question·rio 8 de fato armazena de tais funcionaldiades È apenas
+ OBS: Reparar que as informa√ß√µes que o question√°rio 8 de fato armazena de tais funcionaldiades √© apenas
  PRESENTE / AUSENTE.
- Para identificar o especÌfico que faltou, deve-se verificar as informaÁıes das provas.
+ Para identificar o espec√≠fico que faltou, deve-se verificar as informa√ß√µes das provas.
 */
 function marcarDesmarcarAlunoAusente(chk) {
     try {
@@ -1422,7 +1424,7 @@ function marcarDesmarcarAlunoAusente(chk) {
 /**
 -----MSTECH-----
  *Calcula quantidade de alunos presentes e ausentes com base na quantidade de elementos do HTML
- com o estilo especÌfico para tais situaÁıes.
+ com o estilo espec√≠fico para tais situa√ß√µes.
 */
 function calcularPresentesEAusentes() {
     try {
@@ -1439,15 +1441,15 @@ function calcularPresentesEAusentes() {
 
 /**
 -----MSTECH-----
- *MÈtodo para utilizaÁ„o do plugin de leitura de BARCODE (cÛdigo de barras) para obtenÁ„o do
- cÛdigo do caderno de prova dos Alunos.
+ *M√©todo para utiliza√ß√£o do plugin de leitura de BARCODE (c√≥digo de barras) para obten√ß√£o do
+ c√≥digo do caderno de prova dos Alunos.
 */
 function escanearCodigoDeBarrasCadernoReserva(caderno) {
     cordova.plugins.barcodeScanner.scan(
         function (result) {
             /**
             -----MSTECH-----
-             *Novo mÈtodo para validaÁ„o do cÛdigo de barras dos cadernos reserva.
+             *Novo m√©todo para valida√ß√£o do c√≥digo de barras dos cadernos reserva.
             */
             validarCodigoCadernoReserva(result, caderno);
             /*
@@ -1458,15 +1460,15 @@ function escanearCodigoDeBarrasCadernoReserva(caderno) {
             */
             /**
             -----MSTECH-----
-             *A utilizaÁ„o do plugin È simples. Veja:
-             -Se mesmo com sucesso o resultado do escaneamento for uma string com n˙mero de caracteres
-             diferente de 12, haver· uma mensagem de erro.
-             -Caso contr·rio, o App far· um c·lculo matem·tico preestabelecido para verificar a
-             validade do n˙mero da prova.
-             -Estando tudo OK, o valor escaneado ser· inserido no elemento HTML correspondente da UI
+             *A utiliza√ß√£o do plugin √© simples. Veja:
+             -Se mesmo com sucesso o resultado do escaneamento for uma string com n√∫mero de caracteres
+             diferente de 12, haver√° uma mensagem de erro.
+             -Caso contr√°rio, o App far√° um c√°lculo matem√°tico preestabelecido para verificar a
+             validade do n√∫mero da prova.
+             -Estando tudo OK, o valor escaneado ser√° inserido no elemento HTML correspondente da UI
 
-             O trecho abaixo tornou-se obsoleto. A prova de 2018 ser· verificada localmente e n„o
-             mais por dÌgito verificador.
+             O trecho abaixo tornou-se obsoleto. A prova de 2018 ser√° verificada localmente e n√£o
+             mais por d√≠gito verificador.
             */
             //var valido = true;
             //var resultado = result.text;
@@ -1481,12 +1483,12 @@ function escanearCodigoDeBarrasCadernoReserva(caderno) {
 
             /**
             -----MSTECH-----
-             *Observar que o cÛdigo È mostrado como inv·lido mas, mesmo assim, adicionado ao campo
+             *Observar que o c√≥digo √© mostrado como inv√°lido mas, mesmo assim, adicionado ao campo
              correspondente.
             */
             //if (!valido) {
-            //    ProvaSP_Erro("CÛdigo inv·lido",
-            //        "Verifique se o cÛdigo informado corresponde ao apresentado na lista de presenÁa impressa.");
+            //    ProvaSP_Erro("C√≥digo inv√°lido",
+            //        "Verifique se o c√≥digo informado corresponde ao apresentado na lista de presen√ßa impressa.");
             //}
             //$("#Questionario_8_Questao_13_CodigoBarrasCadernoReserva" + caderno).val(result.text);
         },
@@ -1495,8 +1497,8 @@ function escanearCodigoDeBarrasCadernoReserva(caderno) {
         },
         /**
         -----MSTECH-----
-         *Objeto de opÁıes de escaneamento. … possÌvel configurar as opÁıes da c‚mera para melhor
-         utilizaÁ„o do plugin. Manteremos como est·.
+         *Objeto de op√ß√µes de escaneamento. √â poss√≠vel configurar as op√ß√µes da c√¢mera para melhor
+         utiliza√ß√£o do plugin. Manteremos como est√°.
         */
         {
             preferFrontCamera: false, // iOS and Android
@@ -1504,7 +1506,7 @@ function escanearCodigoDeBarrasCadernoReserva(caderno) {
             showTorchButton: true, // iOS and Android
             torchOn: false, // Android, launch with the torch switched on (if available)
             saveHistory: true, // Android, save scan history (default false)
-            prompt: "Coloque o cÛdigo no quadro de escaneamento", // Android
+            prompt: "Coloque o c√≥digo no quadro de escaneamento", // Android
             resultDisplayDuration: 500, // Android, display scanned text for X ms. 0 suppresses it entirely, default 1500
             /*
             formats : "QR_CODE,PDF_417", // default: all but PDF_417 and RSS_EXPANDED
@@ -1518,9 +1520,9 @@ function escanearCodigoDeBarrasCadernoReserva(caderno) {
 
 /**
 -----MSTECH-----
- *Agora os cadernos reservas s„o verificados localmente por meio de comparaÁ„o simples.
- *N„o existe mais necessidade de validar os cÛdigos de barras dos cadernos reservas atravÈs do
- dÌgito verificador.
+ *Agora os cadernos reservas s√£o verificados localmente por meio de compara√ß√£o simples.
+ *N√£o existe mais necessidade de validar os c√≥digos de barras dos cadernos reservas atrav√©s do
+ d√≠gito verificador.
 */
 function validarCodigoCadernoReserva(codigoEscaneado, cadernoSelecionado) {
     try {
@@ -1542,16 +1544,16 @@ function validarCodigoCadernoReserva(codigoEscaneado, cadernoSelecionado) {
                 }
                 else {
                     cs.val("");
-                    ProvaSP_Erro("CÛdigo inexistente",
-                        "Por favor verifique o cÛdigo escaneado e tente novamente.");
+                    ProvaSP_Erro("C√≥digo inexistente",
+                        "Por favor verifique o c√≥digo escaneado e tente novamente.");
                 }
                 $.mobile.loading("hide");
             },
             error: function () {
                 //Resetando valor do caderno
                 cs.val("");
-                ProvaSP_Erro("CÛdigo inv·lido",
-                    "Por favor verifique o cÛdigo de barras do caderno reserva e tente novamente.");
+                ProvaSP_Erro("C√≥digo inv√°lido",
+                    "Por favor verifique o c√≥digo de barras do caderno reserva e tente novamente.");
             }
         });
     }
@@ -1562,12 +1564,12 @@ function validarCodigoCadernoReserva(codigoEscaneado, cadernoSelecionado) {
 
 /**
 -----MSTECH-----
- *MÈtodo respons·vel por salvar localmente um question·rio pendente.
- *Primeiramente s„o setadas vari·veis especÌficas para cada tipo de question·rio.
- *Em seguida s„o obtidas as respostas do question·rio no momento do salvamento.
- *Assim que todas as informaÁıes s„o salvas localmente, o App tenta sincronizar os question·rios.
- *Caso n„o haja conex„o est·vel no momento, os dados ser„o sincronizados em outra oportunidade.
- *No inÌcio do App, por exemplo, existe uma tentativa de sincronizaÁ„o se houver notificaÁıes locais
+ *M√©todo respons√°vel por salvar localmente um question√°rio pendente.
+ *Primeiramente s√£o setadas vari√°veis espec√≠ficas para cada tipo de question√°rio.
+ *Em seguida s√£o obtidas as respostas do question√°rio no momento do salvamento.
+ *Assim que todas as informa√ß√µes s√£o salvas localmente, o App tenta sincronizar os question√°rios.
+ *Caso n√£o haja conex√£o est√°vel no momento, os dados ser√£o sincronizados em outra oportunidade.
+ *No in√≠cio do App, por exemplo, existe uma tentativa de sincroniza√ß√£o se houver notifica√ß√µes locais
  pendentes.
 */
 function salvarQuestionarioLocal() {
@@ -1590,7 +1592,7 @@ function salvarQuestionarioLocal() {
             //tur_id = parseInt(codigo.substring(0, codigo.length - 1));
         }
         else if (questionarioId_atual == 9) { //Ficha de Registro - Supervisor(a) Escolar
-            //esc_codigo: seleÁ„o
+            //esc_codigo: sele√ß√£o
             esc_codigo = $("#ddlEscola").val();
         }
         //else {
@@ -1606,12 +1608,12 @@ function salvarQuestionarioLocal() {
         /**
         -----MSTECH-----
          *Remove os itens duplicados com valor "default".
-         *ComeÁa a iteraÁ„o a partir do do segundo elemento.
-         *Elementos com resposta padr„o s„o removidos do Array de respostas.
-         *Aparentemente a exclus„o dos itens com valor default tambÈm serve para obter a resposta ˙nica
-         dos itens de m˙ltipla escolha.
+         *Come√ßa a itera√ß√£o a partir do do segundo elemento.
+         *Elementos com resposta padr√£o s√£o removidos do Array de respostas.
+         *Aparentemente a exclus√£o dos itens com valor default tamb√©m serve para obter a resposta √∫nica
+         dos itens de m√∫ltipla escolha.
 
-         *Itens n„o duplicados com valor "default" s„o tratatos no servidor
+         *Itens n√£o duplicados com valor "default" s√£o tratatos no servidor
          Analisar melhor este trecho no Debug.
         */
         var respostas = $("#Questionario" + questionarioId_atual).serializeArray();
@@ -1625,8 +1627,8 @@ function salvarQuestionarioLocal() {
 
         /**
         -----MSTECH-----
-         *Cria item no banco SQLite na tabela de QuestionarioUsuario com o question·rio atual.
-         *O question·rio armazenado ser· enviado posteriormente, quando houver conex„o.
+         *Cria item no banco SQLite na tabela de QuestionarioUsuario com o question√°rio atual.
+         *O question√°rio armazenado ser√° enviado posteriormente, quando houver conex√£o.
         */
         db.transaction(function (tx) {
             //"CREATE TABLE IF NOT EXISTS QuestionarioUsuario (QuestionarioUsuarioID INTEGER PRIMARY KEY AUTOINCREMENT, QuestionarioID INTEGER, Guid TEXT, esc_codigo TEXT, tur_id INTEGER, usu_id INTEGER, Enviado INTEGER, DataPreenchimento TEXT);" +
@@ -1635,18 +1637,18 @@ function salvarQuestionarioLocal() {
                 [questionarioId_atual, guid, esc_codigo, tur_id, usu_id, Enviado, DataPreenchimento], function (tx, results) {
                     /**
                     -----MSTECH-----
-                     *Com o ID de retorno da criaÁ„o do question·rio localmente, armazena-se cada resposta
-                     individualmente na tabela QuestionarioRespostaItem com referÍncia ao mesmo ID criado
+                     *Com o ID de retorno da cria√ß√£o do question√°rio localmente, armazena-se cada resposta
+                     individualmente na tabela QuestionarioRespostaItem com refer√™ncia ao mesmo ID criado
                      inicialmente.
                     */
                     var QuestionarioUsuarioID = results.insertId;
 
-                    console.log("INSERT na tabela QuestionarioUsuario. Retorno da inclus„o: QuestionarioUsuarioID=" + QuestionarioUsuarioID);
+                    console.log("INSERT na tabela QuestionarioUsuario. Retorno da inclus√£o: QuestionarioUsuarioID=" + QuestionarioUsuarioID);
                     for (var i = 0; i < respostas.length; i++) {
                         /**
                         -----MSTECH-----
-                         *Reparar que cada resposta È salva com o n˙mero exato do elemento HTML da UI. Isso se
-                         d· para garantir a identificaÁ„o do elemento do question·rio.
+                         *Reparar que cada resposta √© salva com o n√∫mero exato do elemento HTML da UI. Isso se
+                         d√° para garantir a identifica√ß√£o do elemento do question√°rio.
                         */
                         var numero = respostas[i].name.replace("Questionario_" + questionarioId_atual + "_Questao_", "");
                         var valor = respostas[i].value;
@@ -1671,8 +1673,8 @@ function salvarQuestionarioLocal() {
             function () {
                 /**
                 -----MSTECH-----
-                 *Sucesso em todas as inserÁıes no banco da dados local.
-                 *Ao concluir tais inserÁıes, o App tenta sincronizar as informaÁıes logo em seguida.
+                 *Sucesso em todas as inser√ß√µes no banco da dados local.
+                 *Ao concluir tais inser√ß√µes, o App tenta sincronizar as informa√ß√µes logo em seguida.
                 */
                 console.log('INSERT Questionario OK');
                 $.mobile.loading("hide");
@@ -1681,23 +1683,23 @@ function salvarQuestionarioLocal() {
 
         /**
         -----MSTECH-----
-         *Quando n„o h· conex„o, informa ao usu·rio que os dados foram salvos localmente.
+         *Quando n√£o h√° conex√£o, informa ao usu√°rio que os dados foram salvos localmente.
 
-         *OBS: Reparar que o question·rio n„o È enviado imediatamente. O App tentatr· na prÛxima vez
-         que o mÈtodo "sincronizar", executado a cada 20 segundos for invocado.
+         *OBS: Reparar que o question√°rio n√£o √© enviado imediatamente. O App tentatr√° na pr√≥xima vez
+         que o m√©todo "sincronizar", executado a cada 20 segundos for invocado.
         */
         if (navigator.connection.type == Connection.NONE || navigator.connection.type == Connection.UNKNOWN) {
-            ativarNotificacaoSincronia("N„o foi detectada uma conex„o ativa com a internet. As respostas " +
-                "deste question·rio foram salvas.\n\nSuas respostas ser„o enviadas assim que a conex„o " +
+            ativarNotificacaoSincronia("N√£o foi detectada uma conex√£o ativa com a internet. As respostas " +
+                "deste question√°rio foram salvas.\n\nSuas respostas ser√£o enviadas assim que a conex√£o " +
                 "for reestabelecida.");
         }
         else {
-            swal("Obrigado!", "As informaÁıes foram salvas com sucesso!", "success");
+            swal("Obrigado!", "As informa√ß√µes foram salvas com sucesso!", "success");
         }
 
         /**
         -----MSTECH-----
-         *Ajustando interface para ocasi„o do envio
+         *Ajustando interface para ocasi√£o do envio
         */
         removerItemBackButton();
         $(".page").hide();
@@ -1712,11 +1714,11 @@ function salvarQuestionarioLocal() {
 
 /**
 -----MSTECH-----
- *MÈtdo para adicionar ao plugin de notificaÁıes locais uma notificaÁ„o di·ria para abrir o App e enviar
- os dados n„o sincronizados quando houver conex„o.
- *Tais notificaÁıes ser„o encerradas quando as informaÁıes forem de fato sincronizadas.
- *DaÌ a necessidade do mÈtodo inicial que verifica se existem notificaÁıes locais agendadas.
- *Se existirem, existe tambÈm a necessidade de tentar sincronizar os dados.
+ *M√©tdo para adicionar ao plugin de notifica√ß√µes locais uma notifica√ß√£o di√°ria para abrir o App e enviar
+ os dados n√£o sincronizados quando houver conex√£o.
+ *Tais notifica√ß√µes ser√£o encerradas quando as informa√ß√µes forem de fato sincronizadas.
+ *Da√≠ a necessidade do m√©todo inicial que verifica se existem notifica√ß√µes locais agendadas.
+ *Se existirem, existe tamb√©m a necessidade de tentar sincronizar os dados.
 */
 function ativarNotificacaoSincronia(mensagem) {
     try {
@@ -1725,7 +1727,7 @@ function ativarNotificacaoSincronia(mensagem) {
             notificacaoSincroniaAtivada = true;
             cordova.plugins.notification.local.schedule({
                 id: 0,
-                text: "Existem informaÁıes da Prova S„o Paulo que ainda n„o foram enviadas via internet. Abra aqui e envie agora.",
+                text: "Existem informa√ß√µes da Prova S√£o Paulo que ainda n√£o foram enviadas via internet. Abra aqui e envie agora.",
                 every: "day",
             });
         }
@@ -1737,9 +1739,9 @@ function ativarNotificacaoSincronia(mensagem) {
 
 /**
 -----MSTECH-----
- *Tenta sincronizar os dados pendentes a cada 20 segundos se houver um notificaÁ„o local agendada e
- se houver conex„o com a internet.
- *Caso contr·rio ser· um mÈtodo irrelevante toda vez que for chamado, ou seja, n„o realiza aÁ„o alguma.
+ *Tenta sincronizar os dados pendentes a cada 20 segundos se houver um notifica√ß√£o local agendada e
+ se houver conex√£o com a internet.
+ *Caso contr√°rio ser√° um m√©todo irrelevante toda vez que for chamado, ou seja, n√£o realiza a√ß√£o alguma.
 */
 function sincronizarLoop() {
     try {
@@ -1755,7 +1757,7 @@ function sincronizarLoop() {
 
 /**
 -----MSTECH-----
- *Se houver conex„o, tenta sincronizar question·rios pendentes
+ *Se houver conex√£o, tenta sincronizar question√°rios pendentes
 */
 function sincronizar() {
     try {
@@ -1770,9 +1772,9 @@ function sincronizar() {
 
 /**
 -----MSTECH-----
- *Tenta enviar para o servidor Web os question·rios salvos localmente no banco da dados SQLite
- *Reparar que os question·rios n„o enviados possuem a flag "Enviado" com valor 0.
- *Reparar ainda que mesmo question·rios enviados s„o mantidos no banco da dados local.
+ *Tenta enviar para o servidor Web os question√°rios salvos localmente no banco da dados SQLite
+ *Reparar que os question√°rios n√£o enviados possuem a flag "Enviado" com valor 0.
+ *Reparar ainda que mesmo question√°rios enviados s√£o mantidos no banco da dados local.
 */
 function sincronizarQuestionarios() {
     listaQuestionariosNaoEnviados = new Array();
@@ -1788,16 +1790,16 @@ function sincronizarQuestionarios() {
                         /**
                         -----MSTECH-----
                          *Cria um objeto QuestionarioUsuario cujos atributos foram obtidos no SQLite
-                         *Adicionar o objeto criado ao vetor de question·rios n„o enviados
+                         *Adicionar o objeto criado ao vetor de question√°rios n√£o enviados
                         */
                         var qu = new QuestionarioUsuario(qur.QuestionarioUsuarioID, qur.QuestionarioID, qur.Guid, qur.esc_codigo, qur.tur_id, qur.usu_id, qur.DataPreenchimento, null);
                         listaQuestionariosNaoEnviados.push(qu);
 
                         /**
                         -----MSTECH-----
-                         *Depois de armazenar as informaÁıes base do question·rio, armazenaremos tambÈm
-                         as respostas de tal question·rio buscando-as na tabela QuestionarioRespostaItem
-                         atravÈs do ID do question·rio em quest„o.
+                         *Depois de armazenar as informa√ß√µes base do question√°rio, armazenaremos tamb√©m
+                         as respostas de tal question√°rio buscando-as na tabela QuestionarioRespostaItem
+                         atrav√©s do ID do question√°rio em quest√£o.
                         */
                         tx.executeSql('SELECT QuestionarioUsuarioID, Numero, Valor FROM QuestionarioRespostaItem WHERE QuestionarioUsuarioID=?',
                             [qur.QuestionarioUsuarioID], function (tx, qriRows) {
@@ -1806,10 +1808,10 @@ function sincronizarQuestionarios() {
 
                                 /**
                                 -----MSTECH-----
-                                 *Cria um vetor de objetos do tipo QuestionarioRespostaItem que possui n˙mero
+                                 *Cria um vetor de objetos do tipo QuestionarioRespostaItem que possui n√∫mero
                                  (para identificar o item) e valor.
-                                 *Tal vetor ser· incorporado ao objeto hashRespostas com chave de acesso igual
-                                 ao ID do question·rio em quest„o.
+                                 *Tal vetor ser√° incorporado ao objeto hashRespostas com chave de acesso igual
+                                 ao ID do question√°rio em quest√£o.
                                 */
                                 for (var i2 = 0; i2 < qriRows.rows.length; i2++) {
                                     var itemRow = qriRows.rows.item(i2);
@@ -1831,10 +1833,10 @@ function sincronizarQuestionarios() {
                     /**
                     -----MSTECH-----
                      *Portanto, antes de sincronizar com a Web, teremos:
-                     -Um vetor listaQuestionariosNaoEnviados: contÈm os objetos de informaÁıes base de
-                     cada question·rio salvo localmente e ainda n„o enviado;
-                     -Um objeto hashRespostas: contÈm um conjunto de objetos com as respostas dos
-                     question·rios organizadas pelo ID de cada question·rio.
+                     -Um vetor listaQuestionariosNaoEnviados: cont√©m os objetos de informa√ß√µes base de
+                     cada question√°rio salvo localmente e ainda n√£o enviado;
+                     -Um objeto hashRespostas: cont√©m um conjunto de objetos com as respostas dos
+                     question√°rios organizadas pelo ID de cada question√°rio.
                     */
                 }
                 catch (error) {
@@ -1853,16 +1855,16 @@ function sincronizarQuestionarios() {
             try {
                 /**
                 -----MSTECH-----
-                 *Callback de sucesso ao obter informaÁıes do SQLite
-                 *Este mÈtodo È respons·vel por incorporar o objeto de respostas ao vetor de question·rios
-                 criando um novo vetor, mais completo, com todas as informaÁıes base do question·rio e
-                 todas as respostas do usu·rio ao mesmo question·rio.
+                 *Callback de sucesso ao obter informa√ß√µes do SQLite
+                 *Este m√©todo √© respons√°vel por incorporar o objeto de respostas ao vetor de question√°rios
+                 criando um novo vetor, mais completo, com todas as informa√ß√µes base do question√°rio e
+                 todas as respostas do usu√°rio ao mesmo question√°rio.
                 */
                 if (listaQuestionariosNaoEnviados.length > 0) {
                     /**
                     -----MSTECH-----
                      *Adiciona a cada objeto QuestionarioUsuario presente no vetor o conjunto de respostas
-                     equivalente. Em seguida converte o objeto JSON correspondente em uma string serializ·vel.
+                     equivalente. Em seguida converte o objeto JSON correspondente em uma string serializ√°vel.
                     */
                     for (var i = 0; i < listaQuestionariosNaoEnviados.length; i++) {
                         var QuestionarioUsuarioID = listaQuestionariosNaoEnviados[i].QuestionarioUsuarioID;
@@ -1873,14 +1875,14 @@ function sincronizarQuestionarios() {
 
                     /**
                     -----MSTECH-----
-                     *Chamada POST ao servidor do ProvaSP. Os question·rios ser„o salvos no banco da dados central
+                     *Chamada POST ao servidor do ProvaSP. Os question√°rios ser√£o salvos no banco da dados central
                     */
                     $.post(urlBackEnd + "api/SincronizarQuestionario", { json: jsonListaQuestionariosNaoEnviados })
                         .done(function (data) {
                             /**
                             -----MSTECH-----
-                             *Em caso de sucesso no envio, exclui a notificaÁ„o di·ria lembrete de
-                             sincronizaÁ„o e atualiza no banco de dados os question·rios enviados setando
+                             *Em caso de sucesso no envio, exclui a notifica√ß√£o di√°ria lembrete de
+                             sincroniza√ß√£o e atualiza no banco de dados os question√°rios enviados setando
                              a flag "Enviado" para 1
                             */
                             if (data.length == listaQuestionariosNaoEnviados.length) {
@@ -1891,15 +1893,15 @@ function sincronizarQuestionarios() {
                         .fail(function (xhr, status, error) {
                             /**
                             -----MSTECH-----
-                             *N„o sendo possÌvel enviar os quesiton·rios, ativa a notificaÁ„o local de
-                             lembrete di·ria silenciosamente se ainda n„o estiver habilitada e mostra o
-                             erro em quest„o.
+                             *N√£o sendo poss√≠vel enviar os quesiton√°rios, ativa a notifica√ß√£o local de
+                             lembrete di√°ria silenciosamente se ainda n√£o estiver habilitada e mostra o
+                             erro em quest√£o.
                             */
                             if (!notificacaoSincroniaAtivada) {
                                 ativarNotificacaoSincronia("");
                             }
-                            ProvaSP_Erro("Falha de comunicaÁ„o",
-                                "N„o foi possÌvel sincronizar as informaÁıes com o servidor. (" +
+                            ProvaSP_Erro("Falha de comunica√ß√£o",
+                                "N√£o foi poss√≠vel sincronizar as informa√ß√µes com o servidor. (" +
                                 status + ") " + error);
                         });
                 }
@@ -1913,8 +1915,8 @@ function sincronizarQuestionarios() {
 
 /**
 -----MSTECH-----
- *Atualiza todas as flags "Enviado" dos question·rios sincronizados para 1.
- *Isso garante que o ProvaSP n„o tente enviar tais question·rios novamente.
+ *Atualiza todas as flags "Enviado" dos question√°rios sincronizados para 1.
+ *Isso garante que o ProvaSP n√£o tente enviar tais question√°rios novamente.
 */
 function atualizarGuidsComoEnviados(data) {
     try {
@@ -1936,7 +1938,7 @@ function atualizarGuidsComoEnviados(data) {
                 ProvaSP_Erro("Alerta", "Transaction error: " + error.message);
             },
             function () {
-                console.log("Question·rios sincronizados com sucesso");
+                console.log("Question√°rios sincronizados com sucesso");
             });
     }
     catch (error) {
@@ -1946,14 +1948,14 @@ function atualizarGuidsComoEnviados(data) {
 
 /**
 -----MSTECH-----
- *ValidaÁıes para permitir utilizaÁ„o de cardenos reservas.
- *Aparentemente s„o 4 cadernos reservas para cada aplicaÁ„o.
+ *Valida√ß√µes para permitir utiliza√ß√£o de cardenos reservas.
+ *Aparentemente s√£o 4 cadernos reservas para cada aplica√ß√£o.
  *Os cadernos reservas resolvem problemas como: alunos transferidos de turmas ou escola, problemas
- nas informaÁıe geradas do sistema central e etc.
- *Assim sendo, o aluno recebe o cardeno reserva que faz a prova associando seu EOL ao cÛdigo da prova.
+ nas informa√ß√µe geradas do sistema central e etc.
+ *Assim sendo, o aluno recebe o cardeno reserva que faz a prova associando seu EOL ao c√≥digo da prova.
 
- *N„o h· mais necessidade de validar os cÛdigos das provas reservas atravÈs de dÌgito validador
- em 2018. Sendo assim, implementa-se a validaÁ„o por verificaÁ„o abaixo.
+ *N√£o h√° mais necessidade de validar os c√≥digos das provas reservas atrav√©s de d√≠gito validador
+ em 2018. Sendo assim, implementa-se a valida√ß√£o por verifica√ß√£o abaixo.
 */
 function validarCadernosReservas() {
     try {
@@ -1969,11 +1971,11 @@ function validarCadernosReservas() {
         var vetorCodigosDeBarra = codigosDeBarraDisponiveis.split("\n");
         /**
         -----MSTECH-----
-         *Percorre as informaÁıes dos cadernos reservas validando o cÛdigo da prova e fazendo
-         verificaÁ„o simples do cÛdigo EOL do aluno (n„o valida).
+         *Percorre as informa√ß√µes dos cadernos reservas validando o c√≥digo da prova e fazendo
+         verifica√ß√£o simples do c√≥digo EOL do aluno (n√£o valida).
 
-         OBS: Reparar que o preenchimento das informaÁıes dos cadernos reservas nada mais È do
-         que um conjunto de itens do question·rio 8.
+         OBS: Reparar que o preenchimento das informa√ß√µes dos cadernos reservas nada mais √© do
+         que um conjunto de itens do question√°rio 8.
         */
         for (var i = 1; i <= 4; i++) {
             var valorCodigoBarras = $("#Questionario_8_Questao_13_CodigoBarrasCadernoReserva" + i).val();
@@ -1981,20 +1983,20 @@ function validarCadernosReservas() {
 
             /**
             -----MSTECH-----
-             *A validaÁ„o sÛ deve ser feita se o caderno foi utilizado, ou seja, os dados
+             *A valida√ß√£o s√≥ deve ser feita se o caderno foi utilizado, ou seja, os dados
              foram preenchidos.
 
-             OBS: Primeiro valida-se o cÛdigo da prova, em seguido o cÛdigo do aluno
+             OBS: Primeiro valida-se o c√≥digo da prova, em seguido o c√≥digo do aluno
             */
             if (valorCodigoBarras != "" || codigoEolAluno != "") {
                 if (vetorCodigosDeBarra.indexOf(valorCodigoBarras) == -1) {
                     //if (!validarCodigoBarrasCadernoReserva(caderno, valorCodigoBarras)) {
-                    ProvaSP_Erro("Erro", "O cÛdigo de barras do caderno reserva " + i + " È inv·lido!");
+                    ProvaSP_Erro("Erro", "O c√≥digo de barras do caderno reserva " + i + " √© inv√°lido!");
                     return false;
                 }
 
                 if (codigoEolAluno == "" || !$.isNumeric(codigoEolAluno)) {
-                    ProvaSP_Erro("Erro", "O CÛdigo EOL informado para o caderno reserva " + i + " È inv·lido!");
+                    ProvaSP_Erro("Erro", "O C√≥digo EOL informado para o caderno reserva " + i + " √© inv√°lido!");
                     return false;
                 }
             }
@@ -2009,11 +2011,11 @@ function validarCadernosReservas() {
 
 /**
 -----MSTECH-----
- *ValidaÁ„o do cÛdigo de barras da prova.
- *Observar que È exatamente a mesma validaÁ„o das provas regulares aplicadas.
+ *Valida√ß√£o do c√≥digo de barras da prova.
+ *Observar que √© exatamente a mesma valida√ß√£o das provas regulares aplicadas.
 
- Este cÛdigo È irrelevante para a ediÁ„o de 2018, tendo em vista que a validaÁ„o dos cadernos
- reservas n„o È mais feito atravÈs de dÌgito validador.
+ Este c√≥digo √© irrelevante para a edi√ß√£o de 2018, tendo em vista que a valida√ß√£o dos cadernos
+ reservas n√£o √© mais feito atrav√©s de d√≠gito validador.
 */
 //function validarCodigoBarrasCadernoReserva(caderno, valorCodigoBarras) {
 //    try {
@@ -2036,12 +2038,12 @@ function validarCadernosReservas() {
 
 /**
 -----MSTECH-----
- *Este mÈtodo È respons·vel por enviar o question·rio quando o usu·rio utiliza o ProvaSP na Web.
- *Vimos que para enviar o question·rio usando o mobile App, salvamos o mesmo e tentamos enviar. Se
- n„o for possÌvel, o question·rio encontra-se salva localmente e uma notificaÁ„o ser· enviada
+ *Este m√©todo √© respons√°vel por enviar o question√°rio quando o usu√°rio utiliza o ProvaSP na Web.
+ *Vimos que para enviar o question√°rio usando o mobile App, salvamos o mesmo e tentamos enviar. Se
+ n√£o for poss√≠vel, o question√°rio encontra-se salva localmente e uma notifica√ß√£o ser√° enviada
  diariamente informando sobre a possibilidade e envio.
 
- OBS: Veremos que o evento do bot„o "CONCLUIR QUESTION¡RIO" filtra o envio da seguinte maneira:
+ OBS: Veremos que o evento do bot√£o "CONCLUIR QUESTION√ÅRIO" filtra o envio da seguinte maneira:
  -Mobile App: salvarQuestionarioLocal
  -Web App: enviarQuestionarioOnline
 */
@@ -2049,10 +2051,10 @@ function enviarQuestionarioOnline() {
     try {
         /**
         -----MSTECH-----
-         *Os trechos iniciais abaixo s„o EXATAMENTE iguais ‡s validaÁıes feitas em
+         *Os trechos iniciais abaixo s√£o EXATAMENTE iguais √†s valida√ß√µes feitas em
          salvarQuestionarioLocal.
-         *PoderÌamos lapidar o cÛdigo aqui melhorando a orientaÁ„o a objeto. N„o o faremos pela
-         quest„o do tempo e testes.
+         *Poder√≠amos lapidar o c√≥digo aqui melhorando a orienta√ß√£o a objeto. N√£o o faremos pela
+         quest√£o do tempo e testes.
         */
         var esc_codigo = "";
         var tur_id = "";
@@ -2068,15 +2070,15 @@ function enviarQuestionarioOnline() {
             //tur_id = parseInt(codigo.substring(0, codigo.length - 1));
         }
         else if (questionarioId_atual == 9) { //Ficha de Registro - Supervisor(a) Escolar
-            //esc_codigo: seleÁ„o
+            //esc_codigo: sele√ß√£o
             esc_codigo = $("#ddlEscola").val();
         }
         else {
             /**
             -----MSTECH-----
-              Aqui questionarioId_atual n„o retorna esc_codigo. esc_codigo ser· ""
-              RESPONDIDO: Este trecho n„o funciona na vers„o atual, tendo em vista que o vetor
-              questionarios n„o possui nada alÈm dos Ìndices dos question·rios.
+              Aqui questionarioId_atual n√£o retorna esc_codigo. esc_codigo ser√° ""
+              RESPONDIDO: Este trecho n√£o funciona na vers√£o atual, tendo em vista que o vetor
+              questionarios n√£o possui nada al√©m dos √≠ndices dos question√°rios.
             */
             //for (var i = 0; i < questionarios.length; i++) {
             //    var questionationarioID = questionarios[i].split("=")[0];
@@ -2088,7 +2090,7 @@ function enviarQuestionarioOnline() {
         }
 
         //Remove os itens duplicados com valor "default".
-        //Itens n„o duplicados com valor "default" s„o tratatos no servidor
+        //Itens n√£o duplicados com valor "default" s√£o tratatos no servidor
         var respostas = $("#Questionario" + questionarioId_atual).serializeArray();
         for (var i = 0; i < respostas.length; i++) {
             if (i > 0) {
@@ -2100,17 +2102,17 @@ function enviarQuestionarioOnline() {
 
         /**
         -----MSTECH-----
-         *A partir daqui, diferentemente da vers„o Mobile App em que obtemos N question·rios salvos
-         no banco local para sincronizar, na vers„o Web tentaremos sincronizar apenas o question·rio
+         *A partir daqui, diferentemente da vers√£o Mobile App em que obtemos N question√°rios salvos
+         no banco local para sincronizar, na vers√£o Web tentaremos sincronizar apenas o question√°rio
          atual.
 
-         O fluxo do cÛdigo se d· assim:
-         -Montagem dos dados base do question·rio;
-         -ObtenÁ„o das respostas ao itens;
-         -Reparar que existe apenas um objeto de question·rio, mesmo assim, para atender ‡ estrutura
-         de envio ‡ Web, teremos um vetor de UMA posiÁ„o com o question·rio atual.
-         -O vetor de objetos de question·rio (no caso, apenas 1 objeto) ser· transformado em string
-         e enviado ‡ Web pelo mesmo POST que tenta enviar na vers„o Mobile App.
+         O fluxo do c√≥digo se d√° assim:
+         -Montagem dos dados base do question√°rio;
+         -Obten√ß√£o das respostas ao itens;
+         -Reparar que existe apenas um objeto de question√°rio, mesmo assim, para atender √† estrutura
+         de envio √† Web, teremos um vetor de UMA posi√ß√£o com o question√°rio atual.
+         -O vetor de objetos de question√°rio (no caso, apenas 1 objeto) ser√° transformado em string
+         e enviado √† Web pelo mesmo POST que tenta enviar na vers√£o Mobile App.
         */
         var qu = new QuestionarioUsuario();
         qu.QuestionarioUsuarioID = 0;
@@ -2137,14 +2139,14 @@ function enviarQuestionarioOnline() {
 
         /**
         -----MSTECH-----
-         *Post de envio do question·rio respondido.
+         *Post de envio do question√°rio respondido.
 
-         OBS: Reparar que na Web, nada alÈm de ajustes de interface È feito, por n„o haver tratamentos
+         OBS: Reparar que na Web, nada al√©m de ajustes de interface √© feito, por n√£o haver tratamentos
          adicionais.
         */
         $.post(urlBackEnd + "api/SincronizarQuestionario", { json: jsonListaQuestionariosNaoEnviados })
             .done(function (data) {
-                swal("Obrigado!", "As informaÁıes foram enviadas com sucesso!", "success");
+                swal("Obrigado!", "As informa√ß√µes foram enviadas com sucesso!", "success");
                 $(".page").hide();
                 $("#menu-page").show();
                 $.mobile.loading("hide");
@@ -2160,8 +2162,8 @@ function enviarQuestionarioOnline() {
 
 /**
 -----MSTECH-----
- *Bot„o que, de fato, conclui o envio dos question·rios.
- *A aÁ„o final deste bot„o È diferente se o ProvaSP for usado no dispositivo Mobile ou na Web
+ *Bot√£o que, de fato, conclui o envio dos question√°rios.
+ *A a√ß√£o final deste bot√£o √© diferente se o ProvaSP for usado no dispositivo Mobile ou na Web
 */
 function btnConcluirQuestionario() {
     try {
@@ -2169,14 +2171,14 @@ function btnConcluirQuestionario() {
         if (ObjetoDeValidacao.validador) {
             /**
             -----MSTECH-----
-             *Abaixo duas validaÁıes simples para o question·rio do tipo Controle da Prova. Se alguma
-             das situaÁıes abaixo ocorrer, o mÈtodo È interrompido junto a uma mensagem de erro.
+             *Abaixo duas valida√ß√µes simples para o question√°rio do tipo Controle da Prova. Se alguma
+             das situa√ß√µes abaixo ocorrer, o m√©todo √© interrompido junto a uma mensagem de erro.
 
-             *1- Se existem problemas na validaÁ„o de cadernos reservas quando utilizados;
+             *1- Se existem problemas na valida√ß√£o de cadernos reservas quando utilizados;
              *2- Se nenhuma disciplina for selecionada.
             */
             if (questionarioId_atual == 8) { //Controle/Acompanhamento da prova
-                //Valida o(s) cÛdigo(s) de barras informado(s), e o(s) cÛdigo(s) EOL do(s) caderno(s) reserva(s)
+                //Valida o(s) c√≥digo(s) de barras informado(s), e o(s) c√≥digo(s) EOL do(s) caderno(s) reserva(s)
                 if (!validarCadernosReservas()) {
                     return;
                 }
@@ -2184,26 +2186,26 @@ function btnConcluirQuestionario() {
                 if (!($("#Questionario_8_Questao_3_Portugues").attr('checked') == "checked" ||
                     $("#Questionario_8_Questao_3_Matematica").attr('checked') == "checked" ||
                     $("#Questionario_8_Questao_3_Ciencias").attr('checked') == "checked")) {
-                    sweetAlert("Disciplina n„o informada", "Por gentileza selecione a disciplina antes de concluir.", "error");
+                    sweetAlert("Disciplina n√£o informada", "Por gentileza selecione a disciplina antes de concluir.", "error");
                     return;
                 }
             }
 
             /**
             -----MSTECH-----
-             *Abaixo uma validaÁ„o simples para o question·rio do tipo Ficha de registro - Supervisor escolar
-             *… obrigatÛrio, para o tipo 9 de question·rio, informar a escola
+             *Abaixo uma valida√ß√£o simples para o question√°rio do tipo Ficha de registro - Supervisor escolar
+             *√â obrigat√≥rio, para o tipo 9 de question√°rio, informar a escola
             */
             if (questionarioId_atual == 9) {//Ficha de Registro - Aplicador(a) de Prova
                 if ($("#ddlEscola").val() == "") {
-                    ProvaSP_Erro("Escola n„o informada", "Por gentileza selecione a Escola antes de concluir.");
+                    ProvaSP_Erro("Escola n√£o informada", "Por gentileza selecione a Escola antes de concluir.");
                     return;
                 }
             }
 
             /**
             -----MSTECH-----
-             *Dispara um loading antes de invocar o mÈtodo de envio do Mobile App ou do ProvaSP Web.
+             *Dispara um loading antes de invocar o m√©todo de envio do Mobile App ou do ProvaSP Web.
             */
             $.mobile.loading("show", {
                 text: "Aguarde...", textVisible: true, theme: "a", html: ""
@@ -2216,24 +2218,24 @@ function btnConcluirQuestionario() {
             var itemDeValidacao = ObjetoDeValidacao.item;
 
             if (itemDeValidacao == "") {
-                //Erro genÈrico
-                swalMsg.titulo = "Dados inv·lidos";
+                //Erro gen√©rico
+                swalMsg.titulo = "Dados inv√°lidos";
                 swalMsg.texto = "Ocorreu um erro ao validar os dados. Por favor tente novamente mais tarde.";
             }
             else if (itemDeValidacao == "15_AB") {
-                //Erro de item 15 do question·rio do Diretor
+                //Erro de item 15 do question√°rio do Diretor
                 swalMsg.titulo = "Item 15";
                 swalMsg.texto = "A soma dos elementos do Item 15 tem que ser, obrigatoriamente, 100%.";
             }
             else {
                 if (Usuario.Coordenador) {
-                    //Erro Coordenador, tendo em vista que os itens podem ter Ìndices diferentes
-                    swalMsg.titulo = "Item inv·lido";
-                    swalMsg.texto = "Por favor verifique os itens com entrada numÈrica e tente novamente.";
+                    //Erro Coordenador, tendo em vista que os itens podem ter √≠ndices diferentes
+                    swalMsg.titulo = "Item inv√°lido";
+                    swalMsg.texto = "Por favor verifique os itens com entrada num√©rica e tente novamente.";
                 }
                 else {
-                    //Erro em item especÌfico
-                    swalMsg.titulo = "Item " + itemDeValidacao + " inv·lido";
+                    //Erro em item espec√≠fico
+                    swalMsg.titulo = "Item " + itemDeValidacao + " inv√°lido";
                     swalMsg.texto = "Por favor verifique o item " + itemDeValidacao + " e tente novamente.";
                 }
             }
@@ -2247,16 +2249,16 @@ function btnConcluirQuestionario() {
 
 /**
 -----MSTECH-----
- *Novo mÈtodo para validaÁ„o dos itens com input number nos question·rios.
+ *Novo m√©todo para valida√ß√£o dos itens com input number nos question√°rios.
 */
 function validarInputs() {
     try {
         /*
          * -----AMCOM-----
-         * Na vers„o 2k19 o question·rio de diretor n„o ter· questıes numÈricas
+         * Na vers√£o 2k19 o question√°rio de diretor n√£o ter√° quest√µes num√©ricas
          */
         /*if (questionarioId_atual == 24) { //DIRETOR
-            //Items fixados no aplicativo para acesso tambÈm Offline
+            //Items fixados no aplicativo para acesso tamb√©m Offline
             var inputsDiretor = [
                 { qtID: "3", max: 50 }, { qtID: "4", max: 50 }, { qtID: "6", max: 50 },
                 { qtID: "15_A", max: 100 }, { qtID: "15_B", max: 100 }
@@ -2264,7 +2266,7 @@ function validarInputs() {
             var qt15A = parseInt($("#Questionario_24_Questao_15_A").val());
             var qt15B = parseInt($("#Questionario_24_Questao_15_B").val());
 
-            //ValidaÁ„o simples de todos os itens do question·rio de diretor
+            //Valida√ß√£o simples de todos os itens do question√°rio de diretor
             for (var i = 0; i < inputsDiretor.length; i++) {
                 var itemDiretorAtual = $("#Questionario_24_Questao_" + inputsDiretor[i].qtID).val();
 
@@ -2278,20 +2280,20 @@ function validarInputs() {
                 }
             }
 
-            //ValidaÁ„o especÌfica do item 15. Õcones A e B n„o podem ultrapassar 100% somados.
+            //Valida√ß√£o espec√≠fica do item 15. √çcones A e B n√£o podem ultrapassar 100% somados.
             if (qt15A + qt15B != 100) {
                 return { validador: false, item: "15_AB" }
             }
             return { validador: true, item: "" }
         }*/
         if (questionarioId_atual == 3) { //COORDENADOR
-            //Items fixados no aplicativo para acesso tambÈm Offline
+            //Items fixados no aplicativo para acesso tamb√©m Offline
             var inputsCoordenador = [
                 { qtID: "4", min: 0, max: 50 }, { qtID: "5", min: 0, max: 50 },
                 { qtID: "6", min: 0, max: 50 }, { qtID: "8", min: 0, max: 50 }
             ];
 
-            //ValidaÁ„o simples de todos os itens do question·rio de coordenador
+            //Valida√ß√£o simples de todos os itens do question√°rio de coordenador
             for (var j = 0; j < inputsCoordenador.length; j++) {
                 var itemCoordenadorAtual = $("#Questionario_3_Questao_" + inputsCoordenador[j].qtID).val();
 
@@ -2319,23 +2321,23 @@ function validarInputs() {
 
 /**
 -----MSTECH-----
- *Fim do MÛdulo 3 - Question·rios
+ *Fim do M√≥dulo 3 - Question√°rios
 */
 
 /**
 -----MSTECH-----
- *MÛdulo 4 - ManipulaÁ„o da UI
- *Este mÛdulo È formado por apenas 2 mÈtodos. No entanto, tais mÈtodo s„o absurdamente grandes e
- difÌceis de rastrear. Portante, adicionaremos submÛdulos sempre que necess·rio.
+ *M√≥dulo 4 - Manipula√ß√£o da UI
+ *Este m√≥dulo √© formado por apenas 2 m√©todos. No entanto, tais m√©todo s√£o absurdamente grandes e
+ dif√≠ceis de rastrear. Portante, adicionaremos subm√≥dulos sempre que necess√°rio.
 */
 
 /**
 -----MSTECH-----
- MÛdulo 4.1: Controles na ocasi„o de verificar os resultados da prova
+ M√≥dulo 4.1: Controles na ocasi√£o de verificar os resultados da prova
 
- *Este mÈtodo ir· tratar os filtros para obtenÁ„o dos resultados da ProvaSP.
- *Este mÈtodo È disparado em diversos pontos do cÛdigo. Portante ele serve para
- organizar os elements de seleÁ„o dos resultados de acordo com as escolhas do usu·rio.
+ *Este m√©todo ir√° tratar os filtros para obten√ß√£o dos resultados da ProvaSP.
+ *Este m√©todo √© disparado em diversos pontos do c√≥digo. Portante ele serve para
+ organizar os elements de sele√ß√£o dos resultados de acordo com as escolhas do usu√°rio.
  *
 */
 function resultado_configurarControles() {
@@ -2357,10 +2359,10 @@ function resultado_configurarControles() {
 
         /**
         -----MSTECH-----
-         *Em seguida s„o obtidos todos os elements de DREs, Escolsas, Turmas e Alunos selecionados pelo
-         usu·rio em forma de checkbox.
+         *Em seguida s√£o obtidos todos os elements de DREs, Escolsas, Turmas e Alunos selecionados pelo
+         usu√°rio em forma de checkbox.
          *Portanto teremos:
-         -NÌvel, ediÁ„o, ·rea de conhecimento e ano: Valores ˙nicos;
+         -N√≠vel, edi√ß√£o, √°rea de conhecimento e ano: Valores √∫nicos;
          -DREs, Escolas, Turmas e Alunos: Vetores.
          *
         */
@@ -2371,11 +2373,11 @@ function resultado_configurarControles() {
 
         /**
         -----MSTECH-----
-         *Aqui todos os elementos de escolha para o resultado da ProvaSP s„o desabilitados e
-         resetados, com exceÁ„o do primeiro elemento: nÌvel.
+         *Aqui todos os elementos de escolha para o resultado da ProvaSP s√£o desabilitados e
+         resetados, com exce√ß√£o do primeiro elemento: n√≠vel.
 
          *OBS: Reparar que a div que de fato comporta os resultados (divResultadoApresentacao)
-         tambÈm È escondida neste momento
+         tamb√©m √© escondida neste momento
         */
         $("#ddlResultadoEdicao").selectmenu("disable");
         $("#ddlResultadoEdicao").selectmenu("refresh");
@@ -2399,8 +2401,8 @@ function resultado_configurarControles() {
 
         /**
         -----MSTECH-----
-         *Se a ediÁ„o selecionada È um ediÁ„o com turmas amostrais de 2017 (ediÁıes mais recentes),  o nÌvel
-         selecionado dos resultados È ESCOLA e os anos s„o 4∫, 6∫ ou 8∫, reseta o select de ano e esconde
+         *Se a edi√ß√£o selecionada √© um edi√ß√£o com turmas amostrais de 2017 (edi√ß√µes mais recentes),  o n√≠vel
+         selecionado dos resultados √© ESCOLA e os anos s√£o 4¬∫, 6¬∫ ou 8¬∫, reseta o select de ano e esconde
          tais turmas.
         */
         if (edicoesComTurmasAmostrais.indexOf(edicao) >= 0 && edicao == 2017) {
@@ -2414,7 +2416,7 @@ function resultado_configurarControles() {
                 $("#ddlResultadoAnoItem_Ano8").hide();
             }
         }
-        //MSTECH - Voltando a mostrar 3∫ Ano
+        //MSTECH - Voltando a mostrar 3¬∫ Ano
         //        else if (edicoesComTurmasAmostrais.indexOf(edicao) >= 0 && edicao == 2018) {
         //            if (ano == "3") {
         //                $("#ddlResultadoAno").val("");
@@ -2425,8 +2427,8 @@ function resultado_configurarControles() {
 
         /**
         -----MSTECH-----
-         *Sendo ENTURMACAO_ATUAL a ediÁ„o escolhida junto ao 3∫ ano, deve-se resetar o select
-         e esconder a opÁ„o do terceiro ano.
+         *Sendo ENTURMACAO_ATUAL a edi√ß√£o escolhida junto ao 3¬∫ ano, deve-se resetar o select
+         e esconder a op√ß√£o do terceiro ano.
         */
         if (edicao == "ENTURMACAO_ATUAL") {
             if (ano == "3") {
@@ -2438,15 +2440,15 @@ function resultado_configurarControles() {
 
         /**
         -----MSTECH-----
-         *As validaÁıes abaixo verificam se o bot„o para mostrar os resultados deve ser habilitado de
+         *As valida√ß√µes abaixo verificam se o bot√£o para mostrar os resultados deve ser habilitado de
          acordo com as escolhas.
-         *Essa validaÁ„o È necess·ria pois os nÌvel de escolha necess·rios para verificar resultados das
-         provas varia de um tipo para outro de usu·rio ou mesmo de um nÌvel selecionado para o outro.
+         *Essa valida√ß√£o √© necess√°ria pois os n√≠vel de escolha necess√°rios para verificar resultados das
+         provas varia de um tipo para outro de usu√°rio ou mesmo de um n√≠vel selecionado para o outro.
 
-         -POR EXEMPLO (usu·rio): Um usu·rio do tipo "nÌvel SME" (permissıes totais do sistema)
-         ter· acesso ao possibilidades de resultados muito mais abrangestes que um docente.
-         -POR EXEMPLO (nÌvel): Em nÌvel SME (opÁ„o do select), o usu·rio verifica comparativos gerais
-         entre DRES nas ProvaSP. Ao selecionar TURMA, o usu·rio poder· ver o resultado de um aluno especÌfico.
+         -POR EXEMPLO (usu√°rio): Um usu√°rio do tipo "n√≠vel SME" (permiss√µes totais do sistema)
+         ter√° acesso ao possibilidades de resultados muito mais abrangestes que um docente.
+         -POR EXEMPLO (n√≠vel): Em n√≠vel SME (op√ß√£o do select), o usu√°rio verifica comparativos gerais
+         entre DRES nas ProvaSP. Ao selecionar TURMA, o usu√°rio poder√° ver o resultado de um aluno espec√≠fico.
         */
         if (nivel == "SME") {
             //MSTECH - Melhorando desempenho do App na troca de filtros
@@ -2456,9 +2458,9 @@ function resultado_configurarControles() {
 
             /**
             -----MSTECH-----
-             *Em nÌvel SME È necess·rio pelo menos:
-             -Selecionar uma ediÁ„o;
-             -Selecionar uma ·rea de conhecimento;
+             *Em n√≠vel SME √© necess√°rio pelo menos:
+             -Selecionar uma edi√ß√£o;
+             -Selecionar uma √°rea de conhecimento;
              -Selecionar um ano.
             */
             if (edicao != "" && areaConhecimento != "" && ano != "") {
@@ -2477,7 +2479,7 @@ function resultado_configurarControles() {
             }
             /**
             -----MSTECH-----
-             *Em nÌvel DRE È necess·rio pelo menos:
+             *Em n√≠vel DRE √© necess√°rio pelo menos:
              -Idem SME
              -Selecionar N DREs em forma de checkbox.
             */
@@ -2490,7 +2492,7 @@ function resultado_configurarControles() {
                 (ano != "" || cicloAprendizagem != "") && dres.length > 0 && escolas.length > 0) {
                 /**
                 -----MSTECH-----
-                 *Em nÌvel ESCOLA È necess·rio pelo menos:
+                 *Em n√≠vel ESCOLA √© necess√°rio pelo menos:
                  -Idem DRE
                  -Selecionar N Escolas em forma de checkbox.
                 */
@@ -2502,7 +2504,7 @@ function resultado_configurarControles() {
             ano != "" && dres.length > 0 && escolas.length > 0 && turmas.length > 0) {
             /**
             -----MSTECH-----
-             *Em nÌvel TURMA È necess·rio pelo menos:
+             *Em n√≠vel TURMA √© necess√°rio pelo menos:
              -Idem ESCOLA
              -Selecionar N Turmas em forma de checkbox.
             */
@@ -2513,7 +2515,7 @@ function resultado_configurarControles() {
             ano != "" && dres.length > 0 && escolas.length > 0 && alunos.length > 0) {
             /**
             -----MSTECH-----
-             *Em nÌvel ALUNO È necess·rio pelo menos:
+             *Em n√≠vel ALUNO √© necess√°rio pelo menos:
              -Idem TURMA
              -Selecionar N Alunos em forma de checkbox.
             */
@@ -2522,17 +2524,17 @@ function resultado_configurarControles() {
 
         /**
         -----MSTECH-----
-         *SELE«√O NÕVEL (ATUALIZA«√O DO TEXTO DA OPTION TURMA)
-         *Ao selecionar a edicao HISTORICO tendo selecionado anteriormente a opÁ„o TURMA, o App
+         *SELE√á√ÉO N√çVEL (ATUALIZA√á√ÉO DO TEXTO DA OPTION TURMA)
+         *Ao selecionar a edicao HISTORICO tendo selecionado anteriormente a op√ß√£o TURMA, o App
          mostra um avisa sobre a impossibilidade de mostrar os detalhes da prova por turma detalhando
          o desempenho dos alunos.
-         *Muda-se inclusive o texto do SELECT, caso a situaÁ„o acima aconteÁa.
+         *Muda-se inclusive o texto do SELECT, caso a situa√ß√£o acima aconte√ßa.
 
-         OBS: Muito provavelmente esta informaÁ„o n„o existe ou n„o È trivial obtÍ-la
+         OBS: Muito provavelmente esta informa√ß√£o n√£o existe ou n√£o √© trivial obt√™-la
         */
         if (edicao == "HISTORICO") {
             if (nivel == "TURMA" && $("#ddlResultadoNivel_optionTurma").html() == "Turma detalhando Alunos") {
-                swal("Detalhamento de alunos", "O detalhamento de alunos por turma n„o ser· apresentado no modo HistÛrico.", "warning");
+                swal("Detalhamento de alunos", "O detalhamento de alunos por turma n√£o ser√° apresentado no modo Hist√≥rico.", "warning");
             }
             $("#ddlResultadoNivel_optionTurma").html("Turma");
         }
@@ -2543,20 +2545,20 @@ function resultado_configurarControles() {
 
         /**
         -----MSTECH-----
-         *As validaÁıes abaixo s„o para a situaÁ„o do usu·rio escolher a opÁ„o padr„o dos SELECTS.
-         *Neste app do ProvaSP, a opÁ„o padr„o È vazia e deve resetar as opÁıes subsequentes, como
-         se a seleÁ„o fosse desfeita.
+         *As valida√ß√µes abaixo s√£o para a situa√ß√£o do usu√°rio escolher a op√ß√£o padr√£o dos SELECTS.
+         *Neste app do ProvaSP, a op√ß√£o padr√£o √© vazia e deve resetar as op√ß√µes subsequentes, como
+         se a sele√ß√£o fosse desfeita.
 
-         *Reparar ainda que os trecho a seguir desfazer o trecho inicial do mÈtodo, o qual
+         *Reparar ainda que os trecho a seguir desfazer o trecho inicial do m√©todo, o qual
          desabilita todos os elementos dos filtros.
         */
-        //VISIBILIDADE SELE«√O EDI«√O
+        //VISIBILIDADE SELE√á√ÉO EDI√á√ÉO
         if (nivel != "") {
             $("#ddlResultadoEdicao").selectmenu("enable");
             $("#ddlResultadoEdicao").selectmenu("refresh");
         }
 
-        //VISIBILIDADE SELE«√O ¡REA DE CONHECIMENTO e CICLO DE APRENDIZAGEM
+        //VISIBILIDADE SELE√á√ÉO √ÅREA DE CONHECIMENTO e CICLO DE APRENDIZAGEM
         if (nivel != "" && edicao != "") {
             if (cicloTD.style.display == "table-row") {
                 $("#ddlResultadoCiclo").selectmenu("enable");
@@ -2583,9 +2585,9 @@ function resultado_configurarControles() {
 
         /**
         -----MSTECH-----
-         *VISIBILIDADE SELE«√O DRE
-         *Esta validaÁ„o acontece quando NÌvel, EdiÁ„o, ¡rea de Conhecimento e Ano j· foram selecionados e
-         dentre as opÁıes de NÌvel, a escolhida foi: DRE/ESCOLA/TURMA/ALUNO, excluindo-se SME
+         *VISIBILIDADE SELE√á√ÉO DRE
+         *Esta valida√ß√£o acontece quando N√≠vel, Edi√ß√£o, √Årea de Conhecimento e Ano j√° foram selecionados e
+         dentre as op√ß√µes de N√≠vel, a escolhida foi: DRE/ESCOLA/TURMA/ALUNO, excluindo-se SME
         */
         if ((nivel == "DRE" || nivel == "ESCOLA" || nivel == "TURMA" || nivel == "ALUNO") &&
             edicao != "" && areaConhecimento != "" && (ano != "" || cicloAprendizagem != "")) {
@@ -2593,22 +2595,22 @@ function resultado_configurarControles() {
 
             /**
             -----MSTECH-----
-             *Com exceÁ„o dos usu·rios nÌvel SME, todos os outros ter„o acesso aos resultados dessa
-             filtragem contanto que tenham a permiss„o necess·ria no objeto de usu·rio, mais
+             *Com exce√ß√£o dos usu√°rios n√≠vel SME, todos os outros ter√£o acesso aos resultados dessa
+             filtragem contanto que tenham a permiss√£o necess√°ria no objeto de usu√°rio, mais
              especificamente no atributo de grupos
 
-             OBS: Perceber este trecho consome a informaÁ„o de grupos do usu·rio, presente tambÈm
+             OBS: Perceber este trecho consome a informa√ß√£o de grupos do usu√°rio, presente tamb√©m
              no arquivo loginOffline.json
             */
             if (!Usuario.AcessoNivelSME) {
                 /**
                 -----MSTECH-----
-                 *PERMISS√O DE VISIBILIDADE PARA CADA DRE:
-                 *Fluxo do cÛdigo:
-                 -Esconde os labels das opÁıes;
+                 *PERMISS√ÉO DE VISIBILIDADE PARA CADA DRE:
+                 *Fluxo do c√≥digo:
+                 -Esconde os labels das op√ß√µes;
                  -Mostra a div geral;
-                 -Se o usu·rio possui grupos associados, mostra as labels correspondentes e,
-                 consequentemente, a opÁ„o checkBox correspondente.
+                 -Se o usu√°rio possui grupos associados, mostra as labels correspondentes e,
+                 consequentemente, a op√ß√£o checkBox correspondente.
                 */
                 $(".resultado-dre-chk").parent().hide();
                 $("#chkResultadoTodasDREs").show();
@@ -2625,11 +2627,11 @@ function resultado_configurarControles() {
         /**
         -----MSTECH-----
          *O tratamentos abaixo determinam a visibilidade de conjuntos de CheckBoxes de acordo com as
-         opÁıes escolhidas previamente. Veja:
-         -VISIBILIDADE SELE«√O ESCOLA
-         -Para escolher escolas, por exemplo, È necess·rio escolher o nÌvel ESCOLA, TURMA ou ALUNO
-         -AlÈm disso, deve-se escolher uma ediÁ„o, um ano e pelo menos uma DRE.
-         -O mesmo para TURMAS e ALUNOS, com exceÁ„o do nÌvel mais especÌfico e necessidade de escolher
+         op√ß√µes escolhidas previamente. Veja:
+         -VISIBILIDADE SELE√á√ÉO ESCOLA
+         -Para escolher escolas, por exemplo, √© necess√°rio escolher o n√≠vel ESCOLA, TURMA ou ALUNO
+         -Al√©m disso, deve-se escolher uma edi√ß√£o, um ano e pelo menos uma DRE.
+         -O mesmo para TURMAS e ALUNOS, com exce√ß√£o do n√≠vel mais espec√≠fico e necessidade de escolher
          pelo menos uma escola no caso de turmas e pelo menos uma turma no caso de alunos.
         */
         if ((nivel == "ESCOLA" || nivel == "TURMA" || nivel == "ALUNO") &&
@@ -2637,13 +2639,13 @@ function resultado_configurarControles() {
             $("#divResultadoEscola").show();
         }
 
-        //VISIBILIDADE SELE«√O TURMA
+        //VISIBILIDADE SELE√á√ÉO TURMA
         if ((nivel == "TURMA" || nivel == "ALUNO") &&
             edicao != "" && ano != "" && dres.length > 0 && escolas.length > 0) {
             $("#divResultadoTurma").show();
         }
 
-        //VISIBILIDADE SELE«√O ALUNO
+        //VISIBILIDADE SELE√á√ÉO ALUNO
         if (nivel == "ALUNO" && edicao != "" && ano != "" && dres.length > 0 &&
             escolas.length > 0 && turmas.length > 0) {
             $("#divResultadoAluno").show();
@@ -2652,12 +2654,12 @@ function resultado_configurarControles() {
 
         /**
         -----MSTECH-----
-         *Os trecho abaixo s„o bem simples e triviais. Os tratamentos existem para que os elementos
-         da UI n„o apareÁam desnecessariamente.
-         *Basicamente os mÈtodos determinam quando mostrar labels que indicam quantas DRES, Escolas ou Alunos
-         foram selecionados. Param tanto, as opÁıes corretas devem ter sido selecionadas.
+         *Os trecho abaixo s√£o bem simples e triviais. Os tratamentos existem para que os elementos
+         da UI n√£o apare√ßam desnecessariamente.
+         *Basicamente os m√©todos determinam quando mostrar labels que indicam quantas DRES, Escolas ou Alunos
+         foram selecionados. Param tanto, as op√ß√µes corretas devem ter sido selecionadas.
 
-         OBS: Em todas as situaÁıes, o texto da label È zerado a princÌpio
+         OBS: Em todas as situa√ß√µes, o texto da label √© zerado a princ√≠pio
         */
 
         /**
@@ -2700,12 +2702,12 @@ function resultado_configurarControles() {
 
         /**
         -----MSTECH-----
-         *Finalmente manipula-se o bot„o de mostrar resultados de acordo com os tratamentos feitos
+         *Finalmente manipula-se o bot√£o de mostrar resultados de acordo com os tratamentos feitos
          acima.
         */
         $("#btnResultadoApresentar").prop("disabled", btnResultadoDesabilitado);
 
-        //MSTECH - N„o mostrar opÁ„o de participaÁ„o quando for filtragem por ciclo
+        //MSTECH - N√£o mostrar op√ß√£o de participa√ß√£o quando for filtragem por ciclo
         if (cicloTD.style.display == "table-row") { btnParticipacaoDesabilitado = true; }
         $("#btnParticipacaoApresentar").toggle(!btnParticipacaoDesabilitado);
     }
@@ -2716,11 +2718,11 @@ function resultado_configurarControles() {
 
 /**
 -----AMCOM-----
- MÛdulo 4.1: Controles na ocasi„o de verificar os revistasBoletins da prova
+ M√≥dulo 4.1: Controles na ocasi√£o de verificar os revistasBoletins da prova
 
- *Este mÈtodo ir· tratar os filtros para obtenÁ„o dos revistasBoletins da ProvaSP.
- *Este mÈtodo È disparado em diversos pontos do cÛdigo. Portante ele serve para
- organizar os elements de seleÁ„o dos revistasBoletins de acordo com as escolhas do usu·rio.
+ *Este m√©todo ir√° tratar os filtros para obten√ß√£o dos revistasBoletins da ProvaSP.
+ *Este m√©todo √© disparado em diversos pontos do c√≥digo. Portante ele serve para
+ organizar os elements de sele√ß√£o dos revistasBoletins de acordo com as escolhas do usu√°rio.
  *
 */
 function revistasBoletins_configurarControles() {
@@ -2743,10 +2745,10 @@ function revistasBoletins_configurarControles() {
 
         /**
         -----AMCOM-----
-         *Em seguida s„o obtidos todos os elements de DREs, Escolsas, Turmas e Alunos selecionados pelo
-         usu·rio em forma de checkbox.
+         *Em seguida s√£o obtidos todos os elements de DREs, Escolsas, Turmas e Alunos selecionados pelo
+         usu√°rio em forma de checkbox.
          *Portanto teremos:
-         -NÌvel, ediÁ„o, ·rea de conhecimento e ano: Valores ˙nicos;
+         -N√≠vel, edi√ß√£o, √°rea de conhecimento e ano: Valores √∫nicos;
          -DREs, Escolas, Turmas e Alunos: Vetores.
          *
         */
@@ -2757,31 +2759,31 @@ function revistasBoletins_configurarControles() {
 
         /**
         -----AMCOM-----
-         *VISIBILIDADE SELE«√O DRE
-         *Esta validaÁ„o acontece quando NÌvel, EdiÁ„o, ¡rea de Conhecimento e Ano j· foram selecionados e
-         dentre as opÁıes de NÌvel, a escolhida foi: DRE/ESCOLA/TURMA/ALUNO, excluindo-se SME
+         *VISIBILIDADE SELE√á√ÉO DRE
+         *Esta valida√ß√£o acontece quando N√≠vel, Edi√ß√£o, √Årea de Conhecimento e Ano j√° foram selecionados e
+         dentre as op√ß√µes de N√≠vel, a escolhida foi: DRE/ESCOLA/TURMA/ALUNO, excluindo-se SME
         */
         if (edicao != "" && areaConhecimento != "" && (edicao !== '2018' || cicloAprendizagem != "")) {
             $("#divRevistasBoletinsDRE").show();
 
             /**
             -----AMCOM-----
-             *Com exceÁ„o dos usu·rios nÌvel SME, todos os outros ter„o acesso aos revistasBoletins dessa
-             filtragem contanto que tenham a permiss„o necess·ria no objeto de usu·rio, mais
+             *Com exce√ß√£o dos usu√°rios n√≠vel SME, todos os outros ter√£o acesso aos revistasBoletins dessa
+             filtragem contanto que tenham a permiss√£o necess√°ria no objeto de usu√°rio, mais
              especificamente no atributo de grupos
 
-             OBS: Perceber este trecho consome a informaÁ„o de grupos do usu·rio, presente tambÈm
+             OBS: Perceber este trecho consome a informa√ß√£o de grupos do usu√°rio, presente tamb√©m
              no arquivo loginOffline.json
             */
             if (!Usuario.AcessoNivelSME) {
                 /**
                 -----AMCOM-----
-                 *PERMISS√O DE VISIBILIDADE PARA CADA DRE:
-                 *Fluxo do cÛdigo:
-                 -Esconde os labels das opÁıes;
+                 *PERMISS√ÉO DE VISIBILIDADE PARA CADA DRE:
+                 *Fluxo do c√≥digo:
+                 -Esconde os labels das op√ß√µes;
                  -Mostra a div geral;
-                 -Se o usu·rio possui grupos associados, mostra as labels correspondentes e,
-                 consequentemente, a opÁ„o checkBox correspondente.
+                 -Se o usu√°rio possui grupos associados, mostra as labels correspondentes e,
+                 consequentemente, a op√ß√£o checkBox correspondente.
                 */
                 $(".revistasBoletins-dre-chk").parent().hide();
                 $("#chkRevistasBoletinsTodasDREs").show();
@@ -2797,10 +2799,10 @@ function revistasBoletins_configurarControles() {
             /**
             -----AMCOM-----
              *O tratamentos abaixo determinam a visibilidade de conjuntos de CheckBoxes de acordo com as
-             opÁıes escolhidas previamente. Veja:
-             -VISIBILIDADE SELE«√O ESCOLA
-             -Para escolher escolas, por exemplo, È necess·rio escolher o nÌvel ESCOLA, TURMA ou ALUNO
-             -AlÈm disso, deve-se escolher uma ediÁ„o, um ano e pelo menos uma DRE.
+             op√ß√µes escolhidas previamente. Veja:
+             -VISIBILIDADE SELE√á√ÉO ESCOLA
+             -Para escolher escolas, por exemplo, √© necess√°rio escolher o n√≠vel ESCOLA, TURMA ou ALUNO
+             -Al√©m disso, deve-se escolher uma edi√ß√£o, um ano e pelo menos uma DRE.
             */
             if (qtdDRES > 0) {
                 $("#divRevistasBoletinsEscola").show();
@@ -2809,12 +2811,12 @@ function revistasBoletins_configurarControles() {
 
         /**
         -----AMCOM-----
-         *Os trecho abaixo s„o bem simples e triviais. Os tratamentos existem para que os elementos
-         da UI n„o apareÁam desnecessariamente.
-         *Basicamente os mÈtodos determinam quando mostrar labels que indicam quantas DRES, Escolas ou Alunos
-         foram selecionados. Param tanto, as opÁıes corretas devem ter sido selecionadas.
+         *Os trecho abaixo s√£o bem simples e triviais. Os tratamentos existem para que os elementos
+         da UI n√£o apare√ßam desnecessariamente.
+         *Basicamente os m√©todos determinam quando mostrar labels que indicam quantas DRES, Escolas ou Alunos
+         foram selecionados. Param tanto, as op√ß√µes corretas devem ter sido selecionadas.
 
-         OBS: Em todas as situaÁıes, o texto da label È zerado a princÌpio
+         OBS: Em todas as situa√ß√µes, o texto da label √© zerado a princ√≠pio
         */
 
         /**
@@ -2832,8 +2834,8 @@ function carregarListaEscolaRevistasBoletins() {
     try {
         /**
         -----AMCOM-----
-         *Limpa HTMLs que contÍm as opÁıes de seleÁ„o de Escolas, Turmas e Alunos
-         *Em seguida executa o mÈtodo geral de reset.
+         *Limpa HTMLs que cont√™m as op√ß√µes de sele√ß√£o de Escolas, Turmas e Alunos
+         *Em seguida executa o m√©todo geral de reset.
         */
         $("#divRevistasBoletinsEscolaItens").html("");
 
@@ -2841,11 +2843,11 @@ function carregarListaEscolaRevistasBoletins() {
 
         /**
         -----AMCOM-----
-         *Seleciona atravÈs dos Checks as escolas selecionadas.
-         *Se o nÌvel selecionado for DRE o bot„o de revistasBoletins È desabilitados
-         *Sen„o, a flag apresentar escolas È setada como TRUE.
-         Ou seja, quando o nÌvel È DRE, n„o È necess·rio selecionar uma escola e os revistasBoletins
-         s„o mostrados de acordo com as DREs selecionadas.
+         *Seleciona atrav√©s dos Checks as escolas selecionadas.
+         *Se o n√≠vel selecionado for DRE o bot√£o de revistasBoletins √© desabilitados
+         *Sen√£o, a flag apresentar escolas √© setada como TRUE.
+         Ou seja, quando o n√≠vel √© DRE, n√£o √© necess√°rio selecionar uma escola e os revistasBoletins
+         s√£o mostrados de acordo com as DREs selecionadas.
         */
         var DREs_selecionadas = $(".revistasBoletins-dre-chk:checked").map(function () { return this.value; }).get();
 
@@ -2864,7 +2866,7 @@ function carregarListaEscolaRevistasBoletins() {
             /**
             -----AMCOM-----
              *Para carregar as escolas com base nas DREs escolhidas, vamos novamente carregar
-             o arquivo escolas.CSV e, a partir dele, obter as informaÁıes necess·rias.
+             o arquivo escolas.CSV e, a partir dele, obter as informa√ß√µes necess√°rias.
             */
             carregarDataEscola(
                 function () {
@@ -2872,7 +2874,7 @@ function carregarListaEscolaRevistasBoletins() {
                         try {
                             /**
                             -----AMCOM-----
-                             *Reparar que apenas usu·rios autorizados podem ver os revistasBoletins
+                             *Reparar que apenas usu√°rios autorizados podem ver os revistasBoletins
                              das respectivas escolas.
                             */
                             let codigoEscolasAutorizadas = [];
@@ -2887,9 +2889,9 @@ function carregarListaEscolaRevistasBoletins() {
 
                             /**
                             -----AMCOM-----
-                             *Percorrendo escolas para adicionar ‡ lista para seleÁ„o.
-                             *Perceber que se o usu·rio for nÌvel SME ou DRE ele poder· ver as escolas
-                             sem restriÁıes de grupo.
+                             *Percorrendo escolas para adicionar √† lista para sele√ß√£o.
+                             *Perceber que se o usu√°rio for n√≠vel SME ou DRE ele poder√° ver as escolas
+                             sem restri√ß√µes de grupo.
                             */
                             for (let i = 1; i < dataEscola.length; i++) {
                                 let r = dataEscola[i].split(";");
@@ -2899,7 +2901,7 @@ function carregarListaEscolaRevistasBoletins() {
                                 let esc_nome = r[2];
 
 
-                                //PERMISS√O DE VISIBILIDADE PARA A ESCOLA:
+                                //PERMISS√ÉO DE VISIBILIDADE PARA A ESCOLA:
                                 let incluirEscola =
                                     (Usuario.AcessoNivelSME ||
                                         Usuario.AcessoNivelDRE ||
@@ -2907,7 +2909,7 @@ function carregarListaEscolaRevistasBoletins() {
 
                                 /**
                                 -----AMCOM-----
-                                 *Se o usu·rio pode acessar os dados da escola, incrementamos escolasEncontradas
+                                 *Se o usu√°rio pode acessar os dados da escola, incrementamos escolasEncontradas
                                  e montamos um elemento HTML na lista de escolas a serem selecionadas.
                                 */
                                 if (incluirEscola
@@ -2926,10 +2928,10 @@ function carregarListaEscolaRevistasBoletins() {
 
                             /**
                             -----AMCOM-----
-                             *Havendo mais de uma escola disponÌvel, mostrar-se-· as estruturas
-                             para seleÁ„o de escolas (filtro de escolas).
-                             *AlÈm disso, cada elemento de escola a ser selecionado receber· um evento
-                             correspondente ao reset das informaÁıes dos filtros.
+                             *Havendo mais de uma escola dispon√≠vel, mostrar-se-√° as estruturas
+                             para sele√ß√£o de escolas (filtro de escolas).
+                             *Al√©m disso, cada elemento de escola a ser selecionado receber√° um evento
+                             correspondente ao reset das informa√ß√µes dos filtros.
                             */
                             if (escolasEncontradas > 0) {
                                 //$("#divRevistasBoletinsEscola").show();
@@ -2950,7 +2952,7 @@ function carregarListaEscolaRevistasBoletins() {
             /**
             -----AMCOM-----
              *Este evento serve para filtrar as escolas selecionadas acima. Ou seja, da listagem de
-             escolas que ser· mostrada, poderemos escrever uma palavra para filtrar os registros
+             escolas que ser√° mostrada, poderemos escrever uma palavra para filtrar os registros
              de acordo com a necessidade.
             */
             $("#txtRevistasBoletinsEscolaFiltro").unbind("change").change(function () {
@@ -2958,7 +2960,7 @@ function carregarListaEscolaRevistasBoletins() {
                     /**
                     -----AMCOM-----
                      *Se o filtro for vazio, mostra todas as escolas selecionadas.
-                     *Reparar que mostra tambÈm a opÁ„o padr„o TODAS AS ESCOLAS
+                     *Reparar que mostra tamb√©m a op√ß√£o padr√£o TODAS AS ESCOLAS
                     */
                     var valorFiltro = $("#txtRevistasBoletinsEscolaFiltro").val().trim().toUpperCase();
                     if (valorFiltro == "") {
@@ -2968,7 +2970,7 @@ function carregarListaEscolaRevistasBoletins() {
                     else {
                         /**
                         -----AMCOM-----
-                         *Esconde a opÁ„o padr„o TODAS AS ESCOLAS, bem como os registros das escolas
+                         *Esconde a op√ß√£o padr√£o TODAS AS ESCOLAS, bem como os registros das escolas
                          selecionadas. Depois disso, filtra as escolas encontradas pela estrutura
                          de buscas e as mostra novamente.
                         */
@@ -3010,7 +3012,7 @@ function abrirLinkRevistaBoletim(source) {
     if (edicao === '2018') {
         //REVISTA
         let urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
-            + "Revistas PedagÛgicas/" + descAreaConhecimento
+            + "Revistas Pedag√≥gicas/" + descAreaConhecimento
             + "/Ciclo " + descCicloAprendizagem
             + "/" + parseInt(esc_codigo) + ".pdf";
 
@@ -3018,7 +3020,7 @@ function abrirLinkRevistaBoletim(source) {
     } else {
         //BOLETIM
         if (idAreaConhecimento == 4)
-            idAreaConhecimento = 2;//RedaÁ„o (4) est· junto com Lingua Portuguesa (2)
+            idAreaConhecimento = 2;//Reda√ß√£o (4) est√° junto com Lingua Portuguesa (2)
         let urlBoletim = urlBackEnd + "boletim_escola/" + edicao
             + "/" + idAreaConhecimento
             + "/" + esc_codigo + ".pdf";
@@ -3032,7 +3034,7 @@ function abrirLinkRevistaBoletim(source) {
     http.send();
 
     if (http.status == 404) {
-        swal("AtenÁ„o!", "N„o foi possÌvel encontrar a Revista PedagÛgica/Boletim para esta escola.", "warning");
+        swal("Aten√ß√£o!", "N√£o foi poss√≠vel encontrar a Revista Pedag√≥gica/Boletim para esta escola.", "warning");
         return;
     }
 
@@ -3042,28 +3044,28 @@ function abrirLinkRevistaBoletim(source) {
 
 /**
 -----MSTECH-----
- MÛdulo 4.2: DefiniÁ„o de handlers e eventos do App
+ M√≥dulo 4.2: Defini√ß√£o de handlers e eventos do App
 
- *Reparar que TODAS as determinaÁıes de eventos Click ou Change tÍm uma atribuiÁ„o "unbind". Isso
- quer dizer que, a cada execuÁ„o do definirEventHandlers o evento anteriormente setado È perdido,
- dando origem a um novo que ser· determinado na ocasi„o da execuÁ„o atual.
+ *Reparar que TODAS as determina√ß√µes de eventos Click ou Change t√™m uma atribui√ß√£o "unbind". Isso
+ quer dizer que, a cada execu√ß√£o do definirEventHandlers o evento anteriormente setado √© perdido,
+ dando origem a um novo que ser√° determinado na ocasi√£o da execu√ß√£o atual.
 
- -MÛdulo 4.2.1 - Botıes para OBTER RESULTADOS
- -MÛdulo 4.2.2 - Botıes para tratamento dos filtros de obtenÁ„o de resultados
- -MÛdulo 4.2.3 - MÈtodo para apresentaÁ„o dos resultados, montagem de gr·ficos e manipulaÁ„o
- -MÛdulo 4.2.4 - MÈtodos e eventos associados ao ProvaSP de fato, question·rio do tipo 8.
- -MÛdulo 4.2.5 - Eventos dos botıes de question·rios
- -MÛdulo 4.2.6 - Botıes para tratamento dos filtros de obtenÁ„o de revistas pedagÛgicas e boletins
+ -M√≥dulo 4.2.1 - Bot√µes para OBTER RESULTADOS
+ -M√≥dulo 4.2.2 - Bot√µes para tratamento dos filtros de obten√ß√£o de resultados
+ -M√≥dulo 4.2.3 - M√©todo para apresenta√ß√£o dos resultados, montagem de gr√°ficos e manipula√ß√£o
+ -M√≥dulo 4.2.4 - M√©todos e eventos associados ao ProvaSP de fato, question√°rio do tipo 8.
+ -M√≥dulo 4.2.5 - Eventos dos bot√µes de question√°rios
+ -M√≥dulo 4.2.6 - Bot√µes para tratamento dos filtros de obten√ß√£o de revistas pedag√≥gicas e boletins
 */
 function definirEventHandlers() {
     /**
     -----MSTECH-----
-     MÛdulo 4.2.1 - Botıes para OBTER RESULTADOS
+     M√≥dulo 4.2.1 - Bot√µes para OBTER RESULTADOS
     */
 
     /**
     -----MSTECH-----
-     *Retorna da selaÁ„o de resultado da ProvaSP por parte do Aluno.
+     *Retorna da sela√ß√£o de resultado da ProvaSP por parte do Aluno.
     */
     $("#btnAlunoVoltar").unbind("click").click(function () {
         try {
@@ -3073,7 +3075,7 @@ function definirEventHandlers() {
                 showCancelButton: true,
 
                 confirmButtonText: "Sim",
-                cancelButtonText: "N„o",
+                cancelButtonText: "N√£o",
                 closeOnConfirm: false
             },
                 function () {
@@ -3093,25 +3095,25 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Novo bot„o para tela de configuraÁıes
+     *Novo bot√£o para tela de configura√ß√µes
     */
     $("#btnConfiguracoes").unbind("click").click(function () {
         try {
             if (mobile && (navigator.connection.type == Connection.NONE ||
                 navigator.connection.type == Connection.UNKNOWN)) {
                 ProvaSP_Erro("Alerta",
-                    "N„o h· conex„o com a internet.\n\nVerifique sua conex„o antes de atualizar as configuraÁıes.");
+                    "N√£o h√° conex√£o com a internet.\n\nVerifique sua conex√£o antes de atualizar as configura√ß√µes.");
             }
             else {
                 if (Usuario.AcessoNivelSME) {
                     $.mobile.loading("show", {
-                        text: "Obtendo configuraÁıes atualizadas...",
+                        text: "Obtendo configura√ß√µes atualizadas...",
                         textVisible: true,
                         theme: "a",
                         html: ""
                     });
 
-                    //Tentando obter as configuraÁıes mais recentes
+                    //Tentando obter as configura√ß√µes mais recentes
                     $.ajax({
                         url: urlBackEnd + "api/RetornarAppJson",
                         type: "GET",
@@ -3128,15 +3130,15 @@ function definirEventHandlers() {
                             provaSP_configuracoes.configuracoes.UrlImagemAlunos =
                                 data.UrlImagemAlunos;
 
-                            //Usando informaÁıes de configuraÁ„o mais recentes (caso outro usu·rio
+                            //Usando informa√ß√µes de configura√ß√£o mais recentes (caso outro usu√°rio
                             //tenha alterado)
                             direcionarTelaConfiguracoes();
                         },
                         error: function (erro) {
                             /**
                             -----MSTECH-----
-                             *Erro ao obter configuraÁ„o atualizada. Usar informaÁıes de
-                             configuraÁıes obtidas inicialmente
+                             *Erro ao obter configura√ß√£o atualizada. Usar informa√ß√µes de
+                             configura√ß√µes obtidas inicialmente
                             */
                             direcionarTelaConfiguracoes();
                             ProvaSP_Erro("Erro " + erro.status, erro.statusText);
@@ -3152,22 +3154,22 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Novo bot„o para encerramento da tela de configuraÁıes. Ao encerrar as ediÁıes na tela de
-     configuraÁ„o, deve ser possÌvel enviar os dados ao servidor.
+     *Novo bot√£o para encerramento da tela de configura√ß√µes. Ao encerrar as edi√ß√µes na tela de
+     configura√ß√£o, deve ser poss√≠vel enviar os dados ao servidor.
     */
     $("#btnSincronizarOpcoes").unbind("click").click(function () {
         try {
             $.mobile.loading("show", {
-                text: "Atualizando configuraÁıes...",
+                text: "Atualizando configura√ß√µes...",
                 textVisible: true,
                 theme: "a",
                 html: ""
             });
 
-            //Executar o POST apenas se houver uma atualizaÁ„o em relaÁ„o ao objeto inicial.
+            //Executar o POST apenas se houver uma atualiza√ß√£o em rela√ß√£o ao objeto inicial.
             if (JSON.stringify(provaSP_configuracoes.dadosAtuais) !=
                 JSON.stringify(provaSP_configuracoes.configuracoes)) {
-                //Objeto de sincronizaÁ„o
+                //Objeto de sincroniza√ß√£o
                 var syncOBJ = [
                     {
                         Chave: "DisponibilizarPreenchimentoQuestionariosFichas",
@@ -3189,7 +3191,7 @@ function definirEventHandlers() {
                 $.post(urlBackEnd + "api/Configuracao", { json: JSON.stringify(syncOBJ) })
                     .done(function (result) {
                         //Mensagem de sucesso!
-                        ProvaSP_Erro("Sucesso!", "OpÁıes da ProvaSP sincronizadas com sucesso.");
+                        ProvaSP_Erro("Sucesso!", "Op√ß√µes da ProvaSP sincronizadas com sucesso.");
                     })
                     .fail(function (erro) {
                         ProvaSP_Erro("Erro " + erro.status, erro.statusText);
@@ -3204,7 +3206,7 @@ function definirEventHandlers() {
     $("#btnEnviarProficiencia").unbind("click").click(function () {
         try {
             var anoCiclo = $("#confAnoCiclo").val();
-            var proficiencia = $("#confNivelProficiÍncia").val();
+            var proficiencia = $("#confNivelProfici√™ncia").val();
             var nomeProficiencia = $("#confProficienciaNome").val();
             var descricaoProficiencia = $("#confProficienciaDescricao").val();
 
@@ -3212,16 +3214,16 @@ function definirEventHandlers() {
                 ProvaSP_Erro("Alerta", "Por favor selecione um Ano ou Ciclo de Aprendizagem.");
             }
             else if (proficiencia == "") {
-                ProvaSP_Erro("Alerta", "Por favor selecione um nÌvel de proficiÍncia.");
+                ProvaSP_Erro("Alerta", "Por favor selecione um n√≠vel de profici√™ncia.");
             }
             else if (nomeProficiencia.length == 0) {
-                ProvaSP_Erro("Alerta", "Por favor preencha o campo 'Nome da proficiÍncia.'");
+                ProvaSP_Erro("Alerta", "Por favor preencha o campo 'Nome da profici√™ncia.'");
             }
             else if (descricaoProficiencia.length == 0) {
-                ProvaSP_Erro("Alerta", "Por favor preencha o campo 'DescriÁ„o da proficiÍncia.'");
+                ProvaSP_Erro("Alerta", "Por favor preencha o campo 'Descri√ß√£o da profici√™ncia.'");
             }
             else {
-                //MSTECH - Definindo URL correta de sincronizaÁ„o
+                //MSTECH - Definindo URL correta de sincroniza√ß√£o
                 var urlSync = "api/NivelProficienciaAnoEscolar";
                 if (anoCiclo.indexOf("c") != -1) {
                     urlSync = "api/NivelProficienciaCiclo";
@@ -3236,7 +3238,7 @@ function definirEventHandlers() {
                 }];
 
                 $.mobile.loading("show", {
-                    text: "Atualizando proficiÍncia...",
+                    text: "Atualizando profici√™ncia...",
                     textVisible: true,
                     theme: "a",
                     html: ""
@@ -3246,7 +3248,7 @@ function definirEventHandlers() {
                     .done(function (result) {
                         //Mensagem de sucesso!
                         limparCamposConfiguracaoProficiencia();
-                        ProvaSP_Erro("Sucesso!", "As informaÁıes da ProficiÍncia foram atualizadas com sucesso!");
+                        ProvaSP_Erro("Sucesso!", "As informa√ß√µes da Profici√™ncia foram atualizadas com sucesso!");
                     })
                     .fail(function (erro) {
                         ProvaSP_Erro("Erro " + erro.status, erro.statusText);
@@ -3281,11 +3283,11 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Bot„o respons·vel por abrir a p·gina de filtragem e obtenÁ„o dos resultados do ProvaSP
+     *Bot√£o respons√°vel por abrir a p√°gina de filtragem e obten√ß√£o dos resultados do ProvaSP
 
-     *Reparar tambÈm que este handler de evento de Click prepara a tela de resultados quando o bot„o
-     btnAbrirResultados for selecionado. Reparar que o mÈtodo do item 4.1 È o "inverso" deste,
-     sendo o respons·vel por tratar os elementos de filtro e mostrar os resultados.
+     *Reparar tamb√©m que este handler de evento de Click prepara a tela de resultados quando o bot√£o
+     btnAbrirResultados for selecionado. Reparar que o m√©todo do item 4.1 √© o "inverso" deste,
+     sendo o respons√°vel por tratar os elementos de filtro e mostrar os resultados.
     */
     $("#btnAbrirResultados").unbind("click").click(function () {
         try {
@@ -3306,23 +3308,23 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Este handler de evento binda DOIS elementos diferentes. AlÈm disso, o evento È destinado apenas
-     ‡ mostragem de resultados do Aluno, que È diferente da mostragem geral e comparativa dos outros
-     tipos de usu·rio.
-     *O evento È disparado sempre que o aluno seleciona uma ·rea de conhecimento ou um ano de
-     ediÁ„o do ProvaSP. No entanto, para a chamada ser realizada de fato, ambos os campos devem ser
+     *Este handler de evento binda DOIS elementos diferentes. Al√©m disso, o evento √© destinado apenas
+     √† mostragem de resultados do Aluno, que √© diferente da mostragem geral e comparativa dos outros
+     tipos de usu√°rio.
+     *O evento √© disparado sempre que o aluno seleciona uma √°rea de conhecimento ou um ano de
+     edi√ß√£o do ProvaSP. No entanto, para a chamada ser realizada de fato, ambos os campos devem ser
      preenchidos.
     */
     $("#ddlResultadoAlunoAreaConhecimento,#ddlResultadoAlunoEdicao").unbind("change").change(function () {
         try {
             /**
             -----MSTECH-----
-             *Fluxo de cÛdigo:
+             *Fluxo de c√≥digo:
              -Obter os valores dos SELECTS ddlResultadoAlunoEdicao e ddlResultadoAlunoAreaConhecimento
              -Limpar o HTML de todos os elementos com style divChartResultadoEscalaSaeb_1
              e divChartResultadoDetalhe;
-             -Validar se informaÁıes dos select s„o v·lidas;
-             -Buscar no servidor do ProvaSP os resultados com base no RA do aluno, ediÁ„o e ·rea
+             -Validar se informa√ß√µes dos select s√£o v√°lidas;
+             -Buscar no servidor do ProvaSP os resultados com base no RA do aluno, edi√ß√£o e √°rea
              de conhecimento.
             */
             var Edicao = $("#ddlResultadoAlunoEdicao").val();
@@ -3341,7 +3343,7 @@ function definirEventHandlers() {
 
                 /**
                 -----MSTECH-----
-                 *Obtendo RA do aluno, Edicao e ¡rea de conhecimento escolhidas.
+                 *Obtendo RA do aluno, Edicao e √Årea de conhecimento escolhidas.
                 */
                 var alu_matricula = Usuario.usu_login.replace("RA", "");
                 var Edicao = $("#ddlResultadoAlunoEdicao").val();
@@ -3349,24 +3351,24 @@ function definirEventHandlers() {
 
                 /**
                 -----MSTECH-----
-                 *RequisiÁ„o para obter resultados da ProvaSP.
-                 *Reparar que este È um POST com retorno de informaÁıes. Ou seja, È necess·rio
+                 *Requisi√ß√£o para obter resultados da ProvaSP.
+                 *Reparar que este √© um POST com retorno de informa√ß√µes. Ou seja, √© necess√°rio
                  enviar um objeto de entrada para obter o resultado do simulado
-                 *Reparar tambÈm que este bot„o obtÈm o resultado especÌfico do Aluno, apesar de ser
-                 uma requisiÁ„o de POST mais abrangente. Tanto que, a maioria das flags est· vazia.
+                 *Reparar tamb√©m que este bot√£o obt√©m o resultado espec√≠fico do Aluno, apesar de ser
+                 uma requisi√ß√£o de POST mais abrangente. Tanto que, a maioria das flags est√° vazia.
                 */
                 $.post(urlBackEnd + "api/ResultadoPorNivel?guid=" + newGuid(),
                     {
                         /**
                         -----MSTECH-----
-                         *InformaÁıes de entrada ALUNO, EDICAO e AREA DE CONHECIMENTO.
+                         *Informa√ß√µes de entrada ALUNO, EDICAO e AREA DE CONHECIMENTO.
                         */
                         Nivel: "ALUNO",
                         Edicao: Edicao,
                         AreaConhecimentoID: AreaConhecimentoID,
                         /**
                         -----MSTECH-----
-                         *InformaÁıes de entrada vazias.
+                         *Informa√ß√µes de entrada vazias.
                         */
                         AnoEscolar: "", lista_uad_sigla: "",
                         lista_esc_codigo: "",
@@ -3378,10 +3380,10 @@ function definirEventHandlers() {
                         $.mobile.loading("hide");
                         /**
                         -----MSTECH-----
-                         *ApresentaÁ„o do resultado obtido.
+                         *Apresenta√ß√£o do resultado obtido.
 
                          Entender como funciona o resultado do PROVASP.
-                         RESPONDIDO: J· debugamos e entendemos a criaÁ„o dos gr·ficos com o ChartJS
+                         RESPONDIDO: J√° debugamos e entendemos a cria√ß√£o dos gr√°ficos com o ChartJS
                         */
                         resultadoApresentar(
                             "",
@@ -3399,15 +3401,15 @@ function definirEventHandlers() {
             else {
                 /**
                 -----MSTECH-----
-                 *Aparentemente este ELSE È desnecess·rio, pois o mesmo trecho È executado antes da
-                 validaÁ„o.
+                 *Aparentemente este ELSE √© desnecess√°rio, pois o mesmo trecho √© executado antes da
+                 valida√ß√£o.
                 */
                 $(".divChartResultadoDetalhe").html("");
                 $(".divChartResultadoEscalaSaeb_1").html("");
 
                 /**
                 -----MSTECH-----
-                 *Escondendo bot„o de Prova do Aluno essencialmente. Mas tambÈm a Div de resultados do aluno
+                 *Escondendo bot√£o de Prova do Aluno essencialmente. Mas tamb√©m a Div de resultados do aluno
                 */
                 $("#divResultadoApresentacaoAluno").hide();
             }
@@ -3418,19 +3420,19 @@ function definirEventHandlers() {
     });
     /**
     -----MSTECH-----
-     *Fim do MÛdulo 4.2.1 - Botıes para OBTER RESULTADOS
+     *Fim do M√≥dulo 4.2.1 - Bot√µes para OBTER RESULTADOS
     */
 
     /**
     -----MSTECH-----
-     MÛdulo 4.2.2 - Botıes para tratamento dos filtros de obtenÁ„o de resultados
-     (o que È feito ao selecionar cada opÁ„o)
+     M√≥dulo 4.2.2 - Bot√µes para tratamento dos filtros de obten√ß√£o de resultados
+     (o que √© feito ao selecionar cada op√ß√£o)
     */
 
     /**
     -----MSTECH-----
-     *Evento CHANGE do select de nÌvel. Sempre que o usu·rio alterar o NÕVEL na seleÁ„o dos filtros de
-     resultados, os tratamentos do handler devem ser executados. Basicamente s„o manipulaÁıes de UI.
+     *Evento CHANGE do select de n√≠vel. Sempre que o usu√°rio alterar o N√çVEL na sele√ß√£o dos filtros de
+     resultados, os tratamentos do handler devem ser executados. Basicamente s√£o manipula√ß√µes de UI.
     */
     $("#ddlResultadoNivel").unbind("change").change(function () {
         try {
@@ -3443,11 +3445,11 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Fluxo do cÛdigo:
-             -A princÌpio, esconde as opÁıes das versıes legadas (antes de 2012)
-             -Tais versıes legadas devem estar disponÌveis apenas para o filtro de nÌvel ALUNO
+             *Fluxo do c√≥digo:
+             -A princ√≠pio, esconde as op√ß√µes das vers√µes legadas (antes de 2012)
+             -Tais vers√µes legadas devem estar dispon√≠veis apenas para o filtro de n√≠vel ALUNO
              -Se o filtro for ESCOLA, devemos disparar TODOS os eventos dos CHECKS da DREs.
-             Desta maneira, todas as escolas ser„o carregadas em paralelo.
+             Desta maneira, todas as escolas ser√£o carregadas em paralelo.
             */
             $(".edicao-resultado-legado").hide();
             $(".edicao-resultado-legado").attr("disabled", "disabled");
@@ -3465,11 +3467,11 @@ function definirEventHandlers() {
             if (this.value != "") {
                 /**
                 -----MSTECH-----
-                 *Se o select de NÕVEL for diferente de vazio:
+                 *Se o select de N√çVEL for diferente de vazio:
                  -Habilita select de EDICAO;
-                 -Se o select de NÕVEL for TURMA, mostramos uma opÁ„o select com um texto de referÍncia:
-                 EnturmaÁ„o atual. Aparentemente este texto n„o tem trigger.
-                 -N„o sendo o NÌvel de turma, remove a opÁ„o de referÍncia.
+                 -Se o select de N√çVEL for TURMA, mostramos uma op√ß√£o select com um texto de refer√™ncia:
+                 Enturma√ß√£o atual. Aparentemente este texto n√£o tem trigger.
+                 -N√£o sendo o N√≠vel de turma, remove a op√ß√£o de refer√™ncia.
                 */
                 $("#ddlResultadoEdicao").selectmenu("enable");
 
@@ -3488,10 +3490,10 @@ function definirEventHandlers() {
             else {
                 /**
                 -----MSTECH-----
-                 *Sendo a opÁ„o de nÌvel vazia, reseta todos os filtros legados e dependentes do mesmo.
+                 *Sendo a op√ß√£o de n√≠vel vazia, reseta todos os filtros legados e dependentes do mesmo.
 
-                 OBS: Os resets feitos abaixo s„o repetidos no mÈtodo resultado_configurarControles.
-                 O que n„o faz muito sentido mas tambÈm n„o prejudica o funcionamento do App.
+                 OBS: Os resets feitos abaixo s√£o repetidos no m√©todo resultado_configurarControles.
+                 O que n√£o faz muito sentido mas tamb√©m n√£o prejudica o funcionamento do App.
                 */
                 $("#ddlResultadoEdicao").val("");
                 $("#ddlResultadoEdicao").selectmenu("refresh");
@@ -3514,7 +3516,7 @@ function definirEventHandlers() {
             if (this.value == "SME" || this.value == "DRE" || this.value == "ESCOLA") {
                 $("#resultados_opcaoCicloAprendizagem").show();
 
-                //MSTECH - Mostrar Area de Conhecimento se EdiÁ„o estiver preenchida
+                //MSTECH - Mostrar Area de Conhecimento se Edi√ß√£o estiver preenchida
                 if ($("#ddlResultadoEdicao").val() != "" && $("#ddlResultadoCiclo").val() != "") {
                     $("#ddlResultadoAreaConhecimento").selectmenu("enable");
                 }
@@ -3531,7 +3533,7 @@ function definirEventHandlers() {
                 //Resetando campos
                 limparCamposSelecionados();
 
-                //MSTECH - Mostrar Area de Conhecimento se EdiÁ„o estiver preenchida
+                //MSTECH - Mostrar Area de Conhecimento se Edi√ß√£o estiver preenchida
                 if ($("#ddlResultadoEdicao").val() != "") {
                     $("#ddlResultadoAreaConhecimento").selectmenu("enable");
                 }
@@ -3544,9 +3546,9 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Evento CHANGE do select de ESCOLA. Primeiramente executa o mÈtodo resultado_configurarControles
-     para limpar todos os elementos da seleÁ„o. Em seguida trata a possibilidade do valor do SELECT
-     de ediÁıes ser vazio.
+     *Evento CHANGE do select de ESCOLA. Primeiramente executa o m√©todo resultado_configurarControles
+     para limpar todos os elementos da sele√ß√£o. Em seguida trata a possibilidade do valor do SELECT
+     de edi√ß√µes ser vazio.
     */
     $("#ddlResultadoEdicao").unbind("change").change(function () {
         try {
@@ -3572,8 +3574,8 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Por fim, se na mudanÁa da ediÁ„o o nÌvel for TURMA ou ALUNO, reseta o HTML de resultados e
-             desabilita o bot„o btnResultadoApresentar
+             *Por fim, se na mudan√ßa da edi√ß√£o o n√≠vel for TURMA ou ALUNO, reseta o HTML de resultados e
+             desabilita o bot√£o btnResultadoApresentar
             */
             var nivel = $("#ddlResultadoNivel").val();
             if (nivel == "TURMA" || nivel == "ALUNO") {
@@ -3589,7 +3591,7 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Novo CUSTOM CheckBox para controlar as opÁıes de Ciclo de aprendizagem. Se o checkbox for
+     *Novo CUSTOM CheckBox para controlar as op√ß√µes de Ciclo de aprendizagem. Se o checkbox for
      selecionado, devemos esconder o select de Anos e Mostrar o de Ciclos de aprendizagem. Se ele for
      desmarcado, devemos mostrar o select de Anos.
     */
@@ -3650,8 +3652,8 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Assim como o EDI«√O, ao alterar a ¡REA de CONHECIMENTO, os filtros para o resultado da
-     ProvaSP s„o resetados e abaixo È tratada a situaÁ„o de SELECT vazio.
+     *Assim como o EDI√á√ÉO, ao alterar a √ÅREA de CONHECIMENTO, os filtros para o resultado da
+     ProvaSP s√£o resetados e abaixo √© tratada a situa√ß√£o de SELECT vazio.
     */
     $("#ddlResultadoAreaConhecimento").unbind("change").change(function () {
         try {
@@ -3696,11 +3698,11 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Assim como o os elementos SELECT anteriores, executamos o mÈtodo de reset geral junto ao reset
+     *Assim como o os elementos SELECT anteriores, executamos o m√©todo de reset geral junto ao reset
      das divs divResultadoTurmaItens e divResultadoAlunoItens que comportam as Turmas e Alunos em forma
      de CHECK a serem selecionados.
 
-     OBS: Aparentemente o trecho de validaÁ„o È irrelevante
+     OBS: Aparentemente o trecho de valida√ß√£o √© irrelevante
     */
     $("#ddlResultadoAno").unbind("change").change(function () {
         try {
@@ -3721,8 +3723,8 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Evento especial para a opÁ„o TODAS AS DREs da select de DREs.
-     *Reparar que as demais opÁıes do select s„o tratados de acordo com o evento change
+     *Evento especial para a op√ß√£o TODAS AS DREs da select de DREs.
+     *Reparar que as demais op√ß√µes do select s√£o tratados de acordo com o evento change
      com base no estilo .resultado-dre-chk
     */
     $("#chkResultadoTodasDREs").unbind("click").click(function () {
@@ -3736,15 +3738,15 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Evento dos checks de DREs. A diferenÁa crucial entre este mÈtodo e o prÛximo È a iserÁ„o da
-     opÁ„o TODAS AS DRES.
+     *Evento dos checks de DREs. A diferen√ßa crucial entre este m√©todo e o pr√≥ximo √© a iser√ß√£o da
+     op√ß√£o TODAS AS DRES.
     */
     $(".resultado-dre-chk").unbind("change").change(function () {
         try {
             /**
             -----MSTECH-----
-             *Limpa HTMLs que contÍm as opÁıes de seleÁ„o de Escolas, Turmas e Alunos
-             *Em seguida executa o mÈtodo geral de reset.
+             *Limpa HTMLs que cont√™m as op√ß√µes de sele√ß√£o de Escolas, Turmas e Alunos
+             *Em seguida executa o m√©todo geral de reset.
             */
             $("#divResultadoEscolaItens").html("");
             $("#divResultadoTurmaItens").html("");
@@ -3754,11 +3756,11 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Seleciona atravÈs dos Checks as escolas selecionadas.
-             *Se o nÌvel selecionado for DRE o bot„o de resultado È desabilitados
-             *Sen„o, a flag apresentar escolas È setada como TRUE.
-             Ou seja, quando o nÌvel È DRE, n„o È necess·rio selecionar uma escola e os resultados
-             s„o mostrados de acordo com as DREs selecionadas.
+             *Seleciona atrav√©s dos Checks as escolas selecionadas.
+             *Se o n√≠vel selecionado for DRE o bot√£o de resultado √© desabilitados
+             *Sen√£o, a flag apresentar escolas √© setada como TRUE.
+             Ou seja, quando o n√≠vel √© DRE, n√£o √© necess√°rio selecionar uma escola e os resultados
+             s√£o mostrados de acordo com as DREs selecionadas.
             */
             var DREs_selecionadas = $(".resultado-dre-chk:checked").map(function () { return this.value; }).get();
             var apresentarEscolas = false;
@@ -3775,7 +3777,7 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Se o nÌvel N√O È DRE, devemos tratar e mostrar as escolas.
+             *Se o n√≠vel N√ÉO √© DRE, devemos tratar e mostrar as escolas.
             */
             if (apresentarEscolas) {
                 ///////////////////////////////////////////////////////////////////////////////
@@ -3791,7 +3793,7 @@ function definirEventHandlers() {
                 /**
                 -----MSTECH-----
                  *Para carregar as escolas com base nas DREs escolhidas, vamos novamente carregar
-                 o arquivo escolas.CSV e, a partir dele, obter as informaÁıes necess·rias.
+                 o arquivo escolas.CSV e, a partir dele, obter as informa√ß√µes necess√°rias.
                 */
                 carregarDataEscola(
                     function () {
@@ -3799,7 +3801,7 @@ function definirEventHandlers() {
                             try {
                                 /**
                                 -----MSTECH-----
-                                 *Reparar que apenas usu·rios autorizados podem ver os resultados
+                                 *Reparar que apenas usu√°rios autorizados podem ver os resultados
                                  das respectivas escolas.
                                 */
                                 var codigoEscolasAutorizadas = [];
@@ -3811,10 +3813,10 @@ function definirEventHandlers() {
 
                                 /**
                                 -----MSTECH-----
-                                 *Ao obter as escolas do arquivo escolas.CSV, cria-se uma opÁ„o para
-                                 seleÁ„o de todas as escolas.
-                                 *A opÁ„o de todas as escolas ser· mostrada junto ‡s opÁıes das escolas
-                                 cuja permiss„o de acesso encontra-se no objeto do Usu·rio logado, mais
+                                 *Ao obter as escolas do arquivo escolas.CSV, cria-se uma op√ß√£o para
+                                 sele√ß√£o de todas as escolas.
+                                 *A op√ß√£o de todas as escolas ser√° mostrada junto √†s op√ß√µes das escolas
+                                 cuja permiss√£o de acesso encontra-se no objeto do Usu√°rio logado, mais
                                  especificamente em "grupos".
                                 */
                                 var l = dataEscola.length;
@@ -3824,9 +3826,9 @@ function definirEventHandlers() {
 
                                 /**
                                 -----MSTECH-----
-                                 *Percorrendo escolas para adicionar ‡ lista para seleÁ„o.
-                                 *Perceber que se o usu·rio for nÌvel SME ou DRE ele poder· ver as escolas
-                                 sem restriÁıes de grupo.
+                                 *Percorrendo escolas para adicionar √† lista para sele√ß√£o.
+                                 *Perceber que se o usu√°rio for n√≠vel SME ou DRE ele poder√° ver as escolas
+                                 sem restri√ß√µes de grupo.
                                 */
                                 for (var i = 1; i < l; i++) {
                                     var r = dataEscola[i].split(";");
@@ -3836,7 +3838,7 @@ function definirEventHandlers() {
                                     var esc_nome = r[2];
 
 
-                                    //PERMISS√O DE VISIBILIDADE PARA A ESCOLA:
+                                    //PERMISS√ÉO DE VISIBILIDADE PARA A ESCOLA:
                                     var incluirEscola =
                                         (Usuario.AcessoNivelSME ||
                                             Usuario.AcessoNivelDRE ||
@@ -3844,7 +3846,7 @@ function definirEventHandlers() {
 
                                     /**
                                     -----MSTECH-----
-                                     *Se o usu·rio pode acessar os dados da escola, incrementamos escolasEncontradas
+                                     *Se o usu√°rio pode acessar os dados da escola, incrementamos escolasEncontradas
                                      e montamos um elemento HTML na lista de escolas a serem selecionadas.
                                     */
                                     if (incluirEscola && (DREs_selecionadas.indexOf("TD") >= 0 ||
@@ -3859,10 +3861,10 @@ function definirEventHandlers() {
 
                                 /**
                                 -----MSTECH-----
-                                 *Havendo mais de uma escola disponÌvel, mostrar-se-· as estruturas
-                                 para seleÁ„o de escolas (filtro de escolas).
-                                 *AlÈm disso, cada elemento de escola a ser selecionado receber· um evento
-                                 correspondente ao reset das informaÁıes dos filtros.
+                                 *Havendo mais de uma escola dispon√≠vel, mostrar-se-√° as estruturas
+                                 para sele√ß√£o de escolas (filtro de escolas).
+                                 *Al√©m disso, cada elemento de escola a ser selecionado receber√° um evento
+                                 correspondente ao reset das informa√ß√µes dos filtros.
                                 */
                                 if (escolasEncontradas > 0) {
                                     $("#divResultadoEscola").show();
@@ -3891,7 +3893,7 @@ function definirEventHandlers() {
                 /**
                 -----MSTECH-----
                  *Este evento serve para filtrar as escolas selecionadas acima. Ou seja, da listagem de
-                 escolas que ser· mostrada, poderemos escrever uma palavra para filtrar os registros
+                 escolas que ser√° mostrada, poderemos escrever uma palavra para filtrar os registros
                  de acordo com a necessidade.
                 */
                 $("#txtResultadoEscolaFiltro").unbind("change").change(function () {
@@ -3899,7 +3901,7 @@ function definirEventHandlers() {
                         /**
                         -----MSTECH-----
                          *Se o filtro for vazio, mostra todas as escolas selecionadas.
-                         *Reparar que mostra tambÈm a opÁ„o padr„o TODAS AS ESCOLAS
+                         *Reparar que mostra tamb√©m a op√ß√£o padr√£o TODAS AS ESCOLAS
                         */
                         var valorFiltro = $("#txtResultadoEscolaFiltro").val().trim().toUpperCase();
                         if (valorFiltro == "") {
@@ -3909,7 +3911,7 @@ function definirEventHandlers() {
                         else {
                             /**
                             -----MSTECH-----
-                             *Esconde a opÁ„o padr„o TODAS AS ESCOLAS, bem como os registros das escolas
+                             *Esconde a op√ß√£o padr√£o TODAS AS ESCOLAS, bem como os registros das escolas
                              selecionadas. Depois disso, filtra as escolas encontradas pela estrutura
                              de buscas e as mostra novamente.
                             */
@@ -3936,7 +3938,7 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Ao selecionar qualquer uma das DREs especÌficas, desmarca a opÁ„o padr„o TODAS AS DREs e reseta
+     *Ao selecionar qualquer uma das DREs espec√≠ficas, desmarca a op√ß√£o padr√£o TODAS AS DREs e reseta
      todos os elementos da filtragem
     */
     $(".resultado-dre-item-chk").unbind("click").click(function () {
@@ -3951,11 +3953,11 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Sempre que este elemento que È um input simples de texto muda, devemos resetar os filtros de busca.
+     *Sempre que este elemento que √© um input simples de texto muda, devemos resetar os filtros de busca.
 
-     OBS: Reparar que este modo de busca por turmas n„o È mais utilizado no ProvaSP. Todas as chamadas
-     para este mÈtodo est„o comentadas. A seleÁ„o de turmas se d· de maneira parecida com as DREs e etc.
-     Deve-se escolher a opÁ„o atravÈs CHECKS montados no App.
+     OBS: Reparar que este modo de busca por turmas n√£o √© mais utilizado no ProvaSP. Todas as chamadas
+     para este m√©todo est√£o comentadas. A sele√ß√£o de turmas se d√° de maneira parecida com as DREs e etc.
+     Deve-se escolher a op√ß√£o atrav√©s CHECKS montados no App.
     */
     $("#txtResultadoTurma").unbind("change").change(function () {
         try {
@@ -3968,10 +3970,10 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Estes botıes determinam a alteraÁ„o de par‚metros para visualizaÁ„o dos resultados da ProvaSP
+     *Estes bot√µes determinam a altera√ß√£o de par√¢metros para visualiza√ß√£o dos resultados da ProvaSP
 
-     OBS: Como o evento de reset È executado constantemente em cada aÁ„o de filtragem, estes botıes
-     nada fazem alÈm de esconder os resultados e posicionar a tela nos filtros.
+     OBS: Como o evento de reset √© executado constantemente em cada a√ß√£o de filtragem, estes bot√µes
+     nada fazem al√©m de esconder os resultados e posicionar a tela nos filtros.
     */
     $("#btnResultadoAlterarParametros, #btnResultadoAlterarParametros2").unbind("click").click(function () {
         try {
@@ -3992,20 +3994,20 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Assim como na seleÁ„o de DREs temos a montagem de uma lista de escola a serem selecionadas, teremos
+     *Assim como na sele√ß√£o de DREs temos a montagem de uma lista de escola a serem selecionadas, teremos
      a montagem de uma lista de TURMAS a serem selecionadas na escola de cada uma das escolas. No entanto,
-     diferente das DREs e Escolas que possuem informaÁıes armazenadas localment no App atravÈs do arquivo
-     escola.CSV, as informaÁıes de Turmas e, posteriormente, de Alunos dever„o ser buscadas no servidor.
+     diferente das DREs e Escolas que possuem informa√ß√µes armazenadas localment no App atrav√©s do arquivo
+     escola.CSV, as informa√ß√µes de Turmas e, posteriormente, de Alunos dever√£o ser buscadas no servidor.
     */
     $("#btnResultadoBuscarTurmas").unbind("click").click(function () {
         try {
             /**
             -----MSTECH-----
              *Reseta listagem de Turmas e alunos
-             *Em seguida obtÈm toda as outras informaÁıes dos filtros. Tais informaÁıes ser„o par‚metros
-             para a busca de informaÁ„o no servidor.
-             *Reparar que È selecionada uma lista em String com todos os cÛdigos das escolas selecionadas.
-             *Por fim, h· uma validaÁ„o de sobrecarga para n„o permitir buscar turmas de mais de 100 escolas.
+             *Em seguida obt√©m toda as outras informa√ß√µes dos filtros. Tais informa√ß√µes ser√£o par√¢metros
+             para a busca de informa√ß√£o no servidor.
+             *Reparar que √© selecionada uma lista em String com todos os c√≥digos das escolas selecionadas.
+             *Por fim, h√° uma valida√ß√£o de sobrecarga para n√£o permitir buscar turmas de mais de 100 escolas.
             */
             $("#divResultadoTurmaItens").html("");
             $("#divResultadoAlunoItens").html("");
@@ -4030,8 +4032,8 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Post com primeiro objeto sendo as informaÁıes de entrada da busca;
-             *O segundo, o nÛ de sucesso e o terceiro, o nÛ de falha.
+             *Post com primeiro objeto sendo as informa√ß√µes de entrada da busca;
+             *O segundo, o n√≥ de sucesso e o terceiro, o n√≥ de falha.
             */
             $.post(urlBackEnd + "api/ResultadoRecuperarTurmas", {
                 ResultadoNivel: ResultadoNivel,
@@ -4050,22 +4052,22 @@ function definirEventHandlers() {
 
                     /**
                     -----MSTECH-----
-                     *Devolvida validaÁ„o de 1000 turmas, para ter coerÍncia com a mesma validaÁ„o
+                     *Devolvida valida√ß√£o de 1000 turmas, para ter coer√™ncia com a mesma valida√ß√£o
                      na busca por alunos.
                     */
                     if (data.length > 1000) {
                         ProvaSP_Erro("Erro de sobrecarga",
-                            "Sua pesquisa retornou mais de 1000 turmas. Por gentileza especifique critÈrios mais restritos.");
+                            "Sua pesquisa retornou mais de 1000 turmas. Por gentileza especifique crit√©rios mais restritos.");
                         return;
                     }
 
                     /**
                     -----MSTECH-----
-                     *A validaÁ„o, teoricamente, n„o È necess·ria. Assim como em Escolas, cada turma
-                     retornada receber· um elemento na listagem e existir· um elemento inicial TODAS
+                     *A valida√ß√£o, teoricamente, n√£o √© necess√°ria. Assim como em Escolas, cada turma
+                     retornada receber√° um elemento na listagem e existir√° um elemento inicial TODAS
                      AS TURMAS.
 
-                     OBS: O For de navegaÁ„o das turmas monta os elementos HTML tratando o ID e o NOME
+                     OBS: O For de navega√ß√£o das turmas monta os elementos HTML tratando o ID e o NOME
                      das turmas de acordo com a necessidade.
                     */
                     if (data.length > 0) {
@@ -4095,8 +4097,8 @@ function definirEventHandlers() {
 
                         /**
                         -----MSTECH-----
-                         *Cada item de Turma, assim como os itens de Escola, receber„o um evento de
-                         seleÁ„o que executar· o mÈtodo de reset dos filtros.
+                         *Cada item de Turma, assim como os itens de Escola, receber√£o um evento de
+                         sele√ß√£o que executar√° o m√©todo de reset dos filtros.
                         */
                         $(".resultado-turma-item-chk").unbind("click").click(function () {
                             $("#divResultadoAlunoItens").html("");
@@ -4106,7 +4108,7 @@ function definirEventHandlers() {
                     }
                 })
                 .fail(function (xhr, status, error) {
-                    ProvaSP_Erro("Falha de comunicaÁ„o", "N„o foi possÌvel recuperar as turmas. (" + status + ") " + error);
+                    ProvaSP_Erro("Falha de comunica√ß√£o", "N√£o foi poss√≠vel recuperar as turmas. (" + status + ") " + error);
                 });
         }
         catch (error) {
@@ -4116,8 +4118,8 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *A filtragem de alunos funciona de forma muito parecida com a filtragem de turmas. ObtÈm-se os
-     dados dos alunos com base nos outro filtros selecionados e atravÈs de uma requisiÁ„o ao servidor
+     *A filtragem de alunos funciona de forma muito parecida com a filtragem de turmas. Obt√©m-se os
+     dados dos alunos com base nos outro filtros selecionados e atrav√©s de uma requisi√ß√£o ao servidor
      do ProvaSP.
     */
     $("#btnResultadoBuscarAlunos").unbind("click").click(function () {
@@ -4125,7 +4127,7 @@ function definirEventHandlers() {
             /**
             -----MSTECH-----
              *Especficamente valores dos filtros;
-             *N„o permite a selaÁ„o de mais de 20 escolas;
+             *N√£o permite a sela√ß√£o de mais de 20 escolas;
              *Reseta dis de listagem de alunos.
             */
             var Edicao = $("#ddlResultadoEdicao").val();
@@ -4149,8 +4151,8 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Reparar, por exemplo, que para esta requisiÁ„o teremos uma lista de escolas e uma lista
-             de turmas. Ambas strings com os dados separados por vÌrgula ","
+             *Reparar, por exemplo, que para esta requisi√ß√£o teremos uma lista de escolas e uma lista
+             de turmas. Ambas strings com os dados separados por v√≠rgula ","
             */
             $.post(urlBackEnd + "api/ResultadoRecuperarAlunos", {
                 Edicao: Edicao,
@@ -4169,18 +4171,18 @@ function definirEventHandlers() {
 
                     if (data.length > 1000) {
                         ProvaSP_Erro("Erro de sobrecarga",
-                            "Sua pesquisa retornou mais de 1000 alunos. Por gentileza especifique critÈrios mais restritos.");
+                            "Sua pesquisa retornou mais de 1000 alunos. Por gentileza especifique crit√©rios mais restritos.");
                         return;
                     }
 
                     /**
                     -----MSTECH-----
-                     *Assim como em escolas e turmas, os alunos ser„o organizados numa lista de CHECKS
+                     *Assim como em escolas e turmas, os alunos ser√£o organizados numa lista de CHECKS
                      com um elemento inicial TODOS OS ALUNOS.
-                     *Os resultados ser„o mostrados de acordo com os alunos selecionados.
+                     *Os resultados ser√£o mostrados de acordo com os alunos selecionados.
 
-                     ATUALIZADO: Reformulamos a forma como a estrutura de alunos È montada para incluir
-                     o bot„o de provas do aluno (imagens da prova real).
+                     ATUALIZADO: Reformulamos a forma como a estrutura de alunos √© montada para incluir
+                     o bot√£o de provas do aluno (imagens da prova real).
                     */
                     if (data.length > 0) {
                         var alunosHTML = "";
@@ -4189,7 +4191,7 @@ function definirEventHandlers() {
                             '$(".resultado-aluno-item-chk").prop("checked", this.checked).checkboxradio("refresh");' +
                             ' resultado_configurarControles();';
 
-                        //TODOS OS ALUNOS - OpÁ„o Default
+                        //TODOS OS ALUNOS - Op√ß√£o Default
                         alunosHTML += "<label for='chkResultadoTodosAlunos' id='lblResultadoTodosAlunos'>";
                         alunosHTML += "<input id='chkResultadoTodosAlunos' type='checkbox' name='chkResultadoAluno' ";
                         alunosHTML += "class='resultado-aluno-chk' value='TD' data-mini='true' onclick='";
@@ -4199,7 +4201,7 @@ function definirEventHandlers() {
                         for (var i = 0; i < data.length; i++) {
                             var alunoAPIString = "0_" + data[i].alu_matricula + "_" + Edicao;
 
-                            //Estrutura de seleÁ„o do aluno
+                            //Estrutura de sele√ß√£o do aluno
                             alunosHTML += "<div class='alunos_checkDiv' style=' width: " + checkBoxesWidth + "px; '>";
                             alunosHTML += "<label for='chkResultadoAluno_" + data[i].alu_matricula + "'>";
                             alunosHTML += "<input id='chkResultadoAluno_" + data[i].alu_matricula +
@@ -4222,10 +4224,10 @@ function definirEventHandlers() {
 
                         /**
                         -----MSTECH-----
-                         *Por fim, a seleÁ„o de cada aluno executa o evento de reset dos filtros.
+                         *Por fim, a sele√ß√£o de cada aluno executa o evento de reset dos filtros.
 
-                         OBS: Quando mais adentramos os nÌveis de filtragem dos resultados da ProvaSP,
-                         menos elementos do DOM s„o de fato resetados no momento da execuÁ„o do
+                         OBS: Quando mais adentramos os n√≠veis de filtragem dos resultados da ProvaSP,
+                         menos elementos do DOM s√£o de fato resetados no momento da execu√ß√£o do
                          resultado_configurarControles
                         */
                         $(".resultado-aluno-item-chk").unbind("click").click(function () {
@@ -4236,7 +4238,7 @@ function definirEventHandlers() {
 
                 })
                 .fail(function (xhr, status, error) {
-                    ProvaSP_Erro("Falha de comunicaÁ„o", "N„o foi possÌvel recuperar os alunos. (" + status + ") " + error);
+                    ProvaSP_Erro("Falha de comunica√ß√£o", "N√£o foi poss√≠vel recuperar os alunos. (" + status + ") " + error);
                 });
         }
         catch (error) {
@@ -4247,15 +4249,15 @@ function definirEventHandlers() {
     /**
     -----MSTECH-----
      *resultadoTabHabilidades
-     *Existe uma opÁ„o na tela de filtragem para obtenÁ„o dos resultados da ProvaSP que
-     mostra uma avaliÁ„o das habilidade da prova, fazendo uma comparaÁ„o de acordo com os filtros
+     *Existe uma op√ß√£o na tela de filtragem para obten√ß√£o dos resultados da ProvaSP que
+     mostra uma avali√ß√£o das habilidade da prova, fazendo uma compara√ß√£o de acordo com os filtros
      selecionados.
     */
     $("#resultadoTabHabilidades").unbind("click").click(function () {
         try {
             /**
             -----MSTECH-----
-             *Obtendo todas as informaÁıes dos filtros de busca de resultados.
+             *Obtendo todas as informa√ß√µes dos filtros de busca de resultados.
             */
             var nivel = $("#ddlResultadoNivel").val();
             var Edicao = $("#ddlResultadoEdicao").val();
@@ -4283,14 +4285,14 @@ function definirEventHandlers() {
                 .done(function (data) {
                     /**
                     -----MSTECH-----
-                     -Estas informaÁıes sÛ podem ser obtidas depois que os resultados da prova forem
+                     -Estas informa√ß√µes s√≥ podem ser obtidas depois que os resultados da prova forem
                      mostrados.
                     */
                     $.mobile.loading("hide");
                 })
                 .fail(function (xhr, status, error) {
-                    ProvaSP_Erro("Falha de comunicaÁ„o",
-                        "N„o foi possÌvel recuperar as habilidades. (" + status + ") " + error);
+                    ProvaSP_Erro("Falha de comunica√ß√£o",
+                        "N√£o foi poss√≠vel recuperar as habilidades. (" + status + ") " + error);
                 });
         }
         catch (error) {
@@ -4299,12 +4301,12 @@ function definirEventHandlers() {
     });
     /**
     -----MSTECH-----
-     *Fim do MÛdulo 4.2.2 - Botıes para tratamento dos filtros de obtenÁ„o de resultados
+     *Fim do M√≥dulo 4.2.2 - Bot√µes para tratamento dos filtros de obten√ß√£o de resultados
     */
 
     /**
     -----MSTECH-----
-     MÛdulo 4.2.3 - MÈtodo para apresentaÁ„o dos resultados, montagem de gr·ficos e manipulaÁ„o
+     M√≥dulo 4.2.3 - M√©todo para apresenta√ß√£o dos resultados, montagem de gr√°ficos e manipula√ß√£o
      da UI
     */
     var chartResultadoAgregacao_ctx = null;
@@ -4313,10 +4315,10 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Os handlers abaixo coletam todas as informaÁıes selecionadas pelo usu·rio nos filtros e mostra
+     *Os handlers abaixo coletam todas as informa√ß√µes selecionadas pelo usu√°rio nos filtros e mostra
      o resultado da ProvaSP com base no retorno do POST ao servidor.
 
-     OBS: Reparar que os filtros ResultadoFiltro tambÈm chamam a requisiÁ„o ao server.
+     OBS: Reparar que os filtros ResultadoFiltro tamb√©m chamam a requisi√ß√£o ao server.
     */
     $("#btnResultadoApresentar, #chkResultadoFiltroAbaixoDoBasico, #chkResultadoFiltroBasico, #chkResultadoFiltroAdequado, #chkResultadoFiltroAvancado").unbind("click").click(function () {
         try {
@@ -4331,7 +4333,6 @@ function definirEventHandlers() {
             var lista_turmas = "";
             var lista_alu_matricula = "";
 
-
             $.mobile.loading("show", {
                 text: "Aguarde...",
                 textVisible: true,
@@ -4341,7 +4342,7 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Abaixo a determinaÁ„o de informaÁıes especÌficas com base no nÌvel selecionado.
+             *Abaixo a determina√ß√£o de informa√ß√µes espec√≠ficas com base no n√≠vel selecionado.
             */
             if (nivel == "DRE") {
                 lista_uad_sigla = $(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get().toString();
@@ -4357,7 +4358,7 @@ function definirEventHandlers() {
                 lista_alu_matricula = $(".resultado-aluno-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
 
-            //MSTECH - Construindo objeto para enviar ao servidor. Ele ser· reaproveitado em situaÁıes de busca
+            //MSTECH - Construindo objeto para enviar ao servidor. Ele ser√° reaproveitado em situa√ß√µes de busca
             //por ciclo.
             objEnvio = {
                 Nivel: nivel,
@@ -4378,7 +4379,7 @@ function definirEventHandlers() {
                 .done(function (dataResultado) {
                     /**
                     -----MSTECH-----
-                     *No sucesso da requisiÁ„o, mostra resultados.
+                     *No sucesso da requisi√ß√£o, mostra resultados.
                     */
                     $.mobile.loading("hide");
                     resultadoApresentar(
@@ -4401,27 +4402,27 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *MÈtodo que mostra os resultados da ProvaSP em forma de gr·ficos e etc.
-     *… um mÈtodo extremamente extenso por conter diversos tratamentos, manipulaÁ„o de UI e manipulaÁ„o
-     da lib de gr·ficos chart.js
+     *M√©todo que mostra os resultados da ProvaSP em forma de gr√°ficos e etc.
+     *√â um m√©todo extremamente extenso por conter diversos tratamentos, manipula√ß√£o de UI e manipula√ß√£o
+     da lib de gr√°ficos chart.js
 
-     *Reparar que existem diversos gr·ficos. Por exemplo um montado para os valores da agredaÁ„o, outro
+     *Reparar que existem diversos gr√°ficos. Por exemplo um montado para os valores da agreda√ß√£o, outro
      para os valores dos Itens dos resultados.
-     *Reparar ainda que existem uma situaÁ„o em que s„o montados 2 gr·ficos da escola SAEB. Mais
-     especificamente quando nenhuma ediÁ„o È escolhida. Sendo assim, o App dever· comparar o ano atual
+     *Reparar ainda que existem uma situa√ß√£o em que s√£o montados 2 gr√°ficos da escola SAEB. Mais
+     especificamente quando nenhuma edi√ß√£o √© escolhida. Sendo assim, o App dever√° comparar o ano atual
      com o anterior.
     */
     function resultadoApresentar(ciclo, edicao, areaConhecimentoId, ano, divResultadoContainer, dataResultado, objetoEnviado) {
         try {
-            //MSTEHC - Nova informaÁ„o de ProficiÍncias. Se n„o houver dados vindos do servidor, usar valor padr„o
+            //MSTEHC - Nova informa√ß√£o de Profici√™ncias. Se n√£o houver dados vindos do servidor, usar valor padr√£o
             var proficienciasAtuais = [
                 { Nome: "Indefinido" },
-                { Nome: "Abaixo do b·sico" },
-                { Nome: "B·sico" },
+                { Nome: "Abaixo do b√°sico" },
+                { Nome: "B√°sico" },
                 { Nome: "Adequado" },
-                { Nome: "AvanÁado" }
+                { Nome: "Avan√ßado" }
             ];
-            var labelsCiclos = { ciclo1: "AlfabetizaÁ„o", ciclo2: "Interdisciplinar", ciclo3: "Autoral" };
+            var labelsCiclos = { ciclo1: "Alfabetiza√ß√£o", ciclo2: "Interdisciplinar", ciclo3: "Autoral" };
 
             if (dataResultado.hasOwnProperty("Proficiencias")) {
                 if (dataResultado.Proficiencias.length > 0) {
@@ -4431,14 +4432,14 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Configura ChartJS para mostrar Tooltips por padr„o e melhorar o desempenho dos gr·ficos.
-             *Em seguida esconde p·gina de resultados com base nos filtros.
-             *Em seguida mostra a Div que comportar· os resultados e manipula a interface para se
-             moldar de acordo com as opÁıes escolhidas.
+             *Configura ChartJS para mostrar Tooltips por padr√£o e melhorar o desempenho dos gr√°ficos.
+             *Em seguida esconde p√°gina de resultados com base nos filtros.
+             *Em seguida mostra a Div que comportar√° os resultados e manipula a interface para se
+             moldar de acordo com as op√ß√µes escolhidas.
             */
             configurarPluginsChartsJS();
 
-            //MSTECH - Novo evento para voltar aos par‚metros quando backbutton do Android
+            //MSTECH - Novo evento para voltar aos par√¢metros quando backbutton do Android
             if (divResultadoContainer == "divResultadoApresentacao") {
                 mostrarTelaResultados(true, "divResultadoApresentacao", 0);
                 adicionarItemBackButton("btnResultadoAlterarParametros");
@@ -4452,7 +4453,7 @@ function definirEventHandlers() {
                 $("#divResultadoApresentacaoAluno").show();
 
                 $(".lblResultadoTitulo").html(
-                    "Resultado referente ao " + dataResultado.AnoEscolar + "∫ Ano"
+                    "Resultado referente ao " + dataResultado.AnoEscolar + "¬∫ Ano"
                 );
             }
 
@@ -4464,79 +4465,81 @@ function definirEventHandlers() {
             $("#lblResultadoTituloDetalhe").html("");
 
             var nivel = $("#ddlResultadoNivel").val();
-            var edicao = $("#ddlResultadoEdicao").val();
+            edicao = $("#ddlResultadoEdicao").val();
             var areaConhecimento = $("#ddlResultadoAreaConhecimento").val();
             var lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get();
 
             /**
             -----MSTECH-----
-             *Mostra diferentes tÌtulos e descriÁıes com base no tipo de usu·rio selecionado.
+             *Mostra diferentes t√≠tulos e descri√ß√µes com base no tipo de usu√°rio selecionado.
             */
             if (nivel == "SME") {
                 if (parseInt(ciclo) > 1) {
-                    $("#lblResultadoTituloAgregacao").html("O primeiro gr·fico abaixo È o resultado da agragaÁ„o das informaÁıes dos gr·ficos seguintes (por ano), ou seja, o total do ciclo aprendizagem para cada nÌvel.");
+                    $("#lblResultadoTituloAgregacao").html("O primeiro gr√°fico abaixo √© o resultado da agraga√ß√£o das informa√ß√µes dos gr√°ficos seguintes (por ano), ou seja, o total do ciclo aprendizagem para cada n√≠vel.");
                 }
                 else {
-                    $("#lblResultadoTituloAgregacao").html("No gr·fico abaixo encontra-se a distribuiÁ„o de todos os alunos da SME nos nÌveis: " +
+                    $("#lblResultadoTituloAgregacao").html("No gr√°fico abaixo encontra-se a distribui√ß√£o de todos os alunos da SME nos n√≠veis: " +
                         proficienciasAtuais[1].Nome + ", " +
                         proficienciasAtuais[2].Nome + ", " +
                         proficienciasAtuais[3].Nome + " e " +
                         proficienciasAtuais[4].Nome + ".");
-                    $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de proficiÍncia de cada DRE.");
+                    $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de profici√™ncia de cada DRE.");
                 }
             }
             else if (nivel == "DRE") {
                 if (dataResultado.Agregacao.length == 1)
-                    $("#lblResultadoTituloAgregacao").html("No gr·fico abaixo encontra-se a distribuiÁ„o de todos os alunos da DRE nos nÌveis: " +
+                    $("#lblResultadoTituloAgregacao").html("No gr√°fico abaixo encontra-se a distribui√ß√£o de todos os alunos da DRE nos n√≠veis: " +
                         proficienciasAtuais[1].Nome + ", " +
                         proficienciasAtuais[2].Nome + ", " +
                         proficienciasAtuais[3].Nome + " e " +
                         proficienciasAtuais[4].Nome + ".");
                 else
-                    $("#lblResultadoTituloAgregacao").html("Nos gr·ficos abaixo encontram-se a distribuiÁ„o de todos os alunos das DREs selecionadas nos nÌveis: " +
+                    $("#lblResultadoTituloAgregacao").html("Nos gr√°ficos abaixo encontram-se a distribui√ß√£o de todos os alunos das DREs selecionadas nos n√≠veis: " +
                         proficienciasAtuais[1].Nome + ", " +
                         proficienciasAtuais[2].Nome + ", " +
                         proficienciasAtuais[3].Nome + " e " +
                         proficienciasAtuais[4].Nome + ".");
-                $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de proficiÍncia de cada Escola.");
+                $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de profici√™ncia de cada Escola.");
             }
             else if (nivel == "ESCOLA") {
                 if (dataResultado.Agregacao.length == 1)
-                    $("#lblResultadoTituloAgregacao").html("No gr·fico abaixo encontra-se a distribuiÁ„o de todos os alunos da Escola nos nÌveis: " +
+                    $("#lblResultadoTituloAgregacao").html("No gr√°fico abaixo encontra-se a distribui√ß√£o de todos os alunos da Escola nos n√≠veis: " +
                         proficienciasAtuais[1].Nome + ", " +
                         proficienciasAtuais[2].Nome + ", " +
                         proficienciasAtuais[3].Nome + " e " +
                         proficienciasAtuais[4].Nome + ".");
                 else
-                    $("#lblResultadoTituloAgregacao").html("Nos gr·ficos abaixo encontram-se a distribuiÁ„o de todos os alunos das Escolas selecionadas nos nÌveis: " +
+                    $("#lblResultadoTituloAgregacao").html("Nos gr√°ficos abaixo encontram-se a distribui√ß√£o de todos os alunos das Escolas selecionadas nos n√≠veis: " +
                         proficienciasAtuais[1].Nome + ", " +
                         proficienciasAtuais[2].Nome + ", " +
                         proficienciasAtuais[3].Nome + " e " +
                         proficienciasAtuais[4].Nome + ".");
-                $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de proficiÍncia de cada Turma.");
+                $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de profici√™ncia de cada Turma.");
             }
             else if (nivel == "TURMA") {
                 if (dataResultado.Agregacao.length == 1)
-                    $("#lblResultadoTituloAgregacao").html("No gr·fico abaixo encontra-se a distribuiÁ„o de todos os alunos da Turma nos nÌveis: " +
+                    $("#lblResultadoTituloAgregacao").html("No gr√°fico abaixo encontra-se a distribui√ß√£o de todos os alunos da Turma nos n√≠veis: " +
                         proficienciasAtuais[1].Nome + ", " +
                         proficienciasAtuais[2].Nome + ", " +
                         proficienciasAtuais[3].Nome + " e " +
                         proficienciasAtuais[4].Nome + ".");
                 else
-                    $("#lblResultadoTituloAgregacao").html("Nos gr·fico abaixo encontram-se a distribuiÁ„o de todos os alunos das Turmas selecionadas nos nÌveis: " +
+                    $("#lblResultadoTituloAgregacao").html("Nos gr√°fico abaixo encontram-se a distribui√ß√£o de todos os alunos das Turmas selecionadas nos n√≠veis: " +
                         proficienciasAtuais[1].Nome + ", " +
                         proficienciasAtuais[2].Nome + ", " +
                         proficienciasAtuais[3].Nome + " e " +
                         proficienciasAtuais[4].Nome + ".");
-                $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de proficiÍncia de cada Aluno. No gr·fico, toque na barra correspondente ao aluno para visualizar informaÁıes detalhadas sobre seu respectivo desempenho.");
+                $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de profici√™ncia de cada Aluno. No gr√°fico, toque na barra correspondente ao aluno para visualizar informa√ß√µes detalhadas sobre seu respectivo desempenho.");
             }
+
+            gerarImagemDivResultadoTituloDetalhe();
 
             /**
             -----MSTECH-----
              *Mais detalhes de interface.
 
-             Testar atravÈs de debug
-             RESPONDIDO: J· testando e enterdemos que existem diferenÁas na apresentaÁ„o dos resultados
+             Testar atrav√©s de debug
+             RESPONDIDO: J√° testando e enterdemos que existem diferen√ßas na apresenta√ß√£o dos resultados
              dependendo dos filtros escolhidos.
             */
             if (dataResultado.Agregacao.length == 0)
@@ -4556,80 +4559,80 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Configurando valores de referÍncia para os gr·ficos de ¡rea de Conhecimento e para
+             *Configurando valores de refer√™ncia para os gr√°ficos de √Årea de Conhecimento e para
              cada ano escolar.
-             *Tais configuraÁıes s„o importantes para melhorar a visualizaÁ„o dos resultados
-             por parte dos usu·rios verificando que a nota m·xima para todas as disciplinas È 500,
-             com exceÁ„o de redaÁ„o que È 100.
+             *Tais configura√ß√µes s√£o importantes para melhorar a visualiza√ß√£o dos resultados
+             por parte dos usu√°rios verificando que a nota m√°xima para todas as disciplinas √© 500,
+             com exce√ß√£o de reda√ß√£o que √© 100.
             */
             var proficienciaMaxima = 500;
             var reguaProficiencia = {};
 
-            if (areaConhecimentoId == "1") { //CiÍncias
-                reguaProficiencia["c1"] = [125, 175, 225]; //B·sico
+            if (areaConhecimentoId == "1") { //Ci√™ncias
+                reguaProficiencia["c1"] = [125, 175, 225]; //B√°sico
                 reguaProficiencia["c2"] = [175, 225, 275]; //Interdisciplinas
                 reguaProficiencia["c3"] = [210, 275, 325]; //Autoral
 
-                reguaProficiencia["2"] = [100, 150, 200]; //2∞ Ano
-                reguaProficiencia["3"] = [125, 175, 225]; //3∞ Ano
-                reguaProficiencia["4"] = [150, 200, 250]; //4∞ Ano
-                reguaProficiencia["5"] = [175, 225, 275]; //5∞ Ano
-                reguaProficiencia["6"] = [190, 240, 290]; //6∞ Ano
-                reguaProficiencia["7"] = [200, 250, 300]; //7∞ Ano
-                reguaProficiencia["8"] = [210, 275, 325]; //8∞ Ano
-                reguaProficiencia["9"] = [225, 300, 350]; //9∞ Ano
+                reguaProficiencia["2"] = [100, 150, 200]; //2¬∞ Ano
+                reguaProficiencia["3"] = [125, 175, 225]; //3¬∞ Ano
+                reguaProficiencia["4"] = [150, 200, 250]; //4¬∞ Ano
+                reguaProficiencia["5"] = [175, 225, 275]; //5¬∞ Ano
+                reguaProficiencia["6"] = [190, 240, 290]; //6¬∞ Ano
+                reguaProficiencia["7"] = [200, 250, 300]; //7¬∞ Ano
+                reguaProficiencia["8"] = [210, 275, 325]; //8¬∞ Ano
+                reguaProficiencia["9"] = [225, 300, 350]; //9¬∞ Ano
             }
-            else if (areaConhecimentoId == "2") {//LÌngua Portuguesa
-                reguaProficiencia["c1"] = [125, 175, 225]; //B·sico
+            else if (areaConhecimentoId == "2") {//L√≠ngua Portuguesa
+                reguaProficiencia["c1"] = [125, 175, 225]; //B√°sico
                 reguaProficiencia["c2"] = [150, 200, 250]; //Interdisciplinas
                 reguaProficiencia["c3"] = [185, 250, 300]; //Autoral
 
-                reguaProficiencia["2"] = [100, 125, 175]; //2∞ Ano
-                reguaProficiencia["3"] = [125, 175, 225]; //3∞ Ano
-                reguaProficiencia["4"] = [135, 185, 235]; //4∞ Ano
-                reguaProficiencia["5"] = [150, 200, 250]; //5∞ Ano
-                reguaProficiencia["6"] = [165, 215, 265]; //6∞ Ano
-                reguaProficiencia["7"] = [175, 225, 275]; //7∞ Ano
-                reguaProficiencia["8"] = [185, 250, 300]; //8∞ Ano
-                reguaProficiencia["9"] = [200, 275, 325]; //9∞ Ano
+                reguaProficiencia["2"] = [100, 125, 175]; //2¬∞ Ano
+                reguaProficiencia["3"] = [125, 175, 225]; //3¬∞ Ano
+                reguaProficiencia["4"] = [135, 185, 235]; //4¬∞ Ano
+                reguaProficiencia["5"] = [150, 200, 250]; //5¬∞ Ano
+                reguaProficiencia["6"] = [165, 215, 265]; //6¬∞ Ano
+                reguaProficiencia["7"] = [175, 225, 275]; //7¬∞ Ano
+                reguaProficiencia["8"] = [185, 250, 300]; //8¬∞ Ano
+                reguaProficiencia["9"] = [200, 275, 325]; //9¬∞ Ano
             }
-            else if (areaConhecimentoId == "3") {//Matem·tica
-                reguaProficiencia["c1"] = [150, 200, 250]; //B·sico
+            else if (areaConhecimentoId == "3") {//Matem√°tica
+                reguaProficiencia["c1"] = [150, 200, 250]; //B√°sico
                 reguaProficiencia["c2"] = [175, 225, 275]; //Interdisciplinas
                 reguaProficiencia["c3"] = [210, 275, 325]; //Autoral
 
-                reguaProficiencia["2"] = [125, 175, 200]; //3∞ Ano
-                reguaProficiencia["3"] = [150, 200, 250]; //3∞ Ano
-                reguaProficiencia["4"] = [165, 210, 265]; //4∞ Ano
-                reguaProficiencia["5"] = [175, 225, 275]; //5∞ Ano
-                reguaProficiencia["6"] = [190, 240, 290]; //6∞ Ano
-                reguaProficiencia["7"] = [200, 250, 300]; //7∞ Ano
-                reguaProficiencia["8"] = [210, 275, 325]; //8∞ Ano
-                reguaProficiencia["9"] = [225, 300, 350]; //9∞ Ano
+                reguaProficiencia["2"] = [125, 175, 200]; //3¬∞ Ano
+                reguaProficiencia["3"] = [150, 200, 250]; //3¬∞ Ano
+                reguaProficiencia["4"] = [165, 210, 265]; //4¬∞ Ano
+                reguaProficiencia["5"] = [175, 225, 275]; //5¬∞ Ano
+                reguaProficiencia["6"] = [190, 240, 290]; //6¬∞ Ano
+                reguaProficiencia["7"] = [200, 250, 300]; //7¬∞ Ano
+                reguaProficiencia["8"] = [210, 275, 325]; //8¬∞ Ano
+                reguaProficiencia["9"] = [225, 300, 350]; //9¬∞ Ano
             }
-            else if (areaConhecimentoId == "4") {//RedaÁ„o
+            else if (areaConhecimentoId == "4") {//Reda√ß√£o
                 var proficienciaMaxima = 100;
-                reguaProficiencia["c1"] = [50, 65, 90]; //B·sico
+                reguaProficiencia["c1"] = [50, 65, 90]; //B√°sico
                 reguaProficiencia["c2"] = [50, 65, 90]; //Interdisciplinas
                 reguaProficiencia["c3"] = [50, 65, 90]; //Autoral
 
-                reguaProficiencia["2"] = [50, 65, 90]; //2∞ Ano
-                reguaProficiencia["3"] = [50, 65, 90]; //3∞ Ano
-                reguaProficiencia["4"] = [50, 65, 90]; //4∞ Ano
-                reguaProficiencia["5"] = [50, 65, 90]; //5∞ Ano
-                reguaProficiencia["6"] = [50, 65, 90]; //6∞ Ano
-                reguaProficiencia["7"] = [50, 65, 90]; //7∞ Ano
-                reguaProficiencia["8"] = [50, 65, 90]; //8∞ Ano
-                reguaProficiencia["9"] = [50, 65, 90]; //9∞ Ano
+                reguaProficiencia["2"] = [50, 65, 90]; //2¬∞ Ano
+                reguaProficiencia["3"] = [50, 65, 90]; //3¬∞ Ano
+                reguaProficiencia["4"] = [50, 65, 90]; //4¬∞ Ano
+                reguaProficiencia["5"] = [50, 65, 90]; //5¬∞ Ano
+                reguaProficiencia["6"] = [50, 65, 90]; //6¬∞ Ano
+                reguaProficiencia["7"] = [50, 65, 90]; //7¬∞ Ano
+                reguaProficiencia["8"] = [50, 65, 90]; //8¬∞ Ano
+                reguaProficiencia["9"] = [50, 65, 90]; //9¬∞ Ano
             }
 
             //var anoSelecionado = $("#ddlResultadoAno").val();
             /**
             -----MSTECH-----
-             *Determinando os intervalos do gr·fico com base nos valores preestabelecidos
+             *Determinando os intervalos do gr√°fico com base nos valores preestabelecidos
              informados acima.
-             *Em seguida, temos a montagem das legendas, tambÈm utilizando a base da rÈgua de
-             proficiÍncia
+             *Em seguida, temos a montagem das legendas, tamb√©m utilizando a base da r√©gua de
+             profici√™ncia
             */
             var intervaloGrafico = [];
             var tituloAbaixoDoBasico = "";
@@ -4665,8 +4668,8 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Aqui temos a determinaÁ„o das vari·veis que compıem a interface e estilos dos gr·ficos
-             basicamente especificaÁ„o de cores.
+             *Aqui temos a determina√ß√£o das vari√°veis que comp√µem a interface e estilos dos gr√°ficos
+             basicamente especifica√ß√£o de cores.
             */
             var legendaAgregacao = { position: "right" };
             var corNivelAbaixoDoBasico_ref = "rgba(255,0,0,alpha)";
@@ -4700,9 +4703,9 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Montagem do gr·fico de resultado AgregaÁ„o.
-             *O cÛdigo abaixo È a estruturaÁ„o do ChartJS, gr·fico do tipo PolarArea.
-             *Reparar que os atributos do gr·fico s„o montados de acordo com os dados retornados
+             *Montagem do gr√°fico de resultado Agrega√ß√£o.
+             *O c√≥digo abaixo √© a estrutura√ß√£o do ChartJS, gr√°fico do tipo PolarArea.
+             *Reparar que os atributos do gr√°fico s√£o montados de acordo com os dados retornados
              pelo servidor, mas especificamente os dados contidos no objeto Agregacao.
             */
             for (var i = 0; i < dataResultado.Agregacao.length; i++) {
@@ -4712,9 +4715,9 @@ function definirEventHandlers() {
 
                 graficosAgregacaoHTML += "<canvas id='chartResultadoAgregacao" + i + "' style='margin-top:15px;'></canvas>";
 
-                //MSTECH - Nova div para gr·ficos do Ciclo de Aprendizagem
+                //MSTECH - Nova div para gr√°ficos do Ciclo de Aprendizagem
                 if (ciclo != "") {
-                    //CICLO DE ALFABETIZA«√O - Gr·fico sobreposto
+                    //CICLO DE ALFABETIZA√á√ÉO - Gr√°fico sobreposto
                     graficosAgregacaoHTML += "<div style='margin-top:15px;'>";
                     graficosAgregacaoHTML += baseGraficoAprendizagem(i);
                     if (ciclo == 1) {
@@ -4726,7 +4729,7 @@ function definirEventHandlers() {
                 }
                 else {
                     textoProficiencia = [
-                        agregacao.Titulo, "ProficiÍncia: " + agregacao.Valor + " (" +
+                        agregacao.Titulo, "Profici√™ncia: " + agregacao.Valor + " (" +
                         tituloNivel[agregacao.NivelProficienciaID] + ") - Total de alunos: " +
                         agregacao.TotalAlunos, ""];
                 }
@@ -4738,7 +4741,7 @@ function definirEventHandlers() {
                 var chartResultadoAgregacao = new Chart(chartResultadoAgregacao_ctx, {
                     type: 'polarArea',
                     data: {
-                        //labels: ["Abaixo do b·sico:" + dataResultado.PercentualAbaixoDoBasico + "%", "B·sico:" + dataResultado.PercentualBasico + "%", "Adequado:" + dataResultado.PercentualAdequado + "%", "AvanÁado:" + dataResultado.PercentualAvancado + "%"],
+                        //labels: ["Abaixo do b√°sico:" + dataResultado.PercentualAbaixoDoBasico + "%", "B√°sico:" + dataResultado.PercentualBasico + "%", "Adequado:" + dataResultado.PercentualAdequado + "%", "Avan√ßado:" + dataResultado.PercentualAvancado + "%"],
                         labels: [tituloAbaixoDoBasico + ":  " + agregacao.PercentualAbaixoDoBasico + "%", tituloBasico + ":  " + agregacao.PercentualBasico + "%", tituloAdequado + ":  " + agregacao.PercentualAdequado + "%", tituloAvancado + ":  " + agregacao.PercentualAvancado + "%"],
 
                         datasets: [
@@ -4762,8 +4765,8 @@ function definirEventHandlers() {
                                 label: function (tooltipItem, data) {
                                     /**
                                     -----MSTECH-----
-                                     *Determina a label do gr·fico em porcentagem com base nas
-                                     informaÁıes contidas no mesmo.
+                                     *Determina a label do gr√°fico em porcentagem com base nas
+                                     informa√ß√µes contidas no mesmo.
                                     */
                                     //get the concerned dataset
                                     var dataset = data.datasets[tooltipItem.datasetIndex];
@@ -4801,7 +4804,7 @@ function definirEventHandlers() {
 
                 /**
                 -----MSTECH-----
-                 *Se o filtro de nÌvel for ESCOLA, ainda oferece a possibilidade de verificar o boletim
+                 *Se o filtro de n√≠vel for ESCOLA, ainda oferece a possibilidade de verificar o boletim
                  da mesma, gerado em arquivo PDF.
                 */
                 if (nivel == "ESCOLA") {
@@ -4819,14 +4822,14 @@ function definirEventHandlers() {
                     if (ciclo != "") {
                         //REVISTA
                         var urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
-                            "Revistas PedagÛgicas/" +
+                            "Revistas Pedag√≥gicas/" +
                             $("#ddlResultadoAreaConhecimento option:selected").text() + "/" +
                             "Ciclo " + $("#ddlResultadoCiclo option:selected").text() +
                             "/" + parseInt(agregacao.Chave) + ".pdf";
 
                         $("#divChartResultadoAgregacao").append(
                             "<a  class='ui-btn' href='" + encodeURI(urlRevista) +
-                            "' target='blank'>Baixar Revista PedagÛgica</a>"
+                            "' target='blank'>Baixar Revista Pedag√≥gica</a>"
                         );
                     }
                 }
@@ -4834,16 +4837,16 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *AlÈm dos gr·ficos mais objetos com o desempenho na ProvaSP com base no nÌvel selecionado,
-             È deve-se montar tambÈm gr·ficos com base no SAEB Sistema de AvaliaÁ„o da EducaÁ„o B·sica.
-             *Para tal, abaixo configuramos as informaÁıes para a montagem dos gr·ficos correspondentes.
+             *Al√©m dos gr√°ficos mais objetos com o desempenho na ProvaSP com base no n√≠vel selecionado,
+             √© deve-se montar tamb√©m gr√°ficos com base no SAEB Sistema de Avalia√ß√£o da Educa√ß√£o B√°sica.
+             *Para tal, abaixo configuramos as informa√ß√µes para a montagem dos gr√°ficos correspondentes.
 
-             *Reparar ainda que no caso da ENTURMACAO_ATUAL, s„o montadas duas rÈguas com dois gr·ficos e
-             na outra situaÁ„o apenas 1. Se escolher ENTURMACAO_ATUAL monta o gr·fico do ano atual e anterior
-             para fins de comparaÁ„o.
+             *Reparar ainda que no caso da ENTURMACAO_ATUAL, s√£o montadas duas r√©guas com dois gr√°ficos e
+             na outra situa√ß√£o apenas 1. Se escolher ENTURMACAO_ATUAL monta o gr√°fico do ano atual e anterior
+             para fins de compara√ß√£o.
 
-             Debugar para enteder melhor o funcionamento e a raz„o divergÍncia da criaÁ„o dos gr·ficos.
-             RESPONDIDO: Dois gr·ficos s„o criados quando compara-se o ano atual com o ano anterior.
+             Debugar para enteder melhor o funcionamento e a raz√£o diverg√™ncia da cria√ß√£o dos gr√°ficos.
+             RESPONDIDO: Dois gr√°ficos s√£o criados quando compara-se o ano atual com o ano anterior.
             */
             $("#" + divResultadoContainer + " .lblResultadoTituloEscalaSaeb_1").html("");
             $("#" + divResultadoContainer + " .lblResultadoTituloEscalaSaeb_2").html("");
@@ -4866,10 +4869,10 @@ function definirEventHandlers() {
                     proficienciaMaxima - reguaProficiencia[anoAplicacaoProva][2]
                 ];
 
-                $(".lblResultadoTituloEscalaSaeb_1").html("RÈgua do " + anoAplicacaoProva + "∫ ano");
-                $(".lblResultadoTituloEscalaSaeb_2").html("RÈgua do " + ano + "∫ ano");
+                $(".lblResultadoTituloEscalaSaeb_1").html("R√©gua do " + anoAplicacaoProva + "¬∫ ano");
+                $(".lblResultadoTituloEscalaSaeb_2").html("R√©gua do " + ano + "¬∫ ano");
 
-                //CONFIGURA 2 R…GUAS
+                //CONFIGURA 2 R√âGUAS
                 document.getElementById('divChartResultadoDetalhe').style.overflow = 'auto';
                 document.getElementById('divChartResultadoDetalhe').style.height = '350px';
 
@@ -4881,11 +4884,11 @@ function definirEventHandlers() {
                     [{
                         data: [intervaloGrafico[0]],
                         backgroundColor: corNivelAbaixoDoBasico,
-                        label: proficienciasAtuais[1].Nome + " (<" + reguaProficiencia[anoAplicacaoProva][0] + ")" //label: "Abaixo do b·sico" //label: "Abaixo do b·sico (<" + intervaloGrafico[0] +")"
+                        label: proficienciasAtuais[1].Nome + " (<" + reguaProficiencia[anoAplicacaoProva][0] + ")" //label: "Abaixo do b√°sico" //label: "Abaixo do b√°sico (<" + intervaloGrafico[0] +")"
                     }, {
                         data: [intervaloGrafico[1]],
                         backgroundColor: corNivelBasico,
-                        label: proficienciasAtuais[2].Nome + " (>=" + reguaProficiencia[anoAplicacaoProva][0] + " e <" + reguaProficiencia[anoAplicacaoProva][1] + ")" //label: "B·sico" //label: "B·sico (>=" + intervaloGrafico[0] + " e <" + intervaloGrafico[1] + ")"
+                        label: proficienciasAtuais[2].Nome + " (>=" + reguaProficiencia[anoAplicacaoProva][0] + " e <" + reguaProficiencia[anoAplicacaoProva][1] + ")" //label: "B√°sico" //label: "B√°sico (>=" + intervaloGrafico[0] + " e <" + intervaloGrafico[1] + ")"
                     }, {
                         data: [intervaloGrafico[2]],
                         backgroundColor: corNivelAdequado,
@@ -4893,7 +4896,7 @@ function definirEventHandlers() {
                     }, {
                         data: [intervaloGrafico[3]],
                         backgroundColor: corNivelAvancado,
-                        label: proficienciasAtuais[4].Nome + " (>=" + reguaProficiencia[anoAplicacaoProva][2] + ")" //label: "AvanÁado" //label: "AvanÁado (>=" + intervaloGrafico[3] + ")"
+                        label: proficienciasAtuais[4].Nome + " (>=" + reguaProficiencia[anoAplicacaoProva][2] + ")" //label: "Avan√ßado" //label: "Avan√ßado (>=" + intervaloGrafico[3] + ")"
                     }]
                 );
 
@@ -4905,11 +4908,11 @@ function definirEventHandlers() {
                     [{
                         data: [intervaloGrafico2[0]],
                         backgroundColor: corNivelAbaixoDoBasico,
-                        label: tituloAbaixoDoBasico //label: "Abaixo do b·sico" //label: "Abaixo do b·sico (<" + intervaloGrafico[0] +")"
+                        label: tituloAbaixoDoBasico //label: "Abaixo do b√°sico" //label: "Abaixo do b√°sico (<" + intervaloGrafico[0] +")"
                     }, {
                         data: [intervaloGrafico2[1]],
                         backgroundColor: corNivelBasico,
-                        label: tituloBasico //label: "B·sico" //label: "B·sico (>=" + intervaloGrafico[0] + " e <" + intervaloGrafico[1] + ")"
+                        label: tituloBasico //label: "B√°sico" //label: "B√°sico (>=" + intervaloGrafico[0] + " e <" + intervaloGrafico[1] + ")"
                     }, {
                         data: [intervaloGrafico2[2]],
                         backgroundColor: corNivelAdequado,
@@ -4917,12 +4920,12 @@ function definirEventHandlers() {
                     }, {
                         data: [intervaloGrafico2[3]],
                         backgroundColor: corNivelAvancado,
-                        label: tituloAvancado //label: "AvanÁado" //label: "AvanÁado (>=" + intervaloGrafico[3] + ")"
+                        label: tituloAvancado //label: "Avan√ßado" //label: "Avan√ßado (>=" + intervaloGrafico[3] + ")"
                     }]
                 );
             }
             else {
-                //CONFIGURA 1 R…GUA
+                //CONFIGURA 1 R√âGUA
                 configurarReguaSaeb(
                     divResultadoContainer,
                     "divChartResultadoEscalaSaeb_1",
@@ -4931,11 +4934,11 @@ function definirEventHandlers() {
                     [{
                         data: [intervaloGrafico[0]],
                         backgroundColor: corNivelAbaixoDoBasico,
-                        label: tituloAbaixoDoBasico //label: "Abaixo do b·sico" //label: "Abaixo do b·sico (<" + intervaloGrafico[0] +")"
+                        label: tituloAbaixoDoBasico //label: "Abaixo do b√°sico" //label: "Abaixo do b√°sico (<" + intervaloGrafico[0] +")"
                     }, {
                         data: [intervaloGrafico[1]],
                         backgroundColor: corNivelBasico,
-                        label: tituloBasico //label: "B·sico" //label: "B·sico (>=" + intervaloGrafico[0] + " e <" + intervaloGrafico[1] + ")"
+                        label: tituloBasico //label: "B√°sico" //label: "B√°sico (>=" + intervaloGrafico[0] + " e <" + intervaloGrafico[1] + ")"
                     }, {
                         data: [intervaloGrafico[2]],
                         backgroundColor: corNivelAdequado,
@@ -4943,14 +4946,14 @@ function definirEventHandlers() {
                     }, {
                         data: [intervaloGrafico[3]],
                         backgroundColor: corNivelAvancado,
-                        label: tituloAvancado //label: "AvanÁado" //label: "AvanÁado (>=" + intervaloGrafico[3] + ")"
+                        label: tituloAvancado //label: "Avan√ßado" //label: "Avan√ßado (>=" + intervaloGrafico[3] + ")"
                     }]
                 );
             }
 
             /**
             -----MSTECH-----
-             *Ajustando dimensıes dos gr·ficos de acordo com os Itens gerados.
+             *Ajustando dimens√µes dos gr√°ficos de acordo com os Itens gerados.
             */
             $("#" + divResultadoContainer + " .divChartResultadoDetalhe").empty().append("<canvas id='chartResultadoDetalhe'></canvas>");
 
@@ -4983,11 +4986,11 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Montagem do gr·fico de barras com base nas informaÁıes dos itens dos resultados.
+             *Montagem do gr√°fico de barras com base nas informa√ß√µes dos itens dos resultados.
             */
             for (var i = 0; i < dataResultado.Itens.length; i++) {
                 if (dataResultado.Itens[i].Valor == -1) {
-                    dataResultado.Itens[i].Valor = "Profic. n„o calculada";
+                    dataResultado.Itens[i].Valor = "Profic. n√£o calculada";
                 }
             }
 
@@ -5013,8 +5016,8 @@ function definirEventHandlers() {
                                     parseInt(labelSplitArray[labelSplitArray.length - 1].split(")")[0]);
 
                                 if (!isNaN(alunoID)) {
-                                    var E = $("#ddlResultadoEdicao").val(); //EdicaÁ„o
-                                    var AC = $("#ddlResultadoAreaConhecimento").val();// ¡rea de Conhecimento
+                                    var E = $("#ddlResultadoEdicao").val(); //Edica√ß√£o
+                                    var AC = $("#ddlResultadoAreaConhecimento").val();// √Årea de Conhecimento
 
                                     baixarProvaAlunoPorAno(false, AC + '_' + alunoID + '_' + E);
                                 }
@@ -5035,8 +5038,8 @@ function definirEventHandlers() {
                                     var labelOffset = c.chart.getDatasetMeta(0).data[0]._model.height;
 
                                     if ($("#ddlResultadoEdicao").val() == "ENTURMACAO_ATUAL") {
-                                        //No caso de ENTURMACAO_ATUAL s„o apresentados 2 gr·ficos: a proficiÍncia do ano anterior e a atual.
-                                        //Por essa raz„o È preciso dobrar o salto da label:
+                                        //No caso de ENTURMACAO_ATUAL s√£o apresentados 2 gr√°ficos: a profici√™ncia do ano anterior e a atual.
+                                        //Por essa raz√£o √© preciso dobrar o salto da label:
                                         labelOffset *= 2;
                                     }
 
@@ -5052,7 +5055,7 @@ function definirEventHandlers() {
                         backgroundColor: "rgba(100,100,100,1)",
                         callbacks: {
                             title: function (tooltipItem, data) {
-                                //CUSTOMIZA«√O DA TOOLTIP
+                                //CUSTOMIZA√á√ÉO DA TOOLTIP
 
                                 //return data['labels'][tooltipItem[0]['index']];
                                 return "";
@@ -5060,10 +5063,10 @@ function definirEventHandlers() {
                             label: function (tooltipItem, data) {
                                 /**
                                 -----MSTECH-----
-                                 *CUSTOMIZA«√O DA TOOLTIP;
-                                 *De acordo com os valores passados ao gr·fico, mostrar tooltips
+                                 *CUSTOMIZA√á√ÉO DA TOOLTIP;
+                                 *De acordo com os valores passados ao gr√°fico, mostrar tooltips
                                  personalizadas. Por exemplo: dependendo dos resultados obtidos, informar
-                                 se ficou abaixo da mÈdio, acima ou etc.
+                                 se ficou abaixo da m√©dio, acima ou etc.
                                 */
                                 var anoRef = 0;
                                 var valorProficiencia = data['datasets'][0]['data'][tooltipItem['index']];
@@ -5089,10 +5092,10 @@ function definirEventHandlers() {
                                     NivelProficienciaID_ENTURMACAO = 4;
 
                                 if (ciclo == "") {
-                                    return "RÈgua do " + anoRef + "∫ ano: " + tituloNivel[NivelProficienciaID_ENTURMACAO];
+                                    return "R√©gua do " + anoRef + "¬∫ ano: " + tituloNivel[NivelProficienciaID_ENTURMACAO];
                                 }
                                 else {
-                                    return "RÈgua do ciclo de " + labelsCiclos["ciclo" + ciclo];
+                                    return "R√©gua do ciclo de " + labelsCiclos["ciclo" + ciclo];
                                 }
 
 
@@ -5101,7 +5104,7 @@ function definirEventHandlers() {
                             /*,
                             afterLabel: function (tooltipItem, data)
                             {
-                                //CUSTOMIZA«√O DA TOOLTIP
+                                //CUSTOMIZA√á√ÉO DA TOOLTIP
 
                                 var dataset = data['datasets'][0];
                                 //var percent = Math.round((dataset['data'][tooltipItem['index']] / dataset["_meta"][0]['total']) * 100)
@@ -5144,7 +5147,7 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Trechos respons·vel pela filtragem de dados dos gr·ficos.
+             *Trechos respons√°vel pela filtragem de dados dos gr√°ficos.
             */
             var hashtableProficienciaId_cor = {};
             hashtableProficienciaId_cor["1"] = corNivelAbaixoDoBasico;
@@ -5170,7 +5173,7 @@ function definirEventHandlers() {
             for (var i = 0; i < dataResultado.Itens.length; i++) {
                 var item = dataResultado.Itens[i];
 
-                //MSTECH - Quando existe valor em pelo menos um dos ITENS, mostra o gr·fico em ciclo
+                //MSTECH - Quando existe valor em pelo menos um dos ITENS, mostra o gr√°fico em ciclo
                 if (item.Valor != 0) { existeValor = true; }
 
                 if (item.NivelProficienciaID == 0 || filtroProficiencia.indexOf(item.NivelProficienciaID.toString()) >= 0) {
@@ -5195,7 +5198,7 @@ function definirEventHandlers() {
                             NivelProficienciaID_ENTURMACAO = 3;
                         else if (item.Valor >= reguaProficiencia[ano][2])
                             NivelProficienciaID_ENTURMACAO = 4;
-                        chartResultadoDetalhe.data.datasets[0].label = "RÈgua do " + anoAplicacaoProva + "∫ ano";
+                        chartResultadoDetalhe.data.datasets[0].label = "R√©gua do " + anoAplicacaoProva + "¬∫ ano";
 
                     }
                     else {
@@ -5208,32 +5211,32 @@ function definirEventHandlers() {
                         else if (item.Valor >= reguaProficiencia["c" + ciclo][2])
                             NivelProficienciaID_ENTURMACAO = 4;
                         chartResultadoDetalhe.data.datasets[0].label =
-                            "RÈgua do ciclo de " + labelsCiclos["ciclo" + ciclo];
+                            "R√©gua do ciclo de " + labelsCiclos["ciclo" + ciclo];
                     }
 
                     /**
                     -----MSTECH-----
-                     *Corrigido bug de atribuiÁ„o de dados ao dataset. Isso ocorrer· apenas quando a
+                     *Corrigido bug de atribui√ß√£o de dados ao dataset. Isso ocorrer√° apenas quando a
                      base de dados para tal existir
                     */
                     if (edicao == "ENTURMACAO_ATUAL") {
                         chartResultadoDetalhe.data.datasets[1].backgroundColor.push(hashtableProficienciaId_enturmacao_cor[NivelProficienciaID_ENTURMACAO]);
-                        chartResultadoDetalhe.data.datasets[1].label = "RÈgua do " + ano + "∫ ano";
+                        chartResultadoDetalhe.data.datasets[1].label = "R√©gua do " + ano + "¬∫ ano";
                     }
                 }
             }
 
             /**
             -----MSTECH-----
-             *Com os gr·ficos montados, ser„o criadas mÈtricas de mÈdia.
-             *Tais mÈtricas s„o adicionadas ao gr·ficos
+             *Com os gr√°ficos montados, ser√£o criadas m√©tricas de m√©dia.
+             *Tais m√©tricas s√£o adicionadas ao gr√°ficos
 
-             Verificar por debug como as mÈdias s„o mostradas.
-             RESPONDIDO: Verificamos no Debug a montagem de todos os tipos de gr·ficos.
+             Verificar por debug como as m√©dias s√£o mostradas.
+             RESPONDIDO: Verificamos no Debug a montagem de todos os tipos de gr√°ficos.
             */
             if (dataResultado.Itens.length > 1) {
                 if (dataResultado.Valor > 0) {
-                    chartResultadoDetalhe.data.labels.push("M…DIA: " + dataResultado.Valor);
+                    chartResultadoDetalhe.data.labels.push("M√âDIA: " + dataResultado.Valor);
                     chartResultadoDetalhe.data.datasets[0].data.push(dataResultado.Valor);
                     chartResultadoDetalhe.data.datasets[0].backgroundColor.push(hashtableProficienciaId_cor[dataResultado.NivelProficienciaID]);
                 }
@@ -5245,8 +5248,8 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Por fim, se do servidor vieram informaÁıes quanto ao desempenho em habilidades especÌficas
-             montar-se-· a tab de Habilidades. Caso contr·rio a tab n„o ser· mostrada.
+             *Por fim, se do servidor vieram informa√ß√µes quanto ao desempenho em habilidades espec√≠ficas
+             montar-se-√° a tab de Habilidades. Caso contr√°rio a tab n√£o ser√° mostrada.
             */
             if (ciclo != "") {
                 if (!existeValor) {
@@ -5270,13 +5273,13 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Novo mÈtodo para mostrar os gr·ficos do ciclo de aprendizagem
+             *Novo m√©todo para mostrar os gr√°ficos do ciclo de aprendizagem
             */
             cicloTotalAlunos = {};
-            //MSTECH - Resetando sÈrie histÛrica
+            //MSTECH - Resetando s√©rie hist√≥rica
             serieHistorica = { anoAtual: {}, anoAnterior: {} };
             if (ciclo != "" && Object.keys(objetoEnviado).length > 0) {
-                //MSTECH - ValidaÁ„o para verificar se as bases dos gr·ficos foram criadas ao haver informaÁ„o
+                //MSTECH - Valida√ß√£o para verificar se as bases dos gr√°ficos foram criadas ao haver informa√ß√£o
                 if (dataResultado.Agregacao.length > 0) {
                     for (var i = 0; i < modeloCiclos["Ciclo" + ciclo].length; i++) {
                         downloadResultadosCiclos(i, objetoEnviado, ciclo);
@@ -5294,11 +5297,11 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Este mÈtodo determina a configuraÁ„o dos gr·ficos do ChartJS.
-     *Primeiramente percebe-se que o cÛdigo torna os gr·ficos mais eficientes;
-     *Em segundo lugar, ele serve para sempre mostrar as tooltips (legendas e labels de informaÁ„o)
+     *Este m√©todo determina a configura√ß√£o dos gr√°ficos do ChartJS.
+     *Primeiramente percebe-se que o c√≥digo torna os gr√°ficos mais eficientes;
+     *Em segundo lugar, ele serve para sempre mostrar as tooltips (legendas e labels de informa√ß√£o)
 
-     ReferÍncia: https://stackoverflow.com/questions/36992922/chart-js-v2-how-to-make-tooltips-always-appear-on-pie-chart
+     Refer√™ncia: https://stackoverflow.com/questions/36992922/chart-js-v2-how-to-make-tooltips-always-appear-on-pie-chart
     */
     function configurarPluginsChartsJS() {
         try {
@@ -5337,7 +5340,7 @@ function definirEventHandlers() {
                         chart.options.tooltips.enabled = true;
                         /**
                        -----MSTECH-----
-                        *Havia um erro aqui, CHART agora È carregado localmente.
+                        *Havia um erro aqui, CHART agora √© carregado localmente.
                        */
                         Chart.helpers.each(chart.pluginTooltips, function (tooltip) {
                             // This line checks if the item is visible to display the tooltip
@@ -5361,9 +5364,9 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *ObtÈm as informaÁıes das habilidades atravÈs do objeto retornado do servidor.
-     *Com base nas informaÁıes de habilidades, manipuladas por nÌvel, montam-se tabelas de
-     informaÁıes e gr·dicos de radar para an·lise dos dados.
+     *Obt√©m as informa√ß√µes das habilidades atrav√©s do objeto retornado do servidor.
+     *Com base nas informa√ß√µes de habilidades, manipuladas por n√≠vel, montam-se tabelas de
+     informa√ß√µes e gr√°dicos de radar para an√°lise dos dados.
     */
     function configurarHabilidades(dataResultado) {
         try {
@@ -5372,10 +5375,10 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Verificando se usu·rio escolheu mais de uma opÁ„o em qualquer um dos filtros que
-             possibilitam tal aÁ„o.
-             *Em seguir reseta o conte˙do HTML da div divResultadoTabHabilidades_conteudoDinamico, a
-             qual comporta a an·lise de habilidades.
+             *Verificando se usu√°rio escolheu mais de uma op√ß√£o em qualquer um dos filtros que
+             possibilitam tal a√ß√£o.
+             *Em seguir reseta o conte√∫do HTML da div divResultadoTabHabilidades_conteudoDinamico, a
+             qual comporta a an√°lise de habilidades.
             */
             if (nivel == "DRE") {
                 selecaoMultipla = ($(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get().length > 1);
@@ -5392,22 +5395,22 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *O Loop a seguir monta o HTML de uma tabela com as informaÁıes das habilidade de acordo
+             *O Loop a seguir monta o HTML de uma tabela com as informa√ß√µes das habilidade de acordo
              com o retorno do servidor.
-             *Reparar, portanto, que a construÁ„o da an·lise de habilidades se d· depois da obtenÁ„o do
-             resultado da ProvaSP com base nos filtros em quest„o.
+             *Reparar, portanto, que a constru√ß√£o da an√°lise de habilidades se d√° depois da obten√ß√£o do
+             resultado da ProvaSP com base nos filtros em quest√£o.
             */
             for (var iTema = 0; iTema < dataResultado.Habilidades.length; iTema++) {
                 /**
                 -----MSTECH-----
-                 *Selecionando tema atual e criando o tÌtulo correspondente
-                 *Em seguida cria a tabela com a base SME e os nÌveis de acordo com os filtros escolhidos
-                 pelos usu·rios no Head da mesma.
+                 *Selecionando tema atual e criando o t√≠tulo correspondente
+                 *Em seguida cria a tabela com a base SME e os n√≠veis de acordo com os filtros escolhidos
+                 pelos usu√°rios no Head da mesma.
                 */
                 var tema = dataResultado.Habilidades[iTema];
                 $("#divResultadoTabHabilidades_conteudoDinamico").append("<h4 style='margin-top:15px;'>" + tema.Titulo + "</h4>");
 
-                var htmTabela = "<table class='greyGridTable'><thead><tr><td>Habilidade</td><td>DescriÁ„o</td><td>SME(%)</td>";
+                var htmTabela = "<table class='greyGridTable'><thead><tr><td>Habilidade</td><td>Descri√ß√£o</td><td>SME(%)</td>";
                 if (nivel == "DRE" || nivel == "ESCOLA" || nivel == "TURMA") {
                     htmTabela += "<td>DRE(%)</td>";
                 }
@@ -5421,10 +5424,10 @@ function definirEventHandlers() {
 
                 /**
                 -----MSTECH-----
-                 *Este trecho demonstra que as habilidades tambÈm s„o divididas por nÌvel. Sendo assim,
-                 criamos v·rios vetores para armazenar as informaÁıes das habilidades com base em tais
-                 nÌveis.
-                 *Uma mesma habilidade poder· ser analisada tanto no ‚mbito SME quanto no ‚mbite TURMA
+                 *Este trecho demonstra que as habilidades tamb√©m s√£o divididas por n√≠vel. Sendo assim,
+                 criamos v√°rios vetores para armazenar as informa√ß√µes das habilidades com base em tais
+                 n√≠veis.
+                 *Uma mesma habilidade poder√° ser analisada tanto no √¢mbito SME quanto no √¢mbite TURMA
                  por exemplo.
                 */
                 var estruturaHabilidadeMultiNivel = function () {
@@ -5451,9 +5454,9 @@ function definirEventHandlers() {
 
                     /**
                     -----MSTECH-----
-                     *Este primeiro tratamento cria um objeto com o nome da habilidade e conte˙do geral
+                     *Este primeiro tratamento cria um objeto com o nome da habilidade e conte√∫do geral
                      do tipo estruturaHabilidadeMultiNivel.
-                     *O trecho seguinte È irrelevante por encontrar-se comentado.
+                     *O trecho seguinte √© irrelevante por encontrar-se comentado.
                     */
                     if (tesseratoHabilidade[habilidade.OrigemTitulo] == null) {
                         tesseratoHabilidade[habilidade.OrigemTitulo] = new estruturaHabilidadeMultiNivel();
@@ -5471,10 +5474,10 @@ function definirEventHandlers() {
 
                     /**
                     -----MSTECH-----
-                     *Seleciona o objeto multinÌvel correspondente ‡ habilidade atual;
-                     *Em seguida cria uma linha na tabela para o tÌtulo da habilidade se houver mais
-                     de uma seleÁ„o por nÌvel;
-                     *Depois, cria uma linha da tabela para o cÛdigo e a descriÁ„o da habilidade
+                     *Seleciona o objeto multin√≠vel correspondente √† habilidade atual;
+                     *Em seguida cria uma linha na tabela para o t√≠tulo da habilidade se houver mais
+                     de uma sele√ß√£o por n√≠vel;
+                     *Depois, cria uma linha da tabela para o c√≥digo e a descri√ß√£o da habilidade
                     */
                     var dimensaoHabilidade = tesseratoHabilidade[habilidade.OrigemTitulo];
 
@@ -5485,13 +5488,13 @@ function definirEventHandlers() {
 
                     /**
                     -----MSTECH-----
-                     *Por fim, obtÈm de cada habilidade o valor correspondente para
-                     o nÌvel SME por padr„o e para os outros nÌveis de acordo com a escolha de filtros
-                     do usu·rio.
+                     *Por fim, obt√©m de cada habilidade o valor correspondente para
+                     o n√≠vel SME por padr√£o e para os outros n√≠veis de acordo com a escolha de filtros
+                     do usu√°rio.
 
-                     *Reparar que a informaÁ„o È salva tanto no objeto estruturaHabilidadeMultiNivel
+                     *Reparar que a informa√ß√£o √© salva tanto no objeto estruturaHabilidadeMultiNivel
                      quanto nos vetores individuais.
-                     *Perceber ainda que os valores armazenados nos vetores individuais n„o s„o utilizados,
+                     *Perceber ainda que os valores armazenados nos vetores individuais n√£o s√£o utilizados,
                      tornando-se irrelevantes.
                     */
                     arrayHabilidadeValorSME.push(habilidade.PercentualAcertosNivelSME);
@@ -5523,13 +5526,13 @@ function definirEventHandlers() {
 
                 /**
                 -----MSTECH-----
-                 *CONFIGURA«√O DO(s) GR¡FICO(s) DE RADAR:
-                 *Monta-se os gr·ficos de radar com base nas informaÁıes armazenadas no objeto
+                 *CONFIGURA√á√ÉO DO(s) GR√ÅFICO(s) DE RADAR:
+                 *Monta-se os gr√°ficos de radar com base nas informa√ß√µes armazenadas no objeto
                  tesseratoHabilidade.
                  -Primeiramente seleciona-se os elementos HTML;
                  -Em seguida monta-se a estrutura de objetos DataSet do chart.js com base nos vetores
-                 de informaÁıes obtidos apra cada nÌvel;
-                 -Por fim, inclui os datasets dos nÌveis selecionados e mostra o gr·fico.
+                 de informa√ß√µes obtidos apra cada n√≠vel;
+                 -Por fim, inclui os datasets dos n√≠veis selecionados e mostra o gr√°fico.
                 */
                 var itesserato = 0;
                 for (var chaveTesserato in tesseratoHabilidade) {
@@ -5571,7 +5574,7 @@ function definirEventHandlers() {
 
                     /**
                     -----MSTECH-----
-                     *SME È padr„o
+                     *SME √© padr√£o
                     */
                     var conjuntoDATASETS = [datasetSME];
 
@@ -5587,14 +5590,14 @@ function definirEventHandlers() {
 
                     /**
                     -----MSTECH-----
-                     *Estrutura ChartJS do gr·fico de radar.
+                     *Estrutura ChartJS do gr√°fico de radar.
                     */
                     var chartResultadoHabilidade_ctx = document.getElementById(chartID).getContext("2d");
                     chartResultadoHabilidade_ctx.canvas.height = 150;
                     var chartResultadoHabilidade = new Chart(chartResultadoHabilidade_ctx, {
                         type: 'radar',
                         data: {
-                            //labels: ["Abaixo do b·sico:" + dataResultado.PercentualAbaixoDoBasico + "%", "B·sico:" + dataResultado.PercentualBasico + "%", "Adequado:" + dataResultado.PercentualAdequado + "%", "AvanÁado:" + dataResultado.PercentualAvancado + "%"],
+                            //labels: ["Abaixo do b√°sico:" + dataResultado.PercentualAbaixoDoBasico + "%", "B√°sico:" + dataResultado.PercentualBasico + "%", "Adequado:" + dataResultado.PercentualAdequado + "%", "Avan√ßado:" + dataResultado.PercentualAvancado + "%"],
                             labels: dimensaoHabilidade.arrayHabilidadeLabel,
                             datasets: conjuntoDATASETS
                         },
@@ -5624,16 +5627,16 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *MÈtodo que retorna apenas o ano correspondente ‡ turma selecionada menos 1. Aparentemente
-     este valor È usado para fins de mÈtrica de gr·ficos.
+     *M√©todo que retorna apenas o ano correspondente √† turma selecionada menos 1. Aparentemente
+     este valor √© usado para fins de m√©trica de gr√°ficos.
 
      *Mais especificamente, ao selecioanr ENTURMACAO_ATUAL o ProvaSP deve montar um comparativa
      entre o ano atual e o anterior.
 
      *Reparar que havia uma forma de obter este valor com base nos dados do servidor.
 
-     Verificar por debug a utilizaÁ„o deste valor
-     RESPONDIDO: Retorna o ano anterior o ano selecionado, para comparaÁ„o entre eles.
+     Verificar por debug a utiliza√ß√£o deste valor
+     RESPONDIDO: Retorna o ano anterior o ano selecionado, para compara√ß√£o entre eles.
     */
     function recuperarAnoEnturmacao(dataResultado) {
         try {
@@ -5655,9 +5658,9 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Este mÈtodo cria gr·ficos de barras com comparativos dos dados retornados pelo servidor.
-     *S„o grafÌcos que comparam, de acordo com o nÌvel, as informaÁıes com base nos filtros selecionados
-     oferecendo aos usu·rios mais opÁıes de an·lise e visualizaÁ„o
+     *Este m√©todo cria gr√°ficos de barras com comparativos dos dados retornados pelo servidor.
+     *S√£o graf√≠cos que comparam, de acordo com o n√≠vel, as informa√ß√µes com base nos filtros selecionados
+     oferecendo aos usu√°rios mais op√ß√µes de an√°lise e visualiza√ß√£o
     */
     function configurarReguaSaeb(divResultadoContainer, divRegua, canvasId, proficienciaMaxima, datasets) {
         try {
@@ -5735,33 +5738,33 @@ function definirEventHandlers() {
     }
     /**
     -----MSTECH-----
-     *Fim do MÛdulo 4.2.3 - MÈtodo para apresentaÁ„o dos resultados, montagem de gr·ficos e manipulaÁ„o
+     *Fim do M√≥dulo 4.2.3 - M√©todo para apresenta√ß√£o dos resultados, montagem de gr√°ficos e manipula√ß√£o
     */
 
     /**
     -----MSTECH-----
-     MÛdulo 4.2.4 - MÈtodos e eventos associados ao ProvaSP de fato, question·rio do tipo 8. Neste
-     mÛdulo temos funcionalidades como:
+     M√≥dulo 4.2.4 - M√©todos e eventos associados ao ProvaSP de fato, question√°rio do tipo 8. Neste
+     m√≥dulo temos funcionalidades como:
      -Termo de sigilo e compromisso;
-     -SeleÁ„o de turma;
-     -FrequÍncias ou chamada;
+     -Sele√ß√£o de turma;
+     -Frequ√™ncias ou chamada;
      -Etc.
      da UI
     */
 
     /**
     -----MSTECH-----
-     *Aparentemente este mÈtodo sugere uma impress„o. O mÈtodo parece inacabado por alguns motivos:
-     -N„o possui elemento "elem" que entrar· como Body do documento;
-     -Referencia um select do question·rio 9 Sem especificar lÛgica alguma;
-     -Aparentemente o question·rio 9, do supervidor escolar, nem mesmo È utilizado.
+     *Aparentemente este m√©todo sugere uma impress√£o. O m√©todo parece inacabado por alguns motivos:
+     -N√£o possui elemento "elem" que entrar√° como Body do documento;
+     -Referencia um select do question√°rio 9 Sem especificar l√≥gica alguma;
+     -Aparentemente o question√°rio 9, do supervidor escolar, nem mesmo √© utilizado.
 
-     Quest„o do question·rio 9 - … utilizado?
-     RESPONDIDO: Este mÈtodo È irrelevante. Ao selecionar um DRE no question·rio do tipo 9, em vez
-     de serem mostradas as escolas, uma p·gina para impress„o vazia È mostrada. O que n„o faz sentido.
+     Quest√£o do question√°rio 9 - √â utilizado?
+     RESPONDIDO: Este m√©todo √© irrelevante. Ao selecionar um DRE no question√°rio do tipo 9, em vez
+     de serem mostradas as escolas, uma p√°gina para impress√£o vazia √© mostrada. O que n√£o faz sentido.
 
-     Corrigido: Foi corrigido um bug neste mÈtodo com base no cÛdigo da vers„o publicada na PlayStore.
-     Agora ao selecionar uma DRE, È possÌvel selecionar a escola.
+     Corrigido: Foi corrigido um bug neste m√©todo com base no c√≥digo da vers√£o publicada na PlayStore.
+     Agora ao selecionar uma DRE, √© poss√≠vel selecionar a escola.
     */
     $("#ddlDRE").unbind("change").change(function () {
         try {
@@ -5791,8 +5794,8 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Momento em que o termo de sigilo e compromisso È aceito pelo usu·rio aplicador da ProvaSP.
-     *Reparar que, ao executar este evento de aceite, o question·rio 8 ser· habilitado.
+     *Momento em que o termo de sigilo e compromisso √© aceito pelo usu√°rio aplicador da ProvaSP.
+     *Reparar que, ao executar este evento de aceite, o question√°rio 8 ser√° habilitado.
     */
     $("#btnTermoAplicadorConcordo").unbind("click").click(function () {
         try {
@@ -5805,7 +5808,7 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Abaixo temos todos os tratamentos iniciais para inÌcio do ProvaSP ou question·rio do
+             *Abaixo temos todos os tratamentos iniciais para in√≠cio do ProvaSP ou question√°rio do
              tipo 8.
             */
             adicionarItemBackButton("btnQuestionarioSair");
@@ -5831,7 +5834,7 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Quando o usu·rio n„o aceia o termo de sigilo e compromisso, o App simplesmente volta
+     *Quando o usu√°rio n√£o aceia o termo de sigilo e compromisso, o App simplesmente volta
      ao estado imediatamente anterior.
     */
     $("#btnTermoAplicadorDiscordo").unbind("click").click(function () {
@@ -5848,12 +5851,12 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Este mÈtodo È respons·vel por buscar a lista de alunos da turma informada pelo aplicador da prova.
-     *… importante verificar que a lista de alunos È buscada atravÈs dos arquivps CSV no pacote do
-     aplicativo, ou seja, È possÌvel aplicar a prova Offline.
-     *AlÈm disso, È importante destacar a maneira como os alunos das turmas s„o obtidos. Todos os alunos
-     de turmas terminadas em um determinado dÌgito s„o armazenados no arquivo CSV com nome correspondente
-     a este ˙ltimo dÌgito de validaÁ„o. Destta maneira, pelo cÛdigo da turma, È possÌvel carregar o aquivo
+     *Este m√©todo √© respons√°vel por buscar a lista de alunos da turma informada pelo aplicador da prova.
+     *√â importante verificar que a lista de alunos √© buscada atrav√©s dos arquivps CSV no pacote do
+     aplicativo, ou seja, √© poss√≠vel aplicar a prova Offline.
+     *Al√©m disso, √© importante destacar a maneira como os alunos das turmas s√£o obtidos. Todos os alunos
+     de turmas terminadas em um determinado d√≠gito s√£o armazenados no arquivo CSV com nome correspondente
+     a este √∫ltimo d√≠gito de valida√ß√£o. Destta maneira, pelo c√≥digo da turma, √© poss√≠vel carregar o aquivo
      correspondente diretamente.
     */
     $("#btnCodigoTurmaProsseguir").unbind("click").click(function () {
@@ -5862,7 +5865,7 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *N„o deve ser possÌvel utilizar caderno reserva no ProvaSP Web
+             *N√£o deve ser poss√≠vel utilizar caderno reserva no ProvaSP Web
             */
             if (!mobile) {
                 if (window.location.href.indexOf("file:///") == -1)
@@ -5871,15 +5874,15 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Validando cÛdigo de turma informado.
-             *Sendo um cÛdigo v·lido, obter o dÌgito verificador.
-             *Sendo um cÛdigo inv·lido, informar ao usu·rio
+             *Validando c√≥digo de turma informado.
+             *Sendo um c√≥digo v√°lido, obter o d√≠gito verificador.
+             *Sendo um c√≥digo inv√°lido, informar ao usu√°rio
             */
 
             /**
             -----MSTECH-----
-             *Em 2018 removemos o dÌgito verificador por n„o haver tal informaÁ„o nos cÛdigos de turma
-             fornecidos. Portanto o tratamento de validaÁ„o È feito verificando a existÍncia
+             *Em 2018 removemos o d√≠gito verificador por n√£o haver tal informa√ß√£o nos c√≥digos de turma
+             fornecidos. Portanto o tratamento de valida√ß√£o √© feito verificando a exist√™ncia
              da turma apenas.
             */
             var tur_id = null;
@@ -5897,8 +5900,8 @@ function definirEventHandlers() {
             //}
 
             if (!codigoValido) {
-                ProvaSP_Erro("CÛdigo inv·lido",
-                    "Verifique se o cÛdigo informado corresponde ao apresentado na lista de presenÁa impressa.");
+                ProvaSP_Erro("C√≥digo inv√°lido",
+                    "Verifique se o c√≥digo informado corresponde ao apresentado na lista de presen√ßa impressa.");
                 return;
             }
             else {
@@ -5917,8 +5920,8 @@ function definirEventHandlers() {
 
             /**
             -----MSTECH-----
-             *Buscando localmente informaÁıes dos alunos de uma turma especÌfica com base no ˙ltimo
-             dÌgito do cÛdigo da turma.
+             *Buscando localmente informa√ß√µes dos alunos de uma turma espec√≠fica com base no √∫ltimo
+             d√≠gito do c√≥digo da turma.
             */
             $.ajax({
                 type: "GET",
@@ -5927,8 +5930,8 @@ function definirEventHandlers() {
                 success: function (data) {
                     /**
                     -----MSTECH-----
-                     *Obtendo as informaÁıes de cada aluno do arquivo separando os dados por linha.
-                     *Cada elemento linha do arquivo correspondente a um aluno ser· transformado em
+                     *Obtendo as informa√ß√µes de cada aluno do arquivo separando os dados por linha.
+                     *Cada elemento linha do arquivo correspondente a um aluno ser√° transformado em
                      um elemento de um vetor lista de alunos.
                     */
                     if (data.indexOf("\r\n") > 0) {
@@ -5944,9 +5947,9 @@ function definirEventHandlers() {
                     -----MSTECH-----
                      *Comparando a turma informada pelo aplicador com a turma de cada um dos alunos
                      armazenados no arquivo CSV. Sendo a turma correspondente, cria uma estrutura de
-                     seleÁ„o do aluno, onde ser· possÌvel informar a presenÁa (CHAMADA)
+                     sele√ß√£o do aluno, onde ser√° poss√≠vel informar a presen√ßa (CHAMADA)
 
-                     *Reparar que cada aluno selecionado ter· um ID de checkbox e um ID de span
+                     *Reparar que cada aluno selecionado ter√° um ID de checkbox e um ID de span
                     */
                     for (var i = 0; i < dataChamada.length; i++) {
                         var registro = dataChamada[i].split(";");
@@ -5959,7 +5962,7 @@ function definirEventHandlers() {
                         else {
                             /**
                             -----MSTECH-----
-                             *Funciona como um BREAK. … esperado que todos os alunos de uma mesma turma
+                             *Funciona como um BREAK. √â esperado que todos os alunos de uma mesma turma
                              tenham seus registro um seguido do outro. Logo, quando o Loop identificar
                              uma turma diferente, o mesmo deve ser interrompido.
                             */
@@ -5973,11 +5976,11 @@ function definirEventHandlers() {
 
                     /**
                     -----MSTECH-----
-                     *Ao carregar a lista de alunos com sucesso, o termo de compromisso ser· mostrado.
+                     *Ao carregar a lista de alunos com sucesso, o termo de compromisso ser√° mostrado.
                     */
                     if (!processandoTurma) {
-                        ProvaSP_Erro("CÛdigo n„o encontrado",
-                            "Verifique se o cÛdigo informado corresponde ao apresentado na lista de presenÁa impressa.");
+                        ProvaSP_Erro("C√≥digo n√£o encontrado",
+                            "Verifique se o c√≥digo informado corresponde ao apresentado na lista de presen√ßa impressa.");
                     }
                     else {
                         $("#divQuestionario8_TermoDeCompromisso").show();
@@ -5985,8 +5988,8 @@ function definirEventHandlers() {
                     }
                 },
                 error: function () {
-                    ProvaSP_Erro("CÛdigo n„o encontrado",
-                        "Verifique se o cÛdigo informado corresponde ao apresentado na lista de presenÁa impressa.");
+                    ProvaSP_Erro("C√≥digo n√£o encontrado",
+                        "Verifique se o c√≥digo informado corresponde ao apresentado na lista de presen√ßa impressa.");
                 }
             });
         }
@@ -5997,7 +6000,7 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Evento do bot„o Ficha de Registro / Aplicador da Prova.
+     *Evento do bot√£o Ficha de Registro / Aplicador da Prova.
      *Mostra a primeira div de Codigo de Turma e esconde o menu principal.
     */
     $("#btnAbrirFichaAplicadorProvaOuChamada").unbind("click").click(function () {
@@ -6014,10 +6017,10 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *O bot„o para este evento aparentemente n„o existe.
+     *O bot√£o para este evento aparentemente n√£o existe.
 
-     Verificar com debug possibilidade de sair do question·rio de aplicaÁ„o de prova
-     RESPONDIDO: Bot„o realmente n„o existe.
+     Verificar com debug possibilidade de sair do question√°rio de aplica√ß√£o de prova
+     RESPONDIDO: Bot√£o realmente n√£o existe.
     */
     $("#btnFichaAplicadorProvaOuChamadaVoltar").unbind("click").click(function () {
         try {
@@ -6033,7 +6036,7 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *MÈtodo simples para sair da tela de seleÁ„o de turma e voltar para o menu principal
+     *M√©todo simples para sair da tela de sele√ß√£o de turma e voltar para o menu principal
     */
     $("#btnCodigoTurmaVoltar").unbind("click").click(function () {
         try {
@@ -6050,20 +6053,20 @@ function definirEventHandlers() {
     /**
     -----MSTECH-----
      *Evento para voltar a tela de login.
-     *Reparar que no ProvaSP Web deveria executar o mÈtodo alertarSaidaApp, o qual n„o existe.
+     *Reparar que no ProvaSP Web deveria executar o m√©todo alertarSaidaApp, o qual n√£o existe.
 
-     Verificar existÍncia do mÈtodo alertarSaidaApp
-     RESPONDIDO: Existe uma equivalÍncia na vers„o web no cÛdigo C#
+     Verificar exist√™ncia do m√©todo alertarSaidaApp
+     RESPONDIDO: Existe uma equival√™ncia na vers√£o web no c√≥digo C#
     */
     $("#btnSair").unbind("click").click(function () {
         try {
             swal({
-                title: "Deseja realmente voltar ‡ tela de Login?",
+                title: "Deseja realmente voltar √† tela de Login?",
                 type: "warning",
                 showCancelButton: true,
 
                 confirmButtonText: "Sim",
-                cancelButtonText: "N„o",
+                cancelButtonText: "N√£o",
                 closeOnConfirm: false
             },
                 function () {
@@ -6079,9 +6082,9 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Evento para sair do question·rio (seja qual for o tipo)
-     *Reparar que quando est· na tela de escolha de turma, volta diretamente e quando est· na tela
-     de question·rios, mostra o sweet alert.
+     *Evento para sair do question√°rio (seja qual for o tipo)
+     *Reparar que quando est√° na tela de escolha de turma, volta diretamente e quando est√° na tela
+     de question√°rios, mostra o sweet alert.
     */
     $("#btnQuestionarioSair").unbind("click").click(function () {
         try {
@@ -6091,7 +6094,7 @@ function definirEventHandlers() {
                 showCancelButton: true,
 
                 confirmButtonText: "Sim",
-                cancelButtonText: "N„o",
+                cancelButtonText: "N√£o",
                 closeOnConfirm: false
             },
                 function () {
@@ -6110,13 +6113,13 @@ function definirEventHandlers() {
     });
     /**
     -----MSTECH-----
-     *Fim do MÛdulo 4.2.4 - MÈtodos e eventos associados ao ProvaSP de fato, question·rio do tipo 8.
+     *Fim do M√≥dulo 4.2.4 - M√©todos e eventos associados ao ProvaSP de fato, question√°rio do tipo 8.
     */
 
     /**
     -----MSTECH-----
-     MÛdulo 4.2.5 - Eventos dos botıes de question·rios
-     -Neste mÛdulo temos as aÁıes ao selecionar, por exemplo, as alternativas dos question·rios.
+     M√≥dulo 4.2.5 - Eventos dos bot√µes de question√°rios
+     -Neste m√≥dulo temos as a√ß√µes ao selecionar, por exemplo, as alternativas dos question√°rios.
     */
 
     function iniciarQuestionario() {
@@ -6128,9 +6131,9 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *O item inicial dos question·rios n„o È uma quest„o, È uma label da IntroduÁ„o
-     para iniciar o question·rio de fato.
-     *Reparar que esconde a introduÁ„o e mostra as questıes
+     *O item inicial dos question√°rios n√£o √© uma quest√£o, √© uma label da Introdu√ß√£o
+     para iniciar o question√°rio de fato.
+     *Reparar que esconde a introdu√ß√£o e mostra as quest√µes
     */
     $("#btnQuestionario1_Iniciar,#btnQuestionario24_Iniciar,#btnQuestionario3_Iniciar," +
         "#btnQuestionario23_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
@@ -6163,20 +6166,20 @@ function definirEventHandlers() {
                             $.mobile.loading("hide");
 
                         if (dataResultado === "True") {
-                            swal("AtenÁ„o!", "Este question·rio j· foi respondido.", "warning");
+                            swal("Aten√ß√£o!", "Este question√°rio j√° foi respondido.", "warning");
                         }
                         else {
-                            //os question·rios de Diretor e Assistente de Diretor s„o bem longos
+                            //os question√°rios de Diretor e Assistente de Diretor s√£o bem longos
                             if (questionarioId_atual === 24 || questionarioId_atual === 25) {
                                 swal(
                                     {
                                         title: "Gostaria de iniciar o preenchimento agora?",
-                                        text: "Este question·rio È extenso e n„o ser· possÌvel salv·-lo para continuar em outro momento.",
+                                        text: "Este question√°rio √© extenso e n√£o ser√° poss√≠vel salv√°-lo para continuar em outro momento.",
                                         type: "info",
                                         showCancelButton: true,
 
                                         confirmButtonText: "Sim",
-                                        cancelButtonText: "N„o",
+                                        cancelButtonText: "N√£o",
                                         closeOnConfirm: true
                                     },
                                     function (isConfirm) {
@@ -6201,10 +6204,10 @@ function definirEventHandlers() {
 
     /**
     -----AMCOM-----
-     * Pergunta passou a ser escolha ˙nica na ediÁ„o de 2k19
-     *ALTERNATIVAS DE M⁄LTIPLA ESCOLHA QUE DEVEM DESELECIONAR OUTRAS
-     *Todos os handlers abaixo s„o de itens de question·rios que aceitam mais de uma resposta. No
-     entanto, geralmente existe uma opÁ„o que anula a seleÁ„o das demais
+     * Pergunta passou a ser escolha √∫nica na edi√ß√£o de 2k19
+     *ALTERNATIVAS DE M√öLTIPLA ESCOLHA QUE DEVEM DESELECIONAR OUTRAS
+     *Todos os handlers abaixo s√£o de itens de question√°rios que aceitam mais de uma resposta. No
+     entanto, geralmente existe uma op√ß√£o que anula a sele√ß√£o das demais
     */
     /*$("#Questionario_24_Questao_5_A,#Questionario_24_Questao_5_B,#Questionario_24_Questao_5_C,#Questionario_24_Questao_5_D,#Questionario_24_Questao_5_E").unbind("click").click(function () {
         try {
@@ -6315,7 +6318,7 @@ function definirEventHandlers() {
     });
 
     /* ----AMCOM----
-     * Na vers„o 2019 a pergunta passou a ser de escolha ˙nica
+     * Na vers√£o 2019 a pergunta passou a ser de escolha √∫nica
     $("#Questionario_23_Questao_8_A,#Questionario_23_Questao_8_B,#Questionario_23_Questao_8_C,#Questionario_23_Questao_8_D,#Questionario_23_Questao_8_E").unbind("click").click(function () {
         try {
             $("#Questionario_23_Questao_8_F").prop('checked', false).checkboxradio('refresh');
@@ -6336,7 +6339,7 @@ function definirEventHandlers() {
 
     /**
     -----AMCOM-----
-    * Pergunta passou a ser escolha ˙nica na ediÁ„o de 2k19
+    * Pergunta passou a ser escolha √∫nica na edi√ß√£o de 2k19
     */
     /*$("#Questionario_25_Questao_6_A,#Questionario_25_Questao_6_B,#Questionario_25_Questao_6_C,#Questionario_25_Questao_6_D,#Questionario_25_Questao_6_E").unbind("click").click(function () {
         try {
@@ -6430,8 +6433,8 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Os handlers abaixo habilitam/desabilitam campos de justificativa de questıes com
-     resposta SIM e N√O.
+     *Os handlers abaixo habilitam/desabilitam campos de justificativa de quest√µes com
+     resposta SIM e N√ÉO.
     */
     $("#Questionario_8_Questao_14_6_Sim").unbind("click").click(function () {
         try {
@@ -6651,10 +6654,10 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Os mÈtodos abaixo s„o especÌficos para a seleÁ„o da ¡rea de Conhecimento. Dependendo da
+     *Os m√©todos abaixo s√£o espec√≠ficos para a sele√ß√£o da √Årea de Conhecimento. Dependendo da
      escolha.
-     *O mÈtodo resetInstrumento esconde elementos extras para o question·rio de CiÍncias e PortuguÍs.
-     *Matem·tica n„o possui itens extras
+     *O m√©todo resetInstrumento esconde elementos extras para o question√°rio de Ci√™ncias e Portugu√™s.
+     *Matem√°tica n√£o possui itens extras
     */
     $("#Questionario_8_Questao_3_Portugues").unbind("click").click(function () {
         try {
@@ -6677,7 +6680,7 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *AplicaÁ„o de BIB do question·rio 14 - Auxiliar TÈcnico da EducaÁ„o
+     *Aplica√ß√£o de BIB do question√°rio 14 - Auxiliar T√©cnico da Educa√ß√£o
     */
     $("#Questionario_14_Questao_1_A").unbind("click").click(function () {
         try {
@@ -6699,7 +6702,7 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Removido evento para itens extras de CiÍncias em 2018
+     *Removido evento para itens extras de Ci√™ncias em 2018
     */
     //    $("#Questionario_8_Questao_3_Ciencias").unbind("click").click(function () {
     //        try {
@@ -6713,14 +6716,14 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Este handler em especÌfico trata para que sejam escolhidas apenas 3 alternativas dentre
-     as disponÌveis para a quest„o. … um caso extremamente particular
+     *Este handler em espec√≠fico trata para que sejam escolhidas apenas 3 alternativas dentre
+     as dispon√≠veis para a quest√£o. √â um caso extremamente particular
 
-     ValidaÁ„o n„o utilizada no question·rio atualizado.
+     Valida√ß√£o n√£o utilizada no question√°rio atualizado.
     */
     //    $("#fieldSetQuestionario_3_Questao_21").delegate('.ui-checkbox', 'click', function (e) {
     //        try {
-    //            //limita o n˙mero de alternativas selecionadas em 3.
+    //            //limita o n√∫mero de alternativas selecionadas em 3.
     //            var alternativas = ["A", "B", "C", "D", "E", "F", "G", "H"];
     //            var quantidadeSelecao = 0;
     //            for (var i = 0; i < alternativas.length; i++) {
@@ -6735,8 +6738,8 @@ function definirEventHandlers() {
     //
     //            var chk = $("#" + e.target.attributes["for"].value);
     //            if (!chk.prop("checked") && quantidadeSelecao >= 3) {
-    //                //swal("", "Selecione no m·ximo trÍs alternativas!", "error"); //swal manda a barra de rolagem para o topo.
-    //                alert("Selecione no m·ximo trÍs alternativas!");
+    //                //swal("", "Selecione no m√°ximo tr√™s alternativas!", "error"); //swal manda a barra de rolagem para o topo.
+    //                alert("Selecione no m√°ximo tr√™s alternativas!");
     //                e.stopImmediatePropagation();
     //                e.preventDefault();
     //            }
@@ -6748,24 +6751,24 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Mostra os relatÛrios de acompanhamento com base no ID do usu·rio.
-     *Se for mobile, verificar conex„o.
-     *Abre uma p·gina dentro do App.
+     *Mostra os relat√≥rios de acompanhamento com base no ID do usu√°rio.
+     *Se for mobile, verificar conex√£o.
+     *Abre uma p√°gina dentro do App.
 
-     OBS: RelatÛrio de acompanhamento s„o informaÁıes sobre o nÌvel de participaÁ„o no ProvaSP.
+     OBS: Relat√≥rio de acompanhamento s√£o informa√ß√µes sobre o n√≠vel de participa√ß√£o no ProvaSP.
     */
     $("#btnAbrirRelatorioAcompanhamento").unbind("click").click(function () {
         try {
             /**
             -----MSTECH-----
-             *Corrigida implementaÁ„o do mÈtodo.
-             -Usamos o cÛdigo correto para abrir uma URL;
-             -A URL funciona com o usu_login e n„o com o usu_id
+             *Corrigida implementa√ß√£o do m√©todo.
+             -Usamos o c√≥digo correto para abrir uma URL;
+             -A URL funciona com o usu_login e n√£o com o usu_id
             */
             if (mobile) {
                 if (navigator.connection.type == Connection.NONE || navigator.connection.type == Connection.UNKNOWN) {
-                    ProvaSP_Erro("Falha de comunicaÁ„o",
-                        "Para poder abrir o relatÛrio de acompanhamento, È necess·rio estar conectado na internet.");
+                    ProvaSP_Erro("Falha de comunica√ß√£o",
+                        "Para poder abrir o relat√≥rio de acompanhamento, √© necess√°rio estar conectado na internet.");
                     return;
                 }
                 else {
@@ -6784,7 +6787,7 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *MÈtodo simpels que esconde todas as outras "pages" e mostra o menu
+     *M√©todo simpels que esconde todas as outras "pages" e mostra o menu
     */
     $("#btnResultadoFechar").unbind("click").click(function () {
         try {
@@ -6800,8 +6803,8 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Novo mÈtodo para fechar o popup de Prova do Aluno. Nele s„o mostrados os links para as imagens
-     da prova fÌsica do aluno.
+     *Novo m√©todo para fechar o popup de Prova do Aluno. Nele s√£o mostrados os links para as imagens
+     da prova f√≠sica do aluno.
     */
     $("#btnProvaAlunoVoltar").unbind("click").click(function () {
         try {
@@ -6821,7 +6824,7 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Bot„o para abrir popup de prova fÌsica do aluno. Primeiro devemos tentar buscar no servidor
+     *Bot√£o para abrir popup de prova f√≠sica do aluno. Primeiro devemos tentar buscar no servidor
      as URLs, depois mostrar o popup de acesso.
     */
     $("#btnProvaAlunoPopup").unbind("click").click(function () {
@@ -6838,14 +6841,14 @@ function definirEventHandlers() {
 
     /**
     -----MSTECH-----
-     *Provavelmente haveria uma forma de visualizar os relatÛrios de acompanhamento com base no tipo
-     de usu·rio. No entanto, as informaÁıes passaram a ser mostradas com base no ID do usu·rio. Ou
-     seja, o tratamento È feito na Web.
+     *Provavelmente haveria uma forma de visualizar os relat√≥rios de acompanhamento com base no tipo
+     de usu√°rio. No entanto, as informa√ß√µes passaram a ser mostradas com base no ID do usu√°rio. Ou
+     seja, o tratamento √© feito na Web.
 
-     OBS: MÈtodos abaixo s„o irrelevantes/obsoletos tendo em vista que o relatÛrio de acompanhamento
-     È gerado com base no USU_LOGIN do usu·rio.
+     OBS: M√©todos abaixo s√£o irrelevantes/obsoletos tendo em vista que o relat√≥rio de acompanhamento
+     √© gerado com base no USU_LOGIN do usu√°rio.
     */
-    //RELAT”RIO DO SUPERVISOR:
+    //RELAT√ìRIO DO SUPERVISOR:
     $("#btnAbrirRelatorioAcompanhamento_9").unbind("click").click(function () {
         try {
 
@@ -6855,7 +6858,7 @@ function definirEventHandlers() {
         }
     });
 
-    //RELAT”RIO DO DIRETOR:
+    //RELAT√ìRIO DO DIRETOR:
     $("#btnAbrirRelatorioAcompanhamento_10").unbind("click").click(function () {
         try {
 
@@ -6865,7 +6868,7 @@ function definirEventHandlers() {
         }
     });
 
-    //RELAT”RIO DO COORDENADOR:
+    //RELAT√ìRIO DO COORDENADOR:
     $("#btnAbrirRelatorioAcompanhamento_11").unbind("click").click(function () {
         try {
 
@@ -6876,21 +6879,21 @@ function definirEventHandlers() {
     });
     /**
     -----MSTECH-----
-     *Fim do MÛdulo 4.2.5 - Eventos dos botıes de question·rios
+     *Fim do M√≥dulo 4.2.5 - Eventos dos bot√µes de question√°rios
     */
 
 
     /**
     -----AMCOM-----
-     MÛdulo 4.2.6 - Botıes para tratamento dos filtros de obtenÁ„o de revistas pedagÛgicas e boletins
-     (o que È feito ao selecionar cada opÁ„o)
+     M√≥dulo 4.2.6 - Bot√µes para tratamento dos filtros de obten√ß√£o de revistas pedag√≥gicas e boletins
+     (o que √© feito ao selecionar cada op√ß√£o)
     */
 
     /**
     -----AMCOM-----
-     *Evento CHANGE do select de ESCOLA. Primeiramente executa o mÈtodo revistasBoletins_configurarControles
-     para limpar todos os elementos da seleÁ„o. Em seguida trata a possibilidade do valor do SELECT
-     de ediÁıes ser vazio.
+     *Evento CHANGE do select de ESCOLA. Primeiramente executa o m√©todo revistasBoletins_configurarControles
+     para limpar todos os elementos da sele√ß√£o. Em seguida trata a possibilidade do valor do SELECT
+     de edi√ß√µes ser vazio.
     */
     $("#ddlRevistasBoletinsEdicao").unbind("change").change(function () {
         try {
@@ -6903,8 +6906,8 @@ function definirEventHandlers() {
 
     /**
     -----AMCOM-----
-     *Assim como o EDI«√O, ao alterar a ¡REA de CONHECIMENTO, os filtros para o revistasBoletins da
-     ProvaSP s„o resetados e abaixo È tratada a situaÁ„o de SELECT vazio.
+     *Assim como o EDI√á√ÉO, ao alterar a √ÅREA de CONHECIMENTO, os filtros para o revistasBoletins da
+     ProvaSP s√£o resetados e abaixo √© tratada a situa√ß√£o de SELECT vazio.
     */
     $("#ddlRevistasBoletinsAreaConhecimento").unbind("change").change(function () {
         try {
@@ -6930,8 +6933,8 @@ function definirEventHandlers() {
 
     /**
     -----AMCOM-----
-     *Evento especial para a opÁ„o TODAS AS DREs da select de DREs.
-     *Reparar que as demais opÁıes do select s„o tratados de acordo com o evento change
+     *Evento especial para a op√ß√£o TODAS AS DREs da select de DREs.
+     *Reparar que as demais op√ß√µes do select s√£o tratados de acordo com o evento change
      com base no estilo .revistasBoletins-dre-chk
     */
     $("#chkRevistasBoletinsTodasDREs").unbind("click").click(function () {
@@ -6945,8 +6948,8 @@ function definirEventHandlers() {
 
     /**
     -----AMCOM-----
-     *Evento dos checks de DREs. A diferenÁa crucial entre este mÈtodo e o prÛximo È a iserÁ„o da
-     opÁ„o TODAS AS DRES.
+     *Evento dos checks de DREs. A diferen√ßa crucial entre este m√©todo e o pr√≥ximo √© a iser√ß√£o da
+     op√ß√£o TODAS AS DRES.
     */
     $(".revistasBoletins-dre-chk").unbind("change").change(function () {
         carregarListaEscolaRevistasBoletins();
@@ -6954,7 +6957,7 @@ function definirEventHandlers() {
 
     /**
     -----AMCOM-----
-     *Ao selecionar qualquer uma das DREs especÌficas, desmarca a opÁ„o padr„o TODAS AS DREs e reseta
+     *Ao selecionar qualquer uma das DREs espec√≠ficas, desmarca a op√ß√£o padr√£o TODAS AS DREs e reseta
      todos os elementos da filtragem
     */
     $(".revistasBoletins-dre-item-lnk").unbind("click").click(function () {
@@ -6969,13 +6972,13 @@ function definirEventHandlers() {
 
     /**
 -----AMCOM-----
- *Fim do MÛdulo 4.2.6 - Botıes para tratamento dos filtros de obtenÁ„o de revistas pedagÛgicas e boletins
+ *Fim do M√≥dulo 4.2.6 - Bot√µes para tratamento dos filtros de obten√ß√£o de revistas pedag√≥gicas e boletins
 */
 
 }
 /**
 -----MSTECH-----
- *Fim do MÛdulo 4 - ManipulaÁ„o da UI
+ *Fim do M√≥dulo 4 - Manipula√ß√£o da UI
 */
 
 
@@ -6983,28 +6986,28 @@ function definirEventHandlers() {
 
 /**
 -----MSTECH-----
- *MÛdulo 5 - ImplementaÁıes MSTECH
- Novos mÈtodos criados pela MSTECH para novas funcionalidades do App
+ *M√≥dulo 5 - Implementa√ß√µes MSTECH
+ Novos m√©todos criados pela MSTECH para novas funcionalidades do App
 */
 /**
 
 
 /**
 -----MSTECH-----
- MÛdulo 5.1: MÈtodos gerais para resoluÁ„o de questıes especÌficas
+ M√≥dulo 5.1: M√©todos gerais para resolu√ß√£o de quest√µes espec√≠ficas
  *
 */
 
 /*-----MSTECH-----
- ObtenÁ„o de cÛdigos de turma v·lidos
- -MÈtodo adicional criado pela MSTEHC para converter os cÛdigos impressos nas provas em cÛdigos
- v·lidos de turmas da SME-SP.
- -Verificar que o mÈtodo permite que o cÛdigo seja validado em outra ocasi„o, caso n„o esteja
+ Obten√ß√£o de c√≥digos de turma v√°lidos
+ -M√©todo adicional criado pela MSTEHC para converter os c√≥digos impressos nas provas em c√≥digos
+ v√°lidos de turmas da SME-SP.
+ -Verificar que o m√©todo permite que o c√≥digo seja validado em outra ocasi√£o, caso n√£o esteja
  presente no arquivo.
 */
 function retornaCodigoValido(codigoBase) {
     try {
-        //CÛdigos imrpessos nas provas tÍm, obrigatoriamente, 7 dÌgitos.
+        //C√≥digos imrpessos nas provas t√™m, obrigatoriamente, 7 d√≠gitos.
         if (codigoBase.length == 7) {
             var codigosDeTurmaDisponiveis = $.ajax({
                 type: "GET",
@@ -7034,10 +7037,10 @@ function retornaCodigoValido(codigoBase) {
 
 /**
 -----MSTECH-----
- Manipula filtros e divs dos resultados da prova para oferecer condiÁıes mais din‚micas de dados
+ Manipula filtros e divs dos resultados da prova para oferecer condi√ß√µes mais din√¢micas de dados
  sem necessidade de navegar pelas telas.
 
- ATUALIZA«√O: Adicionado tratamento para tornar o menu fixado
+ ATUALIZA√á√ÉO: Adicionado tratamento para tornar o menu fixado
 */
 //MSTECH - Menu fixado para filtrar resultados
 var flagDivFixado = false;
@@ -7105,14 +7108,14 @@ function mostrarTelaResultados(isShow, divResultados, opcaoTab) {
 
 /**
 -----MSTECH-----
- ATUALIZA«√O - Criamos um mÈtodo para a chamada do bot„o visando atender ‡ duas situaÁıes no momento
- do clique no bot„o. Ou seja, quando n„o h· clique no bot„o, n„o devemos permitir o BACKBUTTON
+ ATUALIZA√á√ÉO - Criamos um m√©todo para a chamada do bot√£o visando atender √† duas situa√ß√µes no momento
+ do clique no bot√£o. Ou seja, quando n√£o h√° clique no bot√£o, n√£o devemos permitir o BACKBUTTON
 */
 function abrirResultados() {
     try {
         /**
         -----MSTECH-----
-         *Nova implemenetaÁ„o para mostrar resultados da ProvaSP para os alunos.
+         *Nova implemeneta√ß√£o para mostrar resultados da ProvaSP para os alunos.
         */
         if (Usuario.Aluno) {
             resultadoAlunoConfigurarInterface();
@@ -7120,7 +7123,7 @@ function abrirResultados() {
         else {
             /**
             -----MSTECH-----
-             *Removendo opÁıes de resultados SME e DRE de acordo com o tipo de usu·rio
+             *Removendo op√ß√µes de resultados SME e DRE de acordo com o tipo de usu√°rio
             */
             if (!Usuario.AcessoNivelSME) {
                 $("#ddlResultadoNivel_SME").remove();
@@ -7137,7 +7140,7 @@ function abrirResultados() {
              -Mostra a "page" de resultado;
              -Reseta todos os elementos de filtragem (incluindo SELECTS e CHECKS);
              -Esconde divs de resultados;
-             -Desabilita o bot„o Mostrar Resultado (ele ser· habilitado no mÈtodo resultado_configurarControles)
+             -Desabilita o bot√£o Mostrar Resultado (ele ser√° habilitado no m√©todo resultado_configurarControles)
             */
             //resultado-page
             $(".page").hide();
@@ -7183,7 +7186,7 @@ function abrirResultados() {
 
 //marcos
 /* 
-    Funcionalidades para Revistas PedagÛgicas e Boletins
+    Funcionalidades para Revistas Pedag√≥gicas e Boletins
  */
 function abrirConsultaRevistasBoletins() {
     try {
@@ -7194,7 +7197,7 @@ function abrirConsultaRevistasBoletins() {
             -Mostra a "page" de ;
             -Reseta todos os elementos de filtragem (incluindo SELECTS e CHECKS);
             -Esconde divs de revistasBoletins;
-            -Desabilita o bot„o Mostrar RevistasBoletins (ele ser· habilitado no mÈtodo revistasBoletins_configurarControles)
+            -Desabilita o bot√£o Mostrar RevistasBoletins (ele ser√° habilitado no m√©todo revistasBoletins_configurarControles)
         */
         $(".page").hide();
         $("#revistasBoletins-page").show();
@@ -7225,20 +7228,20 @@ $("#btnRevistasBoletinsVoltar").unbind("click").click(function () {
 
 /**
 -----MSTECH-----
- *Fim do MÛdulo 5.1 - MÈtodos gerais para resoluÁ„o de questıes especÌficas
+ *Fim do M√≥dulo 5.1 - M√©todos gerais para resolu√ß√£o de quest√µes espec√≠ficas
 */
 
 
 /**
 -----MSTECH-----
- MÛdulo 5.2: MÈtodos referentes ‡ tela de configuraÁıes
+ M√≥dulo 5.2: M√©todos referentes √† tela de configura√ß√µes
  *
 */
 
 /**
 -----MSTECH-----
- Evento que direciona para a tela de configuraÁıes. De fato, a tela È mostrada com os elementos
- necess·rios.
+ Evento que direciona para a tela de configura√ß√µes. De fato, a tela √© mostrada com os elementos
+ necess√°rios.
 */
 function direcionarTelaConfiguracoes() {
     try {
@@ -7249,7 +7252,7 @@ function direcionarTelaConfiguracoes() {
         adicionarItemBackButton("btnConfiguracoesSair");
         carregarConfiguracoes();
 
-        //Esconder todas as p·ginas e mostrar apenas a de configuraÁ„o
+        //Esconder todas as p√°ginas e mostrar apenas a de configura√ß√£o
         $(".page").hide();
         $("#configuracoes-page").show();
     }
@@ -7260,7 +7263,7 @@ function direcionarTelaConfiguracoes() {
 
 /**
 -----MSTECH-----
- Voltar ‡ tela de menu vindo da tela de configuraÁıes (apenas layout).
+ Voltar √† tela de menu vindo da tela de configura√ß√µes (apenas layout).
 */
 function voltarMenu_deConfiguracoes() {
     try {
@@ -7277,26 +7280,26 @@ function voltarMenu_deConfiguracoes() {
 
 /**
 -----MSTECH-----
- Nova funÁ„o para carregar as informaÁıes da tela de ConfiguraÁıes.
+ Nova fun√ß√£o para carregar as informa√ß√µes da tela de Configura√ß√µes.
 */
 function carregarConfiguracoes() {
     try {
         if (Usuario.AcessoNivelSME) {
-            var labelPreenchimentoQuestion·rios = document.getElementById("opcaoPreenchimentoQuestionarios");
+            var labelPreenchimentoQuestion√°rios = document.getElementById("opcaoPreenchimentoQuestionarios");
             var labelRelatorioAcompanhamento = document.getElementById("opcaoRelatorioAcompanhamento");
 
-            //OpÁ„o para disponibilizaÁ„o de question·rios (sejam eles socioeconÙmicos ou
-            //mesmo aplicaÁıes de prova)
+            //Op√ß√£o para disponibiliza√ß√£o de question√°rios (sejam eles socioecon√¥micos ou
+            //mesmo aplica√ß√µes de prova)
             if (provaSP_configuracoes.configuracoes.DisponibilizarPreenchimentoQuestionariosFichas) {
-                labelPreenchimentoQuestion·rios.innerText = "ATIVADO";
-                labelPreenchimentoQuestion·rios.style.color = "green";
+                labelPreenchimentoQuestion√°rios.innerText = "ATIVADO";
+                labelPreenchimentoQuestion√°rios.style.color = "green";
             }
             else {
-                labelPreenchimentoQuestion·rios.innerText = "DESATIVADO";
-                labelPreenchimentoQuestion·rios.style.color = "red";
+                labelPreenchimentoQuestion√°rios.innerText = "DESATIVADO";
+                labelPreenchimentoQuestion√°rios.style.color = "red";
             }
 
-            //OpÁ„o para disponibilizaÁ„o de acesso aos relatÛrios de acompanhamento
+            //Op√ß√£o para disponibiliza√ß√£o de acesso aos relat√≥rios de acompanhamento
             if (provaSP_configuracoes.configuracoes.RelatorioAcompanhamentoVisivel) {
                 labelRelatorioAcompanhamento.innerText = "ATIVADO";
                 labelRelatorioAcompanhamento.style.color = "green";
@@ -7306,7 +7309,7 @@ function carregarConfiguracoes() {
                 labelRelatorioAcompanhamento.style.color = "red";
             }
 
-            //OpÁ„o para alterar o mÌnimo de participaÁ„o para representatividade segundo o INEP
+            //Op√ß√£o para alterar o m√≠nimo de participa√ß√£o para representatividade segundo o INEP
             $("#confRepresentatividadeSegundoINEP").val(
                 provaSP_configuracoes.configuracoes.RepresentatividadeSegundoINEP
             );
@@ -7319,7 +7322,7 @@ function carregarConfiguracoes() {
 
 /**
 -----MSTECH-----
- Evento para a alteraÁ„o das configuraÁıes (SÛ bool)
+ Evento para a altera√ß√£o das configura√ß√µes (S√≥ bool)
 */
 function alterarConfiguracao(opcaoAlterada) {
     try {
@@ -7343,7 +7346,7 @@ $("#confRepresentatividadeSegundoINEP").unbind("change").change(function () {
                 provaSP_configuracoes.configuracoes.RepresentatividadeSegundoINEP = 25;
                 $("#confRepresentatividadeSegundoINEP").val("25");
 
-                ProvaSP_Erro("Inv·lido", "Por favor forneÁa um valor entre 0 e 100");
+                ProvaSP_Erro("Inv√°lido", "Por favor forne√ßa um valor entre 0 e 100");
             }
             else {
                 provaSP_configuracoes.configuracoes.RepresentatividadeSegundoINEP =
@@ -7364,7 +7367,7 @@ function divConfiguracoes(opcaoSelecionada) {
                 "<span class='mdi mdi-arrow-down-drop-circle-outline'></span>";
         }
 
-        //Escondendo todas as opÁıes
+        //Escondendo todas as op√ß√µes
         if (opcaoSelecionada != -1 && opcaoConfiguracoesSelecionada != opcaoSelecionada) {
             document.getElementById("configuracoes_div" + opcaoSelecionada).style.display = "block";
             document.getElementById("configuracoes_icone" + opcaoSelecionada).innerHTML =
@@ -7403,7 +7406,7 @@ function obterCorte() {
                     else {
                         if (corteCache.length > 0) { montarSelectCorte(corteCache); }
                         else {
-                            ProvaSP_Erro("N„o h· informaÁıes de Corte",
+                            ProvaSP_Erro("N√£o h√° informa√ß√µes de Corte",
                                 "Por favor tente novamente mais tarde.");
                         }
                     }
@@ -7473,7 +7476,7 @@ $("#btnObterSequenciaDidatica").unbind("click").click(function () {
             "&corteId=" + corteSD;
 
         $.mobile.loading("show", {
-            text: "Obtendo sequÍncia de atividades...",
+            text: "Obtendo sequ√™ncia de atividades...",
             textVisible: true,
             theme: "a",
             html: ""
@@ -7516,10 +7519,10 @@ $("#btnCommitSD").unbind("click").click(function () {
         var linkSD = $("#linkSD").val();
 
         if (tituloSD.length == 0 || textoSD.length == 0) {
-            ProvaSP_Erro("Dados inv·lidos", "Por favor preencha os campos de TÌtulo e Texto para continuar.");
+            ProvaSP_Erro("Dados inv√°lidos", "Por favor preencha os campos de T√≠tulo e Texto para continuar.");
         }
         else if (!validURL(linkSD)) {
-            ProvaSP_Erro("Link inv·lido", "Por favor o campo Link com uma URL v·lida.");
+            ProvaSP_Erro("Link inv√°lido", "Por favor o campo Link com uma URL v√°lida.");
         }
         else {
             var objSDEnvio = {
@@ -7534,7 +7537,7 @@ $("#btnCommitSD").unbind("click").click(function () {
             var objSDEnvioString = JSON.stringify(objSDEnvio);
 
             $.mobile.loading("show", {
-                text: "Cadastrando informaÁıes...",
+                text: "Cadastrando informa√ß√µes...",
                 textVisible: true,
                 theme: "a",
                 html: ""
@@ -7543,7 +7546,7 @@ $("#btnCommitSD").unbind("click").click(function () {
             $.post(urlBackEnd + "api/SequenciaDidatica/Salvar?guid=" + newGuid(), { json: objSDEnvioString })
                 .done(function (resultSD) {
                     $.mobile.loading("hide");
-                    swal("Obrigado!", "As informaÁıes da SequÍncia de Atividades foram salvas com sucesso!", "success");
+                    swal("Obrigado!", "As informa√ß√µes da Sequ√™ncia de Atividades foram salvas com sucesso!", "success");
                 })
                 .fail(function (erro) {
                     ProvaSP_Erro("Erro " + erro.status, erro.statusText);
@@ -7629,7 +7632,7 @@ $("#ddlSDAreaConhecimento").unbind("change").change(function () {
                 "&areaConhecimentoId=" + areaConhecimentoResultadoSD;
 
             $.mobile.loading("show", {
-                text: "Obtendo sequÍncias de atividades...",
+                text: "Obtendo sequ√™ncias de atividades...",
                 textVisible: true,
                 theme: "a",
                 html: ""
@@ -7647,8 +7650,8 @@ $("#ddlSDAreaConhecimento").unbind("change").change(function () {
                         montarSequenciaDidatica(dataSDResultado);
                     }
                     else {
-                        ProvaSP_Erro("N„o h· informaÁıes ",
-                            "Ainda n„o h· informaÁıes sobre a SequÍncia de Atividades selecionada." +
+                        ProvaSP_Erro("N√£o h√° informa√ß√µes ",
+                            "Ainda n√£o h√° informa√ß√µes sobre a Sequ√™ncia de Atividades selecionada." +
                             "\n\nPor favor tente novamente.");
                     }
                 },
@@ -7674,14 +7677,14 @@ function montarSequenciaDidatica(resultadoSequenciaDidatica) {
 
             SDHTML += "<div class='sequenciadidatica_mainDiv'>";
             for (var j = 0; j < resultadoSequenciaDidatica[i].SequenciasDidaticas.length; j++) {
-                //SequÍncia de atividades atual
+                //Sequ√™ncia de atividades atual
                 var sda = resultadoSequenciaDidatica[i].SequenciasDidaticas[j];
 
                 SDHTML += "<div class='sequenciadidatica_blockDiv'>";
                 SDHTML += "<table class='sequenciadidatica_blockTable'>";
                 SDHTML += "<tr>";
                 SDHTML += "<td class='sequenciadidatica_blockTDTitle'>";
-                SDHTML += "<p class='sequenciadidatica_blockTitle'>" + sda.AnoEscolar + "∫ Ano</p>";
+                SDHTML += "<p class='sequenciadidatica_blockTitle'>" + sda.AnoEscolar + "¬∫ Ano</p>";
                 SDHTML += "</td>";
                 SDHTML += "<td onclick=\"abrirLinkSD('" + sda.Link +
                     "')\" class='sequenciadidatica_blockTDIcon'>";
@@ -7712,8 +7715,8 @@ function abrirLinkSD(urlSD) {
     try {
         if (mobile) {
             if (navigator.connection.type == Connection.NONE || navigator.connection.type == Connection.UNKNOWN) {
-                ProvaSP_Erro("Sem conex„o",
-                    "Por favor verifique sua conex„o com a internet e tente novamente mais tarde.");
+                ProvaSP_Erro("Sem conex√£o",
+                    "Por favor verifique sua conex√£o com a internet e tente novamente mais tarde.");
                 return;
             }
             else { navigator.app.loadUrl(urlSD, { openExternal: true }); }
@@ -7728,12 +7731,12 @@ function abrirLinkSD(urlSD) {
 function limparCamposConfiguracaoProficiencia() {
     try {
         $("#confAnoCiclo").val("");
-        $("#confNivelProficiÍncia").val("");
+        $("#confNivelProfici√™ncia").val("");
         $("#confProficienciaNome").val("");
         $("#confProficienciaDescricao").val("");
 
         $("#confAnoCiclo").selectmenu("refresh");
-        $("#confNivelProficiÍncia").selectmenu("refresh");
+        $("#confNivelProfici√™ncia").selectmenu("refresh");
 
         $.mobile.silentScroll(0);
     }
@@ -7743,20 +7746,20 @@ function limparCamposConfiguracaoProficiencia() {
 }
 /**
 -----MSTECH-----
- *Fim do MÛdulo 5.2 - Tela de ConfiguraÁıes
+ *Fim do M√≥dulo 5.2 - Tela de Configura√ß√µes
 */
 
 
 /**
 -----MSTECH-----
- MÛdulo 5.3: Prova do Aluno - MÈtodos para baixar e mostrar a prova fÌsica do Aluno
+ M√≥dulo 5.3: Prova do Aluno - M√©todos para baixar e mostrar a prova f√≠sica do Aluno
  *
 */
 
 /**
 -----MSTECH-----
- Novo mÈtodo para abrir as imagens da prova real de um aluno especÌfico baseado no Ano selecionado.
- O App receber· um retorno do servidor com as urls das imagens da prova real do aluno.
+ Novo m√©todo para abrir as imagens da prova real de um aluno espec√≠fico baseado no Ano selecionado.
+ O App receber√° um retorno do servidor com as urls das imagens da prova real do aluno.
 */
 function baixarProvaAlunoPorAno(alunoIndividual, alunoString) {
     try {
@@ -7764,8 +7767,8 @@ function baixarProvaAlunoPorAno(alunoIndividual, alunoString) {
         var alunoStringArray = alunoString.split("_");
         var areaConhecimentoID = alunoStringArray[0];
 
-        //MSTECH - Atualizando a ·rea de conhecimento em seleÁ„o de aluno quando muda no form.
-        //Este trecho executa quando n„o È um aluno individual
+        //MSTECH - Atualizando a √°rea de conhecimento em sele√ß√£o de aluno quando muda no form.
+        //Este trecho executa quando n√£o √© um aluno individual
         if (!alunoIndividual) {
             areaConhecimentoID = $("#ddlResultadoAreaConhecimento").val();
         }
@@ -7776,7 +7779,7 @@ function baixarProvaAlunoPorAno(alunoIndividual, alunoString) {
             "&alu_matricula=" + alunoStringArray[1];
 
         $.mobile.loading("show", {
-            text: "Obtendo informaÁıes...",
+            text: "Obtendo informa√ß√µes...",
             textVisible: true,
             theme: "a",
             html: ""
@@ -7794,8 +7797,8 @@ function baixarProvaAlunoPorAno(alunoIndividual, alunoString) {
                     popupProvaAluno(dataResultado);
                 }
                 else {
-                    ProvaSP_Erro("N„o h· arquivos",
-                        "N„o existem registros de arquivos referentes ‡ prova do Aluno para " +
+                    ProvaSP_Erro("N√£o h√° arquivos",
+                        "N√£o existem registros de arquivos referentes √† prova do Aluno para " +
                         "os filtros selecionados.");
                 }
             },
@@ -7811,7 +7814,7 @@ function baixarProvaAlunoPorAno(alunoIndividual, alunoString) {
 
 /**
 -----MSTECH-----
- Mostrar popup com os arquivos da prova fÌsica do Aluno quando houver arquivos
+ Mostrar popup com os arquivos da prova f√≠sica do Aluno quando houver arquivos
 */
 function popupProvaAluno(serverRetorno) {
     try {
@@ -7830,15 +7833,15 @@ function popupProvaAluno(serverRetorno) {
             //Linha com link para imagem
             itemProvaDownloaHTML += "<p class='provaaluno_item' onclick=\"abrirArquivoAluno('" +
                 serverRetorno[i].caminho + "')\"><span class='provaaluno_downloadBtn'>Visualizar prova</span>" +
-                "<span class='mdi mdi-open-in-new'></span> P·gina: " + serverRetorno[i].pagina + " - " +
+                "<span class='mdi mdi-open-in-new'></span> P√°gina: " + serverRetorno[i].pagina + " - " +
                 serverRetorno[i].questao + " (" + serverRetorno[i].Edicao +
                 ")</p>";
 
-            //CritÈrios de redaÁ„o
+            //Crit√©rios de reda√ß√£o
             itemProvaDownloaHTML += "<p class='provaaluno_criterios'>";
             for (var j = 1; j < 6; j++) {
                 if (serverRetorno[i].hasOwnProperty("REDQ" + j)) {
-                    itemProvaDownloaHTML += "CritÈrio " + j + ": ";
+                    itemProvaDownloaHTML += "Crit√©rio " + j + ": ";
                     itemProvaDownloaHTML += serverRetorno[i]["REDQ" + j];
                     itemProvaDownloaHTML += "<br />";
                 }
@@ -7864,7 +7867,7 @@ function popupProvaAlunoObtemCiclo() {
 
         //Configurando Ciclo
         if (Usuario.Aluno) {
-            anoCorrespondente = parseInt(Usuario.Ano); //Usu·rio aluno
+            anoCorrespondente = parseInt(Usuario.Ano); //Usu√°rio aluno
         }
         else {
             var ciclo = $("#ddlResultadoCiclo").val();
@@ -7873,7 +7876,7 @@ function popupProvaAlunoObtemCiclo() {
             else { anoCorrespondente = parseInt($("#ddlResultadoAno").val()); } //Filtro de ano
         }
 
-        if (anoCorrespondente == 2 || anoCorrespondente == 3) { return 1; } //AlfabetizaÁ„o
+        if (anoCorrespondente == 2 || anoCorrespondente == 3) { return 1; } //Alfabetiza√ß√£o
         else if (anoCorrespondente >= 4 && anoCorrespondente <= 6) { return 2; } //Interdisciplinar
         else if (anoCorrespondente >= 7 && anoCorrespondente <= 9) { return 3; } //Autoral
     }
@@ -7891,8 +7894,8 @@ $("#btnProvaAlunoCriterios").unbind("click").click(function () {
 
         if (mobile) {
             if (navigator.connection.type == Connection.NONE || navigator.connection.type == Connection.UNKNOWN) {
-                ProvaSP_Erro("Sem conex„o",
-                    "Por favor verifique sua conex„o com a internet para obter a descriÁ„o dos critÈrios.");
+                ProvaSP_Erro("Sem conex√£o",
+                    "Por favor verifique sua conex√£o com a internet para obter a descri√ß√£o dos crit√©rios.");
                 return;
             }
             else {
@@ -7910,14 +7913,14 @@ $("#btnProvaAlunoCriterios").unbind("click").click(function () {
 
 /**
 -----MSTECH-----
- Abre arquivo da prova fÌsica do Aluno - Redirecionamento WEB
+ Abre arquivo da prova f√≠sica do Aluno - Redirecionamento WEB
 */
 function abrirArquivoAluno(urlArquivo) {
     try {
         if (mobile) {
             if (navigator.connection.type == Connection.NONE || navigator.connection.type == Connection.UNKNOWN) {
-                ProvaSP_Erro("Sem conex„o",
-                    "Por favor verifique sua conex„o com a internet para abrir este arquivo.");
+                ProvaSP_Erro("Sem conex√£o",
+                    "Por favor verifique sua conex√£o com a internet para abrir este arquivo.");
                 return;
             }
             else {
@@ -7937,13 +7940,13 @@ function abrirArquivoAluno(urlArquivo) {
 
 /**
 -----MSTECH-----
- Mostra o conjunto de elementos correspondentes ‡ opÁ„o de RESULTADOS DA PROVASP escolhida.
+ Mostra o conjunto de elementos correspondentes √† op√ß√£o de RESULTADOS DA PROVASP escolhida.
 */
 function divResultadoProva(opcaoSelecionada) {
     try {
         for (let i = 0; i < 5; i++) {
             let resultadoDiv = document.getElementById("resultados_div" + i);
-            //alguma das opÁıes podem n„o ter o DIV de conte˙do
+            //alguma das op√ß√µes podem n√£o ter o DIV de conte√∫do
             if (resultadoDiv == null)
                 continue;
             resultadoDiv.style.display = "none";
@@ -7951,7 +7954,7 @@ function divResultadoProva(opcaoSelecionada) {
                 "<span class='mdi mdi-arrow-down-drop-circle-outline'></span>";
         }
 
-        //Escondendo todas as opÁıes
+        //Escondendo todas as op√ß√µes
         if (opcaoSelecionada != -1 && opcaoResultadoSelecionada != opcaoSelecionada) {
             document.getElementById("resultados_div" + opcaoSelecionada).style.display = "block";
             document.getElementById("resultados_icone" + opcaoSelecionada).innerHTML =
@@ -7966,13 +7969,13 @@ function divResultadoProva(opcaoSelecionada) {
 }
 /**
 -----MSTECH-----
- *Fim do MÛdulo 5.3 - Prova do Aluno
+ *Fim do M√≥dulo 5.3 - Prova do Aluno
 */
 
 
 /**
 -----MSTECH-----
- MÛdulo 5.4: Gr·ficos de Ciclo de Aprendizagem
+ M√≥dulo 5.4: Gr√°ficos de Ciclo de Aprendizagem
  *
 */
 function downloadResultadosCiclos(indice, objEnvio, cicloSelecionado) {
@@ -7991,7 +7994,7 @@ function downloadResultadosCiclos(indice, objEnvio, cicloSelecionado) {
 
                     /**
                     -----MSTECH-----
-                     *No sucesso da requisiÁ„o, mostra resultados.
+                     *No sucesso da requisi√ß√£o, mostra resultados.
                     */
                     if (dataResultado.Agregacao.length > 0) {
                         for (var i = 0; i < dataResultado.Agregacao.length; i++) {
@@ -7999,13 +8002,13 @@ function downloadResultadosCiclos(indice, objEnvio, cicloSelecionado) {
                                 graficoResultadoCicloAprendizagem2Ano(dataResultado.Agregacao[i], i);
                             }
 
-                            //Gr·fico ciclo de aprendizagem
+                            //Gr√°fico ciclo de aprendizagem
                             graficoResultadoCicloAprendizagem(
                                 indiceGrafico, dataResultado.Agregacao[i], anoEscolarAtual, i
                             );
                         }
 
-                        //SÈrie histÛrica
+                        //S√©rie hist√≥rica
                         serieHistorica.anoAtual["agregacao_indice" + indiceGrafico] = dataResultado.Agregacao;
                         downloadSerieHistoricaAnoAnterior(indiceGrafico, objEnvioSelecionado, cicloSelecionado);
                     }
@@ -8044,7 +8047,7 @@ function downloadSerieHistoricaAnoAnterior(indice, objEnvio, ciclo) {
                             graficoResultadoSerieHistorica(objEnvioSerieHistorica, false);
                         }
                     }
-                    else { //SÈrie histÛrica do ciclo de alfabetizaÁ„o
+                    else { //S√©rie hist√≥rica do ciclo de alfabetiza√ß√£o
                         if ((sAt.hasOwnProperty("agregacao_indice2") && sAt.hasOwnProperty("agregacao_indice3")) &&
                             (sAn.hasOwnProperty("agregacao_indice2") && sAn.hasOwnProperty("agregacao_indice3"))) {
                             graficoResultadoSerieHistorica(objEnvioSerieHistorica, true);
@@ -8065,7 +8068,7 @@ function baseGraficoAprendizagem(indiceAgregacao) {
     try {
         var baseGraficoHTML = "";
 
-        //TÌtulo sÛ È necess·rio para alfabetizaÁ„o por conta dos 3 gr·ficos sobrepostos
+        //T√≠tulo s√≥ √© necess√°rio para alfabetiza√ß√£o por conta dos 3 gr√°ficos sobrepostos
         baseGraficoHTML += "<div class='resultados_graficoAprendizagemChartDiv2'>";
         baseGraficoHTML += "<div id='divResultadoCiclo1_" + indiceAgregacao + "'></div>";
         baseGraficoHTML += "<div id='divResultadoCiclo2_" + indiceAgregacao + "'></div>";
@@ -8086,8 +8089,8 @@ function graficoResultadoCicloAprendizagem2Ano(dataServidor, indiceAgregacao) {
 
         /**
         -----MSTECH-----
-         *Novos gr·ficos para ciclo de aprendizagem. Deve aparecer somente se for o ciclo de aprendizagem 1
-         ALFABETIZA«√O
+         *Novos gr√°ficos para ciclo de aprendizagem. Deve aparecer somente se for o ciclo de aprendizagem 1
+         ALFABETIZA√á√ÉO
         */
         $("#divResultadoCiclo2Ano_" + indiceAgregacao).empty("");
 
@@ -8101,7 +8104,7 @@ function graficoResultadoCicloAprendizagem2Ano(dataServidor, indiceAgregacao) {
         var donut2Ano = new Chart(chartResultadoCicloAprendizagem2Ano_ctx, {
             type: 'doughnut',
             data: {
-                labels: ["N„o alfabetizados", "Alfabetizados"],
+                labels: ["N√£o alfabetizados", "Alfabetizados"],
                 datasets: [
                     {
                         backgroundColor: ["#9C9B9B", "#AAD3A6"],
@@ -8119,7 +8122,7 @@ function graficoResultadoCicloAprendizagem2Ano(dataServidor, indiceAgregacao) {
                 //showAllTooltips: false,
                 title: {
                     display: true,
-                    text: "Ciclo de aprendizagem - AlfabetizaÁ„o 2∫ Ano",
+                    text: "Ciclo de aprendizagem - Alfabetiza√ß√£o 2¬∫ Ano",
                     fontFamily: "'Open Sans Bold', sans-serif",
                     fontSize: 15,
                 },
@@ -8146,10 +8149,10 @@ function graficoResultadoCicloAprendizagem(indiceGrafico, dataServidor, anoEscol
     try {
         var proficienciasGrafico = [
             { Nome: "Indefinido" },
-            { Nome: "Abaixo do b·sico" },
-            { Nome: "B·sico" },
+            { Nome: "Abaixo do b√°sico" },
+            { Nome: "B√°sico" },
             { Nome: "Adequado" },
-            { Nome: "AvanÁado" }
+            { Nome: "Avan√ßado" }
         ];
 
         if (dataServidor.hasOwnProperty("Proficiencias")) {
@@ -8162,8 +8165,8 @@ function graficoResultadoCicloAprendizagem(indiceGrafico, dataServidor, anoEscol
 
         /**
         -----MSTECH-----
-         *Novos gr·ficos para ciclo de aprendizagem. Deve aparecer somente se for o ciclo de aprendizagem 1
-         ALFABETIZA«√O
+         *Novos gr√°ficos para ciclo de aprendizagem. Deve aparecer somente se for o ciclo de aprendizagem 1
+         ALFABETIZA√á√ÉO
         */
         if (indiceGrafico == 1) {
             $("#divResultadoCiclo1_" + indiceAgregacao).empty("");
@@ -8206,7 +8209,7 @@ function graficoResultadoCicloAprendizagem(indiceGrafico, dataServidor, anoEscol
                     legend: { display: false },
                     title: {
                         display: true,
-                        text: anoEscolarGrafico + '∫ Ano'
+                        text: anoEscolarGrafico + '¬∫ Ano'
                     },
                     tooltips: {
                         callbacks: {
@@ -8263,7 +8266,7 @@ function graficoResultadoCicloAprendizagem(indiceGrafico, dataServidor, anoEscol
                     legend: { display: false },
                     title: {
                         display: true,
-                        text: anoEscolarGrafico + '∫ Ano'
+                        text: anoEscolarGrafico + '¬∫ Ano'
                     },
                     tooltips: {
                         callbacks: {
@@ -8320,7 +8323,7 @@ function graficoResultadoCicloAprendizagem(indiceGrafico, dataServidor, anoEscol
                     legend: { display: false },
                     title: {
                         display: true,
-                        text: anoEscolarGrafico + '∫ Ano'
+                        text: anoEscolarGrafico + '¬∫ Ano'
                     },
                     tooltips: {
                         callbacks: {
@@ -8386,12 +8389,12 @@ function limparCicloAprendizagem(param) {
 function baseGraficoSerieHistorica(indiceAgregacao, acID) {
     try {
         var baseGraficoHTML = "";
-        var areaConhecimento = ["CiÍncias da Natureza", "LÌngua Portuguesa", "Matem·tica", "RedaÁ„o"];
+        var areaConhecimento = ["Ci√™ncias da Natureza", "L√≠ngua Portuguesa", "Matem√°tica", "Reda√ß√£o"];
 
-        //TÌtulo sÛ È necess·rio para alfabetizaÁ„o por conta dos 3 gr·ficos sobrepostos
+        //T√≠tulo s√≥ √© necess√°rio para alfabetiza√ß√£o por conta dos 3 gr√°ficos sobrepostos
         baseGraficoHTML += "<div class='resultados_graficoSerieHistoricaMainDiv' style='display: none;'>";
         baseGraficoHTML += "<p class='resultados_graficoAprendizagemTitle'>";
-        baseGraficoHTML += "SÈrie histÛrica - " + areaConhecimento[parseInt(acID) - 1];
+        baseGraficoHTML += "S√©rie hist√≥rica - " + areaConhecimento[parseInt(acID) - 1];
         baseGraficoHTML += "</p>";
         baseGraficoHTML += "<div class='resultados_graficoSerieHistorica'>";
         baseGraficoHTML += "<div id='divResultadoSerieHistorica_" + indiceAgregacao + "'></div>";
@@ -8411,17 +8414,17 @@ function graficoResultadoSerieHistorica(baseOBJ, flagAlfabetizacao) {
         var chartLabelsPorCiclo = [];
         var chartResultadoSerieHistorica_ctx = null;
         var coresPorAreaConhecimento = [
-            { colorBackground: "#6B91A8", colorBorder: "#59798C" }, //CiÍncias da Natureza
-            { colorBackground: "#F4CA00", colorBorder: "#D8B100" }, //LÌngua Portuguesa
-            { colorBackground: "#E97457", colorBorder: "#CE654E" }, //Matem·tica
-            { colorBackground: "#FF6A00", colorBorder: "#E55B00" } //RedaÁ„o
+            { colorBackground: "#6B91A8", colorBorder: "#59798C" }, //Ci√™ncias da Natureza
+            { colorBackground: "#F4CA00", colorBorder: "#D8B100" }, //L√≠ngua Portuguesa
+            { colorBackground: "#E97457", colorBorder: "#CE654E" }, //Matem√°tica
+            { colorBackground: "#FF6A00", colorBorder: "#E55B00" } //Reda√ß√£o
         ];
         var chartBack = coresPorAreaConhecimento[parseInt(baseOBJ.AreaConhecimentoID) - 1].colorBackground;
         var chartBorder = coresPorAreaConhecimento[parseInt(baseOBJ.AreaConhecimentoID) - 1].colorBorder;
 
-        if (baseOBJ.AnoEscolar < 4) { chartLabelsPorCiclo = ["2∫ Ano", "3∫ Ano"]; }
-        else if (baseOBJ.AnoEscolar >= 4 && baseOBJ.AnoEscolar <= 6) { chartLabelsPorCiclo = ["4∫ Ano", "5∫ Ano", "6∫ Ano"]; }
-        else { chartLabelsPorCiclo = ["7∫ Ano", "8∫ Ano", "9∫ Ano"]; }
+        if (baseOBJ.AnoEscolar < 4) { chartLabelsPorCiclo = ["2¬∫ Ano", "3¬∫ Ano"]; }
+        else if (baseOBJ.AnoEscolar >= 4 && baseOBJ.AnoEscolar <= 6) { chartLabelsPorCiclo = ["4¬∫ Ano", "5¬∫ Ano", "6¬∫ Ano"]; }
+        else { chartLabelsPorCiclo = ["7¬∫ Ano", "8¬∫ Ano", "9¬∫ Ano"]; }
 
         for (var i = 0; i < serieHistorica.anoAtual.agregacao_indice3.length; i++) {
             $("#divResultadoSerieHistorica_" + i).empty("");
@@ -8624,7 +8627,7 @@ function graficoResultadoSerieHistorica(baseOBJ, flagAlfabetizacao) {
 
 function mostrarGraficosSerieHistorica() {
     try {
-        //MSTECH - Mostrar gr·ficos da sÈrie histÛrica apenas quando houver dados
+        //MSTECH - Mostrar gr√°ficos da s√©rie hist√≥rica apenas quando houver dados
         var divsSH = document.getElementsByClassName("resultados_graficoSerieHistoricaMainDiv");
 
         for (var i = 0; i < divsSH.length; i++) {
@@ -8637,17 +8640,17 @@ function mostrarGraficosSerieHistorica() {
 }
 /**
 -----MSTECH-----
- *Fim do MÛdulo 5.4 - Ciclo de Aprendizagem
+ *Fim do M√≥dulo 5.4 - Ciclo de Aprendizagem
 */
 
 /**
 -----MSTECH-----
- *Fim do MÛdulo 5.5 - ParticipaÁ„o
+ *Fim do M√≥dulo 5.5 - Participa√ß√£o
 */
 
 /**
 -----MSTECH-----
- Mostrar popup de participaÁ„o da ProvaSP pela tela de filtros
+ Mostrar popup de participa√ß√£o da ProvaSP pela tela de filtros
 */
 function popupParticipacao() {
     try {
@@ -8660,7 +8663,7 @@ function popupParticipacao() {
         var lista_turmas = "";
 
         $.mobile.loading("show", {
-            text: "Obtendo dados de participaÁ„o...",
+            text: "Obtendo dados de participa√ß√£o...",
             textVisible: true,
             theme: "a",
             html: ""
@@ -8702,7 +8705,7 @@ function popupParticipacao() {
             });
     }
     catch (error) {
-        ProvaSP_Erro("Alerta", "Erro ao buscar informaÁıes: " + error);
+        ProvaSP_Erro("Alerta", "Erro ao buscar informa√ß√µes: " + error);
     }
 }
 
@@ -8722,7 +8725,7 @@ function montarQuadroParticipacao(participacaoData) {
             participacaoHTML += "<div id='participacaoDiv" + i +
                 "' class='participacao_subDiv' style='display: none;'>";
 
-            //O primeiro bloco È referente ao nÌvel macro
+            //O primeiro bloco √© referente ao n√≠vel macro
             participacaoHTML += blocoDadosParticipacao(participacaoData[i]);
             if (participacaoData[i].Itens != null) {
                 for (var j = 0; j < participacaoData[i].Itens.length; j++) {
@@ -8791,7 +8794,7 @@ function blocoDadosParticipacao(blocoOBJ) {
         blocoHTML += "<p class='participacao_text'>PRESENTES</p>";
         blocoHTML += "</td>";
         blocoHTML += "<td class='participacao_coloredTD' colspan='2'>";
-        blocoHTML += "<p class='participacao_text' style='text-align: left;'>% DE PARTICIPA«√O</p>";
+        blocoHTML += "<p class='participacao_text' style='text-align: left;'>% DE PARTICIPA√á√ÉO</p>";
         blocoHTML += "</td>";
         blocoHTML += "</tr>";
         blocoHTML += "</table>";
@@ -8843,12 +8846,12 @@ $("#btnParticipacaoVoltar").unbind("click").click(function () {
 });
 /**
 -----MSTECH-----
- *Fim do MÛdulo 5.5 - ParticipaÁ„o
+ *Fim do M√≥dulo 5.5 - Participa√ß√£o
 */
 
 /**
 -----MSTECH-----
- *Fim do MÛdulo 5.6 - Question·rios Resultados - Por Fatores associados e CaracterizaÁ„o de FamÌlias e Escolas
+ *Fim do M√≥dulo 5.6 - Question√°rios Resultados - Por Fatores associados e Caracteriza√ß√£o de Fam√≠lias e Escolas
 */
 $("#ddlCFENivel").unbind("change").change(function () {
     try {
@@ -8860,7 +8863,7 @@ $("#ddlCFENivel").unbind("change").change(function () {
         $("#ddlCFECiclo").selectmenu("disable");
         $("#ddlCFECiclo").selectmenu("refresh");
 
-        $("#ddlCFEQuestionario").html("<option value='' selected='selected'>(Question·rio)</option>");
+        $("#ddlCFEQuestionario").html("<option value='' selected='selected'>(Question√°rio)</option>");
         $("#ddlCFEQuestionario").val("");
         $("#ddlCFEQuestionario").selectmenu("disable");
         $("#ddlCFEQuestionario").selectmenu("refresh");
@@ -8975,7 +8978,7 @@ $("#ddlCFEEdicao").unbind("change").change(function () {
     try {
         $("#ddlCFECiclo").val("");
 
-        $("#ddlCFEQuestionario").html("<option value='' selected='selected'>(Question·rio)</option>");
+        $("#ddlCFEQuestionario").html("<option value='' selected='selected'>(Question√°rio)</option>");
         $("#ddlCFEQuestionario").val("");
         $("#ddlCFEQuestionario").selectmenu("disable");
         $("#ddlCFEQuestionario").selectmenu("refresh");
@@ -8996,7 +8999,7 @@ $("#ddlFAEdicao").unbind("change").change(function () {
     try {
         $("#ddlFACiclo").val("");
 
-        $("#ddlFAQuestionario").html("<option value='' selected='selected'>(Question·rio)</option>");
+        $("#ddlFAQuestionario").html("<option value='' selected='selected'>(Question√°rio)</option>");
         $("#ddlFAQuestionario").val("");
 
         $("#ddlFAConstructo").html("<option value='' selected='selected'>(Constructo)</option>");
@@ -9022,7 +9025,7 @@ $("#ddlFAEdicao").unbind("change").change(function () {
 
 $("#ddlCFECiclo").unbind("change").change(function () {
     try {
-        $("#ddlCFEQuestionario").html("<option value='' selected='selected'>(Question·rio)</option>");
+        $("#ddlCFEQuestionario").html("<option value='' selected='selected'>(Question√°rio)</option>");
         $("#ddlCFEQuestionario").val("");
 
         $("#btnCFEApresentar").prop("disabled", true);
@@ -9040,7 +9043,7 @@ $("#ddlCFECiclo").unbind("change").change(function () {
 
 $("#ddlFACiclo").unbind("change").change(function () {
     try {
-        $("#ddlFAQuestionario").html("<option value='' selected='selected'>(Question·rio)</option>");
+        $("#ddlFAQuestionario").html("<option value='' selected='selected'>(Question√°rio)</option>");
         $("#ddlFAQuestionario").val("");
 
         $("#ddlFAConstructo").html("<option value='' selected='selected'>(Constructo)</option>");
@@ -9073,7 +9076,7 @@ function getQuestionarios(fatorAssociado) {
             "FatorAssociado/GetQuestionario?edicao=" + edicao;
 
         $.mobile.loading("show", {
-            text: "Obtendo question·rios...",
+            text: "Obtendo question√°rios...",
             textVisible: true,
             theme: "a",
             html: ""
@@ -9089,7 +9092,7 @@ function getQuestionarios(fatorAssociado) {
 
                 if (dataResultado.length > 0) {
                     var inputParametro = "";
-                    var questionariosSelectHTML = "<option value='' selected='selected'>(Question·rio)</option>";
+                    var questionariosSelectHTML = "<option value='' selected='selected'>(Question√°rio)</option>";
 
                     for (var i = 0; i < dataResultado.length; i++) {
                         questionariosSelectHTML += "<option value='" + dataResultado[i].QuestionarioID +
@@ -9105,8 +9108,8 @@ function getQuestionarios(fatorAssociado) {
 
                 }
                 else {
-                    ProvaSP_Erro("N„o h· informaÁıes aqui",
-                        "N„o foi possÌvel obter os question·rios. Por favor tente novamente mais tarde.");
+                    ProvaSP_Erro("N√£o h√° informa√ß√µes aqui",
+                        "N√£o foi poss√≠vel obter os question√°rios. Por favor tente novamente mais tarde.");
                 }
             },
             error: function (erro) {
@@ -9186,8 +9189,8 @@ function getConstructos() {
                     $("#ddlFAConstructo").selectmenu("refresh");
                 }
                 else {
-                    ProvaSP_Erro("N„o h· informaÁıes aqui",
-                        "N„o foi possÌvel obter os constructos. Por favor tente novamente mais tarde.");
+                    ProvaSP_Erro("N√£o h√° informa√ß√µes aqui",
+                        "N√£o foi poss√≠vel obter os constructos. Por favor tente novamente mais tarde.");
                 }
             },
             error: function (erro) {
@@ -9231,7 +9234,7 @@ $("#btnCFEApresentar").unbind("click").click(function () {
         }
 
         $.mobile.loading("show", {
-            text: "Obtendo informaÁıes...",
+            text: "Obtendo informa√ß√µes...",
             textVisible: true,
             theme: "a",
             html: ""
@@ -9392,7 +9395,7 @@ function montarVariaveisDeFatorAssociado(faVariaveis) {
         }
         $("#fa_variaveisDoConstructo").html(variaveisHTML);
 
-        //Montando gr·ficos abaixo de cada opÁ„o
+        //Montando gr√°ficos abaixo de cada op√ß√£o
         downloadDadosDaVariavel();
     }
     catch (error) {
@@ -9436,7 +9439,7 @@ function downloadDadosDaVariavel() {
         };
 
         $.mobile.loading("show", {
-            text: "Obtendo dados da vari·vel...",
+            text: "Obtendo dados da vari√°vel...",
             textVisible: true,
             theme: "a",
             html: ""
@@ -9492,7 +9495,7 @@ function baseGraficosConstructo() {
             baseConstructoHTML += "</b>";
             baseConstructoHTML += "</p>";
 
-            //Div para o gr·fico
+            //Div para o gr√°fico
             baseConstructoHTML += "<div id='variavelConstructo_" + i + "' style='border: 2px solid #ccc; margin-bottom: 20px;'>";
             baseConstructoHTML += "</div>";
         }
@@ -9512,12 +9515,12 @@ function montarGraficosConstructo(constructo, nivel, nivelSuperior) {
             var constructoLabel = vetorLabelsConstructo(constructo[i]);
 
             if (constructoLabel.length > 0) {
-                //NÌvel padr„o do constructo
+                //N√≠vel padr√£o do constructo
                 constructoDataSet.push({
                     label: nivel, data: vetorDadosConstructo(constructo[i], false), backgroundColor: "#083C59"
                 });
 
-                //NÌvel superior do constructo
+                //N√≠vel superior do constructo
                 if (nivelSuperior != "") {
                     constructoDataSet.push({
                         label: nivelSuperior, data: vetorDadosConstructo(constructo[i], true), backgroundColor: "#91C8D7"
@@ -9661,7 +9664,52 @@ $("#btnConstructoVoltar").unbind("click").click(function () {
     }
 });
 
+function exportarPDF() {
+    var pdf = new jsPDF('p', 'pt', 'a4');
+    pdf.html(document.getElementById('divResultadoTabProficiencias'), {
+        callback: function (pdf) {
+            pdf.save('ProeficienciaDetalhe.pdf');
+        }
+    });
+}       
+
+
+function gerarImagemDivResultadoTituloDetalhe() {    
+    domtoimage.toPng(document.getElementById('divResultadoTituloDetalhe'))
+        .then(function (dataURL) {
+            imagemDivResultadoTituloDetalhe = new Image();
+            imagemDivResultadoTituloDetalhe.src = dataURL;
+        });
+}
+
+$('#linkExportarPNG').click(function () {
+    exportarImagem('png');
+});
+
+$('#linkExportarJPG').click(function () {
+    exportarImagem('jpg');
+});
+
+function exportarImagem(extensao) {
+    var canvasExport = document.getElementById("canvasExportImage");
+    var contextCanvasExport = canvasExport.getContext("2d");
+    var chartEscala = document.getElementById('chartResultadoEscalaSaeb_1');
+    var chartResultado = document.getElementById("chartResultadoDetalhe");
+
+    canvasExport.width = chartEscala.width > chartResultado.width ? chartEscala.width : chartResultado.width;
+    canvasExport.height = imagemDivResultadoTituloDetalhe.height + chartEscala.height + chartResultado.height + 2;   
+
+    contextCanvasExport.drawImage(imagemDivResultadoTituloDetalhe, 0, 0);
+    contextCanvasExport.drawImage(chartEscala, 0, imagemDivResultadoTituloDetalhe.height + 1);
+    contextCanvasExport.drawImage(chartResultado, 0, imagemDivResultadoTituloDetalhe.height + chartEscala.height + 1);
+
+    var link = document.createElement('a');
+    link.download = "ProeficienciaDetalhe." + extensao;
+    link.href = canvasExport.toDataURL("image/" + extensao).replace("image/" + extensao, "image/octet-stream");
+    link.click();
+}
+
 /**
 -----MSTECH-----
- *Fim do MÛdulo 5 - Novas implementaÁıes da MSTECH
+ *Fim do M√≥dulo 5 - Novas implementa√ß√µes da MSTECH
 */
