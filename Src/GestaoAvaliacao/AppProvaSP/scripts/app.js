@@ -9,6 +9,8 @@ var db = null;
 var mobile = false;
 var opcaoResultadoSelecionada = -1;
 var opcaoConfiguracoesSelecionada = -1;
+var imagemDivResultadoTituloDetalhe;
+
 
 /**
 -----MSTECH-----
@@ -4357,7 +4359,6 @@ function definirEventHandlers() {
             var lista_turmas = "";
             var lista_alu_matricula = "";
 
-
             $.mobile.loading("show", {
                 text: "Aguarde...",
                 textVisible: true,
@@ -4553,6 +4554,8 @@ function definirEventHandlers() {
                         proficienciasAtuais[4].Nome + ".");
                 $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de proficiência de cada Aluno. No gráfico, toque na barra correspondente ao aluno para visualizar informações detalhadas sobre seu respectivo desempenho.");
             }
+
+            gerarImagemDivResultadoTituloDetalhe();
 
             /**
             -----MSTECH-----
@@ -9686,6 +9689,51 @@ $("#btnConstructoVoltar").unbind("click").click(function () {
         console.log(error);
     }
 });
+
+function exportarPDF() {
+    var pdf = new jsPDF('p', 'pt', 'a4');
+    pdf.html(document.getElementById('divResultadoTabProficiencias'), {
+        callback: function (pdf) {
+            pdf.save('ProeficienciaDetalhe.pdf');
+        }
+    });
+}       
+
+
+function gerarImagemDivResultadoTituloDetalhe() {    
+    domtoimage.toPng(document.getElementById('divResultadoTituloDetalhe'))
+        .then(function (dataURL) {
+            imagemDivResultadoTituloDetalhe = new Image();
+            imagemDivResultadoTituloDetalhe.src = dataURL;
+        });
+}
+
+$('#linkExportarPNG').click(function () {
+    exportarImagem('png');
+});
+
+$('#linkExportarJPG').click(function () {
+    exportarImagem('jpg');
+});
+
+function exportarImagem(extensao) {
+    var canvasExport = document.getElementById("canvasExportImage");
+    var contextCanvasExport = canvasExport.getContext("2d");
+    var chartEscala = document.getElementById('chartResultadoEscalaSaeb_1');
+    var chartResultado = document.getElementById("chartResultadoDetalhe");
+
+    canvasExport.width = chartEscala.width > chartResultado.width ? chartEscala.width : chartResultado.width;
+    canvasExport.height = imagemDivResultadoTituloDetalhe.height + chartEscala.height + chartResultado.height + 2;   
+
+    contextCanvasExport.drawImage(imagemDivResultadoTituloDetalhe, 0, 0);
+    contextCanvasExport.drawImage(chartEscala, 0, imagemDivResultadoTituloDetalhe.height + 1);
+    contextCanvasExport.drawImage(chartResultado, 0, imagemDivResultadoTituloDetalhe.height + chartEscala.height + 1);
+
+    var link = document.createElement('a');
+    link.download = "ProeficienciaDetalhe." + extensao;
+    link.href = canvasExport.toDataURL("image/" + extensao).replace("image/" + extensao, "image/octet-stream");
+    link.click();
+}
 
 /**
 -----MSTECH-----

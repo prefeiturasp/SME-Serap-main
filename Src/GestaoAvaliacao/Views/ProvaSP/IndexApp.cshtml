@@ -974,7 +974,16 @@ não exclua esse comentário.
 
                     <div id="divResultadoTabProficiencias" class="ui-body-d ui-content">
 
-                        <table style="width:100%;">
+                        <p id="exportar_div" class="resultados_headerTitle" style="display:block" data-html2canvas-ignore="true">
+                            Exportar:
+                            <a href="#" onclick="exportarPDF()">PDF</a>
+                            <text>,</text>
+                            <a id="linkExportarPNG" href="#">PNG</a>
+                            <text>,</text>
+                            <a id="linkExportarJPG" href="#">JPG</a>
+                        </p>
+
+                        <table style="width:100%;" data-html2canvas-ignore="true">
                             <tr>
                                 <td style="width:50%;">
                                     <label for="chkResultadoFiltroAbaixoDoBasico">
@@ -1015,7 +1024,7 @@ não exclua esse comentário.
                         <div id="divChartResultadoDetalhe" class="divChartResultadoDetalhe" style="border:1px solid rgb(230,230,230);"></div>
                         <span class="lblResultadoTituloEscalaSaeb_2"></span>
                         <div class="divChartResultadoEscalaSaeb_2"></div>
-
+                        <canvas id="canvasExportImage" style="display:none"></canvas>
                     </div>
 
                     <div id="divResultadoTabHabilidades" class="ui-body-d ui-content">
@@ -2056,14 +2065,16 @@ não exclua esse comentário.
     <script src="/AppProvaSP/scripts/model/QuestionarioUsuario.js?v=1.30.7.0"></script>
     <script src="/AppProvaSP/scripts/model/QuestionarioRespostaItem.js?v=1.30.7.0"></script>
 
-    <script src="/AppProvaSP/scripts/app.js?v=1.30.7.0" type="text/javascript"></script>
-
-
+    <script src="/AppProvaSP/scripts/app.js?v=1.30.4.0" type="text/javascript"></script>
+    <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/jspdf.min.js"></script>
+    <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/html2canvas.min.js"></script>
+    <script src="/AppProvaSP/scripts/external/DomToImage-2.6/dom-to-image.js"></script>
+    <script src="/AppProvaSP/scripts/external/FileSaver/FileSaver.min.js"></script>
     <script src="scripts/chart.js"></script>
     <script>
-            if (window.MSInputMethodContext != null) {
-                alert("ATENÇÃO! Você está utilizando o Internet Explorer e este aplicativo não funcionará de forma adequada. Por gentileza utilize o Google Chrome.");
-            }
+        if (window.MSInputMethodContext != null) {
+            alert("ATENÇÃO! Você está utilizando o Internet Explorer e este aplicativo não funcionará de forma adequada. Por gentileza utilize o Google Chrome.");
+        }        
     </script>
 </body>
 </html>
