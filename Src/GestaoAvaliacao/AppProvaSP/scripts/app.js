@@ -2435,26 +2435,23 @@ function resultado_configurarControles() {
                 $("#ddlResultadoAnoItem_Ano8").hide();
             }
         }
-        //MSTECH - Voltando a mostrar 3º Ano
-        //        else if (edicoesComTurmasAmostrais.indexOf(edicao) >= 0 && edicao == 2018) {
-        //            if (ano == "3") {
-        //                $("#ddlResultadoAno").val("");
-        //                $("#ddlResultadoAno").trigger("change");
-        //            }
-        //            $("#ddlResultadoAnoItem_Ano3").hide();
-        //        }
 
         /**
-        -----MSTECH-----
-         *Sendo ENTURMACAO_ATUAL a edição escolhida junto ao 3º ano, deve-se resetar o select
-         e esconder a opção do terceiro ano.
+        -----AMCOM-----
+         *Sendo ENTURMACAO_ATUAL a edição escolhida junto ao 2º ano, deve-se resetar o select
+         e esconder a opção do 2º ano. Quando é ciências também esconde a opção do 2º ano.
         */
         if (edicao == "ENTURMACAO_ATUAL") {
-            if (ano == "3") {
+            if (ano == "2") {
                 $("#ddlResultadoAno").val("");
                 $("#ddlResultadoAno").trigger("change");
             }
-            $("#ddlResultadoAnoItem_Ano3").hide();
+            $("#ddlResultadoAnoItem_Ano2").hide();
+        } else if (areaConhecimento == "1") { //Ciências
+            $("#ddlResultadoAnoItem_Ano2").hide();
+        }
+        else {
+            $("#ddlResultadoAnoItem_Ano2").show();
         }
 
         /**
@@ -3675,7 +3672,7 @@ function definirEventHandlers() {
     };
 
     /**
-    -----MSTECH-----
+    -----AMCOM-----
      *Assim como o EDIÇÃO, ao alterar a ÁREA de CONHECIMENTO, os filtros para o resultado da
      ProvaSP são resetados e abaixo é tratada a situação de SELECT vazio.
     */
@@ -3683,17 +3680,14 @@ function definirEventHandlers() {
         try {
             resultado_configurarControles();
 
-            $("#ddlResultadoAnoItem_Ano2").show();
             if (this.value == "") {
                 $("#ddlResultadoAno").val("");
                 $("#ddlResultadoAno").selectmenu("refresh");
                 $("#ddlResultadoAno").selectmenu("disable");
             }
-            else if (this.value == 1) {
+            else if (this.value == 1) { //Ciências
                 $("#ddlResultadoAno").val("");
                 $("#ddlResultadoAno").selectmenu("refresh");
-
-                $("#ddlResultadoAnoItem_Ano2").hide();
             }
         }
         catch (error) {
