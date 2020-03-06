@@ -10,7 +10,10 @@ var mobile = false;
 var opcaoResultadoSelecionada = -1;
 var opcaoConfiguracoesSelecionada = -1;
 var imagemDivResultadoTituloDetalhe;
-
+var imagemResultadoTitulo;
+var imagemResultadoSubtitulo;
+var imagemResultadoTituloAgregacao;
+var imagemTableChecksResultadoFiltro;
 
 /**
 -----MSTECH-----
@@ -2889,7 +2892,7 @@ function carregarListaEscolaRevistasBoletins() {
              o arquivo escolas.CSV e, a partir dele, obter as informações necessárias.
             */
             let promiseCarga = carregarDataEscola(
-                new Promise ((resolve, reject) => {
+                new Promise((resolve, reject) => {
                     setTimeout(function () {
                         try {
                             /**
@@ -4555,7 +4558,7 @@ function definirEventHandlers() {
                 $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de proficiência de cada Aluno. No gráfico, toque na barra correspondente ao aluno para visualizar informações detalhadas sobre seu respectivo desempenho.");
             }
 
-            gerarImagemDivResultadoTituloDetalhe();
+            gerarImagensHTML();
 
             /**
             -----MSTECH-----
@@ -5630,6 +5633,11 @@ function definirEventHandlers() {
                 */
                 $("#divResultadoTabHabilidades_conteudoDinamico").append(htmTabela);
             }
+
+            $(document.getElementsByTagName('canvas')).each(function () {
+                if (this.height === 0 || this.width === 0)
+                    this.remove();
+            });
         }
         catch (error) {
             console.log(error);
@@ -9690,47 +9698,134 @@ $("#btnConstructoVoltar").unbind("click").click(function () {
     }
 });
 
-function exportarPDF() {
+function ExportarGeral() {
+    var formato = $('#ddlFormatoArquivoExportacao').val();
+    switch (formato) {
+        case "1":
+            exportarPDF(document.getElementById('divResultadoApresentacao'));
+            break;
+        case "2":
+        case "3":
+            var elements = [imagemResultadoTitulo,
+                imagemResultadoSubtitulo,
+                imagemResultadoTituloAgregacao,
+                document.getElementById('chartResultadoAgregacao0'),
+                imagemTableChecksResultadoFiltro,
+                document.getElementById('chartResultadoEscalaSaeb_1'),
+                document.getElementById("chartResultadoDetalhe")];
+            exportarImagem(formato === '2' ? 'png' : 'jpg', elements, 'Proeficiencia');
+            break;
+        default:
+            break;
+    }
+}
+
+function exportarPDF(element) {
+    if (element === undefined || element === null)
+        element = document.getElementById('divResultadoTabProficiencias');
+
     var pdf = new jsPDF('p', 'pt', 'a4');
-    pdf.html(document.getElementById('divResultadoTabProficiencias'), {
+    pdf.html(element, {
         callback: function (pdf) {
             pdf.save('ProeficienciaDetalhe.pdf');
         }
     });
-}       
+}
 
+function gerarImagensHTML() {
+    domtoimage.toPng($(document.getElementById('lblResultadoTitulo')).parent()[0])
+        .then(function (dataURL) {
+            imagemResultadoTitulo = new Image();
+            imagemResultadoTitulo.src = dataURL;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 
-function gerarImagemDivResultadoTituloDetalhe() {    
+    domtoimage.toPng(document.getElementById('lblResultadoSubTitulo'))
+        .then(function (dataURL) {
+            imagemResultadoSubtitulo = new Image();
+            imagemResultadoSubtitulo.src = dataURL;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    domtoimage.toPng(document.getElementById('divResultadoTituloAgregacao'))
+        .then(function (dataURL) {
+            imagemResultadoTituloAgregacao = new Image();
+            imagemResultadoTituloAgregacao.src = dataURL;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    //domtoimage.toPng(document.getElementById('tableChecksResultadoFiltro'))
+    //    .then(function (dataUrl) {
+    //        debugger;
+    //    })
+    //    .catch(function (error) {
+    //        console.log(error);
+    //    });
+    html2canvas($('#tableChecksResultadoFiltro'), {
+        onrendered: function (canvas) {
+            debugger;
+            var canvasImg = canvas.toDataURL("image/jpg");
+        }
+    });
+
     domtoimage.toPng(document.getElementById('divResultadoTituloDetalhe'))
         .then(function (dataURL) {
             imagemDivResultadoTituloDetalhe = new Image();
             imagemDivResultadoTituloDetalhe.src = dataURL;
+        })
+        .catch(function (error) {
+            console.log(error);
         });
 }
 
 $('#linkExportarPNG').click(function () {
-    exportarImagem('png');
+    var elements = [imagemDivResultadoTituloDetalhe,
+        document.getElementById('chartResultadoEscalaSaeb_1'),
+        document.getElementById("chartResultadoDetalhe")];
+
+    exportarImagem('png', elements, 'ProeficienciaDetalhe');
 });
 
 $('#linkExportarJPG').click(function () {
-    exportarImagem('jpg');
+    var elements = [imagemDivResultadoTituloDetalhe,
+        document.getElementById('chartResultadoEscalaSaeb_1'),
+        document.getElementById("chartResultadoDetalhe")];
+
+    exportarImagem('jpg', elements, 'ProeficienciaDetalhe');
 });
 
-function exportarImagem(extensao) {
+function exportarImagem(extensao, elements, nomeArquivo) {
+
     var canvasExport = document.getElementById("canvasExportImage");
     var contextCanvasExport = canvasExport.getContext("2d");
-    var chartEscala = document.getElementById('chartResultadoEscalaSaeb_1');
-    var chartResultado = document.getElementById("chartResultadoDetalhe");
 
-    canvasExport.width = chartEscala.width > chartResultado.width ? chartEscala.width : chartResultado.width;
-    canvasExport.height = imagemDivResultadoTituloDetalhe.height + chartEscala.height + chartResultado.height + 2;   
+    var ordenacaoOriginal = [...elements];
+    elements.sort(function comparar(item1, item2) {
+        if (item1.width < item2.width) return -1;
+        if (item1.width > item2.width) return 1;
+        return 0;
+    });
 
-    contextCanvasExport.drawImage(imagemDivResultadoTituloDetalhe, 0, 0);
-    contextCanvasExport.drawImage(chartEscala, 0, imagemDivResultadoTituloDetalhe.height + 1);
-    contextCanvasExport.drawImage(chartResultado, 0, imagemDivResultadoTituloDetalhe.height + chartEscala.height + 1);
+    canvasExport.width = elements[elements.length - 1].width;
+    canvasExport.height = 0;
+    elements.forEach(element => {
+        canvasExport.height += element.height + 1;
+    });
+
+    var alturaAtual = 0;
+    ordenacaoOriginal.forEach(element => {
+        contextCanvasExport.drawImage(element, 0, alturaAtual);
+        alturaAtual += element.height + 1;
+    });
 
     var link = document.createElement('a');
-    link.download = "ProeficienciaDetalhe." + extensao;
+    link.download = nomeArquivo + "." + extensao;
     link.href = canvasExport.toDataURL("image/" + extensao).replace("image/" + extensao, "image/octet-stream");
     link.click();
 }

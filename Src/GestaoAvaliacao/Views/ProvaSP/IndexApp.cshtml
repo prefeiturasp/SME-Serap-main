@@ -942,7 +942,27 @@ não exclua esse comentário.
                     </li>
                 </ul>
 
-                <a href="#" onclick="document.getElementById('divChartResultadoDetalhe').style.overflow='visible'; document.getElementById('divChartResultadoDetalhe').style.height='100%'; window.print();">Imprimir</a>
+
+                <table id="exportar_div" class="resultados_headerTitle" style="width: 100%;" data-html2canvas-ignore="true">
+                    <tr>
+                        <td style="width: 30%;">
+                            <span>Exporte os gráficos em:</span>
+                        </td>
+                        <td>
+                            <select id="ddlFormatoArquivoExportacao" data-mini="true">
+                                <option value="1">PDF</option>
+                                <option value="2">PNG</option>
+                                <option value="3">JPG</option>
+                                <option value="3">PPT</option>
+                            </select>
+                        </td>
+                        <td>
+                            <a id="btnExportar" href="#" data-role="button" class="btnInfo" onclick="ExportarGeral()">Exportar</a>
+                        </td>
+                    </tr>
+                </table>
+
+                @*<a href="#" onclick="document.getElementById('divChartResultadoDetalhe').style.overflow='visible'; document.getElementById('divChartResultadoDetalhe').style.height='100%'; window.print();">Imprimir</a>*@
 
                 <div id="divResultadoTituloAgregacao" style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
                     <span id="lblResultadoTituloAgregacao"></span>
@@ -967,8 +987,8 @@ não exclua esse comentário.
                 <div data-role="tabs" id="tabs" style="margin-top:15px;">
                     <div id="divTabsProficienciaHabilidade" data-role="navbar">
                         <ul>
-                            <li><a id="#linkResultadoTabProficiencias" href="#divResultadoTabProficiencias">Proficiência em detalhe</a></li>
-                            <li><a id="#linkResultadoTabHabilidades" href="#divResultadoTabHabilidades">Habilidade</a></li>
+                            <li><a id="#linkResultadoTabProficiencias" href="#divResultadoTabProficiencias" data-html2canvas-ignore="true">Proficiência em detalhe</a></li>
+                            <li><a id="#linkResultadoTabHabilidades" href="#divResultadoTabHabilidades" data-html2canvas-ignore="true">Habilidade</a></li>
                         </ul>
                     </div>
 
@@ -983,7 +1003,7 @@ não exclua esse comentário.
                             <a id="linkExportarJPG" href="#">JPG</a>
                         </p>
 
-                        <table style="width:100%;" data-html2canvas-ignore="true">
+                        <table id="tableChecksResultadoFiltro" style="width:100%;">
                             <tr>
                                 <td style="width:50%;">
                                     <label for="chkResultadoFiltroAbaixoDoBasico">
@@ -1014,17 +1034,17 @@ não exclua esse comentário.
                             </tr>
                         </table>
 
-                        <div id="divResultadoTituloDetalhe" class="infoBox" style="margin:15px;">
+                        <div id="divResultadoTituloDetalhe" class="infoBox" style="margin:15px;" data-html2canvas-ignore="true">
                             <span id="lblResultadoTituloDetalhe"></span>
                         </div>
 
                         <span class="lblResultadoTituloEscalaSaeb_1"></span>
                         <div class="divChartResultadoEscalaSaeb_1"></div>
-                        <img class="imgChartResultadoDetalhe" />
+                        <img class="imgChartResultadoDetalhe" data-html2canvas-ignore="true" />
                         <div id="divChartResultadoDetalhe" class="divChartResultadoDetalhe" style="border:1px solid rgb(230,230,230);"></div>
                         <span class="lblResultadoTituloEscalaSaeb_2"></span>
                         <div class="divChartResultadoEscalaSaeb_2"></div>
-                        <canvas id="canvasExportImage" style="display:none"></canvas>
+                        <canvas id="canvasExportImage" style="display:none" data-html2canvas-ignore="true"></canvas>
                     </div>
 
                     <div id="divResultadoTabHabilidades" class="ui-body-d ui-content">
@@ -1035,7 +1055,7 @@ não exclua esse comentário.
                         </div>
                         <div id="divResultadoTabHabilidades_conteudoDinamico"></div>
                     </div>
-                    <a href="#" data-role="button" class="btnInfo" id="btnResultadoAlterarParametros2">Voltar às opções</a>
+                    <a href="#" data-role="button" class="btnInfo" id="btnResultadoAlterarParametros2" data-html2canvas-ignore="true">Voltar às opções</a>
                     <div data-role="footer" data-position="fixed" data-tap-toggle="false">
                         <a id="btnResultadoAlterarParametros" style="width:50%;" href="#" data-role="button" class="btnInfo">Voltar às opções</a>
                     </div>
@@ -2066,15 +2086,15 @@ não exclua esse comentário.
     <script src="/AppProvaSP/scripts/model/QuestionarioRespostaItem.js?v=1.30.7.0"></script>
 
     <script src="/AppProvaSP/scripts/app.js?v=1.30.4.0" type="text/javascript"></script>
-    <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/jspdf.min.js"></script>
-    <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/html2canvas.min.js"></script>
+    <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/jspdf.debug.js"></script>
+    <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/html2canvas.js"></script>
     <script src="/AppProvaSP/scripts/external/DomToImage-2.6/dom-to-image.js"></script>
     <script src="/AppProvaSP/scripts/external/FileSaver/FileSaver.min.js"></script>
     <script src="scripts/chart.js"></script>
     <script>
         if (window.MSInputMethodContext != null) {
             alert("ATENÇÃO! Você está utilizando o Internet Explorer e este aplicativo não funcionará de forma adequada. Por gentileza utilize o Google Chrome.");
-        }        
+        }
     </script>
 </body>
 </html>

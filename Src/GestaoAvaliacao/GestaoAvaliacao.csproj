@@ -411,7 +411,9 @@
     <Content Include="AppProvaSP\scripts\external\DomToImage-2.6\dom-to-image.min.js" />
     <Content Include="AppProvaSP\scripts\external\FileSaver\FileSaver.min.js" />
     <Content Include="AppProvaSP\scripts\external\jquery-ui\datepicker.js" />
+    <Content Include="AppProvaSP\scripts\external\jsPDF-2.1.1\html2canvas.js" />
     <Content Include="AppProvaSP\scripts\external\jsPDF-2.1.1\html2canvas.min.js" />
+    <Content Include="AppProvaSP\scripts\external\jsPDF-2.1.1\jspdf.debug.js" />
     <Content Include="AppProvaSP\scripts\external\jsPDF-2.1.1\jspdf.min.js" />
     <Content Include="AppProvaSP\scripts\global.js" />
     <Content Include="AppProvaSP\scripts\index.js" />
