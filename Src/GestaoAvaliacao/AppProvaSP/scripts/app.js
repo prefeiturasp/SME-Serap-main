@@ -26,6 +26,7 @@ var provaSP_configuracoes = {
         PossuiPerfilEdicaoAtual: false
     }
 };
+var areasConhecimento = ["Ciências da Natureza", "Língua Portuguesa", "Matemática", "Redação"];
 var cicloTotalAlunos = {};
 var modeloCiclos = { Ciclo1: [-1, 2, 3], Ciclo2: [4, 5, 6], Ciclo3: [7, 8, 9] };
 //MSTECH - Objeto para salvar os dados de agração de Série Histórica - Ano atual e Ano anterior
@@ -8405,12 +8406,11 @@ function limparCicloAprendizagem(param) {
 function baseGraficoSerieHistorica(indiceAgregacao, acID) {
     try {
         var baseGraficoHTML = "";
-        var areaConhecimento = ["Ciências da Natureza", "Língua Portuguesa", "Matemática", "Redação"];
 
         //Título só é necessário para alfabetização por conta dos 3 gráficos sobrepostos
         baseGraficoHTML += "<div class='resultados_graficoSerieHistoricaMainDiv' style='display: none;'>";
         baseGraficoHTML += "<p class='resultados_graficoAprendizagemTitle'>";
-        baseGraficoHTML += "Série histórica - " + areaConhecimento[parseInt(acID) - 1];
+        baseGraficoHTML += "Série histórica - " + areasConhecimento[parseInt(acID) - 1];
         baseGraficoHTML += "</p>";
         baseGraficoHTML += "<div class='resultados_graficoSerieHistorica'>";
         baseGraficoHTML += "<div id='divResultadoSerieHistorica_" + indiceAgregacao + "'></div>";
@@ -8673,6 +8673,7 @@ function popupParticipacao() {
         var objParticipacaoEnvio = {};
         var nivel = $("#ddlResultadoNivel").val();
         var edicao = $("#ddlResultadoEdicao").val();
+        var areaConhecimento = $("#ddlResultadoAreaConhecimento").val();
         var anoEscolar = $("#ddlResultadoAno").val();
         var lista_uad_sigla = "";
         var lista_esc_codigo = "";
@@ -8699,6 +8700,7 @@ function popupParticipacao() {
         objParticipacaoEnvio = {
             Nivel: nivel,
             Edicao: edicao,
+            AreaConhecimento: areaConhecimento,
             AnoEscolar: anoEscolar,
             lista_uad_sigla: lista_uad_sigla,
             lista_esc_codigo: lista_esc_codigo,
@@ -8759,48 +8761,22 @@ function montarQuadroParticipacao(participacaoData) {
 
 function blocoDadosParticipacao(blocoOBJ) {
     try {
-        var blocoHTML = "";
-        var coloredValidator = false;
-
-        if (parseFloat(blocoOBJ.PercentualParticipacao) >
-            parseFloat(provaSP_configuracoes.configuracoes.RepresentatividadeSegundoINEP)) {
-            coloredValidator = true;
-        }
-
+        let blocoHTML = "";
         blocoHTML += "<div class='participacao_blockDiv'>";
         blocoHTML += "<p class='participacao_title'>";
-        blocoHTML += "<span class='participacao_coloredLine'>| </span>" +
-            blocoOBJ.Titulo;
+        blocoHTML += "<span class='participacao_coloredLine'>| </span>" + blocoOBJ.Titulo;
         blocoHTML += "</p>";
 
         blocoHTML += "<table>";
-        blocoHTML += "<tr>";
-        blocoHTML += "<td class='participacao_defaultTD'>";
-        blocoHTML += "<p class='participacao_values'>";
-        blocoHTML += blocoOBJ.TotalPrevisto;
-        blocoHTML += "</p>";
-        blocoHTML += "</td>";
-        blocoHTML += "<td class='participacao_defaultTD'>";
-        blocoHTML += "<p class='participacao_values'>";
-        blocoHTML += blocoOBJ.TotalPresente;
-        blocoHTML += "</p>";
-        blocoHTML += "</td>";
-        blocoHTML += "<td class='participacao_coloredTD'>";
-        if (coloredValidator) {
-            blocoHTML += "<p class='participacao_colored participacao_coloredOK'>";
+
+        //Bloco de informações Geral, sem considerar a Área de Conhecimento selecionada
+        blocoHTML = apresentarBlocoParticipacaoArea("Geral", blocoHTML, blocoOBJ.PercentualParticipacaoGeral,
+            blocoOBJ.TotalPrevistoGeral, blocoOBJ.TotalPresenteGeral);
+        //Bloco de informações da Área de Conhecimento selecionada
+        if (blocoOBJ.AreaConhecimentoID) {
+            blocoHTML = apresentarBlocoParticipacaoArea(areasConhecimento[blocoOBJ.AreaConhecimentoID - 1], blocoHTML, blocoOBJ.PercentualParticipacaoAreaConhecimento,
+                blocoOBJ.TotalPrevistoAreaConhecimento, blocoOBJ.TotalPresenteAreaConhecimento);
         }
-        else {
-            blocoHTML += "<p class='participacao_colored'>";
-        }
-        blocoHTML += blocoOBJ.PercentualParticipacao;
-        blocoHTML += "</p>";
-        blocoHTML += "</td>";
-        blocoHTML += "<td class='participacao_flagTD'>";
-        if (coloredValidator) {
-            blocoHTML += "<p class='participacao_flagIcon'><span class='mdi mdi-flag-variant'></span></p>";
-        }
-        blocoHTML += "</td>";
-        blocoHTML += "</tr>";
 
         blocoHTML += "<tr>";
         blocoHTML += "<td class='participacao_defaultTD'>";
@@ -8822,6 +8798,55 @@ function blocoDadosParticipacao(blocoOBJ) {
         console.log(error);
         return "";
     }
+}
+
+function apresentarBlocoParticipacaoArea(descricaoArea, blocoHTML, percentualParticipacao, totalPrevisto, totalPresente) {
+    let coloredValidator = false;
+
+    if (parseFloat(percentualParticipacao) >
+        parseFloat(provaSP_configuracoes.configuracoes.RepresentatividadeSegundoINEP)) {
+        coloredValidator = true;
+    }
+
+    blocoHTML += "<tr>";
+    blocoHTML += "<td colspan='3'>";
+    blocoHTML += "<p class='participacao_descricao'>";
+    blocoHTML += descricaoArea;
+    blocoHTML += "</p>";
+    blocoHTML += "</td>";
+    blocoHTML += "</tr>";
+
+    blocoHTML += "<tr>";
+    blocoHTML += "<td class='participacao_defaultTD'>";
+    blocoHTML += "<p class='participacao_values'>";
+    blocoHTML += totalPrevisto;
+    blocoHTML += "</p>";
+    blocoHTML += "</td>";
+
+    blocoHTML += "<td class='participacao_defaultTD'>";
+    blocoHTML += "<p class='participacao_values'>";
+    blocoHTML += totalPresente;
+    blocoHTML += "</p>";
+    blocoHTML += "</td>";
+
+    blocoHTML += "<td class='participacao_coloredTD'>";
+    if (coloredValidator) {
+        blocoHTML += "<p class='participacao_colored participacao_coloredOK'>";
+    } else {
+        blocoHTML += "<p class='participacao_colored'>";
+    }
+    blocoHTML += percentualParticipacao;
+    blocoHTML += "</p>";
+    blocoHTML += "</td>";
+
+    blocoHTML += "<td class='participacao_flagTD'>";
+    if (coloredValidator) {
+        blocoHTML += "<p class='participacao_flagIcon'><span class='mdi mdi-flag-variant'></span></p>";
+    }
+    blocoHTML += "</td>";
+    blocoHTML += "</tr>";
+
+    return blocoHTML;
 }
 
 function mostrarParticipacao(headerID) {
