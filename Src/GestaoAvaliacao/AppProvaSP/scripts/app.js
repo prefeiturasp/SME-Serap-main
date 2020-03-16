@@ -9,8 +9,6 @@ var db = null;
 var mobile = false;
 var opcaoResultadoSelecionada = -1;
 var opcaoConfiguracoesSelecionada = -1;
-var imagemDivResultadoTituloDetalhe;
-
 
 /**
 -----MSTECH-----
@@ -4548,8 +4546,6 @@ function definirEventHandlers() {
                         proficienciasAtuais[4].Nome + ".");
                 $("#lblResultadoTituloDetalhe").html("Abaixo segue o detalhamento de proficiência de cada Aluno. No gráfico, toque na barra correspondente ao aluno para visualizar informações detalhadas sobre seu respectivo desempenho.");
             }
-
-            gerarImagemDivResultadoTituloDetalhe();
 
             /**
             -----MSTECH-----
@@ -9694,38 +9690,41 @@ function exportarPDF() {
 }       
 
 
-function gerarImagemDivResultadoTituloDetalhe() {    
-    domtoimage.toPng(document.getElementById('divResultadoTituloDetalhe'))
-        .then(function (dataURL) {
-            imagemDivResultadoTituloDetalhe = new Image();
-            imagemDivResultadoTituloDetalhe.src = dataURL;
-        });
+function gerarImagemDivResultadoTituloDetalhe() {
+    return new Promise((resolve) => {
+        domtoimage.toPng(document.getElementById('divResultadoTituloDetalhe'))
+            .then(function (dataURL) {
+                let imagemDivResultadoTituloDetalhe = new Image();
+                imagemDivResultadoTituloDetalhe.onload = () => { resolve(imagemDivResultadoTituloDetalhe) };
+                imagemDivResultadoTituloDetalhe.src = dataURL;
+            });
+    });
 }
 
-$('#linkExportarPNG').click(function () {
-    exportarImagem('png');
+$('.link-exportar-imagem-detalhes').click(function () {
+    let imageFormat = this.dataset.imageFormat;
+    gerarImagemDivResultadoTituloDetalhe()
+        .then((imgTituloDetalhe) => { exportarImagem(imageFormat, imgTituloDetalhe); });
 });
 
-$('#linkExportarJPG').click(function () {
-    exportarImagem('jpg');
-});
+function exportarImagem(extensao, imgTituloDetalhe) {
+    let chartEscala = document.getElementById('chartResultadoEscalaSaeb_1');
+    let chartResultado = document.getElementById("chartResultadoDetalhe");
 
-function exportarImagem(extensao) {
-    var canvasExport = document.getElementById("canvasExportImage");
-    var contextCanvasExport = canvasExport.getContext("2d");
-    var chartEscala = document.getElementById('chartResultadoEscalaSaeb_1');
-    var chartResultado = document.getElementById("chartResultadoDetalhe");
-
+    let canvasExport = document.createElement('canvas');
     canvasExport.width = chartEscala.width > chartResultado.width ? chartEscala.width : chartResultado.width;
-    canvasExport.height = imagemDivResultadoTituloDetalhe.height + chartEscala.height + chartResultado.height + 2;   
+    canvasExport.height = imgTituloDetalhe.height + chartEscala.height + chartResultado.height + 2;
+    console.log("imgTituloDetalhe:" + (imgTituloDetalhe ? imgTituloDetalhe : "NULO"));
+    console.log("imgTituloDetalhe.height:" + imgTituloDetalhe.height);
 
-    contextCanvasExport.drawImage(imagemDivResultadoTituloDetalhe, 0, 0);
-    contextCanvasExport.drawImage(chartEscala, 0, imagemDivResultadoTituloDetalhe.height + 1);
-    contextCanvasExport.drawImage(chartResultado, 0, imagemDivResultadoTituloDetalhe.height + chartEscala.height + 1);
+    let contextCanvasExport = canvasExport.getContext("2d");
+    contextCanvasExport.drawImage(imgTituloDetalhe, 0, 0);
+    contextCanvasExport.drawImage(chartEscala, 0, imgTituloDetalhe.height + 1);
+    contextCanvasExport.drawImage(chartResultado, 0, imgTituloDetalhe.height + chartEscala.height + 1);
 
-    var link = document.createElement('a');
+    let link = document.createElement('a');
     link.download = "ProeficienciaDetalhe." + extensao;
-    link.href = canvasExport.toDataURL("image/" + extensao).replace("image/" + extensao, "image/octet-stream");
+    link.href = canvasExport.toDataURL("image/" + extensao);
     link.click();
 }
 
