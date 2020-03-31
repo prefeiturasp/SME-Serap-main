@@ -924,7 +924,7 @@ não exclua esse comentário.
             -->
             <div id="divResultadoApresentacao" style="display:none;">
 
-                <div style="font-weight:bold; margin-top:25px;">
+                <div id="divResultadoApresentacaoTitulo" style="font-weight:bold; margin-top:25px;">
                     <span id="lblResultadoTitulo" class="lblResultadoTitulo">
                     </span>
                 </div>
@@ -976,8 +976,8 @@ não exclua esse comentário.
 
                         <p id="exportar_div" class="resultados_headerTitle" style="display:block" data-html2canvas-ignore="true">
                             Exportar resultados em:
-                            <a href="#" onclick="exportarPDF()" style="display: none">PDF</a>
-                            <text style="display: none">,</text>
+                            <a href="#" class="link-exportar-pdf-detalhes" >PDF</a>
+                            <text>,</text>
                             <a class="link-exportar-imagem-detalhes" href="#" data-image-format="png">PNG</a>
                             <text>,</text>
                             <a class="link-exportar-imagem-detalhes" href="#" data-image-format="jpg">JPG</a>
@@ -1013,18 +1013,19 @@ não exclua esse comentário.
                                 </td>
                             </tr>
                         </table>
+                        <div id="bodyImpressaoPdf">
+                            <div id="divResultadoTituloDetalhe" class="infoBox" style="margin:15px;">
+                                <span id="lblResultadoTituloDetalhe"></span>
+                            </div>
 
-                        <div id="divResultadoTituloDetalhe" class="infoBox" style="margin:15px;">
-                            <span id="lblResultadoTituloDetalhe"></span>
+                            <span class="lblResultadoTituloEscalaSaeb_1"></span>
+                            <div class="divChartResultadoEscalaSaeb_1"></div>
+                            <img class="imgChartResultadoDetalhe" />
+                            <div id="divChartResultadoDetalhe" class="divChartResultadoDetalhe" style="border:1px solid rgb(230,230,230);"></div>
+                            <span class="lblResultadoTituloEscalaSaeb_2"></span>
+                            <div class="divChartResultadoEscalaSaeb_2"></div>
+                            <canvas id="canvasExportImage" style="display:none"></canvas>
                         </div>
-
-                        <span class="lblResultadoTituloEscalaSaeb_1"></span>
-                        <div class="divChartResultadoEscalaSaeb_1"></div>
-                        <img class="imgChartResultadoDetalhe" />
-                        <div id="divChartResultadoDetalhe" class="divChartResultadoDetalhe" style="border:1px solid rgb(230,230,230);"></div>
-                        <span class="lblResultadoTituloEscalaSaeb_2"></span>
-                        <div class="divChartResultadoEscalaSaeb_2"></div>
-                        <canvas id="canvasExportImage" style="display:none"></canvas>
                     </div>
 
                     <div id="divResultadoTabHabilidades" class="ui-body-d ui-content">
