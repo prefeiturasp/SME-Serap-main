@@ -135,12 +135,12 @@ namespace GestaoAvaliacao.Repository
             {
                 var sql = @"SELECT a.Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS ItemOrder, a.Numeration ,a.Id AS Alternative_Id, a.[Order], a.Correct,
                             CASE WHEN RR.Id IS NOT NULL THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS ItemRevoked  
-                            FROM [Block] b
-                            INNER JOIN BlockItem bi on bi.Block_Id = b.Id
+                            FROM [Block] b WITH (NOLOCK)
+                            INNER JOIN BlockItem bi WITH (NOLOCK) on bi.Block_Id = b.Id
                             INNER JOIN Item i WITH (NOLOCK) ON i.Id = bi.Item_Id 
-                            INNER JOIN Alternative a on a.Item_Id = bi.Item_Id
-                            INNER JOIN Test T WITH(NOLOCK) ON T.Id = b.Test_Id 
-                            LEFT JOIN RequestRevoke RR ON RR.BlockItem_Id = BI.Id AND RR.State = @state AND RR.Situation IN @Situations 
+                            INNER JOIN Alternative a WITH (NOLOCK) on a.Item_Id = bi.Item_Id
+                            INNER JOIN Test T WITH (NOLOCK) ON T.Id = b.Test_Id 
+                            LEFT JOIN RequestRevoke RR WITH (NOLOCK) ON RR.BlockItem_Id = BI.Id AND RR.State = @state AND RR.Situation IN @Situations 
                             LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = i.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state 
                             WHERE b.Test_Id = @Test_Id AND bi.State = @State
                             ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order], a.[Order] ";
@@ -151,19 +151,19 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public List<Alternative> GetAlternativesByItens(IEnumerable<string> itens, long test_id)
+        public List<Alternative> GetAlternativesByItens(long[] itens, long test_id)
         {
             var sql = new StringBuilder("SELECT  A.[Id], A.[Description], [Correct], A.[Order], [Justificative], [Numeration], REPLACE(Numeration, ')', '') AS NumerationSem, [TCTBiserialCoefficient], [TCTDificulty], [TCTDiscrimination], A.[Item_Id], BI.[Order] AS ItemOrder ");
-            sql.Append("FROM Alternative AS A WITH(NOLOCK) ");
-            sql.Append("INNER JOIN Item AS I WITH(NOLOCK) ON I.Id = A.Item_Id ");
-            sql.Append("INNER JOIN BlockItem AS BI WITH(NOLOCK) ON BI.Item_Id = I.Id ");
-            sql.Append("INNER JOIN Block AS BL WITH(NOLOCK) ON BL.Id = BI.Block_Id ");
+            sql.Append("FROM Alternative AS A WITH (NOLOCK) ");
+            sql.Append("INNER JOIN Item AS I WITH (NOLOCK) ON I.Id = A.Item_Id ");
+            sql.Append("INNER JOIN BlockItem AS BI WITH (NOLOCK) ON BI.Item_Id = I.Id ");
+            sql.Append("INNER JOIN Block AS BL WITH (NOLOCK) ON BL.Id = BI.Block_Id ");
             sql.Append("WHERE A.State <> @State ");
             sql.Append("AND I.State <> @State ");
             sql.Append("AND BI.State <> @State ");
             sql.Append("AND BL.State <> @State ");
             sql.Append("AND BL.Test_Id = @TestId ");
-            sql.AppendFormat("AND A.Item_Id IN ({0}) ", string.Join(",", itens));
+            sql.AppendFormat("AND A.Item_Id IN ('{0}') ", string.Join("','", itens));
             sql.Append("ORDER BY BI.[Order], A.[Order] ");
 
             using (IDbConnection cn = Connection)
@@ -179,3 +179,4 @@ namespace GestaoAvaliacao.Repository
         #endregion Read
     }
 }
+ 

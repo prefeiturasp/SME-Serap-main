@@ -17,7 +17,7 @@ namespace GestaoEscolar.Repository
         {
             var sql = new StringBuilder("SELECT esc_id, esc_nome, uad_idSuperiorGestao ");
             sql.Append("FROM ESC_Escola AS ESC WITH (NOLOCK) ");         
-            sql.Append("INNER JOIN Synonym_AdministrativeUnitType AS AUT WITH(NOLOCK) ");
+            sql.Append("INNER JOIN Synonym_AdministrativeUnitType AS AUT WITH (NOLOCK) ");
             sql.Append("ON AUT.AdministrativeUnitTypeId = ESC.tua_id ");
             sql.Append("WHERE ent_id = @ent_id ");
             sql.Append("AND esc_situacao = @state ");
@@ -47,7 +47,7 @@ namespace GestaoEscolar.Repository
             string sql = @"SELECT e.esc_id, e.esc_nome,
                            uad.uad_id, uad.uad_nome, uad.uad_sigla 
                            FROM ESC_Escola e WITH (NOLOCK) 
-                           INNER JOIN SYS_UnidadeAdministrativa uad (NOLOCK) ON e.uad_idSuperiorGestao = uad.uad_id 
+                           INNER JOIN SYS_UnidadeAdministrativa uad WITH (NOLOCK) ON e.uad_idSuperiorGestao = uad.uad_id 
                            WHERE e.ent_id = @ent_id 
                            AND e.esc_situacao = @state 
                            AND e.esc_id = @esc_id ";
@@ -73,12 +73,12 @@ namespace GestaoEscolar.Repository
         public IEnumerable<ESC_Escola> LoadSimpleTeacher(Guid ent_id, Guid pes_id, Guid uad_id)
         {
             var sql = new StringBuilder("SELECT DISTINCT e.esc_id, e.esc_nome, e.uad_id ");
-            sql.AppendLine("FROM ACA_Docente (NOLOCK) d ");
-            sql.AppendLine("INNER JOIN TUR_TurmaDocente (NOLOCK) tdoc ON d.doc_id = tdoc.doc_id AND tdoc.tdt_situacao = @state ");
-            sql.AppendLine("INNER JOIN TUR_TurmaDisciplina (NOLOCK) td ON td.tud_id = tdoc.tud_id AND td.tud_situacao = @state ");
-            sql.AppendLine("INNER JOIN TUR_Turma t (NOLOCK) ON t.tur_id = td.tur_id AND t.tur_situacao = @state ");
-            sql.AppendLine("INNER JOIN ESC_Escola e (NOLOCK) ON e.esc_id = t.esc_id AND e.esc_situacao = @state ");          
-            sql.AppendLine("INNER JOIN Synonym_AdministrativeUnitType AS AUT WITH(NOLOCK) ");
+            sql.AppendLine("FROM ACA_Docente WITH (NOLOCK) d ");
+            sql.AppendLine("INNER JOIN TUR_TurmaDocente WITH (NOLOCK) tdoc ON d.doc_id = tdoc.doc_id AND tdoc.tdt_situacao = @state ");
+            sql.AppendLine("INNER JOIN TUR_TurmaDisciplina WITH (NOLOCK) td ON td.tud_id = tdoc.tud_id AND td.tud_situacao = @state ");
+            sql.AppendLine("INNER JOIN TUR_Turma t WITH (NOLOCK) ON t.tur_id = td.tur_id AND t.tur_situacao = @state ");
+            sql.AppendLine("INNER JOIN ESC_Escola e WITH (NOLOCK) ON e.esc_id = t.esc_id AND e.esc_situacao = @state ");          
+            sql.AppendLine("INNER JOIN Synonym_AdministrativeUnitType AS AUT WITH (NOLOCK) ");
             sql.AppendLine("ON AUT.AdministrativeUnitTypeId = e.tua_id ");
             sql.AppendLine("WHERE d.doc_situacao = @state ");
             sql.AppendLine("AND AUT.State = @state ");

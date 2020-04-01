@@ -964,7 +964,7 @@ namespace GestaoAvaliacao.Repository
 			sql.AppendLine("FROM [AnswerSheetBatchFiles] BF WITH (NOLOCK) ");
             if (type == (byte)EnumFollowUpIdentificationReportDataType.ResolutionNotOk)
             {
-                sql.AppendLine("INNER JOIN [File] F WITH(NOLOCK) ON BF.File_Id = F.Id ");
+                sql.AppendLine("INNER JOIN [File] F WITH (NOLOCK) ON BF.File_Id = F.Id ");
             }
 
             return sql.ToString();

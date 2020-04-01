@@ -38,10 +38,10 @@ namespace GestaoAvaliacao.Repository
                                 PC.Featured,
 	                            F.[Path] AS CaminhoIcone,
 	                            FV.[Path] AS CaminhoVideo
-                            FROM PageConfiguration AS PC WITH(NOLOCK)
-                            LEFT JOIN [File] AS F WITH(NOLOCK)
+                            FROM PageConfiguration AS PC WITH (NOLOCK)
+                            LEFT JOIN [File] AS F WITH (NOLOCK)
 	                            ON F.Id = PC.FileIllustrativeImage_Id
-                            LEFT JOIN [File] AS FV WITH(NOLOCK)
+                            LEFT JOIN [File] AS FV WITH (NOLOCK)
 	                            ON FV.Id = PC.FileVideo_Id
                             WHERE PC.[State] <> @state
 	                            AND PC.Id = @id";
@@ -69,10 +69,10 @@ namespace GestaoAvaliacao.Repository
                                 PC.Featured,
 	                            F.[Path] AS CaminhoIcone,
 	                            FV.[Path] AS CaminhoVideo
-                            FROM PageConfiguration AS PC WITH(NOLOCK)
-                            LEFT JOIN [File] AS F WITH(NOLOCK)
+                            FROM PageConfiguration AS PC WITH (NOLOCK)
+                            LEFT JOIN [File] AS F WITH (NOLOCK)
 	                            ON F.Id = PC.FileIllustrativeImage_Id
-                            LEFT JOIN [File] AS FV WITH(NOLOCK)
+                            LEFT JOIN [File] AS FV WITH (NOLOCK)
 	                            ON FV.Id = PC.FileVideo_Id
                             WHERE PC.[State] <> @state";
 
@@ -91,7 +91,7 @@ namespace GestaoAvaliacao.Repository
                             "( " +
                                "SELECT Id, Category, Title, Description, Featured, " +
                                "ROW_NUMBER() OVER (ORDER BY Description) AS RowNumber " +
-                               "FROM PageConfiguration WITH(NOLOCK) " +
+                               "FROM PageConfiguration WITH (NOLOCK) " +
                                "WHERE State = @state " +
                             ") " +
                            "SELECT Id, Category, Title, Description, Featured " +
@@ -101,7 +101,7 @@ namespace GestaoAvaliacao.Repository
                            "ORDER BY RowNumber";
 
                 var countSql = @"SELECT COUNT(id) " +
-                                "FROM PageConfiguration WITH(NOLOCK) " +
+                                "FROM PageConfiguration WITH (NOLOCK) " +
                                 "WHERE State = @state ";
 
                 var pageConfiguration = cn.Query<PageConfiguration>(sql, new { state = EnumState.ativo, pageSize = pager.PageSize, page = pager.CurrentPage });
@@ -123,7 +123,7 @@ namespace GestaoAvaliacao.Repository
                             ( 
                                 SELECT Id, Category, Title, Description, Featured, 
                                 ROW_NUMBER() OVER (ORDER BY Description) AS RowNumber
-                                FROM PageConfiguration WITH(NOLOCK) 
+                                FROM PageConfiguration WITH (NOLOCK) 
                                 WHERE State  = @state 
                                 AND (@search IS NULL OR Title LIKE '%' + @search + '%') 
                                 AND (@category IS NULL OR 
@@ -142,7 +142,7 @@ namespace GestaoAvaliacao.Repository
                            ORDER BY RowNumber";
 
                 var countSql = @"SELECT COUNT(id) 
-                                FROM PageConfiguration WITH(NOLOCK) 
+                                FROM PageConfiguration WITH (NOLOCK) 
                                 WHERE State = @state 
                                 AND (@search IS NULL OR Title Like '%' + @search + '%') 
                                 AND (@category IS NULL OR 

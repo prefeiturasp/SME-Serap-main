@@ -244,9 +244,7 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                var itensConcat = itens.Distinct().AsEnumerable().Select(x => string.Concat("'", x, "'"));
-
-                var alternatives = alternativeBusiness.GetAlternativesByItens(itensConcat, test_id);
+                var alternatives = alternativeBusiness.GetAlternativesByItens(itens, test_id);
 
                 bool provaFinalizada = false;
 
@@ -257,7 +255,7 @@ namespace GestaoAvaliacao.Controllers
                         StudentCorrection studentCorrection = await _studentCorrectionBusiness.Get(alu_id, test_id, tur_id, SessionFacade.UsuarioLogado.Usuario.ent_id);
 
                         int ordemUltimaResposta = 0;
-
+                        
                         if (studentCorrection != null)
                         {
                             foreach (var alternativa in alternatives)
@@ -286,10 +284,11 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                Guid ent_id = SessionFacade.UsuarioLogado.Usuario.ent_id;
-                Guid usu_id = SessionFacade.UsuarioLogado.Usuario.usu_id;
-                Guid pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id;
-                EnumSYS_Visao vis_id = (EnumSYS_Visao)SessionFacade.UsuarioLogado.Grupo.vis_id;
+                var usuarioLogado = SessionFacade.UsuarioLogado;
+                Guid ent_id = usuarioLogado.Usuario.ent_id;
+                Guid usu_id = usuarioLogado.Usuario.usu_id;
+                Guid pes_id = usuarioLogado.Usuario.pes_id;
+                EnumSYS_Visao vis_id = (EnumSYS_Visao)usuarioLogado.Grupo.vis_id;
 
                 await correctionBusiness.SaveCorrection(alu_id, alternativa.Id, alternativa.Item_Id, false, false, test_id, tur_id, ent_id,
                    usu_id, pes_id, vis_id, true, false, ordemItem, true);

@@ -17,8 +17,8 @@ namespace GestaoAvaliacao.Repository
         {
             var sql = @"SELECT 
                             ISNULL(TP.Id, 0) AS Id, ISNULL(TP.Test_Id, 0) AS Test_Id, Gru.gru_id, Gru.gru_nome, CAST(ISNULL(TP.AllowAnswer, 1) AS BIT) AS AllowAnswer, CAST(ISNULL(TP.ShowResult, 1) AS BIT) AS ShowResult, CAST(ISNULL(TP.TestHide, 0) AS BIT) AS TestHide, TP.CreateDate
-                        FROM Synonym_Core_SYS_Grupo Gru WITH(NOLOCK)
-	                        LEFT JOIN TestPermission TP WITH(NOLOCK)
+                        FROM Synonym_Core_SYS_Grupo Gru WITH (NOLOCK)
+	                        LEFT JOIN TestPermission TP WITH (NOLOCK)
 		                        ON Gru.gru_id = TP.gru_id
 		                        AND TP.[State] = 1
 		                        AND TP.Test_Id = @test_id

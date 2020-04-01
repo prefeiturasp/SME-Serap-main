@@ -151,16 +151,16 @@ namespace GestaoAvaliacao.Repository
                             SKI.Id, SKI.Code, SKI.[Description],
 	                        D.Id, D.[Description]
                         FROM
-	                        Item I WITH(NOLOCK)
+	                        Item I WITH (NOLOCK)
 	                        INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id AND BI.State <> 3
 	                        INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id AND B.State <> 3
-	                        INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.Test_Id AND T.State <> 3
+	                        INNER JOIN Test T WITH (NOLOCK) ON T.Id = B.Test_Id AND T.State <> 3
 	                        INNER JOIN Alternative A WITH (NOLOCK) ON A.Item_Id = I.Id AND A.State <> 3
 	                        INNER JOIN ItemSkill SI WITH (NOLOCK) ON SI.Item_Id = I.Id AND SI.State <> 3
-	                        INNER JOIN Skill AS SKI WITH(NOLOCK) ON SKI.Id = SI.Skill_Id AND SKI.State <> 3
+	                        INNER JOIN Skill AS SKI WITH (NOLOCK) ON SKI.Id = SI.Skill_Id AND SKI.State <> 3
 	                        INNER JOIN EvaluationMatrix EM WITH (NOLOCK) ON EM.Id = I.EvaluationMatrix_Id AND EM.State <> 3
 	                        INNER JOIN Discipline D WITH (NOLOCK) ON D.Id = EM.Discipline_Id AND D.State <> 3                
-	                        LEFT JOIN BaseText BT WITH(NOLOCK) ON BT.Id = I.BaseText_Id AND BT.State <> 3
+	                        LEFT JOIN BaseText BT WITH (NOLOCK) ON BT.Id = I.BaseText_Id AND BT.State <> 3
 	                        LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = 1 ");
 
             sql.AppendFormat("WHERE I.Id IN ({0})", string.Join(",", ids));

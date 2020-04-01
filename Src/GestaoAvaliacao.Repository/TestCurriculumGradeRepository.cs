@@ -39,8 +39,8 @@ namespace GestaoAvaliacao.Repository
 		{
 			var sql = new StringBuilder("DECLARE @anos VARCHAR(8000) ");
 			sql.Append("SELECT @anos = COALESCE(@anos + ', ', '') + Tcp.tcp_descricao ");
-			sql.Append("FROM TestCurriculumGrade AS Tcg WITH(NOLOCK) ");
-			sql.Append("INNER JOIN SGP_ACA_TipoCurriculoPeriodo AS Tcp WITH(NOLOCK)ON Tcp.tcp_id = Tcg.TypeCurriculumGradeId ");
+			sql.Append("FROM TestCurriculumGrade AS Tcg WITH (NOLOCK) ");
+			sql.Append("INNER JOIN SGP_ACA_TipoCurriculoPeriodo AS Tcp WITH (NOLOCK)ON Tcp.tcp_id = Tcg.TypeCurriculumGradeId ");
 			sql.Append("WHERE Tcg.Test_Id = @Test_Id AND Tcg.State = @state AND Tcp.tcp_situacao = @state ");
 			sql.Append("ORDER BY Tcp.tcp_descricao ");
 			sql.Append("SELECT @anos AS crp_descricao ");
@@ -58,9 +58,9 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<ACA_TipoCurriculoPeriodo> GetDistinctCurricumGradeByTestSubGroup_Id(long TestSubGroup_Id)
 		{
 			var sql = new StringBuilder("SELECT DISTINCT TCP.tcp_id, TCP.tcp_descricao ");
-			sql.Append("FROM TestCurriculumGrade AS TCG WITH(NOLOCK) ");
-			sql.Append("INNER JOIN Test AS TES WITH(NOLOCK)ON TES.Id = TCG.Test_Id ");
-			sql.Append("INNER JOIN SGP_ACA_TipoCurriculoPeriodo AS TCP WITH(NOLOCK)ON TCP.tcp_id = TCG.TypeCurriculumGradeId ");
+			sql.Append("FROM TestCurriculumGrade AS TCG WITH (NOLOCK) ");
+			sql.Append("INNER JOIN Test AS TES WITH (NOLOCK)ON TES.Id = TCG.Test_Id ");
+			sql.Append("INNER JOIN SGP_ACA_TipoCurriculoPeriodo AS TCP WITH (NOLOCK)ON TCP.tcp_id = TCG.TypeCurriculumGradeId ");
 			sql.Append("WHERE TES.TestSubGroup_Id = @TestSubGroup_Id AND TCG.State = @state AND TCP.tcp_situacao = @state ");
 			sql.Append("ORDER BY TCP.tcp_descricao ");
 
@@ -76,8 +76,8 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<ACA_TipoCurriculoPeriodo> GetCurricumGradeByTest_Id(long Test_Id)
 		{
 			var sql = new StringBuilder("SELECT DISTINCT TCP.tcp_id, TCP.tcp_descricao ");
-			sql.Append("FROM TestCurriculumGrade AS TCG WITH(NOLOCK) ");
-			sql.Append("INNER JOIN SGP_ACA_TipoCurriculoPeriodo AS TCP WITH(NOLOCK)ON TCP.tcp_id = TCG.TypeCurriculumGradeId ");
+			sql.Append("FROM TestCurriculumGrade AS TCG WITH (NOLOCK) ");
+			sql.Append("INNER JOIN SGP_ACA_TipoCurriculoPeriodo AS TCP WITH (NOLOCK)ON TCP.tcp_id = TCG.TypeCurriculumGradeId ");
 			sql.Append("WHERE TCG.Test_Id = @Test_Id AND TCG.State = @state AND TCP.tcp_situacao = @state ");
 			sql.Append("ORDER BY TCP.tcp_descricao ");
 

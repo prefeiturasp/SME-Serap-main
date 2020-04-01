@@ -20,7 +20,7 @@ namespace GestaoAvaliacao.Business
             return await _alternativeRepository.GetAlternativesWithNumerationAndOrderByTest(test_id);
         }
 
-        public List<Alternative> GetAlternativesByItens(IEnumerable<string> itens, long test_id)
+        public List<Alternative> GetAlternativesByItens(long[] itens, long test_id)
         {
             return _alternativeRepository.GetAlternativesByItens(itens, test_id);
         }        

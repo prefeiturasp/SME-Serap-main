@@ -236,8 +236,8 @@ namespace GestaoAvaliacao.Repository
             {
                 cn.Open();
                 var sql = @"SELECT S.Id, S.[Description], S.Code
-                            FROM EvaluationMatrix AS E WITH(NOLOCK) 
-                            INNER JOIN Skill AS S WITH(NOLOCK) 
+                            FROM EvaluationMatrix AS E WITH (NOLOCK) 
+                            INNER JOIN Skill AS S WITH (NOLOCK) 
                             ON S.EvaluationMatrix_Id = E.Id
                             WHERE e.Discipline_Id = @idDiscipline 
                             AND ModelSkillLevel_Id = 2
@@ -257,10 +257,10 @@ namespace GestaoAvaliacao.Repository
         public IEnumerable<Skill> SearchByMatrix(long evaluationMatrixId, long modelSkillLevelId, long? parentId, ref Pager pager)
         {
             var sql = new StringBuilder("SELECT s.Id, s.Code, s.Description, s.LastLevel, msl.Id, msl.Description, msl.Level, s1.Id, cc.Id, cc.Description ");
-            sql.Append("FROM Skill s (NOLOCK) ");
-            sql.Append("INNER JOIN ModelSkillLevel msl (NOLOCK) ON msl.Id = s.ModelSkillLevel_Id ");
-            sql.Append("LEFT JOIN Skill s1 (NOLOCK) ON s.Parent_Id = s1.Id ");
-            sql.Append("LEFT JOIN CognitiveCompetence cc (NOLOCK) ON cc.Id = s.CognitiveCompetence_Id ");
+            sql.Append("FROM Skill s WITH (NOLOCK) ");
+            sql.Append("INNER JOIN ModelSkillLevel msl WITH (NOLOCK) ON msl.Id = s.ModelSkillLevel_Id ");
+            sql.Append("LEFT JOIN Skill s1 WITH (NOLOCK) ON s.Parent_Id = s1.Id ");
+            sql.Append("LEFT JOIN CognitiveCompetence cc WITH (NOLOCK) ON cc.Id = s.CognitiveCompetence_Id ");
             sql.Append("WHERE s.EvaluationMatrix_Id = @evaluationMatrixId AND s.ModelSkillLevel_Id = @modelSkillLevelId AND s.State = @state ");
 
             if (parentId.HasValue)

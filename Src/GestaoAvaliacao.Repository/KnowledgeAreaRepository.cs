@@ -142,8 +142,8 @@ namespace GestaoAvaliacao.Repository
             {
                 cn.Open();
                 var sql = @"SELECT COUNT(KnowledgeArea_Id)
-                           FROM SubjectKnowledgeArea AS SKA WITH(NOLOCK)
-                           INNER JOIN Subject AS S WITH(NOLOCK)
+                           FROM SubjectKnowledgeArea AS SKA WITH (NOLOCK)
+                           INNER JOIN Subject AS S WITH (NOLOCK)
                            ON S.Id = SKA.Subject_Id
                            WHERE KnowledgeArea_Id = @id
                            AND State != @state ";

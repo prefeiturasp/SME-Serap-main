@@ -98,7 +98,7 @@ namespace GestaoAvaliacao.Services
                 item.Item_Id = itemIdNew.HasValue ? itemIdNew.Value : itemIdOld;
                 item.Alternative_Id = alternativeIdNew ?? alternativeIdNew.Value;
                 var alternative = alternativeBusiness
-                    .GetAlternativesByItens(new List<string>() { itemIdNew.HasValue ? itemIdNew.Value.ToString() : itemIdOld.ToString() }.AsEnumerable(), testId)
+                    .GetAlternativesByItens(new long[] { itemIdNew.HasValue ? itemIdNew.Value : itemIdOld }, testId)
                     .SingleOrDefault(a => a.Id.Equals(alternativeIdNew.HasValue ? alternativeIdNew.Value : item.Alternative_Id));
                 item.Numeration = alternative != null ? alternative.Numeration : item.Numeration;
                 await testTemplateRepository.Replace(testTemplate);

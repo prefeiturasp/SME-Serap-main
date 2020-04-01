@@ -39,9 +39,9 @@ namespace GestaoAvaliacao.Repository
                             ", Quantidades AS " +
                             "( " +
                                 "SELECT COUNT(DISTINCT ISNULL(BF.Student_Id, BF.Id)) as quantidade, BF.Situation, ASBQ.Id " +
-                                    "FROM [AnswerSheetBatchFiles] BF WITH(NOLOCK) " +
-                                    "LEFT JOIN [AnswerSheetBatch] B WITH(NOLOCK) ON B.[Id] = BF.[AnswerSheetBatch_Id] AND B.[State] = 1 " +
-                                    "LEFT JOIN AnswerSheetBatchQueue ASBQ WITH(NOLOCK) ON ASBQ.Id = BF.AnswerSheetBatchQueue_Id " +
+                                    "FROM [AnswerSheetBatchFiles] BF WITH (NOLOCK) " +
+                                    "LEFT JOIN [AnswerSheetBatch] B WITH (NOLOCK) ON B.[Id] = BF.[AnswerSheetBatch_Id] AND B.[State] = 1 " +
+                                    "LEFT JOIN AnswerSheetBatchQueue ASBQ WITH (NOLOCK) ON ASBQ.Id = BF.AnswerSheetBatchQueue_Id " +
                                  "WHERE BF.[State] = @state " +
                                 "GROUP BY BF.Situation, ASBQ.Id " +
                             ") " +
@@ -270,8 +270,8 @@ namespace GestaoAvaliacao.Repository
         private string GetInnerEscolaDRE(AnswerSheetBatchQueueFilter filter, bool InclueEscola)
         {
             StringBuilder sql = new StringBuilder();
-            sql.Append("LEFT JOIN [SGP_ESC_Escola] E2 WITH(NOLOCK) ON A.[School_Id] = E2.[esc_id] AND E2.[esc_situacao] = 1 ");
-            sql.Append("LEFT JOIN [SGP_SYS_UnidadeAdministrativa] UAD WITH(NOLOCK) ON UAD.[uad_id] = E2.[uad_idSuperiorGestao] AND UAD.[uad_situacao] = 1 ");
+            sql.Append("LEFT JOIN [SGP_ESC_Escola] E2 WITH (NOLOCK) ON A.[School_Id] = E2.[esc_id] AND E2.[esc_situacao] = 1 ");
+            sql.Append("LEFT JOIN [SGP_SYS_UnidadeAdministrativa] UAD WITH (NOLOCK) ON UAD.[uad_id] = E2.[uad_idSuperiorGestao] AND UAD.[uad_situacao] = 1 ");
             return sql.ToString();
         }
 

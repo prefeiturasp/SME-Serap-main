@@ -263,8 +263,8 @@ namespace ProvaSP.Data
                                                 r.PercentualAdequado, 
                                                 r.PercentualAvancado, 
                                                 r.PercentualAlfabetizado
-                                            FROM ResultadoEscola r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoEscola r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.AnoEscolar=@AnoEscolar AND r.uad_sigla IN(" + sbDREs.ToString() + @") 
                                             ORDER BY r.uad_sigla, e.esc_nome
                                             ",
@@ -366,8 +366,8 @@ namespace ProvaSP.Data
                                                 PercentualAdequado, 
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
-                                            FROM ResultadoEscola r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoEscola r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + @") ",
                                         param: parametros
                                     ).ToList<ResultadoItem>();
@@ -441,8 +441,8 @@ namespace ProvaSP.Data
                                                 r.PercentualAdequado, 
                                                 r.PercentualAvancado, 
                                                 r.PercentualAlfabetizado
-                                            FROM ResultadoTurma r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoTurma r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + @") 
                                             ORDER BY r.uad_sigla, e.esc_nome
                                             ",
@@ -550,7 +550,7 @@ namespace ProvaSP.Data
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
                                             FROM ResultadoTurma r WITH (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND tur_codigo IN(" + sbTurmas.ToString() + @") ",
                                         param: parametros
                                     ).ToList<ResultadoItem>();
@@ -625,8 +625,8 @@ namespace ProvaSP.Data
                                                 PercentualAdequado, 
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
-                                            FROM ResultadoEscola r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoEscola r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + @")
                                             ",
                                         param: parametros
@@ -648,7 +648,7 @@ namespace ProvaSP.Data
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
                                             FROM ResultadoTurma r WITH (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND r.tur_codigo IN(" + sbTurmas.ToString() + @")
                                             ",
                                                         param: parametros
@@ -669,8 +669,8 @@ namespace ProvaSP.Data
                                                 0 AS PercentualAvancado, 
                                                 0 AS PercentualAlfabetizado, 
                                                 r.REDQ1, r.REDQ2, r.REDQ3, r.REDQ4, r.REDQ5
-                                            FROM ResultadoAluno r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoAluno r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND r.tur_codigo IN(" + sbTurmas.ToString() + @")
                                             ORDER BY e.esc_nome, tur_codigo, r.alu_nome
                                             ",
@@ -924,7 +924,7 @@ namespace ProvaSP.Data
                                                 0 AS PercentualAvancado, 
                                                 0 AS PercentualAlfabetizado, 
                                                 r.REDQ1, r.REDQ2, r.REDQ3, r.REDQ4, r.REDQ5
-                                            FROM ResultadoAluno r (NOLOCK)
+                                            FROM ResultadoAluno r WITH (NOLOCK)
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.alu_matricula IN(" + sbAlunos.ToString() + @")
                                             ORDER BY r.alu_nome
                                             ",
@@ -1002,8 +1002,8 @@ namespace ProvaSP.Data
                                                 PercentualAdequado, 
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
-                                            FROM ResultadoEscola r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoEscola r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.esc_codigo IN(SELECT esc_codigo FROM ResultadoAluno WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND alu_matricula IN(" + sbAlunos.ToString() + @")) 
                                             ",
                                         param: parametros
@@ -1025,7 +1025,7 @@ namespace ProvaSP.Data
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
                                             FROM ResultadoTurma r WITH (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.tur_id IN(SELECT tur_id FROM ResultadoAluno WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND alu_matricula IN(" + sbAlunos.ToString() + @") ) 
                                             ",
                                                         param: parametros
@@ -1444,8 +1444,8 @@ namespace ProvaSP.Data
                                                 r.PercentualAdequado, 
                                                 r.PercentualAvancado, 
                                                 r.PercentualAlfabetizado
-                                            FROM ResultadoCicloEscola r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoCicloEscola r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.CicloId=@Ciclo AND r.uad_sigla IN(" + sbDREs.ToString() + @") 
                                             ORDER BY r.uad_sigla, e.esc_nome
                                             ",
@@ -1546,8 +1546,8 @@ namespace ProvaSP.Data
                                                 PercentualAdequado, 
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
-                                            FROM ResultadoCicloEscola r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoCicloEscola r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + @") ",
                                         param: parametros
                                     ).ToList<ResultadoItem>();
@@ -1621,8 +1621,8 @@ namespace ProvaSP.Data
                                                 r.PercentualAdequado, 
                                                 r.PercentualAvancado, 
                                                 r.PercentualAlfabetizado
-                                            FROM ResultadoCicloTurma r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoCicloTurma r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + @") 
                                             ORDER BY r.uad_sigla, e.esc_nome
                                             ",
@@ -1731,7 +1731,7 @@ namespace ProvaSP.Data
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
                                             FROM ResultadoCicloTurma r WITH (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND tur_codigo IN(" + sbTurmas.ToString() + @") ",
                                         param: parametros
                                     ).ToList<ResultadoItem>();
@@ -1806,8 +1806,8 @@ namespace ProvaSP.Data
                                                 PercentualAdequado, 
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
-                                            FROM ResultadoCicloEscola r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoCicloEscola r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + @")
                                             ",
                                         param: parametros
@@ -1829,7 +1829,7 @@ namespace ProvaSP.Data
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
                                             FROM ResultadoCicloTurma r WITH (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND r.tur_codigo IN(" + sbTurmas.ToString() + @")
                                             ",
                                                         param: parametros
@@ -1849,8 +1849,8 @@ namespace ProvaSP.Data
                                                 0 AS PercentualAdequado, 
                                                 0 AS PercentualAvancado, 
                                                 0 AS PercentualAlfabetizado
-                                            FROM ResultadoCicloAluno r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoCicloAluno r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND r.tur_codigo IN(" + sbTurmas.ToString() + @")
                                             ORDER BY e.esc_nome, tur_codigo, r.alu_nome
                                             ",
@@ -2081,7 +2081,7 @@ namespace ProvaSP.Data
                                                 0 AS PercentualAdequado, 
                                                 0 AS PercentualAvancado, 
                                                 0 AS PercentualAlfabetizado
-                                            FROM ResultadoCicloAluno r (NOLOCK)
+                                            FROM ResultadoCicloAluno r WITH (NOLOCK)
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.alu_matricula IN(" + sbAlunos.ToString() + @")
                                             ORDER BY r.alu_nome
                                             ",
@@ -2156,8 +2156,8 @@ namespace ProvaSP.Data
                                                 PercentualAdequado, 
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
-                                            FROM ResultadoCicloEscola r (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            FROM ResultadoCicloEscola r WITH (NOLOCK)
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.esc_codigo IN(SELECT esc_codigo FROM ResultadoCicloAluno WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND alu_matricula IN(" + sbAlunos.ToString() + @")) 
                                             ",
                                         param: parametros
@@ -2179,7 +2179,7 @@ namespace ProvaSP.Data
                                                 PercentualAvancado, 
                                                 PercentualAlfabetizado
                                             FROM ResultadoCicloTurma r WITH (NOLOCK)
-                                            JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
+                                            JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.tur_id IN(SELECT tur_id FROM ResultadoCicloAluno WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND alu_matricula IN(" + sbAlunos.ToString() + @") ) 
                                             ",
                                                         param: parametros

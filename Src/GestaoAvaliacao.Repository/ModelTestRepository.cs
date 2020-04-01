@@ -28,10 +28,10 @@ namespace GestaoAvaliacao.Repository
 			sql.Append("fFooter.UpdateDate, fFooter.State, fFooter.ContentType, fFooter.OwnerId, fFooter.OwnerType, fFooter.ParentOwnerId, ");
 			sql.Append("fRedactor.Id, fRedactor.Name, fRedactor.Path, fRedactor.CreateDate, ");
 			sql.Append("fRedactor.UpdateDate, fRedactor.State, fRedactor.ContentType, fRedactor.OwnerId, fRedactor.OwnerType, fRedactor.ParentOwnerId ");
-			sql.Append("FROM dbo.ModelTest m (NOLOCK) ");
-			sql.Append("LEFT JOIN [File] fHeader (NOLOCK) ON m.FileHeader_Id = fHeader.Id ");
-			sql.Append("LEFT JOIN [File] fFooter (NOLOCK) ON m.FileFooter_Id = fFooter.Id ");
-            sql.Append("LEFT JOIN [File] fRedactor (NOLOCK) ON m.Id = fRedactor.OwnerId AND fRedactor.Id <> ISNULL(fFooter.Id, 0) AND fRedactor.Id <> ISNULL(fHeader.Id, 0) AND fRedactor.OwnerType IN (@OwnerType1,@OwnerType2) ");
+			sql.Append("FROM dbo.ModelTest m WITH (NOLOCK) ");
+			sql.Append("LEFT JOIN [File] fHeader WITH (NOLOCK) ON m.FileHeader_Id = fHeader.Id ");
+			sql.Append("LEFT JOIN [File] fFooter WITH (NOLOCK) ON m.FileFooter_Id = fFooter.Id ");
+            sql.Append("LEFT JOIN [File] fRedactor WITH (NOLOCK) ON m.Id = fRedactor.OwnerId AND fRedactor.Id <> ISNULL(fFooter.Id, 0) AND fRedactor.Id <> ISNULL(fHeader.Id, 0) AND fRedactor.OwnerType IN (@OwnerType1,@OwnerType2) ");
 			sql.Append("WHERE m.Id = @id And m.State = @state ");
 
 			var lookup = new Dictionary<long, ModelTest>();
@@ -69,7 +69,7 @@ namespace GestaoAvaliacao.Repository
 			sql.Append("( ");
 			sql.Append("SELECT Id, Description, DefaultModel, ");
 			sql.Append("ROW_NUMBER() OVER (ORDER BY Description) AS RowNumber ");
-			sql.Append("FROM ModelTest (NOLOCK) ");
+			sql.Append("FROM ModelTest WITH (NOLOCK) ");
 			sql.Append("WHERE State = @state AND EntityId = @EntityId ");
 			if (!string.IsNullOrEmpty(search))
 				sql.Append(" AND Description LIKE '%' + @search + '%'");
@@ -83,7 +83,7 @@ namespace GestaoAvaliacao.Repository
 			
 
 			var countSql = new StringBuilder("SELECT COUNT(id) ");
-			countSql.Append("FROM ModelTest (NOLOCK) ");
+			countSql.Append("FROM ModelTest WITH (NOLOCK) ");
 			countSql.Append("WHERE State = @state AND EntityId = @EntityId");
 
 
@@ -109,7 +109,7 @@ namespace GestaoAvaliacao.Repository
 		public bool ExistsAnotherDefaultModel(Guid EntityId, long Id)
 		{
 			StringBuilder sql = new StringBuilder("SELECT Count(Id) ");
-			sql.Append("FROM dbo.ModelTest (NOLOCK) ");
+			sql.Append("FROM dbo.ModelTest WITH (NOLOCK) ");
 			sql.Append("WHERE State = @state AND EntityId = @EntityId AND Id <> @id AND DefaultModel = 1");
 
 			using (IDbConnection cn = Connection)
@@ -123,7 +123,7 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<ModelTest> FindSimple(Guid EntityId)
 		{
 			StringBuilder sql = new StringBuilder("SELECT Id, Description ");
-			sql.Append("FROM ModelTest (NOLOCK) ");
+			sql.Append("FROM ModelTest WITH (NOLOCK) ");
 			sql.Append("WHERE EntityId = @EntityId AND State = @State ");
 			sql.Append("ORDER BY DefaultModel DESC, Description ASC ");
 
@@ -142,7 +142,7 @@ namespace GestaoAvaliacao.Repository
 			sql.Append("ShowLineAboveFooter,FileFooter_Id,ShowSchool,ShowStudentName,ShowTeacherName,ShowClassName,ShowStudentNumber,ShowDate,ShowLineBelowStudentInformation, ");
 			sql.Append("CoverPageText,ShowStudentInformationsOnCoverPage,ShowHeaderOnCoverPage,ShowFooterOnCoverPage,CreateDate,UpdateDate,State,EntityId,ShowBorderOnCoverPage, ");
 			sql.Append("LogoHeaderSize,ShowMessageHeader,LogoFooterSize,ShowMessageFooter,ShowLogoHeader,ShowLogoFooter,HeaderHtml,FooterHtml,StudentInformationHtml ");
-			sql.Append("FROM ModelTest (NOLOCK) ");
+			sql.Append("FROM ModelTest WITH (NOLOCK) ");
 			sql.Append("WHERE EntityId = @EntityId AND State = @State AND DefaultModel = @DefaultModel ");
 			sql.Append("ORDER BY DefaultModel DESC, Description ASC ");
 
@@ -157,7 +157,7 @@ namespace GestaoAvaliacao.Repository
 		public bool ExistsDescriptionNamed(Guid EntityId, long Id, string description)
 		{
 			StringBuilder sql = new StringBuilder("SELECT Count(Id) ");
-			sql.Append("FROM dbo.ModelTest (NOLOCK) ");
+			sql.Append("FROM dbo.ModelTest WITH (NOLOCK) ");
 			sql.Append("WHERE State = @state AND EntityId = @EntityId AND Id <> @id AND Description COLLATE Latin1_General_CI_AS = @DefaultModel");
 
 			using (IDbConnection cn = Connection)

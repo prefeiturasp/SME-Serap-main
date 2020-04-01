@@ -29,9 +29,9 @@ namespace GestaoAvaliacao.Repository
                 var sql = @"SELECT BI.Id, BI.Block_Id, BI.Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS [Order], CASE WHEN RR.Id IS NOT NULL THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS Revoked, Em.Discipline_Id 
 						   FROM BlockItem BI WITH (NOLOCK) 
 						   INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
-	                       INNER JOIN Item I WITH(NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3
-	                       INNER JOIN EvaluationMatrix Em WITH(NOLOCK) ON I.EvaluationMatrix_Id = Em.Id AND Em.State <> 3
-                           INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
+	                       INNER JOIN Item I WITH (NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3
+	                       INNER JOIN EvaluationMatrix Em WITH (NOLOCK) ON I.EvaluationMatrix_Id = Em.Id AND Em.State <> 3
+                           INNER JOIN Test T WITH (NOLOCK) ON T.Id = B.[Test_Id] 
                            LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = 1 
                            LEFT JOIN RequestRevoke RR ON RR.BlockItem_Id = BI.Id AND RR.State = 1 AND RR.Situation IN @Situations 
 						   WHERE B.Test_Id = @TestId 
@@ -57,8 +57,8 @@ namespace GestaoAvaliacao.Repository
                 StringBuilder sql = new StringBuilder(@"SELECT  B.Id, T.Id AS Test_Id, BI.Id, BI.Block_Id, BI.Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS [Order]
                             FROM BlockItem BI WITH (NOLOCK) 
                             INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
-                            INNER JOIN Item I WITH(NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3
-                            INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
+                            INNER JOIN Item I WITH (NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3
+                            INNER JOIN Test T WITH (NOLOCK) ON T.Id = B.[Test_Id] 
                             LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = 1 
                             WHERE BI.State = 1 AND B.State = 1 ");
                 sql.AppendFormat("AND T.Id IN ({0})", string.Join(",", tests));
@@ -94,14 +94,14 @@ namespace GestaoAvaliacao.Repository
                            "AND State = @state " +
 
                            "SELECT T.Id, T.KnowledgeAreaBlock " +
-                           "FROM Test T WITH(NOLOCK)" +
+                           "FROM Test T WITH (NOLOCK)" +
                            "WHERE Id = @TestId " +
 
                            "SELECT BI.Id, BI.Block_Id, BI.Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS [Order], I.KnowledgeArea_Id " +
                            "FROM BlockItem BI WITH (NOLOCK) " +
                            "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
-                           "INNER JOIN Item I WITH(NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3 " +
-                           "INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] " +
+                           "INNER JOIN Item I WITH (NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3 " +
+                           "INNER JOIN Test T WITH (NOLOCK) ON T.Id = B.[Test_Id] " +
                            "LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state " +
                            "WHERE B.Test_Id = @TestId " +
                            "AND BI.State = @state AND B.State = @state";
@@ -132,7 +132,7 @@ namespace GestaoAvaliacao.Repository
                                "FROM Item I WITH (NOLOCK) " +
                                "INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id " +
                                "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
-                               "INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] " +
+                               "INNER JOIN Test T WITH (NOLOCK) ON T.Id = B.[Test_Id] " +
                                "LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state " +
                                "LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = K.Id AND B.Id = Bka.Block_Id AND Bka.State = @state " +
                                "WHERE BI.Block_Id = @id " +
@@ -166,14 +166,14 @@ namespace GestaoAvaliacao.Repository
 									 FROM BlockItem BI WITH (NOLOCK) 
                                      INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
 									 INNER JOIN Item I WITH (NOLOCK) ON I.Id = BI.Item_Id 
-                                     INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
+                                     INNER JOIN Test T WITH (NOLOCK) ON T.Id = B.[Test_Id] 
                                      WHERE BI.Item_Id = @id AND BI.Block_Id = @blockId 
 									 AND I.State = @state AND BI.State = @state 
 
 									 SELECT D.Id, D.Description 
 									 FROM Item I 
 									 INNER JOIN EvaluationMatrix EM WITH (NOLOCK)ON EM.Id = I.EvaluationMatrix_Id 
-									 INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
+									 INNER JOIN Discipline D WITH (NOLOCK) ON EM.Discipline_Id = D.Id 
 									 WHERE I.State = @state 
 									 AND EM.State = @state 
 									 AND D.State = @state 
@@ -207,8 +207,8 @@ namespace GestaoAvaliacao.Repository
                 cn.Open();
 
                 var sql = @"SELECT Bka.Id, Bka.Block_Id, Bka.KnowledgeArea_Id, Bka.[Order], k.[Description] 
-                            FROM BlockKnowledgeArea Bka WITH(NOLOCK) 
-                            INNER JOIN KnowledgeArea K WITH(NOLOCK) ON Bka.KnowledgeArea_Id = K.Id 
+                            FROM BlockKnowledgeArea Bka WITH (NOLOCK) 
+                            INNER JOIN KnowledgeArea K WITH (NOLOCK) ON Bka.KnowledgeArea_Id = K.Id 
                             WHERE Bka.Block_Id = @id 
                             AND Bka.State = @state AND K.State = @state 
                             ORDER BY Bka.[Order]";
@@ -231,9 +231,9 @@ namespace GestaoAvaliacao.Repository
                            "SELECT BI.Id, BI.Block_Id, BI.Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS [Order], I.KnowledgeArea_Id, K.[Description] AS KnowledgeArea_Description " +
                            "FROM BlockItem BI WITH (NOLOCK) " +
                            "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
-                           "INNER JOIN Item I WITH(NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3 " +
-                           "INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] " +
-                           "LEFT JOIN KnowledgeArea K WITH(NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state " +
+                           "INNER JOIN Item I WITH (NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3 " +
+                           "INNER JOIN Test T WITH (NOLOCK) ON T.Id = B.[Test_Id] " +
+                           "LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state " +
                            "LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state " +
                            "WHERE B.Booklet_Id = @id " +
                            "AND BI.State = @state AND B.State = @state";
@@ -328,7 +328,7 @@ namespace GestaoAvaliacao.Repository
                             .AppendLine("INNER JOIN Alternative A ON A.Item_Id = I.Id ")
                             .AppendLine("INNER JOIN ItemSkill SS ON SS.Item_Id = I.Id ")
                             .AppendLine("INNER JOIN Skill S ON S.Id = SS.Skill_Id ")
-                            .AppendLine("INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.Test_Id ")
+                            .AppendLine("INNER JOIN Test T WITH (NOLOCK) ON T.Id = B.Test_Id ")
                             .AppendLine("LEFT JOIN RequestRevoke RR ON RR.BlockItem_Id = BI.Id AND RR.State = @state AND RR.Situation IN @Situations ")
                             .AppendLine("LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state ")
                             .AppendLine("WHERE B.Test_Id = @Test_Id ")
@@ -351,7 +351,7 @@ namespace GestaoAvaliacao.Repository
             sql.Append("FROM Item I WITH (NOLOCK) ");
             sql.Append("INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id ");
             sql.Append("INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id  ");
-            sql.Append("INNER JOIN Alternative A (NOLOCK) ON A.Item_Id = I.Id ");
+            sql.Append("INNER JOIN Alternative A WITH (NOLOCK) ON A.Item_Id = I.Id ");
             sql.Append("INNER JOIN Test T WITH (NOLOCK) ON T.Id = B.[Test_Id] ");
             sql.Append("LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state ");
             sql.Append("WHERE B.Test_Id = @id ");
@@ -462,7 +462,7 @@ namespace GestaoAvaliacao.Repository
                             "i.Id,i.ItemCode,i.ItemVersion,i.Statement," +
                             "bx.Id, bx.Description, " +
                             "ROW_NUMBER() OVER (ORDER BY bi.[Order]) AS RowNumber " +
-                            "FROM Test t " +
+                            "FROM Test t WITH (NOLOCK) " +
                             "INNER JOIN Booklet bt WITH (NOLOCK) on t.ID = bt.Test_Id " +
                             "INNER JOIN Block bl WITH (NOLOCK) on bt.Id = bl.Booklet_Id " +
                             "INNER JOIN BlockItem  bi WITH (NOLOCK) on bl.Id = bi.Block_Id AND bi.State = @state " +
@@ -517,7 +517,7 @@ namespace GestaoAvaliacao.Repository
                 "i.Id,i.ItemCode,i.ItemVersion,i.Statement,i.Revoked, i.LastVersion, " +
                 "bx.Id, bx.Description, " +
                 "ROW_NUMBER() OVER (ORDER BY rr.CreateDate) AS RowNumber " +
-                "FROM Test t " +
+                "FROM Test t WITH (NOLOCK) " +
                 "INNER JOIN Booklet bt WITH (NOLOCK) on t.ID = bt.Test_Id " +
                 "INNER JOIN Block bl WITH (NOLOCK) on bt.Id = bl.Booklet_Id " +
                 "INNER JOIN BlockItem  bi WITH (NOLOCK) on bl.Id = bi.Block_Id AND bi.State = @state " +

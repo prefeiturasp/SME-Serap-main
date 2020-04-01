@@ -24,8 +24,8 @@ namespace GestaoAvaliacao.Repository
             if (filter.ttn_id.HasValue && filter.ttn_id > 0)
                 tables.AppendLine("AND ttn.ttn_id = @ttn_id ");
 
-            tables.AppendLine("INNER JOIN SGP_ACA_CalendarioAnual cal WITH(NOLOCK) ON t.cal_id = cal.cal_id ");
-            tables.AppendLine("INNER JOIN Test te WITH(NOLOCK) ON te.Id = @test_id AND YEAR(te.ApplicationStartDate) = cal.cal_ano ");
+            tables.AppendLine("INNER JOIN SGP_ACA_CalendarioAnual cal WITH (NOLOCK) ON t.cal_id = cal.cal_id ");
+            tables.AppendLine("INNER JOIN Test te WITH (NOLOCK) ON te.Id = @test_id AND YEAR(te.ApplicationStartDate) = cal.cal_ano ");
 
             tables.Append("INNER JOIN SGP_ESC_Escola e WITH (NOLOCK) ON e.esc_id = t.esc_id AND e.esc_situacao = @state ");
             if (filter.School_Id > 0)
@@ -56,8 +56,8 @@ namespace GestaoAvaliacao.Repository
             {
                 tables.AppendLine("LEFT JOIN Adherence a WITH (NOLOCK) ON a.EntityId = t.tur_id AND a.Test_Id = @test_id AND a.TypeEntity = @typeEntity AND a.TypeSelection = @TypeSelection AND a.[State] = @state ");
                 tables.AppendLine("LEFT JOIN TestSectionStatusCorrection tt WITH (NOLOCK) ON tt.Test_id = @test_id AND tt.tur_id = t.tur_id AND tt.[State] = @state ");
-                tables.AppendLine("INNER JOIN SGP_TUR_TurmaCurriculo tc WITH(NOLOCK) ON tc.tur_id = t.tur_id ");
-                tables.AppendLine("INNER JOIN SGP_ACA_CurriculoPeriodo crp WITH(NOLOCK) ON crp.cur_id = tc.cur_id AND crp.crr_id = tc.crr_id AND crp.crp_id = tc.crp_id ");
+                tables.AppendLine("INNER JOIN SGP_TUR_TurmaCurriculo tc WITH (NOLOCK) ON tc.tur_id = t.tur_id ");
+                tables.AppendLine("INNER JOIN SGP_ACA_CurriculoPeriodo crp WITH (NOLOCK) ON crp.cur_id = tc.cur_id AND crp.crr_id = tc.crr_id AND crp.crp_id = tc.crp_id ");
                 where.AppendLine("WHERE a.Id IS NULL ");
                 if (!string.IsNullOrEmpty(filter.StatusCorrection))
                 {
@@ -127,7 +127,7 @@ namespace GestaoAvaliacao.Repository
             var sql = new StringBuilder("DECLARE @table AS TABLE (TypeCurriculumGradeId BIGINT) ");
             sql.AppendLine("INSERT INTO @table ");
             sql.AppendLine("SELECT [TypeCurriculumGradeId] ");
-            sql.AppendLine("FROM TestCurriculumGrade WITH(NOLOCK) ");
+            sql.AppendLine("FROM TestCurriculumGrade WITH (NOLOCK) ");
             sql.AppendLine("WHERE Test_Id = @test_id AND [State] = @state ");
 
             sql.AppendLine(";WITH CounteredSections AS ( ");
@@ -193,7 +193,7 @@ namespace GestaoAvaliacao.Repository
             sql.Append("INNER JOIN BlockItem bi WITH (NOLOCK) ON bi.Block_Id = b.Id ");
             sql.Append("INNER JOIN Item i WITH (NOLOCK) ON i.Id = bi.Item_Id ");
             sql.Append("INNER JOIN Alternative a WITH (NOLOCK) ON a.Item_Id = i.Id AND a.Correct = @correct ");
-            sql.Append("LEFT JOIN KnowledgeArea K WITH(NOLOCK) ON i.KnowledgeArea_Id = K.Id AND K.State = @state ");
+            sql.Append("LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON i.KnowledgeArea_Id = K.Id AND K.State = @state ");
             sql.Append("LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = i.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state ");
             sql.Append("WHERE t.Id = @test_id AND t.State = @state AND b.State = @state AND bi.State = @state AND i.State = @state AND a.State = @state ");
             sql.Append("ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order] ");

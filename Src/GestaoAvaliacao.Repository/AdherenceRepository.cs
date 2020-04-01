@@ -28,7 +28,7 @@ namespace GestaoAvaliacao.Repository
 
 			#region Tables
 			var tabelas = new StringBuilder("FROM SGP_ESC_Escola e WITH (NOLOCK) ");            
-            tabelas.AppendLine("INNER JOIN AdministrativeUnitType AS AUT WITH(NOLOCK) ON AUT.AdministrativeUnitTypeId = e.tua_id AND AUT.State = @state ");
+            tabelas.AppendLine("INNER JOIN AdministrativeUnitType AS AUT WITH (NOLOCK) ON AUT.AdministrativeUnitTypeId = e.tua_id AND AUT.State = @state ");
             tabelas.AppendLine("INNER JOIN SGP_SYS_UnidadeAdministrativa uad WITH (NOLOCK) ON e.uad_idSuperiorGestao = uad.uad_id  AND uad.uad_situacao = @state ");
 			tabelas.AppendLine("INNER JOIN (SELECT DISTINCT tur.esc_id ");
 			tabelas.AppendLine("FROM SGP_TUR_Turma tur WITH (NOLOCK) ");            
@@ -42,34 +42,34 @@ namespace GestaoAvaliacao.Repository
 				tabelas.Append("AS tud ON tud.tur_id = tur.tur_id ");
 			}
 
-            tabelas.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp (nolock)");
+            tabelas.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK)");
             tabelas.AppendLine("		       ON tur.tur_id = ttcp.tur_id AND");
             tabelas.AppendLine("				  ttcp.ttcr_situacao = @state");
-            tabelas.AppendLine("	   INNER JOIN SGP_TUR_TurmaCurriculo tc (nolock)");
+            tabelas.AppendLine("	   INNER JOIN SGP_TUR_TurmaCurriculo tc WITH (NOLOCK)");
             tabelas.AppendLine("			   ON ttcp.tur_id = tc.tur_id AND");
             tabelas.AppendLine("				  ttcp.crp_ordem = tc.crp_id AND");
             tabelas.AppendLine("				  tc.tcr_situacao = @state");
-            tabelas.AppendLine("       INNER JOIN sgp_aca_tipocurriculoperiodo tcg (nolock)");
+            tabelas.AppendLine("       INNER JOIN sgp_aca_tipocurriculoperiodo tcg WITH (NOLOCK)");
             tabelas.AppendLine("               ON tcg.tcp_id = tc.tcp_id AND tc.tcr_situacao = @state");
-            tabelas.AppendLine("       INNER JOIN testtypecourse ttc (nolock)");
+            tabelas.AppendLine("       INNER JOIN testtypecourse ttc WITH (NOLOCK)");
             tabelas.AppendLine("	           ON tc.cur_id = ttc.CourseId AND");
             tabelas.AppendLine("				  testtype_id = @testType AND");
             tabelas.AppendLine("				  ttc.state = @state");
-            tabelas.AppendLine("       INNER JOIN sgp_aca_curso cur (nolock)");
+            tabelas.AppendLine("       INNER JOIN sgp_aca_curso cur WITH (NOLOCK)");
             tabelas.AppendLine("               ON cur.cur_id = tc.cur_id AND");
             tabelas.AppendLine("				  ttcp.tme_id = cur.tme_id");            
-            tabelas.AppendLine("       INNER JOIN sgp_aca_curriculoperiodo crp (nolock)");
+            tabelas.AppendLine("       INNER JOIN sgp_aca_curriculoperiodo crp WITH (NOLOCK)");
             tabelas.AppendLine("               ON crp.cur_id = cur.cur_id AND");
             tabelas.AppendLine("				  crp.crp_ordem = tcg.tcp_ordem AND");
             tabelas.AppendLine("				  crp.tcp_id = tcg.tcp_id");
-            tabelas.AppendLine("       INNER JOIN testcurriculumgrade tcc (nolock)");
+            tabelas.AppendLine("       INNER JOIN testcurriculumgrade tcc WITH (NOLOCK)");
             tabelas.AppendLine("               ON tcc.typecurriculumgradeid = tcg.tcp_id AND");
             tabelas.AppendLine("				  tcc.state = @state AND");
             tabelas.AppendLine("				  tcc.test_id = @test_id");
-            tabelas.AppendLine("	   INNER JOIN [Test] t (nolock)");
+            tabelas.AppendLine("	   INNER JOIN [Test] t WITH (NOLOCK)");
             tabelas.AppendLine("			   ON tcc.Test_Id = t.Id AND");
             tabelas.AppendLine("				  t.[State] = @state");
-            tabelas.AppendLine("	   INNER JOIN SGP_ACA_CalendarioAnual ca (nolock)");
+            tabelas.AppendLine("	   INNER JOIN SGP_ACA_CalendarioAnual ca WITH (NOLOCK)");
             tabelas.AppendLine("			   ON tur.cal_id = ca.cal_id AND");
             tabelas.AppendLine("				  ca.cal_situacao = @state");
 
@@ -197,18 +197,18 @@ namespace GestaoAvaliacao.Repository
 		{
 			var sql = new StringBuilder();
 			sql.AppendLine("SELECT DISTINCT CAST(uad.uad_id AS varchar(36)) AS EntityId, (uad.uad_sigla + ' - ' +  uad.uad_nome) AS Description");
-			sql.AppendLine("FROM SGP_SYS_UnidadeAdministrativa uad WITH(NOLOCK)");
-			sql.AppendLine("INNER JOIN SGP_ESC_Escola esc WITH(NOLOCK) ON uad.uad_id = esc.uad_idSuperiorGestao");
-			sql.AppendLine("INNER JOIN SGP_TUR_Turma tur WITH(NOLOCK) ON tur.esc_id = esc.esc_id");
+			sql.AppendLine("FROM SGP_SYS_UnidadeAdministrativa uad WITH (NOLOCK)");
+			sql.AppendLine("INNER JOIN SGP_ESC_Escola esc WITH (NOLOCK) ON uad.uad_id = esc.uad_idSuperiorGestao");
+			sql.AppendLine("INNER JOIN SGP_TUR_Turma tur WITH (NOLOCK) ON tur.esc_id = esc.esc_id");
 
 			if (visao != EnumSYS_Visao.Administracao)
 				sql.AppendLine("INNER JOIN GetUserSection(@gru_id, @usu_id, @pes_id, @ent_id, @vis_id, @state, @esc_id, @uad_id, @ttn_id, @tne_id, @crp_ordem) section ON section.tur_id = tur.tur_id");
 
 			if (!AllAdhered)
-				sql.AppendLine("INNER JOIN Adherence a WITH(NOLOCK) ON a.EntityId = esc.esc_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId");
+				sql.AppendLine("INNER JOIN Adherence a WITH (NOLOCK) ON a.EntityId = esc.esc_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId");
 			else
 			{
-				sql.AppendLine("LEFT JOIN Adherence a WITH(NOLOCK) ON a.EntityId = esc.esc_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId AND a.TypeSelection = @TypeSelection");
+				sql.AppendLine("LEFT JOIN Adherence a WITH (NOLOCK) ON a.EntityId = esc.esc_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId AND a.TypeSelection = @TypeSelection");
 				sql.AppendLine("WHERE a.Id IS NULL");
 			}
 
@@ -248,15 +248,15 @@ namespace GestaoAvaliacao.Repository
         {
             var sql = new StringBuilder();
             sql.AppendLine("SELECT DISTINCT CAST(uad.uad_id AS varchar(36)) AS EntityId, (uad.uad_sigla + ' - ' +  uad.uad_nome) AS Description");
-            sql.AppendLine("FROM SGP_SYS_UnidadeAdministrativa uad WITH(NOLOCK)");
-            sql.AppendLine("INNER JOIN SGP_ESC_Escola esc WITH(NOLOCK) ON uad.uad_id = esc.uad_idSuperiorGestao");
-            sql.AppendLine("INNER JOIN SGP_TUR_Turma tur WITH(NOLOCK) ON tur.esc_id = esc.esc_id");
+            sql.AppendLine("FROM SGP_SYS_UnidadeAdministrativa uad WITH (NOLOCK)");
+            sql.AppendLine("INNER JOIN SGP_ESC_Escola esc WITH (NOLOCK) ON uad.uad_id = esc.uad_idSuperiorGestao");
+            sql.AppendLine("INNER JOIN SGP_TUR_Turma tur WITH (NOLOCK) ON tur.esc_id = esc.esc_id");
 
             if (visao != EnumSYS_Visao.Administracao)
                 sql.AppendLine("INNER JOIN GetUserSection(@gru_id, @usu_id, @pes_id, @ent_id, @vis_id, @state, @esc_id, @uad_id, @ttn_id, @tne_id, @crp_ordem) section ON section.tur_id = tur.tur_id");
 
-            sql.AppendFormat("INNER JOIN Test T WITH(NOLOCK) ON T.Id IN ({0}) ", string.Join(",", lstTest));
-            sql.AppendLine("LEFT JOIN Adherence A WITH(NOLOCK) ON A.Test_Id = T.Id AND A.EntityId = esc.esc_id AND A.TypeEntity = @TypeEntity AND A.[State] = 1 ");
+            sql.AppendFormat("INNER JOIN Test T WITH (NOLOCK) ON T.Id IN ({0}) ", string.Join(",", lstTest));
+            sql.AppendLine("LEFT JOIN Adherence A WITH (NOLOCK) ON A.Test_Id = T.Id AND A.EntityId = esc.esc_id AND A.TypeEntity = @TypeEntity AND A.[State] = 1 ");
             sql.AppendLine("WHERE ((T.AllAdhered = 1 AND ISNULL(A.TypeSelection, 0) NOT IN (@TypeSelectionNaoSelecionado, @TypeSelectionBloqueado)) OR (T.AllAdhered = 0 AND TypeSelection = @TypeSelectionSelecionado)) ");
             sql.AppendLine("GROUP BY uad.uad_id, (uad.uad_sigla + ' - ' +  uad.uad_nome)");
             sql.AppendLine("ORDER BY (uad.uad_sigla + ' - ' +  uad.uad_nome)");
@@ -296,14 +296,14 @@ namespace GestaoAvaliacao.Repository
         {
             var sql = new StringBuilder();
             sql.AppendLine("SELECT DISTINCT CAST(esc.esc_id AS varchar) AS EntityId, esc.esc_nome AS Description");
-            sql.AppendLine("FROM SGP_ESC_Escola esc WITH(NOLOCK) ");
-            sql.AppendLine("INNER JOIN SGP_TUR_Turma tur WITH(NOLOCK) ON tur.esc_id = esc.esc_id");
+            sql.AppendLine("FROM SGP_ESC_Escola esc WITH (NOLOCK) ");
+            sql.AppendLine("INNER JOIN SGP_TUR_Turma tur WITH (NOLOCK) ON tur.esc_id = esc.esc_id");
 
             if (visao != EnumSYS_Visao.Administracao)
                 sql.AppendLine("INNER JOIN GetUserSection(@gru_id, @usu_id, @pes_id, @ent_id, @vis_id, @state, @esc_id, @uad_id, @ttn_id, @tne_id, @crp_ordem) section ON section.tur_id = tur.tur_id");
 
-            sql.AppendFormat("INNER JOIN Test T WITH(NOLOCK) ON T.Id IN ({0}) ", string.Join(",", lstTest));
-            sql.AppendLine("LEFT JOIN Adherence A WITH(NOLOCK) ON A.Test_Id = T.Id AND A.EntityId = esc.esc_id AND A.TypeEntity = @TypeEntity AND A.[State] = 1 ");
+            sql.AppendFormat("INNER JOIN Test T WITH (NOLOCK) ON T.Id IN ({0}) ", string.Join(",", lstTest));
+            sql.AppendLine("LEFT JOIN Adherence A WITH (NOLOCK) ON A.Test_Id = T.Id AND A.EntityId = esc.esc_id AND A.TypeEntity = @TypeEntity AND A.[State] = 1 ");
             sql.AppendLine("WHERE ((T.AllAdhered = 1 AND ISNULL(A.TypeSelection, 0) NOT IN (@TypeSelectionNaoSelecionado, @TypeSelectionBloqueado)) OR (T.AllAdhered = 0 AND TypeSelection = @TypeSelectionSelecionado)) ");
             sql.AppendLine("AND esc.uad_idSuperiorGestao = @uad_id");
             sql.AppendLine("ORDER BY esc.esc_nome");
@@ -343,22 +343,22 @@ namespace GestaoAvaliacao.Repository
 		{
 			var sql = new StringBuilder();
 			sql.AppendLine("SELECT DISTINCT CAST(esc.esc_id AS varchar) AS EntityId, esc.esc_nome AS Description");
-			sql.AppendLine("FROM SGP_ESC_Escola esc WITH(NOLOCK) ");
-			sql.AppendLine("INNER JOIN SGP_TUR_Turma tur WITH(NOLOCK) ON tur.esc_id = esc.esc_id");
+			sql.AppendLine("FROM SGP_ESC_Escola esc WITH (NOLOCK) ");
+			sql.AppendLine("INNER JOIN SGP_TUR_Turma tur WITH (NOLOCK) ON tur.esc_id = esc.esc_id");
 
 			if (visao != EnumSYS_Visao.Administracao)
 				sql.AppendLine("INNER JOIN GetUserSection(@gru_id, @usu_id, @pes_id, @ent_id, @vis_id, @state, @esc_id, @uad_id, @ttn_id, @tne_id, @crp_ordem) section ON section.tur_id = tur.tur_id");
 
 			if (!AllAdhered)
 			{
-				sql.AppendLine("INNER JOIN Adherence a WITH(NOLOCK) ON a.EntityId = esc.esc_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId");
+				sql.AppendLine("INNER JOIN Adherence a WITH (NOLOCK) ON a.EntityId = esc.esc_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId");
 
 				if (uad_id != Guid.Empty)
 					sql.AppendLine("WHERE esc.uad_idSuperiorGestao = @uad_id");
 			}
 			else
 			{
-				sql.AppendLine("LEFT JOIN Adherence a WITH(NOLOCK) ON a.EntityId = esc.esc_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId AND a.TypeSelection = @TypeSelection");
+				sql.AppendLine("LEFT JOIN Adherence a WITH (NOLOCK) ON a.EntityId = esc.esc_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId AND a.TypeSelection = @TypeSelection");
 				sql.AppendLine("WHERE a.Id IS NULL");
 				if (uad_id != Guid.Empty)
 					sql.AppendLine("AND esc.uad_idSuperiorGestao = @uad_id");
@@ -400,17 +400,17 @@ namespace GestaoAvaliacao.Repository
         {
             var sql = new StringBuilder();
             sql.AppendLine("SELECT DISTINCT CAST(tur.tur_id AS varchar) AS EntityId, tur.tur_codigo + ' ' + ttn.ttn_nome AS Description");
-            sql.AppendLine("FROM SGP_TUR_Turma tur WITH(NOLOCK)");
-            sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH(NOLOCK) ON ttcp.tur_id = tur.tur_id AND ((ttcp.tne_id = @tne_id AND ttcp.crp_ordem = @crp_ordem) OR (@tne_id = 0 AND 0 = @crp_ordem)) ");
-            sql.AppendLine("INNER JOIN SGP_ACA_TipoTurno ttn WITH(NOLOCK) ON ttn.ttn_id = tur.ttn_id");
+            sql.AppendLine("FROM SGP_TUR_Turma tur WITH (NOLOCK)");
+            sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON ttcp.tur_id = tur.tur_id AND ((ttcp.tne_id = @tne_id AND ttcp.crp_ordem = @crp_ordem) OR (@tne_id = 0 AND 0 = @crp_ordem)) ");
+            sql.AppendLine("INNER JOIN SGP_ACA_TipoTurno ttn WITH (NOLOCK) ON ttn.ttn_id = tur.ttn_id");
 
 			if (visao != EnumSYS_Visao.Administracao)
 				sql.AppendLine("INNER JOIN GetUserSection(@gru_id, @usu_id, @pes_id, @ent_id, @vis_id, @state, @esc_id, @uad_id, @ttn_id, @tne_id, @crp_ordem) section ON section.tur_id = tur.tur_id");
 
 			if (!AllAdhered)
-				sql.AppendLine("INNER JOIN Adherence a WITH(NOLOCK) ON a.EntityId = tur.tur_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId");
+				sql.AppendLine("INNER JOIN Adherence a WITH (NOLOCK) ON a.EntityId = tur.tur_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId");
 			else
-				sql.AppendLine("LEFT JOIN Adherence a WITH(NOLOCK) ON a.EntityId = tur.tur_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId AND a.TypeSelection = @TypeSelection");
+				sql.AppendLine("LEFT JOIN Adherence a WITH (NOLOCK) ON a.EntityId = tur.tur_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId AND a.TypeSelection = @TypeSelection");
 
 			sql.AppendLine("WHERE tur.tur_situacao = @state");
 
@@ -451,17 +451,17 @@ namespace GestaoAvaliacao.Repository
         {
             var sql = new StringBuilder();
             sql.AppendLine("SELECT DISTINCT CAST(tur.tur_id AS varchar) AS EntityId, tur.tur_codigo + ' ' + ttn.ttn_nome AS Description");
-            sql.AppendLine("FROM SGP_TUR_Turma tur WITH(NOLOCK)");
-            sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH(NOLOCK) ON ttcp.tur_id = tur.tur_id AND ((ttcp.tne_id = @tne_id AND ttcp.crp_ordem = @crp_ordem) OR (@tne_id = 0 AND 0 = @crp_ordem)) ");
-            sql.AppendLine("INNER JOIN SGP_ACA_TipoTurno ttn WITH(NOLOCK) ON ttn.ttn_id = tur.ttn_id");
+            sql.AppendLine("FROM SGP_TUR_Turma tur WITH (NOLOCK)");
+            sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON ttcp.tur_id = tur.tur_id AND ((ttcp.tne_id = @tne_id AND ttcp.crp_ordem = @crp_ordem) OR (@tne_id = 0 AND 0 = @crp_ordem)) ");
+            sql.AppendLine("INNER JOIN SGP_ACA_TipoTurno ttn WITH (NOLOCK) ON ttn.ttn_id = tur.ttn_id");
 
             if (visao != EnumSYS_Visao.Administracao)
                 sql.AppendLine("INNER JOIN GetUserSection(@gru_id, @usu_id, @pes_id, @ent_id, @vis_id, @state, @esc_id, @uad_id, @ttn_id, @tne_id, @crp_ordem) section ON section.tur_id = tur.tur_id");
 
             if (!AllAdhered)
-                sql.AppendLine("INNER JOIN Adherence a WITH(NOLOCK) ON a.EntityId = tur.tur_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId");
+                sql.AppendLine("INNER JOIN Adherence a WITH (NOLOCK) ON a.EntityId = tur.tur_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId");
             else
-                sql.AppendLine("LEFT JOIN Adherence a WITH(NOLOCK) ON a.EntityId = tur.tur_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId AND a.TypeSelection = @TypeSelection");
+                sql.AppendLine("LEFT JOIN Adherence a WITH (NOLOCK) ON a.EntityId = tur.tur_id AND a.TypeEntity = @TypeEntity AND a.Test_Id = @TestId AND a.TypeSelection = @TypeSelection");
 
             sql.AppendLine("WHERE tur.tur_situacao = @state AND tur.esc_id = @esc_id");
 
@@ -537,11 +537,11 @@ namespace GestaoAvaliacao.Repository
 	                        ISNULL(a.TypeSelection, {0}) AS TypeSelection,
                             CAST(CASE WHEN (a.Id IS NULL) THEN 0 ELSE 1 END AS BIT) AS existAdherence
                         FROM 
-	                        SGP_MTR_MatriculaTurma AS Mtu WITH(NOLOCK)
-	                        INNER JOIN SGP_ACA_Aluno AS Alu WITH(NOLOCK)
+	                        SGP_MTR_MatriculaTurma AS Mtu WITH (NOLOCK)
+	                        INNER JOIN SGP_ACA_Aluno AS Alu WITH (NOLOCK)
 		                        ON Mtu.alu_id = Alu.alu_id
 		                        AND Alu.alu_situacao <> @stateExcluido
-	                        LEFT JOIN Adherence A WITH(NOLOCK) 
+	                        LEFT JOIN Adherence A WITH (NOLOCK) 
 		                        ON a.EntityId = alu.alu_id
 		                        AND a.TypeEntity = @typeEntity 
 		                        AND a.Test_Id = @Test_Id
@@ -602,38 +602,38 @@ namespace GestaoAvaliacao.Repository
 		private string GetSectionsDisponibleTestQuery(int ttn_id, int crp_ordem, Guid? pes_id)
 		{
             var sql = new StringBuilder();
-            sql.AppendLine("FROM   sgp_tur_turma tur (nolock)");
-            sql.AppendLine("    INNER JOIN sgp_aca_tipoturno ttn (nolock)");
+            sql.AppendLine("FROM   sgp_tur_turma tur WITH (NOLOCK)");
+            sql.AppendLine("    INNER JOIN sgp_aca_tipoturno ttn WITH (NOLOCK)");
             sql.AppendLine("        ON ttn.ttn_id = tur.ttn_id");
-            sql.AppendLine("    INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp (nolock)");
+            sql.AppendLine("    INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK)");
             sql.AppendLine("        ON tur.tur_id = ttcp.tur_id AND");
             sql.AppendLine("           ttcp.ttcr_situacao = @state");
-            sql.AppendLine("    INNER JOIN SGP_TUR_TurmaCurriculo tc (nolock)");
+            sql.AppendLine("    INNER JOIN SGP_TUR_TurmaCurriculo tc WITH (NOLOCK)");
             sql.AppendLine("        ON ttcp.tur_id = tc.tur_id AND");
             sql.AppendLine("           ttcp.crp_ordem = tc.crp_id AND");
             sql.AppendLine("           tc.tcr_situacao = @state");
-            sql.AppendLine("    INNER JOIN sgp_aca_tipocurriculoperiodo tcg (nolock)");
+            sql.AppendLine("    INNER JOIN sgp_aca_tipocurriculoperiodo tcg WITH (NOLOCK)");
             sql.AppendLine("        ON tcg.tcp_id = tc.tcp_id AND");
             sql.AppendLine("           tc.tcr_situacao = @state");
-            sql.AppendLine("    INNER JOIN testtypecourse ttc (nolock)");
+            sql.AppendLine("    INNER JOIN testtypecourse ttc WITH (NOLOCK)");
             sql.AppendLine("        ON tc.cur_id = ttc.CourseId AND");
             sql.AppendLine("           testtype_id = @testType AND");
             sql.AppendLine("           ttc.state = @state");
-            sql.AppendLine("    INNER JOIN sgp_aca_curso cur (nolock)");
+            sql.AppendLine("    INNER JOIN sgp_aca_curso cur WITH (NOLOCK)");
             sql.AppendLine("        ON cur.cur_id = tc.cur_id AND");
             sql.AppendLine("           ttcp.tme_id = cur.tme_id");            
-            sql.AppendLine("    INNER JOIN sgp_aca_curriculoperiodo crp (nolock)");
+            sql.AppendLine("    INNER JOIN sgp_aca_curriculoperiodo crp WITH (NOLOCK)");
             sql.AppendLine("        ON crp.cur_id = cur.cur_id AND");
             sql.AppendLine("           crp.crp_ordem = tcg.tcp_ordem AND");
             sql.AppendLine("           crp.tcp_id = tcg.tcp_id");
-            sql.AppendLine("    INNER JOIN testcurriculumgrade tcc (nolock)");
+            sql.AppendLine("    INNER JOIN testcurriculumgrade tcc WITH (NOLOCK)");
             sql.AppendLine("        ON tcc.typecurriculumgradeid = tcg.tcp_id AND");
             sql.AppendLine("           tcc.state = @state AND");
             sql.AppendLine("           tcc.test_id = @test_id");
-            sql.AppendLine("    INNER JOIN [Test] t (nolock)");
+            sql.AppendLine("    INNER JOIN [Test] t WITH (NOLOCK)");
             sql.AppendLine("        ON tcc.Test_Id = t.Id AND");
             sql.AppendLine("           t.[State] = @state");
-            sql.AppendLine("    INNER JOIN SGP_ACA_CalendarioAnual ca (nolock)");
+            sql.AppendLine("    INNER JOIN SGP_ACA_CalendarioAnual ca WITH (NOLOCK)");
             sql.AppendLine("        ON tur.cal_id = ca.cal_id AND");
             sql.AppendLine("           ca.cal_situacao = @state");            
 
@@ -682,10 +682,10 @@ namespace GestaoAvaliacao.Repository
 				case EnumSYS_Visao.Individual:
 					sql.AppendLine("INNER JOIN (");
 					sql.AppendLine("SELECT DISTINCT tur.esc_id");
-					sql.AppendLine("FROM SGP_TUR_Turma tur WITH(NOLOCK)");
-					sql.AppendLine("INNER JOIN SGP_TUR_TurmaDisciplina tud WITH(NOLOCK) ON tur.tur_id = tud.tur_id AND tud.tud_situacao = @state");
-					sql.AppendLine("INNER JOIN SGP_TUR_TurmaDocente tdt WITH(NOLOCK) ON tdt.tud_id = tud.tud_id AND tdt_situacao = @state");
-					sql.AppendLine("INNER JOIN SGP_ACA_Docente doc WITH(NOLOCK) ON doc.doc_id = tdt.doc_id AND doc.doc_situacao = @state AND doc.ent_id = @ent_id AND doc.pes_id = @pes_id");
+					sql.AppendLine("FROM SGP_TUR_Turma tur WITH (NOLOCK)");
+					sql.AppendLine("INNER JOIN SGP_TUR_TurmaDisciplina tud WITH (NOLOCK) ON tur.tur_id = tud.tur_id AND tud.tud_situacao = @state");
+					sql.AppendLine("INNER JOIN SGP_TUR_TurmaDocente tdt WITH (NOLOCK) ON tdt.tud_id = tud.tud_id AND tdt_situacao = @state");
+					sql.AppendLine("INNER JOIN SGP_ACA_Docente doc WITH (NOLOCK) ON doc.doc_id = tdt.doc_id AND doc.doc_situacao = @state AND doc.ent_id = @ent_id AND doc.pes_id = @pes_id");
 					sql.AppendLine("WHERE tur.tur_situacao = @state) AS esc ON esc.id = a.EntityId");
 					break;
 				default:
@@ -717,10 +717,10 @@ namespace GestaoAvaliacao.Repository
 				case EnumSYS_Visao.Individual:
 					sql.AppendLine("INNER JOIN (");
 					sql.AppendLine("SELECT tur.tur_id");
-					sql.AppendLine("FROM SGP_TUR_Turma tur WITH(NOLOCK)");
-					sql.AppendLine("INNER JOIN SGP_TUR_TurmaDisciplina tud WITH(NOLOCK) ON tur.tur_id = tud.tur_id AND tud.tud_situacao = @state");
-					sql.AppendLine("INNER JOIN SGP_TUR_TurmaDocente tdt WITH(NOLOCK) ON tdt.tud_id = tud.tud_id AND tdt_situacao = @state");
-					sql.AppendLine("INNER JOIN SGP_ACA_Docente doc WITH(NOLOCK) ON doc.doc_id = tdt.doc_id AND doc.doc_situacao = @state AND doc.ent_id = @ent_id AND doc.pes_id = @pes_id");
+					sql.AppendLine("FROM SGP_TUR_Turma tur WITH (NOLOCK)");
+					sql.AppendLine("INNER JOIN SGP_TUR_TurmaDisciplina tud WITH (NOLOCK) ON tur.tur_id = tud.tur_id AND tud.tud_situacao = @state");
+					sql.AppendLine("INNER JOIN SGP_TUR_TurmaDocente tdt WITH (NOLOCK) ON tdt.tud_id = tud.tud_id AND tdt_situacao = @state");
+					sql.AppendLine("INNER JOIN SGP_ACA_Docente doc WITH (NOLOCK) ON doc.doc_id = tdt.doc_id AND doc.doc_situacao = @state AND doc.ent_id = @ent_id AND doc.pes_id = @pes_id");
 					sql.AppendLine("WHERE tur.tur_situacao = @state) AS esc ON esc.id = a.EntityId");
 					break;
 				default:
@@ -754,29 +754,29 @@ namespace GestaoAvaliacao.Repository
 			Guid? pes_id = null, Guid? ent_id = null, IEnumerable<string> uadGestor = null, IEnumerable<string> uadCoordenador = null)
 		{
             var tables = new StringBuilder();
-            tables.AppendLine("FROM TestCurriculumGrade tcg (NOLOCK)");
+            tables.AppendLine("FROM TestCurriculumGrade tcg WITH (NOLOCK)");
             tables.AppendLine("		INNER JOIN SGP_ACA_TipoCurriculoPeriodo tpcp");
             tables.AppendLine("			ON tcg.TypeCurriculumGradeId = tpcp.tcp_id AND");
             tables.AppendLine("			   tpcp.[tcp_situacao] = @state");
-            tables.AppendLine("		INNER JOIN SGP_TUR_TurmaCurriculo tc (NOLOCK)");
+            tables.AppendLine("		INNER JOIN SGP_TUR_TurmaCurriculo tc WITH (NOLOCK)");
             tables.AppendLine("			ON tpcp.tcp_id = tc.tcp_id AND");
             tables.AppendLine("			   tpcp.tcp_ordem = tc.crp_id AND");
             tables.AppendLine("			   tc.tcr_situacao = @state");
-            tables.AppendLine("		INNER JOIN SGP_TUR_Turma t (NOLOCK)");
+            tables.AppendLine("		INNER JOIN SGP_TUR_Turma t WITH (NOLOCK)");
             tables.AppendLine("			ON tc.tur_id = t.tur_id AND");
             tables.AppendLine("			   t.tur_situacao = @state");
-            tables.AppendLine("		INNER JOIN SGP_ESC_Escola e (NOLOCK)");
+            tables.AppendLine("		INNER JOIN SGP_ESC_Escola e WITH (NOLOCK)");
             tables.AppendLine("			on t.esc_id = e.esc_id AND");
             tables.AppendLine("			   e.esc_situacao = @state");
-            tables.AppendLine("		INNER JOIN AdministrativeUnitType aut (NOLOCK)");
+            tables.AppendLine("		INNER JOIN AdministrativeUnitType aut WITH (NOLOCK)");
             tables.AppendLine("			ON e.tua_id = aut.AdministrativeUnitTypeId AND");
             tables.AppendLine("			   aut.[State] = @state");
-            tables.AppendLine("		INNER JOIN SGP_SYS_UnidadeAdministrativa ua (NOLOCK)");
+            tables.AppendLine("		INNER JOIN SGP_SYS_UnidadeAdministrativa ua WITH (NOLOCK)");
             tables.AppendLine("			ON e.uad_idSuperiorGestao = ua.uad_id");
-            tables.AppendLine("     INNER JOIN [Test] tst (NOLOCK)");
+            tables.AppendLine("     INNER JOIN [Test] tst WITH (NOLOCK)");
             tables.AppendLine("			ON tcg.Test_Id = tst.Id AND");
             tables.AppendLine("			   tst.[State] = @state");
-            tables.AppendLine("		INNER JOIN SGP_ACA_CalendarioAnual ca (NOLOCK)");
+            tables.AppendLine("		INNER JOIN SGP_ACA_CalendarioAnual ca WITH (NOLOCK)");
             tables.AppendLine("			ON t.cal_id = ca.cal_id AND");
             tables.AppendLine("			   ca.cal_situacao = @state");
 
@@ -909,9 +909,9 @@ namespace GestaoAvaliacao.Repository
 			tables.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON t.tur_id = ttcp.tur_id AND ttcp.tur_id = t.tur_id AND ttcp.ttcr_situacao = @state ");
 			tables.AppendLine("INNER JOIN SGP_ACA_TipoCurriculoPeriodo tcg WITH (NOLOCK) ON tcg.tcp_ordem = ttcp.crp_ordem AND tcg.tme_id = ttcp.tme_id AND tcg.tne_id = ttcp.tne_id AND tcg.tcp_id = ISNULL(@tcp_id, tcg.tcp_id)");
 			tables.AppendLine("INNER JOIN SGP_ACA_Curso cur WITH (NOLOCK) ON cur.cur_id = ttcp.cur_id ");
-			tables.AppendLine("INNER JOIN SGP_ACA_CurriculoPeriodo crp WITH(NOLOCK) ON crp.cur_id = cur.cur_id AND crp.crp_ordem = ttcp.crp_ordem AND crp.tcp_id = tcg.tcp_id ");
+			tables.AppendLine("INNER JOIN SGP_ACA_CurriculoPeriodo crp WITH (NOLOCK) ON crp.cur_id = cur.cur_id AND crp.crp_ordem = ttcp.crp_ordem AND crp.tcp_id = tcg.tcp_id ");
 			tables.AppendFormat("INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) ON tcc.TypeCurriculumGradeId = tcg.tcp_id AND tcc.State = @state AND tcc.Test_Id IN ({0}) ", string.Join(",", test_id));
-            tables.AppendLine("INNER JOIN SGP_ESC_Escola e WITH(NOLOCK) ON t.esc_id = e.esc_id AND e.esc_situacao <> @excluido ");
+            tables.AppendLine("INNER JOIN SGP_ESC_Escola e WITH (NOLOCK) ON t.esc_id = e.esc_id AND e.esc_situacao <> @excluido ");
 
             if (pes_id.HasValue)
 			{
@@ -922,8 +922,8 @@ namespace GestaoAvaliacao.Repository
 				tables.Append("AS tud ON tud.tur_id = t.tur_id ");
 			}
 
-            tables.AppendLine("INNER JOIN Test Te WITH(NOLOCK) ON tcc.Test_Id = Te.Id ");
-            tables.AppendLine("LEFT JOIN Adherence A WITH(NOLOCK) ON A.Test_Id = Te.Id AND A.EntityId = e.esc_id AND A.TypeEntity = @typeEntity AND A.[State] = 1 ");
+            tables.AppendLine("INNER JOIN Test Te WITH (NOLOCK) ON tcc.Test_Id = Te.Id ");
+            tables.AppendLine("LEFT JOIN Adherence A WITH (NOLOCK) ON A.Test_Id = Te.Id AND A.EntityId = e.esc_id AND A.TypeEntity = @typeEntity AND A.[State] = 1 ");
             tables.AppendLine("WHERE (Te.AllAdhered = 1 AND ISNULL(A.TypeSelection, 0) NOT IN (@TypeSelectionNaoSelecionado, @TypeSelectionBloqueado) OR (Te.AllAdhered = 0 AND TypeSelection = @TypeSelectionSelecionado)) ");
             tables.Append("AND t.tur_situacao <> @excluido ");
             
@@ -976,7 +976,7 @@ namespace GestaoAvaliacao.Repository
 			sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON t.tur_id = ttcp.tur_id AND ttcp.tur_id = t.tur_id AND ttcp.ttcr_situacao = @state ");
 			sql.AppendLine("INNER JOIN SGP_ACA_TipoCurriculoPeriodo tcg WITH (NOLOCK) ON tcg.tcp_ordem = ttcp.crp_ordem AND tcg.tme_id = ttcp.tme_id AND tcg.tne_id = ttcp.tne_id ");
 			sql.AppendLine("INNER JOIN SGP_ACA_Curso cur WITH (NOLOCK) ON cur.cur_id = ttcp.cur_id ");
-			sql.AppendLine("INNER JOIN SGP_ACA_CurriculoPeriodo crp WITH(NOLOCK) ON crp.cur_id = cur.cur_id AND crp.crp_ordem = ttcp.crp_ordem AND crp.tcp_id = tcg.tcp_id ");
+			sql.AppendLine("INNER JOIN SGP_ACA_CurriculoPeriodo crp WITH (NOLOCK) ON crp.cur_id = cur.cur_id AND crp.crp_ordem = ttcp.crp_ordem AND crp.tcp_id = tcg.tcp_id ");
 			sql.AppendLine("INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) ON tcc.TypeCurriculumGradeId = tcg.tcp_id AND tcc.State = @state AND tcc.Test_Id = @test_id ");
 
 			if (pes_id.HasValue)
@@ -1042,8 +1042,8 @@ namespace GestaoAvaliacao.Repository
 	                                (CASE WHEN (Mtu.mtu_numeroChamada > 0) THEN CAST(Mtu.mtu_numeroChamada AS VARCHAR(MAX)) + ' - ' ELSE '' END + Alu.alu_nome) AS alu_nome, 
 	                                ISNULL(a.TypeSelection, {0}) AS TypeSelection
                                 FROM 
-	                                SGP_MTR_MatriculaTurma AS Mtu WITH(NOLOCK)
-	                                INNER JOIN SGP_ACA_Aluno AS Alu WITH(NOLOCK)
+	                                SGP_MTR_MatriculaTurma AS Mtu WITH (NOLOCK)
+	                                INNER JOIN SGP_ACA_Aluno AS Alu WITH (NOLOCK)
 		                                ON Mtu.alu_id = Alu.alu_id
 		                                AND Alu.alu_situacao <> @stateExcluido "
 							, AllAdhered ? (byte)EnumAdherenceSelection.Selected : (byte)EnumAdherenceSelection.NotSelected);
@@ -1091,7 +1091,7 @@ namespace GestaoAvaliacao.Repository
 		{
 			var sql = new StringBuilder("SELECT tur.tur_id, ua.uad_nome AS dre_nome, CASE WHEN ua.uad_sigla IS NULL THEN ua.uad_nome ELSE ua.uad_sigla END AS dre_sigla, esc.esc_nome, tur.tur_codigo, ttn.ttn_nome, esc.esc_id ");
 			sql.AppendLine("FROM SGP_TUR_Turma tur WITH (NOLOCK) ");
-			sql.AppendLine("INNER JOIN SGP_ESC_Escola esc WITH(NOLOCK) ON esc.esc_id = tur.esc_id ");
+			sql.AppendLine("INNER JOIN SGP_ESC_Escola esc WITH (NOLOCK) ON esc.esc_id = tur.esc_id ");
 
 			if (esc_id > 0)
 				sql.AppendLine("AND esc.esc_id = @esc_id");
@@ -1099,7 +1099,7 @@ namespace GestaoAvaliacao.Repository
 			if (uad_id != null)
 				sql.AppendLine("AND esc.uad_idSuperiorGestao = @uad_id");
 
-			sql.AppendLine("INNER JOIN SGP_SYS_UnidadeAdministrativa ua WITH(NOLOCK) ON ua.uad_id = esc.uad_idSuperiorGestao ");
+			sql.AppendLine("INNER JOIN SGP_SYS_UnidadeAdministrativa ua WITH (NOLOCK) ON ua.uad_id = esc.uad_idSuperiorGestao ");
 			sql.AppendLine("INNER JOIN SGP_ACA_TipoTurno ttn WITH (NOLOCK) ON ttn.ttn_id = tur.ttn_id ");
 			sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON tur.tur_id = ttcp.tur_id AND ttcp.tur_id = tur.tur_id AND ttcp.ttcr_situacao = @state ");
 			sql.AppendLine("INNER JOIN SGP_ACA_TipoCurriculoPeriodo tcg WITH (NOLOCK) ON tcg.tcp_ordem = ttcp.crp_ordem AND tcg.tme_id = ttcp.tme_id AND tcg.tne_id = ttcp.tne_id ");
@@ -1141,19 +1141,19 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<AdheredEntityDTO> LoadDreSimpleAdherence(long test_id, Guid ent_id, bool allAdhered, IEnumerable<string> uad_id = null)
 		{
 			var sql = new StringBuilder("SELECT CAST(Uad.uad_id AS varchar(36)) AS EntityId, Uad.uad_sigla + ' - ' +  Uad.uad_nome AS Description ");
-			sql.Append("FROM SGP_SYS_UnidadeAdministrativa Uad WITH(NOLOCK) ");
-			sql.Append("INNER JOIN SGP_ESC_Escola Esc WITH(NOLOCK) ON Uad.uad_id = Esc.uad_idSuperiorGestao ");
+			sql.Append("FROM SGP_SYS_UnidadeAdministrativa Uad WITH (NOLOCK) ");
+			sql.Append("INNER JOIN SGP_ESC_Escola Esc WITH (NOLOCK) ON Uad.uad_id = Esc.uad_idSuperiorGestao ");
 
 			if (!allAdhered)
 			{
-				sql.AppendLine("INNER JOIN Adherence Adh WITH(NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id ");
+				sql.AppendLine("INNER JOIN Adherence Adh WITH (NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id ");
 				sql.AppendLine("WHERE Uad.ent_id = @ent_id AND Uad.uad_situacao = @situacao AND Adh.State = @situacao ");
 				if (uad_id != null)
 					sql.AppendFormat("AND Uad.uad_id IN ({0}) ", string.Join(",", uad_id.ToArray()));
 			}
 			else
 			{
-				sql.AppendLine("LEFT JOIN Adherence Adh WITH(NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id AND Adh.TypeSelection = @typeSelection ");
+				sql.AppendLine("LEFT JOIN Adherence Adh WITH (NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id AND Adh.TypeSelection = @typeSelection ");
 				sql.AppendLine("WHERE Adh.Id IS NULL AND Uad.ent_id = @ent_id AND Uad.uad_situacao = @situacao ");
 				if (uad_id != null)
 					sql.AppendFormat("AND Uad.uad_id IN ({0}) ", string.Join(",", uad_id.ToArray()));
@@ -1181,18 +1181,18 @@ namespace GestaoAvaliacao.Repository
 		{
 			var sql = new StringBuilder();
 			sql.AppendLine("SELECT CAST(Uad.uad_id AS varchar(36)) AS EntityId, Uad.uad_nome AS Description ");
-			sql.AppendLine("FROM SGP_SYS_UnidadeAdministrativa Uad WITH(NOLOCK) ");
-			sql.AppendLine("INNER JOIN SGP_ESC_Escola Esc WITH(NOLOCK) ON Uad.uad_id = Esc.uad_idSuperiorGestao ");
+			sql.AppendLine("FROM SGP_SYS_UnidadeAdministrativa Uad WITH (NOLOCK) ");
+			sql.AppendLine("INNER JOIN SGP_ESC_Escola Esc WITH (NOLOCK) ON Uad.uad_id = Esc.uad_idSuperiorGestao ");
 			if (!allAdhered)
 			{
-				sql.AppendLine("INNER JOIN Adherence Adh WITH(NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id ");
+				sql.AppendLine("INNER JOIN Adherence Adh WITH (NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id ");
 				sql.AppendLine("WHERE Uad.ent_id = @ent_id AND Uad.uad_situacao = @situacao AND Adh.State = @situacao ");
 				if (uad_id != null)
 					sql.AppendFormat("AND Uad.uad_id IN ({0}) ", string.Join(",", uad_id.ToArray()));
 			}
 			else
 			{
-				sql.AppendLine("LEFT JOIN Adherence Adh WITH(NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id AND Adh.TypeSelection = @typeSelection ");
+				sql.AppendLine("LEFT JOIN Adherence Adh WITH (NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id AND Adh.TypeSelection = @typeSelection ");
 				sql.AppendLine("WHERE Adh.Id IS NULL AND Uad.ent_id = @ent_id AND Uad.uad_situacao = @situacao ");
 				if (uad_id != null)
 					sql.AppendFormat("AND Esc.uad_id IN ({0}) ", string.Join(",", uad_id.ToArray()));
@@ -1217,15 +1217,15 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<AdheredEntityDTO> LoadDRESimpleTeacherAdherence(long test_id, Guid ent_id, Guid pes_id, bool allAdhered)
 		{
 			var sql = new StringBuilder("SELECT CAST(Uad.uad_id AS varchar(36)) AS EntityId, Uad.uad_nome AS Description ");
-			sql.Append("FROM SGP_ACA_Docente a WITH(NOLOCK) ");
-			sql.Append("INNER JOIN SGP_TUR_TurmaDocente td WITH(NOLOCK) ON a.doc_id = td.doc_id ");
-			sql.Append("INNER JOIN SGP_TUR_TurmaDisciplina tdis WITH(NOLOCK) ON tdis.tud_id = td.tud_id ");
-			sql.Append("INNER JOIN SGP_TUR_Turma t WITH(NOLOCK) ON t.tur_id = tdis.tur_id ");
-			sql.Append("INNER JOIN SGP_ESC_Escola e WITH(NOLOCK) ON e.esc_id = t.esc_id ");
-			sql.Append("INNER JOIN SGP_SYS_UnidadeAdministrativa uad WITH(NOLOCK) ON uad.uad_id = e.uad_idSuperiorGestao ");
+			sql.Append("FROM SGP_ACA_Docente a WITH (NOLOCK) ");
+			sql.Append("INNER JOIN SGP_TUR_TurmaDocente td WITH (NOLOCK) ON a.doc_id = td.doc_id ");
+			sql.Append("INNER JOIN SGP_TUR_TurmaDisciplina tdis WITH (NOLOCK) ON tdis.tud_id = td.tud_id ");
+			sql.Append("INNER JOIN SGP_TUR_Turma t WITH (NOLOCK) ON t.tur_id = tdis.tur_id ");
+			sql.Append("INNER JOIN SGP_ESC_Escola e WITH (NOLOCK) ON e.esc_id = t.esc_id ");
+			sql.Append("INNER JOIN SGP_SYS_UnidadeAdministrativa uad WITH (NOLOCK) ON uad.uad_id = e.uad_idSuperiorGestao ");
 			if (!allAdhered)
 			{
-				sql.AppendLine("INNER JOIN Adherence Adh WITH(NOLOCK) ON Adh.EntityId = e.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id AND Adh.State = @situacao  ");
+				sql.AppendLine("INNER JOIN Adherence Adh WITH (NOLOCK) ON Adh.EntityId = e.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id AND Adh.State = @situacao  ");
 			}
 			sql.AppendLine("WHERE a.ent_id = @ent_id AND Uad.uad_situacao = @situacao AND a.pes_id = @pes_id ");
 			sql.Append("AND a.doc_situacao = @situacao AND td.tdt_situacao = @situacao AND t.tur_situacao = @situacao AND e.esc_situacao = @situacao AND uad.uad_situacao = @situacao ");
@@ -1252,18 +1252,18 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<AdheredEntityDTO> LoadSchoolSimpleAdherence(long test_id, Guid ent_id, Guid uad_id, bool allAdhered, IEnumerable<string> esc_id = null)
 		{
 			var sql = new StringBuilder("SELECT CAST(Esc.esc_id AS varchar(15)) AS EntityId, Esc.esc_nome AS Description ");
-			sql.Append("FROM SGP_ESC_Escola Esc WITH(NOLOCK) ");
+			sql.Append("FROM SGP_ESC_Escola Esc WITH (NOLOCK) ");
 
 			if (!allAdhered)
 			{
-				sql.AppendLine("INNER JOIN Adherence Adh WITH(NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id ");
+				sql.AppendLine("INNER JOIN Adherence Adh WITH (NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id ");
 				sql.AppendLine("WHERE ent_id = @ent_id AND esc_situacao = @state AND Adh.State = @state ");
 				if (esc_id != null)
 					sql.AppendFormat("AND uad_id IN ({0}) ", string.Join(",", esc_id));
 			}
 			else
 			{
-				sql.AppendLine("LEFT JOIN Adherence Adh WITH(NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id AND Adh.TypeSelection = @typeSelection ");
+				sql.AppendLine("LEFT JOIN Adherence Adh WITH (NOLOCK) ON Adh.EntityId = Esc.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id AND Adh.TypeSelection = @typeSelection ");
 				sql.AppendLine("WHERE Adh.Id IS NULL AND ent_id = @ent_id AND esc_situacao = @state ");
 				if (esc_id != null)
 					sql.AppendFormat("AND uad_id IN ({0}) ", string.Join(",", esc_id));
@@ -1292,15 +1292,15 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<AdheredEntityDTO> LoadSchoolSimpleTeacherAdherence(long test_id, Guid ent_id, Guid pes_id, Guid uad_id, bool allAdhered)
 		{
 			var sql = new StringBuilder("SELECT CAST(e.esc_id AS varchar(15)) AS EntityId, e.esc_nome AS Description ");
-			sql.AppendLine("FROM SGP_ACA_Docente (NOLOCK) d ");
-			sql.AppendLine("INNER JOIN SGP_TUR_TurmaDocente (NOLOCK) tdoc ON d.doc_id = tdoc.doc_id AND tdoc.tdt_situacao = @state ");
-			sql.AppendLine("INNER JOIN SGP_TUR_TurmaDisciplina (NOLOCK) td ON td.tud_id = tdoc.tud_id AND td.tud_situacao = @state ");
-			sql.AppendLine("INNER JOIN SGP_TUR_Turma t (NOLOCK) ON t.tur_id = td.tur_id AND t.tur_situacao = @state ");
-			sql.AppendLine("INNER JOIN SGP_ESC_Escola e (NOLOCK) ON e.esc_id = t.esc_id AND e.esc_situacao = @state ");
+			sql.AppendLine("FROM SGP_ACA_Docente WITH (NOLOCK) d ");
+			sql.AppendLine("INNER JOIN SGP_TUR_TurmaDocente WITH (NOLOCK) tdoc ON d.doc_id = tdoc.doc_id AND tdoc.tdt_situacao = @state ");
+			sql.AppendLine("INNER JOIN SGP_TUR_TurmaDisciplina WITH (NOLOCK) td ON td.tud_id = tdoc.tud_id AND td.tud_situacao = @state ");
+			sql.AppendLine("INNER JOIN SGP_TUR_Turma t WITH (NOLOCK) ON t.tur_id = td.tur_id AND t.tur_situacao = @state ");
+			sql.AppendLine("INNER JOIN SGP_ESC_Escola e WITH (NOLOCK) ON e.esc_id = t.esc_id AND e.esc_situacao = @state ");
 
 			if (!allAdhered)
 			{
-				sql.AppendLine("INNER JOIN Adherence Adh WITH(NOLOCK) ON Adh.EntityId = e.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id AND Adh.State = @state ");
+				sql.AppendLine("INNER JOIN Adherence Adh WITH (NOLOCK) ON Adh.EntityId = e.esc_id AND Adh.TypeEntity = @typeEntity AND Adh.Test_Id = @test_id AND Adh.State = @state ");
 			}
 			sql.AppendLine("AND d.doc_situacao = @state ");
 			sql.AppendLine("AND e.uad_idSuperiorGestao = @uad_id  AND d.ent_id = @ent_id AND pes_id = @pes_id ");
@@ -1327,7 +1327,7 @@ namespace GestaoAvaliacao.Repository
 		public List<TeamsDTO> GetInfoTeams(List<long?> turmas)
 		{
 			var sql = new StringBuilder("SELECT tur_id, tur_codigo ");
-			sql.Append("FROM dbo.SGP_TUR_Turma WITH(NOLOCK) ");
+			sql.Append("FROM dbo.SGP_TUR_Turma WITH (NOLOCK) ");
 			sql.AppendFormat("WHERE tur_id IN ({0}) ", string.Join(",", turmas.ToArray()));
 
 			using (IDbConnection cn = Connection)

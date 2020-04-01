@@ -159,7 +159,7 @@ namespace ProvaSP.Data
                     sql: @"SELECT 
 	                            NivelProficienciaID, CicloId AS AnoCiclo, Nome, Descricao
                             FROM 
-	                            NivelProficienciaCiclo WITH(NOLOCK)
+	                            NivelProficienciaCiclo WITH (NOLOCK)
                             WHERE
 	                            CicloId = @CicloId"
                     , param: new { CicloId }).ToList();
@@ -174,7 +174,7 @@ namespace ProvaSP.Data
                     sql: @"SELECT 
 	                            NivelProficienciaID, AnoEscolar AS AnoCiclo, Nome, Descricao
                             FROM 
-	                            NivelProficienciaAnoEscolar WITH(NOLOCK)
+	                            NivelProficienciaAnoEscolar WITH (NOLOCK)
                             WHERE
 	                            AnoEscolar = @AnoEscolar"
                     , param: new { AnoEscolar }).ToList();

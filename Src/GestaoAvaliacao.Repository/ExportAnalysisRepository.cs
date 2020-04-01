@@ -18,11 +18,11 @@ namespace GestaoAvaliacao.Repository
 		#region ReadOnly
 		public IEnumerable<ExportAnalysisDTO> Search(ref Pager pager, ExportAnalysisFilter filter)
 		{
-			var from = "FROM TestSectionStatusCorrection tssc WITH(NOLOCK) ";
-			var inner = @"INNER JOIN Test t WITH(NOLOCK) ON t.Id = tssc.Test_Id
-						  INNER JOIN TestType tt WITH(NOLOCK) ON tt.Id = t.TestType_Id AND tt.State = @state
-						  LEFT JOIN ExportAnalysis ea WITH(NOLOCK) ON ea.Test_Id = t.Id AND ea.State = @state
-						  LEFT JOIN[File] f WITH(NOLOCK) ON f.OwnerId = ea.Id AND f.OwnerType = @OwnerType AND f.State = @state ";
+			var from = "FROM TestSectionStatusCorrection tssc WITH (NOLOCK) ";
+			var inner = @"INNER JOIN Test t WITH (NOLOCK) ON t.Id = tssc.Test_Id
+						  INNER JOIN TestType tt WITH (NOLOCK) ON tt.Id = t.TestType_Id AND tt.State = @state
+						  LEFT JOIN ExportAnalysis ea WITH (NOLOCK) ON ea.Test_Id = t.Id AND ea.State = @state
+						  LEFT JOIN[File] f WITH (NOLOCK) ON f.OwnerId = ea.Id AND f.OwnerType = @OwnerType AND f.State = @state ";
 			StringBuilder where = new StringBuilder(@"WHERE t.State = @state ");
 			if (filter.Code > 0)
 				where.AppendLine("AND t.Id = @TestId");

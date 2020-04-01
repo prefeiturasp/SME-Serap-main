@@ -80,7 +80,7 @@ namespace GestaoAvaliacao.Repository
         public TestSectionStatusCorrection Get(long Test_Id, long tur_id)
         {
             var sql = new StringBuilder("SELECT Id, Test_Id, tur_id, StatusCorrection, CreateDate, UpdateDate, State ");
-            sql.Append("FROM TestSectionStatusCorrection (NOLOCK) ");
+            sql.Append("FROM TestSectionStatusCorrection WITH (NOLOCK) ");
             sql.Append("WHERE Test_Id = @Test_Id AND tur_id = @tur_id ");
 
             using (IDbConnection cn = Connection)
@@ -95,10 +95,10 @@ namespace GestaoAvaliacao.Repository
         public IEnumerable<TestSectionStatusCorrection> GetByTest(long Test_Id)
         {
             var sql = @"SELECT Tssc.Id, Tssc.Test_Id, Tssc.tur_id, Tssc.StatusCorrection, Tssc.CreateDate, Tssc.UpdateDate, Tssc.State, UadSuperior.uad_id AS idDRE, UadSuperior.uad_nome AS DRE, Esc.esc_id, Esc.esc_nome, Tur.tur_id, Tur.tur_codigo
-                        FROM TestSectionStatusCorrection AS Tssc WITH(NOLOCK) 
-	                        INNER JOIN SGP_TUR_Turma AS Tur WITH(NOLOCK) ON Tssc.tur_id = Tur.tur_id
-	                        INNER JOIN SGP_ESC_Escola AS Esc WITH(NOLOCK) ON Tur.esc_id = Esc.esc_id
-	                        LEFT JOIN SGP_SYS_UnidadeAdministrativa AS UadSuperior WITH(NOLOCK) ON Esc.uad_idSuperiorGestao = UadSuperior.uad_id
+                        FROM TestSectionStatusCorrection AS Tssc WITH (NOLOCK) 
+	                        INNER JOIN SGP_TUR_Turma AS Tur WITH (NOLOCK) ON Tssc.tur_id = Tur.tur_id
+	                        INNER JOIN SGP_ESC_Escola AS Esc WITH (NOLOCK) ON Tur.esc_id = Esc.esc_id
+	                        LEFT JOIN SGP_SYS_UnidadeAdministrativa AS UadSuperior WITH (NOLOCK) ON Esc.uad_idSuperiorGestao = UadSuperior.uad_id
                         WHERE Tssc.Test_Id = @id 
                         GROUP BY Tssc.Id, Tssc.Test_Id, Tssc.tur_id, Tssc.StatusCorrection, Tssc.CreateDate, Tssc.UpdateDate, Tssc.State, UadSuperior.uad_id, UadSuperior.uad_nome, Esc.esc_id, Esc.esc_nome, Tur.tur_id, Tur.tur_codigo";
 
@@ -113,8 +113,8 @@ namespace GestaoAvaliacao.Repository
         public IEnumerable<TestSectionStatusCorrection> GetBySchool(long Test_Id, int esc_id)
         {
             var sql = new StringBuilder("SELECT t.Id, t.Test_Id, t.tur_id, t.StatusCorrection, t.CreateDate, t.UpdateDate, t.State ");
-            sql.Append("FROM TestSectionStatusCorrection t (NOLOCK) ");
-            sql.Append("INNER JOIN SGP_TUR_Turma tur (NOLOCK) on t.tur_id = tur.tur_id ");
+            sql.Append("FROM TestSectionStatusCorrection t WITH (NOLOCK) ");
+            sql.Append("INNER JOIN SGP_TUR_Turma tur WITH (NOLOCK) on t.tur_id = tur.tur_id ");
             sql.Append("WHERE Test_Id = @Test_Id AND tur.esc_id = @esc_id");
 
             using (IDbConnection cn = Connection)
@@ -130,10 +130,10 @@ namespace GestaoAvaliacao.Repository
 
             var sql = new StringBuilder();
             sql.AppendLine("SELECT tur.tur_id, esc.esc_id, esc.uad_id, esc.uad_idSuperiorGestao, tssc.Test_Id");
-            sql.AppendLine("FROM TestSectionStatusCorrection tssc WITH(NOLOCK)");
-            sql.AppendLine("INNER JOIN SGP_TUR_Turma tur WITH(NOLOCK) ON tur.tur_id = tssc.tur_id");
-            sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH(NOLOCK) ON ttcp.tur_id = tur.tur_id");
-            sql.AppendLine("INNER JOIN SGP_ESC_Escola esc WITH(NOLOCK) ON esc.esc_id = tur.esc_id");
+            sql.AppendLine("FROM TestSectionStatusCorrection tssc WITH (NOLOCK)");
+            sql.AppendLine("INNER JOIN SGP_TUR_Turma tur WITH (NOLOCK) ON tur.tur_id = tssc.tur_id");
+            sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON ttcp.tur_id = tur.tur_id");
+            sql.AppendLine("INNER JOIN SGP_ESC_Escola esc WITH (NOLOCK) ON esc.esc_id = tur.esc_id");
             sql.AppendLine("WHERE (tssc.StatusCorrection = @Success OR tssc.StatusCorrection = @PartialSuccess)");
 
             if (Test_Id.HasValue)
@@ -175,7 +175,7 @@ namespace GestaoAvaliacao.Repository
         public List<TestSectionStatusCorrection> GetAll()
         {
             var sql = new StringBuilder("SELECT Test_Id, tur_id ");
-            sql.Append("FROM TestSectionStatusCorrection (NOLOCK) ");
+            sql.Append("FROM TestSectionStatusCorrection WITH (NOLOCK) ");
             sql.Append("WHERE (StatusCorrection = 2 OR StatusCorrection = 3) AND State <> 3 ");
             sql.Append("GROUP BY Test_Id, tur_id ");
 

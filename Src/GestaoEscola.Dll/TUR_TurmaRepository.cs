@@ -65,7 +65,7 @@ namespace GestaoEscolar.Repository
         public TUR_Turma Get(long tur_id)
         {
             var sql = new StringBuilder("SELECT tur_id, esc_id, tur_codigo, tur_descricao, cal_id, ttn_id, tur_situacao, tur_dataCriacao, tur_dataAlteracao, tur_tipo ");
-            sql.Append("FROM TUR_Turma (NOLOCK) ");
+            sql.Append("FROM TUR_Turma WITH (NOLOCK) ");
             sql.Append("WHERE tur_id = @tur_id ");
 
 
@@ -81,8 +81,8 @@ namespace GestaoEscolar.Repository
         {
             var sql = new StringBuilder("SELECT tur.tur_id, tur.esc_id, tur.tur_codigo, tur.tur_descricao, tur.cal_id, tur.tur_situacao, tur.tur_dataCriacao, ");
             sql.Append("tur.tur_dataAlteracao, tur.tur_tipo, ttn.ttn_id, ttn.ttn_nome ");
-            sql.Append("FROM TUR_Turma tur (NOLOCK) ");
-            sql.Append("INNER JOIN ACA_TipoTurno (NOLOCK) ttn ON tur.ttn_id = ttn.ttn_id ");
+            sql.Append("FROM TUR_Turma tur WITH (NOLOCK) ");
+            sql.Append("INNER JOIN ACA_TipoTurno WITH (NOLOCK) ttn ON tur.ttn_id = ttn.ttn_id ");
             sql.Append("WHERE tur_id = @tur_id ");
 
 
@@ -107,11 +107,11 @@ namespace GestaoEscolar.Repository
                            tur.tur_dataCriacao, tur.tur_dataAlteracao, tur.tur_tipo, 
                            ttn.ttn_id, ttn.ttn_nome,
                            tme.tme_id, tme.tme_nome 
-                           FROM TUR_Turma tur (NOLOCK) 
-                           INNER JOIN ACA_TipoTurno (NOLOCK) ttn ON tur.ttn_id = ttn.ttn_id 
-                           INNER JOIN TUR_TurmaCurriculo (NOLOCK) tcr ON tur.tur_id = tcr.tur_id
-                           INNER JOIN ACA_Curso (NOLOCK) cur ON tcr.cur_id = cur.cur_id
-                           INNER JOIN ACA_TipoModalidadeEnsino (NOLOCK) tme ON cur.tme_id = tme.tme_id
+                           FROM TUR_Turma tur WITH (NOLOCK) 
+                           INNER JOIN ACA_TipoTurno WITH (NOLOCK) ttn ON tur.ttn_id = ttn.ttn_id 
+                           INNER JOIN TUR_TurmaCurriculo WITH (NOLOCK) tcr ON tur.tur_id = tcr.tur_id
+                           INNER JOIN ACA_Curso WITH (NOLOCK) cur ON tcr.cur_id = cur.cur_id
+                           INNER JOIN ACA_TipoModalidadeEnsino WITH (NOLOCK) tme ON cur.tme_id = tme.tme_id
                            WHERE tur.tur_id = @tur_id ";
 
             using (IDbConnection cn = Connection)
@@ -160,8 +160,8 @@ namespace GestaoEscolar.Repository
                 sql.Append("WHERE tud.tud_situacao = @state AND tdt.tdt_situacao = @state AND doc.doc_situacao = @state ");
                 sql.Append("AND doc.pes_id = @pes_id AND doc.ent_id = @ent_id) tud ON tur.tur_id = tud.tur_id ");
             }
-            sql.Append("INNER JOIN TUR_TurmaCurriculo tc WITH(NOLOCK) ON tur.tur_id = tc.tur_id AND tc.tcr_situacao <> 3 ");
-            sql.AppendFormat("INNER JOIN ACA_CurriculoPeriodo crp WITH(NOLOCK) ON tc.cur_id = Crp.cur_id AND tc.crr_id = Crp.crr_id AND tc.crp_id = Crp.crp_id AND crp.crp_situacao <> 3 AND crp.tcp_id  IN ({0}) ", string.Join(",", years));
+            sql.Append("INNER JOIN TUR_TurmaCurriculo tc WITH (NOLOCK) ON tur.tur_id = tc.tur_id AND tc.tcr_situacao <> 3 ");
+            sql.AppendFormat("INNER JOIN ACA_CurriculoPeriodo crp WITH (NOLOCK) ON tc.cur_id = Crp.cur_id AND tc.crr_id = Crp.crr_id AND tc.crp_id = Crp.crp_id AND crp.crp_situacao <> 3 AND crp.tcp_id  IN ({0}) ", string.Join(",", years));
             sql.Append("WHERE tur.tur_situacao = @state AND tur.esc_id = @esc_id ");
 
             if (ttn_id > 0)

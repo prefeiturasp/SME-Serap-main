@@ -65,9 +65,9 @@ namespace GestaoAvaliacao.Repository
 	                                    FROM Subject AS SUB 
 	                                    INNER JOIN dbo.SubjectDiscipline AS SD 
 	                                    ON SD.Subject_Id = SUB.Id 
-	                                    INNER JOIN SubjectKnowledgeArea AS SKA WITH(NOLOCK)
+	                                    INNER JOIN SubjectKnowledgeArea AS SKA WITH (NOLOCK)
 		                                    ON SUB.Id = SKA.Subject_Id
-	                                    INNER JOIN KnowledgeArea AS K WITH(NOLOCK)
+	                                    INNER JOIN KnowledgeArea AS K WITH (NOLOCK)
 		                                    ON SKA.KnowledgeArea_Id = K.Id
 	                                    WHERE SUB.State != @state 
 	                                    AND SUB.EntityId = @entityid 
@@ -76,7 +76,7 @@ namespace GestaoAvaliacao.Repository
 
                                     SELECT A.Id, A.Description, A.Discipline_Id,
                                      STUFF(( SELECT  ', ' + A2.KnowledgeArea_Desc
-                                                    FROM Assunto AS A2 WITH(NOLOCK)
+                                                    FROM Assunto AS A2 WITH (NOLOCK)
                                                     WHERE   
 					                                    A.Id = A2.Id
 				                                    GROUP BY A2.KnowledgeArea_Desc
@@ -126,7 +126,7 @@ namespace GestaoAvaliacao.Repository
             {
                 cn.Open();
                 var sql = @"SELECT Id, Description, State 
-                            FROM Subject AS SUB WITH(NOLOCK)
+                            FROM Subject AS SUB WITH (NOLOCK)
                             WHERE Id = @id 
 	                            AND state != @state 
                             SELECT Id, Description 
@@ -134,13 +134,13 @@ namespace GestaoAvaliacao.Repository
                             WHERE Subject_Id = @id
 	                            AND state != @state 
                             SELECT DIS.Id, DIS.Description 
-                            FROM SubjectDiscipline AS SD WITH(NOLOCK)
-                            INNER JOIN Discipline AS DIS WITH(NOLOCK)
+                            FROM SubjectDiscipline AS SD WITH (NOLOCK)
+                            INNER JOIN Discipline AS DIS WITH (NOLOCK)
 	                            ON DIS.Id = SD.Discipline_Id
                             WHERE Subject_Id = @id
                             SELECT KA.Id, KA.Description 
-                            FROM SubjectKnowledgeArea AS SKA WITH(NOLOCK)
-                            INNER JOIN KnowledgeArea AS KA WITH(NOLOCK)
+                            FROM SubjectKnowledgeArea AS SKA WITH (NOLOCK)
+                            INNER JOIN KnowledgeArea AS KA WITH (NOLOCK)
 	                            ON KA.Id = SKA.KnowledgeArea_Id
                             WHERE Subject_Id = @id ";
 
@@ -178,8 +178,8 @@ namespace GestaoAvaliacao.Repository
             {
                 cn.Open();
                 var sql = @"SELECT SUB.Id, SUB.Description, SUBS.Id AS Subsubject_Id, SUBS.Description AS Subsubject_Description
-                            FROM SubSubject AS SUBS WITH(NOLOCK) 
-                            INNER JOIN Subject AS SUB WITH(NOLOCK)
+                            FROM SubSubject AS SUBS WITH (NOLOCK) 
+                            INNER JOIN Subject AS SUB WITH (NOLOCK)
                                 ON SUB.Id = SUBS.Subject_Id
                             WHERE SUBS.Id = @id ";
 
@@ -228,7 +228,7 @@ namespace GestaoAvaliacao.Repository
                 StringBuilder sql = new StringBuilder();
 
                 sql.AppendLine("SELECT SS.Id, SS.Description ");
-                sql.AppendLine("FROM SubSubject AS SS WITH(NOLOCK) ");
+                sql.AppendLine("FROM SubSubject AS SS WITH (NOLOCK) ");
                 sql.AppendLine(string.Format("WHERE @subjects IS NOT NULL AND SS.Subject_Id IN ({0}) ", subjects));
                 sql.AppendLine("AND SS.State = @state ");
                 sql.AppendLine("AND (@Description IS NULL OR SS.Description LIKE '%' + @Description + '%') ");
@@ -276,10 +276,10 @@ namespace GestaoAvaliacao.Repository
             {
                 cn.Open();
                 var sql = @"SELECT COUNT(I.Id) 
-                           FROM Item AS I WITH(NOLOCK)
-                           INNER JOIN SubSubject AS SS WITH(NOLOCK)
+                           FROM Item AS I WITH (NOLOCK)
+                           INNER JOIN SubSubject AS SS WITH (NOLOCK)
                                 ON I.SubSubject_Id = SS.Id
-                           INNER JOIN Subject AS S WITH(NOLOCK)
+                           INNER JOIN Subject AS S WITH (NOLOCK)
                                 ON SS.Subject_Id = S.Id
                            WHERE S.Id = @Id
                            AND S.EntityId = @entityid

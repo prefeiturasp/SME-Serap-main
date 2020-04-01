@@ -140,7 +140,7 @@ namespace GestaoAvaliacao.Repository
 			{
 				cn.Open();
 				var sql = @"SELECT Id, (Description + ' - (' +  tne_nome + ')') AS Description, DisciplineTypeId, TypeLevelEducationId " +
-						   "FROM Discipline AS DIS WITH(NOLOCK) " +
+						   "FROM Discipline AS DIS WITH (NOLOCK) " +
 						   "INNER JOIN SGP_ACA_TipoNivelEnsino TNE WITH (NOLOCK) ON TNE.tne_id = DIS.TypeLevelEducationId " +
 						   "WHERE State = @state " +
 						   "AND EntityId = @entityid " +
@@ -180,12 +180,12 @@ namespace GestaoAvaliacao.Repository
 								ISNULL(T.Discipline_Id, Em.Discipline_Id) AS Id, 
 								D.Description
 							FROM 
-								Test AS T WITH(NOLOCK)
-								INNER JOIN Block B WITH(NOLOCK) ON T.Id = B.Test_Id AND B.State <> 3
-								INNER JOIN BlockItem Bi WITH(NOLOCK) ON B.Id = Bi.Block_Id AND Bi.State <> 3
-								INNER JOIN Item I WITH(NOLOCK) ON Bi.Item_Id = I.Id AND I.State <> 3
-								INNER JOIN EvaluationMatrix Em WITH(NOLOCK) ON I.EvaluationMatrix_Id = Em.Id AND Em.State <> 3
-								INNER JOIN Discipline D WITH(NOLOCK) ON D.Id = ISNULL(T.Discipline_Id, Em.Discipline_Id) AND D.State <> 3
+								Test AS T WITH (NOLOCK)
+								INNER JOIN Block B WITH (NOLOCK) ON T.Id = B.Test_Id AND B.State <> 3
+								INNER JOIN BlockItem Bi WITH (NOLOCK) ON B.Id = Bi.Block_Id AND Bi.State <> 3
+								INNER JOIN Item I WITH (NOLOCK) ON Bi.Item_Id = I.Id AND I.State <> 3
+								INNER JOIN EvaluationMatrix Em WITH (NOLOCK) ON I.EvaluationMatrix_Id = Em.Id AND Em.State <> 3
+								INNER JOIN Discipline D WITH (NOLOCK) ON D.Id = ISNULL(T.Discipline_Id, Em.Discipline_Id) AND D.State <> 3
 							WHERE
 								T.Id = @Test_Id
 								AND T.State <> 3
@@ -206,12 +206,12 @@ namespace GestaoAvaliacao.Repository
 								ISNULL(T.Discipline_Id, Em.Discipline_Id) AS Id, 
 								D.Description
 							FROM 
-								Test AS T WITH(NOLOCK)
-								INNER JOIN Block B WITH(NOLOCK) ON T.Id = B.Test_Id AND B.State <> 3
-								INNER JOIN BlockItem Bi WITH(NOLOCK) ON B.Id = Bi.Block_Id AND Bi.State <> 3
-								INNER JOIN Item I WITH(NOLOCK) ON Bi.Item_Id = I.Id AND I.State <> 3
-								INNER JOIN EvaluationMatrix Em WITH(NOLOCK) ON I.EvaluationMatrix_Id = Em.Id AND Em.State <> 3
-								INNER JOIN Discipline D WITH(NOLOCK) ON D.Id = ISNULL(T.Discipline_Id, Em.Discipline_Id) AND D.State <> 3
+								Test AS T WITH (NOLOCK)
+								INNER JOIN Block B WITH (NOLOCK) ON T.Id = B.Test_Id AND B.State <> 3
+								INNER JOIN BlockItem Bi WITH (NOLOCK) ON B.Id = Bi.Block_Id AND Bi.State <> 3
+								INNER JOIN Item I WITH (NOLOCK) ON Bi.Item_Id = I.Id AND I.State <> 3
+								INNER JOIN EvaluationMatrix Em WITH (NOLOCK) ON I.EvaluationMatrix_Id = Em.Id AND Em.State <> 3
+								INNER JOIN Discipline D WITH (NOLOCK) ON D.Id = ISNULL(T.Discipline_Id, Em.Discipline_Id) AND D.State <> 3
 							WHERE
 								T.TestSubGroup_Id = @TestSubGroup_Id
 								AND T.State <> 3
@@ -233,10 +233,10 @@ namespace GestaoAvaliacao.Repository
 				StringBuilder sql = new StringBuilder();
 
                 sql.AppendLine("SELECT DIS.Id, DIS.Description ");
-                sql.AppendLine("FROM KnowledgeArea AS KA WITH(NOLOCK) ");
-                sql.AppendLine("INNER JOIN KnowledgeAreaDiscipline AS KAD WITH(NOLOCK) ");
+                sql.AppendLine("FROM KnowledgeArea AS KA WITH (NOLOCK) ");
+                sql.AppendLine("INNER JOIN KnowledgeAreaDiscipline AS KAD WITH (NOLOCK) ");
                 sql.AppendLine("ON KAD.KnowledgeArea_Id = KA.Id ");
-                sql.AppendLine("INNER JOIN dbo.Discipline AS DIS WITH(NOLOCK) ");
+                sql.AppendLine("INNER JOIN dbo.Discipline AS DIS WITH (NOLOCK) ");
                 sql.AppendLine("ON DIS.Id = KAD.Discipline_Id ");
                 sql.AppendLine(string.Format("WHERE @knowledgeAreas IS NOT NULL AND KA.Id IN ({0}) ", knowledgeAreas));
                 sql.AppendLine("AND DIS.State = @state ");

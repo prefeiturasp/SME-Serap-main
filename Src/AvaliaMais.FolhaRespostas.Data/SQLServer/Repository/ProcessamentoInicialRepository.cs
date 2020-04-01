@@ -126,8 +126,8 @@ namespace AvaliaMais.FolhaRespostas.Data.SQLServer.Repository
             return "WHERE tes.Id = @TestId " +
                     "AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= tes.CorrectionEndDate " +
                     "AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= tes.CorrectionStartDate))) " +
-                    "AND ((tes.AllAdhered = 1 AND NOT EXISTS (SELECT Adr.Id FROM Adherence Adr WITH(NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND (Adr.TypeSelection = @TypeSelectionNotSelect OR Adr.TypeSelection = @TypeSelectionBlocked) AND Adr.Test_Id = @TestId)) " +
-                    "OR (tes.AllAdhered = 0 AND EXISTS (SELECT Adr.Id FROM Adherence Adr WITH(NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND Adr.TypeSelection = @TypeSelectionSelected AND Adr.Test_Id = @TestId))) ";
+                    "AND ((tes.AllAdhered = 1 AND NOT EXISTS (SELECT Adr.Id FROM Adherence Adr WITH (NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND (Adr.TypeSelection = @TypeSelectionNotSelect OR Adr.TypeSelection = @TypeSelectionBlocked) AND Adr.Test_Id = @TestId)) " +
+                    "OR (tes.AllAdhered = 0 AND EXISTS (SELECT Adr.Id FROM Adherence Adr WITH (NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND Adr.TypeSelection = @TypeSelectionSelected AND Adr.Test_Id = @TestId))) ";
         }
 
         private string MontarGroup()
@@ -163,7 +163,7 @@ namespace AvaliaMais.FolhaRespostas.Data.SQLServer.Repository
 								,[Section_Id],[SupAdmUnit_Id],[School_Id],[Situation],[CreatedBy_Id],[AnswerSheetBatchQueue_Id] 
 								,ROW_NUMBER() OVER(PARTITION BY AnswerSheetBatch_Id, SupAdmUnit_Id, School_Id, Section_Id, Student_Id 
 								ORDER BY UpdateDate DESC) AS RowNumber 
-								FROM AnswerSheetBatchFiles WITH(NOLOCK)
+								FROM AnswerSheetBatchFiles WITH (NOLOCK)
 								WHERE AnswerSheetBatch_Id IS NOT NULL AND Student_Id IS NOT NULL 
 								AND Section_Id = @turmaId 
 
@@ -172,7 +172,7 @@ namespace AvaliaMais.FolhaRespostas.Data.SQLServer.Repository
 								SELECT 
 								[Id],[File_Id],[AnswerSheetBatch_Id],[Student_Id],[Sent],[CreateDate],[UpdateDate],[State]
 								,[Section_Id],[SupAdmUnit_Id],[School_Id],[Situation],[CreatedBy_Id],[AnswerSheetBatchQueue_Id] 
-								FROM BatchFiles WITH(NOLOCK)
+								FROM BatchFiles WITH (NOLOCK)
 								WHERE RowNumber = 1
 							)
 
@@ -181,34 +181,34 @@ namespace AvaliaMais.FolhaRespostas.Data.SQLServer.Repository
 								DISTINCT alu.alu_id as AlunoId,alu.alu_nome as Nome,mtu.tur_id as TurmaId,mtu.mtu_dataMatricula as DataMatricula
 								,mtu.mtu_dataSaida as DataSaida, mtu.mtu_numeroChamada as Numero,ab.test_Id as ProvaId,bf.Situation as Situacao
 								,CASE WHEN abr.alu_id IS NULL THEN 0 ELSE 1 END AS Ausente
-								FROM SGP_ACA_Aluno alu WITH(NOLOCK)
-								INNER JOIN SGP_MTR_MatriculaTurma mtu WITH(NOLOCK) ON mtu.alu_id = alu.alu_id and mtu.mtu_situacao <> @excluido 
-								LEFT JOIN BatchFilesDistinct bf WITH(NOLOCK) ON bf.Section_Id = mtu.tur_id and bf.student_id = alu.alu_id
-								LEFT JOIN AnswerSheetBatch ab WITH(NOLOCK) ON bf.AnswerSheetBatch_Id = ab.Id 
-								LEFT JOIN StudentTestAbsenceReason abr WITH(NOLOCK) ON alu.alu_id = abr.alu_id and ab.Test_Id = abr.Test_Id and bf.Section_Id = abr.tur_id
+								FROM SGP_ACA_Aluno alu WITH (NOLOCK)
+								INNER JOIN SGP_MTR_MatriculaTurma mtu WITH (NOLOCK) ON mtu.alu_id = alu.alu_id and mtu.mtu_situacao <> @excluido 
+								LEFT JOIN BatchFilesDistinct bf WITH (NOLOCK) ON bf.Section_Id = mtu.tur_id and bf.student_id = alu.alu_id
+								LEFT JOIN AnswerSheetBatch ab WITH (NOLOCK) ON bf.AnswerSheetBatch_Id = ab.Id 
+								LEFT JOIN StudentTestAbsenceReason abr WITH (NOLOCK) ON alu.alu_id = abr.alu_id and ab.Test_Id = abr.Test_Id and bf.Section_Id = abr.tur_id
 								WHERE 
 								mtu.tur_id = @turmaId 
 								AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= @CorrectionEndDate 
 								AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= @CorrectionStartDate ))) 
 								AND alu.alu_situacao = @ativo
 								AND ab.Test_Id = @provaId
-                                AND ((@AllAdhered = 1 AND NOT EXISTS (SELECT Adr.Id FROM Adherence Adr WITH(NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND (Adr.TypeSelection = @TypeSelectionNotSelect OR Adr.TypeSelection = @TypeSelectionBlocked) AND Adr.Test_Id = @provaId)) 
-                                    OR (@AllAdhered = 0 AND EXISTS (SELECT Adr.Id FROM Adherence Adr WITH(NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND Adr.TypeSelection = @TypeSelectionSelected AND Adr.Test_Id = @provaId))) 
+                                AND ((@AllAdhered = 1 AND NOT EXISTS (SELECT Adr.Id FROM Adherence Adr WITH (NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND (Adr.TypeSelection = @TypeSelectionNotSelect OR Adr.TypeSelection = @TypeSelectionBlocked) AND Adr.Test_Id = @provaId)) 
+                                    OR (@AllAdhered = 0 AND EXISTS (SELECT Adr.Id FROM Adherence Adr WITH (NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND Adr.TypeSelection = @TypeSelectionSelected AND Adr.Test_Id = @provaId))) 
 
 
             ; WITH AlunoMatricula AS (
 								SELECT 
 								DISTINCT alu.alu_id as AlunoId,alu.alu_nome as Nome,mtu.tur_id as TurmaId,mtu.mtu_dataMatricula as DataMatricula
 								,mtu.mtu_dataSaida as DataSaida, mtu.mtu_numeroChamada as Numero
-								FROM SGP_ACA_Aluno alu WITH(NOLOCK)
-								INNER JOIN SGP_MTR_MatriculaTurma mtu WITH(NOLOCK) ON mtu.alu_id = alu.alu_id and mtu.mtu_situacao <> @excluido
+								FROM SGP_ACA_Aluno alu WITH (NOLOCK)
+								INNER JOIN SGP_MTR_MatriculaTurma mtu WITH (NOLOCK) ON mtu.alu_id = alu.alu_id and mtu.mtu_situacao <> @excluido
 								WHERE 
 								mtu.tur_id = @turmaId 
 								AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= @CorrectionEndDate))
 								AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= @CorrectionStartDate )
 								AND alu.alu_situacao = @ativo
-                                AND ((@AllAdhered = 1 AND NOT EXISTS (SELECT Adr.Id FROM Adherence Adr WITH(NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND (Adr.TypeSelection = @TypeSelectionNotSelect OR Adr.TypeSelection = @TypeSelectionBlocked) AND Adr.Test_Id = @provaId)) 
-                                    OR (@AllAdhered = 0 AND EXISTS (SELECT Adr.Id FROM Adherence Adr WITH(NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND Adr.TypeSelection = @TypeSelectionSelected AND Adr.Test_Id = @provaId))) 
+                                AND ((@AllAdhered = 1 AND NOT EXISTS (SELECT Adr.Id FROM Adherence Adr WITH (NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND (Adr.TypeSelection = @TypeSelectionNotSelect OR Adr.TypeSelection = @TypeSelectionBlocked) AND Adr.Test_Id = @provaId)) 
+                                    OR (@AllAdhered = 0 AND EXISTS (SELECT Adr.Id FROM Adherence Adr WITH (NOLOCK) WHERE Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @ativo AND Adr.TypeSelection = @TypeSelectionSelected AND Adr.Test_Id = @provaId))) 
 							),
 							AlunosTurma AS (
 								SELECT AlunoId, Nome, TurmaId, DataMatricula, DataSaida, Numero, ProvaId, Situacao, Ausente

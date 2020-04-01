@@ -15,7 +15,7 @@ namespace ProvaSP.Data.Data
             {
                 return conn.Query<Corte>(
                     sql: @"SELECT c.CorteId, c.Nome
-                           FROM Corte c WITH(NOLOCK)
+                           FROM Corte c WITH (NOLOCK)
                            ORDER BY c.CorteId"
                     ).ToList();
             }
@@ -27,7 +27,7 @@ namespace ProvaSP.Data.Data
             {
                 return conn.Query<SequenciaDidatica>(
                     sql: @"SELECT Edicao, AnoEscolar, AreaConhecimentoId, CorteId, Titulo, Texto, Link
-                           FROM SequenciaDidatica WITH(NOLOCK) 
+                           FROM SequenciaDidatica WITH (NOLOCK) 
                            WHERE Edicao = @edicao AND AnoEscolar = @anoEscolar AND AreaConhecimentoId = @areaConhecimentoId AND CorteId = @corteId",
                             param: new
                             {
@@ -43,7 +43,7 @@ namespace ProvaSP.Data.Data
         {
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
             {
-                int ret = conn.Execute(@"IF EXISTS (SELECT * FROM SequenciaDidatica WITH(NOLOCK) WHERE Edicao = @Edicao AND AnoEscolar = @AnoEscolar AND AreaConhecimentoId = @AreaConhecimentoId AND CorteId = @CorteId) 
+                int ret = conn.Execute(@"IF EXISTS (SELECT * FROM SequenciaDidatica WITH (NOLOCK) WHERE Edicao = @Edicao AND AnoEscolar = @AnoEscolar AND AreaConhecimentoId = @AreaConhecimentoId AND CorteId = @CorteId) 
                                         BEGIN
                                             UPDATE SequenciaDidatica 
                                             SET Titulo = @Titulo, Texto = @Texto, Link = @Link 
@@ -74,9 +74,9 @@ namespace ProvaSP.Data.Data
             {
                 List<SequenciaDidatica> sequenciaDidaticas = conn.Query<SequenciaDidatica>(
                     sql: @"SELECT s.Edicao, s.AnoEscolar, s.AreaConhecimentoId, s.CorteId, s.Titulo, s.Texto, s.Link, c.Nome AS CorteNome
-                           FROM SequenciaDidatica s WITH(NOLOCK) 
-                                INNER JOIN Corte c WITH(NOLOCK) ON c.CorteId = s.CorteId
-                                INNER JOIN CicloAnoEscolar ca WITH(NOLOCK) ON ca.AnoEscolar = s.AnoEscolar
+                           FROM SequenciaDidatica s WITH (NOLOCK) 
+                                INNER JOIN Corte c WITH (NOLOCK) ON c.CorteId = s.CorteId
+                                INNER JOIN CicloAnoEscolar ca WITH (NOLOCK) ON ca.AnoEscolar = s.AnoEscolar
                            WHERE s.Edicao = @edicao AND ca.CicloId = @cicloId AND s.AreaConhecimentoId = @areaConhecimentoId
                            ORDER BY c.CorteId, s.AnoEscolar",
                             param: new

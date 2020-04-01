@@ -302,7 +302,7 @@ namespace GestaoAvaliacao.Repository
             sql.AppendLine("SELECT R.TestCode, R.Description, R.TestTypeDescription, R.CreateDate, R.AllAdhered, R.TotalAdherence");
             sql.AppendLine(", ROW_NUMBER() OVER (ORDER BY R.CreateDate DESC) AS RowNumber");
             sql.AppendLine("FROM ( SELECT DISTINCT T.Id AS TestCode, T.Description AS Description, TT.Description AS TestTypeDescription, T.CreateDate, T.State, T.TestType_Id, T.AllAdhered");
-            sql.AppendLine(", CASE WHEN T.AllAdhered = 0 THEN (SELECT COUNT(Adherence.EntityId) FROM Adherence WITH(NOLOCK) WHERE Adherence.TypeEntity = @typeAdherence AND Adherence.Test_Id = T.Id GROUP BY Adherence.Test_Id) END AS TotalAdherence");
+            sql.AppendLine(", CASE WHEN T.AllAdhered = 0 THEN (SELECT COUNT(Adherence.EntityId) FROM Adherence WITH (NOLOCK) WHERE Adherence.TypeEntity = @typeAdherence AND Adherence.Test_Id = T.Id GROUP BY Adherence.Test_Id) END AS TotalAdherence");
             sql.AppendLine("FROM [Test] T WITH (NOLOCK)");
             sqlInner.AppendLine("INNER JOIN [TestType] TT WITH (NOLOCK) ON TT.Id = T.TestType_Id AND TT.State <> @state");
 

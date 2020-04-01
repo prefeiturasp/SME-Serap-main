@@ -15,8 +15,8 @@ namespace GestaoEscolar.Repository
 		public IEnumerable<ACA_Aluno> GetBySection(long tur_id)
 		{
 			var sql = new StringBuilder("SELECT alu.alu_id, alu.alu_nome, mtu_id, mtu_numeroChamada ");
-			sql.Append("FROM ACA_Aluno (NOLOCK) alu ");
-			sql.Append("INNER JOIN MTR_MatriculaTurma (NOLOCK) mtu ON alu.alu_id = mtu.alu_id ");
+			sql.Append("FROM ACA_Aluno WITH (NOLOCK) alu ");
+			sql.Append("INNER JOIN MTR_MatriculaTurma WITH (NOLOCK) mtu ON alu.alu_id = mtu.alu_id ");
 			sql.Append("WHERE tur_id = @tur_id AND alu.alu_situacao = @state AND mtu.mtu_situacao = @state ");
 			sql.Append("ORDER BY alu.alu_nome ");
 
@@ -47,7 +47,7 @@ namespace GestaoEscolar.Repository
                                               ,[alu_situacao]
                                               ,[MatriculaTurma_alu_id]
                                               ,[MatriculaTurma_mtu_id]");
-            sql.Append("FROM ACA_Aluno (NOLOCK) ");
+            sql.Append("FROM ACA_Aluno WITH (NOLOCK) ");
             sql.Append("WHERE alu_id = @alu_id ");
 
 
@@ -62,7 +62,7 @@ namespace GestaoEscolar.Repository
         public ACA_Aluno GetStudentByPesId(Guid pes_id)
         {
             var sql = new StringBuilder(@"SELECT [alu_id] ");
-            sql.Append("FROM ACA_Aluno (NOLOCK) ");
+            sql.Append("FROM ACA_Aluno WITH (NOLOCK) ");
             sql.Append("WHERE pes_id = @pes_id ");
 
 
@@ -81,7 +81,7 @@ namespace GestaoEscolar.Repository
                                               ,[ent_id]
                                               ,[alu_matricula]
                                               ,[alu_situacao]");
-            sql.Append("FROM ACA_Aluno (NOLOCK) ");
+            sql.Append("FROM ACA_Aluno WITH (NOLOCK) ");
             sql.AppendFormat("WHERE alu_id IN ({0}) ", string.Join(",", alu_ids));
 
 

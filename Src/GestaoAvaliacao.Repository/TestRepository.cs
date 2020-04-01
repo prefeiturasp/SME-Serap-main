@@ -292,7 +292,7 @@ namespace GestaoAvaliacao.Repository
             sql.Append("INNER JOIN [Item] I WITH (NOLOCK) ON I.[Id] = BI.[Item_Id] ");
             sql.Append("INNER JOIN [Alternative] A WITH (NOLOCK) ON A.[Item_Id] = I.[Id] ");
             sql.Append("INNER JOIN Test T WITH (NOLOCK) ON T.Id = B.[Test_Id] ");
-            sql.Append("LEFT JOIN KnowledgeArea K WITH(NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State <> @State ");
+            sql.Append("LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State <> @State ");
             sql.Append("LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State <> @state ");
             sql.Append("WHERE B.[State] <> @State AND BI.[State] <> @State AND I.[State] <> @State AND A.[State] <> @State ");
             sql.Append("AND B.[Test_Id] = @TestId ");
@@ -347,11 +347,11 @@ namespace GestaoAvaliacao.Repository
                 sql.Append("AND A.[alu_id] = @StudentId ");
             if (allAdhered)
             {
-                sql.AppendLine("AND NOT EXISTS (SELECT Adr.Id FROM Adherence Adr WITH(NOLOCK) WHERE Adr.EntityId = A.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @state AND (Adr.TypeSelection = @TypeSelectionNotSelect OR Adr.TypeSelection = @TypeSelectionBlocked) AND Adr.Test_Id = @test_id) ");
+                sql.AppendLine("AND NOT EXISTS (SELECT Adr.Id FROM Adherence Adr WITH (NOLOCK) WHERE Adr.EntityId = A.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @state AND (Adr.TypeSelection = @TypeSelectionNotSelect OR Adr.TypeSelection = @TypeSelectionBlocked) AND Adr.Test_Id = @test_id) ");
             }
             else
             {
-                sql.AppendLine("AND EXISTS (SELECT Adr.Id FROM Adherence Adr WITH(NOLOCK) WHERE Adr.EntityId = A.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @state AND Adr.TypeSelection = @TypeSelectionSelected AND Adr.Test_Id = @test_id) ");
+                sql.AppendLine("AND EXISTS (SELECT Adr.Id FROM Adherence Adr WITH (NOLOCK) WHERE Adr.EntityId = A.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @state AND Adr.TypeSelection = @TypeSelectionSelected AND Adr.Test_Id = @test_id) ");
             }
 
             sql.Append("ORDER BY M.[mtu_numeroChamada] ASC ");
@@ -595,7 +595,7 @@ namespace GestaoAvaliacao.Repository
 								WHEN t.TestSituation = 2 AND CAST(GETDATE() AS Date) BETWEEN t.ApplicationStartDate AND t.ApplicationEndDate THEN 3
 								WHEN t.TestSituation = 2 AND CAST(GETDATE() AS Date) > t.ApplicationEndDate THEN 4
 								END) AS TestSituation
-						FROM Test t WITH(NOLOCK) ";
+						FROM Test t WITH (NOLOCK) ";
             if (filter.vis_id != EnumSYS_Visao.Administracao)
             {
                 sql += @"INNER JOIN TestsByUser(@usuId, @pes_id, @ent_id, @state, @typeEntity, @typeSelected, @typeNotSelected, @gru_id, @vis_id, @uad_id, @esc_id, @ttn_id, @tne_id, @crp_ordem) teacher ON t.Id = teacher.Id ";
@@ -702,9 +702,9 @@ namespace GestaoAvaliacao.Repository
 								WHEN t.TestSituation = 2 AND CAST(GETDATE() AS Date) > t.ApplicationEndDate THEN 4
 								END) AS TestSituation,
 							tg.Id, tg.Description
-						FROM Test t WITH(NOLOCK) ";
-            sql += @"INNER JOIN TestSubGroup tsg WITH(NOLOCK) ON t.TestSubGroup_Id = tsg.Id 
-					 INNER JOIN TestGroup tg WITH(NOLOCK) ON tsg.TestGroup_Id = tg.Id ";
+						FROM Test t WITH (NOLOCK) ";
+            sql += @"INNER JOIN TestSubGroup tsg WITH (NOLOCK) ON t.TestSubGroup_Id = tsg.Id 
+					 INNER JOIN TestGroup tg WITH (NOLOCK) ON tsg.TestGroup_Id = tg.Id ";
             if (filter.vis_id != EnumSYS_Visao.Administracao)
             {
                 sql += @"INNER JOIN TestsByUser(@usuId, @pes_id, @ent_id, @state, @typeEntity, @typeSelected, @typeNotSelected, @gru_id, @vis_id, @uad_id, @esc_id, @ttn_id, @tne_id, @crp_ordem) teacher ON t.Id = teacher.Id ";
@@ -873,7 +873,7 @@ namespace GestaoAvaliacao.Repository
             sql.AppendLine("SELECT @CorrectionStartDate = CorrectionStartDate,  ");
             sql.AppendLine("@CorrectionEndDate = CorrectionEndDate, ");
             sql.AppendLine("@AllAdhered = AllAdhered ");
-            sql.AppendLine("FROM Test WITH(NOLOCK) ");
+            sql.AppendLine("FROM Test WITH (NOLOCK) ");
             sql.AppendLine("WHERE Id = @test_id ");
 
             sql.AppendLine("SELECT alu.alu_id, alu.alu_nome, mtu.tur_id, mtu.mtu_numeroChamada, CASE WHEN (Adr.TypeSelection = @TypeSelectionBlocked) THEN 1 ELSE 0 END AS blocked");
@@ -881,7 +881,7 @@ namespace GestaoAvaliacao.Repository
             sql.AppendLine("FROM SGP_ACA_Aluno alu WITH (NOLOCK) ");
             sql.AppendLine("INNER JOIN SGP_MTR_MatriculaTurma mtu WITH (NOLOCK) ON alu.alu_id = mtu.alu_id ");
             sql.AppendLine("LEFT JOIN [File] f WITH (NOLOCK) ON f.[OwnerId] = alu.alu_id AND f.[ParentOwnerId] = @test_id AND f.[State] = @state AND f.OwnerType = @ownerType ");
-            sql.AppendLine("LEFT JOIN Adherence Adr WITH(NOLOCK) ON Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @state AND Adr.Test_Id = @test_id ");
+            sql.AppendLine("LEFT JOIN Adherence Adr WITH (NOLOCK) ON Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @state AND Adr.Test_Id = @test_id ");
             sql.AppendLine("WHERE mtu.tur_id = @tur_id AND alu.alu_situacao = @state  ");
             sql.AppendLine("AND mtu.mtu_situacao <> @stateExcluido ");
             sql.AppendLine("AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= @CorrectionEndDate AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= @CorrectionStartDate ) ))");
@@ -942,11 +942,11 @@ namespace GestaoAvaliacao.Repository
             var sql = new StringBuilder();
 
             sql.AppendLine("SELECT ISNULL(T.Discipline_Id, Em.Discipline_Id) AS Discipline_Id, I.Id AS Item_Id ");
-            sql.AppendLine("FROM Test AS T WITH(NOLOCK) ");
-            sql.AppendLine("INNER JOIN Block B WITH(NOLOCK) ON T.Id = B.Test_Id AND B.State <> 3 ");
-            sql.AppendLine("INNER JOIN BlockItem Bi WITH(NOLOCK) ON B.Id = Bi.Block_Id AND Bi.State <> 3 ");
-            sql.AppendLine("INNER JOIN Item I WITH(NOLOCK) ON Bi.Item_Id = I.Id AND I.State <> 3 ");
-            sql.AppendLine("INNER JOIN EvaluationMatrix Em WITH(NOLOCK) ON I.EvaluationMatrix_Id = Em.Id AND Em.State <> 3 ");
+            sql.AppendLine("FROM Test AS T WITH (NOLOCK) ");
+            sql.AppendLine("INNER JOIN Block B WITH (NOLOCK) ON T.Id = B.Test_Id AND B.State <> 3 ");
+            sql.AppendLine("INNER JOIN BlockItem Bi WITH (NOLOCK) ON B.Id = Bi.Block_Id AND Bi.State <> 3 ");
+            sql.AppendLine("INNER JOIN Item I WITH (NOLOCK) ON Bi.Item_Id = I.Id AND I.State <> 3 ");
+            sql.AppendLine("INNER JOIN EvaluationMatrix Em WITH (NOLOCK) ON I.EvaluationMatrix_Id = Em.Id AND Em.State <> 3 ");
             sql.AppendLine("WHERE T.Id = @test_Id AND T.State <> 3 ");
 
             using (IDbConnection cn = Connection)
@@ -982,8 +982,8 @@ namespace GestaoAvaliacao.Repository
 								WHEN t.TestSituation = 2 AND CAST(GETDATE() AS Date) BETWEEN t.ApplicationStartDate AND t.ApplicationEndDate THEN 3
 								WHEN t.TestSituation = 2 AND CAST(GETDATE() AS Date) > t.ApplicationEndDate THEN 4
 								END) AS TestSituation  " +
-                           "FROM Test t WITH(NOLOCK) " +
-                           "INNER JOIN TestSubGroup sg WITH(NOLOCK)" +
+                           "FROM Test t WITH (NOLOCK) " +
+                           "INNER JOIN TestSubGroup sg WITH (NOLOCK)" +
                            "ON t.TestSubGroup_Id = sg.Id AND sg.[State] <> @state " +
                            "WHERE sg.Id = @id " +
                            "AND t.State != @state ";
@@ -1015,10 +1015,10 @@ namespace GestaoAvaliacao.Repository
 								WHEN t.TestSituation = 2 AND CAST(GETDATE() AS Date) BETWEEN t.ApplicationStartDate AND t.ApplicationEndDate THEN 3
 								WHEN t.TestSituation = 2 AND CAST(GETDATE() AS Date) > t.ApplicationEndDate THEN 4
 								END) AS TestSituation  " +
-                           "FROM Test t WITH(NOLOCK) " +
-                           "INNER JOIN TestSubGroup sg WITH(NOLOCK)" +
+                           "FROM Test t WITH (NOLOCK) " +
+                           "INNER JOIN TestSubGroup sg WITH (NOLOCK)" +
                            "ON t.TestSubGroup_Id = sg.Id AND sg.[State] <> @state " +
-                           "INNER JOIN TestCurriculumGrade tcg WITH(NOLOCK)" +
+                           "INNER JOIN TestCurriculumGrade tcg WITH (NOLOCK)" +
                            "ON t.Id = tcg.Test_Id AND tcg.[State] <> @state " +
                            "WHERE sg.Id = @id " +
                            "AND tcg.TypeCurriculumGradeId = @tcpId " +
@@ -1046,10 +1046,10 @@ namespace GestaoAvaliacao.Repository
 	                                                    TT.FrequencyApplication,
 	                                                    T.ApplicationEndDate
                                                     FROM
-	                                                    Test AS T WITH(NOLOCK)
-	                                                    INNER JOIN TestType AS TT WITH(NOLOCK)
+	                                                    Test AS T WITH (NOLOCK)
+	                                                    INNER JOIN TestType AS TT WITH (NOLOCK)
 		                                                    ON TT.Id = T.TestType_Id
-	                                                    LEFT JOIN Discipline AS D WITH(NOLOCK)
+	                                                    LEFT JOIN Discipline AS D WITH (NOLOCK)
 		                                                    ON D.Id = T.Discipline_Id	
                                                     WHERE 
 	                                                    ElectronicTest = 1
@@ -1084,26 +1084,26 @@ namespace GestaoAvaliacao.Repository
 	                                                    mtu.alu_id,
 	                                                    mtu.tur_id
                                                     FROM
-                                                        Test AS T WITH(NOLOCK)
-                                                        INNER JOIN TestType AS TT WITH(NOLOCK)
+                                                        Test AS T WITH (NOLOCK)
+                                                        INNER JOIN TestType AS TT WITH (NOLOCK)
                                                             ON TT.Id = T.TestType_Id
 	                                                    INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) 
 		                                                    ON T.Id = tcc.Test_Id
 		                                                    AND tcc.[State] = 1
-	                                                    INNER JOIN SGP_ACA_CurriculoPeriodo AS Crp WITH(NOLOCK)
+	                                                    INNER JOIN SGP_ACA_CurriculoPeriodo AS Crp WITH (NOLOCK)
 		                                                    ON tcc.TypeCurriculumGradeId = Crp.tcp_id
 		                                                    AND Crp.crp_situacao <> 3
-                                                        INNER JOIN SGP_MTR_MatriculaTurma mtu WITH(NOLOCK) 
+                                                        INNER JOIN SGP_MTR_MatriculaTurma mtu WITH (NOLOCK) 
                                                             ON mtu.cur_id = Crp.cur_id
 		                                                    AND mtu.crr_id = Crp.crr_id
 		                                                    AND mtu.crp_id = Crp.crp_id
                                                             AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= CAST(T.CorrectionEndDate AS DATE) 
 		                                                    AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= CAST(T.ApplicationStartDate AS DATE)))) 
-	                                                    INNER JOIN SGP_ACA_Aluno AS ALU WITH(NOLOCK)
+	                                                    INNER JOIN SGP_ACA_Aluno AS ALU WITH (NOLOCK)
 		                                                    ON ALU.alu_id = mtu.alu_id
-                                                        LEFT JOIN Discipline AS D WITH(NOLOCK)
+                                                        LEFT JOIN Discipline AS D WITH (NOLOCK)
                                                             ON D.Id = T.Discipline_Id
-	                                                    LEFT JOIN Adherence AS A WITH(NOLOCK)
+	                                                    LEFT JOIN Adherence AS A WITH (NOLOCK)
 		                                                    ON T.Id = A.Test_Id
 		                                                    AND ALU.alu_id = A.EntityId	
                                                             AND A.TypeEntity = @TypeEntityStudent
@@ -1149,26 +1149,26 @@ namespace GestaoAvaliacao.Repository
             StringBuilder sql = new StringBuilder(@"SELECT
                                                         T.Id
                                                     FROM
-                                                        Test AS T WITH(NOLOCK)
-                                                        INNER JOIN TestType AS TT WITH(NOLOCK)
+                                                        Test AS T WITH (NOLOCK)
+                                                        INNER JOIN TestType AS TT WITH (NOLOCK)
                                                             ON TT.Id = T.TestType_Id
 	                                                    INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) 
 		                                                    ON T.Id = tcc.Test_Id
 		                                                    AND tcc.[State] = 1
-	                                                    INNER JOIN SGP_ACA_CurriculoPeriodo AS Crp WITH(NOLOCK)
+	                                                    INNER JOIN SGP_ACA_CurriculoPeriodo AS Crp WITH (NOLOCK)
 		                                                    ON tcc.TypeCurriculumGradeId = Crp.tcp_id
 		                                                    AND Crp.crp_situacao <> 3
-                                                        INNER JOIN SGP_MTR_MatriculaTurma mtu WITH(NOLOCK) 
+                                                        INNER JOIN SGP_MTR_MatriculaTurma mtu WITH (NOLOCK) 
                                                             ON mtu.cur_id = Crp.cur_id
 		                                                    AND mtu.crr_id = Crp.crr_id
 		                                                    AND mtu.crp_id = Crp.crp_id
                                                             AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= CAST(T.CorrectionEndDate AS DATE) 
 		                                                    AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= CAST(T.ApplicationStartDate AS DATE)))) 
-	                                                    INNER JOIN SGP_ACA_Aluno AS ALU WITH(NOLOCK)
+	                                                    INNER JOIN SGP_ACA_Aluno AS ALU WITH (NOLOCK)
 		                                                    ON ALU.alu_id = mtu.alu_id
-                                                        LEFT JOIN Discipline AS D WITH(NOLOCK)
+                                                        LEFT JOIN Discipline AS D WITH (NOLOCK)
                                                             ON D.Id = T.Discipline_Id
-	                                                    LEFT JOIN Adherence AS A WITH(NOLOCK)
+	                                                    LEFT JOIN Adherence AS A WITH (NOLOCK)
 		                                                    ON T.Id = A.Test_Id
 		                                                    AND ALU.alu_id = A.EntityId	
                                                             AND A.TypeEntity = @TypeEntityStudent
@@ -1216,10 +1216,10 @@ namespace GestaoAvaliacao.Repository
 	                                                    TT.FrequencyApplication,
 	                                                    T.ApplicationEndDate
                                                     FROM
-	                                                    Test AS T WITH(NOLOCK)
-	                                                    INNER JOIN TestType AS TT WITH(NOLOCK)
+	                                                    Test AS T WITH (NOLOCK)
+	                                                    INNER JOIN TestType AS TT WITH (NOLOCK)
 		                                                    ON TT.Id = T.TestType_Id
-	                                                    LEFT JOIN Discipline AS D WITH(NOLOCK)
+	                                                    LEFT JOIN Discipline AS D WITH (NOLOCK)
 		                                                    ON D.Id = T.Discipline_Id	
                                                     WHERE 
 	                                                    T.[State] <> @State
@@ -1625,7 +1625,7 @@ namespace GestaoAvaliacao.Repository
 					NumberItem, ApplicationStartDate, ApplicationEndDate, CorrectionStartDate, CorrectionEndDate, UsuId, TestSituation, 
 					AllAdhered, CreateDate, UpdateDate, [State], PublicFeedback, ProcessedCorrection, ProcessedCorrectionDate, Visible, 
 					FrequencyApplication, Multidiscipline, TestSubGroup_Id, [Order] 
-				FROM Test WITH(NOLOCK) 
+				FROM Test WITH (NOLOCK) 
 				WHERE [Order] > @Order AND [State] = 1 
 				ORDER BY Test.[Order]";
 
@@ -1647,7 +1647,7 @@ namespace GestaoAvaliacao.Repository
 					NumberItem, ApplicationStartDate, ApplicationEndDate, CorrectionStartDate, CorrectionEndDate, UsuId, TestSituation, 
 					AllAdhered, CreateDate, UpdateDate, [State], PublicFeedback, ProcessedCorrection, ProcessedCorrectionDate, Visible, 
 					FrequencyApplication, Multidiscipline, TestSubGroup_Id, [Order] 
-				FROM Test WITH(NOLOCK) 
+				FROM Test WITH (NOLOCK) 
 				WHERE [Order] < @Order AND [State] = 1 
 				ORDER BY Test.[Order] DESC";
 
@@ -1666,7 +1666,7 @@ namespace GestaoAvaliacao.Repository
         {
             var sql = @"               
 				SELECT MAX([Order])
-				FROM Test WITH(NOLOCK)";
+				FROM Test WITH (NOLOCK)";
 
             using (IDbConnection cn = Connection)
             {

@@ -138,8 +138,8 @@ namespace GestaoAvaliacao.Repository
             {
                 cn.Open();
                 var sql = @"SELECT SGRP.Id, GRP.Description + ' - ' + SGRP.Description AS Description " +
-                           "FROM TestGroup AS GRP WITH(NOLOCK) " +
-                           "INNER JOIN TestSubGroup AS SGRP WITH(NOLOCK) " +
+                           "FROM TestGroup AS GRP WITH (NOLOCK) " +
+                           "INNER JOIN TestSubGroup AS SGRP WITH (NOLOCK) " +
                            "ON GRP.Id = SGRP.TestGroup_Id " +
                            "WHERE EntityId = @entityid AND GRP.State = @state AND SGRP.State = @state " +
                            "ORDER BY GRP.Description, SGRP.Description ";
@@ -156,8 +156,8 @@ namespace GestaoAvaliacao.Repository
             {
                 cn.Open();
                 var sql = @"SELECT COUNT(t.Id) " +
-                           "FROM Test t WITH(NOLOCK) " +
-                           "INNER JOIN TestSubGroup sg WITH(NOLOCK)" +
+                           "FROM Test t WITH (NOLOCK) " +
+                           "INNER JOIN TestSubGroup sg WITH (NOLOCK)" +
                            "ON t.TestSubGroup_Id = sg.Id " +
                            "WHERE sg.TestGroup_Id = @id " +
                            "AND t.State != @state ";
@@ -210,7 +210,7 @@ namespace GestaoAvaliacao.Repository
             {
                 cn.Open();
                 var sql = @"SELECT COUNT(Id) " +
-                           "FROM Test WITH(NOLOCK) " +                           
+                           "FROM Test WITH (NOLOCK) " +                           
                            "WHERE TestSubGroup_Id = @id " +
                            "AND State != @state ";
 

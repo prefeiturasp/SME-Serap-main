@@ -118,7 +118,7 @@ namespace ProvaSP.Data
                                     pArea.AreaConhecimentoID, pArea.TotalPrevisto AS TotalPrevistoAreaConhecimento, 
                                     pArea.TotalPresente AS TotalPresenteAreaConhecimento, pArea.PercentualParticipacao AS PercentualParticipacaoAreaConhecimento
                                FROM ParticipacaoEscola pGeral WITH (NOLOCK)
-                                    LEFT JOIN Escola (NOLOCK) e ON e.esc_codigo = pGeral.esc_codigo 
+                                    LEFT JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = pGeral.esc_codigo 
                                     LEFT JOIN ParticipacaoEscolaAreaConhecimento pArea WITH (NOLOCK) ON pArea.Edicao = pGeral.Edicao
                                         AND pArea.AnoEscolar = pGeral.AnoEscolar
                                         AND pArea.uad_sigla = pGeral.uad_sigla
@@ -188,7 +188,7 @@ namespace ProvaSP.Data
                                     pArea.AreaConhecimentoID, pArea.TotalPrevisto AS TotalPrevistoAreaConhecimento, 
                                     pArea.TotalPresente AS TotalPresenteAreaConhecimento, pArea.PercentualParticipacao AS PercentualParticipacaoAreaConhecimento
                                FROM ParticipacaoTurma pGeral WITH (NOLOCK)
-                                    LEFT JOIN Escola (NOLOCK) e ON e.esc_codigo = pGeral.esc_codigo 
+                                    LEFT JOIN Escola WITH (NOLOCK) e ON e.esc_codigo = pGeral.esc_codigo 
                                     LEFT JOIN ParticipacaoTurmaAreaConhecimento pArea WITH (NOLOCK) ON pArea.Edicao = pGeral.Edicao
                                         AND pArea.AnoEscolar = pGeral.AnoEscolar
                                         AND pArea.uad_sigla = pGeral.uad_sigla

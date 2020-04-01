@@ -71,8 +71,8 @@ namespace GestaoEscolar.Repository
 		{
 			var sql = new StringBuilder();
 			sql.AppendLine("SELECT DISTINCT tcp.tcp_ordem, tcp.tcp_descricao, tne.tne_id, tne.tne_nome");
-			sql.AppendLine("FROM ACA_TipoCurriculoPeriodo tcp WITH(NOLOCK)");
-			sql.AppendLine("INNER JOIN ACA_TipoNivelEnsino tne WITH(NOLOCK) ON tcp.tne_id = tne.tne_id");
+			sql.AppendLine("FROM ACA_TipoCurriculoPeriodo tcp WITH (NOLOCK)");
+			sql.AppendLine("INNER JOIN ACA_TipoNivelEnsino tne WITH (NOLOCK) ON tcp.tne_id = tne.tne_id");
 
 			sql.AppendLine("WHERE [tcp_situacao] = @state ");
 			sql.AppendLine("ORDER BY [tcp_descricao], tne_nome ");
@@ -89,26 +89,26 @@ namespace GestaoEscolar.Repository
 		{
 			var sql = new StringBuilder();
 			sql.AppendLine("SELECT DISTINCT tcp.tcp_ordem, tcp.tcp_descricao, tne.tne_id, tne.tne_nome");
-			sql.AppendLine("FROM ACA_TipoCurriculoPeriodo tcp WITH(NOLOCK)");
-			sql.AppendLine("INNER JOIN ACA_TipoNivelEnsino tne WITH(NOLOCK) ON tcp.tne_id = tne.tne_id");
+			sql.AppendLine("FROM ACA_TipoCurriculoPeriodo tcp WITH (NOLOCK)");
+			sql.AppendLine("INNER JOIN ACA_TipoNivelEnsino tne WITH (NOLOCK) ON tcp.tne_id = tne.tne_id");
 
 			if (pes_id.HasValue)
 			{
-				sql.AppendLine("INNER JOIN TUR_TurmaTipoCurriculoPeriodo ttcp WITH(NOLOCK) ON ttcp.crp_ordem = tcp.tcp_ordem AND ttcp.tne_id = tne.tne_id");
+				sql.AppendLine("INNER JOIN TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON ttcp.crp_ordem = tcp.tcp_ordem AND ttcp.tne_id = tne.tne_id");
 				sql.AppendLine("INNER JOIN TUR_TurmaDisciplina tud ON tud.tur_id = ttcp.tur_id");
 				sql.AppendLine("INNER JOIN TUR_TurmaDocente tdt ON tdt.tud_id = tud.tud_id");
 				sql.AppendLine("INNER JOIN ACA_Docente doc ON doc.doc_id = tdt.doc_id AND doc.pes_id = @pes_id AND doc.ent_id = @ent_id");
 			}
 			else if (esc_id != null)
 			{
-				sql.AppendLine("INNER JOIN TUR_TurmaTipoCurriculoPeriodo ttcp WITH(NOLOCK) ON ttcp.crp_ordem = tcp.tcp_ordem AND ttcp.tne_id = tne.tne_id");
+				sql.AppendLine("INNER JOIN TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON ttcp.crp_ordem = tcp.tcp_ordem AND ttcp.tne_id = tne.tne_id");
 				sql.Append("INNER JOIN ESC_Escola e WITH (NOLOCK) ON e.esc_id = ttcp.esc_id ");
 				sql.AppendLine(string.Format("AND e.uad_id IN ({0})", string.Join(",", esc_id)));
 			}
 
 			else if (dre_id != null)
 			{
-				sql.AppendLine("INNER JOIN TUR_TurmaTipoCurriculoPeriodo ttcp WITH(NOLOCK) ON ttcp.crp_ordem = tcp.tcp_ordem AND ttcp.tne_id = tne.tne_id");
+				sql.AppendLine("INNER JOIN TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON ttcp.crp_ordem = tcp.tcp_ordem AND ttcp.tne_id = tne.tne_id");
 				sql.Append("INNER JOIN ESC_Escola e WITH (NOLOCK) ON e.esc_id = ttcp.esc_id ");
 				sql.AppendLine(string.Format("AND e.uad_idSuperiorGestao IN ({0})", string.Join(",", dre_id)));
 			}

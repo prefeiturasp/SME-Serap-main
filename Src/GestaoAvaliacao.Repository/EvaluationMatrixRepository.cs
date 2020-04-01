@@ -256,7 +256,7 @@ namespace GestaoAvaliacao.Repository
                 StringBuilder sql = new StringBuilder();
 
                 sql.AppendLine("SELECT EM.Id, EM.Description ");
-                sql.AppendLine("FROM EvaluationMatrix AS EM WITH(NOLOCK) ");
+                sql.AppendLine("FROM EvaluationMatrix AS EM WITH (NOLOCK) ");
                 sql.AppendLine(string.Format("WHERE @discipline IS NOT NULL AND EM.Discipline_Id IN ({0}) ", discipline));
                 sql.AppendLine("AND EM.State = @state ");
                 sql.AppendLine("AND (@Description IS NULL OR EM.Description LIKE '%' + @Description + '%') ");

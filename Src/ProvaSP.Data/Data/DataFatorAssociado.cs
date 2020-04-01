@@ -15,7 +15,7 @@ namespace ProvaSP.Data.Data
             {
                 return conn.Query<Questionario>(
                     sql: @"SELECT f.FatorAssociadoQuestionarioId AS QuestionarioID, f.Edicao, f.Nome 
-                           FROM FatorAssociadoQuestionario f WITH(NOLOCK)
+                           FROM FatorAssociadoQuestionario f WITH (NOLOCK)
                            WHERE Edicao = @Edicao AND f.FatorAssociadoQuestionarioId NOT IN (4,3,7,8) 
                            ORDER BY f.Nome",
                             param: new
@@ -32,7 +32,7 @@ namespace ProvaSP.Data.Data
             {
                 return conn.Query<Constructo>(
                     sql: @"SELECT c.ConstructoId, c.Edicao, c.CicloId, c.FatorAssociadoQuestionarioId AS QuestionarioId, c.Nome 
-                           FROM Constructo c WITH(NOLOCK)
+                           FROM Constructo c WITH (NOLOCK)
                            WHERE c.Edicao = @Edicao AND c.CicloId = @CicloId AND c.FatorAssociadoQuestionarioId = @QuestionarioId
                            ORDER BY c.Nome",
                             param: new
@@ -53,7 +53,7 @@ namespace ProvaSP.Data.Data
 
                 fatorAssociado.Constructo = conn.Query<Constructo>(
                     sql: @"SELECT c.ConstructoId, c.Edicao, c.CicloId, c.FatorAssociadoQuestionarioId AS QuestionarioId, c.Nome 
-                           FROM Constructo c WITH(NOLOCK)
+                           FROM Constructo c WITH (NOLOCK)
                            WHERE c.ConstructoId = @ConstructoId",
                             param: new
                             {
@@ -63,7 +63,7 @@ namespace ProvaSP.Data.Data
 
                 fatorAssociado.Resultados = conn.Query<FatorAssociadoResultado>(
                     sql: @"SELECT f.AreaConhecimentoId, a.Nome AS AreaConhecimentoNome, f.Pontos
-                           FROM FatorAssociado f WITH(NOLOCK)
+                           FROM FatorAssociado f WITH (NOLOCK)
                                 INNER JOIN AreaConhecimento a ON a.AreaConhecimentoID = f.AreaConhecimentoId
                            WHERE f.ConstructoId = @ConstructoId 
                            ORDER BY a.Nome",
@@ -75,7 +75,7 @@ namespace ProvaSP.Data.Data
 
                 fatorAssociado.Variaveis = conn.Query<Variavel>(
                     sql: @"SELECT f.VariavelId, f.VariavelDescricao 
-                           FROM FatorAssociadoQuestionarioRespostaSME f WITH(NOLOCK)
+                           FROM FatorAssociadoQuestionarioRespostaSME f WITH (NOLOCK)
                            WHERE f.Edicao = @Edicao AND f.CicloId = @CicloId AND f.FatorAssociadoQuestionarioId = @QuestionarioId AND f.ConstructoId = @ConstructoId
                            GROUP BY f.VariavelId, f.VariavelDescricao
                            ORDER BY CAST(f.VariavelId AS NUMERIC)",

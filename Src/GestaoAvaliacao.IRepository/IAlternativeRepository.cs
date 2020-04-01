@@ -9,7 +9,7 @@ namespace GestaoAvaliacao.IRepository
     public interface IAlternativeRepository
     {
         Task<IEnumerable<AlternativesWithNumerationAndOrderProjection>> GetAlternativesWithNumerationAndOrderByTest(long test_id);
-        List<Alternative> GetAlternativesByItens(IEnumerable<string> itens, long test_id);
+        List<Alternative> GetAlternativesByItens(long[] itens, long test_id);
         Alternative Save(Alternative entity);
         void Update(Alternative entity);
         Alternative Get(long id);

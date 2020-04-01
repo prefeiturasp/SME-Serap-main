@@ -18,8 +18,8 @@ namespace ProvaSP.Data
                             SELECT 
 	                            I.Edicao, I.AreaConhecimentoID, I.esc_codigo, I.alu_matricula, I.alu_nome, I.questao, I.pagina, I.caminho, R.REDQ1, R.REDQ2, R.REDQ3, R.REDQ4, R.REDQ5
                             FROM 
-	                            ImagemAluno I WITH(NOLOCK)
-	                            LEFT JOIN ResultadoAluno R WITH(NOLOCK)
+	                            ImagemAluno I WITH (NOLOCK)
+	                            LEFT JOIN ResultadoAluno R WITH (NOLOCK)
 		                            ON R.Edicao = I.Edicao
 		                            AND R.AreaConhecimentoID = I.AreaConhecimentoID
 		                            AND I.esc_codigo = R.esc_codigo
