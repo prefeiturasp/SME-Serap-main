@@ -22,14 +22,14 @@ namespace GestaoAvaliacao.Repository.Context
         
         public static object GetItem(string key)
         {
-           return AddOrGetExisting(key, () => InitTalkDBTransactionCollection());
+            return AddOrGetExisting(key, () => InitTalkDBTransactionCollection());
         }
 
         private static T AddOrGetExisting<T>(string key, Func<T> valueFactory)
         {
             var cachePolicy = new CacheItemPolicy()
             {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(10)
+                AbsoluteExpiration = DateTime.Now.AddMinutes(30)
             };
 
             var newValue = new Lazy<T>(valueFactory);
