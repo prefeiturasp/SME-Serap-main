@@ -976,7 +976,7 @@ não exclua esse comentário.
 
                         <p id="exportar_div" class="resultados_headerTitle" style="display:block" data-html2canvas-ignore="true">
                             Exportar resultados em:
-                            <a href="#" class="link-exportar-pdf-detalhes" >PDF</a>
+                            <a href="#" class="link-exportar-pdf-detalhes">PDF</a>
                             <text>,</text>
                             <a class="link-exportar-imagem-detalhes" href="#" data-image-format="png">PNG</a>
                             <text>,</text>
@@ -1024,8 +1024,8 @@ não exclua esse comentário.
                             <div id="divChartResultadoDetalhe" class="divChartResultadoDetalhe" style="border:1px solid rgb(230,230,230);"></div>
                             <span class="lblResultadoTituloEscalaSaeb_2"></span>
                             <div class="divChartResultadoEscalaSaeb_2"></div>
-                            <canvas id="canvasExportImage" style="display:none"></canvas>
-                        </div>
+                            <canvas id="canvasExportImage" style="display:none;"></canvas>
+                            <div id="divChartExportarPdf"></div>
                     </div>
 
                     <div id="divResultadoTabHabilidades" class="ui-body-d ui-content">
@@ -2065,6 +2065,7 @@ não exclua esse comentário.
     <script type="text/javascript" src="/AppProvaSP/scripts/global.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/model/QuestionarioUsuario.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/model/QuestionarioRespostaItem.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/model/ExportarDreEscolas.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/app.js?v=1.30.7.2" type="text/javascript"></script>
 
     <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/jspdf.min.js"></script>
@@ -2075,7 +2076,7 @@ não exclua esse comentário.
     <script>
         if (window.MSInputMethodContext != null) {
             alert("ATENÇÃO! Você está utilizando o Internet Explorer e este aplicativo não funcionará de forma adequada. Por gentileza utilize o Google Chrome.");
-        }        
+        }
     </script>
 </body>
 </html>
