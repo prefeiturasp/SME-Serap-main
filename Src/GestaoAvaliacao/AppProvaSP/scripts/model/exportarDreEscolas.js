@@ -74,6 +74,8 @@ function montarRelatorioEmPdf(ciclo, edicao, areaConhecimentoId, ano, divResulta
     var pdf = new jsPDF('p', 'pt', 'a4');
     montarRadarNoPdf(pdf);
 
+    var labelsCiclos = { ciclo1: "Alfabetização", ciclo2: "Interdisciplinar", ciclo3: "Autoral" };
+
     for (var i = 0; i < dataResultado.Itens.length; i++) {
         if (dataResultado.Itens[i].Valor == -1) {
             dataResultado.Itens[i].Valor = "Profic. não calculada";
@@ -91,6 +93,7 @@ function montarRelatorioEmPdf(ciclo, edicao, areaConhecimentoId, ano, divResulta
         if (anoAplicacaoProva > 9)
             anoAplicacaoProva = 9;
     }
+
 
     var cores = getCores();
     var coresProfiencia = getCoresProficiencia(cores);
@@ -110,12 +113,12 @@ function montarRelatorioEmPdf(ciclo, edicao, areaConhecimentoId, ano, divResulta
             dataChartPdf.datasets.push({ data: [], backgroundColor: [] });
         }
 
+
         for (var contadorEscola = 0; contadorEscola < escolas.length; contadorEscola++) {
             var item = escolas[contadorEscola];
 
             if (item.NivelProficienciaID == 0 || filtroProficiencia.indexOf(item.NivelProficienciaID.toString()) >= 0) {
                 var tituloAtual = item.Titulo + ": " + item.Valor;
-
                 if (tituloAtual.length > maiorTitulo.length) {
                     maiorTitulo = tituloAtual;
                 }
@@ -162,7 +165,7 @@ function montarRelatorioEmPdf(ciclo, edicao, areaConhecimentoId, ano, divResulta
         var canvasId = "chartExportarPdf" + contadorCanvas;
         var alturaDoCanvas = definirAlturaDoCanvas(escolas.length, edicao);
         var primeiraPagina = contadorCanvas == 0;
-        criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMaxima, ciclo, ano, edicao, reguaProficiencia, primeiraPagina, dataChartPdf);
+        criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMaxima, ciclo, ano, edicao, reguaProficiencia, primeiraPagina, labelsCiclos, dataChartPdf);
 
         limparChartDoPdf();
 
@@ -340,7 +343,7 @@ function adicionarGraficoDeBarrasAoPdf(pdf, canvasElement, primeiraPagina) {
 
 function montarRadarNoPdf(pdf) {
     pdf.fromHTML($('#divResultadoApresentacaoTitulo')[0], 228, 15);
-    pdf.fromHTML($('#lblResultadoSubTitulo')[0], 180, 40);
+    pdf.fromHTML($('#lblResultadoSubTitulo')[0], 180, 20);
 
     var listaDeAgregacao = [];
 
@@ -349,7 +352,7 @@ function montarRadarNoPdf(pdf) {
     });
 
     var quantidade = 0;
-    var canvasPosition = 70;
+    var canvasPosition = 50;
 
     listaDeAgregacao.forEach(agregacaoId => {
         if (quantidade > 0) {
@@ -388,7 +391,7 @@ function criarCanvasDoChart(canvasId, alturaDoCanvas) {
     return canvasElement;
 }
 
-function criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMaxima, ciclo, ano, edicao, reguaProficiencia, primeiraPagina, dataChartPdf) {
+function criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMaxima, ciclo, ano, edicao, reguaProficiencia, primeiraPagina, labelsCiclos, dataChartPdf) {
 
     var canvasElement = criarCanvasDoChart(canvasId, alturaDoCanvas);
     var chartResultadoDetalhePdf_ctx = canvasElement.getContext("2d");
@@ -506,9 +509,34 @@ function limparChartDoPdf() {
 
 $('.link-exportar-imagem-detalhes').click(function () {
     let imageFormat = this.dataset.imageFormat;
-    gerarImagemDivResultadoTituloDetalhe()
-        .then((imgTituloDetalhe) => { exportarImagem(imageFormat, imgTituloDetalhe); });
+    const imagemTituloDeApresentacao = gerarImagemDivTituloDeApresentacao();
+    const imagemTituloDeApresentacaoFiltro = gerarImagemDivTituloDeApresentacaoFiltro();
+    const imagemResultadoTituloDetalhe = gerarImagemDivResultadoTituloDetalhe();
+    Promise.all([imagemTituloDeApresentacao, imagemTituloDeApresentacaoFiltro, imagemResultadoTituloDetalhe]).then(imagens => exportarImagem(imageFormat, imagens));
 });
+
+function gerarImagemDivTituloDeApresentacao() {
+    return new Promise((resolve) => {
+        domtoimage.toPng(document.getElementById('divResultadoApresentacaoTitulo'))
+            .then(function (dataURL) {
+                let imagemDivResultadoTituloDetalhe = new Image();
+                imagemDivResultadoTituloDetalhe.onload = () => { resolve(imagemDivResultadoTituloDetalhe) };
+                imagemDivResultadoTituloDetalhe.src = dataURL;
+            });
+    });
+}
+
+
+function gerarImagemDivTituloDeApresentacaoFiltro() {
+    return new Promise((resolve) => {
+        domtoimage.toPng(document.getElementById('lblResultadoSubTitulo'))
+            .then(function (dataURL) {
+                let imagemDivResultadoTituloDetalhe = new Image();
+                imagemDivResultadoTituloDetalhe.onload = () => { resolve(imagemDivResultadoTituloDetalhe) };
+                imagemDivResultadoTituloDetalhe.src = dataURL;
+            });
+    });
+}
 
 function gerarImagemDivResultadoTituloDetalhe() {
     return new Promise((resolve) => {
@@ -521,20 +549,21 @@ function gerarImagemDivResultadoTituloDetalhe() {
     });
 }
 
-function exportarImagem(extensao, imgTituloDetalhe) {
+function exportarImagem(extensao, imagens) {
+    let imgTituloDeApresentacao = imagens[0];
+    let imgTituloDeApresentacaoFiltro = imagens[1];
+    let imgTituloDetalhe = imagens[2];
+
     let canvasExport = document.createElement('canvas');
     let chartEscala = document.getElementById('chartResultadoEscalaSaeb_1');
     let chartResultado = document.getElementById("chartResultadoDetalhe");
 
-    //pdf.fromHTML($('#divResultadoApresentacaoTitulo')[0], 228, 15);
-    //pdf.fromHTML($('#lblResultadoSubTitulo')[0], 180, 40);
-
-    let listaDeRadar = [];
     let widthRadar = 0;
     let heightRadar = 0;
+    let radares = [];
     $("#divChartResultadoAgregacao").find("canvas").each(function () {
         var nomeDiv = $(this).attr('id');
-        listaDeRadar.push(nomeDiv);
+        radares.push(nomeDiv);
 
         var canvas = document.getElementById(nomeDiv);
         widthRadar = canvas.width > widthRadar ? canvas.width : widthRadar;
@@ -542,36 +571,51 @@ function exportarImagem(extensao, imgTituloDetalhe) {
 
     });
 
+    canvasExport.height = calcularCanvasHeight(heightRadar, imgTituloDeApresentacao, imgTituloDetalhe, chartEscala, chartResultado, radares);
+    canvasExport.width = calcularCanvasWidth(widthRadar, chartEscala, chartResultado)
+
     let contextCanvasExport = canvasExport.getContext("2d");
 
-    canvasExport.height = heightRadar + imgTituloDetalhe.height + chartEscala.height + chartResultado.height + 40 + listaDeRadar.length;
-    widthRadar = widthRadar > chartEscala.width ? widthRadar : chartEscala.width;
-    widthRadar = widthRadar > chartResultado.width ? widthRadar : chartResultado.width;
-    canvasExport.width = widthRadar;
-
-    contextCanvasExport.fillStyle = "white";
-    contextCanvasExport.fillRect(0, 0, canvasExport.width, canvasExport.height);;
-
+    setFundoBrancoNoCanvas(contextCanvasExport, canvasExport);
     
+    contextCanvasExport.drawImage(imgTituloDeApresentacao, 5, 20);
+    contextCanvasExport.drawImage(imgTituloDeApresentacaoFiltro, 11, 40);
 
-    var heightRadarChart = 15;
+    let heightExportCanvas = 70;
 
-    listaDeRadar.forEach(radarChart => {
-        var canvas = document.getElementById(radarChart);
-        contextCanvasExport.drawImage(canvas, -25, heightRadarChart);
-        heightRadarChart += canvas.height + 20;
+    radares.forEach(radarChart => {
+        let canvas = document.getElementById(radarChart);
+        contextCanvasExport.drawImage(canvas, -25, heightExportCanvas);
+        heightExportCanvas += canvas.height + 20;
     });
-
     
-    contextCanvasExport.drawImage(imgTituloDetalhe, 30, heightRadarChart);
+    contextCanvasExport.drawImage(imgTituloDetalhe, 30, heightExportCanvas);
 
-    heightRadarChart += imgTituloDetalhe.height + 10;
-    contextCanvasExport.drawImage(chartEscala, 20, heightRadarChart);
-    heightRadarChart += chartEscala.height + 10;
-    contextCanvasExport.drawImage(chartResultado, 25, heightRadarChart);
+    heightExportCanvas += imgTituloDetalhe.height + 10;
+    contextCanvasExport.drawImage(chartEscala, 20, heightExportCanvas);
+    heightExportCanvas += chartEscala.height + 10;
+    contextCanvasExport.drawImage(chartResultado, 25, heightExportCanvas);
 
     let link = document.createElement('a');
     link.download = "Proficiencia." + extensao;
     link.href = canvasExport.toDataURL("image/" + extensao);
     link.click();
+}
+
+function calcularCanvasHeight(heightRadar, imgTituloDeApresentacao, imgTituloDetalhe, chartEscala, chartResultado, listaDeRadar)
+{
+    return heightRadar + imgTituloDeApresentacao.height + imgTituloDetalhe.height + chartEscala.height + chartResultado.height + 95 + listaDeRadar.length;
+}
+
+function calcularCanvasWidth(widthRadar, chartEscala, chartResultado)
+{
+    widthRadar = widthRadar > chartEscala.width ? widthRadar : chartEscala.width;
+    widthRadar = widthRadar > chartResultado.width ? widthRadar : chartResultado.width;
+    return widthRadar;
+}
+
+function setFundoBrancoNoCanvas(contextCanvasExport, canvasExport)
+{
+    contextCanvasExport.fillStyle = "white";
+    contextCanvasExport.fillRect(0, 0, canvasExport.width, canvasExport.height);
 }
