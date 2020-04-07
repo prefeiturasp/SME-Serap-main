@@ -4,10 +4,71 @@
 
 var paginaDoPdf = 1;
 
-
 $('.link-exportar-pdf-detalhes').click(function () {
     gerarRelatorioEmPdf();
 });
+
+function gerarRelatorioEmPdf() {
+    var objEnvio = {};
+    var nivel = $("#ddlResultadoNivel").val();
+    var edicao = $("#ddlResultadoEdicao").val();
+    var ciclo = $("#ddlResultadoCiclo").val();
+    var areaConhecimentoId = $("#ddlResultadoAreaConhecimento").val();
+    var anoEscolar = $("#ddlResultadoAno").val();
+    var lista_uad_sigla = "";
+    var lista_esc_codigo = "";
+    var lista_turmas = "";
+    var lista_alu_matricula = "";
+
+    $.mobile.loading("show", {
+        text: "Aguarde a geração do PDF...",
+        textVisible: true,
+        theme: "a",
+        html: ""
+    });
+
+    if (nivel == "DRE") {
+        lista_uad_sigla = $(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get().toString();
+    }
+    else if (nivel == "ESCOLA") {
+        lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
+    }
+    else if (nivel == "TURMA") {
+        lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
+        lista_turmas = $(".resultado-turma-item-chk:checked").map(function () { return this.value; }).get().toString();
+    }
+    else if (nivel == "ALUNO") {
+        lista_alu_matricula = $(".resultado-aluno-item-chk:checked").map(function () { return this.value; }).get().toString();
+    }
+
+    objEnvio = {
+        Nivel: nivel,
+        Edicao: edicao,
+        Ciclo: ciclo,
+        AreaConhecimentoID: areaConhecimentoId,
+        AnoEscolar: anoEscolar,
+        lista_uad_sigla: lista_uad_sigla,
+        lista_esc_codigo: lista_esc_codigo,
+        lista_turmas: lista_turmas,
+        lista_alu_matricula: lista_alu_matricula
+    }
+
+    $.post(urlBackEnd + "api/ResultadoPorNivel?guid=" + newGuid(), objEnvio)
+        .done(function (dataResultado) {
+            $.mobile.loading("hide");
+            montarRelatorioEmPdf(
+                ciclo,
+                edicao,
+                areaConhecimentoId,
+                anoEscolar,
+                "divResultadoApresentacao",
+                dataResultado,
+                objEnvio);
+        })
+        .fail(function (erro) {
+            ProvaSP_Erro("Erro " + erro.status, erro.statusText);
+        });
+}
 
 function montarRelatorioEmPdf(ciclo, edicao, areaConhecimentoId, ano, divResultadoContainer, dataResultado, objetoEnviado) {
     var pdf = new jsPDF('p', 'pt', 'a4');
@@ -318,68 +379,6 @@ function montarRadarNoPdf(pdf) {
     });
 }
 
-function gerarRelatorioEmPdf() {
-    var objEnvio = {};
-    var nivel = $("#ddlResultadoNivel").val();
-    var edicao = $("#ddlResultadoEdicao").val();
-    var ciclo = $("#ddlResultadoCiclo").val();
-    var areaConhecimentoId = $("#ddlResultadoAreaConhecimento").val();
-    var anoEscolar = $("#ddlResultadoAno").val();
-    var lista_uad_sigla = "";
-    var lista_esc_codigo = "";
-    var lista_turmas = "";
-    var lista_alu_matricula = "";
-
-    $.mobile.loading("show", {
-        text: "Aguarde a geração do PDF...",
-        textVisible: true,
-        theme: "a",
-        html: ""
-    });
-
-    if (nivel == "DRE") {
-        lista_uad_sigla = $(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get().toString();
-    }
-    else if (nivel == "ESCOLA") {
-        lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
-    }
-    else if (nivel == "TURMA") {
-        lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
-        lista_turmas = $(".resultado-turma-item-chk:checked").map(function () { return this.value; }).get().toString();
-    }
-    else if (nivel == "ALUNO") {
-        lista_alu_matricula = $(".resultado-aluno-item-chk:checked").map(function () { return this.value; }).get().toString();
-    }
-
-    objEnvio = {
-        Nivel: nivel,
-        Edicao: edicao,
-        Ciclo: ciclo,
-        AreaConhecimentoID: areaConhecimentoId,
-        AnoEscolar: anoEscolar,
-        lista_uad_sigla: lista_uad_sigla,
-        lista_esc_codigo: lista_esc_codigo,
-        lista_turmas: lista_turmas,
-        lista_alu_matricula: lista_alu_matricula
-    }
-
-    $.post(urlBackEnd + "api/ResultadoPorNivel?guid=" + newGuid(), objEnvio)
-        .done(function (dataResultado) {
-            $.mobile.loading("hide");
-            montarRelatorioEmPdf(
-                ciclo,
-                edicao,
-                areaConhecimentoId,
-                anoEscolar,
-                "divResultadoApresentacao",
-                dataResultado,
-                objEnvio);
-        })
-        .fail(function (erro) {
-            ProvaSP_Erro("Erro " + erro.status, erro.statusText);
-        });
-}
-
 function criarCanvasDoChart(canvasId, alturaDoCanvas) {
     var elementDom = document.getElementById("divChartExportarPdf");
     var canvasElement = document.createElement('canvas');
@@ -499,12 +498,17 @@ function criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMa
     });
 }
 
-
 function limparChartDoPdf() {
     $("#divChartExportarPdf").empty();
 }
 
 /***** Fim do PDF */
+
+$('.link-exportar-imagem-detalhes').click(function () {
+    let imageFormat = this.dataset.imageFormat;
+    gerarImagemDivResultadoTituloDetalhe()
+        .then((imgTituloDetalhe) => { exportarImagem(imageFormat, imgTituloDetalhe); });
+});
 
 function gerarImagemDivResultadoTituloDetalhe() {
     return new Promise((resolve) => {
@@ -517,27 +521,57 @@ function gerarImagemDivResultadoTituloDetalhe() {
     });
 }
 
-$('.link-exportar-imagem-detalhes').click(function () {
-    let imageFormat = this.dataset.imageFormat;
-    gerarImagemDivResultadoTituloDetalhe()
-        .then((imgTituloDetalhe) => { exportarImagem(imageFormat, imgTituloDetalhe); });
-});
-
 function exportarImagem(extensao, imgTituloDetalhe) {
+    let canvasExport = document.createElement('canvas');
     let chartEscala = document.getElementById('chartResultadoEscalaSaeb_1');
     let chartResultado = document.getElementById("chartResultadoDetalhe");
 
-    let canvasExport = document.createElement('canvas');
-    canvasExport.width = chartEscala.width > chartResultado.width ? chartEscala.width : chartResultado.width;
-    canvasExport.height = imgTituloDetalhe.height + chartEscala.height + chartResultado.height + 2;
+    //pdf.fromHTML($('#divResultadoApresentacaoTitulo')[0], 228, 15);
+    //pdf.fromHTML($('#lblResultadoSubTitulo')[0], 180, 40);
+
+    let listaDeRadar = [];
+    let widthRadar = 0;
+    let heightRadar = 0;
+    $("#divChartResultadoAgregacao").find("canvas").each(function () {
+        var nomeDiv = $(this).attr('id');
+        listaDeRadar.push(nomeDiv);
+
+        var canvas = document.getElementById(nomeDiv);
+        widthRadar = canvas.width > widthRadar ? canvas.width : widthRadar;
+        heightRadar += canvas.height + 20;
+
+    });
 
     let contextCanvasExport = canvasExport.getContext("2d");
-    contextCanvasExport.drawImage(imgTituloDetalhe, 0, 0);
-    contextCanvasExport.drawImage(chartEscala, 0, imgTituloDetalhe.height + 1);
-    contextCanvasExport.drawImage(chartResultado, 0, imgTituloDetalhe.height + chartEscala.height + 1);
+
+    canvasExport.height = heightRadar + imgTituloDetalhe.height + chartEscala.height + chartResultado.height + 40 + listaDeRadar.length;
+    widthRadar = widthRadar > chartEscala.width ? widthRadar : chartEscala.width;
+    widthRadar = widthRadar > chartResultado.width ? widthRadar : chartResultado.width;
+    canvasExport.width = widthRadar;
+
+    contextCanvasExport.fillStyle = "white";
+    contextCanvasExport.fillRect(0, 0, canvasExport.width, canvasExport.height);;
+
+    
+
+    var heightRadarChart = 15;
+
+    listaDeRadar.forEach(radarChart => {
+        var canvas = document.getElementById(radarChart);
+        contextCanvasExport.drawImage(canvas, -25, heightRadarChart);
+        heightRadarChart += canvas.height + 20;
+    });
+
+    
+    contextCanvasExport.drawImage(imgTituloDetalhe, 30, heightRadarChart);
+
+    heightRadarChart += imgTituloDetalhe.height + 10;
+    contextCanvasExport.drawImage(chartEscala, 20, heightRadarChart);
+    heightRadarChart += chartEscala.height + 10;
+    contextCanvasExport.drawImage(chartResultado, 25, heightRadarChart);
 
     let link = document.createElement('a');
-    link.download = "ProeficienciaDetalhe." + extensao;
+    link.download = "Proficiencia." + extensao;
     link.href = canvasExport.toDataURL("image/" + extensao);
     link.click();
 }
