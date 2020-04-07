@@ -44,7 +44,7 @@ var notificacaoSincroniaAtivada = false;
 var variaveisConstructo = {};
 /**
 -----MSTECH-----
- *Cache das informações de corte - Em Configurações
+ *Cache das informações de corte - Em Configuraçõesc
 */
 var corteCache = [];
 
@@ -4363,6 +4363,10 @@ function definirEventHandlers() {
             -----MSTECH-----
              *Abaixo a determinação de informações específicas com base no nível selecionado.
             */
+            $('#exportar_graficos').hide();
+            $('#imprimir_graficos').hide();
+            if (nivel == "DRE") { $("#exportar_graficos").show(); } else { $("#imprimir_graficos").show(); }
+            
             if (nivel == "DRE") {
                 lista_uad_sigla = $(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
@@ -4393,7 +4397,6 @@ function definirEventHandlers() {
 
             //var lista_esc_codigo = $(".resultado-escola-chk:checked").map(function () { return this.value; }).get().toString();
             //var lista_turmas = $(".resultado-turma-chk:checked").map(function () { return this.value; }).get().toString(); //$("#txtResultadoTurma").val();
-
             $.post(urlBackEnd + "api/ResultadoPorNivel?guid=" + newGuid(), objEnvio)
                 .done(function (dataResultado) {
                     /**
@@ -4979,7 +4982,7 @@ function definirEventHandlers() {
                     chartResultadoDetalhe_ctx.canvas.height = dataResultado.Itens.length * 60; //300;
                 }
                 else {
-                    chartResultadoDetalhe_ctx.canvas.height = dataResultado.Itens.length * 50; //300;
+                    chartResultadoDetalhe_ctx.canvas.height = (dataResultado.Itens.length * 50); //300;
                 }
 
             }
@@ -5038,7 +5041,6 @@ function definirEventHandlers() {
                             setTimeout(
                                 function () {
                                     var labelOffset = c.chart.getDatasetMeta(0).data[0]._model.height;
-
                                     if ($("#ddlResultadoEdicao").val() == "ENTURMACAO_ATUAL") {
                                         //No caso de ENTURMACAO_ATUAL são apresentados 2 gráficos: a proficiência do ano anterior e a atual.
                                         //Por essa razão é preciso dobrar o salto da label:
@@ -9704,54 +9706,6 @@ $("#btnConstructoVoltar").unbind("click").click(function () {
         console.log(error);
     }
 });
-
-function exportarPDF() {
-    var pdf = new jsPDF('p', 'pt', 'a4');
-    pdf.html(document.getElementById('divResultadoTabProficiencias'), {
-        callback: function (pdf) {
-            pdf.save('ProeficienciaDetalhe.pdf');
-        }
-    });
-}       
-
-
-function gerarImagemDivResultadoTituloDetalhe() {
-    return new Promise((resolve) => {
-        domtoimage.toPng(document.getElementById('divResultadoTituloDetalhe'))
-            .then(function (dataURL) {
-                let imagemDivResultadoTituloDetalhe = new Image();
-                imagemDivResultadoTituloDetalhe.onload = () => { resolve(imagemDivResultadoTituloDetalhe) };
-                imagemDivResultadoTituloDetalhe.src = dataURL;
-            });
-    });
-}
-
-$('.link-exportar-imagem-detalhes').click(function () {
-    let imageFormat = this.dataset.imageFormat;
-    gerarImagemDivResultadoTituloDetalhe()
-        .then((imgTituloDetalhe) => { exportarImagem(imageFormat, imgTituloDetalhe); });
-});
-
-function exportarImagem(extensao, imgTituloDetalhe) {
-    let chartEscala = document.getElementById('chartResultadoEscalaSaeb_1');
-    let chartResultado = document.getElementById("chartResultadoDetalhe");
-
-    let canvasExport = document.createElement('canvas');
-    canvasExport.width = chartEscala.width > chartResultado.width ? chartEscala.width : chartResultado.width;
-    canvasExport.height = imgTituloDetalhe.height + chartEscala.height + chartResultado.height + 2;
-    console.log("imgTituloDetalhe:" + (imgTituloDetalhe ? imgTituloDetalhe : "NULO"));
-    console.log("imgTituloDetalhe.height:" + imgTituloDetalhe.height);
-
-    let contextCanvasExport = canvasExport.getContext("2d");
-    contextCanvasExport.drawImage(imgTituloDetalhe, 0, 0);
-    contextCanvasExport.drawImage(chartEscala, 0, imgTituloDetalhe.height + 1);
-    contextCanvasExport.drawImage(chartResultado, 0, imgTituloDetalhe.height + chartEscala.height + 1);
-
-    let link = document.createElement('a');
-    link.download = "ProeficienciaDetalhe." + extensao;
-    link.href = canvasExport.toDataURL("image/" + extensao);
-    link.click();
-}
 
 /**
 -----MSTECH-----

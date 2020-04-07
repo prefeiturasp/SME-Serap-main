@@ -925,8 +925,10 @@ não exclua esse comentário.
             <div id="divResultadoApresentacao" style="display:none;">
 
                 <div style="font-weight:bold; margin-top:25px;">
-                    <span id="lblResultadoTitulo" class="lblResultadoTitulo">
-                    </span>
+                    <div id="divResultadoApresentacaoTitulo">
+                        <span id="lblResultadoTitulo" class="lblResultadoTitulo">
+                        </span>
+                    </div>
                 </div>
 
                 <ul id="lblResultadoSubTitulo"
@@ -942,21 +944,31 @@ não exclua esse comentário.
                     </li>
                 </ul>
 
-                <a href="#" onclick="document.getElementById('divChartResultadoDetalhe').style.overflow='visible'; document.getElementById('divChartResultadoDetalhe').style.height='100%'; window.print();">Imprimir</a>
+                <p id="exportar_graficos" class="resultados_headerTitle" style="display:none;" data-html2canvas-ignore="true">
+                    Exportar gráficos em:
+                    <a href="#" class="link-exportar-pdf-detalhes">PDF</a>
+                    <text>,</text>
+                    <a class="link-exportar-imagem-detalhes" href="#" data-image-format="png">PNG</a>
+                    <text>,</text>
+                    <a class="link-exportar-imagem-detalhes" href="#" data-image-format="jpg">JPG</a>
+                </p>
+
+                    
+                <a id="imprimir_graficos" style="display:none;" href="#" onclick="document.getElementById('divChartResultadoDetalhe').style.overflow='visible'; document.getElementById('divChartResultadoDetalhe').style.height='100%'; window.print();">Imprimir</a>
 
                 <div id="divResultadoTituloAgregacao" style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
                     <span id="lblResultadoTituloAgregacao"></span>
                 </div>
 
                 <!--MSTECH
-                    *Principais gráficos - Agregação e Ciclo de Aprendizagem.
-                    OBS: O gráfico de Ciclo de Aprendizagem deve aparecer somente quando existe
-                    a informação do ciclo e quando for nível SME ou DRE
+        *Principais gráficos - Agregação e Ciclo de Aprendizagem.
+        OBS: O gráfico de Ciclo de Aprendizagem deve aparecer somente quando existe
+        a informação do ciclo e quando for nível SME ou DRE
 
-                    ATUALIZAÇÃO: Agora os gráficos de Ciclo de Aprendizagem são também adicionados aos
-                    gráficos legados de agregação. Desta maneira, pode-se montar N gráficos de
-                    Ciclo de Aprendizagem, dependendo do filtro selecionado
-                -->
+        ATUALIZAÇÃO: Agora os gráficos de Ciclo de Aprendizagem são também adicionados aos
+        gráficos legados de agregação. Desta maneira, pode-se montar N gráficos de
+        Ciclo de Aprendizagem, dependendo do filtro selecionado
+    -->
                 <div id="divChartResultadoAgregacao"></div>
 
                 <div id="divResultadoTituloAmostral" style="background-color:rgb(255,215,215); color:rgb(255,50,50); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none; display:none;">
@@ -974,14 +986,6 @@ não exclua esse comentário.
 
                     <div id="divResultadoTabProficiencias" class="ui-body-d ui-content">
 
-                        <p id="exportar_div" class="resultados_headerTitle" style="display:block" data-html2canvas-ignore="true">
-                            Exportar resultados em:
-                            <a href="#" onclick="exportarPDF()" style="display: none">PDF</a>
-                            <text style="display: none">,</text>
-                            <a class="link-exportar-imagem-detalhes" href="#" data-image-format="png">PNG</a>
-                            <text>,</text>
-                            <a class="link-exportar-imagem-detalhes" href="#" data-image-format="jpg">JPG</a>
-                        </p>
 
                         <table style="width:100%;" data-html2canvas-ignore="true">
                             <tr>
@@ -1013,169 +1017,172 @@ não exclua esse comentário.
                                 </td>
                             </tr>
                         </table>
+                        <div id="bodyImpressaoPdf">
+                            <div style="margin:15px;">
+                                <div id="divResultadoTituloDetalhe" class="infoBox">
+                                    <span id="lblResultadoTituloDetalhe"></span>
+                                </div>
+                            </div>
 
-                        <div id="divResultadoTituloDetalhe" class="infoBox" style="margin:15px;">
-                            <span id="lblResultadoTituloDetalhe"></span>
+                            <span class="lblResultadoTituloEscalaSaeb_1"></span>
+                            <div class="divChartResultadoEscalaSaeb_1"></div>
+                            <img class="imgChartResultadoDetalhe" />
+                            <div id="divChartResultadoDetalhe" class="divChartResultadoDetalhe" style="border:1px solid rgb(230,230,230);"></div>
+                            <span class="lblResultadoTituloEscalaSaeb_2"></span>
+                            <div class="divChartResultadoEscalaSaeb_2"></div>
+                            <canvas id="canvasExportImage" style="display:none;"></canvas>
+                            <div id="divChartExportarPdf"></div>
                         </div>
 
-                        <span class="lblResultadoTituloEscalaSaeb_1"></span>
-                        <div class="divChartResultadoEscalaSaeb_1"></div>
-                        <img class="imgChartResultadoDetalhe" />
-                        <div id="divChartResultadoDetalhe" class="divChartResultadoDetalhe" style="border:1px solid rgb(230,230,230);"></div>
-                        <span class="lblResultadoTituloEscalaSaeb_2"></span>
-                        <div class="divChartResultadoEscalaSaeb_2"></div>
-                        <canvas id="canvasExportImage" style="display:none"></canvas>
+                        <div id="divResultadoTabHabilidades" class="ui-body-d ui-content">
+                            <div class="infoBox" style="margin:15px;">
+                                <span>
+                                    Abaixo seguem os percentuais de acertos por cada habilidade.
+                                </span>
+                            </div>
+                            <div id="divResultadoTabHabilidades_conteudoDinamico"></div>
+                        </div>
+                        <a href="#" data-role="button" class="btnInfo" id="btnResultadoAlterarParametros2">Voltar às opções</a>
+                        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+                            <a id="btnResultadoAlterarParametros" style="width:50%;" href="#" data-role="button" class="btnInfo">Voltar às opções</a>
+                        </div>
                     </div>
 
-                    <div id="divResultadoTabHabilidades" class="ui-body-d ui-content">
-                        <div class="infoBox" style="margin:15px;">
-                            <span>
-                                Abaixo seguem os percentuais de acertos por cada habilidade.
-                            </span>
-                        </div>
-                        <div id="divResultadoTabHabilidades_conteudoDinamico"></div>
-                    </div>
-                    <a href="#" data-role="button" class="btnInfo" id="btnResultadoAlterarParametros2">Voltar às opções</a>
-                    <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-                        <a id="btnResultadoAlterarParametros" style="width:50%;" href="#" data-role="button" class="btnInfo">Voltar às opções</a>
-                    </div>
                 </div>
 
-            </div>
+                <!--MSTECH
+    *Popup para mostrar dados de participação da ProvaSP
+    -->
+                <div id="divResultadoFA" class="page generico_mainDiv" style="display: none;">
+                    <div class="container generico_subDiv">
+                        <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
 
-            <!--MSTECH
-            *Popup para mostrar dados de participação da ProvaSP
-            -->
-            <div id="divResultadoFA" class="page generico_mainDiv" style="display: none;">
-                <div class="container generico_subDiv">
-                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+                        <div class="generico_headerDiv">
+                            <p class="generico_headerTitle">SME</p>
+                            <p id="faHeaderText" class="generico_headerText"></p>
+                        </div>
 
-                    <div class="generico_headerDiv">
-                        <p class="generico_headerTitle">SME</p>
-                        <p id="faHeaderText" class="generico_headerText"></p>
-                    </div>
+                        <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
+                            O gráfico abaixo apresenta a influência do fator selecionado no desempenho dos estudantes, por componente curricular.<br /><br />
+                            Toque em uma variável específica para mais informações.
+                        </div>
 
-                    <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
-                        O gráfico abaixo apresenta a influência do fator selecionado no desempenho dos estudantes, por componente curricular.<br /><br />
-                        Toque em uma variável específica para mais informações.
-                    </div>
+                        <div class="fatoresassociados_headerDiv">
+                            <p class="fatoresassociados_title">INFLUÊNCIA DO FATOR DO DESEMPENHO</p>
+                            <p id="faHeaderTitle" class="fatoresassociados_text"></p>
+                        </div>
 
-                    <div class="fatoresassociados_headerDiv">
-                        <p class="fatoresassociados_title">INFLUÊNCIA DO FATOR DO DESEMPENHO</p>
-                        <p id="faHeaderTitle" class="fatoresassociados_text"></p>
-                    </div>
-
-                    <!--Quadros-->
-                    <div class="fatoresassociados_quadrosDiv">
-                        <!--LÍNGUA PORTUGUESA-->
-                        <div class="fatoresassociados_quadrosBlockDiv">
-                            <div class="fatoresassociados_quadrosBlockLeftDiv">
-                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
-                            </div>
-                            <div class="fatoresassociados_quadrosBlockRightDiv">
-                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #F4CB01;">
-                                    <p id="faTitle2" class="fatoresassociados_quadrosBlockHeader"></p>
+                        <!--Quadros-->
+                        <div class="fatoresassociados_quadrosDiv">
+                            <!--LÍNGUA PORTUGUESA-->
+                            <div class="fatoresassociados_quadrosBlockDiv">
+                                <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                    <p class="fatoresassociados_quadrosVText">PONTOS</p>
                                 </div>
-                                <div class="fatoresassociados_quadrosBlockHeight">
-                                    <p id="faValor2" class="fatoresassociados_quadrosBlockBody">0</p>
+                                <div class="fatoresassociados_quadrosBlockRightDiv">
+                                    <div class="fatoresassociados_quadrosBlockHeight" style="background: #F4CB01;">
+                                        <p id="faTitle2" class="fatoresassociados_quadrosBlockHeader"></p>
+                                    </div>
+                                    <div class="fatoresassociados_quadrosBlockHeight">
+                                        <p id="faValor2" class="fatoresassociados_quadrosBlockBody">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--MATEMÁTICA-->
+                            <div class="fatoresassociados_quadrosBlockDiv">
+                                <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                    <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                                </div>
+                                <div class="fatoresassociados_quadrosBlockRightDiv">
+                                    <div class="fatoresassociados_quadrosBlockHeight" style="background: #EA7458;">
+                                        <p id="faTitle3" class="fatoresassociados_quadrosBlockHeader"></p>
+                                    </div>
+                                    <div class="fatoresassociados_quadrosBlockHeight">
+                                        <p id="faValor3" class="fatoresassociados_quadrosBlockBody">0</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--CIÊNCIA NATURAIS-->
+                            <div class="fatoresassociados_quadrosBlockDiv">
+                                <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                    <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                                </div>
+                                <div class="fatoresassociados_quadrosBlockRightDiv">
+                                    <div class="fatoresassociados_quadrosBlockHeight" style="background: #6B91A8;">
+                                        <p id="faTitle1" class="fatoresassociados_quadrosBlockHeader"></p>
+                                    </div>
+                                    <div class="fatoresassociados_quadrosBlockHeight">
+                                        <p id="faValor1" class="fatoresassociados_quadrosBlockBody">0</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <!--MATEMÁTICA-->
-                        <div class="fatoresassociados_quadrosBlockDiv">
-                            <div class="fatoresassociados_quadrosBlockLeftDiv">
-                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
-                            </div>
-                            <div class="fatoresassociados_quadrosBlockRightDiv">
-                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #EA7458;">
-                                    <p id="faTitle3" class="fatoresassociados_quadrosBlockHeader"></p>
-                                </div>
-                                <div class="fatoresassociados_quadrosBlockHeight">
-                                    <p id="faValor3" class="fatoresassociados_quadrosBlockBody">0</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--CIÊNCIA NATURAIS-->
-                        <div class="fatoresassociados_quadrosBlockDiv">
-                            <div class="fatoresassociados_quadrosBlockLeftDiv">
-                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
-                            </div>
-                            <div class="fatoresassociados_quadrosBlockRightDiv">
-                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #6B91A8;">
-                                    <p id="faTitle1" class="fatoresassociados_quadrosBlockHeader"></p>
-                                </div>
-                                <div class="fatoresassociados_quadrosBlockHeight">
-                                    <p id="faValor1" class="fatoresassociados_quadrosBlockBody">0</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <p class="fatoresassociados_resenha">
-                        O fator (variável contextual) que não apresentou impacto significativo sobre
-                        o desempenho do estudante no componente curricular e/ou sobre a média
-                        escolar é representado por um traço (-).
-                    </p>
-
-                    <!--Variáveis-->
-                    <div class="fatoresassociados_variaveisDiv">
-                        <!--Variáveis Table HEADER-->
-                        <!--MSTECH - Tabela removida para retirar imagem do estado de SP-->
-                        <!--<table class="fatoresassociados_variaveisTable"><tr>-->
-                        <!--<td class="fatoresassociados_variaveisTDLeft">-->
-                        <!--<p class="fatoresassociados_variaveisTDLeftText">-->
-                        <!--Observe abaixo as variáveis que compõem o constructo<br />-->
-                        <!--<b>-->
-                        <!--<span class='mdi mdi-chevron-right'></span>-->
-                        <!--<span id="faVarsConstructo"></span>-->
-                        <!--</b>-->
-                        <!--</p>-->
-                        <!--</td>-->
-                        <!--<td class="fatoresassociados_variaveisTDRight">-->
-                        <!--<img class="fatoresassociados_variaveisTDRightImg" src="/AppProvaSP/images/fa_background.png" />-->
-                        <!--</td>-->
-                        <!--</tr></table>-->
-                        <p class="fatoresassociados_variaveisText">
-                            Observe abaixo as variáveis que compõem o constructo<br />
-                            <b>
-                                <span class='mdi mdi-chevron-right'></span>
-                                <span id="faVarsConstructo"></span>
-                            </b>
+                        <p class="fatoresassociados_resenha">
+                            O fator (variável contextual) que não apresentou impacto significativo sobre
+                            o desempenho do estudante no componente curricular e/ou sobre a média
+                            escolar é representado por um traço (-).
                         </p>
 
-                        <!--Variáveis em si-->
-                        <div id="fa_variaveisDoConstructo"></div>
-                    </div>
+                        <!--Variáveis-->
+                        <div class="fatoresassociados_variaveisDiv">
+                            <!--Variáveis Table HEADER-->
+                            <!--MSTECH - Tabela removida para retirar imagem do estado de SP-->
+                            <!--<table class="fatoresassociados_variaveisTable"><tr>-->
+                            <!--<td class="fatoresassociados_variaveisTDLeft">-->
+                            <!--<p class="fatoresassociados_variaveisTDLeftText">-->
+                            <!--Observe abaixo as variáveis que compõem o constructo<br />-->
+                            <!--<b>-->
+                            <!--<span class='mdi mdi-chevron-right'></span>-->
+                            <!--<span id="faVarsConstructo"></span>-->
+                            <!--</b>-->
+                            <!--</p>-->
+                            <!--</td>-->
+                            <!--<td class="fatoresassociados_variaveisTDRight">-->
+                            <!--<img class="fatoresassociados_variaveisTDRightImg" src="/AppProvaSP/images/fa_background.png" />-->
+                            <!--</td>-->
+                            <!--</tr></table>-->
+                            <p class="fatoresassociados_variaveisText">
+                                Observe abaixo as variáveis que compõem o constructo<br />
+                                <b>
+                                    <span class='mdi mdi-chevron-right'></span>
+                                    <span id="faVarsConstructo"></span>
+                                </b>
+                            </p>
 
-                    <!--BOTÃO VOLTAR-->
-                    <button id="btnFAVoltar" data-role="button">Voltar às opções</button>
+                            <!--Variáveis em si-->
+                            <div id="fa_variaveisDoConstructo"></div>
+                        </div>
+
+                        <!--BOTÃO VOLTAR-->
+                        <button id="btnFAVoltar" data-role="button">Voltar às opções</button>
+                    </div>
+                </div>
+
+                <!--MSTECH
+    *Popup para mostrar dados de participação da ProvaSP
+    -->
+                <div id="divResultadoConstructo" class="page generico_mainDiv" style="display: none;">
+                    <div class="container generico_subDiv">
+                        <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+                        <div class="generico_headerDiv">
+                            <p id="constructoHeaderTitle" class="generico_headerTitle"></p>
+                            <p id="constructoHeaderText" class="generico_headerText"></p>
+                        </div>
+
+                        <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
+                            Nos gráficos abaixo são mostrados os dados de caracterização das famílias e das escolas
+                        </div>
+
+                        <!--Conteúdo do contructo em si-->
+                        <div id="constructDivContent"></div>
+
+                        <!--BOTÃO VOLTAR-->
+                        <button id="btnConstructoVoltar" data-role="button">Voltar</button>
+                    </div>
                 </div>
             </div>
-
-            <!--MSTECH
-            *Popup para mostrar dados de participação da ProvaSP
-            -->
-            <div id="divResultadoConstructo" class="page generico_mainDiv" style="display: none;">
-                <div class="container generico_subDiv">
-                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
-
-                    <div class="generico_headerDiv">
-                        <p id="constructoHeaderTitle" class="generico_headerTitle"></p>
-                        <p id="constructoHeaderText" class="generico_headerText"></p>
-                    </div>
-
-                    <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
-                        Nos gráficos abaixo são mostrados os dados de caracterização das famílias e das escolas
-                    </div>
-
-                    <!--Conteúdo do contructo em si-->
-                    <div id="constructDivContent"></div>
-
-                    <!--BOTÃO VOLTAR-->
-                    <button id="btnConstructoVoltar" data-role="button">Voltar</button>
-                </div>
-            </div>
-        </div>
         <!--MSTECH
         *Adicionado DIV de fechamento que estava faltando
         -->
@@ -2064,6 +2071,7 @@ não exclua esse comentário.
     <script type="text/javascript" src="/AppProvaSP/scripts/global.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/model/QuestionarioUsuario.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/model/QuestionarioRespostaItem.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/model/ExportarDreEscolas.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/app.js?v=1.30.7.2" type="text/javascript"></script>
 
     <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/jspdf.min.js"></script>
@@ -2074,7 +2082,7 @@ não exclua esse comentário.
     <script>
         if (window.MSInputMethodContext != null) {
             alert("ATENÇÃO! Você está utilizando o Internet Explorer e este aplicativo não funcionará de forma adequada. Por gentileza utilize o Google Chrome.");
-        }        
+        }
     </script>
 </body>
 </html>
