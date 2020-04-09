@@ -4365,6 +4365,7 @@ function definirEventHandlers() {
             */
             $('#exportar_graficos').hide();
             $('#imprimir_graficos').hide();
+
             if (nivel == "DRE") { $("#exportar_graficos").show(); } else { $("#imprimir_graficos").show(); }
             
             if (nivel == "DRE") {
@@ -4379,6 +4380,12 @@ function definirEventHandlers() {
             }
             else if (nivel == "ALUNO") {
                 lista_alu_matricula = $(".resultado-aluno-item-chk:checked").map(function () { return this.value; }).get().toString();
+            }
+
+            if (nivel == "DRE" && $('span').hasClass('mdi-checkbox-marked'))
+            {
+                $('#exportar_graficos').hide();
+                $('#imprimir_graficos').hide();
             }
 
             //MSTECH - Construindo objeto para enviar ao servidor. Ele será reaproveitado em situações de busca

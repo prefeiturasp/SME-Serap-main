@@ -405,6 +405,7 @@
     <Content Include="AppProvaSP\questionario_23.html" />
     <Content Include="AppProvaSP\questionario_3.html" />
     <Content Include="AppProvaSP\questionario_9.html" />
+    <Content Include="AppProvaSP\scripts\model\ExportarDreEscolas.js" />
     <Content Include="AppProvaSP\scripts\app.js" />
     <Content Include="AppProvaSP\scripts\datepicker-pt-BR.js" />
     <Content Include="AppProvaSP\scripts\external\DomToImage-2.6\dom-to-image.js" />
