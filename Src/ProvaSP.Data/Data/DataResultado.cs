@@ -483,6 +483,76 @@ namespace ProvaSP.Data
             return resultado;
         }
 
+        public static byte[] ExportarDadosDosAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_uad_sigla)
+        {
+            var dadosDosAlunos = new List<DadosDosAlunosParaExportarCsvDreEscolas>();
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                var parametros = new DynamicParameters();
+
+                parametros.Add("Edicao", Edicao, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 10);
+                parametros.Add("AnoEscolar", AnoEscolar, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 3);
+                parametros.Add("AreaConhecimentoID", AreaConhecimentoID, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
+
+                var sbDREs = new StringBuilder();
+                var lista_uad_siglaSplit = lista_uad_sigla.Split(',');
+
+                foreach (var uad_sigla in lista_uad_siglaSplit)
+                {
+                    if (sbDREs.Length > 0)
+                    {
+                        sbDREs.Append(",");
+                    }
+                    string parameterName = "@p_" + uad_sigla;
+                    sbDREs.Append(parameterName);
+                    parametros.Add(parameterName, uad_sigla, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 4);
+                }
+
+                conn.Open();
+
+                dadosDosAlunos = 
+                    conn.Query<DadosDosAlunosParaExportarCsvDreEscolas>(
+                                    sql: $@"
+                                        SELECT
+	                                        esc.esc_nome AS NomeDaEscola,
+	                                        resultado.NivelProficienciaID, 
+	                                        resultado.Edicao,
+	                                        resultado.alu_nome AS Nome,
+	                                        resultado.alu_matricula AS Matricula,
+	                                        resultado.AnoEscolar,
+	                                        resultado.tur_codigo AS CodigoDaTurmaDoAluno,
+	                                        ISNULL(tr.Periodo,'Indefinido') AS Periodo,
+	                                        resultado.valor as Media,
+	                                        nivel.Nome as NivelProficiencia
+                                        FROM ResultadoAluno resultado WITH (NOLOCK)
+                                            LEFT JOIN Turma tr WITH (NOLOCK) ON tr.tur_id = resultado.tur_id
+                                            INNER JOIN Escola esc WITH (NOLOCK) ON esc.esc_codigo = resultado.esc_codigo
+                                            INNER JOIN NivelProficiencia nivel WITH (NOLOCK) ON nivel.NivelProficienciaID = resultado.NivelProficienciaID
+                                        WHERE 
+                                            resultado.Edicao=@Edicao AND 
+                                            resultado.AreaConhecimentoID=@AreaConhecimentoID AND 
+                                            resultado.AnoEscolar=@AnoEscolar AND 
+                                            resultado.uad_sigla IN({sbDREs}) 
+                                        ORDER BY 
+                                            esc.esc_nome, 
+                                            resultado.tur_codigo, 
+                                            resultado.alu_nome
+                                        ",
+                                    param: parametros
+                                ).ToList();
+            }
+
+            var texto = string.Empty;
+            texto = "NomeDaEscola;Edicao;NomeDoAluno;MatriculaDoAluno;AnoEscolarDoAluno;CodigoDaTurmaDoAluno;Periodo;MediaDoAluno;NivelProficienciaDoAluno;";
+            dadosDosAlunos.ForEach(x =>
+            {
+                texto += $"{Environment.NewLine}{x.NomeDaEscola};{x.Edicao};{x.Nome};{x.Matricula};{x.AnoEscolar};{x.CodigoDaTurmaDoAluno};{x.Periodo};{x.Media};{x.NivelProficiencia};";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
+
         public static Resultado RecuperarResultadoTurma(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo, string lista_turmas)
         {
             var resultado = new Resultado();
@@ -713,6 +783,7 @@ namespace ProvaSP.Data
             return resultado;
         }
 
+  
         public static Resultado RecuperarResultadoEnturmacaoAtual(string Edicao, int AreaConhecimentoID, string AnoEscolarCorrente, string lista_turmas)
         {
             var resultado = new Resultado();
@@ -1048,11 +1119,9 @@ namespace ProvaSP.Data
             return resultado;
         }
 
-        public static int RetornarNivelProficienciaID(int AreaConhecimentoID, string AnoEscolar, float ValorProficiencia)
+        public static string RetornarNivelProficienciaID(int AreaConhecimentoID, string AnoEscolar, float ValorProficiencia)
         {
-            int Retorno = 0;
-
-            int LIMITE_ABAIXO_DO_BASICO = 0;
+              int LIMITE_ABAIXO_DO_BASICO = 0;
             int LIMITE_BASICO = 0;
             int LIMITE_ADEQUADO = 0;
 
@@ -1199,15 +1268,13 @@ namespace ProvaSP.Data
             }
 
             if (ValorProficiencia < LIMITE_ABAIXO_DO_BASICO)
-                Retorno = 1;
+                return "Abaixo do básico";
             else if (ValorProficiencia < LIMITE_BASICO)
-                Retorno = 2;
+                return "Básico";
             else if (ValorProficiencia < LIMITE_ADEQUADO)
-                Retorno = 3;
+                return "Adequado";
             else
-                Retorno = 4;
-
-            return Retorno;
+                return "Avançado";
         }
 
         public static Resultado RecuperarResultadoCicloSME(string Edicao, int AreaConhecimentoID, string Ciclo)

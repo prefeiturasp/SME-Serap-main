@@ -1,5 +1,46 @@
 ﻿"use strict";
 
+function parametrosDaRequisicaoDeExportacaoDeDadosEGraficos() {
+    var objEnvio = {};
+    var nivel = $("#ddlResultadoNivel").val();
+    var edicao = $("#ddlResultadoEdicao").val();
+    var ciclo = $("#ddlResultadoCiclo").val();
+    var areaConhecimentoId = $("#ddlResultadoAreaConhecimento").val();
+    var anoEscolar = $("#ddlResultadoAno").val();
+    var lista_uad_sigla = "";
+    var lista_esc_codigo = "";
+    var lista_turmas = "";
+    var lista_alu_matricula = "";
+
+    if (nivel == "DRE") {
+        lista_uad_sigla = $(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get().toString();
+    }
+    else if (nivel == "ESCOLA") {
+        lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
+    }
+    else if (nivel == "TURMA") {
+        lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
+        lista_turmas = $(".resultado-turma-item-chk:checked").map(function () { return this.value; }).get().toString();
+    }
+    else if (nivel == "ALUNO") {
+        lista_alu_matricula = $(".resultado-aluno-item-chk:checked").map(function () { return this.value; }).get().toString();
+    }
+
+    objEnvio = {
+        Nivel: nivel,
+        Edicao: edicao,
+        Ciclo: ciclo,
+        AreaConhecimentoID: areaConhecimentoId,
+        AnoEscolar: anoEscolar,
+        lista_uad_sigla: lista_uad_sigla,
+        lista_esc_codigo: lista_esc_codigo,
+        lista_turmas: lista_turmas,
+        lista_alu_matricula: lista_alu_matricula
+    }
+
+    return objEnvio;
+}
+
 /***** Ínicio do PDF */
 
 var paginaDoPdf = 1;
@@ -507,6 +548,8 @@ function limparChartDoPdf() {
 
 /***** Fim do PDF */
 
+/***** Ínicio download imagem PNG e JPG */
+
 $('.link-exportar-imagem-detalhes').click(function () {
     let imageFormat = this.dataset.imageFormat;
     const imagemTituloDeApresentacao = gerarImagemDivTituloDeApresentacao();
@@ -525,7 +568,6 @@ function gerarImagemDivTituloDeApresentacao() {
             });
     });
 }
-
 
 function gerarImagemDivTituloDeApresentacaoFiltro() {
     return new Promise((resolve) => {
@@ -619,3 +661,40 @@ function setFundoBrancoNoCanvas(contextCanvasExport, canvasExport)
     contextCanvasExport.fillStyle = "white";
     contextCanvasExport.fillRect(0, 0, canvasExport.width, canvasExport.height);
 }
+
+/***** Fim do download imagem PNG e JPG */
+
+/***** Ínicio do download do CSV */
+
+$('.link-exportar-dados-csv').click(function () {
+    gerarRelatorioEmCsv();
+});
+
+function gerarRelatorioEmCsv() {
+    var objEnvio = parametrosDaRequisicaoDeExportacaoDeDadosEGraficos();
+    
+    $.mobile.loading("show", {
+        text: "Aguarde a geração do csv...",
+        textVisible: true,
+        theme: "a",
+        html: ""
+    });
+
+
+    $.post(urlBackEnd + "api/ResultadoPorNivel/download-csv-dre-detalhando-escolas-alunos?guid=" + newGuid(), objEnvio)
+    .success(function (data) {
+        var universalBOM = "\uFEFF";
+        var blob = new Blob([universalBOM+data], {type: "text/csv;charset=UTF-8" });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "ProficienciaAlunos.csv";
+        link.click();
+
+        $.mobile.loading("hide");
+    })
+    .fail(function (erro) {
+        ProvaSP_Erro("Erro " + erro.status, erro.statusText);
+    });
+}
+
+/***** Fim do download do CSV */

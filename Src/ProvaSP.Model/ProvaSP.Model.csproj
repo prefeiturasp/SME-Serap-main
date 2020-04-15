@@ -70,6 +70,7 @@
     <Compile Include="Entidades\ListaPresenca.cs" />
     <Compile Include="Entidades\Proficiencia.cs" />
     <Compile Include="Entidades\RelatorioAgrupamento.cs" />
+    <Compile Include="Entidades\DadosDosAlunosParaExportarCsvDreEscolas.cs" />
     <Compile Include="Entidades\RelatorioItemAgrupado.cs" />
     <Compile Include="Entidades\Resultado.cs" />
     <Compile Include="Entidades\ResultadoItem.cs" />
