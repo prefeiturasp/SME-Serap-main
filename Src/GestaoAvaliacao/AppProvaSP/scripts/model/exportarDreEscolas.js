@@ -664,13 +664,13 @@ function setFundoBrancoNoCanvas(contextCanvasExport, canvasExport)
 
 /***** Fim do download imagem PNG e JPG */
 
-/***** Ínicio do download do CSV */
+/***** Ínicio do download do CSV Dos Alunos*/
 
-$('.link-exportar-dados-csv').click(function () {
-    gerarRelatorioEmCsv();
+$('.link-exportar-dados-csv-alunos').click(function () {
+    gerarRelatorioEmCsvDosAlunos();
 });
 
-function gerarRelatorioEmCsv() {
+function gerarRelatorioEmCsvDosAlunos() {
     var objEnvio = parametrosDaRequisicaoDeExportacaoDeDadosEGraficos();
     
     $.mobile.loading("show", {
@@ -698,3 +698,38 @@ function gerarRelatorioEmCsv() {
 }
 
 /***** Fim do download do CSV */
+
+/***** Ínicio do download do CSV dos gráficos de radar e barras*/
+
+$('.link-exportar-dados-csv-graficos').click(function () {
+    gerarRelatorioEmCsvDosGraficos();
+});
+
+function gerarRelatorioEmCsvDosGraficos() {
+    var objEnvio = parametrosDaRequisicaoDeExportacaoDeDadosEGraficos();
+
+    $.mobile.loading("show", {
+        text: "Aguarde a geração do csv...",
+        textVisible: true,
+        theme: "a",
+        html: ""
+    });
+
+
+    $.post(urlBackEnd + "api/ResultadoPorNivel/download-csv-dre-detalhando-escolas-consolidado?guid=" + newGuid(), objEnvio)
+    .success(function (data) {
+        var universalBOM = "\uFEFF";
+        var blob = new Blob([universalBOM + data], { type: "text/csv;charset=UTF-8" });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "ProficienciaAlunos.csv";
+        link.click();
+
+        $.mobile.loading("hide");
+    })
+    .fail(function (erro) {
+        ProvaSP_Erro("Erro " + erro.status, erro.statusText);
+    });
+}
+
+/***** Fim do download do CSV dos gráficos de radar e barras */

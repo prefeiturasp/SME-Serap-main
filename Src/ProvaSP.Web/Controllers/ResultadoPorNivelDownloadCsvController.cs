@@ -15,7 +15,7 @@ using System.Web.Http;
 namespace ProvaSP.Web.Controllers
 {
     public class ResultadoPorNivelDownloadCsvController : ApiController
-    {
+    {        
         [HttpPost]
         public HttpResponseMessage DownloadCsvDreDetalhandoEscolasDosAlunos(FormDataCollection formData)
         {
@@ -24,7 +24,7 @@ namespace ProvaSP.Web.Controllers
             var AnoEscolar = Convert.ToString(formData["AnoEscolar"]);
             var lista_uad_sigla = Convert.ToString(formData["lista_uad_sigla"]);
 
-            var myByteArrayContent = DataResultado.ExportarDadosDosAlunos(Edicao,AreaConhecimentoID,AnoEscolar, lista_uad_sigla);
+            var myByteArrayContent = DataResultado.ExportarDadosDreEscolasDosAlunos(Edicao,AreaConhecimentoID,AnoEscolar, lista_uad_sigla);
 
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -47,7 +47,7 @@ namespace ProvaSP.Web.Controllers
             var AnoEscolar = Convert.ToString(formData["AnoEscolar"]);
             var lista_uad_sigla = Convert.ToString(formData["lista_uad_sigla"]);
 
-            var myByteArrayContent = DataResultado.ExportarDadosDosAlunos(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+            var myByteArrayContent = DataResultado.ExportarDadosDreEscolasConsolidados(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
 
             var result = new HttpResponseMessage(HttpStatusCode.OK)
             {

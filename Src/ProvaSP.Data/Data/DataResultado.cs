@@ -483,7 +483,33 @@ namespace ProvaSP.Data
             return resultado;
         }
 
-        public static byte[] ExportarDadosDosAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_uad_sigla)
+        public static byte[] ExportarDadosDreEscolasConsolidados(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_uad_sigla)
+        {
+            var resultado = RecuperarResultadoDRE(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+            var texto = string.Empty;
+
+            var agregacoes = resultado.Agregacao;
+            var niveisDeProficiencia = GetNiveisDeProficiencia();
+            texto = "Titulo;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            agregacoes.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor}{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
+        private static List<NivelDeProficiencia> GetNiveisDeProficiencia()
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                conn.Open();
+                return conn.Query<NivelDeProficiencia>("select NivelProficienciaID, Nome from NivelProficiencia").ToList();
+            }
+        }
+
+        public static byte[] ExportarDadosDreEscolasDosAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_uad_sigla)
         {
             var dadosDosAlunos = new List<DadosDosAlunosParaExportarCsvDreEscolas>();
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
@@ -510,7 +536,7 @@ namespace ProvaSP.Data
 
                 conn.Open();
 
-                dadosDosAlunos = 
+                dadosDosAlunos =
                     conn.Query<DadosDosAlunosParaExportarCsvDreEscolas>(
                                     sql: $@"
                                         SELECT
@@ -551,7 +577,6 @@ namespace ProvaSP.Data
 
             return Encoding.UTF8.GetBytes(texto);
         }
-
 
         public static Resultado RecuperarResultadoTurma(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo, string lista_turmas)
         {
@@ -783,7 +808,7 @@ namespace ProvaSP.Data
             return resultado;
         }
 
-  
+
         public static Resultado RecuperarResultadoEnturmacaoAtual(string Edicao, int AreaConhecimentoID, string AnoEscolarCorrente, string lista_turmas)
         {
             var resultado = new Resultado();
@@ -1121,7 +1146,7 @@ namespace ProvaSP.Data
 
         public static string RetornarNivelProficienciaID(int AreaConhecimentoID, string AnoEscolar, float ValorProficiencia)
         {
-              int LIMITE_ABAIXO_DO_BASICO = 0;
+            int LIMITE_ABAIXO_DO_BASICO = 0;
             int LIMITE_BASICO = 0;
             int LIMITE_ADEQUADO = 0;
 

@@ -62,6 +62,7 @@
     <Compile Include="Entidades\Configuracao.cs" />
     <Compile Include="Entidades\Constructo.cs" />
     <Compile Include="Entidades\Corte.cs" />
+    <Compile Include="Entidades\NivelDeProficiencia.cs" />
     <Compile Include="Entidades\FatorAssociado.cs" />
     <Compile Include="Entidades\Grupo.cs" />
     <Compile Include="Entidades\HabilidadeItem.cs" />
