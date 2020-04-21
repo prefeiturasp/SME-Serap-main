@@ -693,7 +693,7 @@ function gerarRelatorioEmCsvDosAlunos() {
         $.mobile.loading("hide");
     })
     .fail(function (erro) {
-        ProvaSP_Erro("Erro " + erro.status, erro.statusText);
+        ProvaSP_Erro("Erro " + erro.status, erro.responseText);
     });
 }
 
@@ -727,8 +727,9 @@ function gerarRelatorioEmCsvDosGraficos() {
 
         $.mobile.loading("hide");
     })
-    .fail(function (erro) {
-        ProvaSP_Erro("Erro " + erro.status, erro.statusText);
+        .fail(function (erro) {
+            debugger;
+        ProvaSP_Erro("Erro " + erro.status, erro.responseText);
     });
 }
 

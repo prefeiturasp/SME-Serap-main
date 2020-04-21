@@ -4364,9 +4364,15 @@ function definirEventHandlers() {
              *Abaixo a determinação de informações específicas com base no nível selecionado.
             */
             $('#exportar_graficos').hide();
+            $('#exportar-dados').hide();
             $('#imprimir_graficos').hide();
 
-            if (nivel == "DRE") { $("#exportar_graficos").show(); } else { $("#imprimir_graficos").show(); }
+            if (nivel == "DRE") {
+                $("#exportar_graficos").show();
+                $('#exportar-dados').show();
+            } else {
+                $("#imprimir_graficos").show();
+            }
             
             if (nivel == "DRE") {
                 lista_uad_sigla = $(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get().toString();
@@ -4385,6 +4391,7 @@ function definirEventHandlers() {
             if (nivel == "DRE" && $('span').hasClass('mdi-checkbox-marked'))
             {
                 $('#exportar_graficos').hide();
+                $('#exportar-dados').hide();
                 $('#imprimir_graficos').hide();
             }
 

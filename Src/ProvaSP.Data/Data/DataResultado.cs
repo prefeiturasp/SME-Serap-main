@@ -494,7 +494,15 @@ namespace ProvaSP.Data
             agregacoes.ForEach(x =>
             {
                 var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
-                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor}{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+            });
+
+            var itens = resultado.Itens;
+            texto += $"{Environment.NewLine}Titulo;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            itens.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
             });
 
             return Encoding.UTF8.GetBytes(texto);

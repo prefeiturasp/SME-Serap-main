@@ -15,51 +15,71 @@ using System.Web.Http;
 namespace ProvaSP.Web.Controllers
 {
     public class ResultadoPorNivelDownloadCsvController : ApiController
-    {        
+    {
         [HttpPost]
         public HttpResponseMessage DownloadCsvDreDetalhandoEscolasDosAlunos(FormDataCollection formData)
         {
-            var Edicao = Convert.ToString(formData["Edicao"]);
-            var AreaConhecimentoID = int.Parse(Convert.ToString(formData["AreaConhecimentoID"]));
-            var AnoEscolar = Convert.ToString(formData["AnoEscolar"]);
-            var lista_uad_sigla = Convert.ToString(formData["lista_uad_sigla"]);
-
-            var myByteArrayContent = DataResultado.ExportarDadosDreEscolasDosAlunos(Edicao,AreaConhecimentoID,AnoEscolar, lista_uad_sigla);
-
-            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            try
             {
-                Content = new ByteArrayContent(myByteArrayContent)
-            };
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-            {
-                FileName = "Proficiencia.csv"
-            };
+                var Edicao = Convert.ToString(formData["Edicao"]);
+                var AreaConhecimentoID = int.Parse(Convert.ToString(formData["AreaConhecimentoID"]));
+                var AnoEscolar = Convert.ToString(formData["AnoEscolar"]);
+                var lista_uad_sigla = Convert.ToString(formData["lista_uad_sigla"]);
 
-            return result;
+                var myByteArrayContent = DataResultado.ExportarDadosDreEscolasDosAlunos(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+
+                var result = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new ByteArrayContent(myByteArrayContent)
+                };
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                {
+                    FileName = "Proficiencia.csv"
+                };
+
+                return result;
+            }
+            catch(Exception ex)
+            {
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent($"{ex.Message ?? ex.StackTrace}")
+                };
+            }
         }
 
         [HttpPost]
         public HttpResponseMessage DownloadCsvDreDetalhandoEscolasConsolidado(FormDataCollection formData)
         {
-            var Edicao = Convert.ToString(formData["Edicao"]);
-            var AreaConhecimentoID = int.Parse(Convert.ToString(formData["AreaConhecimentoID"]));
-            var AnoEscolar = Convert.ToString(formData["AnoEscolar"]);
-            var lista_uad_sigla = Convert.ToString(formData["lista_uad_sigla"]);
-
-            var myByteArrayContent = DataResultado.ExportarDadosDreEscolasConsolidados(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
-
-            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            try
             {
-                Content = new ByteArrayContent(myByteArrayContent)
-            };
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-            {
-                FileName = "Proficiencia.csv"
-            };
+                var Edicao = Convert.ToString(formData["Edicao"]);
+                var AreaConhecimentoID = int.Parse(Convert.ToString(formData["AreaConhecimentoID"]));
+                var AnoEscolar = Convert.ToString(formData["AnoEscolar"]);
+                var lista_uad_sigla = Convert.ToString(formData["lista_uad_sigla"]);
 
-            return result;
+                var myByteArrayContent = DataResultado.ExportarDadosDreEscolasConsolidados(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+
+                var result = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new ByteArrayContent(myByteArrayContent)
+                };
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                {
+                    FileName = "Proficiencia.csv"
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent($"{ex.Message ?? ex.StackTrace}")
+                };
+            }
         }
     }
 }
