@@ -4370,21 +4370,19 @@ function definirEventHandlers() {
             if (nivel == "DRE") {
                 $("#exportar_graficos").show();
                 $('#exportar-dados').show();
-            } else {
-                $("#imprimir_graficos").show();
-            }
-            
-            if (nivel == "DRE") {
                 lista_uad_sigla = $(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
             else if (nivel == "ESCOLA") {
+                $("#exportar_graficos").show();
                 lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
             else if (nivel == "TURMA") {
+                $("#imprimir_graficos").show();
                 lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
                 lista_turmas = $(".resultado-turma-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
             else if (nivel == "ALUNO") {
+                $("#imprimir_graficos").show();
                 lista_alu_matricula = $(".resultado-aluno-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
 
