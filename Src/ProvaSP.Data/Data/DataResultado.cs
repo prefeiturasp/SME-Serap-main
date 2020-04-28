@@ -490,15 +490,17 @@ namespace ProvaSP.Data
 
             var agregacoes = resultado.Agregacao;
             var niveisDeProficiencia = GetNiveisDeProficiencia();
-            texto = "Titulo;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            texto = "NomeDre;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
             agregacoes.ForEach(x =>
             {
                 var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
                 texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
             });
 
+            texto += $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
+
             var itens = resultado.Itens;
-            texto += $"{Environment.NewLine}Titulo;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            texto += $"{Environment.NewLine}NomeEscola;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
             itens.ForEach(x =>
             {
                 var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
@@ -577,7 +579,8 @@ namespace ProvaSP.Data
             }
 
             var texto = string.Empty;
-            texto = "NomeDaEscola;Edicao;NomeDoAluno;MatriculaDoAluno;AnoEscolarDoAluno;CodigoDaTurmaDoAluno;Periodo;MediaDoAluno;NivelProficienciaDoAluno;";
+            texto += "Microdados;";
+            texto += $"{Environment.NewLine}NomeDaEscola;Edicao;NomeDoAluno;MatriculaDoAluno;AnoEscolarDoAluno;CodigoDaTurmaDoAluno;Periodo;MediaDoAluno;NivelProficienciaDoAluno;";
             dadosDosAlunos.ForEach(x =>
             {
                 texto += $"{Environment.NewLine}{x.NomeDaEscola};{x.Edicao};{x.Nome};{x.Matricula};{x.AnoEscolar};{x.CodigoDaTurmaDoAluno};{x.Periodo};{x.Media};{x.NivelProficiencia};";
