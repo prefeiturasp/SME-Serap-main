@@ -687,7 +687,7 @@ function gerarRelatorioEmCsvDosAlunos() {
         var blob = new Blob([universalBOM+data], {type: "text/csv;charset=UTF-8" });
         var link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download = "ProficienciaAlunos.csv";
+        link.download = "ProficienciaDosAlunos.csv";
         link.click();
 
         $.mobile.loading("hide");
@@ -722,7 +722,7 @@ function gerarRelatorioEmCsvDosGraficos() {
         var blob = new Blob([universalBOM + data], { type: "text/csv;charset=UTF-8" });
         var link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download = "ProficienciaAlunos.csv";
+        link.download = "ProficienciaDre.csv";
         link.click();
 
         $.mobile.loading("hide");
