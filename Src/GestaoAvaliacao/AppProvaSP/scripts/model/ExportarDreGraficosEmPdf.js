@@ -3,6 +3,7 @@
 var paginaDoPdf = 1;
 
 $('.link-exportar-pdf-detalhes').click(function () {
+    paginaDoPdf = 1;
     gerarRelatorioEmPdf();
 });
 
@@ -339,9 +340,14 @@ function adicionarGraficoDeBarrasAoPdf(pdf, canvasElement, primeiraPagina) {
     pdf.text(500, 800, "Página " + paginaDoPdf);
 }
 
-function montarRadarNoPdf(pdf) {
-    pdf.fromHTML($('#divResultadoApresentacaoTitulo')[0], 228, 15);
-    pdf.fromHTML($('#lblResultadoSubTitulo')[0], 180, 20);
+function montarRadarNoPdf(pdf) {   
+    pdf.setFontType("bold");
+    pdf.setFontSize(20);
+    pdf.text(190, 30, $('#lblResultadoTitulo').text());
+    pdf.setFontSize(15); 
+    pdf.text(150, 48, $('#lblResultadoEdicao').text() + " - " + $('#lblResultadoAreaConhecimento').text() + " - " +  $('#lblResultadoAno').text());
+    pdf.setFontType("normal");
+    pdf.setFontSize(16);
 
     var listaDeAgregacao = [];
 
@@ -349,10 +355,19 @@ function montarRadarNoPdf(pdf) {
         listaDeAgregacao.push($(this).attr('id'));
     });
 
-    var quantidade = 0;
-    var canvasPosition = 50;
-
+    let quantidade = 0;
+    let canvasPosition = 65;
+    let quantidadeDeRadares = listaDeAgregacao.length;
     listaDeAgregacao.forEach(agregacaoId => {
+        let alinhamentoRadar = 80;
+        let tamanhoDoCanvas = 0.75;
+
+        if(quantidadeDeRadares == 1)
+        {
+            alinhamentoRadar = 30;
+            tamanhoDoCanvas = 0.85;
+        }
+
         if (quantidade > 0) {
             canvasPosition += 250;
 
@@ -368,9 +383,9 @@ function montarRadarNoPdf(pdf) {
         canvasChartRadar.width = 680;
         canvasChartRadar.height = 300;
         const ctx = canvasChartRadar.getContext("2d");
-        ctx.drawImage(canvas, 80, 0);
+        ctx.drawImage(canvas, alinhamentoRadar, 0);
 
-        pdf.addImage(canvasChartRadar.toDataURL("image/png", 1.0), 'PNG', 0, canvasPosition, canvasChartRadar.width * 0.75, canvasChartRadar.height * 0.75, '', 'FAST');
+        pdf.addImage(canvasChartRadar.toDataURL("image/png", 1.0), 'PNG', 0, canvasPosition, canvasChartRadar.width * tamanhoDoCanvas, canvasChartRadar.height * tamanhoDoCanvas, '', 'FAST');
 
         pdf.setFontSize(9);
         pdf.setFontType("normal")
