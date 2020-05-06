@@ -4378,7 +4378,7 @@ function definirEventHandlers() {
                 lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
             else if (nivel == "TURMA") {
-                $("#imprimir_graficos").show();
+                $("#exportar_graficos").show();
                 lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
                 lista_turmas = $(".resultado-turma-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
