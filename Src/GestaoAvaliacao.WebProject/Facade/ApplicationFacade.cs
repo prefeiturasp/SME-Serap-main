@@ -197,7 +197,7 @@ namespace GestaoAvaliacao.WebProject.Facade
 			{
 				IParameterBusiness parameterBusiness = container.Resolve<IParameterBusiness>();
 				var paramPath = parameterBusiness.GetParamByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), SessionFacade.UsuarioLogado.Usuario.ent_id);
-				var virtualPath = paramPath != null ? paramPath.Value : (HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + HttpContext.Current.Request.ApplicationPath);
+				var virtualPath = paramPath != null ? paramPath.Value : (ApplicationFacade.BaseURL + HttpContext.Current.Request.ApplicationPath);
 
 				return virtualPath;
 			}
@@ -207,10 +207,23 @@ namespace GestaoAvaliacao.WebProject.Facade
 		{
 			get
 			{
-				return (HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + HttpContext.Current.Request.ApplicationPath);
+				return (ApplicationFacade.BaseURL + HttpContext.Current.Request.ApplicationPath);
 			}
 		}
 
+		private static string BaseURL
+		{
+			get
+			{
+				var baseURL = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
+				if (baseURL.StartsWith("http://hom-")) // ambiente de homologação usa HTTPS aplicado pelo Proxy
+					baseURL = baseURL.Replace("http://", "https://");
+				else if (baseURL.StartsWith("http://itens-"))// ambiente de itens usa HTTPS aplicado pelo Proxy
+					baseURL = baseURL.Replace("http://", "https://");
+				return baseURL;
+			}
+		}
+		
 		#endregion
 
 		#region Private Methods
@@ -218,7 +231,7 @@ namespace GestaoAvaliacao.WebProject.Facade
 		private static string RecuperarVersao()
 		{
 			var xmlDoc = new XmlDocument();
-
+			
 			xmlDoc.Load(HttpContext.Current.Request.PhysicalApplicationPath + "version.xml");
 
 			var xn = xmlDoc.GetElementsByTagName("versionNumber");
