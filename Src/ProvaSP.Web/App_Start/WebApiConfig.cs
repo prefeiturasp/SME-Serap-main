@@ -10,8 +10,8 @@ namespace ProvaSP.Web
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
-            config.Routes.MapHttpRoute("ResultadoPorNivelDreDetalhandoEscolasDownloadCsvDosAlunos", "api/ResultadoPorNivel/download-csv-dre-detalhando-escolas-alunos", new { controller = "ResultadoPorNivelDownloadCsv", action = "DownloadCsvDreDetalhandoEscolasDosAlunos" });
-            config.Routes.MapHttpRoute("ResultadoPorNivelDreDetalhandoEscolasDownloadCsvConsolidado", "api/ResultadoPorNivel/download-csv-dre-detalhando-escolas-consolidado", new { controller = "ResultadoPorNivelDownloadCsv", action = "DownloadCsvDreDetalhandoEscolasConsolidado" });
+            config.Routes.MapHttpRoute("ResultadoPorNivelDownloadCsvDosAlunos", "api/ResultadoPorNivel/download-csv-dre-alunos", new { controller = "ResultadoPorNivelDownloadCsv", action = "DownloadCsvDreAlunos" });
+            config.Routes.MapHttpRoute("ResultadoPorNivelDownloadCsvDreMediaConsolidado", "api/ResultadoPorNivel/download-csv-dre-media-consolidado", new { controller = "ResultadoPorNivelDownloadCsv", action = "DownloadCsvDreMediaConsolidado" });
 
             // Web API routes
             config.MapHttpAttributeRoutes();

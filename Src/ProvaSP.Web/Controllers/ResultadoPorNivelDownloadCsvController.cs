@@ -17,7 +17,7 @@ namespace ProvaSP.Web.Controllers
     public class ResultadoPorNivelDownloadCsvController : ApiController
     {
         [HttpPost]
-        public HttpResponseMessage DownloadCsvDreDetalhandoEscolasDosAlunos(FormDataCollection formData)
+        public HttpResponseMessage DownloadCsvDreAlunos(FormDataCollection formData)
         {
             try
             {
@@ -25,8 +25,21 @@ namespace ProvaSP.Web.Controllers
                 var AreaConhecimentoID = int.Parse(Convert.ToString(formData["AreaConhecimentoID"]));
                 var AnoEscolar = Convert.ToString(formData["AnoEscolar"]);
                 var lista_uad_sigla = Convert.ToString(formData["lista_uad_sigla"]);
+                var Nivel = Convert.ToString(formData["Nivel"]);
+                var Ciclo = Convert.ToString(formData["Ciclo"]);
+                var lista_esc_codigo = Convert.ToString(formData["lista_esc_codigo"]);
+                var lista_turmas = Convert.ToString(formData["lista_turmas"]);
+                var lista_alu_matricula = Convert.ToString(formData["lista_alu_matricula"]);
 
-                var myByteArrayContent = DataResultado.ExportarDadosDreEscolasDosAlunos(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+                var myByteArrayContent = new byte[0];
+                if (Nivel == "DRE")
+                {
+                    myByteArrayContent = DataResultado.ExportarDadosDreEscolasDosAlunos(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+                }
+                else if (Nivel == "ESCOLA")
+                {
+                    myByteArrayContent = DataResultado.ExportarDadosDreResultadoEscolaDosAlunos(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo);
+                }
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK)
                 {
@@ -40,7 +53,7 @@ namespace ProvaSP.Web.Controllers
 
                 return result;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new HttpResponseMessage(HttpStatusCode.InternalServerError)
                 {
@@ -50,7 +63,7 @@ namespace ProvaSP.Web.Controllers
         }
 
         [HttpPost]
-        public HttpResponseMessage DownloadCsvDreDetalhandoEscolasConsolidado(FormDataCollection formData)
+        public HttpResponseMessage DownloadCsvDreMediaConsolidado(FormDataCollection formData)
         {
             try
             {
@@ -58,8 +71,21 @@ namespace ProvaSP.Web.Controllers
                 var AreaConhecimentoID = int.Parse(Convert.ToString(formData["AreaConhecimentoID"]));
                 var AnoEscolar = Convert.ToString(formData["AnoEscolar"]);
                 var lista_uad_sigla = Convert.ToString(formData["lista_uad_sigla"]);
+                var Nivel = Convert.ToString(formData["Nivel"]);
+                var Ciclo = Convert.ToString(formData["Ciclo"]);
+                var lista_esc_codigo = Convert.ToString(formData["lista_esc_codigo"]);
+                var lista_turmas = Convert.ToString(formData["lista_turmas"]);
+                var lista_alu_matricula = Convert.ToString(formData["lista_alu_matricula"]);
 
-                var myByteArrayContent = DataResultado.ExportarDadosDreEscolasConsolidados(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+                var myByteArrayContent = new byte[0];
+                if (Nivel == "DRE")
+                {
+                    myByteArrayContent = DataResultado.ExportarDadosDreEscolasConsolidados(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+                }
+                else if (Nivel == "ESCOLA")
+                {
+                    myByteArrayContent = DataResultado.ExportarDadosDreResultadoEscolaConsolidado(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo);
+                }
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK)
                 {

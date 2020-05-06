@@ -4366,7 +4366,7 @@ function definirEventHandlers() {
             $('#exportar_graficos').hide();
             $('#exportar-dados').hide();
             $('#imprimir_graficos').hide();
-
+            
             if (nivel == "DRE") {
                 $("#exportar_graficos").show();
                 $('#exportar-dados').show();
@@ -4374,6 +4374,7 @@ function definirEventHandlers() {
             }
             else if (nivel == "ESCOLA") {
                 $("#exportar_graficos").show();
+                $('#exportar-dados').show();
                 lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
             else if (nivel == "TURMA") {
@@ -4385,8 +4386,12 @@ function definirEventHandlers() {
                 $("#imprimir_graficos").show();
                 lista_alu_matricula = $(".resultado-aluno-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
+            else if (nivel == "SME")
+            {
+                $("#imprimir_graficos").show();
+            }
 
-            if (nivel == "DRE" && $('span').hasClass('mdi-checkbox-marked'))
+            if ((nivel == "DRE" || nivel == "ESCOLA") && $('span').hasClass('mdi-checkbox-marked'))
             {
                 $('#exportar_graficos').hide();
                 $('#exportar-dados').hide();

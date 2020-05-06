@@ -58,13 +58,13 @@ function gerarRelatorioEmCsvDosAlunos() {
     });
 
 
-    $.post(urlBackEnd + "api/ResultadoPorNivel/download-csv-dre-detalhando-escolas-alunos?guid=" + newGuid(), objEnvio)
+    $.post(urlBackEnd + "api/ResultadoPorNivel/download-csv-dre-alunos?guid=" + newGuid(), objEnvio)
         .success(function (data) {
             var universalBOM = "\uFEFF";
             var blob = new Blob([universalBOM + data], { type: "text/csv;charset=UTF-8" });
             var link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
-            link.download = "ProficienciaMicrodados.csv";
+            link.download = "ProficienciaAlunos.csv";
             link.click();
 
             $.mobile.loading("hide");
@@ -93,7 +93,7 @@ function gerarRelatorioEmCsvDosGraficos() {
     });
 
 
-    $.post(urlBackEnd + "api/ResultadoPorNivel/download-csv-dre-detalhando-escolas-consolidado?guid=" + newGuid(), objEnvio)
+    $.post(urlBackEnd + "api/ResultadoPorNivel/download-csv-dre-media-consolidado?guid=" + newGuid(), objEnvio)
         .success(function (data) {
             var universalBOM = "\uFEFF";
             var blob = new Blob([universalBOM + data], { type: "text/csv;charset=UTF-8" });
