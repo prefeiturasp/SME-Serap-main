@@ -112,8 +112,15 @@ function calcularCanvasHeight(heightRadar, imgTituloDeApresentacao, imgTituloDet
 
 function calcularCanvasWidth(widthRadar, chartEscala, chartResultado)
 {
+    var nivel = $("#ddlResultadoNivel").val();
+    var edicao = $("#ddlResultadoEdicao").val();
+
     widthRadar = widthRadar > chartEscala.width ? widthRadar : chartEscala.width;
     widthRadar = widthRadar > chartResultado.width ? widthRadar : chartResultado.width;
+
+    if(nivel == "TURMA" && edicao == "ENTURMACAO_ATUAL")
+        return widthRadar + 40;
+
     return widthRadar;
 }
 
