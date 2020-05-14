@@ -7,7 +7,13 @@ namespace GestaoAvaliacao.FGVIntegration.Models
 
         public string Email { get; set; }
 
-        public string NomeDaEscola { get; set; }
+        [JsonIgnore]
+        public string CodigoDaEscola { get; set; }
+
+        public string NomeEscola { get; set; }
+
+        [JsonIgnore]
+        public string RfDoResponsavel { get; set; }
 
         public string NomeDoResponsavel { get; set; }
 
@@ -17,12 +23,6 @@ namespace GestaoAvaliacao.FGVIntegration.Models
         /// Apenas números
         /// </summary>
         public string CPFDoResponsavel { get; set; }
-
-        /// <summary>
-        /// PES_Pessoa.pes_id
-        /// </summary>
-        [JsonIgnore]
-        public string IdPessoaResponsavel { get; set; }
 
         /// <summary>
         /// Valores válidos: <see cref="Enums.UnidadeFederativa"/>

@@ -2,10 +2,13 @@
 
 namespace GestaoAvaliacao.FGVIntegration.Models
 {
-    public class Turma : BaseFGVObject
+    public class Turma : BaseFGVObject, IIdentificadorEscola
     {
 
         public string EmailDaEscola { get; set; }
+
+        [JsonIgnore]
+        public string CodigoDaEscola { get; set; }
 
         /// <summary>
         /// Valores válidos: <see cref="Enums.Serie"/>

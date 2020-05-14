@@ -7,8 +7,8 @@
     <ProjectGuid>{D714F282-6B47-4860-9529-2DB8DB7D036A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GestaoAvaliacao.AnswerSheetLotExecuter</RootNamespace>
-    <AssemblyName>GestaoAvaliacao.AnswerSheetLotExecuter</AssemblyName>
+    <RootNamespace>GestaoAvaliacao.FGVIntegration</RootNamespace>
+    <AssemblyName>GestaoAvaliacao.FGVIntegration</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -17,6 +17,8 @@
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -40,17 +42,36 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>15DD3892B7381B9FA04C888DBA04FBA4B2E05936</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>GestaoAvaliacao.FGVIntegration_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.4.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Windsor, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Castle.Facilities.Logging, Version=5.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.LoggingFacility.5.0.1\lib\net45\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.Log4netIntegration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core-log4net.4.4.1\lib\net45\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=5.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Windsor.5.0.1\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.1.50.2\lib\net45\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MSTech.Security.Cryptography, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -66,9 +87,11 @@
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Web">
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -78,26 +101,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adjust.cs">
+    <Compile Include="Business\ConfigurationHelper.cs" />
+    <Compile Include="Data\EolRepository.cs" />
+    <Compile Include="Data\IEolRepository.cs" />
+    <Compile Include="Exceptions\AutenticacaoException.cs" />
+    <Compile Include="Business\IntegracaoBusiness.cs" />
+    <Compile Include="Logging\ILogging.cs" />
+    <Compile Include="Logging\LoggingHelper.cs" />
+    <Compile Include="Logging\LoggingBase.cs" />
+    <Compile Include="IntegrationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Adjust.Designer.cs">
-      <DependentUpon>Adjust.cs</DependentUpon>
+    <Compile Include="IntegrationForm.Designer.cs">
+      <DependentUpon>IntegrationForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FGVEnsinoMedio\DataRepository.cs" />
-    <Compile Include="FGVEnsinoMedio\FGVAPIClient.cs" />
-    <Compile Include="FGVEnsinoMedio\IDataRepository.cs" />
-    <Compile Include="FGVEnsinoMedio\IFGVAPIClient.cs" />
-    <Compile Include="FGVEnsinoMedio\IIntegracaoBusiness.cs" />
-    <Compile Include="FGVEnsinoMedio\IntegracaoBusiness.cs" />
+    <Compile Include="Data\DatabaseRepository.cs" />
+    <Compile Include="Business\FGVAPIConsumer.cs" />
+    <Compile Include="Data\IDatabaseRepository.cs" />
+    <Compile Include="Business\IFGVAPIConsumer.cs" />
+    <Compile Include="Business\IIntegracaoBusiness.cs" />
     <Compile Include="Models\Aluno.cs" />
     <Compile Include="Models\BaseFGVObject.cs" />
     <Compile Include="Models\Coordenador.cs" />
     <Compile Include="Models\Enums.cs" />
+    <Compile Include="Models\IPessoaNomeSobrenome.cs" />
+    <Compile Include="Models\Pessoa.cs" />
+    <Compile Include="Models\FuncionarioCargo.cs" />
     <Compile Include="Models\Escola.cs" />
+    <Compile Include="Models\IIdentificadorEscola.cs" />
     <Compile Include="Models\ItemResultadoFGV.cs" />
     <Compile Include="Models\Professor.cs" />
     <Compile Include="Models\ProfessorTurma.cs" />
+    <Compile Include="Models\ResultadoRequestFGV.cs" />
     <Compile Include="Models\ResultadoFGV.cs" />
     <Compile Include="Models\Turma.cs" />
     <Compile Include="FGVEnsinoMedioInstaller.cs" />
@@ -110,7 +145,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="log4net.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -128,14 +168,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Adjust.resx">
-      <DependentUpon>Adjust.cs</DependentUpon>
+    <EmbeddedResource Include="IntegrationForm.resx">
+      <DependentUpon>IntegrationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

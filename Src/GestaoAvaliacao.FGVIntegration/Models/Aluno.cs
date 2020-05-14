@@ -2,10 +2,13 @@
 
 namespace GestaoAvaliacao.FGVIntegration.Models
 {
-    public class Aluno : BaseFGVObject
+    public class Aluno : BaseFGVObject, IIdentificadorEscola, IPessoaNomeSobrenome
     {
 
         public string EmailDaEscola { get; set; }
+
+        [JsonIgnore]
+        public string CodigoDaEscola { get; set; }
 
         public string EmailDoAluno { get; set; }
 

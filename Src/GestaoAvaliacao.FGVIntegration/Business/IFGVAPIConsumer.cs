@@ -1,14 +1,11 @@
 ﻿using GestaoAvaliacao.FGVIntegration.Models;
-using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
-namespace GestaoAvaliacao.FGVIntegration.FGVEnsinoMedio
+namespace GestaoAvaliacao.FGVIntegration.Business
 {
-    public interface IFGVAPIClient
+    public interface IFGVAPIConsumer
     {
         Task<ResultadoFGV> SendPost(string pEndPoint, BaseFGVObject pParam);
-
-        Task<JObject> Authenticate();
-
+        Task<bool> ValidateAuthentication();
     }
 }

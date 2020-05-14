@@ -74,7 +74,7 @@
 
         public enum Sexo
         {
-            MSCULINO = 'M',
+            MASCULINO = 'M',
             FEMININO = 'F',
         }
 
@@ -95,6 +95,23 @@
             MAT,
             PRED,
             RED,
+        }
+
+        public enum SituacaoRegistro
+        {
+            ATIVO = 1,
+            EXCLUIDO = 3,
+        }
+
+        public enum CargoEscola
+        {
+            DIRETOR = 3360,
+            COORDENADOR = 3379,
+        }
+
+        public enum TipoNivelEnsino
+        {
+            ENSINO_MEDIO = 3
         }
 
     }

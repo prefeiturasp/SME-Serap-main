@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace GestaoAvaliacao.AnswerSheetLotExecuter
+namespace GestaoAvaliacao.FGVIntegration
 {
     static class Program
 	{
@@ -8,6 +8,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+			Application.Run(new IntegrationForm());
 		}
 	}
 }

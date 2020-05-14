@@ -124,6 +124,10 @@
 /Src/GestaoAvaliacao.ExportAnalysisInstaller/obj/Release
 /Src/GestaoAvaliacao.ExportAnalysisService/bin/Debug
 /Src/GestaoAvaliacao.ExportAnalysisService/obj/Release
+/Src/GestaoAvaliacao.FGVIntegration/bin/Debug
+/Src/GestaoAvaliacao.FGVIntegration/bin/Release
+/Src/GestaoAvaliacao.FGVIntegration/obj/Debug
+/Src/GestaoAvaliacao.FGVIntegration/obj/Release
 /Src/GestaoAvaliacao.FileServer/bin/Release
 /Src/GestaoAvaliacao.FileServer/obj/Release
 /Src/GestaoAvaliacao.GenerateNewCorrectionResultInstaller/bin/Debug

@@ -2,12 +2,18 @@
 
 namespace GestaoAvaliacao.FGVIntegration.Models
 {
-    public class Coordenador : BaseFGVObject
+    public class Coordenador : BaseFGVObject, IIdentificadorEscola, IPessoaNomeSobrenome
     {
 
         public string EmailDaEscola { get; set; }
 
+        [JsonIgnore]
+        public string CodigoDaEscola { get; set; }
+
         public string EmailDoCoordenador { get; set; }
+
+        [JsonIgnore]
+        public string RfDoCoordenador { get; set; }
 
         /// <summary>
         /// Valores válidos: <see cref="Enums.TipoCoordenador"/>
@@ -15,6 +21,8 @@ namespace GestaoAvaliacao.FGVIntegration.Models
         public int Tipo { get; set; }
 
         public string Nome { get; set; }
+
+        public string Sobrenome { get; set; }
 
         /// <summary>
         /// Apenas dígitos
