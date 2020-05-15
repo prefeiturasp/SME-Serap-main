@@ -39,9 +39,9 @@ namespace GestaoAvaliacao.FGVIntegration.Data
 	                        pd.psd_numero as CPF,
 	                        (CASE p.pes_sexo WHEN 1 THEN @sexoMasculino WHEN 2 THEN @sexoFeminino ELSE @sexoMasculino END) as Sexo,
 	                        p.pes_dataNascimento as DataNascimento
-                        FROM CoreSSO.dbo.SYS_Usuario u WITH(NOLOCK)
-                          JOIN CoreSSO.dbo.PES_Pessoa p WITH(NOLOCK)               ON p.pes_id = u.pes_id
-                          LEFT JOIN CoreSSO.dbo.PES_PessoaDocumento pd WITH(NOLOCK) ON pd.pes_id = p.pes_id AND pd.tdo_id IN(SELECT tdo_id FROM CoreSSO.dbo.SYS_TipoDocumentacao WHERE tdo_sigla = 'cpf')
+                        FROM CoreSSO.dbo.SYS_Usuario u WITH (NOLOCK)
+                          JOIN CoreSSO.dbo.PES_Pessoa p WITH (NOLOCK)                ON p.pes_id = u.pes_id
+                          LEFT JOIN CoreSSO.dbo.PES_PessoaDocumento pd WITH (NOLOCK) ON pd.pes_id = p.pes_id AND pd.tdo_id IN(SELECT tdo_id FROM CoreSSO.dbo.SYS_TipoDocumentacao WHERE tdo_sigla = 'cpf')
                         WHERE u.usu_login IN @codigosRF
                           AND u.usu_situacao <> @situacao";
 

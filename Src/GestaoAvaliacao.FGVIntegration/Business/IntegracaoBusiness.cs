@@ -54,7 +54,6 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             var taskAlunos = IntegrarAlunos(escolas);
             await Task.WhenAll(taskCoordenadores, taskProfessoresTurmas, taskAlunos);
             Logger.Info("Finalizada integração de professores-turmas e alunos");
-            /**/
 
             return true;
         }

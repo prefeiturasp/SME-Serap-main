@@ -161,22 +161,6 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             Logger.DebugFormat("Retorno Seq={0} do endpoint {1}: {2}", pParam.Seq, pEndPoint, response);
             var results = ParseResult(pEndPoint, response);
             return (JArray)results;
-
-            /*return JObject.Parse(@"
-                {
-                    ""seq"": ""1"",
-                    ""status"": ""1"",
-                    ""operation"": ""INSERÇÃO"",
-                    ""errormessage"": ""sucesso"",
-                    ""validationlist"": [
-                        {
-                            ""key"": ""campo erro"",
-                            ""description"": ""sucesso""
-                        }
-                    ],
-                    ""returns"": """"
-                }
-            ");*/
         }
 
         private async Task<JObject> SendGetJsonResult(string pEndPoint, bool requiresAuth)
