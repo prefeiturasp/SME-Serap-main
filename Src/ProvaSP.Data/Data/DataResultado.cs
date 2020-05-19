@@ -659,9 +659,123 @@ namespace ProvaSP.Data
             return Encoding.UTF8.GetBytes(texto);
         }
 
+        public static byte[] ExportarDadosDreResultadoTurmaDosAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo, string lista_turmas)
+        {
+            var dadosDosAlunos = new List<DadosDosAlunosParaExportarCsvDreEscolas>();
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                var parametros = new DynamicParameters();
+
+                parametros.Add("Edicao", Edicao, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 10);
+                parametros.Add("AnoEscolar", AnoEscolar, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 3);
+                parametros.Add("AreaConhecimentoID", AreaConhecimentoID, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
+
+                var sbEscolas = new StringBuilder();
+                var lista_esc_codigoSplit = lista_esc_codigo.Split(',');
+
+                //Construção dos parâmetros passados pela variável lista_esc_codigo de modo a evitar sql injection.
+                foreach (var esc_codigo in lista_esc_codigoSplit)
+                {
+                    if (sbEscolas.Length > 0)
+                    {
+                        sbEscolas.Append(",");
+                    }
+                    string parameterName = "@p_" + esc_codigo;
+                    sbEscolas.Append(parameterName);
+                    parametros.Add(parameterName, esc_codigo, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 20);
+                }
+
+                var sbTurmas = new StringBuilder();
+                var lista_turmasSplit = lista_turmas.Split(',');
+
+                //Construção dos parâmetros passados pela variável lista_turmas de modo a evitar sql injection.
+                foreach (var tur_codigo in lista_turmasSplit)
+                {
+                    if (sbTurmas.Length > 0)
+                    {
+                        sbTurmas.Append(",");
+                    }
+                    string parameterName = "@p_" + tur_codigo;
+                    sbTurmas.Append(parameterName);
+                    parametros.Add(parameterName, tur_codigo, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 20);
+                }
+
+                conn.Open();
+
+                dadosDosAlunos =
+                    conn.Query<DadosDosAlunosParaExportarCsvDreEscolas>(
+                                    sql: $@"
+                                        SELECT
+	                                        esc.esc_nome AS NomeDaEscola,
+	                                        resultado.NivelProficienciaID, 
+	                                        resultado.Edicao,
+	                                        resultado.alu_nome AS Nome,
+	                                        resultado.alu_matricula AS Matricula,
+	                                        resultado.AnoEscolar,
+	                                        resultado.tur_codigo AS CodigoDaTurmaDoAluno,
+	                                        ISNULL(tr.Periodo,'Indefinido') AS Periodo,
+	                                        resultado.valor as Media,
+	                                        nivel.Nome as NivelProficiencia
+                                        FROM ResultadoAluno resultado WITH (NOLOCK)
+                                            LEFT JOIN Turma tr WITH (NOLOCK) ON tr.tur_id = resultado.tur_id
+                                            INNER JOIN Escola esc WITH (NOLOCK) ON esc.esc_codigo = resultado.esc_codigo
+                                            INNER JOIN NivelProficiencia nivel WITH (NOLOCK) ON nivel.NivelProficienciaID = resultado.NivelProficienciaID
+                                        WHERE 
+                                            resultado.Edicao = @Edicao AND 
+                                            resultado.AreaConhecimentoID = @AreaConhecimentoID AND 
+                                            resultado.AnoEscolar = @AnoEscolar AND 
+                                            resultado.esc_codigo IN ({sbEscolas}) AND
+                                            resultado.tur_codigo IN ({sbTurmas})
+                                        ORDER BY 
+                                            esc.esc_nome, 
+                                            resultado.tur_codigo, 
+                                            resultado.alu_nome
+                                        ",
+                                    param: parametros
+                                ).ToList();
+            }
+
+            var texto = string.Empty;
+            texto += "Microdados;";
+            texto += $"{Environment.NewLine}NomeDaEscola;Edicao;NomeDoAluno;MatriculaDoAluno;AnoEscolarDoAluno;CodigoDaTurmaDoAluno;Periodo;MediaDoAluno;NivelProficienciaDoAluno;";
+            dadosDosAlunos.ForEach(x =>
+            {
+                texto += $"{Environment.NewLine}{x.NomeDaEscola};{x.Edicao};{x.Nome};{x.Matricula};{x.AnoEscolar};{x.CodigoDaTurmaDoAluno};{x.Periodo};{x.Media};{x.NivelProficiencia};";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
         public static byte[] ExportarDadosDreResultadoEscolaConsolidado(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo)
         {
             var resultado = RecuperarResultadoEscola(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo);
+            var texto = string.Empty;
+
+            var agregacoes = resultado.Agregacao;
+            var niveisDeProficiencia = GetNiveisDeProficiencia();
+            texto = "NomeDre;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            agregacoes.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+            });
+
+            texto += $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
+
+            var itens = resultado.Itens;
+            texto += $"{Environment.NewLine}NomeEscola;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            itens.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
+        public static byte[] ExportarDadosDreResultadoTurmaConsolidado(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo, string lista_turmas)
+        {
+            var resultado = RecuperarResultadoTurma(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo, lista_turmas);
             var texto = string.Empty;
 
             var agregacoes = resultado.Agregacao;

@@ -40,6 +40,10 @@ namespace ProvaSP.Web.Controllers
                 {
                     myByteArrayContent = DataResultado.ExportarDadosDreResultadoEscolaDosAlunos(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo);
                 }
+                else if (Nivel == "TURMA")
+                {
+                    myByteArrayContent = DataResultado.ExportarDadosDreResultadoTurmaDosAlunos(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo, lista_turmas);
+                }
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK)
                 {
@@ -85,6 +89,10 @@ namespace ProvaSP.Web.Controllers
                 else if (Nivel == "ESCOLA")
                 {
                     myByteArrayContent = DataResultado.ExportarDadosDreResultadoEscolaConsolidado(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo);
+                }
+                else if (Nivel == "TURMA")
+                {
+                    myByteArrayContent = DataResultado.ExportarDadosDreResultadoTurmaConsolidado(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo, lista_turmas);
                 }
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK)

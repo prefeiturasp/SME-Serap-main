@@ -12,6 +12,7 @@ function parametrosDaRequisicaoDeExportacaoDeDadosEGraficos() {
     var lista_turmas = "";
     var lista_alu_matricula = "";
 
+    debugger;
     if (nivel == "DRE") {
         lista_uad_sigla = $(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get().toString();
     }
