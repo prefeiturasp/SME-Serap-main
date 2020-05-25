@@ -800,6 +800,26 @@ namespace ProvaSP.Data
             return Encoding.UTF8.GetBytes(texto);
         }
 
+        public static byte[] ExportarDadosDreResultadoTurmaEnturmacaoAtualAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_turmas)
+        {
+            var resultado = RecuperarResultadoEnturmacaoAtual(Edicao, AreaConhecimentoID, AnoEscolar, lista_turmas);
+            var itens = resultado.Itens;
+            var niveisDeProficiencia = GetNiveisDeProficiencia();
+            var texto = string.Empty;
+            texto += "Microdados;";
+            texto += $"{Environment.NewLine}NomeEscola;Proficiencia;TotalDeAlunos;NivelDeProficiencia;AnoEscolarAtual;AnoEscolarAnterior";
+            itens.ForEach(x =>
+            {
+                var anoAnterior = int.TryParse(x.AnoEscolar, out int resultadoAno) ? resultadoAno : 0;
+                var anoEnturmacaoAnterior = anoAnterior > 0 ? anoAnterior - 1 : 0;
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                var proficiencia = x.Valor < 0 ? 0 : x.Valor;
+                texto += $@"{Environment.NewLine}{x.Titulo};{proficiencia};{x.TotalAlunos};{nivelDeProficiencia};{x.AnoEscolar};{anoEnturmacaoAnterior}";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
         public static Resultado RecuperarResultadoTurma(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo, string lista_turmas)
         {
             var resultado = new Resultado();

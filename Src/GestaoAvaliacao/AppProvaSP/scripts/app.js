@@ -4365,6 +4365,7 @@ function definirEventHandlers() {
             */
             $('#exportar_graficos').hide();
             $('#exportar-dados').hide();
+            $('#exportar-dados-csv-alunos').hide();
             $('#imprimir_graficos').hide();
             
             if (nivel == "DRE") {
@@ -4379,7 +4380,13 @@ function definirEventHandlers() {
             }
             else if (nivel == "TURMA") {
                 $("#exportar_graficos").show();
-                $('#exportar-dados').show();
+
+                if (edicao == "ENTURMACAO_ATUAL") {
+                    $('#exportar-dados-csv-alunos').show();
+                } else {
+                    $('#exportar-dados').show();
+                }
+
                 lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
                 lista_turmas = $(".resultado-turma-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
@@ -5112,7 +5119,7 @@ function definirEventHandlers() {
                                     NivelProficienciaID_ENTURMACAO = 3;
                                 else if (valorProficiencia >= reguaProficiencia[anoRef][2])
                                     NivelProficienciaID_ENTURMACAO = 4;
-
+                                
                                 if (ciclo == "") {
                                     return "Régua do " + anoRef + "º ano: " + tituloNivel[NivelProficienciaID_ENTURMACAO];
                                 }
@@ -5192,6 +5199,7 @@ function definirEventHandlers() {
             var existeValor = false;
             var filtroProficiencia = $(".resultado-filtro-proficiencia:checked").map(function () { return this.value; }).get();
 
+            debugger;
             for (var i = 0; i < dataResultado.Itens.length; i++) {
                 var item = dataResultado.Itens[i];
 

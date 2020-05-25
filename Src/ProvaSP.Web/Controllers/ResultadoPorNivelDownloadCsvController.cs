@@ -42,7 +42,12 @@ namespace ProvaSP.Web.Controllers
                 }
                 else if (Nivel == "TURMA")
                 {
-                    myByteArrayContent = DataResultado.ExportarDadosDreResultadoTurmaDosAlunos(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo, lista_turmas);
+                    if (Edicao == "ENTURMACAO_ATUAL")
+                    {
+                        myByteArrayContent = DataResultado.ExportarDadosDreResultadoTurmaEnturmacaoAtualAlunos(Edicao, AreaConhecimentoID, AnoEscolar, lista_turmas);
+                    }
+                    else
+                        myByteArrayContent = DataResultado.ExportarDadosDreResultadoTurmaDosAlunos(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo, lista_turmas);
                 }
 
                 var result = new HttpResponseMessage(HttpStatusCode.OK)
