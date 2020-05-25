@@ -1,10 +1,19 @@
 ﻿"use strict";
 
-/***** Ínicio do PDF */
-
 var paginaDoPdf = 1;
 
+function recuperarAnoEnturmacao(dataResultado) {
+    try {
+        var ano = parseInt($("#ddlResultadoAno").val()) - 1;
+        return ano;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
 $('.link-exportar-pdf-detalhes').click(function () {
+    paginaDoPdf = 1;
     gerarRelatorioEmPdf();
 });
 
@@ -61,6 +70,7 @@ function gerarRelatorioEmPdf() {
                 edicao,
                 areaConhecimentoId,
                 anoEscolar,
+                nivel,
                 "divResultadoApresentacao",
                 dataResultado,
                 objEnvio);
@@ -70,7 +80,7 @@ function gerarRelatorioEmPdf() {
         });
 }
 
-function montarRelatorioEmPdf(ciclo, edicao, areaConhecimentoId, ano, divResultadoContainer, dataResultado, objetoEnviado) {
+function montarRelatorioEmPdf(ciclo, edicao, areaConhecimentoId, ano, nivel, divResultadoContainer, dataResultado, objetoEnviado) {
     var pdf = new jsPDF('p', 'pt', 'a4');
     montarRadarNoPdf(pdf);
 
@@ -82,7 +92,7 @@ function montarRelatorioEmPdf(ciclo, edicao, areaConhecimentoId, ano, divResulta
         }
     }
 
-    var quantidadeDeBarrasPorPagina = 8;
+    var quantidadeDeBarrasPorPagina = (nivel == "TURMA" && edicao == "ENTURMACAO_ATUAL") ? 7 : 8;
     var quantidadeDeCanvas = Math.ceil(dataResultado.Itens.length / quantidadeDeBarrasPorPagina);
 
     var proficienciaMaxima = 500;
@@ -113,7 +123,7 @@ function montarRelatorioEmPdf(ciclo, edicao, areaConhecimentoId, ano, divResulta
             dataChartPdf.datasets.push({ data: [], backgroundColor: [] });
         }
 
-
+        debugger;
         for (var contadorEscola = 0; contadorEscola < escolas.length; contadorEscola++) {
             var item = escolas[contadorEscola];
 
@@ -165,7 +175,7 @@ function montarRelatorioEmPdf(ciclo, edicao, areaConhecimentoId, ano, divResulta
         var canvasId = "chartExportarPdf" + contadorCanvas;
         var alturaDoCanvas = definirAlturaDoCanvas(escolas.length, edicao);
         var primeiraPagina = contadorCanvas == 0;
-        criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMaxima, ciclo, ano, edicao, reguaProficiencia, primeiraPagina, labelsCiclos, dataChartPdf);
+        criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMaxima, ciclo, ano, nivel, edicao, reguaProficiencia, primeiraPagina, labelsCiclos, dataChartPdf, anoAplicacaoProva);
 
         limparChartDoPdf();
 
@@ -320,12 +330,24 @@ function getNovoObjetoDataChart() {
     };
 }
 
-function adicionarGraficoDeBarrasAoPdf(pdf, canvasElement, primeiraPagina) {
+function adicionarGraficoDeBarrasAoPdf(pdf, canvasElement, primeiraPagina, edicao, nivel) {
     paginaDoPdf++;
     pdf.addPage();
     var canvasPosition = 15;
     if (primeiraPagina) {
-        pdf.fromHTML($('#divResultadoTituloDetalhe')[0], 125, canvasPosition);
+        
+        if(nivel == "TURMA") {
+            pdf.setFontType("bold");
+            pdf.setFontSize(12);
+            pdf.setTextColor(66, 142, 218);
+            pdf.text(150, edicao == "ENTURMACAO_ATUAL" ? 70 : 50, "Abaixo segue o detalhamento de proficiência de cada Aluno.");
+            pdf.setTextColor(0, 0, 0);
+            pdf.setFontType("normal");
+            pdf.setFontSize(16);
+        }else
+        {
+            pdf.fromHTML($('#divResultadoTituloDetalhe')[0], 125, canvasPosition);
+        }
     }
 
     var canvasProficiencia = document.getElementById('chartResultadoEscalaSaeb_1');
@@ -341,9 +363,47 @@ function adicionarGraficoDeBarrasAoPdf(pdf, canvasElement, primeiraPagina) {
     pdf.text(500, 800, "Página " + paginaDoPdf);
 }
 
-function montarRadarNoPdf(pdf) {
-    pdf.fromHTML($('#divResultadoApresentacaoTitulo')[0], 228, 15);
-    pdf.fromHTML($('#lblResultadoSubTitulo')[0], 180, 20);
+function adicionarGraficoDeBarrasAoPdfDaTurmaDetalhandoAlunosComEnturmacao(pdf, canvasElement, primeiraPagina, edicao, nivel) {
+    
+    var canvasPosition = 0;
+    if(!primeiraPagina)
+    {
+        paginaDoPdf++;
+        pdf.addPage();
+    }
+
+    if (primeiraPagina && nivel == "TURMA" && edicao == "ENTURMACAO_ATUAL") {
+        pdf.setFontType("bold");
+        pdf.setFontSize(12);
+        pdf.setTextColor(66, 142, 218);
+        pdf.text(150, 70, "Abaixo segue o detalhamento de proficiência de cada Aluno.");
+        pdf.setTextColor(0, 0, 0);
+        pdf.setFontType("normal");
+        pdf.setFontSize(16);
+    }
+
+    var canvasProficiencia = document.getElementById('chartResultadoEscalaSaeb_1');
+    var imgData = canvasProficiencia.toDataURL("image/png", 1.0);
+    canvasPosition = primeiraPagina ? 80 : 60;
+    
+    pdf.addImage(imgData, 'PNG', 92, canvasPosition, canvasProficiencia.width * 0.75, canvasProficiencia.height * 0.75, '', 'FAST');
+
+    canvasPosition = primeiraPagina ? 160 : 140;
+    pdf.addImage(canvasElement.toDataURL("image/png", 1.0), 'PNG', 92, canvasPosition, canvasElement.width * 0.75, canvasElement.height * 0.75, '', 'FAST');
+
+    pdf.setFontSize(9);
+    pdf.setFontType("normal")
+    pdf.text(500, 800, "Página " + paginaDoPdf);
+}
+
+function montarRadarNoPdf(pdf) {   
+    pdf.setFontType("bold");
+    pdf.setFontSize(20);
+    pdf.text(190, 30, $('#lblResultadoTitulo').text());
+    pdf.setFontSize(15); 
+    pdf.text(150, 48, $('#lblResultadoEdicao').text() + " - " + $('#lblResultadoAreaConhecimento').text() + " - " +  $('#lblResultadoAno').text());
+    pdf.setFontType("normal");
+    pdf.setFontSize(16);
 
     var listaDeAgregacao = [];
 
@@ -351,10 +411,19 @@ function montarRadarNoPdf(pdf) {
         listaDeAgregacao.push($(this).attr('id'));
     });
 
-    var quantidade = 0;
-    var canvasPosition = 50;
-
+    let quantidade = 0;
+    let canvasPosition = 65;
+    let quantidadeDeRadares = listaDeAgregacao.length;
     listaDeAgregacao.forEach(agregacaoId => {
+        let alinhamentoRadar = 80;
+        let tamanhoDoCanvas = 0.75;
+
+        if(quantidadeDeRadares == 1)
+        {
+            alinhamentoRadar = 30;
+            tamanhoDoCanvas = 0.85;
+        }
+
         if (quantidade > 0) {
             canvasPosition += 250;
 
@@ -370,9 +439,9 @@ function montarRadarNoPdf(pdf) {
         canvasChartRadar.width = 680;
         canvasChartRadar.height = 300;
         const ctx = canvasChartRadar.getContext("2d");
-        ctx.drawImage(canvas, 80, 0);
+        ctx.drawImage(canvas, alinhamentoRadar, 0);
 
-        pdf.addImage(canvasChartRadar.toDataURL("image/png", 1.0), 'PNG', 0, canvasPosition, canvasChartRadar.width * 0.75, canvasChartRadar.height * 0.75, '', 'FAST');
+        pdf.addImage(canvasChartRadar.toDataURL("image/png", 1.0), 'PNG', 0, canvasPosition, canvasChartRadar.width * tamanhoDoCanvas, canvasChartRadar.height * tamanhoDoCanvas, '', 'FAST');
 
         pdf.setFontSize(9);
         pdf.setFontType("normal")
@@ -391,7 +460,7 @@ function criarCanvasDoChart(canvasId, alturaDoCanvas) {
     return canvasElement;
 }
 
-function criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMaxima, ciclo, ano, edicao, reguaProficiencia, primeiraPagina, labelsCiclos, dataChartPdf) {
+function criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMaxima, ciclo, ano, nivel, edicao, reguaProficiencia, primeiraPagina, labelsCiclos, dataChartPdf, anoAplicacaoProva) {
 
     var canvasElement = criarCanvasDoChart(canvasId, alturaDoCanvas);
     var chartResultadoDetalhePdf_ctx = canvasElement.getContext("2d");
@@ -430,7 +499,15 @@ function criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMa
             animation: {
                 duration: 0,
                 responsiveAnimationDuration: 0,
-                onComplete: function () { adicionarGraficoDeBarrasAoPdf(pdf, canvasElement, primeiraPagina) },
+                onComplete: function () { 
+                    if(nivel == "TURMA" && edicao == "ENTURMACAO_ATUAL")
+                    {
+                        adicionarGraficoDeBarrasAoPdfDaTurmaDetalhandoAlunosComEnturmacao(pdf, canvasElement, primeiraPagina, edicao, nivel);
+                    }
+                    else{
+                        adicionarGraficoDeBarrasAoPdf(pdf, canvasElement, primeiraPagina, edicao, nivel);
+                    }
+                }
             },
             showAllTooltips: true,
             tooltips: {
@@ -481,7 +558,7 @@ function criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMa
                         mirror: true,
                         labelOffset: 1,
                         fontStyle: "bold",
-                        labelOffset: $("#ddlResultadoEdicao").val() == "ENTURMACAO_ATUAL" ? -33.48 * 2 : - 33.48,
+                        labelOffset: (edicao == "ENTURMACAO_ATUAL") ? -19.26 * 2 : - 33.48,
                     }
                 }],
                 xAxes: [{
@@ -503,119 +580,4 @@ function criarChartEAdicionarNoPdf(pdf, canvasId, alturaDoCanvas, proficienciaMa
 
 function limparChartDoPdf() {
     $("#divChartExportarPdf").empty();
-}
-
-/***** Fim do PDF */
-
-$('.link-exportar-imagem-detalhes').click(function () {
-    let imageFormat = this.dataset.imageFormat;
-    const imagemTituloDeApresentacao = gerarImagemDivTituloDeApresentacao();
-    const imagemTituloDeApresentacaoFiltro = gerarImagemDivTituloDeApresentacaoFiltro();
-    const imagemResultadoTituloDetalhe = gerarImagemDivResultadoTituloDetalhe();
-    Promise.all([imagemTituloDeApresentacao, imagemTituloDeApresentacaoFiltro, imagemResultadoTituloDetalhe]).then(imagens => exportarImagem(imageFormat, imagens));
-});
-
-function gerarImagemDivTituloDeApresentacao() {
-    return new Promise((resolve) => {
-        domtoimage.toPng(document.getElementById('divResultadoApresentacaoTitulo'))
-            .then(function (dataURL) {
-                let imagemDivResultadoTituloDetalhe = new Image();
-                imagemDivResultadoTituloDetalhe.onload = () => { resolve(imagemDivResultadoTituloDetalhe) };
-                imagemDivResultadoTituloDetalhe.src = dataURL;
-            });
-    });
-}
-
-
-function gerarImagemDivTituloDeApresentacaoFiltro() {
-    return new Promise((resolve) => {
-        domtoimage.toPng(document.getElementById('lblResultadoSubTitulo'))
-            .then(function (dataURL) {
-                let imagemDivResultadoTituloDetalhe = new Image();
-                imagemDivResultadoTituloDetalhe.onload = () => { resolve(imagemDivResultadoTituloDetalhe) };
-                imagemDivResultadoTituloDetalhe.src = dataURL;
-            });
-    });
-}
-
-function gerarImagemDivResultadoTituloDetalhe() {
-    return new Promise((resolve) => {
-        domtoimage.toPng(document.getElementById('divResultadoTituloDetalhe'))
-            .then(function (dataURL) {
-                let imagemDivResultadoTituloDetalhe = new Image();
-                imagemDivResultadoTituloDetalhe.onload = () => { resolve(imagemDivResultadoTituloDetalhe) };
-                imagemDivResultadoTituloDetalhe.src = dataURL;
-            });
-    });
-}
-
-function exportarImagem(extensao, imagens) {
-    let imgTituloDeApresentacao = imagens[0];
-    let imgTituloDeApresentacaoFiltro = imagens[1];
-    let imgTituloDetalhe = imagens[2];
-
-    let canvasExport = document.createElement('canvas');
-    let chartEscala = document.getElementById('chartResultadoEscalaSaeb_1');
-    let chartResultado = document.getElementById("chartResultadoDetalhe");
-
-    let widthRadar = 0;
-    let heightRadar = 0;
-    let radares = [];
-    $("#divChartResultadoAgregacao").find("canvas").each(function () {
-        var nomeDiv = $(this).attr('id');
-        radares.push(nomeDiv);
-
-        var canvas = document.getElementById(nomeDiv);
-        widthRadar = canvas.width > widthRadar ? canvas.width : widthRadar;
-        heightRadar += canvas.height + 20;
-
-    });
-
-    canvasExport.height = calcularCanvasHeight(heightRadar, imgTituloDeApresentacao, imgTituloDetalhe, chartEscala, chartResultado, radares);
-    canvasExport.width = calcularCanvasWidth(widthRadar, chartEscala, chartResultado)
-
-    let contextCanvasExport = canvasExport.getContext("2d");
-
-    setFundoBrancoNoCanvas(contextCanvasExport, canvasExport);
-    
-    contextCanvasExport.drawImage(imgTituloDeApresentacao, 5, 20);
-    contextCanvasExport.drawImage(imgTituloDeApresentacaoFiltro, 11, 40);
-
-    let heightExportCanvas = 70;
-
-    radares.forEach(radarChart => {
-        let canvas = document.getElementById(radarChart);
-        contextCanvasExport.drawImage(canvas, -25, heightExportCanvas);
-        heightExportCanvas += canvas.height + 20;
-    });
-    
-    contextCanvasExport.drawImage(imgTituloDetalhe, 30, heightExportCanvas);
-
-    heightExportCanvas += imgTituloDetalhe.height + 10;
-    contextCanvasExport.drawImage(chartEscala, 20, heightExportCanvas);
-    heightExportCanvas += chartEscala.height + 10;
-    contextCanvasExport.drawImage(chartResultado, 25, heightExportCanvas);
-
-    let link = document.createElement('a');
-    link.download = "Proficiencia." + extensao;
-    link.href = canvasExport.toDataURL("image/" + extensao);
-    link.click();
-}
-
-function calcularCanvasHeight(heightRadar, imgTituloDeApresentacao, imgTituloDetalhe, chartEscala, chartResultado, listaDeRadar)
-{
-    return heightRadar + imgTituloDeApresentacao.height + imgTituloDetalhe.height + chartEscala.height + chartResultado.height + 95 + listaDeRadar.length;
-}
-
-function calcularCanvasWidth(widthRadar, chartEscala, chartResultado)
-{
-    widthRadar = widthRadar > chartEscala.width ? widthRadar : chartEscala.width;
-    widthRadar = widthRadar > chartResultado.width ? widthRadar : chartResultado.width;
-    return widthRadar;
-}
-
-function setFundoBrancoNoCanvas(contextCanvasExport, canvasExport)
-{
-    contextCanvasExport.fillStyle = "white";
-    contextCanvasExport.fillRect(0, 0, canvasExport.width, canvasExport.height);
 }

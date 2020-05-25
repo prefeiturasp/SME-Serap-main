@@ -62,6 +62,7 @@
     <Compile Include="Entidades\Configuracao.cs" />
     <Compile Include="Entidades\Constructo.cs" />
     <Compile Include="Entidades\Corte.cs" />
+    <Compile Include="Entidades\NivelDeProficiencia.cs" />
     <Compile Include="Entidades\FatorAssociado.cs" />
     <Compile Include="Entidades\Grupo.cs" />
     <Compile Include="Entidades\HabilidadeItem.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Entidades\ListaPresenca.cs" />
     <Compile Include="Entidades\Proficiencia.cs" />
     <Compile Include="Entidades\RelatorioAgrupamento.cs" />
+    <Compile Include="Entidades\DadosDosAlunosParaExportarCsvDreEscolas.cs" />
     <Compile Include="Entidades\RelatorioItemAgrupado.cs" />
     <Compile Include="Entidades\Resultado.cs" />
     <Compile Include="Entidades\ResultadoItem.cs" />

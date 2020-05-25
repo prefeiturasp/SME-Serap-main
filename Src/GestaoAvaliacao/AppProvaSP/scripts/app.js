@@ -4364,27 +4364,45 @@ function definirEventHandlers() {
              *Abaixo a determinação de informações específicas com base no nível selecionado.
             */
             $('#exportar_graficos').hide();
+            $('#exportar-dados').hide();
+            $('#exportar-dados-csv-alunos').hide();
             $('#imprimir_graficos').hide();
-
-            if (nivel == "DRE") { $("#exportar_graficos").show(); } else { $("#imprimir_graficos").show(); }
             
             if (nivel == "DRE") {
+                $("#exportar_graficos").show();
+                $('#exportar-dados').show();
                 lista_uad_sigla = $(".resultado-dre-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
             else if (nivel == "ESCOLA") {
+                $("#exportar_graficos").show();
+                $('#exportar-dados').show();
                 lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
             else if (nivel == "TURMA") {
+                $("#exportar_graficos").show();
+
+                if (edicao == "ENTURMACAO_ATUAL") {
+                    $('#exportar-dados-csv-alunos').show();
+                } else {
+                    $('#exportar-dados').show();
+                }
+
                 lista_esc_codigo = $(".resultado-escola-item-chk:checked").map(function () { return this.value; }).get().toString();
                 lista_turmas = $(".resultado-turma-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
             else if (nivel == "ALUNO") {
+                $("#imprimir_graficos").show();
                 lista_alu_matricula = $(".resultado-aluno-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
+            else if (nivel == "SME")
+            {
+                $("#imprimir_graficos").show();
+            }
 
-            if (nivel == "DRE" && $('span').hasClass('mdi-checkbox-marked'))
+            if ((nivel == "DRE" || nivel == "ESCOLA") && $('span').hasClass('mdi-checkbox-marked'))
             {
                 $('#exportar_graficos').hide();
+                $('#exportar-dados').hide();
                 $('#imprimir_graficos').hide();
             }
 
@@ -5101,7 +5119,7 @@ function definirEventHandlers() {
                                     NivelProficienciaID_ENTURMACAO = 3;
                                 else if (valorProficiencia >= reguaProficiencia[anoRef][2])
                                     NivelProficienciaID_ENTURMACAO = 4;
-
+                                
                                 if (ciclo == "") {
                                     return "Régua do " + anoRef + "º ano: " + tituloNivel[NivelProficienciaID_ENTURMACAO];
                                 }
@@ -5181,6 +5199,7 @@ function definirEventHandlers() {
             var existeValor = false;
             var filtroProficiencia = $(".resultado-filtro-proficiencia:checked").map(function () { return this.value; }).get();
 
+            debugger;
             for (var i = 0; i < dataResultado.Itens.length; i++) {
                 var item = dataResultado.Itens[i];
 

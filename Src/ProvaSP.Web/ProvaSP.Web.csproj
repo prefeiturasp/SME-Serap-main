@@ -173,6 +173,7 @@
     <Compile Include="Controllers\RelatorioAcompanhamentoNivelEscolaController.cs" />
     <Compile Include="Controllers\RelatorioAcompanhamentoNivelSMEController.cs" />
     <Compile Include="Controllers\RelatorioAcompanhamentoNivelSME_PorDREController.cs" />
+    <Compile Include="Controllers\ResultadoPorNivelDownloadCsvController.cs" />
     <Compile Include="Controllers\ResultadoPorNivelController.cs" />
     <Compile Include="Controllers\ResultadoRecuperarAlunosController.cs" />
     <Compile Include="Controllers\ResultadoRecuperarTurmasController.cs" />
@@ -297,7 +298,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+		<UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>59674</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
