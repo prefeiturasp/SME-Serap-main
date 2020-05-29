@@ -805,16 +805,34 @@ namespace ProvaSP.Data
             var resultado = RecuperarResultadoEnturmacaoAtual(Edicao, AreaConhecimentoID, AnoEscolar, lista_turmas);
             var itens = resultado.Itens;
             var niveisDeProficiencia = GetNiveisDeProficiencia();
+
+            var ultimaEdicao = string.Empty;
+
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                conn.Open();
+
+                ultimaEdicao = conn.ExecuteScalar<string>(
+                    sql: @"
+                                SELECT TOP 1 Edicao
+                                FROM ResultadoAluno
+                                ORDER BY Edicao DESC
+                            "
+                );
+            }
+
+            var anoAnterior = int.TryParse(ultimaEdicao, out int ano) ? ano - 1 : 0;
             var texto = string.Empty;
             texto += "Microdados;";
-            texto += $"{Environment.NewLine}NomeEscola;Proficiencia;TotalDeAlunos;NivelDeProficiencia;AnoEscolarAtual;AnoEscolarAnterior";
+            texto += $"{Environment.NewLine}NomeEscola;Proficiencia;NivelDeProficiencia;Ano Escolar Atual {ultimaEdicao};Ano Escolar Anterior {anoAnterior}";
             itens.ForEach(x =>
             {
-                var anoAnterior = int.TryParse(x.AnoEscolar, out int resultadoAno) ? resultadoAno : 0;
-                var anoEnturmacaoAnterior = anoAnterior > 0 ? anoAnterior - 1 : 0;
+                var anoEscolarAnterior = int.TryParse(x.AnoEscolar, out int resultadoAno) ? resultadoAno : 0;
+                var anoEnturmacaoAnterior = anoEscolarAnterior > 0 ? (anoEscolarAnterior - 1).ToString() : "-";
                 var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
-                var proficiencia = x.Valor < 0 ? 0 : x.Valor;
-                texto += $@"{Environment.NewLine}{x.Titulo};{proficiencia};{x.TotalAlunos};{nivelDeProficiencia};{x.AnoEscolar};{anoEnturmacaoAnterior}";
+                var proficiencia = x.Valor < 0 ? "-" : x.Valor.ToString();
+                var anoEnturmacaoAtual = int.TryParse(x.AnoEscolar, out int anoEscolar) ? anoEscolar.ToString() : "-"; 
+                texto += $@"{Environment.NewLine}{x.Titulo};{proficiencia};{nivelDeProficiencia};{anoEnturmacaoAtual};{anoEnturmacaoAnterior}";
             });
 
             return Encoding.UTF8.GetBytes(texto);
