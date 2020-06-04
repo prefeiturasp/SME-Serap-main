@@ -26,7 +26,6 @@ namespace GestaoAvaliacao.FGVIntegration
             {
                 var integracao = container.Resolve<IIntegracaoBusiness>();
 
-                //string[] codigoEscolas = new string[] { /*"094609", "017442",*/"018210"/*,"094668","017272","093181","093637","016519",*/ };
                 bool sucesso = await integracao.RealizarIntegracaoEnsinoMedio();
 
                 MessageBox.Show("Integração finalizada. Verifique os logs em 'Log/logger.txt' para verificar possíveis problemas.", "Sucesso");

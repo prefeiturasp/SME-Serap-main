@@ -31,6 +31,8 @@ namespace GestaoAvaliacao.FGVIntegration.Business
         public async Task<bool> RealizarIntegracaoEnsinoMedio()
         {
             Logger.Info("Realizando o processo completo de integração do Ensino Médio");
+            //string[] codigoEscolas = new string[] { /*"094609", "017442",*/"018210"/*,"094668","017272","093181","093637","016519",*/ };
+
             return await RealizarIntegracaoEnsinoMedio(null);
         }
 
@@ -38,6 +40,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
         {
             pCodigoEscolas = pCodigoEscolas ?? new string[0];
             Logger.InfoFormat("Realizando o processo de integração do Ensino Médio com filtro de escolas: [{0}]", string.Join(", ", pCodigoEscolas));
+            var integrarRede = await IntegrarRede();
 
             var escolas = await IntegrarEscolas(pCodigoEscolas);
             Logger.Info("Finalizada integração de escolas");
@@ -62,15 +65,17 @@ namespace GestaoAvaliacao.FGVIntegration.Business
         {
             var colecaoEscolas = dataRepository.BuscarEscolas(pCodigoEscolas);
             colecaoEscolas = await eolRepository.BuscarDiretoresEscolas(colecaoEscolas);
+            var sequencia = 0;
             foreach (var escola in colecaoEscolas)
             {
                 var dadosPessoa = dataRepository.BuscarPessoa(escola.RfDoResponsavel);
                 escola.CPFDoResponsavel = dadosPessoa.CPF;
                 escola.Email = dadosPessoa.Email;
+                escola.Seq= sequencia++; 
             }
 
             Logger.Info($"Integrando {colecaoEscolas.Count()} escolas");
-            var result = await ProcessItensUsingTaskPoolAsync(colecaoEscolas, FGVAPIConsumer.ENDPOINT_ESCOLA_REGISTRAR, fgvApiClient.SendPost, threadsEnvio, CancellationToken.None);
+            var result  = await fgvApiClient.SendPost(FGVAPIConsumer.ENDPOINT_ESCOLA_REGISTRAR, colecaoEscolas);
             return colecaoEscolas;
         }
 
@@ -135,6 +140,26 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             return result;
         }
 
+        private async Task<ResultadoFGV> IntegrarRede()
+        {
+            var colecaoEnviar =
+                new Rede
+                {
+                    NomeDaRede = "SECRETARIA MUNICIPAL DE EDUCAÇÃO DE SÃO PAULO",
+                    NomeDoResponsavel = "Claudio Maroja",
+                    CargoDoResponsavel = "Diretor de Núcleo de Avaliação",
+                    CPFDoResponsavel = "13180367806",
+                    UF = "SP",
+                    Cidade = 3550308,
+                    CNPJ = "46392114000125",
+                    WebSite = "https://educacao.sme.prefeitura.sp.gov.br/",
+                    Tipo = 3
+                };
+
+            var result = await fgvApiClient.SendPost(FGVAPIConsumer.ENDPOINT_REDE_REGISTRAR, colecaoEnviar);
+            return result;
+        }
+
         /// <summary>
         /// O e-mail da escola é considerado o identificador
         /// </summary>
@@ -162,7 +187,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
         }
 
         private async Task<ICollection<T2>> ProcessItensUsingTaskPoolAsync<T, T2>(ICollection<T> list, string endpoint, Func<string, T, Task<T2>> function,
-            int parallelTasksLimit, CancellationToken cancellationToken) 
+            int parallelTasksLimit, CancellationToken cancellationToken)
             where T : BaseFGVObject
         {
             if (list is null)
@@ -214,7 +239,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             {
                 return await function(endpoint, obj);
             }
-            catch (ApplicationException)
+            catch (ApplicationException ex)
             {
                 //Logger.Error("Erro de aplicação. O processo irá continuar com outros registros.", ex);
                 return default;

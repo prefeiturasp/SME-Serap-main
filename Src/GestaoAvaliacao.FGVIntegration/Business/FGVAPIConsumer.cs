@@ -18,6 +18,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
     {
 
         public static readonly string ENDPOINT_AUTH_AUTHORIZE = "auth/authorize";
+        public static readonly string ENDPOINT_REDE_REGISTRAR = "rede/registrar";
         public static readonly string ENDPOINT_ESCOLA_REGISTRAR = "escola/registrar";
         public static readonly string ENDPOINT_COORDENADOR_REGISTRAR = "coordenador/registrar";
         public static readonly string ENDPOINT_TURMA_REGISTRAR = "turma/registrar";
@@ -70,6 +71,36 @@ namespace GestaoAvaliacao.FGVIntegration.Business
                     await Authenticate(true);
                     var results = await SendPostJsonResult(pEndPoint, pParam);
                     return results.ToObject<List<ResultadoFGV>>().Single();
+                }
+            }
+            catch (ApplicationException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Erro na requisição '{pEndPoint}'", ex);
+                throw new ApplicationException($"Erro na requisição '{pEndPoint}'. Mensagem: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<List<ResultadoFGV>> SendPost(string pEndPoint, IEnumerable<BaseFGVObject> pParam)
+        {
+            try
+            {
+                await ValidateAuthentication();
+
+                try
+                {
+                    var results = await SendPostJsonResult(pEndPoint, pParam);
+                    return results.ToObject<List<ResultadoFGV>>();
+                }
+                catch (AutenticacaoException)
+                {
+                    //se deu erro de authenticação, refaz a autenticação e tenta novamente. Se der erro de novo ¯\_(ツ)_/¯ aí deixa seguir seu caminho natural
+                    await Authenticate(true);
+                    var results = await SendPostJsonResult(pEndPoint, pParam);
+                    return results.ToObject<List<ResultadoFGV>>();
                 }
             }
             catch (ApplicationException ex)
@@ -149,13 +180,23 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             return currentAuthToken;
         }
 
+        private async Task<JArray> SendPostJsonResult(string pEndPoint, IEnumerable<BaseFGVObject> pParam)
+        {
+            HttpClient httpClient = CreateDefaultHttpClient();
+            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(pEndPoint, pParam.ToArray());
+            var response = await httpResponse.Content.ReadAsStringAsync();
+
+            var results = ParseResult(pEndPoint, response);
+            return (JArray)results;
+        }
+
         private async Task<JArray> SendPostJsonResult(string pEndPoint, BaseFGVObject pParam)
         {
             if (Logger.IsDebugEnabled)
                 Logger.DebugFormat("Enviando Seq={0} para endpoint {1}: {2}", pParam.Seq, pEndPoint, JsonConvert.SerializeObject(pParam));
 
             HttpClient httpClient = CreateDefaultHttpClient();
-            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(pEndPoint, new BaseFGVObject[] { pParam });
+            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(pEndPoint, pParam);//new BaseFGVObject[] { pParam });
             var response = await httpResponse.Content.ReadAsStringAsync();
 
             Logger.DebugFormat("Retorno Seq={0} do endpoint {1}: {2}", pParam.Seq, pEndPoint, response);
@@ -169,7 +210,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
                 await ValidateAuthentication();
 
             HttpClient httpClient = CreateDefaultHttpClient();
-            string response = await httpClient.GetStringAsync(pEndPoint);
+            string response = await httpClient.GetStringAsync($"{pEndPoint}?{DateTime.Now:yyyy-MM-dd'T'HH:mm:ss}");
 
             var results = ParseResult(pEndPoint, response);
             return (JObject)results;
@@ -206,6 +247,8 @@ namespace GestaoAvaliacao.FGVIntegration.Business
 
             httpClient.DefaultRequestHeaders.Add("x-ClientID", clientId);
             httpClient.DefaultRequestHeaders.Add("x-AuthToken", currentAuthToken);
+            httpClient.DefaultRequestHeaders.Add("ContentyType", "application/json");
+            
             return httpClient;
         }
 
