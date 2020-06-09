@@ -84,7 +84,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             }
         }
 
-        public async Task<List<ResultadoFGV>> SendPost(string pEndPoint, IEnumerable<BaseFGVObject> pParam)
+        public async Task<IEnumerable<ResultadoFGV>> SendPostList(string pEndPoint, IEnumerable<BaseFGVObject> pParam)
         {
             try
             {

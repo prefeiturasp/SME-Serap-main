@@ -11,6 +11,6 @@ namespace GestaoAvaliacao.FGVIntegration.Business
 
         Task<bool> ValidateAuthentication();
 
-        Task<List<ResultadoFGV>> SendPost(string pEndPoint, IEnumerable<BaseFGVObject> pParam);
+        Task<IEnumerable<ResultadoFGV>> SendPostList(string pEndPoint, IEnumerable<BaseFGVObject> pParam);
     }
 }

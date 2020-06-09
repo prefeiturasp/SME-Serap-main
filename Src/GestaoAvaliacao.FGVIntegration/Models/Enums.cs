@@ -61,8 +61,8 @@
         public enum Turno
         {
             MANHA = 'M',
-            TARDE = '2',
-            NOITE = '3',
+            TARDE = 'T',
+            NOITE = 'N',
         }
 
         public enum TipoCoordenador
