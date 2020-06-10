@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,7 +18,6 @@ namespace GestaoAvaliacao.FGVIntegration.Business
         private readonly IEolRepository eolRepository;
         private readonly IFGVAPIConsumer fgvApiClient;
         private readonly byte threadsEnvio;
-        private int seq = 0;
 
         public IntegracaoBusiness(IDatabaseRepository dataRepository, IEolRepository eolRepository, IFGVAPIConsumer fgvApiClient)
         {
@@ -33,32 +33,35 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             Logger.Info("Realizando o processo completo de integração do Ensino Médio");
             //string[] codigoEscolas = new string[] { /*"094609", "017442",*/"018210"/*,"094668","017272","093181","093637","016519",*/ };
 
-            return await RealizarIntegracaoEnsinoMedio(null);
+            return await RealizarIntegracaoDaRede(null);
         }
 
-        public async Task<bool> RealizarIntegracaoEnsinoMedio(ICollection<string> pCodigoEscolas)
+        public async Task<bool> RealizarIntegracaoDaRede(ICollection<string> pCodigoEscolas)
         {
             pCodigoEscolas = pCodigoEscolas ?? new string[0];
             Logger.InfoFormat("Realizando o processo de integração do Ensino Médio com filtro de escolas: [{0}]", string.Join(", ", pCodigoEscolas));
-            //await IntegrarRede();
+
+            await IntegrarRede();
 
             var escolas = await IntegrarEscolas(pCodigoEscolas);
-            Logger.Info("Finalizada integração de escolas");
 
-            //await  IntegrarTurmas(escolas);
-            //await IntegrarProfessores(escolas);
-            Logger.Info("Finalizada integração de turmas e professores");
+            await IntegrarTurmas(escolas);
 
-            //await IntegrarCoordenadores(escolas);
+            await IntegrarProfessores(escolas);
+
+            await IntegrarCoordenadores(escolas);
+
             await IntegrarProfessoresTurmas(escolas);
-            //var taskAlunos = IntegrarAlunos(escolas);
-            Logger.Info("Finalizada integração de professores-turmas e alunos");
+
+            await IntegrarAlunos(escolas);
 
             return true;
         }
 
         private async Task<ICollection<Escola>> IntegrarEscolas(ICollection<string> pCodigoEscolas)
         {
+            Logger.Info("################### Ínicio integração de escolas ###################");
+
             var colecaoEscolas = dataRepository.BuscarEscolas(pCodigoEscolas);
             colecaoEscolas = await eolRepository.BuscarDiretoresEscolas(colecaoEscolas);
             var sequencia = 0;
@@ -72,11 +75,16 @@ namespace GestaoAvaliacao.FGVIntegration.Business
 
             Logger.Info($"Integrando {colecaoEscolas.Count()} escolas");
             var result = await fgvApiClient.SendPostList(FGVAPIConsumer.ENDPOINT_ESCOLA_REGISTRAR, colecaoEscolas);
+
+            Logger.Info("################### Término integração de escolas ###################");
+
             return colecaoEscolas;
         }
 
         private async Task<IEnumerable<ResultadoFGV>> IntegrarCoordenadores(ICollection<Escola> pEscolas)
         {
+            Logger.Info("################### Ínicio Sincronização de coordenadores ###################");
+
             var colecaoCoordenadores = await eolRepository.BuscarCoordenadoresEscolas(pEscolas);
             var contador = 0;
             foreach (var coordenador in colecaoCoordenadores)
@@ -94,6 +102,9 @@ namespace GestaoAvaliacao.FGVIntegration.Business
 
             Logger.Info($"Integrando {colecaoCoordenadores.Count()} coordenadores");
             var result = await ProcessItensUsingTaskPoolAsync(colecaoCoordenadores, FGVAPIConsumer.ENDPOINT_COORDENADOR_REGISTRAR, fgvApiClient.SendPostList, threadsEnvio, CancellationToken.None);
+
+            Logger.Info("################### Término Sincronização de coordenadores ###################");
+
             return result;
         }
 
@@ -105,47 +116,134 @@ namespace GestaoAvaliacao.FGVIntegration.Business
 
         private async Task<IEnumerable<ResultadoFGV>> IntegrarTurmas(ICollection<Escola> pEscolas)
         {
+            Logger.Info("################### Ínicio Sincronização de turmas ###################");
+
             var colecaoEnviar = dataRepository.BuscarTurmas(pEscolas);
             CarregarEmailEscola(pEscolas, colecaoEnviar);
 
             Logger.Info($"Integrando {colecaoEnviar.Count()} turmas");
 
             var result = await ProcessItensUsingTaskPoolAsync(colecaoEnviar, FGVAPIConsumer.ENDPOINT_TURMA_REGISTRAR, fgvApiClient.SendPostList, threadsEnvio, CancellationToken.None);
+
+            Logger.Info("################### Término Sincronização de turmas ###################");
+
             return result;
         }
 
         private async Task<IEnumerable<ResultadoFGV>> IntegrarProfessores(ICollection<Escola> pEscolas)
         {
-            var colecaoEnviar = dataRepository.BuscarProfessores(pEscolas);
-            CarregarEmailEscola(pEscolas, colecaoEnviar);
-            SepararNomeSobrenome(colecaoEnviar);
+            Logger.Info("################### Ínicio Sincronização de professores ###################");
 
-            Logger.Info($"Integrando {colecaoEnviar.Count()} professores");
-            var result = await ProcessItensUsingTaskPoolAsync(colecaoEnviar, FGVAPIConsumer.ENDPOINT_PROFESSOR_REGISTRAR, fgvApiClient.SendPostList, threadsEnvio, CancellationToken.None);
+            var colecaoEnviarProfessores = dataRepository.BuscarProfessores(pEscolas);
+            CarregarEmailEscola(pEscolas, colecaoEnviarProfessores);
+            SepararNomeSobrenome(colecaoEnviarProfessores);
+            EmailFakeDoProfessor(colecaoEnviarProfessores);
+
+            Logger.Info($"Integrando {colecaoEnviarProfessores.Count()} professores");
+            var result = await ProcessItensUsingTaskPoolAsync(colecaoEnviarProfessores, FGVAPIConsumer.ENDPOINT_PROFESSOR_REGISTRAR, fgvApiClient.SendPostList, threadsEnvio, CancellationToken.None);
+
+            Logger.Info("################### Término Sincronização de professores ###################");
+
             return result;
+        }
+
+        private void EmailFakeDoProfessor(ICollection<Professor> colecaoEnviarProfessores)
+        {
+            foreach (var professor in colecaoEnviarProfessores)
+            {
+                var nome = professor.Nome.ToLower().Trim().Split(' ');
+                professor.EmailDoProfessor = $"{string.Join(".", nome)}@sme.prefeitura.sp.gov.br";
+            }
         }
 
         private async Task<IEnumerable<ResultadoFGV>> IntegrarProfessoresTurmas(ICollection<Escola> pEscolas)
         {
-            var colecaoEnviar = dataRepository.BuscarProfessoresTurmas(pEscolas);
-            Logger.Info($"Integrando {colecaoEnviar.Count()} professores-turmas");
-            var result = await ProcessItensUsingTaskPoolAsync(colecaoEnviar, FGVAPIConsumer.ENDPOINT_PROFESSOR_INSERIRNATURMA, fgvApiClient.SendPostList, threadsEnvio, CancellationToken.None);
+            Logger.Info("################### Ínicio Sincronização de professores x turmas ###################");
+
+            var colecaoEnviarProfessorXTurma = dataRepository.BuscarProfessoresTurmas(pEscolas);
+            var contador = 0;
+
+            foreach (var professor in colecaoEnviarProfessorXTurma)
+            {
+                int indiceSobrenome = professor.NomeDoProfessor.Trim().LastIndexOf(' ');
+                var nomeDoProfessor = professor.NomeDoProfessor.Trim().Substring(0, indiceSobrenome);
+                var nome = nomeDoProfessor.ToLower().Trim().Split(' ');
+                professor.EmailDoProfessor = $"{string.Join(".", nome)}@sme.prefeitura.sp.gov.br";
+
+                professor.Seq = contador;
+                contador++;
+            }
+
+            Logger.Info($"Integrando {colecaoEnviarProfessorXTurma.Count()} professores-turmas");
+            var result = await ProcessItensUsingTaskPoolAsync(colecaoEnviarProfessorXTurma, FGVAPIConsumer.ENDPOINT_PROFESSOR_INSERIRNATURMA, fgvApiClient.SendPostList, threadsEnvio, CancellationToken.None);
+
+            Logger.Info("################### Término Sincronização de professores x turmas ###################");
+
+
             return result;
         }
 
         private async Task<IEnumerable<ResultadoFGV>> IntegrarAlunos(ICollection<Escola> pEscolas)
         {
-            var colecaoEnviar = dataRepository.BuscarAlunos(pEscolas);
-            CarregarEmailEscola(pEscolas, colecaoEnviar);
-            SepararNomeSobrenome(colecaoEnviar);
+            Logger.Info("################### Ínicio Sincronização de professores ###################");
 
-            Logger.Info($"Integrando {colecaoEnviar.Count()} alunos");
-            var result = await ProcessItensUsingTaskPoolAsync(colecaoEnviar, FGVAPIConsumer.ENDPOINT_ALUNO_REGISTRAR, fgvApiClient.SendPostList, threadsEnvio, CancellationToken.None);
+            var colecaoEnviarAlunos = dataRepository.BuscarAlunos(pEscolas);
+            CarregarEmailEscola(pEscolas, colecaoEnviarAlunos);
+            SepararNomeSobrenome(colecaoEnviarAlunos);
+
+            foreach (var aluno in colecaoEnviarAlunos)
+            {
+                var nome = aluno.Nome.ToLower().Trim().Split(' ');
+                aluno.EmailDoAluno = $"{string.Join(".", nome)}@sme.prefeitura.sp.gov.br";
+                aluno.CPF = await GerarCpf(aluno.Seq + 1);
+            }
+
+            Logger.Info($"Integrando {colecaoEnviarAlunos.Count()} alunos");
+            var result = await ProcessItensUsingTaskPoolAsync(colecaoEnviarAlunos, FGVAPIConsumer.ENDPOINT_ALUNO_REGISTRAR, fgvApiClient.SendPostList, threadsEnvio, CancellationToken.None);
+
+            Logger.Info("################### Término Sincronização de professores ###################");
+
             return result;
+        }
+
+        private async Task<string> GerarCpf(int sequencia)
+        {
+            int soma = 0;
+            int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+
+            var semente = sequencia.ToString().PadRight(9, '0');
+
+            for (int i = 0; i < 9; i++)
+                soma += int.Parse(semente[i].ToString()) * multiplicador1[i];
+
+            int resto = soma % 11;
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+
+            semente += resto;
+            soma = 0;
+
+            for (int i = 0; i < 10; i++)
+                soma += int.Parse(semente[i].ToString()) * multiplicador2[i];
+
+            resto = soma % 11;
+
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+
+            semente += resto;
+            return await Task.FromResult(semente);
         }
 
         private async Task<ResultadoFGV> IntegrarRede()
         {
+            Logger.Info("################### Ínicio integração da Rede ###################");
+
             var colecaoEnviar =
                 new Rede
                 {
@@ -161,6 +259,9 @@ namespace GestaoAvaliacao.FGVIntegration.Business
                 };
 
             var result = await fgvApiClient.SendPost(FGVAPIConsumer.ENDPOINT_REDE_REGISTRAR, colecaoEnviar);
+
+            Logger.Info("################### Término integração da Rede ###################");
+
             return result;
         }
 
@@ -208,12 +309,11 @@ namespace GestaoAvaliacao.FGVIntegration.Business
                 return results;
 
             var queue = new ConcurrentQueue<List<T>>();
-            var quantidadeDeRepeticoes = GetTotalDePaginas(list.Count(), 50);
+            var quantidadeDeRepeticoes = GetTotalDePaginas(list.Count(), 100);
             for (int i = 0; i < quantidadeDeRepeticoes; i++)
             {
-                queue.Enqueue(list.Skip(i * 50).Take(50).ToList());
+                queue.Enqueue(list.Skip(i * 100).Take(100).ToList());
             }
-
 
             var tasksProcess = new List<Task<IEnumerable<T2>>>(parallelTasksLimit)
             {
@@ -246,8 +346,6 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             if (!queue.TryDequeue(out List<T> obj))
                 return default;
 
-            //Insere o indicador sequencial para possivelmente facilitar a identificação de problemas
-            //obj.Seq = Interlocked.Increment(ref seq);
             try
             {
                 return await function(endpoint, obj);
@@ -259,5 +357,14 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             }
         }
 
+
+        private bool IsValidEmailAdress(string email)
+        {
+            email = email?.ToLower();
+            var regexEmail =
+                new Regex(
+                    @"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|""(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*"")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])");
+            return regexEmail.IsMatch(email);
+        }
     }
 }

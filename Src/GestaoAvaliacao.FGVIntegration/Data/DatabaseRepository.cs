@@ -222,7 +222,7 @@ namespace GestaoAvaliacao.FGVIntegration.Data
                     var sql = @"
                         SELECT
 	                        --u.usu_email as EmailDoProfessor,
-                            convert(char(36), p.pes_id) + '@sme.prefeitura.sp.gov.br' as EmailDoProfessor,
+                            --convert(char(36), p.pes_id) + '@sme.prefeitura.sp.gov.br' as EmailDoProfessor,
 	                        p.pes_nome as NomeDoProfessor,
 	                        t.tur_id as CodigoDaTurma,
 	                        t.tur_codigo as NomeDaTurma,

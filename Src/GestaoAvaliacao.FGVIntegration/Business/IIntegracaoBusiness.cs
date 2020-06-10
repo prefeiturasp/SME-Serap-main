@@ -7,7 +7,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
     {
         Task<bool> RealizarIntegracaoEnsinoMedio();
 
-        Task<bool> RealizarIntegracaoEnsinoMedio(ICollection<string> pCodigoEscolas);
+        Task<bool> RealizarIntegracaoDaRede(ICollection<string> pCodigoEscolas);
 
     }
 }

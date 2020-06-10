@@ -14,6 +14,8 @@ namespace GestaoAvaliacao.FGVIntegration.Models
         /// Valores válidos: <see cref="Enums.Disciplina"/>
         /// </summary>
         public string Disciplina { get; set; }
-
+        
+        [JsonIgnore]
+        public string NomeDoProfessor { get; set; }
     }
 }

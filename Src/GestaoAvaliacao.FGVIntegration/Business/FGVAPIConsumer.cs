@@ -79,7 +79,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             }
             catch (Exception ex)
             {
-                Logger.Error($"Erro na requisição '{pEndPoint}'", ex);
+                Logger.Error($"{Environment.NewLine}##Erro na requisição '{pEndPoint}'", ex);
                 throw new ApplicationException($"Erro na requisição '{pEndPoint}'. Mensagem: {ex.Message}", ex);
             }
         }
@@ -109,7 +109,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             }
             catch (Exception ex)
             {
-                Logger.Error($"Erro na requisição '{pEndPoint}'", ex);
+                Logger.Error($"{Environment.NewLine}##Erro na requisição '{pEndPoint}'", ex);
                 throw new ApplicationException($"Erro na requisição '{pEndPoint}'. Mensagem: {ex.Message}", ex);
             }
         }
@@ -170,7 +170,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             }
             catch (Exception ex)
             {
-                Logger.Error($"Erro na autenticação.", ex);
+                Logger.Error($"{Environment.NewLine} ##Erro na autenticação.", ex);
                 throw new AutenticacaoException($"Erro na autenticação. Mensagem: {ex.Message}", ex);
             }
             finally
@@ -182,25 +182,21 @@ namespace GestaoAvaliacao.FGVIntegration.Business
 
         private async Task<JArray> SendPostJsonResult(string pEndPoint, IEnumerable<BaseFGVObject> pParam)
         {
-            HttpClient httpClient = CreateDefaultHttpClient();
-            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(pEndPoint, pParam.ToArray());
+            var httpClient = CreateDefaultHttpClient();
+            var httpResponse = await httpClient.PostAsJsonAsync(pEndPoint, pParam.ToArray());
             var response = await httpResponse.Content.ReadAsStringAsync();
 
-            var results = ParseResult(pEndPoint, response);
+            var results = ParseResult(pEndPoint, response, null, pParam);
             return (JArray)results;
         }
 
         private async Task<JArray> SendPostJsonResult(string pEndPoint, BaseFGVObject pParam)
         {
-            if (Logger.IsDebugEnabled)
-                Logger.DebugFormat("Enviando Seq={0} para endpoint {1}: {2}", pParam.Seq, pEndPoint, JsonConvert.SerializeObject(pParam));
-
-            HttpClient httpClient = CreateDefaultHttpClient();
-            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync(pEndPoint, pParam);//new BaseFGVObject[] { pParam });
+            var httpClient = CreateDefaultHttpClient();
+            var httpResponse = await httpClient.PostAsJsonAsync(pEndPoint, pParam);
             var response = await httpResponse.Content.ReadAsStringAsync();
 
-            Logger.DebugFormat("Retorno Seq={0} do endpoint {1}: {2}", pParam.Seq, pEndPoint, response);
-            var results = ParseResult(pEndPoint, response);
+            var results = ParseResult(pEndPoint, response, pParam, null);
             return (JArray)results;
         }
 
@@ -212,11 +208,11 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             HttpClient httpClient = CreateDefaultHttpClient();
             string response = await httpClient.GetStringAsync($"{pEndPoint}?{DateTime.Now:yyyy-MM-dd'T'HH:mm:ss}");
 
-            var results = ParseResult(pEndPoint, response);
+            var results = ParseResult(pEndPoint, response, null, null);
             return (JObject)results;
         }
 
-        private JContainer ParseResult(string pEndPoint, string response)
+        private JContainer ParseResult(string pEndPoint, string response, BaseFGVObject objeto, IEnumerable<BaseFGVObject> listaDeObjetos)
         {
             try
             {
@@ -224,16 +220,31 @@ namespace GestaoAvaliacao.FGVIntegration.Business
                 var requestResult = jObject.ToObject<ResultadoRequestFGV>();
                 if (requestResult.Status == "fail")
                 {
-                    Logger.Error($"O request '{pEndPoint}' falhou com a mensagem: {requestResult.Message}");
-                    throw new ApplicationException($"O request '{pEndPoint}' falhou com a mensagem: {requestResult.Message}");
+                    Logger.Error($"{Environment.NewLine}## O request '{pEndPoint}' falhou com a mensagem: {requestResult.Message} ##");
+                    
+                    if(objeto != null)
+                        Logger.Error($"## Object Send: {JsonConvert.SerializeObject(objeto, Formatting.None) } ");
+
+                    if (listaDeObjetos != null)
+                        Logger.Error($"## Object Send: {JsonConvert.SerializeObject(listaDeObjetos, Formatting.None) } ");
+
+                    Logger.Error($"## Object Response: {requestResult?.Returns?.ToString(Formatting.None)}");
                 }
 
                 return requestResult.Returns;
             }
             catch (JsonReaderException ex)
             {
-                Logger.Error($"Retorno do endpoint '{pEndPoint}' não é um JSON válido ou não está no formato esperado.", ex);
-                Logger.Error($"Conteudo do Response:\r\n{response}");
+                Logger.Error($"{Environment.NewLine}## Retorno do endpoint '{pEndPoint}' não é um JSON válido ou não está no formato esperado. ##", ex);
+
+                if (objeto != null)
+                    Logger.Error($"## Conteudo do Send: {JsonConvert.SerializeObject(objeto, Formatting.None) } ");
+
+                if (listaDeObjetos != null)
+                    Logger.Error($"## Conteudo do Send: {JsonConvert.SerializeObject(listaDeObjetos, Formatting.None) } ");
+
+                Logger.Error($"## Conteudo do Response:\r\n{response}");
+
                 throw new ApplicationException($"Retorno do endpoint '{pEndPoint}' não é um JSON válido ou não está no formato esperado.", ex);
             }
         }
@@ -248,7 +259,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             httpClient.DefaultRequestHeaders.Add("x-ClientID", clientId);
             httpClient.DefaultRequestHeaders.Add("x-AuthToken", currentAuthToken);
             httpClient.DefaultRequestHeaders.Add("ContentyType", "application/json");
-            
+
             return httpClient;
         }
 
