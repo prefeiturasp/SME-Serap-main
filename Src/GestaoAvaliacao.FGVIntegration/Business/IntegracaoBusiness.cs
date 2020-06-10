@@ -1,6 +1,7 @@
 ﻿using GestaoAvaliacao.FGVIntegration.Data;
 using GestaoAvaliacao.FGVIntegration.Logging;
 using GestaoAvaliacao.FGVIntegration.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -45,13 +46,13 @@ namespace GestaoAvaliacao.FGVIntegration.Business
 
             var escolas = await IntegrarEscolas(pCodigoEscolas);
 
-            await IntegrarTurmas(escolas);
+            //await IntegrarTurmas(escolas);
 
-            await IntegrarProfessores(escolas);
+            //await IntegrarProfessores(escolas);
 
-            await IntegrarCoordenadores(escolas);
+            //await IntegrarCoordenadores(escolas);
 
-            await IntegrarProfessoresTurmas(escolas);
+            //await IntegrarProfessoresTurmas(escolas);
 
             await IntegrarAlunos(escolas);
 
@@ -189,14 +190,8 @@ namespace GestaoAvaliacao.FGVIntegration.Business
 
             var colecaoEnviarAlunos = dataRepository.BuscarAlunos(pEscolas);
             CarregarEmailEscola(pEscolas, colecaoEnviarAlunos);
+            GerarEmailECpfFakeDoAluno(colecaoEnviarAlunos);          
             SepararNomeSobrenome(colecaoEnviarAlunos);
-
-            foreach (var aluno in colecaoEnviarAlunos)
-            {
-                var nome = aluno.Nome.ToLower().Trim().Split(' ');
-                aluno.EmailDoAluno = $"{string.Join(".", nome)}@sme.prefeitura.sp.gov.br";
-                aluno.CPF = await GerarCpf(aluno.Seq + 1);
-            }
 
             Logger.Info($"Integrando {colecaoEnviarAlunos.Count()} alunos");
             var result = await ProcessItensUsingTaskPoolAsync(colecaoEnviarAlunos, FGVAPIConsumer.ENDPOINT_ALUNO_REGISTRAR, fgvApiClient.SendPostList, threadsEnvio, CancellationToken.None);
@@ -206,7 +201,18 @@ namespace GestaoAvaliacao.FGVIntegration.Business
             return result;
         }
 
-        private async Task<string> GerarCpf(int sequencia)
+        private void GerarEmailECpfFakeDoAluno(ICollection<Aluno> colecaoEnviarAlunos)
+        {
+            foreach (var aluno in colecaoEnviarAlunos)
+            {
+                var nome = aluno.Nome.ToLower().Trim().Split(' ');
+                var sequencia = aluno.Seq + 1;
+                aluno.EmailDoAluno = $"{string.Join(".", nome)}@sme.prefeitura.sp.gov.br";
+                aluno.CPF = GerarCpf(sequencia);
+            }
+        }
+
+        private string GerarCpf(int sequencia)
         {
             int soma = 0;
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -237,7 +243,7 @@ namespace GestaoAvaliacao.FGVIntegration.Business
                 resto = 11 - resto;
 
             semente += resto;
-            return await Task.FromResult(semente);
+            return semente;
         }
 
         private async Task<ResultadoFGV> IntegrarRede()
