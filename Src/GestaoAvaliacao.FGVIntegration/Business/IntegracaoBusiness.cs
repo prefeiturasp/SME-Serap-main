@@ -46,13 +46,13 @@ namespace GestaoAvaliacao.FGVIntegration.Business
 
             var escolas = await IntegrarEscolas(pCodigoEscolas);
 
-            //await IntegrarTurmas(escolas);
+            await IntegrarTurmas(escolas);
 
-            //await IntegrarProfessores(escolas);
+            await IntegrarProfessores(escolas);
 
-            //await IntegrarCoordenadores(escolas);
+            await IntegrarCoordenadores(escolas);
 
-            //await IntegrarProfessoresTurmas(escolas);
+            await IntegrarProfessoresTurmas(escolas);
 
             await IntegrarAlunos(escolas);
 

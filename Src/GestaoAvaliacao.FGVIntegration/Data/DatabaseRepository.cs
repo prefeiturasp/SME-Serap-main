@@ -320,7 +320,7 @@ namespace GestaoAvaliacao.FGVIntegration.Data
                           JOIN GestaoAvaliacao_SGP.dbo.ACA_CalendarioAnual ca WITH (NOLOCK) ON ca.cal_id = t.cal_id
                           LEFT JOIN CoreSSO.dbo.PES_PessoaDocumento pd WITH (NOLOCK) 		ON pd.pes_id = p.pes_id AND pd.tdo_id IN (SELECT tdo_id FROM CoreSSO.dbo.SYS_TipoDocumentacao WHERE tdo_sigla = 'cpf')
                         WHERE a.alu_situacao <> @situacao
-                          AND mt.mtu_situacao <> @situacaoMatriculaAtiva
+                          AND mt.mtu_situacao = @situacaoMatriculaAtiva
                           AND t.tur_situacao <> @situacao
                           AND u.usu_situacao <> @situacao
                           AND ca.cal_ano = @ano
