@@ -302,7 +302,6 @@ namespace GestaoAvaliacao.FGVIntegration.Data
 	                        e.esc_nome as NomeEscola,
 	                        p.pes_id IdDoAluno,
 	                        --u.usu_email as EmailDoAluno,
-                            convert(char(36), p.pes_id) + '@sme.prefeitura.sp.gov.br' as EmailDoAluno,
 	                        p.pes_nome as Nome,
 	                        pd.psd_numero as CPF,
 	                        null as RG,
@@ -321,7 +320,7 @@ namespace GestaoAvaliacao.FGVIntegration.Data
                           JOIN GestaoAvaliacao_SGP.dbo.ACA_CalendarioAnual ca WITH (NOLOCK) ON ca.cal_id = t.cal_id
                           LEFT JOIN CoreSSO.dbo.PES_PessoaDocumento pd WITH (NOLOCK) 		ON pd.pes_id = p.pes_id AND pd.tdo_id IN (SELECT tdo_id FROM CoreSSO.dbo.SYS_TipoDocumentacao WHERE tdo_sigla = 'cpf')
                         WHERE a.alu_situacao <> @situacao
-                          AND mt.mtu_situacao <> @situacao
+                          AND mt.mtu_situacao = @situacaoMatriculaAtiva
                           AND t.tur_situacao <> @situacao
                           AND u.usu_situacao <> @situacao
                           AND ca.cal_ano = @ano
@@ -335,6 +334,7 @@ namespace GestaoAvaliacao.FGVIntegration.Data
                         sexoMasculino = ((char)Enums.Sexo.MASCULINO).ToString(),
                         sexoFeminino = ((char)Enums.Sexo.FEMININO).ToString(),
                         situacao = (byte)Enums.SituacaoRegistro.EXCLUIDO,
+                        situacaoMatriculaAtiva = 1,
                         ano = currentYear,
                         tipoEnsinoMedio = (byte)Enums.TipoNivelEnsino.ENSINO_MEDIO,
                         escolas = (pEscolas == null || !pEscolas.Any() ? null : pEscolas.Select(e => e.CodigoDaEscola)),
