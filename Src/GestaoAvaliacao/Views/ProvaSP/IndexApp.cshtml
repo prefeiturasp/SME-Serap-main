@@ -493,7 +493,7 @@ não exclua esse comentário.
             <button id="btnProvaAlunoVoltar" data-role="button">Voltar</button>
         </div>
     </div>
- 
+
     <!--MSTECH
     *Resultado por nível de filtragem. Todos os filtros aplicados estão, a princípio no método
     resultado_configurarControles.
@@ -511,8 +511,8 @@ não exclua esse comentário.
             </div>
 
             <!--MSTECH
-        *Opções de filtragem
-        -->
+            *Opções de filtragem
+            -->
             <form id="formResultadoOpcoes">
                 <div id="resultados_tabEdit">
                     <!--OPÇÃO 1 - RESULTADOS DA PROVA-->
@@ -523,7 +523,7 @@ não exclua esse comentário.
                         </span>
                     </p>
                     <!--MSTECH - Nova div com opções de resultado da prova. Esta div comportará os resultados
-                da ProvaSP e ProvinhaSP, bem como os respectivos gráficos e tabelas.-->
+                    da ProvaSP e ProvinhaSP, bem como os respectivos gráficos e tabelas.-->
                     <div id="resultados_div0" style="display: none;">
                         <table style="width:100%;">
                             <tr>
@@ -552,8 +552,8 @@ não exclua esse comentário.
                                         <option value="2008" class="edicao-resultado-legado">Edição 2008</option>
                                         <option value="2007" class="edicao-resultado-legado">Edição 2007</option>
                                         <!--
-                                    <option value="HISTORICO">Histórico</option>
-                                    -->
+                                        <option value="HISTORICO">Histórico</option>
+                                        -->
                                     </select>
                                 </td>
                             </tr>
@@ -920,8 +920,8 @@ não exclua esse comentário.
             </form>
 
             <!--MSTECH
-        *Resultado de fato
-        -->
+            *Resultado de fato
+            -->
             <div id="divResultadoApresentacao" style="display:none;">
 
                 <div style="font-weight:bold; margin-top:25px;">
@@ -973,14 +973,14 @@ não exclua esse comentário.
                 </div>
 
                 <!--MSTECH
-                *Principais gráficos - Agregação e Ciclo de Aprendizagem.
-                OBS: O gráfico de Ciclo de Aprendizagem deve aparecer somente quando existe
-                a informação do ciclo e quando for nível SME ou DRE
+                    *Principais gráficos - Agregação e Ciclo de Aprendizagem.
+                    OBS: O gráfico de Ciclo de Aprendizagem deve aparecer somente quando existe
+                    a informação do ciclo e quando for nível SME ou DRE
 
-                ATUALIZAÇÃO: Agora os gráficos de Ciclo de Aprendizagem são também adicionados aos
-                gráficos legados de agregação. Desta maneira, pode-se montar N gráficos de
-                Ciclo de Aprendizagem, dependendo do filtro selecionado
-            -->
+                    ATUALIZAÇÃO: Agora os gráficos de Ciclo de Aprendizagem são também adicionados aos
+                    gráficos legados de agregação. Desta maneira, pode-se montar N gráficos de
+                    Ciclo de Aprendizagem, dependendo do filtro selecionado
+                -->
                 <div id="divChartResultadoAgregacao"></div>
 
                 <div id="divResultadoTituloAmostral" style="background-color:rgb(255,215,215); color:rgb(255,50,50); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none; display:none;">
@@ -1064,8 +1064,8 @@ não exclua esse comentário.
             </div>
 
             <!--MSTECH
-        *Popup para mostrar dados de participação da ProvaSP
-        -->
+            *Popup para mostrar dados de participação da ProvaSP
+            -->
             <div id="divResultadoFA" class="page generico_mainDiv" style="display: none;">
                 <div class="container generico_subDiv">
                     <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
@@ -1173,8 +1173,8 @@ não exclua esse comentário.
             </div>
 
             <!--MSTECH
-        *Popup para mostrar dados de participação da ProvaSP
-        -->
+            *Popup para mostrar dados de participação da ProvaSP
+            -->
             <div id="divResultadoConstructo" class="page generico_mainDiv" style="display: none;">
                 <div class="container generico_subDiv">
                     <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
@@ -1196,142 +1196,141 @@ não exclua esse comentário.
                 </div>
             </div>
         </div>
+    </div>
 
-
-
-        <!--AMCOM
+    <!--AMCOM
     *Popup para consulta de revistas pedagógicas e boletins
     -->
-        <div id="revistasBoletins-page" class="page generico_mainDiv" style="display: none;">
-            <div class="container generico_subDiv">
-                <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+    <div id="revistasBoletins-page" class="page generico_mainDiv" style="display: none;">
+        <div class="container generico_subDiv">
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
 
-                <div class="generico_headerDiv">
-                    <p class="generico_headerTitle">REVISTAS PEDAGÓGICAS E BOLETINS</p>
-                    <p class="generico_headerText">DAS ESCOLAS</p>
-                </div>
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">REVISTAS PEDAGÓGICAS E BOLETINS</p>
+                <p class="generico_headerText">DAS ESCOLAS</p>
+            </div>
 
-                <!--AMCOM
+            <!--AMCOM
             *Opções de filtragem
             -->
-                <form id="formRevistasBoletinsOpcoes">
-                    <table style="width:100%;">
-                        <tr>
-                            <td style="width: 40%">
-                                <select id="ddlRevistasBoletinsEdicao" data-mini="true">
-                                    <option value="2019" selected="selected">Edição 2019</option>
-                                    <option value="2018">Edição 2018</option>
-                                    <option value="2017">Edição 2017</option>
-                                </select>
-                            </td>
-                            <td style="width: 60%">
-                                <select id="ddlRevistasBoletinsAreaConhecimento" data-mini="true">
-                                    <option value="" selected="selected">(Área de Conhecimento...)</option>
-                                    <option value="1">Ciências da Natureza</option>
-                                    <option value="2">Língua Portuguesa</option>
-                                    <option value="4">Redação</option>
-                                    <option value="3">Matemática</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </table>
+            <form id="formRevistasBoletinsOpcoes">
+                <table style="width:100%;">
+                    <tr>
+                        <td style="width: 40%">
+                            <select id="ddlRevistasBoletinsEdicao" data-mini="true">
+                                <option value="2019" selected="selected">Edição 2019</option>
+                                <option value="2018">Edição 2018</option>
+                                <option value="2017">Edição 2017</option>
+                            </select>
+                        </td>
+                        <td style="width: 60%">
+                            <select id="ddlRevistasBoletinsAreaConhecimento" data-mini="true">
+                                <option value="" selected="selected">(Área de Conhecimento...)</option>
+                                <option value="1">Ciências da Natureza</option>
+                                <option value="2">Língua Portuguesa</option>
+                                <option value="4">Redação</option>
+                                <option value="3">Matemática</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
 
-                    <table style="width:100%;">
-                        <tr id="revistasBoletins_selectCiclo">
-                            <td>
-                                <select id="ddlRevistasBoletinsCiclo" data-mini="true" style="width: 100%">
-                                    <option value="" selected="selected">(Ciclo de Aprendizagem...)</option>
-                                    <option id="ddlRevistasBoletinsCicloItem_Ciclo1" value="1">Alfabetização</option>
-                                    <option id="ddlRevistasBoletinsCicloItem_Ciclo2" value="2">Interdisciplinar</option>
-                                    <option id="ddlRevistasBoletinsCicloItem_Ciclo3" value="3">Autoral</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </table>
+                <table style="width:100%;">
+                    <tr id="revistasBoletins_selectCiclo">
+                        <td>
+                            <select id="ddlRevistasBoletinsCiclo" data-mini="true" style="width: 100%">
+                                <option value="" selected="selected">(Ciclo de Aprendizagem...)</option>
+                                <option id="ddlRevistasBoletinsCicloItem_Ciclo1" value="1">Alfabetização</option>
+                                <option id="ddlRevistasBoletinsCicloItem_Ciclo2" value="2">Interdisciplinar</option>
+                                <option id="ddlRevistasBoletinsCicloItem_Ciclo3" value="3">Autoral</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
 
-                    <table style="width:100%;" cellpadding="0" cellspacing="0">
-                        <tr>
-                            <td>
-                                <section id="divRevistasBoletinsDRE" style="display:none;">
-                                    <div style="overflow:auto; height:180px;">
-                                        <label for="chkRevistasBoletinsTodasDREs" id="lblRevistasBoletinsTodasDREs">
-                                            <input id="chkRevistasBoletinsTodasDREs" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk" value="TD" data-mini="true" />
-                                            (TODAS DREs)
-                                        </label>
-                                        <label for="chkRevistasBoletinsBT">
-                                            <input id="chkRevistasBoletinsBT" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="BT" data-mini="true" />
-                                            BUTANTA
-                                        </label>
-                                        <label for="chkRevistasBoletinsCL">
-                                            <input id="chkRevistasBoletinsCL" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="CL" data-mini="true" />
-                                            CAMPO LIMPO
-                                        </label>
-                                        <label for="chkRevistasBoletinsCS">
-                                            <input id="chkRevistasBoletinsCS" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="CS" data-mini="true" />
-                                            CAPELA DO SOCORRO
-                                        </label>
-                                        <label for="chkRevistasBoletinsFO">
-                                            <input id="chkRevistasBoletinsFO" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="FO" data-mini="true" />
-                                            FREGUESIA/BRASILANDIA
-                                        </label>
-                                        <label for="chkRevistasBoletinsG">
-                                            <input id="chkRevistasBoletinsG" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="G" data-mini="true" />
-                                            GUAIANASES
-                                        </label>
-                                        <label for="chkRevistasBoletinsIP">
-                                            <input id="chkRevistasBoletinsIP" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="IP" data-mini="true" />
-                                            IPIRANGA
-                                        </label>
-                                        <label for="chkRevistasBoletinsIQ">
-                                            <input id="chkRevistasBoletinsIQ" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="IQ" data-mini="true" />
-                                            ITAQUERA
-                                        </label>
-                                        <label for="chkRevistasBoletinsJT">
-                                            <input id="chkRevistasBoletinsJT" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="JT" data-mini="true" />
-                                            JACANA/TREMEMBE
-                                        </label>
-                                        <label for="chkRevistasBoletinsPE">
-                                            <input id="chkRevistasBoletinsPE" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="PE" data-mini="true" />
-                                            PENHA
-                                        </label>
-                                        <label for="chkRevistasBoletinsPJ">
-                                            <input id="chkRevistasBoletinsPJ" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="PJ" data-mini="true" />
-                                            PIRITUBA/JARAGUA
-                                        </label>
-                                        <label for="chkRevistasBoletinsSA">
-                                            <input id="chkRevistasBoletinsSA" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="SA" data-mini="true" />
-                                            SANTO AMARO
-                                        </label>
-                                        <label for="chkRevistasBoletinsSM">
-                                            <input id="chkRevistasBoletinsSM" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="SM" data-mini="true" />
-                                            SAO MATEUS
-                                        </label>
-                                        <label for="chkRevistasBoletinsMP">
-                                            <input id="chkRevistasBoletinsMP" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="MP" data-mini="true" />
-                                            SAO MIGUEL
-                                        </label>
-                                    </div>
-                                    <span id="lblRevistasBoletinsSelecaoTotalDRE" class="revistasBoletinsInfoSelecao revistasBoletinsInfoSelecaoDRE"></span>
-                                </section>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <section id="divRevistasBoletinsEscola" class="ui-mini" style="display:none;">
-                                    <span id="lblRevistasBoletinsSelecaoTotalEscola" class="revistasBoletinsInfoSelecao">Escolas:</span>
-                                    <input type="search" id="txtRevistasBoletinsEscolaFiltro" data-mini="true" placeholder="Filtrar escolas" />
-                                    <div id="divRevistasBoletinsEscolaItens" style="overflow:auto; height:180px;"></div>
-                                </section>
-                            </td>
-                        </tr>
-                    </table>
+                <table style="width:100%;" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td>
+                            <section id="divRevistasBoletinsDRE" style="display:none;">
+                                <div style="overflow:auto; height:180px;">
+                                    <label for="chkRevistasBoletinsTodasDREs" id="lblRevistasBoletinsTodasDREs">
+                                        <input id="chkRevistasBoletinsTodasDREs" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk" value="TD" data-mini="true" />
+                                        (TODAS DREs)
+                                    </label>
+                                    <label for="chkRevistasBoletinsBT">
+                                        <input id="chkRevistasBoletinsBT" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="BT" data-mini="true" />
+                                        BUTANTA
+                                    </label>
+                                    <label for="chkRevistasBoletinsCL">
+                                        <input id="chkRevistasBoletinsCL" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="CL" data-mini="true" />
+                                        CAMPO LIMPO
+                                    </label>
+                                    <label for="chkRevistasBoletinsCS">
+                                        <input id="chkRevistasBoletinsCS" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="CS" data-mini="true" />
+                                        CAPELA DO SOCORRO
+                                    </label>
+                                    <label for="chkRevistasBoletinsFO">
+                                        <input id="chkRevistasBoletinsFO" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="FO" data-mini="true" />
+                                        FREGUESIA/BRASILANDIA
+                                    </label>
+                                    <label for="chkRevistasBoletinsG">
+                                        <input id="chkRevistasBoletinsG" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="G" data-mini="true" />
+                                        GUAIANASES
+                                    </label>
+                                    <label for="chkRevistasBoletinsIP">
+                                        <input id="chkRevistasBoletinsIP" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="IP" data-mini="true" />
+                                        IPIRANGA
+                                    </label>
+                                    <label for="chkRevistasBoletinsIQ">
+                                        <input id="chkRevistasBoletinsIQ" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="IQ" data-mini="true" />
+                                        ITAQUERA
+                                    </label>
+                                    <label for="chkRevistasBoletinsJT">
+                                        <input id="chkRevistasBoletinsJT" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="JT" data-mini="true" />
+                                        JACANA/TREMEMBE
+                                    </label>
+                                    <label for="chkRevistasBoletinsPE">
+                                        <input id="chkRevistasBoletinsPE" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="PE" data-mini="true" />
+                                        PENHA
+                                    </label>
+                                    <label for="chkRevistasBoletinsPJ">
+                                        <input id="chkRevistasBoletinsPJ" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="PJ" data-mini="true" />
+                                        PIRITUBA/JARAGUA
+                                    </label>
+                                    <label for="chkRevistasBoletinsSA">
+                                        <input id="chkRevistasBoletinsSA" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="SA" data-mini="true" />
+                                        SANTO AMARO
+                                    </label>
+                                    <label for="chkRevistasBoletinsSM">
+                                        <input id="chkRevistasBoletinsSM" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="SM" data-mini="true" />
+                                        SAO MATEUS
+                                    </label>
+                                    <label for="chkRevistasBoletinsMP">
+                                        <input id="chkRevistasBoletinsMP" type="checkbox" name="chkRevistasBoletinsDRE" class="revistasBoletins-dre-chk revistasBoletins-dre-item-chk" value="MP" data-mini="true" />
+                                        SAO MIGUEL
+                                    </label>
+                                </div>
+                                <span id="lblRevistasBoletinsSelecaoTotalDRE" class="revistasBoletinsInfoSelecao revistasBoletinsInfoSelecaoDRE"></span>
+                            </section>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <section id="divRevistasBoletinsEscola" class="ui-mini" style="display:none;">
+                                <span id="lblRevistasBoletinsSelecaoTotalEscola" class="revistasBoletinsInfoSelecao">Escolas:</span>
+                                <input type="search" id="txtRevistasBoletinsEscolaFiltro" data-mini="true" placeholder="Filtrar escolas" />
+                                <div id="divRevistasBoletinsEscolaItens" style="overflow:auto; height:180px;"></div>
+                            </section>
+                        </td>
+                    </tr>
+                </table>
 
-                </form>
+            </form>
 
-                <button id="btnRevistasBoletinsVoltar" data-role="button">Voltar</button>
-            </div>
+            <button id="btnRevistasBoletinsVoltar" data-role="button">Voltar</button>
         </div>
     </div>
+
     <!--MSTECH
     *Popup para mostrar dados de participação da ProvaSP
     -->
