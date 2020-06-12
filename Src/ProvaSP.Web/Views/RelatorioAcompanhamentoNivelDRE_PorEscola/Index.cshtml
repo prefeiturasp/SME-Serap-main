@@ -1,6 +1,7 @@
 ﻿@using ProvaSP.Model.Entidades
 @using ProvaSP.Data
-@model List<RelatorioItem>
+@using ProvaSP.Web.ViewModel
+@model RelatorioAcompanhamentoEscola
 
 @{
     ViewBag.Title = "Relatório de Acompanhamento";
@@ -9,47 +10,80 @@
 
 <h2>DRE @Html.Raw(EnumHelper<DRE>.GetEnumDescription(ViewBag.DRE))</h2>
 
-<table cellpadding="5">
+@{
+    foreach (var itemChave in Model.IndicadoresAgrupadosChave)
+    {
+        <article style="padding-top:30px">
+        <a href="RelatorioAcompanhamentoNivelEscola?esc_codigo=@itemChave.Chave&usu_id=@ViewBag.Usuario.usu_login">
+            <b>@Html.Raw(itemChave.Titulo)</b>
+            <br />
+            (Clique aqui para ver mais detalhes)
+        </a>
 
-    @{
-        string ultimoTitulo = "";
-        foreach (var item in Model)
+        <div class="container container-table">
+            <div class="text-center col-md-6 col-md-offset-0">
+                <table class="table table-hover">
+                    <tbody>
+                        @{
+                            foreach (var item in itemChave.IndicadoresEscola)
+                            {
+                                <tr>
+                                    <td class="text-left">
+                                        @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                                    </td>
+                                    <td style="text-align: right">
+                                        @item.Valor
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @if (itemChave.GridIndicadoresEscola.Any())
         {
-            if (ultimoTitulo != @item.Titulo)
-            {
-                <tr>
-                    <td style="padding-top:30px;">
-                        <a  href="RelatorioAcompanhamentoNivelEscola?esc_codigo=@item.Chave&usu_id=@ViewBag.Usuario.usu_login">
-                            <b>@item.Titulo</b>
-                            <br />
-                            (Clique aqui para ver mais detalhes)
-                        </a>
-                    </td>
-                    <td>
-
-                    </td>
-                </tr>
-            }
-
-            <tr>
-                <td>
-                    @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
-                </td>
-                <td>
-                    @item.Valor
-                </td>
-
-            </tr>
-            ultimoTitulo = @item.Titulo;
+            <div class="container container-table">
+                <div class="text-center col-md-6 col-md-offset-0">
+                    <table class="table table-striped">
+                        <caption style="font-size: 10pt">Questionários</caption>
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Perfil</th>
+                                <th scope="col">Respondidos</th>
+                                <th scope="col">Total esperado</th>
+                                <th scope="col">% Respondidos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var item in itemChave.GridIndicadoresEscola)
+                                {
+                                    <tr>
+                                        <td class="text-left">@item.DescricaoRespondente</td>
+                                        <td class="text-right">@item.QuantidadePreenchido</td>
+                                        <td class="text-right">@(item.TotalEsperado <= 0 ? string.Empty : Convert.ToString(item.TotalEsperado))</td>
+                                        <td class="text-right">@(item.TotalEsperado <= 0 ? string.Empty : String.Format("{0}%", item.PercentualPreenchido))</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         }
+        </article>
     }
-</table>
+}
 
 @{
     if (ViewBag.Usuario.AcessoNivelSME)
     {
         <br />
-        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelSME_PorDRE?usu_id=@ViewBag.Usuario.usu_login'">
+        <button style="width:50%; font-size:17pt;" class="btn btn-primary"
+                onclick="window.location.href='RelatorioAcompanhamentoNivelSME_PorDRE?usu_id=@ViewBag.Usuario.usu_login'">
             Visualizar Nível SME por DRE
         </button>
     }
@@ -58,7 +92,8 @@
     if (grupos.Any(p => p.gru_nome.Contains("Supervisão Escolar")))
     {
         <br />
-        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelDRE?usu_id=@ViewBag.Usuario.usu_login&uad_codigo=@ViewBag.DRE'">
+        <button style="width:50%; font-size:17pt;" class="btn btn-primary"
+                onclick="window.location.href='RelatorioAcompanhamentoNivelDRE?usu_id=@ViewBag.Usuario.usu_login&uad_codigo=@ViewBag.DRE'">
             Visualizar Nível DRE
         </button>
     }

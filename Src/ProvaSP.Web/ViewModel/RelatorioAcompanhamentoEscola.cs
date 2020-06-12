@@ -8,9 +8,8 @@ namespace ProvaSP.Web.ViewModel
 {
     public class RelatorioAcompanhamentoEscola
     {
-        public List<RelatorioItem> IndicadoresEscola { get; set; }
         public List<RelatorioItem> IndicadoresPessoa { get; set; }
         public List<RelatorioItem> IndicadoresTurma { get; set; }
-
+        public IList<RelatorioAgrupamento> IndicadoresAgrupadosChave { get; set; }
     }
 }

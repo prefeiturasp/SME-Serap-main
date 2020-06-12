@@ -59,12 +59,12 @@ namespace GestaoAvaliacao.Services
                     var answer = studentCorrection.Answers.SingleOrDefault(a => a.Item_Id.Equals(itemIdOld) && a.AnswerChoice.Equals(alternativeIdOld));
                     if (answer != null)
                     {
-                        answer.Item_Id = itemIdNew ?? itemIdNew.Value;
+                        answer.Item_Id = itemIdNew.HasValue ? itemIdNew.Value : answer.Item_Id;
                         answer.AnswerChoice = alternativeIdNew.HasValue ? alternativeIdNew.Value : alternativeIdOld;
-                        answer.Correct = answerCorrect ?? answerCorrect.Value;
+                        answer.Correct = answerCorrect.HasValue ? answerCorrect.Value : answer.Correct;
                         studentCorrection.Hits = studentCorrection.Answers.Count(a => a.Correct);
 
-                        var tempCorrectionResult = await testSectionStatusCorrectionBusiness.GetTempCorrection(testId, studentCorrection.tur_id);
+                        var tempCorrectionResult = await testSectionStatusCorrectionBusiness.GetTempCorrection(Guid.Parse(studentCorrection._id.Substring(0, 36)), testId, studentCorrection.tur_id);
 
                         if (tempCorrectionResult != null && !tempCorrectionResult.Processed)
                             continue;
@@ -95,10 +95,10 @@ namespace GestaoAvaliacao.Services
             var item = testTemplate.Items.SingleOrDefault(tt => tt.Item_Id.Equals(itemIdOld));
             if (item != null)
             {
-                item.Item_Id = itemIdNew ?? itemIdNew.Value;
+                item.Item_Id = itemIdNew.HasValue ? itemIdNew.Value : itemIdOld;
                 item.Alternative_Id = alternativeIdNew ?? alternativeIdNew.Value;
                 var alternative = alternativeBusiness
-                    .GetAlternativesByItens(new List<string>() { itemIdNew.ToString() }.AsEnumerable(), testId)
+                    .GetAlternativesByItens(new List<string>() { itemIdNew.HasValue ? itemIdNew.Value.ToString() : itemIdOld.ToString() }.AsEnumerable(), testId)
                     .SingleOrDefault(a => a.Id.Equals(alternativeIdNew.HasValue ? alternativeIdNew.Value : item.Alternative_Id));
                 item.Numeration = alternative != null ? alternative.Numeration : item.Numeration;
                 await testTemplateRepository.Replace(testTemplate);
@@ -121,11 +121,11 @@ namespace GestaoAvaliacao.Services
                     Test_Id = sc.Test_Id,
                     Tur_id = sc.tur_id,
                     Guid_Student_Correction = Guid.Parse(sc._id.Substring(0, 36))
-                }).Distinct();                
+                }).Distinct();
 
                 foreach (var item in testAndTeams)
                 {
-                    var tempCorrectionResult = await testSectionStatusCorrectionBusiness.GetTempCorrection(item.Test_Id, item.Tur_id);
+                    var tempCorrectionResult = await testSectionStatusCorrectionBusiness.GetTempCorrection(item.Guid_Student_Correction, item.Test_Id, item.Tur_id);
 
                     if (tempCorrectionResult != null && !tempCorrectionResult.Processed)
                         continue;
@@ -134,8 +134,13 @@ namespace GestaoAvaliacao.Services
 
                     tempCorrectionResult.Processed = false;
                     await testSectionStatusCorrectionBusiness.UpdateTempCorrection(tempCorrectionResult);
-                }               
-            }           
+                }
+            }
+        }
+
+        public async Task<IList<MongoEntities.StudentCorrection>> GetByTest(long testId, long teamId)
+        {
+            return await studentCorrectionBusiness.GetByTest(testId, teamId);
         }
     }
 }

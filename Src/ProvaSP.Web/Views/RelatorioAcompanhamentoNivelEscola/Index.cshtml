@@ -10,56 +10,98 @@
 }
 
 <h2>@ViewBag.Escola.esc_nome</h2>
+<br>
 
-<table cellpadding="5">
+@{
+    foreach (var itemChave in Model.IndicadoresAgrupadosChave)
+    {
+        <div class="container container-table">
+            <div class="text-center col-md-6 col-md-offset-0">
+                <table class="table table-hover">
+                    <tbody>
+                        @{
+                            foreach (var item in itemChave.IndicadoresEscola)
+                            {
+                                <tr>
+                                    <td class="text-left">
+                                        @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                                    </td>
+                                    <td style="text-align: right">
+                                        @item.Valor
+                                    </td>
 
-    @{
-        foreach (var item in Model.IndicadoresEscola)
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        if (itemChave.GridIndicadoresEscola.Any())
         {
-
-            <tr>
-
-                <td>
-                    @Html.Raw(EnumHelper<DRE>.GetEnumDescription(item.Titulo))
-                </td>
-                <td>
-                    @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
-                </td>
-                <td>
-                    @item.Valor
-                </td>
-
-            </tr>
+            <div class="container container-table">
+                <div class="text-center col-md-6 col-md-offset-0">
+                    <table class="table table-striped">
+                        <caption style="font-size: 10pt">Questionários</caption>
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Perfil</th>
+                                <th scope="col">Respondidos</th>
+                                <th scope="col">Total esperado</th>
+                                <th scope="col">% Respondidos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var item in itemChave.GridIndicadoresEscola)
+                                {
+                                    <tr>
+                                        <td class="text-left">@item.DescricaoRespondente</td>
+                                        <td class="text-right">@item.QuantidadePreenchido</td>
+                                        <td class="text-right">@(item.TotalEsperado <= 0 ? string.Empty : Convert.ToString(item.TotalEsperado))</td>
+                                        <td class="text-right">@(item.TotalEsperado <= 0 ? string.Empty : String.Format("{0}%", item.PercentualPreenchido))</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         }
+
     }
-</table>
+}
 
-<h2>Turmas</h2>
+@if (Model.IndicadoresTurma.Any())
+{
+    <h2>Turmas</h2>
 
-<table cellpadding="5">
-    @{
-        foreach (var item in Model.IndicadoresTurma)
-        {
+    <table cellpadding="5">
+        @{
+            foreach (var item in Model.IndicadoresTurma)
+            {
 
-            <tr style="@(item.Valor == "SIM" ? "color:green" : "color:red")">
+                <tr style="@(item.Valor == "SIM" ? "color:green" : "color:red")">
 
-                <td>
-                    @item.Titulo
-                </td>
-                <td>
-                    @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
-                </td>
-                <td>
-                    @item.Valor
-                </td>
+                    <td>
+                        @item.Titulo
+                    </td>
+                    <td>
+                        @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                    </td>
+                    <td>
+                        @item.Valor
+                    </td>
 
-            </tr>
+                </tr>
+            }
         }
-    }
-</table>
+    </table>
+}
 
 
-<h2>Docentes</h2>
+<h2>Respondentes</h2>
 
 <table cellpadding="5">
 
@@ -92,8 +134,9 @@
     if (ViewBag.Usuario.AcessoNivelSME || gruposSE.Any(p => p.gru_nome.Contains("Supervisão Escolar")))
     {
         <br />
-        <button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelDRE_PorEscola?usu_id=@ViewBag.Usuario.usu_login&uad_codigo=@ViewBag.Escola.uad_codigo'">
-            Visualizar DRE <br /> por Escola 
+        <button style="width:50%; font-size:16pt;" class="btn btn-primary"
+                onclick="window.location.href='RelatorioAcompanhamentoNivelDRE_PorEscola?usu_id=@ViewBag.Usuario.usu_login&uad_codigo=@ViewBag.Escola.uad_codigo'">
+            Visualizar DRE por Escola
         </button>
     }
 }

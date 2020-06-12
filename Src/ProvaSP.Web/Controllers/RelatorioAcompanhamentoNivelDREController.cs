@@ -1,5 +1,6 @@
 ﻿using ProvaSP.Data;
 using ProvaSP.Model.Entidades;
+using ProvaSP.Web.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +20,10 @@ namespace ProvaSP.Web.Controllers
             {
                 ViewBag.Usuario = usuario;
                 ViewBag.DRE = uad_codigo;
-                var indicadores = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelDRE("2018", uad_codigo);
-                return View(indicadores);
+                var model = new RelatorioAcompanhamentoEscola();
+                var indicadoresEscola = Data.DataAcompanhamentoAplicacao.RecuperarAcompanhamentoEscolaNivelDRE(Data.Funcionalidades.Prova.Edicao, uad_codigo);
+                model.IndicadoresAgrupadosChave = Data.DataAcompanhamentoAplicacao.MontarGridQuantidadeRespondentes(indicadoresEscola);
+                return View(model);
             }
             else
                 return RedirectToAction("Index", "RelatorioAcompanhamento");

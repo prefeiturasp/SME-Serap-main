@@ -22,7 +22,16 @@ namespace ProvaSP.Data
 
                 resultado.Agregacao = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'SME' AS Titulo, 'SME' AS Chave, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar",
                                         param: new
@@ -37,7 +46,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL SME
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA SME' AS Titulo, 'SME' AS Chave, AnoEscolar, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                AnoEscolar, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos,
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar",
                                         param: new
@@ -51,7 +70,16 @@ namespace ProvaSP.Data
 
                 var resultadoItens_DRE = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT NivelProficienciaID, uad_sigla AS Chave, '' AS Titulo, TotalAlunos, Valor, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT NivelProficienciaID, 
+                                                uad_sigla AS Chave, 
+                                                '' AS Titulo, 
+                                                TotalAlunos, 
+                                                Valor, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoDre WITH (NOLOCK)
                                             WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar",
                                         param: new
@@ -69,11 +97,6 @@ namespace ProvaSP.Data
 
                 resultado.Itens.AddRange(resultadoItens_DRE);
 
-                
-
-
-
-                
 
                 var habilidades = conn.Query<HabilidadeTema, HabilidadeItem, HabilidadeTema>(
                         sql: @"
@@ -105,10 +128,7 @@ namespace ProvaSP.Data
 
 
                 resultado.Habilidades = OrganizarHabilidades(habilidades);
-
             }
-
-            
 
             return resultado;
         }
@@ -134,8 +154,6 @@ namespace ProvaSP.Data
         public static Resultado RecuperarResultadoDRE(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_uad_sigla)
         {
             var resultado = new Resultado();
-
-
 
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
             {
@@ -168,7 +186,16 @@ namespace ProvaSP.Data
 
                 resultado.Agregacao = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT '' AS Titulo, uad_sigla AS Chave, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT '' AS Titulo, 
+                                                uad_sigla AS Chave, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoDre WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND uad_sigla IN(" + sbDREs.ToString() + @") ",
                                         param: parametros
@@ -180,7 +207,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL SME
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA SME' AS Titulo, 'SME' AS Chave, AnoEscolar, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                AnoEscolar, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar",
                                         param: parametros
@@ -189,7 +226,17 @@ namespace ProvaSP.Data
 
                 var resultadoItens_DRE = conn.Query<ResultadoItem>(
                                             sql: @"
-                                            SELECT NivelProficienciaID, uad_sigla AS Chave, AnoEscolar, '' AS Titulo, TotalAlunos, Valor, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT NivelProficienciaID, 
+                                                uad_sigla AS Chave, 
+                                                AnoEscolar, 
+                                                '' AS Titulo, 
+                                                TotalAlunos, 
+                                                Valor, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoDre WITH (NOLOCK)
                                             WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND uad_sigla IN(" + sbDREs.ToString() + @")
                                             ",
@@ -203,11 +250,19 @@ namespace ProvaSP.Data
                         resultadoItens_DRE
                 );
 
-
                 resultado.Itens.AddRange(
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT r.NivelProficienciaID, r.esc_codigo AS Chave, '(' + r.uad_sigla + ') ' +e.esc_nome AS Titulo, r.TotalAlunos, r.Valor, r.PercentualAbaixoDoBasico, r.PercentualBasico, r.PercentualAdequado, r.PercentualAvancado, r.PercentualAlfabetizado
+                                            SELECT r.NivelProficienciaID, 
+                                                r.esc_codigo AS Chave, 
+                                                '(' + r.uad_sigla + ') ' +e.esc_nome AS Titulo, 
+                                                r.TotalAlunos, 
+                                                r.Valor, 
+                                                r.PercentualAbaixoDoBasico, 
+                                                r.PercentualBasico, 
+                                                r.PercentualAdequado, 
+                                                r.PercentualAvancado, 
+                                                r.PercentualAlfabetizado
                                             FROM ResultadoEscola r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.AnoEscolar=@AnoEscolar AND r.uad_sigla IN(" + sbDREs.ToString() + @") 
@@ -217,8 +272,6 @@ namespace ProvaSP.Data
                                     ).ToList<ResultadoItem>()
                 );
 
-
-                
 
                 var habilidades = conn.Query<HabilidadeTema, HabilidadeItem, HabilidadeTema>(
                         sql: @"
@@ -265,7 +318,6 @@ namespace ProvaSP.Data
                 }
             }
 
-
             return resultado;
         }
 
@@ -304,7 +356,16 @@ namespace ProvaSP.Data
 
                 resultado.Agregacao = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT e.esc_nome AS Titulo, r.esc_codigo AS Chave, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT e.esc_nome AS Titulo, 
+                                                r.esc_codigo AS Chave, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoEscola r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + @") ",
@@ -325,7 +386,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL SME
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA SME' AS Titulo, 'SME' AS Chave, AnoEscolar, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                AnoEscolar, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar",
                                         param: parametros
@@ -334,7 +405,17 @@ namespace ProvaSP.Data
 
                 var resultadoItens_DRE = conn.Query<ResultadoItem>(
                                             sql: @"
-                                            SELECT NivelProficienciaID, uad_sigla AS Chave, AnoEscolar, '' AS Titulo, TotalAlunos, Valor, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT NivelProficienciaID, 
+                                                uad_sigla AS Chave, 
+                                                AnoEscolar, 
+                                                '' AS Titulo, 
+                                                TotalAlunos, 
+                                                Valor, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoDre WITH (NOLOCK)
                                             WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND uad_sigla IN(SELECT DISTINCT uad_codigo FROM Escola WHERE esc_codigo IN(" + sbEscolas.ToString() + @"))
                                             ",
@@ -348,9 +429,18 @@ namespace ProvaSP.Data
                         resultadoItens_DRE
                 );
 
-                resultado.Itens.AddRange( conn.Query<ResultadoItem>(
+                resultado.Itens.AddRange(conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT r.NivelProficienciaID, r.esc_codigo AS Chave, " + titulo + @", r.TotalAlunos, r.Valor, r.PercentualAbaixoDoBasico, r.PercentualBasico, r.PercentualAdequado, r.PercentualAvancado, r.PercentualAlfabetizado
+                                            SELECT r.NivelProficienciaID, 
+                                                r.esc_codigo AS Chave, "
+                                                + titulo + @", 
+                                                r.TotalAlunos, 
+                                                r.Valor, 
+                                                r.PercentualAbaixoDoBasico, 
+                                                r.PercentualBasico, 
+                                                r.PercentualAdequado, 
+                                                r.PercentualAvancado, 
+                                                r.PercentualAlfabetizado
                                             FROM ResultadoTurma r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + @") 
@@ -359,8 +449,6 @@ namespace ProvaSP.Data
                                         param: parametros
                                     ).ToList<ResultadoItem>()
                 );
-
-                
 
                 var habilidades = conn.Query<HabilidadeTema, HabilidadeItem, HabilidadeTema>(
                         sql: @"
@@ -390,10 +478,369 @@ namespace ProvaSP.Data
                     ).ToList<HabilidadeTema>();
 
                 resultado.Habilidades = OrganizarHabilidades(habilidades);
-
             }
 
             return resultado;
+        }
+
+        private static List<NivelDeProficiencia> GetNiveisDeProficiencia()
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                conn.Open();
+                return conn.Query<NivelDeProficiencia>("select NivelProficienciaID, Nome from NivelProficiencia").ToList();
+            }
+        }
+
+        public static byte[] ExportarDadosDreEscolasDosAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_uad_sigla)
+        {
+            var dadosDosAlunos = new List<DadosDosAlunosParaExportarCsvDreEscolas>();
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                var parametros = new DynamicParameters();
+
+                parametros.Add("Edicao", Edicao, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 10);
+                parametros.Add("AnoEscolar", AnoEscolar, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 3);
+                parametros.Add("AreaConhecimentoID", AreaConhecimentoID, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
+
+                var sbDREs = new StringBuilder();
+                var lista_uad_siglaSplit = lista_uad_sigla.Split(',');
+
+                foreach (var uad_sigla in lista_uad_siglaSplit)
+                {
+                    if (sbDREs.Length > 0)
+                    {
+                        sbDREs.Append(",");
+                    }
+                    string parameterName = "@p_" + uad_sigla;
+                    sbDREs.Append(parameterName);
+                    parametros.Add(parameterName, uad_sigla, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 4);
+                }
+
+                conn.Open();
+
+                dadosDosAlunos =
+                    conn.Query<DadosDosAlunosParaExportarCsvDreEscolas>(
+                                    sql: $@"
+                                        SELECT
+	                                        esc.esc_nome AS NomeDaEscola,
+	                                        resultado.NivelProficienciaID, 
+	                                        resultado.Edicao,
+	                                        resultado.alu_nome AS Nome,
+	                                        resultado.alu_matricula AS Matricula,
+	                                        resultado.AnoEscolar,
+	                                        resultado.tur_codigo AS CodigoDaTurmaDoAluno,
+	                                        ISNULL(tr.Periodo,'Indefinido') AS Periodo,
+	                                        resultado.valor as Media,
+	                                        nivel.Nome as NivelProficiencia
+                                        FROM ResultadoAluno resultado WITH (NOLOCK)
+                                            LEFT JOIN Turma tr WITH (NOLOCK) ON tr.tur_id = resultado.tur_id
+                                            INNER JOIN Escola esc WITH (NOLOCK) ON esc.esc_codigo = resultado.esc_codigo
+                                            INNER JOIN NivelProficiencia nivel WITH (NOLOCK) ON nivel.NivelProficienciaID = resultado.NivelProficienciaID
+                                        WHERE 
+                                            resultado.Edicao=@Edicao AND 
+                                            resultado.AreaConhecimentoID=@AreaConhecimentoID AND 
+                                            resultado.AnoEscolar=@AnoEscolar AND 
+                                            resultado.uad_sigla IN({sbDREs}) 
+                                        ORDER BY 
+                                            esc.esc_nome, 
+                                            resultado.tur_codigo, 
+                                            resultado.alu_nome
+                                        ",
+                                    param: parametros
+                                ).ToList();
+            }
+
+            var texto = string.Empty;
+            texto += "Microdados;";
+            texto += $"{Environment.NewLine}NomeDaEscola;Edicao;NomeDoAluno;MatriculaDoAluno;AnoEscolarDoAluno;CodigoDaTurmaDoAluno;Periodo;MediaDoAluno;NivelProficienciaDoAluno;";
+            dadosDosAlunos.ForEach(x =>
+            {
+                texto += $"{Environment.NewLine}{x.NomeDaEscola};{x.Edicao};{x.Nome};{x.Matricula};{x.AnoEscolar};{x.CodigoDaTurmaDoAluno};{x.Periodo};{x.Media};{x.NivelProficiencia};";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
+        public static byte[] ExportarDadosDreEscolasConsolidados(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_uad_sigla)
+        {
+            var resultado = RecuperarResultadoDRE(Edicao, AreaConhecimentoID, AnoEscolar, lista_uad_sigla);
+            var texto = string.Empty;
+
+            var agregacoes = resultado.Agregacao;
+            var niveisDeProficiencia = GetNiveisDeProficiencia();
+            texto = "NomeDre;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            agregacoes.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+            });
+
+            texto += $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
+
+            var itens = resultado.Itens;
+            texto += $"{Environment.NewLine}NomeEscola;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            itens.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
+        public static byte[] ExportarDadosDreResultadoEscolaDosAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo)
+        {
+            var dadosDosAlunos = new List<DadosDosAlunosParaExportarCsvDreEscolas>();
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                var parametros = new DynamicParameters();
+
+                parametros.Add("Edicao", Edicao, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 10);
+                parametros.Add("AnoEscolar", AnoEscolar, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 3);
+                parametros.Add("AreaConhecimentoID", AreaConhecimentoID, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
+
+                var sbEscolas = new StringBuilder();
+                var lista_esc_codigoSplit = lista_esc_codigo.Split(',');
+
+                foreach (var esc_codigo in lista_esc_codigoSplit)
+                {
+                    if (sbEscolas.Length > 0)
+                    {
+                        sbEscolas.Append(",");
+                    }
+                    string parameterName = "@p_" + esc_codigo;
+                    sbEscolas.Append(parameterName);
+                    parametros.Add(parameterName, esc_codigo, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 20);
+                }
+
+                conn.Open();
+
+                dadosDosAlunos =
+                    conn.Query<DadosDosAlunosParaExportarCsvDreEscolas>(
+                                    sql: $@"
+                                        SELECT
+	                                        esc.esc_nome AS NomeDaEscola,
+	                                        resultado.NivelProficienciaID, 
+	                                        resultado.Edicao,
+	                                        resultado.alu_nome AS Nome,
+	                                        resultado.alu_matricula AS Matricula,
+	                                        resultado.AnoEscolar,
+	                                        resultado.tur_codigo AS CodigoDaTurmaDoAluno,
+	                                        ISNULL(tr.Periodo,'Indefinido') AS Periodo,
+	                                        resultado.valor as Media,
+	                                        nivel.Nome as NivelProficiencia
+                                        FROM ResultadoAluno resultado WITH (NOLOCK)
+                                            LEFT JOIN Turma tr WITH (NOLOCK) ON tr.tur_id = resultado.tur_id
+                                            INNER JOIN Escola esc WITH (NOLOCK) ON esc.esc_codigo = resultado.esc_codigo
+                                            INNER JOIN NivelProficiencia nivel WITH (NOLOCK) ON nivel.NivelProficienciaID = resultado.NivelProficienciaID
+                                        WHERE 
+                                            resultado.Edicao=@Edicao AND 
+                                            resultado.AreaConhecimentoID=@AreaConhecimentoID AND 
+                                            resultado.AnoEscolar=@AnoEscolar AND 
+                                            resultado.esc_codigo IN({sbEscolas}) 
+                                        ORDER BY 
+                                            esc.esc_nome, 
+                                            resultado.tur_codigo, 
+                                            resultado.alu_nome
+                                        ",
+                                    param: parametros
+                                ).ToList();
+            }
+
+            var texto = string.Empty;
+            texto += "Microdados;";
+            texto += $"{Environment.NewLine}NomeDaEscola;Edicao;NomeDoAluno;MatriculaDoAluno;AnoEscolarDoAluno;CodigoDaTurmaDoAluno;Periodo;MediaDoAluno;NivelProficienciaDoAluno;";
+            dadosDosAlunos.ForEach(x =>
+            {
+                texto += $"{Environment.NewLine}{x.NomeDaEscola};{x.Edicao};{x.Nome};{x.Matricula};{x.AnoEscolar};{x.CodigoDaTurmaDoAluno};{x.Periodo};{x.Media};{x.NivelProficiencia};";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
+        public static byte[] ExportarDadosDreResultadoTurmaDosAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo, string lista_turmas)
+        {
+            var dadosDosAlunos = new List<DadosDosAlunosParaExportarCsvDreEscolas>();
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                var parametros = new DynamicParameters();
+
+                parametros.Add("Edicao", Edicao, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 10);
+                parametros.Add("AnoEscolar", AnoEscolar, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 3);
+                parametros.Add("AreaConhecimentoID", AreaConhecimentoID, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
+
+                var sbEscolas = new StringBuilder();
+                var lista_esc_codigoSplit = lista_esc_codigo.Split(',');
+
+                //Construção dos parâmetros passados pela variável lista_esc_codigo de modo a evitar sql injection.
+                foreach (var esc_codigo in lista_esc_codigoSplit)
+                {
+                    if (sbEscolas.Length > 0)
+                    {
+                        sbEscolas.Append(",");
+                    }
+                    string parameterName = "@p_" + esc_codigo;
+                    sbEscolas.Append(parameterName);
+                    parametros.Add(parameterName, esc_codigo, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 20);
+                }
+
+                var sbTurmas = new StringBuilder();
+                var lista_turmasSplit = lista_turmas.Split(',');
+
+                //Construção dos parâmetros passados pela variável lista_turmas de modo a evitar sql injection.
+                foreach (var tur_codigo in lista_turmasSplit)
+                {
+                    if (sbTurmas.Length > 0)
+                    {
+                        sbTurmas.Append(",");
+                    }
+                    string parameterName = "@p_" + tur_codigo;
+                    sbTurmas.Append(parameterName);
+                    parametros.Add(parameterName, tur_codigo, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 20);
+                }
+
+                conn.Open();
+
+                dadosDosAlunos =
+                    conn.Query<DadosDosAlunosParaExportarCsvDreEscolas>(
+                                    sql: $@"
+                                        SELECT
+	                                        esc.esc_nome AS NomeDaEscola,
+	                                        resultado.NivelProficienciaID, 
+	                                        resultado.Edicao,
+	                                        resultado.alu_nome AS Nome,
+	                                        resultado.alu_matricula AS Matricula,
+	                                        resultado.AnoEscolar,
+	                                        resultado.tur_codigo AS CodigoDaTurmaDoAluno,
+	                                        ISNULL(tr.Periodo,'Indefinido') AS Periodo,
+	                                        resultado.valor as Media,
+	                                        nivel.Nome as NivelProficiencia
+                                        FROM ResultadoAluno resultado WITH (NOLOCK)
+                                            LEFT JOIN Turma tr WITH (NOLOCK) ON tr.tur_id = resultado.tur_id
+                                            INNER JOIN Escola esc WITH (NOLOCK) ON esc.esc_codigo = resultado.esc_codigo
+                                            INNER JOIN NivelProficiencia nivel WITH (NOLOCK) ON nivel.NivelProficienciaID = resultado.NivelProficienciaID
+                                        WHERE 
+                                            resultado.Edicao = @Edicao AND 
+                                            resultado.AreaConhecimentoID = @AreaConhecimentoID AND 
+                                            resultado.AnoEscolar = @AnoEscolar AND 
+                                            resultado.esc_codigo IN ({sbEscolas}) AND
+                                            resultado.tur_codigo IN ({sbTurmas})
+                                        ORDER BY 
+                                            esc.esc_nome, 
+                                            resultado.tur_codigo, 
+                                            resultado.alu_nome
+                                        ",
+                                    param: parametros
+                                ).ToList();
+            }
+
+            var texto = string.Empty;
+            texto += "Microdados;";
+            texto += $"{Environment.NewLine}NomeDaEscola;Edicao;NomeDoAluno;MatriculaDoAluno;AnoEscolarDoAluno;CodigoDaTurmaDoAluno;Periodo;MediaDoAluno;NivelProficienciaDoAluno;";
+            dadosDosAlunos.ForEach(x =>
+            {
+                texto += $"{Environment.NewLine}{x.NomeDaEscola};{x.Edicao};{x.Nome};{x.Matricula};{x.AnoEscolar};{x.CodigoDaTurmaDoAluno};{x.Periodo};{x.Media};{x.NivelProficiencia};";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
+        public static byte[] ExportarDadosDreResultadoEscolaConsolidado(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo)
+        {
+            var resultado = RecuperarResultadoEscola(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo);
+            var texto = string.Empty;
+
+            var agregacoes = resultado.Agregacao;
+            var niveisDeProficiencia = GetNiveisDeProficiencia();
+            texto = "NomeDre;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            agregacoes.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+            });
+
+            texto += $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
+
+            var itens = resultado.Itens;
+            texto += $"{Environment.NewLine}NomeEscola;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            itens.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
+        public static byte[] ExportarDadosDreResultadoTurmaConsolidado(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo, string lista_turmas)
+        {
+            var resultado = RecuperarResultadoTurma(Edicao, AreaConhecimentoID, AnoEscolar, lista_esc_codigo, lista_turmas);
+            var texto = string.Empty;
+
+            var agregacoes = resultado.Agregacao;
+            var niveisDeProficiencia = GetNiveisDeProficiencia();
+            texto = "NomeDre;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            agregacoes.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+            });
+
+            texto += $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}";
+
+            var itens = resultado.Itens;
+            texto += $"{Environment.NewLine}NomeEscola;Proficiencia;TotalDeAlunos;NivelDeProficiencia;PercentualAbaixoDoBasico;PercentualAdequado;PercentualAlfabetizado;PercentualAvancado;PercentualBasico;PercentualSemProficiencia;";
+            itens.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                texto += $@"{Environment.NewLine}{x.Titulo};{x.Valor};{x.TotalAlunos};{nivelDeProficiencia};{x.PercentualAbaixoDoBasico};{x.PercentualAdequado};{x.PercentualAlfabetizado};{x.PercentualAvancado};{x.PercentualBasico};{x.PercentualSemProficiencia};";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
+        public static byte[] ExportarDadosDreResultadoTurmaEnturmacaoAtualAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_turmas)
+        {
+            var resultado = RecuperarResultadoEnturmacaoAtual(Edicao, AreaConhecimentoID, AnoEscolar, lista_turmas);
+            var itens = resultado.Itens;
+            var niveisDeProficiencia = GetNiveisDeProficiencia();
+            var ultimaEdicao = GetEnturmacaoAtual();
+
+            var anoAnterior = int.TryParse(ultimaEdicao, out int ano) ? ano - 1 : 0;
+            var texto = string.Empty;
+            texto += "Microdados;";
+            texto += $"{Environment.NewLine}NomeEscola;Proficiencia;NivelDeProficiencia;Ano Escolar Atual {ultimaEdicao};Ano Escolar Anterior {anoAnterior}";
+            itens.ForEach(x =>
+            {
+                var nivelDeProficiencia = niveisDeProficiencia.FirstOrDefault(f => f.NivelProficienciaID == x.NivelProficienciaID)?.Nome;
+                var proficiencia = x.Valor < 0 ? "-" : x.Valor.ToString();
+                var anoEscolarAnterior = int.TryParse(x.AnoEscolar, out int resultadoAno) ? resultadoAno : 0;
+                var anoEnturmacaoAnterior = anoEscolarAnterior > 0 ? (anoEscolarAnterior - 1).ToString() : "-";
+                var anoEnturmacaoAtual = int.TryParse(x.AnoEscolar, out int anoEscolar) ? anoEscolar.ToString() : "-"; 
+                texto += $@"{Environment.NewLine}{x.Titulo};{proficiencia};{nivelDeProficiencia};{anoEnturmacaoAtual};{anoEnturmacaoAnterior}";
+            });
+
+            return Encoding.UTF8.GetBytes(texto);
+        }
+
+        private static string GetEnturmacaoAtual() {
+            var ultimaEdicao = string.Empty;
+
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                conn.Open();
+
+                ultimaEdicao = conn.ExecuteScalar<string>(
+                    sql: @"
+                                SELECT TOP 1 Edicao
+                                FROM ResultadoAluno
+                                ORDER BY Edicao DESC
+                            "
+                );
+            }
+            
+            return ultimaEdicao;
         }
 
         public static Resultado RecuperarResultadoTurma(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_esc_codigo, string lista_turmas)
@@ -452,7 +899,16 @@ namespace ProvaSP.Data
 
                 resultado.Agregacao = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT e.esc_nome + ' - ' + r.tur_codigo AS Titulo, r.tur_codigo AS Chave, NivelProficienciaID, COALESCE(Valor,0) AS Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT e.esc_nome + ' - ' + r.tur_codigo AS Titulo, 
+                                                r.tur_codigo AS Chave, 
+                                                NivelProficienciaID, 
+                                                COALESCE(Valor,0) AS Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoTurma r WITH (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND tur_codigo IN(" + sbTurmas.ToString() + @") ",
@@ -472,7 +928,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL SME
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA SME' AS Titulo, 'SME' AS Chave, AnoEscolar, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                AnoEscolar, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar",
                                         param: parametros
@@ -481,7 +947,17 @@ namespace ProvaSP.Data
 
                 var resultadoItens_DRE = conn.Query<ResultadoItem>(
                                             sql: @"
-                                            SELECT NivelProficienciaID, uad_sigla AS Chave, AnoEscolar, '' AS Titulo, TotalAlunos, Valor, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT NivelProficienciaID, 
+                                                uad_sigla AS Chave, 
+                                                AnoEscolar, 
+                                                '' AS Titulo, 
+                                                TotalAlunos, 
+                                                Valor, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoDre WITH (NOLOCK)
                                             WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND uad_sigla IN(SELECT DISTINCT uad_codigo FROM Escola WHERE esc_codigo IN(" + sbEscolas.ToString() + @"))
                                             ",
@@ -498,7 +974,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL ESCOLA
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA ESCOLA ' + e.esc_nome AS Titulo, r.esc_codigo AS Chave, r.AnoEscolar, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA ESCOLA ' + e.esc_nome AS Titulo, 
+                                                r.esc_codigo AS Chave, 
+                                                r.AnoEscolar, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoEscola r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + @")
@@ -510,7 +996,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL TURMA
                                     conn.Query<ResultadoItem>(
                                                         sql: @"
-                                            SELECT 'MÉDIA DA TURMA ' + e.esc_nome + ' (' + r.tur_codigo + ')' AS Titulo, r.tur_codigo AS Chave, r.AnoEscolar, NivelProficienciaID, COALESCE(Valor,0) AS Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA TURMA ' + e.esc_nome + ' (' + r.tur_codigo + ')' AS Titulo, 
+                                                r.tur_codigo AS Chave, 
+                                                r.AnoEscolar, 
+                                                NivelProficienciaID, 
+                                                COALESCE(Valor,0) AS Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoTurma r WITH (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND r.tur_codigo IN(" + sbTurmas.ToString() + @")
@@ -522,7 +1018,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL ALUNO
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT r.NivelProficienciaID, r.esc_codigo AS Chave, " + titulo + @", 0 AS TotalAlunos, COALESCE(r.Valor,-1) AS Valor, 0 AS PercentualAbaixoDoBasico, 0 AS PercentualBasico, 0 AS PercentualAdequado, 0 AS PercentualAvancado, 0 AS PercentualAlfabetizado, r.REDQ1, r.REDQ2, r.REDQ3, r.REDQ4, r.REDQ5
+                                            SELECT r.NivelProficienciaID, 
+                                                r.esc_codigo AS Chave, "
+                                                + titulo + @", 
+                                                0 AS TotalAlunos, 
+                                                COALESCE(r.Valor,-1) AS Valor, 
+                                                0 AS PercentualAbaixoDoBasico, 
+                                                0 AS PercentualBasico, 
+                                                0 AS PercentualAdequado, 
+                                                0 AS PercentualAvancado, 
+                                                0 AS PercentualAlfabetizado, 
+                                                r.REDQ1, r.REDQ2, r.REDQ3, r.REDQ4, r.REDQ5
                                             FROM ResultadoAluno r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.AnoEscolar=@AnoEscolar AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND r.tur_codigo IN(" + sbTurmas.ToString() + @")
@@ -531,9 +1037,6 @@ namespace ProvaSP.Data
                                         param: parametros
                                     ).ToList<ResultadoItem>()
                 );
-
-                
-
 
                 var habilidades = conn.Query<HabilidadeTema, HabilidadeItem, HabilidadeTema>(
                         sql: @"
@@ -574,17 +1077,16 @@ namespace ProvaSP.Data
         {
             var resultado = new Resultado();
 
+            if (String.IsNullOrEmpty(lista_turmas) || lista_turmas.Split(',').Length == 0)
+            {
+                return resultado;
+            }
+
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
             {
                 var parametros = new DynamicParameters();
 
-
                 parametros.Add("AreaConhecimentoID", AreaConhecimentoID, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
-
-                if (lista_turmas.Split(',').Length == 0)
-                {
-                    return resultado;
-                }
 
                 var listaAlunos = DataAluno.RecuperarAlunos(Edicao, AreaConhecimentoID, "", "", lista_turmas);
 
@@ -616,14 +1118,22 @@ namespace ProvaSP.Data
                             ORDER BY Edicao DESC
                         "
                     );
-
                 parametros.Add("Edicao", ultimaEdicao, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 10);
-
-
 
                 resultado.Itens = conn.Query<ResultadoItem>(
                         sql: @"
-                                SELECT r.AnoEscolar, r.NivelProficienciaID, r.alu_matricula AS Chave, r.alu_nome + ' (' + r.alu_matricula + ')' AS Titulo, 0 AS TotalAlunos, COALESCE(r.Valor,0) AS Valor, 0 AS PercentualAbaixoDoBasico, 0 AS PercentualBasico, 0 AS PercentualAdequado, 0 AS PercentualAvancado, 0 AS PercentualAlfabetizado, r.REDQ1, r.REDQ2, r.REDQ3, r.REDQ4, r.REDQ5
+                                SELECT r.AnoEscolar, 
+                                    r.NivelProficienciaID, 
+                                    r.alu_matricula AS Chave, 
+                                    r.alu_nome + ' (' + r.alu_matricula + ')' AS Titulo, 
+                                    0 AS TotalAlunos, 
+                                    COALESCE(r.Valor,0) AS Valor, 
+                                    0 AS PercentualAbaixoDoBasico, 
+                                    0 AS PercentualBasico, 
+                                    0 AS PercentualAdequado, 
+                                    0 AS PercentualAvancado, 
+                                    0 AS PercentualAlfabetizado, 
+                                    r.REDQ1, r.REDQ2, r.REDQ3, r.REDQ4, r.REDQ5
                                 FROM ResultadoAluno r
                                 WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND r.alu_matricula IN(" + sbAlunos.ToString() + @")
                             ",
@@ -660,8 +1170,10 @@ namespace ProvaSP.Data
                         resultadoItem.Titulo = "(" + esc_nome + "... " + aluno.tur_codigo + ") " + abreviarNome(resultadoItem.Titulo) + repetente;
                     }
                     else
+                    {
                         //Inclui o código da Turma no título 
                         resultadoItem.Titulo = "(" + aluno.tur_codigo + ") " + abreviarNome(resultadoItem.Titulo) + repetente;
+                    }
                 }
 
 
@@ -685,9 +1197,6 @@ namespace ProvaSP.Data
                 resultado.Itens = resultado.Itens.OrderBy(x => x.Titulo).ToList();
 
                 resultado.Agregacao = new List<ResultadoItem>();
-
-                
-
             }
 
             return resultado;
@@ -763,7 +1272,18 @@ namespace ProvaSP.Data
 
                 var resultadoItens_ALUNO = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT r.NivelProficienciaID, r.esc_codigo AS Chave, r.AnoEscolar, r.alu_nome + ' (' + r.alu_matricula + ')' AS Titulo, 0 AS TotalAlunos, COALESCE(r.Valor,-1) AS Valor, 0 AS PercentualAbaixoDoBasico, 0 AS PercentualBasico, 0 AS PercentualAdequado, 0 AS PercentualAvancado, 0 AS PercentualAlfabetizado, r.REDQ1, r.REDQ2, r.REDQ3, r.REDQ4, r.REDQ5
+                                            SELECT r.NivelProficienciaID, 
+                                                r.esc_codigo AS Chave, 
+                                                r.AnoEscolar, 
+                                                r.alu_nome + ' (' + r.alu_matricula + ')' AS Titulo, 
+                                                0 AS TotalAlunos, 
+                                                COALESCE(r.Valor,-1) AS Valor, 
+                                                0 AS PercentualAbaixoDoBasico, 
+                                                0 AS PercentualBasico, 
+                                                0 AS PercentualAdequado, 
+                                                0 AS PercentualAvancado, 
+                                                0 AS PercentualAlfabetizado, 
+                                                r.REDQ1, r.REDQ2, r.REDQ3, r.REDQ4, r.REDQ5
                                             FROM ResultadoAluno r (NOLOCK)
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.alu_matricula IN(" + sbAlunos.ToString() + @")
                                             ORDER BY r.alu_nome
@@ -783,7 +1303,17 @@ namespace ProvaSP.Data
                     resultado.Itens.AddRange( //NÍVEL SME
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA SME' AS Titulo, 'SME' AS Chave, AnoEscolar, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                AnoEscolar, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar",
                                         param: parametros
@@ -792,7 +1322,17 @@ namespace ProvaSP.Data
 
                     var resultadoItens_DRE = conn.Query<ResultadoItem>(
                                             sql: @"
-                                            SELECT NivelProficienciaID, uad_sigla AS Chave, AnoEscolar, '' AS Titulo, TotalAlunos, Valor, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT NivelProficienciaID, 
+                                                uad_sigla AS Chave, 
+                                                AnoEscolar, 
+                                                '' AS Titulo, 
+                                                TotalAlunos, 
+                                                Valor, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoDre WITH (NOLOCK)
                                             WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND uad_sigla IN(SELECT uad_sigla FROM ResultadoAluno WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND alu_matricula IN(" + sbAlunos.ToString() + @")) 
                                             ",
@@ -806,12 +1346,22 @@ namespace ProvaSP.Data
                             resultadoItens_DRE
                     );
                 }
-                
+
 
                 resultado.Itens.AddRange( //NÍVEL ESCOLA
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA ESCOLA ' + e.esc_nome AS Titulo, r.esc_codigo AS Chave, r.AnoEscolar, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA ESCOLA ' + e.esc_nome AS Titulo, 
+                                                r.esc_codigo AS Chave, 
+                                                r.AnoEscolar, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoEscola r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.esc_codigo IN(SELECT esc_codigo FROM ResultadoAluno WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND alu_matricula IN(" + sbAlunos.ToString() + @")) 
@@ -823,7 +1373,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL TURMA
                                     conn.Query<ResultadoItem>(
                                                         sql: @"
-                                            SELECT 'MÉDIA DA TURMA ' + r.tur_codigo AS Titulo, r.tur_codigo AS Chave, r.AnoEscolar, NivelProficienciaID, COALESCE(Valor,0) AS Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA TURMA ' + r.tur_codigo AS Titulo, 
+                                                r.tur_codigo AS Chave, 
+                                                r.AnoEscolar, 
+                                                NivelProficienciaID, 
+                                                COALESCE(Valor,0) AS Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoTurma r WITH (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND AnoEscolar=@AnoEscolar AND r.tur_id IN(SELECT tur_id FROM ResultadoAluno WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND alu_matricula IN(" + sbAlunos.ToString() + @") ) 
@@ -848,10 +1408,8 @@ namespace ProvaSP.Data
             return resultado;
         }
 
-        public static int RetornarNivelProficienciaID(int AreaConhecimentoID, string AnoEscolar, float ValorProficiencia)
+        public static string RetornarNivelProficienciaID(int AreaConhecimentoID, string AnoEscolar, float ValorProficiencia)
         {
-            int Retorno = 0;
-
             int LIMITE_ABAIXO_DO_BASICO = 0;
             int LIMITE_BASICO = 0;
             int LIMITE_ADEQUADO = 0;
@@ -901,8 +1459,6 @@ namespace ProvaSP.Data
                     LIMITE_ADEQUADO = 350;
                 }
             }
-
-
             else if (AreaConhecimentoID == 2) //Língua Portuguesa
             {
                 if (AnoEscolar == "3")
@@ -948,8 +1504,6 @@ namespace ProvaSP.Data
                     LIMITE_ADEQUADO = 325;
                 }
             }
-
-
             else if (AreaConhecimentoID == 3) // Matemática
             {
                 if (AnoEscolar == "3")
@@ -995,25 +1549,21 @@ namespace ProvaSP.Data
                     LIMITE_ADEQUADO = 350;
                 }
             }
-
             else if (AreaConhecimentoID == 4) // Redação
             {
                 LIMITE_ABAIXO_DO_BASICO = 50;
                 LIMITE_BASICO = 65;
                 LIMITE_ADEQUADO = 90;
-
             }
 
             if (ValorProficiencia < LIMITE_ABAIXO_DO_BASICO)
-                Retorno = 1;
+                return "Abaixo do básico";
             else if (ValorProficiencia < LIMITE_BASICO)
-                Retorno = 2;
+                return "Básico";
             else if (ValorProficiencia < LIMITE_ADEQUADO)
-                Retorno = 3;
+                return "Adequado";
             else
-                Retorno = 4;
-
-            return Retorno;
+                return "Avançado";
         }
 
         public static Resultado RecuperarResultadoCicloSME(string Edicao, int AreaConhecimentoID, string Ciclo)
@@ -1026,7 +1576,16 @@ namespace ProvaSP.Data
 
                 resultado.Agregacao = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'SME' AS Titulo, 'SME' AS Chave, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo",
                                         param: new
@@ -1041,7 +1600,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL SME
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA SME' AS Titulo, 'SME' AS Chave, CicloId, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                CicloId, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo",
                                         param: new
@@ -1055,7 +1624,16 @@ namespace ProvaSP.Data
 
                 var resultadoItens_DRE = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT NivelProficienciaID, uad_sigla AS Chave, '' AS Titulo, TotalAlunos, Valor, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT NivelProficienciaID, 
+                                                uad_sigla AS Chave, 
+                                                '' AS Titulo, 
+                                                TotalAlunos, 
+                                                Valor, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloDre WITH (NOLOCK)
                                             WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo",
                                         param: new
@@ -1072,11 +1650,6 @@ namespace ProvaSP.Data
                 }
 
                 resultado.Itens.AddRange(resultadoItens_DRE);
-
-
-
-
-
 
 
                 var habilidades = conn.Query<HabilidadeTema, HabilidadeItem, HabilidadeTema>(
@@ -1109,10 +1682,7 @@ namespace ProvaSP.Data
 
 
                 resultado.Habilidades = OrganizarHabilidades(habilidades);
-
             }
-
-
 
             return resultado;
         }
@@ -1120,8 +1690,6 @@ namespace ProvaSP.Data
         public static Resultado RecuperarResultadoCicloDRE(string Edicao, int AreaConhecimentoID, string CicloId, string lista_uad_sigla)
         {
             var resultado = new Resultado();
-
-
 
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
             {
@@ -1154,7 +1722,16 @@ namespace ProvaSP.Data
 
                 resultado.Agregacao = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT '' AS Titulo, uad_sigla AS Chave, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT '' AS Titulo, 
+                                                uad_sigla AS Chave, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloDre WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND uad_sigla IN(" + sbDREs.ToString() + @") ",
                                         param: parametros
@@ -1166,7 +1743,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL SME
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA SME' AS Titulo, 'SME' AS Chave, CicloId, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                CicloId, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo",
                                         param: parametros
@@ -1175,7 +1762,17 @@ namespace ProvaSP.Data
 
                 var resultadoItens_DRE = conn.Query<ResultadoItem>(
                                             sql: @"
-                                            SELECT NivelProficienciaID, uad_sigla AS Chave, CicloId, '' AS Titulo, TotalAlunos, Valor, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT NivelProficienciaID, 
+                                                uad_sigla AS Chave, 
+                                                CicloId, 
+                                                '' AS Titulo, 
+                                                TotalAlunos, 
+                                                Valor, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloDre WITH (NOLOCK)
                                             WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND uad_sigla IN(" + sbDREs.ToString() + @")
                                             ",
@@ -1193,7 +1790,16 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange(
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT r.NivelProficienciaID, r.esc_codigo AS Chave, '(' + r.uad_sigla + ') ' +e.esc_nome AS Titulo, r.TotalAlunos, r.Valor, r.PercentualAbaixoDoBasico, r.PercentualBasico, r.PercentualAdequado, r.PercentualAvancado, r.PercentualAlfabetizado
+                                            SELECT r.NivelProficienciaID, 
+                                                r.esc_codigo AS Chave, 
+                                                '(' + r.uad_sigla + ') ' +e.esc_nome AS Titulo, 
+                                                r.TotalAlunos, 
+                                                r.Valor, 
+                                                r.PercentualAbaixoDoBasico, 
+                                                r.PercentualBasico, 
+                                                r.PercentualAdequado, 
+                                                r.PercentualAvancado, 
+                                                r.PercentualAlfabetizado
                                             FROM ResultadoCicloEscola r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.CicloId=@Ciclo AND r.uad_sigla IN(" + sbDREs.ToString() + @") 
@@ -1202,9 +1808,6 @@ namespace ProvaSP.Data
                                         param: parametros
                                     ).ToList<ResultadoItem>()
                 );
-
-
-
 
                 var habilidades = conn.Query<HabilidadeTema, HabilidadeItem, HabilidadeTema>(
                         sql: @"
@@ -1251,7 +1854,6 @@ namespace ProvaSP.Data
                 }
             }
 
-
             return resultado;
         }
 
@@ -1290,7 +1892,16 @@ namespace ProvaSP.Data
 
                 resultado.Agregacao = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT e.esc_nome AS Titulo, r.esc_codigo AS Chave, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT e.esc_nome AS Titulo, 
+                                                r.esc_codigo AS Chave, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloEscola r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + @") ",
@@ -1311,7 +1922,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL SME
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA SME' AS Titulo, 'SME' AS Chave, CicloId, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                CicloId, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo",
                                         param: parametros
@@ -1320,7 +1941,17 @@ namespace ProvaSP.Data
 
                 var resultadoItens_DRE = conn.Query<ResultadoItem>(
                                             sql: @"
-                                            SELECT NivelProficienciaID, uad_sigla AS Chave, CicloId, '' AS Titulo, TotalAlunos, Valor, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT NivelProficienciaID, 
+                                                uad_sigla AS Chave, 
+                                                CicloId, 
+                                                '' AS Titulo, 
+                                                TotalAlunos, 
+                                                Valor, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloDre WITH (NOLOCK)
                                             WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND uad_sigla IN(SELECT DISTINCT uad_codigo FROM Escola WHERE esc_codigo IN(" + sbEscolas.ToString() + @"))
                                             ",
@@ -1336,7 +1967,16 @@ namespace ProvaSP.Data
 
                 resultado.Itens.AddRange(conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT r.NivelProficienciaID, r.esc_codigo AS Chave, " + titulo + @", r.TotalAlunos, r.Valor, r.PercentualAbaixoDoBasico, r.PercentualBasico, r.PercentualAdequado, r.PercentualAvancado, r.PercentualAlfabetizado
+                                            SELECT r.NivelProficienciaID, 
+                                                r.esc_codigo AS Chave, "
+                                                + titulo + @", 
+                                                r.TotalAlunos, 
+                                                r.Valor, 
+                                                r.PercentualAbaixoDoBasico, 
+                                                r.PercentualBasico, 
+                                                r.PercentualAdequado, 
+                                                r.PercentualAvancado, 
+                                                r.PercentualAlfabetizado
                                             FROM ResultadoCicloTurma r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + @") 
@@ -1434,11 +2074,18 @@ namespace ProvaSP.Data
 
                 conn.Open();
 
-
-
                 resultado.Agregacao = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT e.esc_nome + ' - ' + r.tur_codigo AS Titulo, r.tur_codigo AS Chave, NivelProficienciaID, COALESCE(Valor,0) AS Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT e.esc_nome + ' - ' + r.tur_codigo AS Titulo, 
+                                                r.tur_codigo AS Chave, 
+                                                NivelProficienciaID, 
+                                                COALESCE(Valor,0) AS Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloTurma r WITH (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND tur_codigo IN(" + sbTurmas.ToString() + @") ",
@@ -1458,7 +2105,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL SME
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA SME' AS Titulo, 'SME' AS Chave, CicloId, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                CicloId, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo",
                                         param: parametros
@@ -1467,7 +2124,17 @@ namespace ProvaSP.Data
 
                 var resultadoItens_DRE = conn.Query<ResultadoItem>(
                                             sql: @"
-                                            SELECT NivelProficienciaID, uad_sigla AS Chave, CicloId, '' AS Titulo, TotalAlunos, Valor, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT NivelProficienciaID, 
+                                                uad_sigla AS Chave, 
+                                                CicloId, 
+                                                '' AS Titulo, 
+                                                TotalAlunos, 
+                                                Valor, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloDre WITH (NOLOCK)
                                             WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND uad_sigla IN(SELECT DISTINCT uad_codigo FROM Escola WHERE esc_codigo IN(" + sbEscolas.ToString() + @"))
                                             ",
@@ -1484,7 +2151,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL ESCOLA
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA ESCOLA ' + e.esc_nome AS Titulo, r.esc_codigo AS Chave, r.CicloId, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA ESCOLA ' + e.esc_nome AS Titulo, 
+                                                r.esc_codigo AS Chave, 
+                                                r.CicloId, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloEscola r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + @")
@@ -1496,7 +2173,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL TURMA
                                     conn.Query<ResultadoItem>(
                                                         sql: @"
-                                            SELECT 'MÉDIA DA TURMA ' + e.esc_nome + ' (' + r.tur_codigo + ')' AS Titulo, r.tur_codigo AS Chave, r.CicloId, NivelProficienciaID, COALESCE(Valor,0) AS Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA TURMA ' + e.esc_nome + ' (' + r.tur_codigo + ')' AS Titulo, 
+                                                r.tur_codigo AS Chave, 
+                                                r.CicloId, 
+                                                NivelProficienciaID, 
+                                                COALESCE(Valor,0) AS Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloTurma r WITH (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND r.tur_codigo IN(" + sbTurmas.ToString() + @")
@@ -1508,7 +2195,16 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL ALUNO
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT r.NivelProficienciaID, r.esc_codigo AS Chave, " + titulo + @", 0 AS TotalAlunos, COALESCE(r.Valor,-1) AS Valor, 0 AS PercentualAbaixoDoBasico, 0 AS PercentualBasico, 0 AS PercentualAdequado, 0 AS PercentualAvancado, 0 AS PercentualAlfabetizado
+                                            SELECT r.NivelProficienciaID, 
+                                                r.esc_codigo AS Chave, "
+                                                + titulo + @", 
+                                                0 AS TotalAlunos, 
+                                                COALESCE(r.Valor,-1) AS Valor, 
+                                                0 AS PercentualAbaixoDoBasico, 
+                                                0 AS PercentualBasico, 
+                                                0 AS PercentualAdequado, 
+                                                0 AS PercentualAvancado, 
+                                                0 AS PercentualAlfabetizado
                                             FROM ResultadoCicloAluno r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.CicloId=@Ciclo AND r.esc_codigo IN(" + sbEscolas.ToString() + ") AND r.tur_codigo IN(" + sbTurmas.ToString() + @")
@@ -1517,9 +2213,6 @@ namespace ProvaSP.Data
                                         param: parametros
                                     ).ToList<ResultadoItem>()
                 );
-
-
-
 
                 var habilidades = conn.Query<HabilidadeTema, HabilidadeItem, HabilidadeTema>(
                         sql: @"
@@ -1564,7 +2257,6 @@ namespace ProvaSP.Data
             {
                 var parametros = new DynamicParameters();
 
-
                 parametros.Add("AreaConhecimentoID", AreaConhecimentoID, System.Data.DbType.Int32, System.Data.ParameterDirection.Input);
 
                 if (lista_turmas.Split(',').Length == 0)
@@ -1606,10 +2298,19 @@ namespace ProvaSP.Data
                 parametros.Add("Edicao", ultimaEdicao, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 10);
 
 
-
                 resultado.Itens = conn.Query<ResultadoItem>(
                         sql: @"
-                                SELECT r.CicloId, r.NivelProficienciaID, r.alu_matricula AS Chave, r.alu_nome + ' (' + r.alu_matricula + ')' AS Titulo, 0 AS TotalAlunos, COALESCE(r.Valor,0) AS Valor, 0 AS PercentualAbaixoDoBasico, 0 AS PercentualBasico, 0 AS PercentualAdequado, 0 AS PercentualAvancado, 0 AS PercentualAlfabetizado
+                                SELECT r.CicloId, 
+                                    r.NivelProficienciaID, 
+                                    r.alu_matricula AS Chave, 
+                                    r.alu_nome + ' (' + r.alu_matricula + ')' AS Titulo, 
+                                    0 AS TotalAlunos, 
+                                    COALESCE(r.Valor,0) AS Valor,
+                                    0 AS PercentualAbaixoDoBasico, 
+                                    0 AS PercentualBasico, 
+                                    0 AS PercentualAdequado, 
+                                    0 AS PercentualAvancado, 
+                                    0 AS PercentualAlfabetizado
                                 FROM ResultadoCicloAluno r
                                 WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND r.alu_matricula IN(" + sbAlunos.ToString() + @")
                             ",
@@ -1646,8 +2347,10 @@ namespace ProvaSP.Data
                         resultadoItem.Titulo = "(" + esc_nome + "... " + aluno.tur_codigo + ") " + abreviarNome(resultadoItem.Titulo) + repetente;
                     }
                     else
+                    {
                         //Inclui o código da Turma no título 
                         resultadoItem.Titulo = "(" + aluno.tur_codigo + ") " + abreviarNome(resultadoItem.Titulo) + repetente;
+                    }
                 }
 
 
@@ -1660,20 +2363,26 @@ namespace ProvaSP.Data
                             string esc_nome = aluno.esc_nome;
                             if (esc_nome.Length > 20)
                                 esc_nome = aluno.esc_nome.Substring(0, 20);
-                            resultado.Itens.Add(new ResultadoItem() { Valor = -1, Titulo = "(" + esc_nome + "... " + aluno.tur_codigo + ") " + abreviarNome(aluno.Nome) + "(" + aluno.alu_matricula + ")" });
+                            resultado.Itens.Add(new ResultadoItem()
+                            {
+                                Valor = -1,
+                                Titulo = "(" + esc_nome + "... " + aluno.tur_codigo + ") " + abreviarNome(aluno.Nome) + "(" + aluno.alu_matricula + ")"
+                            });
                         }
-
                         else
-                            resultado.Itens.Add(new ResultadoItem() { Valor = -1, Titulo = "(" + aluno.tur_codigo + ") " + abreviarNome(aluno.Nome) + "(" + aluno.alu_matricula + ")" });
+                        {
+                            resultado.Itens.Add(new ResultadoItem()
+                            {
+                                Valor = -1,
+                                Titulo = "(" + aluno.tur_codigo + ") " + abreviarNome(aluno.Nome) + "(" + aluno.alu_matricula + ")"
+                            });
+                        }
                     }
                 }
 
                 resultado.Itens = resultado.Itens.OrderBy(x => x.Titulo).ToList();
 
                 resultado.Agregacao = new List<ResultadoItem>();
-
-
-
             }
 
             return resultado;
@@ -1682,8 +2391,6 @@ namespace ProvaSP.Data
         public static Resultado RecuperarResultadoCicloAluno(string Edicao, int AreaConhecimentoID, string CicloId, string lista_alu_matricula, bool ExcluirSme_e_Dre)
         {
             var resultado = new Resultado();
-
-
 
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
             {
@@ -1719,7 +2426,17 @@ namespace ProvaSP.Data
 
                 var resultadoItens_ALUNO = conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT r.NivelProficienciaID, r.esc_codigo AS Chave, r.CicloId, r.alu_nome + ' (' + r.alu_matricula + ')' AS Titulo, 0 AS TotalAlunos, COALESCE(r.Valor,-1) AS Valor, 0 AS PercentualAbaixoDoBasico, 0 AS PercentualBasico, 0 AS PercentualAdequado, 0 AS PercentualAvancado, 0 AS PercentualAlfabetizado
+                                            SELECT r.NivelProficienciaID, 
+                                                r.esc_codigo AS Chave, 
+                                                r.CicloId, 
+                                                r.alu_nome + ' (' + r.alu_matricula + ')' AS Titulo, 
+                                                0 AS TotalAlunos, 
+                                                COALESCE(r.Valor,-1) AS Valor, 
+                                                0 AS PercentualAbaixoDoBasico, 
+                                                0 AS PercentualBasico, 
+                                                0 AS PercentualAdequado, 
+                                                0 AS PercentualAvancado, 
+                                                0 AS PercentualAlfabetizado
                                             FROM ResultadoCicloAluno r (NOLOCK)
                                             WHERE r.Edicao=@Edicao AND r.AreaConhecimentoID=@AreaConhecimentoID AND r.alu_matricula IN(" + sbAlunos.ToString() + @")
                                             ORDER BY r.alu_nome
@@ -1732,14 +2449,22 @@ namespace ProvaSP.Data
                 else
                     return resultado;
 
-
-
                 if (!ExcluirSme_e_Dre)
                 {
                     resultado.Itens.AddRange( //NÍVEL SME
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA SME' AS Titulo, 'SME' AS Chave, CicloId, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA SME' AS Titulo, 
+                                                'SME' AS Chave, 
+                                                CicloId, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloSme WITH (NOLOCK)
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo",
                                         param: parametros
@@ -1748,7 +2473,17 @@ namespace ProvaSP.Data
 
                     var resultadoItens_DRE = conn.Query<ResultadoItem>(
                                             sql: @"
-                                            SELECT NivelProficienciaID, uad_sigla AS Chave, CicloId, '' AS Titulo, TotalAlunos, Valor, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT NivelProficienciaID, 
+                                                uad_sigla AS Chave, 
+                                                CicloId, 
+                                                '' AS Titulo, 
+                                                TotalAlunos, 
+                                                Valor, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloDre WITH (NOLOCK)
                                             WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND uad_sigla IN(SELECT uad_sigla FROM ResultadoCicloAluno WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND alu_matricula IN(" + sbAlunos.ToString() + @")) 
                                             ",
@@ -1763,11 +2498,20 @@ namespace ProvaSP.Data
                     );
                 }
 
-
                 resultado.Itens.AddRange( //NÍVEL ESCOLA
                     conn.Query<ResultadoItem>(
                                         sql: @"
-                                            SELECT 'MÉDIA DA ESCOLA ' + e.esc_nome AS Titulo, r.esc_codigo AS Chave, r.CicloId, NivelProficienciaID, Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA ESCOLA ' + e.esc_nome AS Titulo, 
+                                                r.esc_codigo AS Chave, 
+                                                r.CicloId, 
+                                                NivelProficienciaID, 
+                                                Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloEscola r (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.esc_codigo IN(SELECT esc_codigo FROM ResultadoCicloAluno WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND alu_matricula IN(" + sbAlunos.ToString() + @")) 
@@ -1779,7 +2523,17 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL TURMA
                                     conn.Query<ResultadoItem>(
                                                         sql: @"
-                                            SELECT 'MÉDIA DA TURMA ' + r.tur_codigo AS Titulo, r.tur_codigo AS Chave, r.CicloId, NivelProficienciaID, COALESCE(Valor,0) AS Valor, TotalAlunos, PercentualAbaixoDoBasico, PercentualBasico, PercentualAdequado, PercentualAvancado, PercentualAlfabetizado
+                                            SELECT 'MÉDIA DA TURMA ' + r.tur_codigo AS Titulo, 
+                                                r.tur_codigo AS Chave, 
+                                                r.CicloId, 
+                                                NivelProficienciaID, 
+                                                COALESCE(Valor,0) AS Valor, 
+                                                TotalAlunos, 
+                                                PercentualAbaixoDoBasico, 
+                                                PercentualBasico, 
+                                                PercentualAdequado, 
+                                                PercentualAvancado, 
+                                                PercentualAlfabetizado
                                             FROM ResultadoCicloTurma r WITH (NOLOCK)
                                             JOIN Escola (NOLOCK) e ON e.esc_codigo = r.esc_codigo 
                                             WHERE Edicao = @Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND CicloId=@Ciclo AND r.tur_id IN(SELECT tur_id FROM ResultadoCicloAluno WHERE Edicao=@Edicao AND AreaConhecimentoID=@AreaConhecimentoID AND alu_matricula IN(" + sbAlunos.ToString() + @") ) 
@@ -1791,7 +2545,6 @@ namespace ProvaSP.Data
                 resultado.Itens.AddRange( //NÍVEL ALUNO
                     resultadoItens_ALUNO
                     );
-
             }
 
             if (resultado.Itens.Count > 0)

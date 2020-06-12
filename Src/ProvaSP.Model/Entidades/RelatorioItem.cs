@@ -11,6 +11,7 @@ namespace ProvaSP.Model.Entidades
         public string Chave { get; set; }
         public string Titulo { get; set; }
         public string Atributo { get; set; }
+        public int AtributoID { get; set; }
         public string Valor { get; set; }
     }
 }

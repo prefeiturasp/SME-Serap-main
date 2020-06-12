@@ -1,6 +1,7 @@
 ﻿@using ProvaSP.Model.Entidades
 @using ProvaSP.Data
-@model List<RelatorioItem>
+@using ProvaSP.Web.ViewModel
+@model RelatorioAcompanhamentoEscola
 
 @{
     ViewBag.Title = "Relatório de Acompanhamento";
@@ -8,31 +9,68 @@
 }
 
 <h2>Nível SME</h2>
+@{
+    foreach (var itemChave in Model.IndicadoresAgrupadosChave)
+    {
+        <div class="container container-table">
+            <div class="text-center col-md-6 col-md-offset-0">
+                <table class="table table-hover">
+                    <tbody>
+                        @{
+                            foreach (var item in itemChave.IndicadoresEscola)
+                            {
+                                <tr>
+                                    <td class="text-left">
+                                        @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
+                                    </td>
+                                    <td style="text-align: right">
+                                        @item.Valor
+                                    </td>
 
-<table cellpadding="5">
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    @{
-        foreach (var item in Model)
+        if (itemChave.GridIndicadoresEscola.Any())
         {
-
-            <tr>
-
-                <td>
-                    @item.Titulo
-                </td>
-                <td>
-                    @Html.Raw(EnumHelper<Atributo>.GetEnumDescription(item.Atributo))
-                </td>
-                <td>
-                    @item.Valor
-                </td>
-
-            </tr>
+            <div class="container container-table">
+                <div class="text-center col-md-6 col-md-offset-0">
+                    <table class="table table-striped">
+                        <caption style="font-size: 10pt">Questionários</caption>
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Perfil</th>
+                                <th scope="col">Respondidos</th>
+                                <th scope="col">Total esperado</th>
+                                <th scope="col">% Respondidos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var item in itemChave.GridIndicadoresEscola)
+                                {
+                                    <tr>
+                                        <td class="text-left">@item.DescricaoRespondente</td>
+                                        <td class="text-right">@item.QuantidadePreenchido</td>
+                                        <td class="text-right">@(item.TotalEsperado <= 0 ? string.Empty : Convert.ToString(item.TotalEsperado))</td>
+                                        <td class="text-right">@(item.TotalEsperado <= 0 ? string.Empty : String.Format("{0}%", item.PercentualPreenchido))</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         }
     }
-</table>
+}
 
 <br />
-<button style="width:50%; font-size:17pt;" onclick="window.location.href='RelatorioAcompanhamentoNivelSME_PorDRE?usu_id=@ViewBag.Usuario.usu_login'">
+<button style="width:50%; font-size:17pt;" class="btn btn-primary"
+        onclick="window.location.href='RelatorioAcompanhamentoNivelSME_PorDRE?usu_id=@ViewBag.Usuario.usu_login'">
     Visualizar por DRE
 </button>

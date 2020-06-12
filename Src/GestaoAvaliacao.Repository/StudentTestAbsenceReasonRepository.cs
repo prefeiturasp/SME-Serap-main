@@ -27,15 +27,17 @@ namespace GestaoAvaliacao.Repository
             sql.AppendLine("FROM Test WITH (NOLOCK) ");
             sql.AppendLine("WHERE Id = @test_id ");
 
-            sql.AppendLine("SELECT alu.alu_id, alu.alu_nome, mtu.tur_id, stu.AbsenceReason_Id, mtu.mtu_numeroChamada, Esc.esc_id, Esc.uad_idSuperiorGestao AS dre_id, mtu.cur_id, mtu.crr_id, mtu.crp_id, CASE WHEN (Adr.TypeSelection = @TypeSelectionBlocked) THEN 1 ELSE 0 END AS blocked ");
+            sql.AppendLine("SELECT DISTINCT alu.alu_id, alu.alu_nome, mtu.tur_id, stu.AbsenceReason_Id, mtu.mtu_numeroChamada, Esc.esc_id, Esc.uad_idSuperiorGestao AS dre_id, mtu.cur_id, mtu.crr_id, mtu.crp_id, CASE WHEN (Adr.TypeSelection = @TypeSelectionBlocked) THEN 1 ELSE 0 END AS blocked ");
             sql.AppendLine("FROM SGP_ACA_Aluno alu WITH (NOLOCK) ");
             sql.AppendLine("INNER JOIN SGP_MTR_MatriculaTurma mtu WITH (NOLOCK) ON alu.alu_id = mtu.alu_id ");
+            sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp (NOLOCK) ON mtu.tur_id = ttcp.tur_id ");
+            sql.AppendLine("INNER JOIN SGP_ACA_TipoModalidadeEnsino tme (NOLOCK) ON ttcp.tme_id = tme.tme_id ");
             sql.AppendLine("INNER JOIN SGP_ESC_Escola Esc WITH (NOLOCK) ON Esc.esc_id = mtu.esc_id ");
             sql.AppendLine("LEFT JOIN StudentTestAbsenceReason stu WITH (NOLOCK) ON stu.alu_id = alu.alu_id AND stu.Test_Id = @test_id AND mtu.tur_id = stu.tur_id ");
             sql.AppendLine("LEFT JOIN Adherence Adr WITH(NOLOCK) ON Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @state AND Adr.Test_Id = @test_id ");
             sql.AppendLine("WHERE mtu.tur_id = @tur_id AND alu.alu_situacao = @state  ");
             sql.AppendLine("AND mtu.mtu_situacao <> @stateExcluido ");
-			sql.AppendLine("AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= @CorrectionEndDate AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= @CorrectionStartDate ) ))");
+			sql.AppendLine("AND ((tme.tme_nome NOT LIKE '%EJA%' AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= @CorrectionEndDate AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= @CorrectionStartDate)))) OR tme.tme_nome LIKE '%EJA%')");
             sql.AppendLine("AND ((@AllAdhered = 1 AND ISNULL(Adr.TypeSelection, 0) <> @TypeSelectionNotSelect) ");
             sql.AppendLine("OR (@AllAdhered = 0 AND (Adr.TypeSelection = @TypeSelectionSelected OR Adr.TypeSelection = @TypeSelectionBlocked))) ");
 
@@ -90,15 +92,17 @@ namespace GestaoAvaliacao.Repository
             sql.AppendLine("FROM Test WITH (NOLOCK) ");
             sql.AppendLine("WHERE Id = @test_id ");
 
-            sql.AppendLine("SELECT alu.alu_id, alu.alu_nome, mtu.tur_id, stu.AbsenceReason_Id, mtu.mtu_numeroChamada, Esc.esc_id, Esc.uad_idSuperiorGestao AS dre_id, mtu.cur_id, mtu.crr_id, mtu.crp_id, CASE WHEN (Adr.TypeSelection = @TypeSelectionBlocked) THEN 1 ELSE 0 END AS blocked ");
+            sql.AppendLine("SELECT DISTINCT alu.alu_id, alu.alu_nome, mtu.tur_id, stu.AbsenceReason_Id, mtu.mtu_numeroChamada, Esc.esc_id, Esc.uad_idSuperiorGestao AS dre_id, mtu.cur_id, mtu.crr_id, mtu.crp_id, CASE WHEN (Adr.TypeSelection = @TypeSelectionBlocked) THEN 1 ELSE 0 END AS blocked ");
             sql.AppendLine("FROM SGP_ACA_Aluno alu WITH (NOLOCK) ");
             sql.AppendLine("INNER JOIN SGP_MTR_MatriculaTurma mtu WITH (NOLOCK) ON alu.alu_id = mtu.alu_id ");
+            sql.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp (NOLOCK) ON mtu.tur_id = ttcp.tur_id ");
+            sql.AppendLine("INNER JOIN SGP_ACA_TipoModalidadeEnsino tme (NOLOCK) ON ttcp.tme_id = tme.tme_id ");
             sql.AppendLine("INNER JOIN SGP_ESC_Escola Esc WITH (NOLOCK) ON Esc.esc_id = mtu.esc_id ");
             sql.AppendLine("LEFT JOIN StudentTestAbsenceReason stu WITH (NOLOCK) ON stu.alu_id = alu.alu_id AND stu.Test_Id = @test_id AND mtu.tur_id = stu.tur_id ");
             sql.AppendLine("LEFT JOIN Adherence Adr WITH(NOLOCK) ON Adr.EntityId = alu.alu_id AND Adr.TypeEntity = @TypeEntityStudent AND Adr.State = @state AND Adr.Test_Id = @test_id ");
             sql.AppendLine("WHERE mtu.tur_id = @tur_id AND alu.alu_situacao = @state  ");
             sql.AppendLine("AND mtu.mtu_situacao <> @stateExcluido ");
-            sql.AppendLine("AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= @CorrectionEndDate AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= @CorrectionStartDate ) ))");
+            sql.AppendLine("AND (tme.tme_nome NOT LIKE '%EJA%' AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= @CorrectionEndDate AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= @CorrectionStartDate))) OR tme.tme_nome LIKE '%EJA%')");
             sql.AppendLine("AND ((@AllAdhered = 1 AND ISNULL(Adr.TypeSelection, 0) <> @TypeSelectionNotSelect) ");
             sql.AppendLine("OR (@AllAdhered = 0 AND (Adr.TypeSelection = @TypeSelectionSelected OR Adr.TypeSelection = @TypeSelectionBlocked))) ");
 

@@ -11,29 +11,32 @@ namespace ProvaSP.Data
     public enum TipoQuestionario : int
     {
         QuestionarioSupervisor = 1,
-        QuestionarioDiretor = 2,
         QuestionarioCoordenadorPedagogico = 3,
         FichaRegistroAplicadorProva = 8,
         FichaRegistroSupervisor = 9,
         FichaRegistroDiretor = 10,
         FichaRegistroCoordenadorPedagogico = 11,
 
-        QuestionarioAssistenteDiretoria = 13,
         QuestionarioAuxiliarTecnicoEducacao = 14,
         QuestionarioAgenteEscolarMerendeira = 15,
         QuestionarioAgenteEscolarPortaria = 16,
         QuestionarioAgenteEscolarZeladoria = 17,
 
         /* Edição 2018
+        QuestionarioDiretor = 2,
         QuestionarioProfessor = 12,
+        QuestionarioAssistenteDiretoria = 13,
         QuestionarioAlunos3Ano = 18,
         QuestionarioAlunos4AnoAo6Ano = 19,
         QuestionarioAlunos7AnoAo9Ano = 20 */
 
         //Edição 2019
-        QuestionarioProfessor = 23,
         QuestionarioAlunos3AnoAo6Ano = 21,
-        QuestionarioAlunos7AnoAo9Ano = 22
+        QuestionarioAlunos7AnoAo9Ano = 22,
+        QuestionarioProfessor = 23,
+        QuestionarioDiretor = 24,
+        QuestionarioAssistenteDiretoria = 25
+
     };
 
     public enum TipoPerfil : int
@@ -90,7 +93,7 @@ namespace ProvaSP.Data
 
     public enum Atributo : int
     {
-        [Description("Total esperado de Diretores que devem preencher questionário e ficha:")]
+        [Description("Total esperado de Diretores que devem preencher questionário:")]
         NumeroDeQuestionariosDeDiretor_ParaPreencher = 1,
 
         [Description("Número de Diretores que preencheram o questionário:")]
@@ -168,7 +171,7 @@ namespace ProvaSP.Data
         [Description("Número de Supervisores que preencheram o questionário:")]
         NumeroDeQuestionariosDeSupervisor_TotalPreenchidos = 55,
 
-        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        [Description("Total esperado de Assistentes de Diretores que devem preencher o questionário:")]
         NumeroDeQuestionariosDeAssistenteDiretoria_ParaPreencher = 81,
 
         [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
@@ -177,34 +180,35 @@ namespace ProvaSP.Data
         [Description("Questionário de Assistente de Diretor preenchido?")]
         QuestionarioAssistenteDiretoriaPreenchido = 83,
 
-        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        // Prova de 2k18
+        /*[Description("Total esperado de Alunos do 3 ano que devem preencher o questionário:")]
         NumeroDeQuestionariosAlunos3Ano_ParaPreencher = 84,
 
-        [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
+        [Description("Número de Alunos do 3 ano que preencheram o questionário:")]
         NumeroDeQuestionariosAlunos3Ano_TotalPreenchidos = 85,
 
-        [Description("Questionário de Assistente de Diretor preenchido?")]
-        QuestionarioAlunos3AnoPreenchido = 86,
+        [Description("Questionário de Alunos do 3 ano preenchido?")]
+        QuestionarioAlunos3AnoPreenchido = 86,*/
 
-        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        [Description("Total esperado de Alunos do 3 ao 6 ano que devem preencher o questionário:")]
         NumeroDeQuestionariosAlunos4AnoAo6Ano_ParaPreencher = 87,
 
-        [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
+        [Description("Número de Alunos do 3 ao 6 ano que preencheram o questionário:")]
         NumeroDeQuestionariosAlunos4AnoAo6Ano_TotalPreenchidos = 88,
 
-        [Description("Questionário de Assistente de Diretor preenchido?")]
+        [Description("Questionário de Alunos do 3 ao 6 ano preenchido?")]
         QuestionarioAlunos4AnoAo6AnoPreenchido = 89,
 
-        [Description("Número de Assistentes de Diretores que devem preencher o questionário:")]
+        [Description("Total esperado de Alunos do 7 ao 9 ano que devem preencher o questionário:")]
         NumeroDeQuestionariosAlunos7AnoAo9Ano_ParaPreencher = 90,
 
-        [Description("Número de Assistentes de Diretores que preencheram o questionário:")]
+        [Description("Número de Alunos do 7 ao 9 ano que preencheram o questionário:")]
         NumeroDeQuestionariosAlunos7AnoAo9Ano_TotalPreenchidos = 91,
 
-        [Description("Questionário de Assistente de Diretor preenchido?")]
+        [Description("Questionário de Alunos do 7 ao 9 ano preenchido?")]
         QuestionarioAlunos7AnoAo9AnoPreenchido = 92,
 
-        [Description("Número de Auxiliar Técnico da Educação que devem preencher o questionário:")]
+        [Description("Total esperado de Auxiliar Técnico da Educação que devem preencher o questionário:")]
         NumeroDeQuestionariosDeAuxiliarTecnicoEducacao_ParaPreencher = 93,
 
         [Description("Número de Auxiliar Técnico da Educação que preencheram o questionário:")]
@@ -213,7 +217,7 @@ namespace ProvaSP.Data
         [Description("Questionário de Auxiliar Técnico da Educação preenchido?")]
         QuestionarioAuxiliarTecnicoEducacaoPreenchido = 95,
 
-        [Description("Número de Agente Escolar - Merendeira que devem preencher o questionário:")]
+        [Description("Total esperado de Agente Escolar - Merendeira que devem preencher o questionário:")]
         NumeroDeQuestionariosDeAgenteEscolarMerendeira_ParaPreencher = 96,
 
         [Description("Número de Agente Escolar - Merendeira que preencheram o questionário:")]
@@ -222,7 +226,7 @@ namespace ProvaSP.Data
         [Description("Questionário de Agente Escolar - Merendeira preenchido?")]
         QuestionarioAgenteEscolarMerendeiraPreenchido = 98,
 
-        [Description("Número de Agente Escolar - Portaria que devem preencher o questionário:")]
+        [Description("Total esperado de Agente Escolar - Portaria que devem preencher o questionário:")]
         NumeroDeQuestionariosDeAgenteEscolarPortaria_ParaPreencher = 99,
 
         [Description("Número de Agente Escolar - Portaria que preencheram o questionário:")]
@@ -231,7 +235,7 @@ namespace ProvaSP.Data
         [Description("Questionário de Agente Escolar - Portaria preenchido?")]
         QuestionarioAgenteEscolarPortariaPreenchido = 101,
 
-        [Description("Número de Agente Escolar - Zeladoria que devem preencher o questionário:")]
+        [Description("Total esperado de Agente Escolar - Zeladoria que devem preencher o questionário:")]
         NumeroDeQuestionariosDeAgenteEscolarZeladoria_ParaPreencher = 102,
 
         [Description("Número de Agente Escolar - Zeladoria que preencheram o questionário:")]
@@ -240,6 +244,46 @@ namespace ProvaSP.Data
         [Description("Questionário de Agente Escolar - Zeladoria preenchido?")]
         QuestionarioAgenteEscolarZeladoriaPreenchido = 104
     };
+
+    public enum TipoRespondenteQuestionario
+    {
+        [Description("Diretor")]
+        DIRETOR,
+
+        [Description("Assistente de Diretor")]
+        ASSISTENTE_DIRETOR,
+
+        [Description("Coordenador")]
+        COORDENADOR,
+
+        [Description("Professor")]
+        PROFESSOR,
+
+        [Description("Supervisor")]
+        SUPERVISOR,
+
+        [Description("Aluno do 3º ano")]
+        ALUNO_3_ANO,
+
+        [Description("Aluno do 3º ao 6º ano")]
+        ALUNO_3_6_ANO,
+
+        [Description("Aluno do 7º ao 9º ano")]
+        ALUNO_7_9_ANO,
+
+        [Description("Auxiliar Técnico")]
+        AUXILIAR_TECNICO,
+
+        [Description("Agente Escolar - Merendeira")]
+        AGENTE_ESCOLAR_MERENDEIRA,
+
+        [Description("Agente Escolar - Portaria")]
+        AGENTE_ESCOLAR_PORTARIA,
+
+        [Description("Agente Escolar - Zeladoria")]
+        AGENTE_ESCOLAR_ZELADORIA,
+
+    }
 
     public static class EnumHelper<T>
     {
@@ -254,7 +298,14 @@ namespace ProvaSP.Data
             }
             var field = type.GetField(name);
             var customAttribute = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            return customAttribute.Length > 0 ? ((DescriptionAttribute)customAttribute[0]).Description : name;
+            return customAttribute.Any() ? ((DescriptionAttribute)customAttribute[0]).Description : name;
+        }
+
+        public static string GetEnumDescription(T value)
+        {
+            var fi = value.GetType().GetField(value.ToString());
+            var customAttribute = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+            return customAttribute.Any() ? ((DescriptionAttribute)customAttribute[0]).Description : value.ToString();
         }
     }
 
