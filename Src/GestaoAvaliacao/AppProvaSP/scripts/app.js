@@ -7195,8 +7195,6 @@ function abrirResultados(limparFiltros) {
  */
 function abrirConsultaRevistasBoletins() {
     try {
-        debugger;
-
         /**
         -----AMCOM-----
             *Basicamente temos:
@@ -7206,7 +7204,7 @@ function abrirConsultaRevistasBoletins() {
             -Esconde divs de revistasBoletins;
             -Desabilita o botão Mostrar RevistasBoletins (ele será habilitado no método revistasBoletins_configurarControles)
         */
-        //$(".page").hide();
+        $(".page").hide();
         $("#revistasBoletins-page").show();
 
         $(".revistasBoletins-dre-chk").prop('checked', false).checkboxradio('refresh');
