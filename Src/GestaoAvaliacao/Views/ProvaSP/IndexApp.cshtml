@@ -493,7 +493,7 @@ não exclua esse comentário.
             <button id="btnProvaAlunoVoltar" data-role="button">Voltar</button>
         </div>
     </div>
-
+ 
     <!--MSTECH
     *Resultado por nível de filtragem. Todos os filtros aplicados estão, a princípio no método
     resultado_configurarControles.
@@ -511,8 +511,8 @@ não exclua esse comentário.
             </div>
 
             <!--MSTECH
-            *Opções de filtragem
-            -->
+        *Opções de filtragem
+        -->
             <form id="formResultadoOpcoes">
                 <div id="resultados_tabEdit">
                     <!--OPÇÃO 1 - RESULTADOS DA PROVA-->
@@ -523,7 +523,7 @@ não exclua esse comentário.
                         </span>
                     </p>
                     <!--MSTECH - Nova div com opções de resultado da prova. Esta div comportará os resultados
-                    da ProvaSP e ProvinhaSP, bem como os respectivos gráficos e tabelas.-->
+                da ProvaSP e ProvinhaSP, bem como os respectivos gráficos e tabelas.-->
                     <div id="resultados_div0" style="display: none;">
                         <table style="width:100%;">
                             <tr>
@@ -552,8 +552,8 @@ não exclua esse comentário.
                                         <option value="2008" class="edicao-resultado-legado">Edição 2008</option>
                                         <option value="2007" class="edicao-resultado-legado">Edição 2007</option>
                                         <!--
-                                        <option value="HISTORICO">Histórico</option>
-                                        -->
+                                    <option value="HISTORICO">Histórico</option>
+                                    -->
                                     </select>
                                 </td>
                             </tr>
@@ -920,8 +920,8 @@ não exclua esse comentário.
             </form>
 
             <!--MSTECH
-            *Resultado de fato
-            -->
+        *Resultado de fato
+        -->
             <div id="divResultadoApresentacao" style="display:none;">
 
                 <div style="font-weight:bold; margin-top:25px;">
@@ -973,14 +973,14 @@ não exclua esse comentário.
                 </div>
 
                 <!--MSTECH
-                    *Principais gráficos - Agregação e Ciclo de Aprendizagem.
-                    OBS: O gráfico de Ciclo de Aprendizagem deve aparecer somente quando existe
-                    a informação do ciclo e quando for nível SME ou DRE
+                *Principais gráficos - Agregação e Ciclo de Aprendizagem.
+                OBS: O gráfico de Ciclo de Aprendizagem deve aparecer somente quando existe
+                a informação do ciclo e quando for nível SME ou DRE
 
-                    ATUALIZAÇÃO: Agora os gráficos de Ciclo de Aprendizagem são também adicionados aos
-                    gráficos legados de agregação. Desta maneira, pode-se montar N gráficos de
-                    Ciclo de Aprendizagem, dependendo do filtro selecionado
-                -->
+                ATUALIZAÇÃO: Agora os gráficos de Ciclo de Aprendizagem são também adicionados aos
+                gráficos legados de agregação. Desta maneira, pode-se montar N gráficos de
+                Ciclo de Aprendizagem, dependendo do filtro selecionado
+            -->
                 <div id="divChartResultadoAgregacao"></div>
 
                 <div id="divResultadoTituloAmostral" style="background-color:rgb(255,215,215); color:rgb(255,50,50); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none; display:none;">
@@ -1061,149 +1061,147 @@ não exclua esse comentário.
                     </div>
 
                 </div>
+            </div>
 
-                <!--MSTECH
-                *Popup para mostrar dados de participação da ProvaSP
-                -->
-                <div id="divResultadoFA" class="page generico_mainDiv" style="display: none;">
-                    <div class="container generico_subDiv">
-                        <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+            <!--MSTECH
+        *Popup para mostrar dados de participação da ProvaSP
+        -->
+            <div id="divResultadoFA" class="page generico_mainDiv" style="display: none;">
+                <div class="container generico_subDiv">
+                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
 
-                        <div class="generico_headerDiv">
-                            <p class="generico_headerTitle">SME</p>
-                            <p id="faHeaderText" class="generico_headerText"></p>
-                        </div>
+                    <div class="generico_headerDiv">
+                        <p class="generico_headerTitle">SME</p>
+                        <p id="faHeaderText" class="generico_headerText"></p>
+                    </div>
 
-                        <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
-                            O gráfico abaixo apresenta a influência do fator selecionado no desempenho dos estudantes, por componente curricular.<br /><br />
-                            Toque em uma variável específica para mais informações.
-                        </div>
+                    <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
+                        O gráfico abaixo apresenta a influência do fator selecionado no desempenho dos estudantes, por componente curricular.<br /><br />
+                        Toque em uma variável específica para mais informações.
+                    </div>
 
-                        <div class="fatoresassociados_headerDiv">
-                            <p class="fatoresassociados_title">INFLUÊNCIA DO FATOR DO DESEMPENHO</p>
-                            <p id="faHeaderTitle" class="fatoresassociados_text"></p>
-                        </div>
+                    <div class="fatoresassociados_headerDiv">
+                        <p class="fatoresassociados_title">INFLUÊNCIA DO FATOR DO DESEMPENHO</p>
+                        <p id="faHeaderTitle" class="fatoresassociados_text"></p>
+                    </div>
 
-                        <!--Quadros-->
-                        <div class="fatoresassociados_quadrosDiv">
-                            <!--LÍNGUA PORTUGUESA-->
-                            <div class="fatoresassociados_quadrosBlockDiv">
-                                <div class="fatoresassociados_quadrosBlockLeftDiv">
-                                    <p class="fatoresassociados_quadrosVText">PONTOS</p>
-                                </div>
-                                <div class="fatoresassociados_quadrosBlockRightDiv">
-                                    <div class="fatoresassociados_quadrosBlockHeight" style="background: #F4CB01;">
-                                        <p id="faTitle2" class="fatoresassociados_quadrosBlockHeader"></p>
-                                    </div>
-                                    <div class="fatoresassociados_quadrosBlockHeight">
-                                        <p id="faValor2" class="fatoresassociados_quadrosBlockBody">0</p>
-                                    </div>
-                                </div>
+                    <!--Quadros-->
+                    <div class="fatoresassociados_quadrosDiv">
+                        <!--LÍNGUA PORTUGUESA-->
+                        <div class="fatoresassociados_quadrosBlockDiv">
+                            <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
                             </div>
-                            <!--MATEMÁTICA-->
-                            <div class="fatoresassociados_quadrosBlockDiv">
-                                <div class="fatoresassociados_quadrosBlockLeftDiv">
-                                    <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                            <div class="fatoresassociados_quadrosBlockRightDiv">
+                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #F4CB01;">
+                                    <p id="faTitle2" class="fatoresassociados_quadrosBlockHeader"></p>
                                 </div>
-                                <div class="fatoresassociados_quadrosBlockRightDiv">
-                                    <div class="fatoresassociados_quadrosBlockHeight" style="background: #EA7458;">
-                                        <p id="faTitle3" class="fatoresassociados_quadrosBlockHeader"></p>
-                                    </div>
-                                    <div class="fatoresassociados_quadrosBlockHeight">
-                                        <p id="faValor3" class="fatoresassociados_quadrosBlockBody">0</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--CIÊNCIA NATURAIS-->
-                            <div class="fatoresassociados_quadrosBlockDiv">
-                                <div class="fatoresassociados_quadrosBlockLeftDiv">
-                                    <p class="fatoresassociados_quadrosVText">PONTOS</p>
-                                </div>
-                                <div class="fatoresassociados_quadrosBlockRightDiv">
-                                    <div class="fatoresassociados_quadrosBlockHeight" style="background: #6B91A8;">
-                                        <p id="faTitle1" class="fatoresassociados_quadrosBlockHeader"></p>
-                                    </div>
-                                    <div class="fatoresassociados_quadrosBlockHeight">
-                                        <p id="faValor1" class="fatoresassociados_quadrosBlockBody">0</p>
-                                    </div>
+                                <div class="fatoresassociados_quadrosBlockHeight">
+                                    <p id="faValor2" class="fatoresassociados_quadrosBlockBody">0</p>
                                 </div>
                             </div>
                         </div>
+                        <!--MATEMÁTICA-->
+                        <div class="fatoresassociados_quadrosBlockDiv">
+                            <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                            </div>
+                            <div class="fatoresassociados_quadrosBlockRightDiv">
+                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #EA7458;">
+                                    <p id="faTitle3" class="fatoresassociados_quadrosBlockHeader"></p>
+                                </div>
+                                <div class="fatoresassociados_quadrosBlockHeight">
+                                    <p id="faValor3" class="fatoresassociados_quadrosBlockBody">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--CIÊNCIA NATURAIS-->
+                        <div class="fatoresassociados_quadrosBlockDiv">
+                            <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                            </div>
+                            <div class="fatoresassociados_quadrosBlockRightDiv">
+                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #6B91A8;">
+                                    <p id="faTitle1" class="fatoresassociados_quadrosBlockHeader"></p>
+                                </div>
+                                <div class="fatoresassociados_quadrosBlockHeight">
+                                    <p id="faValor1" class="fatoresassociados_quadrosBlockBody">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                        <p class="fatoresassociados_resenha">
-                            O fator (variável contextual) que não apresentou impacto significativo sobre
-                            o desempenho do estudante no componente curricular e/ou sobre a média
-                            escolar é representado por um traço (-).
+                    <p class="fatoresassociados_resenha">
+                        O fator (variável contextual) que não apresentou impacto significativo sobre
+                        o desempenho do estudante no componente curricular e/ou sobre a média
+                        escolar é representado por um traço (-).
+                    </p>
+
+                    <!--Variáveis-->
+                    <div class="fatoresassociados_variaveisDiv">
+                        <!--Variáveis Table HEADER-->
+                        <!--MSTECH - Tabela removida para retirar imagem do estado de SP-->
+                        <!--<table class="fatoresassociados_variaveisTable"><tr>-->
+                        <!--<td class="fatoresassociados_variaveisTDLeft">-->
+                        <!--<p class="fatoresassociados_variaveisTDLeftText">-->
+                        <!--Observe abaixo as variáveis que compõem o constructo<br />-->
+                        <!--<b>-->
+                        <!--<span class='mdi mdi-chevron-right'></span>-->
+                        <!--<span id="faVarsConstructo"></span>-->
+                        <!--</b>-->
+                        <!--</p>-->
+                        <!--</td>-->
+                        <!--<td class="fatoresassociados_variaveisTDRight">-->
+                        <!--<img class="fatoresassociados_variaveisTDRightImg" src="/AppProvaSP/images/fa_background.png" />-->
+                        <!--</td>-->
+                        <!--</tr></table>-->
+                        <p class="fatoresassociados_variaveisText">
+                            Observe abaixo as variáveis que compõem o constructo<br />
+                            <b>
+                                <span class='mdi mdi-chevron-right'></span>
+                                <span id="faVarsConstructo"></span>
+                            </b>
                         </p>
 
-                        <!--Variáveis-->
-                        <div class="fatoresassociados_variaveisDiv">
-                            <!--Variáveis Table HEADER-->
-                            <!--MSTECH - Tabela removida para retirar imagem do estado de SP-->
-                            <!--<table class="fatoresassociados_variaveisTable"><tr>-->
-                            <!--<td class="fatoresassociados_variaveisTDLeft">-->
-                            <!--<p class="fatoresassociados_variaveisTDLeftText">-->
-                            <!--Observe abaixo as variáveis que compõem o constructo<br />-->
-                            <!--<b>-->
-                            <!--<span class='mdi mdi-chevron-right'></span>-->
-                            <!--<span id="faVarsConstructo"></span>-->
-                            <!--</b>-->
-                            <!--</p>-->
-                            <!--</td>-->
-                            <!--<td class="fatoresassociados_variaveisTDRight">-->
-                            <!--<img class="fatoresassociados_variaveisTDRightImg" src="/AppProvaSP/images/fa_background.png" />-->
-                            <!--</td>-->
-                            <!--</tr></table>-->
-                            <p class="fatoresassociados_variaveisText">
-                                Observe abaixo as variáveis que compõem o constructo<br />
-                                <b>
-                                    <span class='mdi mdi-chevron-right'></span>
-                                    <span id="faVarsConstructo"></span>
-                                </b>
-                            </p>
-
-                            <!--Variáveis em si-->
-                            <div id="fa_variaveisDoConstructo"></div>
-                        </div>
-
-                        <!--BOTÃO VOLTAR-->
-                        <button id="btnFAVoltar" data-role="button">Voltar às opções</button>
+                        <!--Variáveis em si-->
+                        <div id="fa_variaveisDoConstructo"></div>
                     </div>
-                </div>
 
-                <!--MSTECH
-                *Popup para mostrar dados de participação da ProvaSP
-                -->
-                <div id="divResultadoConstructo" class="page generico_mainDiv" style="display: none;">
-                    <div class="container generico_subDiv">
-                        <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
-
-                        <div class="generico_headerDiv">
-                            <p id="constructoHeaderTitle" class="generico_headerTitle"></p>
-                            <p id="constructoHeaderText" class="generico_headerText"></p>
-                        </div>
-
-                        <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
-                            Nos gráficos abaixo são mostrados os dados de caracterização das famílias e das escolas
-                        </div>
-
-                        <!--Conteúdo do contructo em si-->
-                        <div id="constructDivContent"></div>
-
-                        <!--BOTÃO VOLTAR-->
-                        <button id="btnConstructoVoltar" data-role="button">Voltar</button>
-                    </div>
+                    <!--BOTÃO VOLTAR-->
+                    <button id="btnFAVoltar" data-role="button">Voltar às opções</button>
                 </div>
             </div>
+
             <!--MSTECH
-            *Adicionado DIV de fechamento que estava faltando
-            -->
+        *Popup para mostrar dados de participação da ProvaSP
+        -->
+            <div id="divResultadoConstructo" class="page generico_mainDiv" style="display: none;">
+                <div class="container generico_subDiv">
+                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+                    <div class="generico_headerDiv">
+                        <p id="constructoHeaderTitle" class="generico_headerTitle"></p>
+                        <p id="constructoHeaderText" class="generico_headerText"></p>
+                    </div>
+
+                    <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
+                        Nos gráficos abaixo são mostrados os dados de caracterização das famílias e das escolas
+                    </div>
+
+                    <!--Conteúdo do contructo em si-->
+                    <div id="constructDivContent"></div>
+
+                    <!--BOTÃO VOLTAR-->
+                    <button id="btnConstructoVoltar" data-role="button">Voltar</button>
+                </div>
+            </div>
         </div>
 
 
+
         <!--AMCOM
-        *Popup para consulta de revistas pedagógicas e boletins
-        -->
+    *Popup para consulta de revistas pedagógicas e boletins
+    -->
         <div id="revistasBoletins-page" class="page generico_mainDiv" style="display: none;">
             <div class="container generico_subDiv">
                 <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
@@ -1214,8 +1212,8 @@ não exclua esse comentário.
                 </div>
 
                 <!--AMCOM
-                *Opções de filtragem
-                -->
+            *Opções de filtragem
+            -->
                 <form id="formRevistasBoletinsOpcoes">
                     <table style="width:100%;">
                         <tr>
@@ -1333,770 +1331,770 @@ não exclua esse comentário.
                 <button id="btnRevistasBoletinsVoltar" data-role="button">Voltar</button>
             </div>
         </div>
+    </div>
+    <!--MSTECH
+    *Popup para mostrar dados de participação da ProvaSP
+    -->
+    <div id="participacao-page" class="page generico_mainDiv" style="display: none;">
+        <div class="container generico_subDiv">
+            <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
 
-        <!--MSTECH
-        *Popup para mostrar dados de participação da ProvaSP
-        -->
-        <div id="participacao-page" class="page generico_mainDiv" style="display: none;">
-            <div class="container generico_subDiv">
-                <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">PARTICIPAÇÃO</p>
+                <p class="generico_headerText">Relatório de participação dos estudantes na prova</p>
+            </div>
 
-                <div class="generico_headerDiv">
-                    <p class="generico_headerTitle">PARTICIPAÇÃO</p>
-                    <p class="generico_headerText">Relatório de participação dos estudantes na prova</p>
+            <div class="participacao_coloredTipDiv">
+                <p class='participacao_coloredTip'>Dados representativos segundo os critérios do INEP</p>
+                <p class='participacao_flagIconTip'><span class='mdi mdi-flag-variant'></span></p>
+            </div>
+
+            <div id="participacaoConteudo" class="participacao_mainDiv"></div>
+            <button id="btnParticipacaoVoltar" data-role="button">Voltar</button>
+        </div>
+    </div>
+
+    <!--MSTECH
+    *Questionários do ProvaSP dividiros por tipo.
+    *Esta div estava posicionada de maneira errada dentro da div de resultado-page nuinca
+    sendo mostrada por este motivo. Sendoa assim, separamos a div para que funciona corretamente.
+    -->
+    <div id="questionario-page" class="page">
+        <div class="container" style="text-align:center;">
+            <div id="divTituloQuestionario" data-role="header" class="header" style="text-align:center; padding:10px; ">
+                <span id="tituloQuestionario" style="font-size:13pt; ">Ficha de Registro - Coordenador(a) Pedagógico(a)</span>
+            </div>
+
+            <div role="main" class="ui-content">
+                <div id="Questionarios">
+
+                    <!--MSTECH
+                    *Questionário Supervisor
+                    -->
+                    <form id="Questionario1">
+                        <input id="tituloQuestionario1" type="hidden" value="Questionário do Supervisor Escolar" />
+
+                        <div id="divQuestionario1_Intro" style="text-align:left;">
+                            <p>Caro(a) Supervisor(a),</p>
+                            <p>
+                                Este questionário tem como objetivo coletar informações quanto à organização e condições de seu trabalho, à realidade das escolas e ao aproveitamento dos alunos.
+                                As informações fornecidas por você são importantes para a pesquisa que estamos realizando, neste ano, sobre clima escolar, práticas pedagógicas e de gestão.
+                                Solicitamos que, ao respondê-lo, procure contemplar o conjunto das escolas que você supervisiona. Os dados produzidos serão sigilosos e os resultados dessa
+                                pesquisa serão divulgados no 1º semestre de 2020.
+                            </p>
+                            <p>Contamos com sua colaboração respondendo às perguntas a seguir, garantindo a qualidade da pesquisa e a eficiência da Edição 2019 da Provinha e da Prova São Paulo. </p>
+                            <p>Não existem respostas certas ou erradas. Assinale apenas as alternativas que mais condizem com a sua realidade. Solicitamos que responda todas as questões.</p>
+                            <a id="btnQuestionario1_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario1_Questoes" style="display:none;"></div>
+                    </form>
+                    <!--MSTECH
+                    *Questionário Diretor
+                    -->
+                    <form id="Questionario24">
+                        <input id="tituloQuestionario24" type="hidden" value="Questionário do Diretor de Escola" />
+
+                        <div id="divQuestionario24_Intro" style="text-align:left;">
+                            <p>Caro(a) Diretor(a),</p>
+                            <p>
+                                Este questionário busca conhecer suas opiniões a respeito da sua escola.
+                                As informações fornecidas por você são importantes para a pesquisa que estamos realizando,
+                                neste ano, sobre clima escolar, práticas pedagógicas e de gestão. Os dados produzidos
+                                serão sigilosos e os resultados dessa pesquisa serão divulgados no 1º semestre de 2020.<br><br>
+                                Contamos com sua ajuda para responder às perguntas a seguir, garantindo a qualidade da
+                                pesquisa e o sucesso da Edição 2019 da Prova São Paulo.
+                            </p>
+                            <a id="btnQuestionario24_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario24_Questoes" style="display:none;"></div>
+                    </form>
+                    <!--MSTECH
+                    *Questionário Coordenador
+                    -->
+                    <form id="Questionario3">
+                        <input id="tituloQuestionario3" type="hidden" value="Questionário do Coordenador Pedagógico" />
+
+                        <div id="divQuestionario3_Intro" style="text-align:left;">
+                            <p>Caro(a) Coordenador(a) Pedagógico(a),</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Coordenador(a) Pedagógico(a). As informações fornecidas
+                                por você são importantes para a compreensão e o mapeamento de
+                                políticas relacionadas a clima escolar e práticas pedagógicas e
+                                de gestão. Suas respostas não serão analisadas ou divulgadas
+                                individualmente e os resultados dessa pesquisa serão publicizados
+                                no 1º semestre de 2019.<br /><br />
+                                Contamos com sua ajuda para responder às perguntas a seguir,
+                                garantindo a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2018.
+                            </p>
+                            <a id="btnQuestionario3_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario3_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionários dos tipos 4 ao 7 não devem existir no ProvaSP
+                    -->
+                    <form id="divQuestionario4">
+                        <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
+                        <input id="tituloQuestionario4" type="hidden" value="Questionário do Professor de Matemática" />
+                    </form>
+
+                    <form id="Questionario5">
+                        <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
+                        <input id="tituloQuestionario5" type="hidden" value="Questionário do Professor de Ciências Naturais" />
+                    </form>
+
+                    <form id="Questionario6">
+                        <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
+                        <input id="tituloQuestionario6" type="hidden" value="Questionário do Professor de Língua Portuguesa" />
+                    </form>
+
+                    <form id="Questionario7">
+                        <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
+                        <input id="tituloQuestionario7" type="hidden" value="Questionário do Professor do Ensino Fundamental I" />
+                    </form>
+                    <!--MSTECH
+                    *Questionário Controle da Prova a ser aplicada
+                    -->
+                    <form id="Questionario8">
+                        <input id="tituloQuestionario8" type="hidden" value="Ficha de Registro - Aplicador de Prova" />
+
+                        <div id="divQuestionario8_Questoes">
+                            <h3>
+                                1. Identificação da Turma:
+                            </h3>
+                            <fieldset>
+                                <input id="Questionario_8_Questao_1_tur_id" type="text" name="Questionario_8_Questao_1" readonly="readonly" />
+                            </fieldset>
+
+
+                            <h3>
+                                2. Data de Aplicação:
+                            </h3>
+                            <fieldset>
+                                <!--
+                                Datepicker Widget:
+                                http://demos.jquerymobile.com/1.4.1/datepicker/
+                                -->
+                                <input id="Questionario_8_Questao_2_Data" data-role="date" data-inline="true" type="text" name="Questionario_8_Questao_2" />
+                            </fieldset>
+
+
+                            <h3>
+                                3. Disciplina:
+                            </h3>
+                            <fieldset>
+                                <label for="Questionario_8_Questao_3_Portugues">
+                                    <input id="Questionario_8_Questao_3_Portugues" type="radio" name="Questionario_8_Questao_3" value="Português" />
+                                    Português
+                                </label>
+                                <label for="Questionario_8_Questao_3_Matematica">
+                                    <input id="Questionario_8_Questao_3_Matematica" type="radio" name="Questionario_8_Questao_3" value="Matemática" />
+                                    Matemática
+                                </label>
+                                <label for="Questionario_8_Questao_3_Ciencias">
+                                    <input id="Questionario_8_Questao_3_Ciencias" type="radio" name="Questionario_8_Questao_3" value="Ciências" />
+                                    Ciências da Natureza
+                                </label>
+                            </fieldset>
+
+
+                            <!-- CHAMADA -->
+                            <h3>
+                                4. Registros sobre a Frequência da turma.<br />Marque apenas os estudantes <b style="color:red;">ausentes:</b>
+                            </h3>
+                            <fieldset id="divChamadaAlunos" data-role="controlgroup"></fieldset>
+
+                            <h3>
+                                5. Registros sobre a Frequência da turma.<br />Número de estudantes <b>presentes</b>:
+                            </h3>
+                            <fieldset>
+                                <input id="Questionario_8_Questao_5_Presentes" type="number" name="Questionario_8_Questao_5" />
+                            </fieldset>
+
+                            <h3>
+                                6. Registros sobre a Frequência da turma.<br />Número de estudantes <b>ausentes</b>:
+                            </h3>
+                            <fieldset>
+                                <input id="Questionario_8_Questao_6_Ausentes" type="number" name="Questionario_8_Questao_6" />
+                            </fieldset>
+
+                            <h3>
+                                7.Quantidade de atestados médicos recebidos:
+                            </h3>
+                            <fieldset>
+                                <input id="Questionario_8_Questao_7_Ausentes" type="number" name="Questionario_8_Questao_7" placeholder="Informe aqui" />
+                            </fieldset>
+
+                            <h3>
+                                8. Registro sobre os Instrumentos.
+                            </h3>
+                            <fieldset>
+                                <h4>Número de Cadernos de Prova no pacote, incluindo os reservas:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroCadernosProvaIncluindoReservas" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaIncluindoReservas" placeholder="Informe aqui" />
+                                <h4>Número de Cadernos de Prova <b>não</b> utilizados:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroCadernosProvaNaoUtilizados" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaNaoUtilizados" placeholder="Informe aqui" />
+
+                                <h4>Número de Cadernos de Prova com falhas de impressão:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroCadernosProvaComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaComFalhasImpressao" placeholder="Informe aqui" />
+
+                                <h4>Número de Folhas de Respostas preenchidas:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroFolhasRespostaPreenchidas" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaPreenchidas" placeholder="Informe aqui" />
+
+                                <h4>Número de Folhas de Respostas não utilizadas:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroFolhasRespostaNaoUtilizadas" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaNaoUtilizadas" placeholder="Informe aqui" />
+
+                                <h4>Número de Folhas de Respostas com falhas de impressão:</h4>
+                                <input id="Questionario_8_Questao_8_NumeroFolhasRespostaComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaComFalhasImpressao" placeholder="Informe aqui" />
+
+                                <div id="Questionario_8_QuestoesInstrumentoPortugues">
+                                    <h4>Número de Folhas – Produção de Texto preenchidas:</h4>
+                                    <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoPreenchidas" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoPreenchidas" placeholder="Informe aqui" />
+
+                                    <h4>Número de Folhas – Produção de Texto não utilizadas:</h4>
+                                    <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoNaoUtilizadas" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoNaoUtilizadas" placeholder="Informe aqui" />
+
+                                    <h4>Número de Folhas – Produção de Texto com falhas de impressão:</h4>
+                                    <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoComFalhasImpressao" placeholder="Informe aqui" />
+                                </div>
+
+                                <!--<div id="Questionario_8_QuestoesInstrumentoCiencias">-->
+                                <!--<h4>Número de Folhas de Respostas do Questionário de Hábitos de Estudos preenchidas:</h4>-->
+                                <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosPreenchidas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosPreenchidas" placeholder="Informe aqui" />-->
+                                <!--<h4>Número de Folhas de Respostas do Questionário de Hábitos de Estudos não utilizadas:</h4>-->
+                                <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosNaoUtilizadas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosNaoUtilizadas" placeholder="Informe aqui" />-->
+                                <!--<h4>Número de Folhas de Respostas do Questionário de Hábitos de Estudos com falhas de impressão:</h4>-->
+                                <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosComFalhasImpressao" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosComFalhasImpressao" placeholder="Informe aqui" />-->
+                                <!--<h4>Número de Folhas de Respostas do Questionário para pais/mães ou responsáveis devolvidas pelos alunos:</h4>-->
+                                <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioPaisDevolvidas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioPaisDevolvidas" placeholder="Informe aqui" />-->
+                                <!--</div>-->
+                            </fieldset>
+
+                            <h3>
+                                9. A quantidade de tablets para atendimento a estudantes com surdez foi suficiente?
+                            </h3>
+                            <fieldset>
+                                <label for="Questionario_8_Questao_9_Sim">
+                                    <input id="Questionario_8_Questao_9_Sim" type="radio" name="Questionario_8_Questao_9" value="Sim" />
+                                    Sim
+                                </label>
+                                <label for="Questionario_8_Questao_9_Nao">
+                                    <input id="Questionario_8_Questao_9_Nao" type="radio" name="Questionario_8_Questao_9" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_9_NaoSeAplica">
+                                    <input id="Questionario_8_Questao_9_NaoSeAplica" type="radio" name="Questionario_8_Questao_9" value="Não se aplica" />
+                                    Não se aplica
+                                </label>
+                            </fieldset>
+
+                            <h3>
+                                10. O número de Cadernos de provas em braile e/ou ampliadas correspondeu ao número de estudantes com deficiência da turma?
+                            </h3>
+                            <fieldset>
+                                <label for="Questionario_8_Questao_10_Sim">
+                                    <input id="Questionario_8_Questao_10_Sim" type="radio" name="Questionario_8_Questao_10" value="Sim" />
+                                    Sim
+                                </label>
+                                <label for="Questionario_8_Questao_10_Nao">
+                                    <input id="Questionario_8_Questao_10_Nao" type="radio" name="Questionario_8_Questao_10" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_10_NaoSeAplica">
+                                    <input id="Questionario_8_Questao_10_NaoSeAplica" type="radio" name="Questionario_8_Questao_10" value="Não se aplica" />
+                                    Não se aplica
+                                </label>
+                            </fieldset>
+
+                            <h3>
+                                11. Recebeu lacrado o pacote com os Cadernos de prova?
+                            </h3>
+                            <fieldset>
+                                <label for="Questionario_8_Questao_11_Sim">
+                                    <input id="Questionario_8_Questao_11_Sim" type="radio" name="Questionario_8_Questao_11" value="Sim" />
+                                    Sim
+                                </label>
+                                <label for="Questionario_8_Questao_11_Nao">
+                                    <input id="Questionario_8_Questao_11_Nao" type="radio" name="Questionario_8_Questao_11" value="Não" />
+                                    Não
+                                </label>
+                            </fieldset>
+
+                            <h3>
+                                12. Na sala de aplicação estavam você, os estudantes e, quando necessário, o estagiário para auxiliar os estudantes com deficiência?
+                            </h3>
+                            <fieldset>
+                                <label for="Questionario_8_Questao_12_Sim">
+                                    <input id="Questionario_8_Questao_12_Sim" type="radio" name="Questionario_8_Questao_12" value="Sim" />
+                                    Sim
+                                </label>
+                                <label for="Questionario_8_Questao_12_Nao">
+                                    <input id="Questionario_8_Questao_12_Nao" type="radio" name="Questionario_8_Questao_12" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_12_Terceiro">
+                                    <input id="Questionario_8_Questao_12_Terceiro" type="radio" name="Questionario_8_Questao_12" value="Não se aplica" />
+                                    Não se aplica
+                                </label>
+                            </fieldset>
+
+                            <h3>13. Para cada Caderno reserva utilizado, informe o valor do Código de Barras da Folha de Respostas e o Código EOL do Aluno:</h3>
+                            <img src="/AppProvaSP/images/codigoDeBarrasExemplo.png" style="width:50%;" />
+                            <fieldset>
+                                <table id="tblCadernoReserva" style="width:100%; margin-top:15px;">
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            Valor do Código de Barras:
+                                        </td>
+                                        <td>
+                                            Código EOL do Aluno:
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(1);" value="Escanear" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva1" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva1" placeholder="Código de Barras" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva1" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva1" placeholder="EOL do Aluno" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(2);" value="Escanear" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva2" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva2" placeholder="Código de Barras" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva2" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva2" placeholder="EOL do Aluno" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(3);" value="Escanear" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva3" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva3" placeholder="Código de Barras" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva3" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva3" placeholder="EOL do Aluno" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(4);" value="Escanear" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva4" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva4" placeholder="Código de Barras" />
+                                        </td>
+                                        <td>
+                                            <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva4" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva4" placeholder="EOL do Aluno" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </fieldset>
+
+
+                            <h3>14. Fatos relevantes ocorridos durante a aplicação:</h3>
+                            <fieldset>
+                                <h4>14.1. Ocorreu atraso de estudante(s), impedindo a participação na avaliação:</h4>
+                                <label for="Questionario_8_Questao_14_1_Nao">
+                                    <input id="Questionario_8_Questao_14_1_Nao" type="radio" name="Questionario_8_Questao_14_1" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_1_Sim">
+                                    <input id="Questionario_8_Questao_14_1_Sim" type="radio" name="Questionario_8_Questao_14_1" value="Sim" />
+                                    Sim
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.2. Ocorreu saída definitiva de estudante, durante a aplicação, sem terminar a avaliação:</h4>
+                                <label for="Questionario_8_Questao_14_2_Nao">
+                                    <input id="Questionario_8_Questao_14_2_Nao" type="radio" name="Questionario_8_Questao_14_2" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_2_Sim">
+                                    <input id="Questionario_8_Questao_14_2_Sim" type="radio" name="Questionario_8_Questao_14_2" value="Sim" />
+                                    Sim
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.3. Ocorreu falta de material:</h4>
+                                <label for="Questionario_8_Questao_14_3_Nao">
+                                    <input id="Questionario_8_Questao_14_3_Nao" type="radio" name="Questionario_8_Questao_14_3" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_3_Sim">
+                                    <input id="Questionario_8_Questao_14_3_Sim" type="radio" name="Questionario_8_Questao_14_3" value="Sim" />
+                                    Sim. Especifique a solução adotada em 14.8
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.4. Ocorreu paralisação de transporte público, retardando o início da aplicação:</h4>
+                                <label for="Questionario_8_Questao_14_4_Nao">
+                                    <input id="Questionario_8_Questao_14_4_Nao" type="radio" name="Questionario_8_Questao_14_4" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_4_Sim">
+                                    <input id="Questionario_8_Questao_14_4_Sim" type="radio" name="Questionario_8_Questao_14_4" value="Sim" />
+                                    Sim. Especifique a solução adotada em 14.8
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.5. Ocorreu falta de energia elétrica durante a aplicação e afetou a avaliação:</h4>
+                                <label for="Questionario_8_Questao_14_5_Nao">
+                                    <input id="Questionario_8_Questao_14_5_Nao" type="radio" name="Questionario_8_Questao_14_5" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_5_Sim">
+                                    <input id="Questionario_8_Questao_14_5_Sim" type="radio" name="Questionario_8_Questao_14_5" value="Sim" />
+                                    Sim. Especifique a solução adotada em 14.8
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.6. Tablet apresentou falha:</h4>
+                                <label for="Questionario_8_Questao_14_6_NaoSeAplica">
+                                    <input id="Questionario_8_Questao_14_6_NaoSeAplica" type="radio" name="Questionario_8_Questao_14_6" value="Não se aplica" />
+                                    Não se aplica
+                                </label>
+                                <label for="Questionario_8_Questao_14_6_Nao">
+                                    <input id="Questionario_8_Questao_14_6_Nao" type="radio" name="Questionario_8_Questao_14_6" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_6_Sim">
+                                    <input id="Questionario_8_Questao_14_6_Sim" type="radio" name="Questionario_8_Questao_14_6" value="Sim" />
+                                    Sim. Especifique a falha
+                                </label>
+                                <h4>Se SIM, registre a falha</h4>
+                                <input id="Questionario_8_Questao_14_6_Motivos" type="text" name="Questionario_8_Questao_14_6.Motivos" placeholder="Descreva aqui" disabled="disabled" />
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.7. PenDrive apresentou falha:</h4>
+                                <label for="Questionario_8_Questao_14_7_NaoSeAplica">
+                                    <input id="Questionario_8_Questao_14_7_NaoSeAplica" type="radio" name="Questionario_8_Questao_14_7" value="Não se aplica" />
+                                    Não se aplica
+                                </label>
+                                <label for="Questionario_8_Questao_14_7_Nao">
+                                    <input id="Questionario_8_Questao_14_7_Nao" type="radio" name="Questionario_8_Questao_14_7" value="Não" />
+                                    Não
+                                </label>
+                                <label for="Questionario_8_Questao_14_7_Sim">
+                                    <input id="Questionario_8_Questao_14_7_Sim" type="radio" name="Questionario_8_Questao_14_7" value="Sim" />
+                                    Sim. Especifique a falha
+                                </label>
+                                <h4>Se SIM, registre a falha</h4>
+                                <input id="Questionario_8_Questao_14_7_Motivos" type="text" name="Questionario_8_Questao_14_7.Motivos" placeholder="Descreva aqui" disabled="disabled" />
+                            </fieldset>
+                            <fieldset>
+                                <h4>14.8. Outros fatos relevantes não citados acima e/ou especificação dos subitens 11.3 a 11.5:</h4>
+                                <input id="Questionario_8_Questao_14_8_FatosRelevantes" type="text" name="Questionario_8_Questao_14_8_FatosRelevantes" placeholder="Descreva aqui" />
+                            </fieldset>
+
+                            <h3>15. Deixe sugestão de melhoria para a aplicação da próxima Edição:</h3>
+                            <fieldset>
+                                <input id="Questionario_8_Questao_15_Observacoes" type="text" name="Questionario_8_Questao_15" placeholder="Descreva aqui" />
+                            </fieldset>
+
+                            <a href="#" class="ui-btn" style="color:green;" onclick="btnConcluirQuestionario()">Concluir</a>
+                        </div>
+                    </form>
+                    <!--MSTECH
+                    *Ficha de registro - Supervidor
+                    -->
+                    <form id="Questionario9">
+                        <input id="tituloQuestionario9" type="hidden" value="Ficha de Registro - Supervisor Escolar" />
+
+                        <div id="divQuestionario9_Questoes"></div>
+                    </form>
+                    <!--MSTECH
+                    *Ficha de registro - Diretor
+                    -->
+                    <form id="Questionario10">
+                        <input id="tituloQuestionario10" type="hidden" value="Ficha de Registro - Diretor(a) de Escola" />
+
+                        <div id="divQuestionario10_Questoes"></div>
+                    </form>
+                    <!--MSTECH
+                    *Ficha de registro - Coordenador
+                    -->
+                    <form id="Questionario11">
+                        <input id="tituloQuestionario11" type="hidden" value="Ficha de Registro - Coordenador(a) Pedagógico(a)" />
+
+                        <div id="divQuestionario11_Questoes"></div>
+                    </form>
+                    <!--MSTECH
+                    *Questionário - Professor
+                    -->
+                    <form id="Questionario23">
+                        <input id="tituloQuestionario23" type="hidden" value="Questionário do(a) Professor(a)" />
+
+                        <div id="divQuestionario23_Intro" style="text-align:left;">
+                            <p>Caro(a) Professor(a),</p>
+                            <p>
+                                Este questionário busca conhecer suas opiniões a respeito da sua escola.
+                                As informações fornecidas por você são importantes para a pesquisa que estamos realizando, neste ano,
+                                sobre clima escolar, práticas pedagógicas e de gestão. Os dados produzidos serão sigilosos e os
+                                resultados dessa pesquisa serão divulgados no 1º semestre de 2020.
+                            </p>
+                            <a id="btnQuestionario23_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario23_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Assistente do Diretor
+                    -->
+                    <form id="Questionario25">
+                        <input id="tituloQuestionario25" type="hidden" value="Questionário do Assistente do Diretor(a)" />
+
+                        <div id="divQuestionario25_Intro" style="text-align:left;">
+                            <p>Caro(a) Assistente de Diretor(a),</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Assistente de Diretor(a). As informações fornecidas por
+                                você são importantes para a compreensão e o mapeamento de
+                                políticas relacionadas a clima escolar e práticas pedagógicas e
+                                de gestão. Os dados coletados serão analisados de forma
+                                agrupada, nunca de forma individualizada, a fim de garantir o
+                                sigilo. Os resultados dessa pesquisa serão divulgados no 1º
+                                semestre de 2020.
+                                <br /><br />
+                                Contamos com sua ajuda para responder às perguntas a seguir,
+                                garantindo a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2019.
+                            </p>
+                            <a id="btnQuestionario25_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario25_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário dos Agentes Escolares e do Auxiliar Técnico da Educação
+                    -->
+                    <form id="Questionario14">
+                        <input id="tituloQuestionario14" type="hidden" value="Questionário do(a) auxiliar técnico(a) de educação" />
+
+                        <div id="divQuestionario14_Intro" style="text-align:left;">
+                            <p>Caro(a) Auxiliar Técnico(a) de Educação,</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Auxiliar Técnico(a) de Educação. As informações fornecidas
+                                por você são importantes para a compreensão e o mapeamento de
+                                políticas relacionadas à qualidade da educação fornecida pela
+                                Secretaria Municipal de Educação de São Paulo. Os dados coletados
+                                serão analisados de forma agrupada, nunca de forma individualizada,
+                                a fim de garantir o sigilo e anonimato das informações. Os resultados
+                                dessa pesquisa serão divulgados no 1º semestre de 2019.
+                                <br /><br />
+                                Contamos com sua ajuda para responder às perguntas a seguir,
+                                garantindo a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2018.
+                            </p>
+                            <a id="btnQuestionario14_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario14_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Agente Escolar - Merendeira
+                    -->
+                    <form id="Questionario15">
+                        <input id="tituloQuestionario15" type="hidden" value="Questionário do(a) agente escolar" />
+
+                        <div id="divQuestionario15_Intro" style="text-align:left;">
+                            <p>Caro(a) Agente Escolar,</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Agente Escolar. As informações fornecidas por você são
+                                importantes para a compreensão e o mapeamento de políticas
+                                relacionadas à qualidade da educação fornecida pela secretaria
+                                de educação do município de São Paulo. Os dados coletados serão
+                                analisados de forma agrupada, nunca de forma individualizada,
+                                a fim de garantir o sigilo e anonimato das informações.
+                                Os resultados dessa pesquisa serão divulgados no 1º semestre de 2019.
+                                <br /><br />
+                                Contamos com a sua ajuda para responder as perguntas a seguir,
+                                e assim garantir a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2018.
+                            </p>
+                            <a id="btnQuestionario15_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario15_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Agente Escolar - Portaria
+                    -->
+                    <form id="Questionario16">
+                        <input id="tituloQuestionario16" type="hidden" value="Questionário do(a) agente escolar" />
+
+                        <div id="divQuestionario16_Intro" style="text-align:left;">
+                            <p>Caro(a) Agente Escolar,</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Agente Escolar. As informações fornecidas por você são
+                                importantes para a compreensão e o mapeamento de políticas
+                                relacionadas à qualidade da educação fornecida pela secretaria
+                                de educação do município de São Paulo. Os dados coletados serão
+                                analisados de forma agrupada, nunca de forma individualizada,
+                                a fim de garantir o sigilo e anonimato das informações.
+                                Os resultados dessa pesquisa serão divulgados no 1º semestre de 2019.
+                                <br /><br />
+                                Contamos com a sua ajuda para responder as perguntas a seguir,
+                                e assim garantir a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2018.
+                            </p>
+                            <a id="btnQuestionario16_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario16_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Agente Escolar - Zeladoria
+                    -->
+                    <form id="Questionario17">
+                        <input id="tituloQuestionario17" type="hidden" value="Questionário do(a) agente escolar" />
+
+                        <div id="divQuestionario17_Intro" style="text-align:left;">
+                            <p>Caro(a) Agente Escolar,</p>
+                            <p>
+                                Este questionário busca conhecer melhor você e sua experiência
+                                como Agente Escolar. As informações fornecidas por você são
+                                importantes para a compreensão e o mapeamento de políticas
+                                relacionadas à qualidade da educação fornecida pela secretaria
+                                de educação do município de São Paulo. Os dados coletados serão
+                                analisados de forma agrupada, nunca de forma individualizada,
+                                a fim de garantir o sigilo e anonimato das informações.
+                                Os resultados dessa pesquisa serão divulgados no 1º semestre de 2019.
+                                <br /><br />
+                                Contamos com a sua ajuda para responder as perguntas a seguir,
+                                e assim garantir a qualidade da pesquisa e o sucesso da Edição
+                                da Provinha e Prova São Paulo 2018.
+                            </p>
+                            <a id="btnQuestionario17_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario17_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Aluno do 3º ano
+                    -->
+                    <form id="Questionario18">
+                        <input id="tituloQuestionario18" type="hidden" value="Questionário do Estudante" />
+
+                        <div id="divQuestionario18_Intro" style="text-align:left;">
+                            <p>Caro(a) estudante,</p>
+                            <p>
+                                Este questionário coleta informações sobre você, seus hábitos de
+                                estudo e como você se sente na escola, entre seus colegas e seus
+                                professores. O sucesso deste trabalho depende da sua resposta.
+                            </p>
+                            <a id="btnQuestionario18_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario18_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Aluno dp 4º ao 6º ano
+                    -->
+                    <form id="Questionario21">
+                        <input id="tituloQuestionario21" type="hidden" value="Questionário do Estudante" />
+
+                        <div id="divQuestionario21_Intro" style="text-align:left;">
+                            <p>Caro(a) estudante,</p>
+                            <p>
+                                Este questionário coleta informações sobre você, seus hábitos de
+                                estudo e como você se sente na escola, entre seus colegas e seus
+                                professores. Da sua resposta depende o sucesso deste trabalho.
+                            </p>
+                            <p>Muito obrigado por sua participação!</p>
+                            <a id="btnQuestionario21_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario21_Questoes" style="display:none;"></div>
+                    </form>
+
+                    <!--MSTECH
+                    *Questionário do Aluno dp 7º ao 9º ano
+                    -->
+                    <form id="Questionario22">
+                        <input id="tituloQuestionario22" type="hidden" value="Questionário do Estudante" />
+
+                        <div id="divQuestionario22_Intro" style="text-align:left;">
+                            <p>Caro(a) estudante,</p>
+                            <p>
+                                Este questionário coleta informações sobre você, seus hábitos de
+                                estudo e como você se sente na escola, entre seus colegas e seus
+                                professores. Suas respostas são confidenciais e delas depende o
+                                sucesso deste trabalho.
+                            </p>
+                            <p>Muito obrigado por sua participação!</p>
+                            <a id="btnQuestionario22_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
+                        </div>
+
+                        <div id="divQuestionario22_Questoes" style="display:none;"></div>
+                    </form>
                 </div>
 
-                <div class="participacao_coloredTipDiv">
-                    <p class='participacao_coloredTip'>Dados representativos segundo os critérios do INEP</p>
-                    <p class='participacao_flagIconTip'><span class='mdi mdi-flag-variant'></span></p>
-                </div>
-
-                <div id="participacaoConteudo" class="participacao_mainDiv"></div>
-                <button id="btnParticipacaoVoltar" data-role="button">Voltar</button>
+                <a id="btnQuestionarioSair" href="#" class="ui-btn btnSair">Cancelar</a>
             </div>
         </div>
-
-        <!--MSTECH
-        *Questionários do ProvaSP dividiros por tipo.
-        *Esta div estava posicionada de maneira errada dentro da div de resultado-page nuinca
-        sendo mostrada por este motivo. Sendoa assim, separamos a div para que funciona corretamente.
-        -->
-        <div id="questionario-page" class="page">
-            <div class="container" style="text-align:center;">
-                <div id="divTituloQuestionario" data-role="header" class="header" style="text-align:center; padding:10px; ">
-                    <span id="tituloQuestionario" style="font-size:13pt; ">Ficha de Registro - Coordenador(a) Pedagógico(a)</span>
-                </div>
-
-                <div role="main" class="ui-content">
-                    <div id="Questionarios">
-
-                        <!--MSTECH
-                        *Questionário Supervisor
-                        -->
-                        <form id="Questionario1">
-                            <input id="tituloQuestionario1" type="hidden" value="Questionário do Supervisor Escolar" />
-
-                            <div id="divQuestionario1_Intro" style="text-align:left;">
-                                <p>Caro(a) Supervisor(a),</p>
-                                <p>
-                                    Este questionário tem como objetivo coletar informações quanto à organização e condições de seu trabalho, à realidade das escolas e ao aproveitamento dos alunos.
-                                    As informações fornecidas por você são importantes para a pesquisa que estamos realizando, neste ano, sobre clima escolar, práticas pedagógicas e de gestão.
-                                    Solicitamos que, ao respondê-lo, procure contemplar o conjunto das escolas que você supervisiona. Os dados produzidos serão sigilosos e os resultados dessa
-                                    pesquisa serão divulgados no 1º semestre de 2020.
-                                </p>
-                                <p>Contamos com sua colaboração respondendo às perguntas a seguir, garantindo a qualidade da pesquisa e a eficiência da Edição 2019 da Provinha e da Prova São Paulo. </p>
-                                <p>Não existem respostas certas ou erradas. Assinale apenas as alternativas que mais condizem com a sua realidade. Solicitamos que responda todas as questões.</p>
-                                <a id="btnQuestionario1_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario1_Questoes" style="display:none;"></div>
-                        </form>
-                        <!--MSTECH
-                        *Questionário Diretor
-                        -->
-                        <form id="Questionario24">
-                            <input id="tituloQuestionario24" type="hidden" value="Questionário do Diretor de Escola" />
-
-                            <div id="divQuestionario24_Intro" style="text-align:left;">
-                                <p>Caro(a) Diretor(a),</p>
-                                <p>
-                                    Este questionário busca conhecer suas opiniões a respeito da sua escola.
-                                    As informações fornecidas por você são importantes para a pesquisa que estamos realizando,
-                                    neste ano, sobre clima escolar, práticas pedagógicas e de gestão. Os dados produzidos
-                                    serão sigilosos e os resultados dessa pesquisa serão divulgados no 1º semestre de 2020.<br><br>
-                                    Contamos com sua ajuda para responder às perguntas a seguir, garantindo a qualidade da
-                                    pesquisa e o sucesso da Edição 2019 da Prova São Paulo.
-                                </p>
-                                <a id="btnQuestionario24_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario24_Questoes" style="display:none;"></div>
-                        </form>
-                        <!--MSTECH
-                        *Questionário Coordenador
-                        -->
-                        <form id="Questionario3">
-                            <input id="tituloQuestionario3" type="hidden" value="Questionário do Coordenador Pedagógico" />
-
-                            <div id="divQuestionario3_Intro" style="text-align:left;">
-                                <p>Caro(a) Coordenador(a) Pedagógico(a),</p>
-                                <p>
-                                    Este questionário busca conhecer melhor você e sua experiência
-                                    como Coordenador(a) Pedagógico(a). As informações fornecidas
-                                    por você são importantes para a compreensão e o mapeamento de
-                                    políticas relacionadas a clima escolar e práticas pedagógicas e
-                                    de gestão. Suas respostas não serão analisadas ou divulgadas
-                                    individualmente e os resultados dessa pesquisa serão publicizados
-                                    no 1º semestre de 2019.<br /><br />
-                                    Contamos com sua ajuda para responder às perguntas a seguir,
-                                    garantindo a qualidade da pesquisa e o sucesso da Edição
-                                    da Provinha e Prova São Paulo 2018.
-                                </p>
-                                <a id="btnQuestionario3_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario3_Questoes" style="display:none;"></div>
-                        </form>
-
-                        <!--MSTECH
-                        *Questionários dos tipos 4 ao 7 não devem existir no ProvaSP
-                        -->
-                        <form id="divQuestionario4">
-                            <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
-                            <input id="tituloQuestionario4" type="hidden" value="Questionário do Professor de Matemática" />
-                        </form>
-
-                        <form id="Questionario5">
-                            <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
-                            <input id="tituloQuestionario5" type="hidden" value="Questionário do Professor de Ciências Naturais" />
-                        </form>
-
-                        <form id="Questionario6">
-                            <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
-                            <input id="tituloQuestionario6" type="hidden" value="Questionário do Professor de Língua Portuguesa" />
-                        </form>
-
-                        <form id="Questionario7">
-                            <!-- QUESTIONÁRIO SOLICITADO INDEVIDAMENTE NO TERMO DE REFERÊNCIA -->
-                            <input id="tituloQuestionario7" type="hidden" value="Questionário do Professor do Ensino Fundamental I" />
-                        </form>
-                        <!--MSTECH
-                        *Questionário Controle da Prova a ser aplicada
-                        -->
-                        <form id="Questionario8">
-                            <input id="tituloQuestionario8" type="hidden" value="Ficha de Registro - Aplicador de Prova" />
-
-                            <div id="divQuestionario8_Questoes">
-                                <h3>
-                                    1. Identificação da Turma:
-                                </h3>
-                                <fieldset>
-                                    <input id="Questionario_8_Questao_1_tur_id" type="text" name="Questionario_8_Questao_1" readonly="readonly" />
-                                </fieldset>
-
-
-                                <h3>
-                                    2. Data de Aplicação:
-                                </h3>
-                                <fieldset>
-                                    <!--
-                                    Datepicker Widget:
-                                    http://demos.jquerymobile.com/1.4.1/datepicker/
-                                    -->
-                                    <input id="Questionario_8_Questao_2_Data" data-role="date" data-inline="true" type="text" name="Questionario_8_Questao_2" />
-                                </fieldset>
-
-
-                                <h3>
-                                    3. Disciplina:
-                                </h3>
-                                <fieldset>
-                                    <label for="Questionario_8_Questao_3_Portugues">
-                                        <input id="Questionario_8_Questao_3_Portugues" type="radio" name="Questionario_8_Questao_3" value="Português" />
-                                        Português
-                                    </label>
-                                    <label for="Questionario_8_Questao_3_Matematica">
-                                        <input id="Questionario_8_Questao_3_Matematica" type="radio" name="Questionario_8_Questao_3" value="Matemática" />
-                                        Matemática
-                                    </label>
-                                    <label for="Questionario_8_Questao_3_Ciencias">
-                                        <input id="Questionario_8_Questao_3_Ciencias" type="radio" name="Questionario_8_Questao_3" value="Ciências" />
-                                        Ciências da Natureza
-                                    </label>
-                                </fieldset>
-
-
-                                <!-- CHAMADA -->
-                                <h3>
-                                    4. Registros sobre a Frequência da turma.<br />Marque apenas os estudantes <b style="color:red;">ausentes:</b>
-                                </h3>
-                                <fieldset id="divChamadaAlunos" data-role="controlgroup"></fieldset>
-
-                                <h3>
-                                    5. Registros sobre a Frequência da turma.<br />Número de estudantes <b>presentes</b>:
-                                </h3>
-                                <fieldset>
-                                    <input id="Questionario_8_Questao_5_Presentes" type="number" name="Questionario_8_Questao_5" />
-                                </fieldset>
-
-                                <h3>
-                                    6. Registros sobre a Frequência da turma.<br />Número de estudantes <b>ausentes</b>:
-                                </h3>
-                                <fieldset>
-                                    <input id="Questionario_8_Questao_6_Ausentes" type="number" name="Questionario_8_Questao_6" />
-                                </fieldset>
-
-                                <h3>
-                                    7.Quantidade de atestados médicos recebidos:
-                                </h3>
-                                <fieldset>
-                                    <input id="Questionario_8_Questao_7_Ausentes" type="number" name="Questionario_8_Questao_7" placeholder="Informe aqui" />
-                                </fieldset>
-
-                                <h3>
-                                    8. Registro sobre os Instrumentos.
-                                </h3>
-                                <fieldset>
-                                    <h4>Número de Cadernos de Prova no pacote, incluindo os reservas:</h4>
-                                    <input id="Questionario_8_Questao_8_NumeroCadernosProvaIncluindoReservas" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaIncluindoReservas" placeholder="Informe aqui" />
-                                    <h4>Número de Cadernos de Prova <b>não</b> utilizados:</h4>
-                                    <input id="Questionario_8_Questao_8_NumeroCadernosProvaNaoUtilizados" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaNaoUtilizados" placeholder="Informe aqui" />
-
-                                    <h4>Número de Cadernos de Prova com falhas de impressão:</h4>
-                                    <input id="Questionario_8_Questao_8_NumeroCadernosProvaComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroCadernosProvaComFalhasImpressao" placeholder="Informe aqui" />
-
-                                    <h4>Número de Folhas de Respostas preenchidas:</h4>
-                                    <input id="Questionario_8_Questao_8_NumeroFolhasRespostaPreenchidas" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaPreenchidas" placeholder="Informe aqui" />
-
-                                    <h4>Número de Folhas de Respostas não utilizadas:</h4>
-                                    <input id="Questionario_8_Questao_8_NumeroFolhasRespostaNaoUtilizadas" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaNaoUtilizadas" placeholder="Informe aqui" />
-
-                                    <h4>Número de Folhas de Respostas com falhas de impressão:</h4>
-                                    <input id="Questionario_8_Questao_8_NumeroFolhasRespostaComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroFolhasRespostaComFalhasImpressao" placeholder="Informe aqui" />
-
-                                    <div id="Questionario_8_QuestoesInstrumentoPortugues">
-                                        <h4>Número de Folhas – Produção de Texto preenchidas:</h4>
-                                        <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoPreenchidas" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoPreenchidas" placeholder="Informe aqui" />
-
-                                        <h4>Número de Folhas – Produção de Texto não utilizadas:</h4>
-                                        <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoNaoUtilizadas" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoNaoUtilizadas" placeholder="Informe aqui" />
-
-                                        <h4>Número de Folhas – Produção de Texto com falhas de impressão:</h4>
-                                        <input id="Questionario_8_Questao_8_NumeroFolhasProducaoDeTextoComFalhasImpressao" type="number" name="Questionario_8_Questao_8.NumeroFolhasProducaoDeTextoComFalhasImpressao" placeholder="Informe aqui" />
-                                    </div>
-
-                                    <!--<div id="Questionario_8_QuestoesInstrumentoCiencias">-->
-                                    <!--<h4>Número de Folhas de Respostas do Questionário de Hábitos de Estudos preenchidas:</h4>-->
-                                    <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosPreenchidas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosPreenchidas" placeholder="Informe aqui" />-->
-                                    <!--<h4>Número de Folhas de Respostas do Questionário de Hábitos de Estudos não utilizadas:</h4>-->
-                                    <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosNaoUtilizadas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosNaoUtilizadas" placeholder="Informe aqui" />-->
-                                    <!--<h4>Número de Folhas de Respostas do Questionário de Hábitos de Estudos com falhas de impressão:</h4>-->
-                                    <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioHabitosEstudosComFalhasImpressao" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioHabitosEstudosComFalhasImpressao" placeholder="Informe aqui" />-->
-                                    <!--<h4>Número de Folhas de Respostas do Questionário para pais/mães ou responsáveis devolvidas pelos alunos:</h4>-->
-                                    <!--<input id="Questionario_8_Questao_8_NumeroFolhasRespostaDoQuestionarioPaisDevolvidas" type="text" name="Questionario_8_Questao_8.NumeroFolhasRespostaDoQuestionarioPaisDevolvidas" placeholder="Informe aqui" />-->
-                                    <!--</div>-->
-                                </fieldset>
-
-                                <h3>
-                                    9. A quantidade de tablets para atendimento a estudantes com surdez foi suficiente?
-                                </h3>
-                                <fieldset>
-                                    <label for="Questionario_8_Questao_9_Sim">
-                                        <input id="Questionario_8_Questao_9_Sim" type="radio" name="Questionario_8_Questao_9" value="Sim" />
-                                        Sim
-                                    </label>
-                                    <label for="Questionario_8_Questao_9_Nao">
-                                        <input id="Questionario_8_Questao_9_Nao" type="radio" name="Questionario_8_Questao_9" value="Não" />
-                                        Não
-                                    </label>
-                                    <label for="Questionario_8_Questao_9_NaoSeAplica">
-                                        <input id="Questionario_8_Questao_9_NaoSeAplica" type="radio" name="Questionario_8_Questao_9" value="Não se aplica" />
-                                        Não se aplica
-                                    </label>
-                                </fieldset>
-
-                                <h3>
-                                    10. O número de Cadernos de provas em braile e/ou ampliadas correspondeu ao número de estudantes com deficiência da turma?
-                                </h3>
-                                <fieldset>
-                                    <label for="Questionario_8_Questao_10_Sim">
-                                        <input id="Questionario_8_Questao_10_Sim" type="radio" name="Questionario_8_Questao_10" value="Sim" />
-                                        Sim
-                                    </label>
-                                    <label for="Questionario_8_Questao_10_Nao">
-                                        <input id="Questionario_8_Questao_10_Nao" type="radio" name="Questionario_8_Questao_10" value="Não" />
-                                        Não
-                                    </label>
-                                    <label for="Questionario_8_Questao_10_NaoSeAplica">
-                                        <input id="Questionario_8_Questao_10_NaoSeAplica" type="radio" name="Questionario_8_Questao_10" value="Não se aplica" />
-                                        Não se aplica
-                                    </label>
-                                </fieldset>
-
-                                <h3>
-                                    11. Recebeu lacrado o pacote com os Cadernos de prova?
-                                </h3>
-                                <fieldset>
-                                    <label for="Questionario_8_Questao_11_Sim">
-                                        <input id="Questionario_8_Questao_11_Sim" type="radio" name="Questionario_8_Questao_11" value="Sim" />
-                                        Sim
-                                    </label>
-                                    <label for="Questionario_8_Questao_11_Nao">
-                                        <input id="Questionario_8_Questao_11_Nao" type="radio" name="Questionario_8_Questao_11" value="Não" />
-                                        Não
-                                    </label>
-                                </fieldset>
-
-                                <h3>
-                                    12. Na sala de aplicação estavam você, os estudantes e, quando necessário, o estagiário para auxiliar os estudantes com deficiência?
-                                </h3>
-                                <fieldset>
-                                    <label for="Questionario_8_Questao_12_Sim">
-                                        <input id="Questionario_8_Questao_12_Sim" type="radio" name="Questionario_8_Questao_12" value="Sim" />
-                                        Sim
-                                    </label>
-                                    <label for="Questionario_8_Questao_12_Nao">
-                                        <input id="Questionario_8_Questao_12_Nao" type="radio" name="Questionario_8_Questao_12" value="Não" />
-                                        Não
-                                    </label>
-                                    <label for="Questionario_8_Questao_12_Terceiro">
-                                        <input id="Questionario_8_Questao_12_Terceiro" type="radio" name="Questionario_8_Questao_12" value="Não se aplica" />
-                                        Não se aplica
-                                    </label>
-                                </fieldset>
-
-                                <h3>13. Para cada Caderno reserva utilizado, informe o valor do Código de Barras da Folha de Respostas e o Código EOL do Aluno:</h3>
-                                <img src="/AppProvaSP/images/codigoDeBarrasExemplo.png" style="width:50%;" />
-                                <fieldset>
-                                    <table id="tblCadernoReserva" style="width:100%; margin-top:15px;">
-                                        <tr>
-                                            <td></td>
-                                            <td>
-                                                Valor do Código de Barras:
-                                            </td>
-                                            <td>
-                                                Código EOL do Aluno:
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(1);" value="Escanear" />
-                                            </td>
-                                            <td>
-                                                <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva1" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva1" placeholder="Código de Barras" />
-                                            </td>
-                                            <td>
-                                                <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva1" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva1" placeholder="EOL do Aluno" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(2);" value="Escanear" />
-                                            </td>
-                                            <td>
-                                                <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva2" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva2" placeholder="Código de Barras" />
-                                            </td>
-                                            <td>
-                                                <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva2" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva2" placeholder="EOL do Aluno" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(3);" value="Escanear" />
-                                            </td>
-                                            <td>
-                                                <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva3" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva3" placeholder="Código de Barras" />
-                                            </td>
-                                            <td>
-                                                <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva3" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva3" placeholder="EOL do Aluno" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <input type="button" class="btnEscanearCodigoDeBarras" onclick="escanearCodigoDeBarrasCadernoReserva(4);" value="Escanear" />
-                                            </td>
-                                            <td>
-                                                <input type="number" maxlength="12" id="Questionario_8_Questao_13_CodigoBarrasCadernoReserva4" name="Questionario_8_Questao_13.CodigoBarrasCadernoReserva4" placeholder="Código de Barras" />
-                                            </td>
-                                            <td>
-                                                <input type="number" maxlength="7" id="Questionario_8_Questao_13_CodigoEolAlunoCadernoReserva4" name="Questionario_8_Questao_13.CodigoEolAlunoCadernoReserva4" placeholder="EOL do Aluno" />
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </fieldset>
-
-
-                                <h3>14. Fatos relevantes ocorridos durante a aplicação:</h3>
-                                <fieldset>
-                                    <h4>14.1. Ocorreu atraso de estudante(s), impedindo a participação na avaliação:</h4>
-                                    <label for="Questionario_8_Questao_14_1_Nao">
-                                        <input id="Questionario_8_Questao_14_1_Nao" type="radio" name="Questionario_8_Questao_14_1" value="Não" />
-                                        Não
-                                    </label>
-                                    <label for="Questionario_8_Questao_14_1_Sim">
-                                        <input id="Questionario_8_Questao_14_1_Sim" type="radio" name="Questionario_8_Questao_14_1" value="Sim" />
-                                        Sim
-                                    </label>
-                                </fieldset>
-                                <fieldset>
-                                    <h4>14.2. Ocorreu saída definitiva de estudante, durante a aplicação, sem terminar a avaliação:</h4>
-                                    <label for="Questionario_8_Questao_14_2_Nao">
-                                        <input id="Questionario_8_Questao_14_2_Nao" type="radio" name="Questionario_8_Questao_14_2" value="Não" />
-                                        Não
-                                    </label>
-                                    <label for="Questionario_8_Questao_14_2_Sim">
-                                        <input id="Questionario_8_Questao_14_2_Sim" type="radio" name="Questionario_8_Questao_14_2" value="Sim" />
-                                        Sim
-                                    </label>
-                                </fieldset>
-                                <fieldset>
-                                    <h4>14.3. Ocorreu falta de material:</h4>
-                                    <label for="Questionario_8_Questao_14_3_Nao">
-                                        <input id="Questionario_8_Questao_14_3_Nao" type="radio" name="Questionario_8_Questao_14_3" value="Não" />
-                                        Não
-                                    </label>
-                                    <label for="Questionario_8_Questao_14_3_Sim">
-                                        <input id="Questionario_8_Questao_14_3_Sim" type="radio" name="Questionario_8_Questao_14_3" value="Sim" />
-                                        Sim. Especifique a solução adotada em 14.8
-                                    </label>
-                                </fieldset>
-                                <fieldset>
-                                    <h4>14.4. Ocorreu paralisação de transporte público, retardando o início da aplicação:</h4>
-                                    <label for="Questionario_8_Questao_14_4_Nao">
-                                        <input id="Questionario_8_Questao_14_4_Nao" type="radio" name="Questionario_8_Questao_14_4" value="Não" />
-                                        Não
-                                    </label>
-                                    <label for="Questionario_8_Questao_14_4_Sim">
-                                        <input id="Questionario_8_Questao_14_4_Sim" type="radio" name="Questionario_8_Questao_14_4" value="Sim" />
-                                        Sim. Especifique a solução adotada em 14.8
-                                    </label>
-                                </fieldset>
-                                <fieldset>
-                                    <h4>14.5. Ocorreu falta de energia elétrica durante a aplicação e afetou a avaliação:</h4>
-                                    <label for="Questionario_8_Questao_14_5_Nao">
-                                        <input id="Questionario_8_Questao_14_5_Nao" type="radio" name="Questionario_8_Questao_14_5" value="Não" />
-                                        Não
-                                    </label>
-                                    <label for="Questionario_8_Questao_14_5_Sim">
-                                        <input id="Questionario_8_Questao_14_5_Sim" type="radio" name="Questionario_8_Questao_14_5" value="Sim" />
-                                        Sim. Especifique a solução adotada em 14.8
-                                    </label>
-                                </fieldset>
-                                <fieldset>
-                                    <h4>14.6. Tablet apresentou falha:</h4>
-                                    <label for="Questionario_8_Questao_14_6_NaoSeAplica">
-                                        <input id="Questionario_8_Questao_14_6_NaoSeAplica" type="radio" name="Questionario_8_Questao_14_6" value="Não se aplica" />
-                                        Não se aplica
-                                    </label>
-                                    <label for="Questionario_8_Questao_14_6_Nao">
-                                        <input id="Questionario_8_Questao_14_6_Nao" type="radio" name="Questionario_8_Questao_14_6" value="Não" />
-                                        Não
-                                    </label>
-                                    <label for="Questionario_8_Questao_14_6_Sim">
-                                        <input id="Questionario_8_Questao_14_6_Sim" type="radio" name="Questionario_8_Questao_14_6" value="Sim" />
-                                        Sim. Especifique a falha
-                                    </label>
-                                    <h4>Se SIM, registre a falha</h4>
-                                    <input id="Questionario_8_Questao_14_6_Motivos" type="text" name="Questionario_8_Questao_14_6.Motivos" placeholder="Descreva aqui" disabled="disabled" />
-                                </fieldset>
-                                <fieldset>
-                                    <h4>14.7. PenDrive apresentou falha:</h4>
-                                    <label for="Questionario_8_Questao_14_7_NaoSeAplica">
-                                        <input id="Questionario_8_Questao_14_7_NaoSeAplica" type="radio" name="Questionario_8_Questao_14_7" value="Não se aplica" />
-                                        Não se aplica
-                                    </label>
-                                    <label for="Questionario_8_Questao_14_7_Nao">
-                                        <input id="Questionario_8_Questao_14_7_Nao" type="radio" name="Questionario_8_Questao_14_7" value="Não" />
-                                        Não
-                                    </label>
-                                    <label for="Questionario_8_Questao_14_7_Sim">
-                                        <input id="Questionario_8_Questao_14_7_Sim" type="radio" name="Questionario_8_Questao_14_7" value="Sim" />
-                                        Sim. Especifique a falha
-                                    </label>
-                                    <h4>Se SIM, registre a falha</h4>
-                                    <input id="Questionario_8_Questao_14_7_Motivos" type="text" name="Questionario_8_Questao_14_7.Motivos" placeholder="Descreva aqui" disabled="disabled" />
-                                </fieldset>
-                                <fieldset>
-                                    <h4>14.8. Outros fatos relevantes não citados acima e/ou especificação dos subitens 11.3 a 11.5:</h4>
-                                    <input id="Questionario_8_Questao_14_8_FatosRelevantes" type="text" name="Questionario_8_Questao_14_8_FatosRelevantes" placeholder="Descreva aqui" />
-                                </fieldset>
-
-                                <h3>15. Deixe sugestão de melhoria para a aplicação da próxima Edição:</h3>
-                                <fieldset>
-                                    <input id="Questionario_8_Questao_15_Observacoes" type="text" name="Questionario_8_Questao_15" placeholder="Descreva aqui" />
-                                </fieldset>
-
-                                <a href="#" class="ui-btn" style="color:green;" onclick="btnConcluirQuestionario()">Concluir</a>
-                            </div>
-                        </form>
-                        <!--MSTECH
-                        *Ficha de registro - Supervidor
-                        -->
-                        <form id="Questionario9">
-                            <input id="tituloQuestionario9" type="hidden" value="Ficha de Registro - Supervisor Escolar" />
-
-                            <div id="divQuestionario9_Questoes"></div>
-                        </form>
-                        <!--MSTECH
-                        *Ficha de registro - Diretor
-                        -->
-                        <form id="Questionario10">
-                            <input id="tituloQuestionario10" type="hidden" value="Ficha de Registro - Diretor(a) de Escola" />
-
-                            <div id="divQuestionario10_Questoes"></div>
-                        </form>
-                        <!--MSTECH
-                        *Ficha de registro - Coordenador
-                        -->
-                        <form id="Questionario11">
-                            <input id="tituloQuestionario11" type="hidden" value="Ficha de Registro - Coordenador(a) Pedagógico(a)" />
-
-                            <div id="divQuestionario11_Questoes"></div>
-                        </form>
-                        <!--MSTECH
-                        *Questionário - Professor
-                        -->
-                        <form id="Questionario23">
-                            <input id="tituloQuestionario23" type="hidden" value="Questionário do(a) Professor(a)" />
-
-                            <div id="divQuestionario23_Intro" style="text-align:left;">
-                                <p>Caro(a) Professor(a),</p>
-                                <p>
-                                    Este questionário busca conhecer suas opiniões a respeito da sua escola.
-                                    As informações fornecidas por você são importantes para a pesquisa que estamos realizando, neste ano,
-                                    sobre clima escolar, práticas pedagógicas e de gestão. Os dados produzidos serão sigilosos e os
-                                    resultados dessa pesquisa serão divulgados no 1º semestre de 2020.
-                                </p>
-                                <a id="btnQuestionario23_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario23_Questoes" style="display:none;"></div>
-                        </form>
-
-                        <!--MSTECH
-                        *Questionário do Assistente do Diretor
-                        -->
-                        <form id="Questionario25">
-                            <input id="tituloQuestionario25" type="hidden" value="Questionário do Assistente do Diretor(a)" />
-
-                            <div id="divQuestionario25_Intro" style="text-align:left;">
-                                <p>Caro(a) Assistente de Diretor(a),</p>
-                                <p>
-                                    Este questionário busca conhecer melhor você e sua experiência
-                                    como Assistente de Diretor(a). As informações fornecidas por
-                                    você são importantes para a compreensão e o mapeamento de
-                                    políticas relacionadas a clima escolar e práticas pedagógicas e
-                                    de gestão. Os dados coletados serão analisados de forma
-                                    agrupada, nunca de forma individualizada, a fim de garantir o
-                                    sigilo. Os resultados dessa pesquisa serão divulgados no 1º
-                                    semestre de 2020.
-                                    <br /><br />
-                                    Contamos com sua ajuda para responder às perguntas a seguir,
-                                    garantindo a qualidade da pesquisa e o sucesso da Edição
-                                    da Provinha e Prova São Paulo 2019.
-                                </p>
-                                <a id="btnQuestionario25_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario25_Questoes" style="display:none;"></div>
-                        </form>
-
-                        <!--MSTECH
-                        *Questionário dos Agentes Escolares e do Auxiliar Técnico da Educação
-                        -->
-                        <form id="Questionario14">
-                            <input id="tituloQuestionario14" type="hidden" value="Questionário do(a) auxiliar técnico(a) de educação" />
-
-                            <div id="divQuestionario14_Intro" style="text-align:left;">
-                                <p>Caro(a) Auxiliar Técnico(a) de Educação,</p>
-                                <p>
-                                    Este questionário busca conhecer melhor você e sua experiência
-                                    como Auxiliar Técnico(a) de Educação. As informações fornecidas
-                                    por você são importantes para a compreensão e o mapeamento de
-                                    políticas relacionadas à qualidade da educação fornecida pela
-                                    Secretaria Municipal de Educação de São Paulo. Os dados coletados
-                                    serão analisados de forma agrupada, nunca de forma individualizada,
-                                    a fim de garantir o sigilo e anonimato das informações. Os resultados
-                                    dessa pesquisa serão divulgados no 1º semestre de 2019.
-                                    <br /><br />
-                                    Contamos com sua ajuda para responder às perguntas a seguir,
-                                    garantindo a qualidade da pesquisa e o sucesso da Edição
-                                    da Provinha e Prova São Paulo 2018.
-                                </p>
-                                <a id="btnQuestionario14_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario14_Questoes" style="display:none;"></div>
-                        </form>
-
-                        <!--MSTECH
-                        *Questionário do Agente Escolar - Merendeira
-                        -->
-                        <form id="Questionario15">
-                            <input id="tituloQuestionario15" type="hidden" value="Questionário do(a) agente escolar" />
-
-                            <div id="divQuestionario15_Intro" style="text-align:left;">
-                                <p>Caro(a) Agente Escolar,</p>
-                                <p>
-                                    Este questionário busca conhecer melhor você e sua experiência
-                                    como Agente Escolar. As informações fornecidas por você são
-                                    importantes para a compreensão e o mapeamento de políticas
-                                    relacionadas à qualidade da educação fornecida pela secretaria
-                                    de educação do município de São Paulo. Os dados coletados serão
-                                    analisados de forma agrupada, nunca de forma individualizada,
-                                    a fim de garantir o sigilo e anonimato das informações.
-                                    Os resultados dessa pesquisa serão divulgados no 1º semestre de 2019.
-                                    <br /><br />
-                                    Contamos com a sua ajuda para responder as perguntas a seguir,
-                                    e assim garantir a qualidade da pesquisa e o sucesso da Edição
-                                    da Provinha e Prova São Paulo 2018.
-                                </p>
-                                <a id="btnQuestionario15_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario15_Questoes" style="display:none;"></div>
-                        </form>
-
-                        <!--MSTECH
-                        *Questionário do Agente Escolar - Portaria
-                        -->
-                        <form id="Questionario16">
-                            <input id="tituloQuestionario16" type="hidden" value="Questionário do(a) agente escolar" />
-
-                            <div id="divQuestionario16_Intro" style="text-align:left;">
-                                <p>Caro(a) Agente Escolar,</p>
-                                <p>
-                                    Este questionário busca conhecer melhor você e sua experiência
-                                    como Agente Escolar. As informações fornecidas por você são
-                                    importantes para a compreensão e o mapeamento de políticas
-                                    relacionadas à qualidade da educação fornecida pela secretaria
-                                    de educação do município de São Paulo. Os dados coletados serão
-                                    analisados de forma agrupada, nunca de forma individualizada,
-                                    a fim de garantir o sigilo e anonimato das informações.
-                                    Os resultados dessa pesquisa serão divulgados no 1º semestre de 2019.
-                                    <br /><br />
-                                    Contamos com a sua ajuda para responder as perguntas a seguir,
-                                    e assim garantir a qualidade da pesquisa e o sucesso da Edição
-                                    da Provinha e Prova São Paulo 2018.
-                                </p>
-                                <a id="btnQuestionario16_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario16_Questoes" style="display:none;"></div>
-                        </form>
-
-                        <!--MSTECH
-                        *Questionário do Agente Escolar - Zeladoria
-                        -->
-                        <form id="Questionario17">
-                            <input id="tituloQuestionario17" type="hidden" value="Questionário do(a) agente escolar" />
-
-                            <div id="divQuestionario17_Intro" style="text-align:left;">
-                                <p>Caro(a) Agente Escolar,</p>
-                                <p>
-                                    Este questionário busca conhecer melhor você e sua experiência
-                                    como Agente Escolar. As informações fornecidas por você são
-                                    importantes para a compreensão e o mapeamento de políticas
-                                    relacionadas à qualidade da educação fornecida pela secretaria
-                                    de educação do município de São Paulo. Os dados coletados serão
-                                    analisados de forma agrupada, nunca de forma individualizada,
-                                    a fim de garantir o sigilo e anonimato das informações.
-                                    Os resultados dessa pesquisa serão divulgados no 1º semestre de 2019.
-                                    <br /><br />
-                                    Contamos com a sua ajuda para responder as perguntas a seguir,
-                                    e assim garantir a qualidade da pesquisa e o sucesso da Edição
-                                    da Provinha e Prova São Paulo 2018.
-                                </p>
-                                <a id="btnQuestionario17_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario17_Questoes" style="display:none;"></div>
-                        </form>
-
-                        <!--MSTECH
-                        *Questionário do Aluno do 3º ano
-                        -->
-                        <form id="Questionario18">
-                            <input id="tituloQuestionario18" type="hidden" value="Questionário do Estudante" />
-
-                            <div id="divQuestionario18_Intro" style="text-align:left;">
-                                <p>Caro(a) estudante,</p>
-                                <p>
-                                    Este questionário coleta informações sobre você, seus hábitos de
-                                    estudo e como você se sente na escola, entre seus colegas e seus
-                                    professores. O sucesso deste trabalho depende da sua resposta.
-                                </p>
-                                <a id="btnQuestionario18_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario18_Questoes" style="display:none;"></div>
-                        </form>
-
-                        <!--MSTECH
-                        *Questionário do Aluno dp 4º ao 6º ano
-                        -->
-                        <form id="Questionario21">
-                            <input id="tituloQuestionario21" type="hidden" value="Questionário do Estudante" />
-
-                            <div id="divQuestionario21_Intro" style="text-align:left;">
-                                <p>Caro(a) estudante,</p>
-                                <p>
-                                    Este questionário coleta informações sobre você, seus hábitos de
-                                    estudo e como você se sente na escola, entre seus colegas e seus
-                                    professores. Da sua resposta depende o sucesso deste trabalho.
-                                </p>
-                                <p>Muito obrigado por sua participação!</p>
-                                <a id="btnQuestionario21_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario21_Questoes" style="display:none;"></div>
-                        </form>
-
-                        <!--MSTECH
-                        *Questionário do Aluno dp 7º ao 9º ano
-                        -->
-                        <form id="Questionario22">
-                            <input id="tituloQuestionario22" type="hidden" value="Questionário do Estudante" />
-
-                            <div id="divQuestionario22_Intro" style="text-align:left;">
-                                <p>Caro(a) estudante,</p>
-                                <p>
-                                    Este questionário coleta informações sobre você, seus hábitos de
-                                    estudo e como você se sente na escola, entre seus colegas e seus
-                                    professores. Suas respostas são confidenciais e delas depende o
-                                    sucesso deste trabalho.
-                                </p>
-                                <p>Muito obrigado por sua participação!</p>
-                                <a id="btnQuestionario22_Iniciar" href="#" class="ui-btn">Clique aqui para iniciar o questionário</a>
-                            </div>
-
-                            <div id="divQuestionario22_Questoes" style="display:none;"></div>
-                        </form>
-                    </div>
-
-                    <a id="btnQuestionarioSair" href="#" class="ui-btn btnSair">Cancelar</a>
-                </div>
-            </div>
-        </div>
-
-        <!--SCRIPTS_VERSAO_MOBILE_INICIO-->
-        <script src="cordova.js" type="text/javascript"></script>
-        <!--SCRIPTS_VERSAO_MOBILE_TERMINO-->
-
-        <script src="/AppProvaSP/scripts/jquery-1.8.0.min.js"></script>
-        <script src="/AppProvaSP/scripts/jquery.mobile-1.4.5.min.js"></script>
-
-
-        <!--SWEETALERT_INICIO-->
-        <script src="/AppProvaSP/scripts/sha512.js"></script>
-        <script src="/AppProvaSP/scripts/sweetalert.min.js"></script>
-        <!--SWEETALERT_TERMINO-->
-
-        <script src="/AppProvaSP/scripts/platformOverrides.js" type="text/javascript"></script>
-
-        <!--DATEPICKER_INICIO-->
-        <script src="/AppProvaSP/scripts/external/jquery-ui/datepicker.js"></script>
-        <script src="/AppProvaSP/scripts/jquery.mobile.datepicker.js"></script>
-        <script src="/AppProvaSP/scripts/datepicker-pt-BR.js"></script>
-        <!--DATEPICKER_INICIO-->
-
-        <script type="text/javascript" src="/AppProvaSP/scripts/global.js?v=1.30.7.2"></script>
-        <script src="/AppProvaSP/scripts/model/QuestionarioUsuario.js?v=1.30.7.2"></script>
-        <script src="/AppProvaSP/scripts/model/QuestionarioRespostaItem.js?v=1.30.7.2"></script>
-        <script src="/AppProvaSP/scripts/model/ExportarDreEmCsv.js?v=1.30.7.2"></script>
-        <script src="/AppProvaSP/scripts/model/ExportarDreGraficosEmImagem.js?v=1.30.7.2"></script>
-        <script src="/AppProvaSP/scripts/model/ExportarDreGraficosEmPdf.js?v=1.30.7.2"></script>
-        <script src="/AppProvaSP/scripts/app.js?v=1.30.7.2" type="text/javascript"></script>
-
-        <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/jspdf.min.js"></script>
-        <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/html2canvas.min.js"></script>
-        <script src="/AppProvaSP/scripts/external/DomToImage-2.6/dom-to-image.js"></script>
-        <script src="/AppProvaSP/scripts/external/FileSaver/FileSaver.min.js"></script>
-        <script src="scripts/chart.js"></script>
-        <script>
-            if (window.MSInputMethodContext != null) {
-                alert("ATENÇÃO! Você está utilizando o Internet Explorer e este aplicativo não funcionará de forma adequada. Por gentileza utilize o Google Chrome.");
-            }
-        </script>
+    </div>
+
+    <!--SCRIPTS_VERSAO_MOBILE_INICIO-->
+    <script src="cordova.js" type="text/javascript"></script>
+    <!--SCRIPTS_VERSAO_MOBILE_TERMINO-->
+
+    <script src="/AppProvaSP/scripts/jquery-1.8.0.min.js"></script>
+    <script src="/AppProvaSP/scripts/jquery.mobile-1.4.5.min.js"></script>
+
+
+    <!--SWEETALERT_INICIO-->
+    <script src="/AppProvaSP/scripts/sha512.js"></script>
+    <script src="/AppProvaSP/scripts/sweetalert.min.js"></script>
+    <!--SWEETALERT_TERMINO-->
+
+    <script src="/AppProvaSP/scripts/platformOverrides.js" type="text/javascript"></script>
+
+    <!--DATEPICKER_INICIO-->
+    <script src="/AppProvaSP/scripts/external/jquery-ui/datepicker.js"></script>
+    <script src="/AppProvaSP/scripts/jquery.mobile.datepicker.js"></script>
+    <script src="/AppProvaSP/scripts/datepicker-pt-BR.js"></script>
+    <!--DATEPICKER_INICIO-->
+
+    <script type="text/javascript" src="/AppProvaSP/scripts/global.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/model/QuestionarioUsuario.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/model/QuestionarioRespostaItem.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/model/ExportarDreEmCsv.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/model/ExportarDreGraficosEmImagem.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/model/ExportarDreGraficosEmPdf.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/app.js?v=1.30.7.2" type="text/javascript"></script>
+
+    <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/jspdf.min.js"></script>
+    <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/html2canvas.min.js"></script>
+    <script src="/AppProvaSP/scripts/external/DomToImage-2.6/dom-to-image.js"></script>
+    <script src="/AppProvaSP/scripts/external/FileSaver/FileSaver.min.js"></script>
+    <script src="scripts/chart.js"></script>
+    <script>
+        if (window.MSInputMethodContext != null) {
+            alert("ATENÇÃO! Você está utilizando o Internet Explorer e este aplicativo não funcionará de forma adequada. Por gentileza utilize o Google Chrome.");
+        }
+    </script>
 </body>
 </html>
