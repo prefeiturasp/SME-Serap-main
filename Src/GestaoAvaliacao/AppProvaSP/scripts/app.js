@@ -4059,7 +4059,7 @@ function definirEventHandlers() {
                      na busca por alunos.
                     */
                     if (data.length > 1000) {
-                        ProvaSP_Erro("Erro de sobrecarga", resultadoApresentar
+                        ProvaSP_Erro("Erro de sobrecarga",
                             "Sua pesquisa retornou mais de 1000 turmas. Por gentileza especifique critérios mais restritos.");
                         return;
                     }
