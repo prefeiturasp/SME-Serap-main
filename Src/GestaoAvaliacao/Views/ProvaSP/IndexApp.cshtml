@@ -30,7 +30,6 @@ não exclua esse comentário.
     </script>
 </head>
 
-
 <body style="height:100%;" data-role="page">
     <!--MSTECH
     *Estrutura de loading
@@ -96,7 +95,6 @@ não exclua esse comentário.
                     <button id="btnTermoAplicadorConcordo" data-role="button">Concordo</button>
                     <button id="btnTermoAplicadorDiscordo" data-role="button">Discordo</button>
                 </div>
-
 
                 <div id="divMenuPrincipal" style="margin-top:15px;">
                     <div id="provaSP_disponivel">
@@ -258,7 +256,6 @@ não exclua esse comentário.
                     <option value="" selected="selected">(Edição...)</option>
                 </select>
             </form>
-
 
             <div id="divResultadoApresentacaoAluno" style="display:none; margin-top:15px;">
                 <span class="lblResultadoTituloEscalaSaeb_1"></span>
@@ -536,7 +533,6 @@ não exclua esse comentário.
                                         <option value="TURMA" id="ddlResultadoNivel_optionTurma">Turma detalhando Alunos</option>
                                         <option value="ALUNO">Aluno</option>
                                     </select>
-
                                 </td>
                                 <td>
                                     <select id="ddlResultadoEdicao" data-mini="true" disabled="disabled">
@@ -589,7 +585,6 @@ não exclua esse comentário.
                                 <td id="resultado_selectAno">
                                     <select id="ddlResultadoAno" data-mini="true" disabled="disabled">
                                         <option value="" selected="selected">(Ano...)</option>
-                                        <option id="ddlResultadoAnoItem_Ano2" value="2">2º Ano</option>
                                         <option id="ddlResultadoAnoItem_Ano3" value="3">3º Ano</option>
                                         <option id="ddlResultadoAnoItem_Ano4" value="4">4º Ano</option>
                                         <option id="ddlResultadoAnoItem_Ano5" value="5">5º Ano</option>
@@ -664,7 +659,6 @@ não exclua esse comentário.
                                         </label>
                                     </div>
                                     <span id="lblResultadoSelecaoTotalDRE" class="resultadoInfoSelecao"></span>
-
                                 </td>
                                 <td>
                                     <div id="divResultadoEscola" style="display:none;">
@@ -672,7 +666,6 @@ não exclua esse comentário.
                                         <div id="divResultadoEscolaItens" style="overflow:auto; height:155px;"></div>
                                         <span id="lblResultadoSelecaoTotalEscola" class="resultadoInfoSelecao"></span>
                                     </div>
-
                                 </td>
                             </tr>
                         </table>
@@ -752,7 +745,6 @@ não exclua esse comentário.
                             <div id="SDResultadosBlocos"></div>
                         </div>
                     </div>
-
 
                     <!--OPÇÃO 2 - QUESTIONÁRIOS - FATORES ASSOCIADOS-->
                     <p id="resultados_tab1" class="resultados_headerTitle" onclick="divResultadoProva(1)">
@@ -871,17 +863,14 @@ não exclua esse comentário.
                                                 SAO MIGUEL
                                             </label>
                                         </div>
-
                                     </td>
                                     <td>
                                         <div id="divCFEEscola" style="display:none;">
                                             <div id="divCFEEscolaItens" style="overflow:auto; height: 200px;"></div>
                                         </div>
-
                                     </td>
                                 </tr>
                             </table>
-
 
                             <table style="width:100%;">
                                 <tr>
@@ -900,7 +889,6 @@ não exclua esse comentário.
                                             <option value="3">Ciclo Autoral</option>
                                         </select>
                                     </td>
-
                                 </tr>
                             </table>
 
@@ -965,7 +953,6 @@ não exclua esse comentário.
                     <a href="#" class="link-exportar-dados-csv-alunos">CSV Alunos</a>
                 </p>
 
-
                 <a id="imprimir_graficos" style="display:none;" href="#" onclick="document.getElementById('divChartResultadoDetalhe').style.overflow='visible'; document.getElementById('divChartResultadoDetalhe').style.height='100%'; window.print();">Imprimir</a>
 
                 <div id="divResultadoTituloAgregacao" style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
@@ -987,7 +974,6 @@ não exclua esse comentário.
                     <span>Por falta de representatividade das turmas amostrais, não existe cálculo de média nem tão pouco percentuais de acertos por habilidade para os níveis Escola e Turma.</span>
                 </div>
 
-
                 <div data-role="tabs" id="tabs" style="margin-top:15px;">
                     <div id="divTabsProficienciaHabilidade" data-role="navbar">
                         <ul>
@@ -997,7 +983,6 @@ não exclua esse comentário.
                     </div>
 
                     <div id="divResultadoTabProficiencias" class="ui-body-d ui-content">
-
 
                         <table style="width:100%;" data-html2canvas-ignore="true">
                             <tr>
@@ -1059,7 +1044,6 @@ não exclua esse comentário.
                             <a id="btnResultadoAlterarParametros" style="width:50%;" href="#" data-role="button" class="btnInfo">Voltar às opções</a>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -1324,7 +1308,6 @@ não exclua esse comentário.
                         </td>
                     </tr>
                 </table>
-
             </form>
 
             <button id="btnRevistasBoletinsVoltar" data-role="button">Voltar</button>
@@ -1471,7 +1454,6 @@ não exclua esse comentário.
                                 <input id="Questionario_8_Questao_1_tur_id" type="text" name="Questionario_8_Questao_1" readonly="readonly" />
                             </fieldset>
 
-
                             <h3>
                                 2. Data de Aplicação:
                             </h3>
@@ -1482,7 +1464,6 @@ não exclua esse comentário.
                                 -->
                                 <input id="Questionario_8_Questao_2_Data" data-role="date" data-inline="true" type="text" name="Questionario_8_Questao_2" />
                             </fieldset>
-
 
                             <h3>
                                 3. Disciplina:
@@ -1501,7 +1482,6 @@ não exclua esse comentário.
                                     Ciências da Natureza
                                 </label>
                             </fieldset>
-
 
                             <!-- CHAMADA -->
                             <h3>
@@ -1701,7 +1681,6 @@ não exclua esse comentário.
                                     </tr>
                                 </table>
                             </fieldset>
-
 
                             <h3>14. Fatos relevantes ocorridos durante a aplicação:</h3>
                             <fieldset>
@@ -2062,7 +2041,6 @@ não exclua esse comentário.
 
     <script src="/AppProvaSP/scripts/jquery-1.8.0.min.js"></script>
     <script src="/AppProvaSP/scripts/jquery.mobile-1.4.5.min.js"></script>
-
 
     <!--SWEETALERT_INICIO-->
     <script src="/AppProvaSP/scripts/sha512.js"></script>
