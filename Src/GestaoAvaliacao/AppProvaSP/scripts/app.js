@@ -4059,7 +4059,7 @@ function definirEventHandlers() {
                      na busca por alunos.
                     */
                     if (data.length > 1000) {
-                        ProvaSP_Erro("Erro de sobrecarga",
+                        ProvaSP_Erro("Erro de sobrecarga", resultadoApresentar
                             "Sua pesquisa retornou mais de 1000 turmas. Por gentileza especifique critérios mais restritos.");
                         return;
                     }
@@ -4447,7 +4447,6 @@ function definirEventHandlers() {
     */
     function resultadoApresentar(ciclo, edicao, areaConhecimentoId, ano, divResultadoContainer, dataResultado, objetoEnviado) {
         try {
-            debugger;
             //MSTEHC - Nova informação de Proficiências. Se não houver dados vindos do servidor, usar valor padrão
             var proficienciasAtuais = [
                 { Nome: "Indefinido" },
@@ -7940,7 +7939,6 @@ function abrirArquivoAluno(urlArquivo) {
             }
         }
         else {
-            debugger;
             window.open(provaSP_configuracoes.configuracoes.UrlImagemAlunos + urlArquivo);
         }
     }
