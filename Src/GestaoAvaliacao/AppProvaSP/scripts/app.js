@@ -5199,7 +5199,6 @@ function definirEventHandlers() {
             var existeValor = false;
             var filtroProficiencia = $(".resultado-filtro-proficiencia:checked").map(function () { return this.value; }).get();
 
-            debugger;
             for (var i = 0; i < dataResultado.Itens.length; i++) {
                 var item = dataResultado.Itens[i];
 
