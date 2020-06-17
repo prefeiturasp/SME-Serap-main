@@ -98,7 +98,7 @@ namespace ProvaSP.Web.Controllers
                     }
                 }
 
-                if (resultado != null)
+                if (resultado != null && resultado.Itens.Any())
                 {
                     if (string.IsNullOrEmpty(Ciclo))
                     {

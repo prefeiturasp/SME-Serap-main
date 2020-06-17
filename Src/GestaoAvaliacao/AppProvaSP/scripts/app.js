@@ -355,7 +355,6 @@ function onDeviceReady() {
             }
         });
 
-
         //$.getJSON(urlBackEnd + "api/RetornarAppJson?callback=?",
         //    function (data)
         //    {
@@ -402,7 +401,6 @@ function onDeviceReady() {
          Manteremos para fins de registro.
         */
         //function resultadoAlunoApresentar(dataResultado) {
-
         //}
 
         /**
@@ -498,7 +496,6 @@ function onDeviceReady() {
                              acima e conexão com a internet.
                             */
                             sincronizarLoop();
-
                         }, function (error) {
                             ProvaSP_Erro("Alerta", "SQL batch ERROR: " + error.message);
                         });
@@ -520,7 +517,6 @@ function onDeviceReady() {
                                 sincronizar();
                         });
                         */
-
                     },
                     function (er) { ProvaSP_Erro("Alerta", er); }
                 );
@@ -742,8 +738,6 @@ function resultadoAlunoConfigurarInterface() {
 -----MSTECH-----
  *Fim do Módulo 1 - Início
 */
-
-
 
 /**
 -----MSTECH-----
@@ -1016,7 +1010,6 @@ function guidPart() {
 
  Sendo assim, tais métodos de validação garantem a coerência dos dados das provas.
 
-
  ATUALIZAÇÃO: Método descontinuados. Validações da versão de 2018 não são mais feitas
  através de dígito validador.
 */
@@ -1081,12 +1074,10 @@ function guidPart() {
 //    }
 //}
 
-
 /**
 -----MSTECH-----
  *Fim do Módulo 2 - Métodos auxiliares
 */
-
 
 /**
 -----MSTECH-----
@@ -1335,7 +1326,6 @@ function carregarDataEscola(callback, opcoes) {
                                 resolve();
                             });
                         }
-
                     }
                 });
             } else {
@@ -1841,7 +1831,6 @@ function sincronizarQuestionarios() {
                                     //listaQuestionarios
                                 }
                                 hashRespostas[QuestionarioUsuarioID] = respostas;
-
                             },
                             function (tx, error) {
                                 console.log('SELECT error: ' + error.message);
@@ -2666,7 +2655,6 @@ function resultado_configurarControles() {
             $("#divResultadoAluno").show();
         }
 
-
         /**
         -----MSTECH-----
          *Os trecho abaixo são bem simples e triviais. Os tratamentos existem para que os elementos
@@ -2885,7 +2873,7 @@ function carregarListaEscolaRevistasBoletins() {
              o arquivo escolas.CSV e, a partir dele, obter as informações necessárias.
             */
             let promiseCarga = carregarDataEscola(
-                new Promise ((resolve, reject) => {
+                new Promise((resolve, reject) => {
                     setTimeout(function () {
                         try {
                             /**
@@ -2916,7 +2904,6 @@ function carregarListaEscolaRevistasBoletins() {
                                 let esc_codigo = r[1];
                                 let esc_nome = r[2];
 
-
                                 //PERMISSÃO DE VISIBILIDADE PARA A ESCOLA:
                                 let incluirEscola =
                                     (Usuario.AcessoNivelSME ||
@@ -2930,7 +2917,6 @@ function carregarListaEscolaRevistasBoletins() {
                                 */
                                 if (incluirEscola
                                     && (DREs_selecionadas.indexOf("TD") >= 0 || DREs_selecionadas.indexOf(uad_sigla) >= 0)) {
-
                                     escolasEncontradas++;
                                     let lblID = "lblRevistasBoletinsEscola_" + esc_codigo;
                                     htmlListaEscolas += `<div id='${lblID}' class='revistasBoletins-escola-lbl ui-btn ui-corner-all ui-btn-inherit' style='text-align: left;'>${esc_nome}`
@@ -3502,7 +3488,6 @@ function definirEventHandlers() {
                     if ($("#ddlResultadoEdicao").val() == "ENTURMACAO_ATUAL") {
                         $("#ddlResultadoEdicao").val("");
                         $("#ddlResultadoEdicao").selectmenu("refresh");
-
                     }
                     $("#ddlResultadoEdicao_item_ENTURMACAO_ATUAL").hide();
                 }
@@ -3854,7 +3839,6 @@ function definirEventHandlers() {
                                     var esc_codigo = r[1];
                                     var esc_nome = r[2];
 
-
                                     //PERMISSÃO DE VISIBILIDADE PARA A ESCOLA:
                                     var incluirEscola =
                                         (Usuario.AcessoNivelSME ||
@@ -4065,7 +4049,7 @@ function definirEventHandlers() {
                     $.mobile.loading("hide");
 
                     if (data.length == 0) {
-                        ProvaSP_Erro("Alerta", "Nenhuma turma encontrada");
+                        ProvaSP_Erro("Alerta", "Resultados não disponíveis.");
                         return;
                     }
 
@@ -4236,7 +4220,6 @@ function definirEventHandlers() {
                             alunosHTML += "<img class='alunos_iconeImg' src='/AppProvaSP/images/provas.png' " +
                                 "onclick=\"baixarProvaAlunoPorAno(false, '" + alunoAPIString + "')\" />";
                             alunosHTML += "</div>";
-
                         }
                         $("#divResultadoAlunoItens").html(alunosHTML)
                         $("#divResultadoAlunoItens").trigger("create");
@@ -4254,7 +4237,6 @@ function definirEventHandlers() {
                             resultado_configurarControles();
                         });
                     }
-
                 })
                 .fail(function (xhr, status, error) {
                     ProvaSP_Erro("Falha de comunicação", "Não foi possível recuperar os alunos. (" + status + ") " + error);
@@ -4367,7 +4349,7 @@ function definirEventHandlers() {
             $('#exportar-dados').hide();
             $('#exportar-dados-csv-alunos').hide();
             $('#imprimir_graficos').hide();
-            
+
             if (nivel == "DRE") {
                 $("#exportar_graficos").show();
                 $('#exportar-dados').show();
@@ -4394,13 +4376,11 @@ function definirEventHandlers() {
                 $("#imprimir_graficos").show();
                 lista_alu_matricula = $(".resultado-aluno-item-chk:checked").map(function () { return this.value; }).get().toString();
             }
-            else if (nivel == "SME")
-            {
+            else if (nivel == "SME") {
                 $("#imprimir_graficos").show();
             }
 
-            if ((nivel == "DRE" || nivel == "ESCOLA") && $('span').hasClass('mdi-checkbox-marked'))
-            {
+            if ((nivel == "DRE" || nivel == "ESCOLA") && $('span').hasClass('mdi-checkbox-marked')) {
                 $('#exportar_graficos').hide();
                 $('#exportar-dados').hide();
                 $('#imprimir_graficos').hide();
@@ -4429,6 +4409,12 @@ function definirEventHandlers() {
                      *No sucesso da requisição, mostra resultados.
                     */
                     $.mobile.loading("hide");
+
+                    if (dataResultado.Itens.length <= 0) {
+                        ProvaSP_Erro("Alerta", "Resultados não disponíveis.");
+                        return;
+                    }
+
                     resultadoApresentar(
                         ciclo,
                         edicao,
@@ -4705,7 +4691,6 @@ function definirEventHandlers() {
                 tituloAdequado = proficienciasAtuais[3].Nome + " (>=" + reguaProficiencia["c" + ciclo][1] + " e <" + reguaProficiencia["c" + ciclo][2] + ")";
                 tituloAvancado = proficienciasAtuais[4].Nome + " (>=" + reguaProficiencia["c" + ciclo][2] + ")";
             }
-
 
             /**
             -----MSTECH-----
@@ -5009,7 +4994,6 @@ function definirEventHandlers() {
                 else {
                     chartResultadoDetalhe_ctx.canvas.height = (dataResultado.Itens.length * 50); //300;
                 }
-
             }
             //$("#divChartResultadoDetalhe").show();
             //$("#imgChartResultadoDetalhe").hide();
@@ -5119,14 +5103,13 @@ function definirEventHandlers() {
                                     NivelProficienciaID_ENTURMACAO = 3;
                                 else if (valorProficiencia >= reguaProficiencia[anoRef][2])
                                     NivelProficienciaID_ENTURMACAO = 4;
-                                
+
                                 if (ciclo == "") {
                                     return "Régua do " + anoRef + "º ano: " + tituloNivel[NivelProficienciaID_ENTURMACAO];
                                 }
                                 else {
                                     return "Régua do ciclo de " + labelsCiclos["ciclo" + ciclo];
                                 }
-
 
                                 //return data['datasets'][0]['data'][tooltipItem['index']];
                             }
@@ -5163,10 +5146,8 @@ function definirEventHandlers() {
                                 padding: 20,
                             },
                             scaleLabel: {
-
                             },
                             gridLines: {
-
                             },
                             stacked: false
                         }]
@@ -5228,7 +5209,6 @@ function definirEventHandlers() {
                         else if (item.Valor >= reguaProficiencia[ano][2])
                             NivelProficienciaID_ENTURMACAO = 4;
                         chartResultadoDetalhe.data.datasets[0].label = "Régua do " + anoAplicacaoProva + "º ano";
-
                     }
                     else {
                         if (item.Valor < reguaProficiencia["c" + ciclo][0])
@@ -5552,7 +5532,6 @@ function definirEventHandlers() {
                 }
                 htmTabela += "</table>";
 
-
                 /**
                 -----MSTECH-----
                  *CONFIGURAÇÃO DO(s) GRÁFICO(s) DE RADAR:
@@ -5728,7 +5707,6 @@ function definirEventHandlers() {
                                 display: false
                             },
                             gridLines: {
-
                             },
                             stacked: true
                         }],
@@ -5743,7 +5721,6 @@ function definirEventHandlers() {
                             ticks: {
                                 fontColor: "white",
                                 fontFamily: "'Open Sans Bold', sans-serif"
-
                             },
                             stacked: true
                         }]
@@ -5757,7 +5734,6 @@ function definirEventHandlers() {
                         },
                         onClick: function (event, legendItem) { } //DESABILITA CLICK NA LEGENDA
                     },
-
                 }
             });
         }
@@ -6880,7 +6856,6 @@ function definirEventHandlers() {
     //RELATÓRIO DO SUPERVISOR:
     $("#btnAbrirRelatorioAcompanhamento_9").unbind("click").click(function () {
         try {
-
         }
         catch (error) {
             console.log(error);
@@ -6890,7 +6865,6 @@ function definirEventHandlers() {
     //RELATÓRIO DO DIRETOR:
     $("#btnAbrirRelatorioAcompanhamento_10").unbind("click").click(function () {
         try {
-
         }
         catch (error) {
             console.log(error);
@@ -6900,7 +6874,6 @@ function definirEventHandlers() {
     //RELATÓRIO DO COORDENADOR:
     $("#btnAbrirRelatorioAcompanhamento_11").unbind("click").click(function () {
         try {
-
         }
         catch (error) {
             console.log(error);
@@ -6910,7 +6883,6 @@ function definirEventHandlers() {
     -----MSTECH-----
      *Fim do Módulo 4.2.5 - Eventos dos botões de questionários
     */
-
 
     /**
     -----AMCOM-----
@@ -6986,15 +6958,11 @@ function definirEventHandlers() {
 -----AMCOM-----
  *Fim do Módulo 4.2.6 - Botões para tratamento dos filtros de obtenção de revistas pedagógicas e boletins
 */
-
 }
 /**
 -----MSTECH-----
  *Fim do Módulo 4 - Manipulação da UI
 */
-
-
-
 
 /**
 -----MSTECH-----
@@ -7002,7 +6970,6 @@ function definirEventHandlers() {
  Novos métodos criados pela MSTECH para novas funcionalidades do App
 */
 /**
-
 
 /**
 -----MSTECH-----
@@ -7190,7 +7157,7 @@ function abrirResultados(limparFiltros) {
     }
 };
 
-/* 
+/*
     Funcionalidades para Revistas Pedagógicas e Boletins
  */
 function abrirConsultaRevistasBoletins() {
@@ -7270,7 +7237,6 @@ $("#btnRevistasBoletinsVoltar").unbind("click").click(function () {
 -----MSTECH-----
  *Fim do Módulo 5.1 - Métodos gerais para resolução de questões específicas
 */
-
 
 /**
 -----MSTECH-----
@@ -7789,7 +7755,6 @@ function limparCamposConfiguracaoProficiencia() {
  *Fim do Módulo 5.2 - Tela de Configurações
 */
 
-
 /**
 -----MSTECH-----
  Módulo 5.3: Prova do Aluno - Métodos para baixar e mostrar a prova física do Aluno
@@ -8015,7 +7980,6 @@ function divResultadoProva(opcaoSelecionada) {
 -----MSTECH-----
  *Fim do Módulo 5.3 - Prova do Aluno
 */
-
 
 /**
 -----MSTECH-----
@@ -9173,7 +9137,6 @@ function getQuestionarios(fatorAssociado) {
                     $("#" + inputParametro).val("");
                     $("#" + inputParametro).selectmenu("enable");
                     $("#" + inputParametro).selectmenu("refresh");
-
                 }
                 else {
                     ProvaSP_Erro("Não há informações aqui",
