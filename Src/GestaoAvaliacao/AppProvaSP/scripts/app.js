@@ -9711,7 +9711,6 @@ function montarGraficosConstructo(constructo, nivel, nivelSuperior) {
             $("#variavelConstructo_" + i).append("<canvas id='chartVariavel_" + i + "'></canvas>");
             var chartVariavel_ctx = document.getElementById("chartVariavel_" + i).getContext("2d");
             var constructoDataSet = [];
-            debugger;
             var constructoLabel = vetorLabelsConstructo(constructo[i]);
 
             if (constructoLabel.length > 0) {
