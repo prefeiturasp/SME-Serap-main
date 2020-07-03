@@ -669,6 +669,13 @@ table.greyGridTable tfoot td {
     font-size: 9pt;
     text-shadow: 0 0;
 }
+.fatoresassociados_referencia {
+    text-align: center;
+    margin-top: 5px;
+    color: #606060;
+    font-size: 10pt;
+    font-weight: bold;
+}
 
 /*MSTECH - Estilos da nova tela de Configurações*/
 .configuracoes_optionsMainDiv {
