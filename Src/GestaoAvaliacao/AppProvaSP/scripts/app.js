@@ -9009,51 +9009,116 @@ $(".cfe-dre-radio").unbind("change").change(function () {
 $("#ddlCFEEdicao").unbind("change").change(function () {
     try {
         $("#ddlCFECiclo").val("");
+        $("#ddlCFEAnoEscolar").val("");
 
-        $("#ddlCFEQuestionario").html("<option value='' selected='selected'>(Questionário)</option>");
-        $("#ddlCFEQuestionario").val("");
-        $("#ddlCFEQuestionario").selectmenu("disable");
-        $("#ddlCFEQuestionario").selectmenu("refresh");
+        resetSelectionCFEQuestionarios();
+        enableSelectionCFEQuestionario(false);
 
-        if (this.value == "") { $("#ddlCFECiclo").selectmenu("disable"); }
-        else { $("#ddlCFECiclo").selectmenu("enable"); }
+        if (this.value == "") {
+            enableSelectionCFECiclo(false);
+            enableSelectionCFEAnoEscolar(false);
+        }
+        else if (this.value == "2018") {
+            enableSelectionCFECiclo(true);
+        }
+        else {
+            enableSelectionCFEAnoEscolar(true);
+        }
 
         $("#btnCFEApresentar").prop("disabled", true);
-
-        $("#ddlCFECiclo").selectmenu("refresh");
     }
     catch (error) {
         console.log(error);
     }
 });
+
+function enableSelectionCFECiclo(enable) {
+    var filtroCiclo = document.getElementById('filtro_CFECiclo');
+
+    if (enable === true) {
+        enableSelectionCFEAnoEscolar(false);
+        filtroCiclo.style.display = "block";
+        $("#ddlCFECiclo").selectmenu("enable");
+    }
+    else {
+        filtroCiclo.style.display = "none";
+        $("#ddlCFECiclo").selectmenu("disable");
+    }
+    $("#ddlCFECiclo").selectmenu("refresh");
+}
+
+function enableSelectionCFEAnoEscolar(enable) {
+    var filtroAnoEscolar = document.getElementById('filtro_CFEAnoEscolar');
+
+    if (enable === true) {
+        enableSelectionCFECiclo(false);
+        filtroAnoEscolar.style.display = "block";
+        $("#ddlCFEAnoEscolar").selectmenu("enable");
+    }
+    else {
+        filtroAnoEscolar.style.display = "none";
+        $("#ddlCFEAnoEscolar").selectmenu("disable");
+    }
+    $("#ddlCFEAnoEscolar").selectmenu("refresh");
+}
 
 $("#ddlFAEdicao").unbind("change").change(function () {
     try {
         $("#ddlFACiclo").val("");
+        $("#ddlFAAnoEscolar").val("");
 
-        $("#ddlFAQuestionario").html("<option value='' selected='selected'>(Questionário)</option>");
-        $("#ddlFAQuestionario").val("");
+        resetSelectionFAQuestionarios();
+        resetSelectionFAConstructo();
+        enableSelectionFAQuestionario(false);
+        enableSelectionFAConstructo(false);
 
-        $("#ddlFAConstructo").html("<option value='' selected='selected'>(Constructo)</option>");
-        $("#ddlFAConstructo").val("");
-
-        $("#ddlFAQuestionario").selectmenu("disable");
-        $("#ddlFAQuestionario").selectmenu("refresh");
-
-        $("#ddlFAConstructo").selectmenu("disable");
-        $("#ddlFAConstructo").selectmenu("refresh");
-
-        if (this.value == "") { $("#ddlFACiclo").selectmenu("disable"); }
-        else { $("#ddlFACiclo").selectmenu("enable"); }
+        if (this.value == "") {
+            enableSelectionFACiclo(false);
+            enableSelectionFAAnoEscolar(false);
+        }
+        else if (this.value == "2018") {
+            enableSelectionFACiclo(true);
+        }
+        else {
+            enableSelectionFAAnoEscolar(true);
+        }
 
         $("#btnFAApresentar").prop("disabled", true);
-
-        $("#ddlFACiclo").selectmenu("refresh");
     }
     catch (error) {
         console.log(error);
     }
 });
+
+function enableSelectionFACiclo(enable) {
+    var filtroCiclo = document.getElementById('filtro_FACiclo');
+
+    if (enable === true) {
+        enableSelectionFAAnoEscolar(false);
+        filtroCiclo.style.display = "block";
+        $("#ddlFACiclo").selectmenu("enable");
+    }
+    else {
+        filtroCiclo.style.display = "none";
+        $("#ddlFACiclo").selectmenu("disable");
+    }
+    $("#ddlFACiclo").selectmenu("refresh");
+}
+
+function enableSelectionFAAnoEscolar(enable) {
+    var filtroAnoEscolar = document.getElementById('filtro_FAAnoEscolar');
+
+    if (enable === true) {
+        enableSelectionFACiclo(false);
+        filtroAnoEscolar.style.display = "block";
+        $("#ddlFAAnoEscolar").selectmenu("enable");
+    }
+    else {
+        filtroAnoEscolar.style.display = "none";
+        $("#ddlFAAnoEscolar").selectmenu("disable");
+    }
+    $("#ddlFAAnoEscolar").selectmenu("refresh");
+}
 
 $("#ddlCFECiclo").unbind("change").change(function () {
     try {
@@ -9073,29 +9138,108 @@ $("#ddlCFECiclo").unbind("change").change(function () {
     }
 });
 
-$("#ddlFACiclo").unbind("change").change(function () {
+$("#ddlCFEAnoEscolar").unbind("change").change(function () {
     try {
-        $("#ddlFAQuestionario").html("<option value='' selected='selected'>(Questionário)</option>");
-        $("#ddlFAQuestionario").val("");
+        resetSelectionCFEQuestionarios();
 
-        $("#ddlFAConstructo").html("<option value='' selected='selected'>(Constructo)</option>");
-        $("#ddlFAConstructo").val("");
-
-        $("#ddlFAConstructo").selectmenu("disable");
-        $("#ddlFAConstructo").selectmenu("refresh");
-
-        $("#btnFAApresentar").prop("disabled", true);
+        $("#btnCFEApresentar").prop("disabled", true);
 
         if (this.value == "") {
-            $("#ddlFAQuestionario").selectmenu("disable");
-            $("#ddlFAQuestionario").selectmenu("refresh");
+            enableSelectionCFEQuestionario(false);
         }
-        else { getQuestionarios(true); }
+        else {
+            getQuestionarios(false);
+        }
     }
     catch (error) {
         console.log(error);
     }
 });
+
+function enableSelectionCFEQuestionario(enable) {
+    if (enable === true) {
+        $("#ddlCFEQuestionario").selectmenu("enable");
+    }
+    else {
+        $("#ddlCFEQuestionario").selectmenu("disable");
+    }
+    $("#ddlCFEQuestionario").selectmenu("refresh");
+}
+
+function resetSelectionCFEQuestionarios() {
+    $("#ddlCFEQuestionario").html("<option value='' selected='selected'>(Questionário)</option>");
+    $("#ddlCFEQuestionario").val("");
+}
+
+$("#ddlFACiclo").unbind("change").change(function () {
+    try {
+        resetSelectionFAQuestionarios();
+        resetSelectionFAConstructo();
+
+        $("#btnFAApresentar").prop("disabled", true);
+
+        if (this.value == "") {
+            enableSelectionFAQuestionario(false);
+        }
+        else {
+            getQuestionarios(true);
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+
+$("#ddlFAAnoEscolar").unbind("change").change(function () {
+    try {
+        resetSelectionFAQuestionarios();
+        resetSelectionFAConstructo();
+
+        $("#btnFAApresentar").prop("disabled", true);
+
+        if (this.value == "") {
+            enableSelectionFAQuestionario(false);
+        }
+        else {
+            getQuestionarios(true);
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+
+function enableSelectionFAQuestionario(enable) {
+    if (enable === true) {
+        $("#ddlFAQuestionario").selectmenu("enable");
+    }
+    else {
+        $("#ddlFAQuestionario").selectmenu("disable");
+    }
+    $("#ddlFAQuestionario").selectmenu("refresh");
+}
+
+function enableSelectionFAConstructo(enable) {
+    if (enable === true) {
+        $("#ddlFAConstructo").selectmenu("enable");
+    }
+    else {
+        $("#ddlFAConstructo").selectmenu("disable");
+    }
+    $("#ddlFAConstructo").selectmenu("refresh");
+}
+
+function resetSelectionFAQuestionarios() {
+    $("#ddlFAQuestionario").html("<option value='' selected='selected'>(Questionário)</option>");
+    $("#ddlFAQuestionario").val("");
+}
+
+function resetSelectionFAConstructo() {
+    $("#ddlFAConstructo").html("<option value='' selected='selected'>(Constructo)</option>");
+    $("#ddlFAConstructo").val("");
+
+    enableSelectionFAConstructo(false);
+}
 
 function getQuestionarios(fatorAssociado) {
     try {
@@ -9185,10 +9329,11 @@ function getConstructos() {
     try {
         var edicao = $("#ddlFAEdicao").val();
         var ciclo = $("#ddlFACiclo").val();
+        var anoEscolar = $("#ddlFAAnoEscolar").val();
         var quesitonario = $("#ddlFAQuestionario").val();
 
         var urlObterConstructos = urlBackEnd +
-            "api/" + "FatorAssociado/GetConstructo?edicao=" + edicao + "&cicloId=" + ciclo +
+            "api/" + "FatorAssociado/GetConstructo?edicao=" + edicao + "&cicloId=" + ciclo + "&anoEscolar=" + anoEscolar +
             "&questionarioId=" + quesitonario;
 
         $.mobile.loading("show", {
@@ -9252,6 +9397,7 @@ $("#btnCFEApresentar").unbind("click").click(function () {
         var objCaracterizacaoEnvio = {
             Nivel: nivel,
             Edicao: $("#ddlCFEEdicao").val(),
+            AnoEscolar: $("#ddlCFEAnoEscolar").val(),
             CicloId: $("#ddlCFECiclo").val(),
             QuestionarioId: $("#ddlCFEQuestionario").val()
         };
@@ -9282,9 +9428,13 @@ $("#btnCFEApresentar").unbind("click").click(function () {
                 $("#constructoHeaderTitle").text($("#ddlCFENivel").val());
                 $("#constructoHeaderText").text(
                     $("#ddlCFEEdicao option:selected").text() + " - " +
-                    $("#ddlCFEQuestionario option:selected").text() + " - " +
-                    $("#ddlCFECiclo option:selected").text()
-                );
+                    $("#ddlCFEQuestionario option:selected").text() + " - ");
+
+                if ($("#ddlCFECiclo").val() != "")
+                    $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFECiclo option:selected").text()); 
+
+                if ($("#ddlCFEAnoEscolar").val() != "")
+                    $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFEAnoEscolar option:selected").text());
 
                 for (var i = 0; i < dataConstructo.length; i++) {
                     var variavelID = "";
@@ -9338,11 +9488,12 @@ $("#btnFAApresentar").unbind("click").click(function () {
     try {
         var edicao = $("#ddlFAEdicao").val();
         var ciclo = $("#ddlFACiclo").val();
+        var anoEscolar = $("#ddlFAAnoEscolar").val();
         var quesitonario = $("#ddlFAQuestionario").val();
         var constructo = $("#ddlFAConstructo").val();
 
         var urlObterFA = urlBackEnd +
-            "api/" + "FatorAssociado/GetFatorAssociado?edicao=" + edicao + "&cicloId=" + ciclo +
+            "api/" + "FatorAssociado/GetFatorAssociado?edicao=" + edicao + "&cicloId=" + ciclo + "&anoEscolar=" + anoEscolar +
             "&questionarioId=" + quesitonario + "&constructoId=" + constructo;
 
         $.mobile.loading("show", {
@@ -9378,11 +9529,21 @@ function apresentarResultadoFA(dadosServidor) {
         //Header text
         $("#faHeaderText").text(
             $("#ddlFAEdicao option:selected").text() + " - " +
-            $("#ddlFAQuestionario option:selected").text() + " - " +
-            $("#ddlFACiclo option:selected").text()
+            $("#ddlFAQuestionario option:selected").text() + " - "
         );
+
+        if ($("#ddlFACiclo").val() != "")
+            $("#faHeaderText").text($("#faHeaderText").text() + $("#ddlFACiclo option:selected").text());
+
+        if ($("#ddlFAAnoEscolar").val() != "")
+            $("#faHeaderText").text($("#faHeaderText").text() + $("#ddlFAAnoEscolar option:selected").text());
+
         $("#faHeaderTitle").text($("#ddlFAConstructo option:selected").text());
         $("#faVarsConstructo").text($("#ddlFAConstructo option:selected").text());
+
+        $("#fatoresassociados_referencia").text("");
+        if (dadosServidor.Constructo.Referencia != null)
+            $("#fatoresassociados_referencia").text("Referência: " + dadosServidor.Constructo.Referencia);
 
         //Construindo resultados
         for (var i = 0; i < dadosServidor.Resultados.length; i++) {
@@ -9465,6 +9626,7 @@ function downloadDadosDaVariavel() {
             Nivel: "SME",
             Edicao: $("#ddlFAEdicao").val(),
             CicloId: $("#ddlFACiclo").val(),
+            AnoEscolar: $("#ddlFAAnoEscolar").val(),
             QuestionarioId: $("#ddlFAQuestionario").val(),
             ConstructoId: $("#ddlFAConstructo").val()
         };
@@ -9484,9 +9646,15 @@ function downloadDadosDaVariavel() {
                 $("#constructoHeaderTitle").text("SME");
                 $("#constructoHeaderText").text(
                     $("#ddlFAEdicao option:selected").text() + " - " +
-                    $("#ddlFAQuestionario option:selected").text() + " - " +
-                    $("#ddlFACiclo option:selected").text()
+                    $("#ddlFAQuestionario option:selected").text() + " - "
                 );
+
+                if ($("#ddlFACiclo").val() != "")
+                    $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlFACiclo option:selected").text());
+
+                if ($("#ddlFAAnoEscolar").val() != "")
+                    $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlFAAnoEscolar option:selected").text());
+
                 baseGraficosConstructo();
 
                 //Building necessary data
@@ -9543,6 +9711,7 @@ function montarGraficosConstructo(constructo, nivel, nivelSuperior) {
             $("#variavelConstructo_" + i).append("<canvas id='chartVariavel_" + i + "'></canvas>");
             var chartVariavel_ctx = document.getElementById("chartVariavel_" + i).getContext("2d");
             var constructoDataSet = [];
+            debugger;
             var constructoLabel = vetorLabelsConstructo(constructo[i]);
 
             if (constructoLabel.length > 0) {
@@ -9663,8 +9832,8 @@ function vetorDadosConstructo(variavelAtual, nivelSuperior) {
         var vetorData = [];
 
         for (var i = 0; i < variavelAtual.variaveis.length; i++) {
-            if (nivelSuperior) { vetorData.push(parseFloat(variavelAtual.variaveis[i].ValorSuperior).toFixed(2)); }
-            else { vetorData.push(parseFloat(variavelAtual.variaveis[i].Valor).toFixed(2)); }
+            if (nivelSuperior) { vetorData.push(parseFloat(variavelAtual.variaveis[i].ValorSuperior.replace(",", ".")).toFixed(2)); }
+            else { vetorData.push(parseFloat(variavelAtual.variaveis[i].Valor.replace(",", ".")).toFixed(2)); }
         }
         return vetorData;
     }

@@ -20,7 +20,7 @@ namespace ProvaSP.Web.Controllers
             var resultado = new List<Questionario>();
 
             try
-            {   
+            {
                 resultado = DataFatorAssociado.RetornarQuestionario(edicao);
             }
             catch (Exception ex)
@@ -41,13 +41,13 @@ namespace ProvaSP.Web.Controllers
 
         [HttpGet]
         [Route("GetConstructo")]
-        public HttpResponseMessage GetConstructo(string edicao, int cicloId, int questionarioId)
+        public HttpResponseMessage GetConstructo(string edicao, int? cicloId, int? anoEscolar, int questionarioId)
         {
             var resultado = new List<Constructo>();
 
             try
             {
-                resultado = DataFatorAssociado.RetornarConstructo(edicao, cicloId, questionarioId);
+                resultado = DataFatorAssociado.RetornarConstructo(edicao, cicloId, anoEscolar, questionarioId);
             }
             catch (Exception ex)
             {
@@ -67,7 +67,7 @@ namespace ProvaSP.Web.Controllers
 
         [HttpGet]
         [Route("GetFatorAssociado")]
-        public HttpResponseMessage GetFatorAssociado(string edicao, int cicloId, int questionarioId, int constructoId)
+        public HttpResponseMessage GetFatorAssociado(string edicao, int? cicloId, int questionarioId, int constructoId)
         {
             var resultado = new FatorAssociado();
 
@@ -97,29 +97,29 @@ namespace ProvaSP.Web.Controllers
         {
             string nivel = Convert.ToString(formData["Nivel"]).ToUpper();
             string edicao = Convert.ToString(formData["Edicao"]);
-            int cicloId = Convert.ToInt32(formData["CicloId"]);
+            var cicloId = int.TryParse(formData["CicloId"].ToString(), out var auxInt) ? auxInt : default(int?);
+            var anoEscolar = int.TryParse(formData["AnoEscolar"].ToString(), out auxInt) ? auxInt : default(int?);
             int questionarioId = Convert.ToInt32(formData["QuestionarioId"]);
             string constructo = Convert.ToString(formData["ConstructoId"]);
             string uad_sigla = Convert.ToString(formData["uad_sigla"]);
             string esc_codigo = Convert.ToString(formData["esc_codigo"]);
-            
+
             var resultado = new List<VariavelItem>();
 
             try
             {
                 if (nivel.ToUpper() == "SME")
                 {
-                    int constructoId = 0;
-                    int.TryParse(constructo, out constructoId);
-                    resultado = DataFatorAssociado.RetornarResultadoItemSME(edicao, cicloId, questionarioId, constructoId);
+                    int.TryParse(constructo, out var constructoId);
+                    resultado = DataFatorAssociado.RetornarResultadoItemSME(edicao, cicloId, anoEscolar, questionarioId, constructoId);
                 }
                 else if (nivel.ToUpper() == "DRE")
                 {
-                    resultado = DataFatorAssociado.RetornarResultadoItemDRE(edicao, cicloId, questionarioId, uad_sigla);
+                    resultado = DataFatorAssociado.RetornarResultadoItemDRE(edicao, cicloId, anoEscolar, questionarioId, uad_sigla);
                 }
                 else if (nivel.ToUpper() == "ESCOLA")
                 {
-                    resultado = DataFatorAssociado.RetornarResultadoItemEscola(edicao, cicloId, questionarioId, uad_sigla, esc_codigo);
+                    resultado = DataFatorAssociado.RetornarResultadoItemEscola(edicao, cicloId, anoEscolar, questionarioId, uad_sigla, esc_codigo);
                 }
             }
             catch (Exception ex)
