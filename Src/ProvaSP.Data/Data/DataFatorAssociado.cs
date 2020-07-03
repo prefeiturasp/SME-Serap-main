@@ -17,7 +17,7 @@ namespace ProvaSP.Data.Data
                 return conn.Query<Questionario>(
                     sql: @"SELECT f.FatorAssociadoQuestionarioId AS QuestionarioID, f.Edicao, f.Nome
                            FROM FatorAssociadoQuestionario f WITH(NOLOCK)
-                           WHERE Edicao = @Edicao AND f.FatorAssociadoQuestionarioId NOT IN (4,3,7,8, 9)
+                           WHERE Edicao = @Edicao
                            ORDER BY f.Nome",
                             param: new
                             {
