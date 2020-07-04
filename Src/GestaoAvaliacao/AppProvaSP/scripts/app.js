@@ -9251,6 +9251,10 @@ function getQuestionarios(fatorAssociado) {
         var urlObterQuestionariosPorEdicao = urlBackEnd + "api/" +
             "FatorAssociado/GetQuestionario?edicao=" + edicao;
 
+        if (!fatorAssociado) {
+            urlObterQuestionariosPorEdicao = urlObterQuestionariosPorEdicao + "&anoEscolar=" + $("#ddlCFEAnoEscolar").val();
+        }
+
         $.mobile.loading("show", {
             text: "Obtendo questionários...",
             textVisible: true,

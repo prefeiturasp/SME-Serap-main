@@ -2,6 +2,7 @@
 using ProvaSP.Model.Entidades;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
@@ -13,15 +14,57 @@ namespace ProvaSP.Web.Controllers
     [RoutePrefix("api/FatorAssociado")]
     public class FatorAssociadoController : ApiController
     {
+        private const int _segundoAno = 2;
+        private const string _edicao2019 = "2019";
+        private const int _questionarioDaFamiliaDoAluno = 6;
+        private static IEnumerable<int> _questionariosQueNaoDevemSerExibidosNoFatoresAssociados = new List<int> { 3, 4, 6, 7, 8, 9 };
+        private static IEnumerable<int> _questionariosQueNaoDevemSerExibidosNaCaracterizacaoDeFamilias = new List<int> { 3, 4, 7, 8, 9 };
+
         [HttpGet]
         [Route("GetQuestionario")]
-        public HttpResponseMessage GetQuestionario(string edicao)
+        public HttpResponseMessage GetQuestionarioParaFatoresAssociados(string edicao)
         {
             var resultado = new List<Questionario>();
 
             try
             {
                 resultado = DataFatorAssociado.RetornarQuestionario(edicao);
+                resultado = resultado.Where(x => !_questionariosQueNaoDevemSerExibidosNoFatoresAssociados.Contains(x.QuestionarioID)).ToList();
+            }
+            catch (Exception ex)
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
+                {
+                    ReasonPhrase = ex.Message.Replace(Environment.NewLine, " ")
+                };
+                throw new HttpResponseException(resp);
+            }
+
+            var resultadoJson = Newtonsoft.Json.JsonConvert.SerializeObject(resultado);
+
+            var response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(resultadoJson, Encoding.UTF8, "application/json");
+            return response;
+        }
+
+        [HttpGet]
+        [Route("GetQuestionario")]
+        public HttpResponseMessage GetQuestionarioParaCaracterizacaoDasFamilias(string edicao, int? anoEscolar)
+        {
+            var resultado = new List<Questionario>();
+
+            try
+            {
+                resultado = DataFatorAssociado.RetornarQuestionario(edicao);
+
+                if (edicao == _edicao2019 && anoEscolar.GetValueOrDefault() == _segundoAno)
+                {
+                    resultado = resultado.Where(x => x.QuestionarioID == _questionarioDaFamiliaDoAluno).ToList();
+                }
+                else
+                {
+                    resultado = resultado.Where(x => !_questionariosQueNaoDevemSerExibidosNaCaracterizacaoDeFamilias.Contains(x.QuestionarioID)).ToList();
+                }
             }
             catch (Exception ex)
             {
