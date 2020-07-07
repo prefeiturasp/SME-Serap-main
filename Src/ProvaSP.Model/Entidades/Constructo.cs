@@ -7,5 +7,7 @@
         public int CicloId { get; set; }
         public int QuestionarioId { get; set; }
         public string Nome { get; set; }
+        public int? AnoEscolar { get; set; }
+        public string Referencia { get; set; }
     }
 }
