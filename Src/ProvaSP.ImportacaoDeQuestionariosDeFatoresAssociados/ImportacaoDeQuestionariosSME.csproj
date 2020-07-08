@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C0D55CEE-9F75-452C-B794-F469509AD28C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ImportacaoDeQuestionariosSME</RootNamespace>
+    <AssemblyName>ImportacaoDeQuestionariosSME</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.0.35\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Configuration.ConfigurationManager.4.7.0\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Security.AccessControl, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.4.7.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Permissions, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Permissions.4.7.0\lib\net461\System.Security.Permissions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.4.7.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\DapperContext.cs" />
+    <Compile Include="Data\IDapperContext.cs" />
+    <Compile Include="Data\Repositories\Abstractions\BaseInsertRepository.cs" />
+    <Compile Include="Data\Repositories\Abstractions\BaseRepository.cs" />
+    <Compile Include="Data\Repositories\Alunos\AlunoRepository.cs" />
+    <Compile Include="Data\Repositories\Alunos\Dtos\MatriculaAnoEscolarDto.cs" />
+    <Compile Include="Data\Repositories\CiclosAnoEscolar\CicloAnoEscolarRepository.cs" />
+    <Compile Include="Data\Repositories\Constructos\ConstructoRepository.cs" />
+    <Compile Include="Data\Repositories\Escolas\EscolaRepository.cs" />
+    <Compile Include="Data\Repositories\FatoresAssociadosQuestionarioResposta\DRE\FatorAssociadoQuestionarioRespostaDREConstructoRepository.cs" />
+    <Compile Include="Data\Repositories\FatoresAssociadosQuestionarioResposta\Escolas\FatorAssociadoQuestionarioRespostaEscolaConstructoRepository.cs" />
+    <Compile Include="Data\Repositories\FatoresAssociadosQuestionarioResposta\Escolas\FatorAssociadoQuestionarioRespostaEscolaRepository.cs" />
+    <Compile Include="Data\Repositories\FatoresAssociadosQuestionarioResposta\SME\FatorAssociadoQuestionarioRespostaSMEConstructoRepository.cs" />
+    <Compile Include="Data\Repositories\FatoresAssociadosQuestionarioResposta\SME\FatorAssociadoQuestionarioRespostaSMERepository.cs" />
+    <Compile Include="Data\Repositories\FatoresAssociadosQuestionario\FatorAssociadoQuestionarioRepository.cs" />
+    <Compile Include="Data\Repositories\FatoresAssociados\FatorAssociadoRepository.cs" />
+    <Compile Include="Data\Repositories\ImagensAlunos\ImagemAlunoRepository.cs" />
+    <Compile Include="Data\Repositories\Questionarios\Itens\QuestionarioItemRepository.cs" />
+    <Compile Include="Domain\Alunos\Dtos\AlunoAnoEscolarDto.cs" />
+    <Compile Include="Domain\Alunos\IAlunoRepository.cs" />
+    <Compile Include="Domain\CiclosAnoEscolar\CicloAnoEscolar.cs" />
+    <Compile Include="Domain\CiclosAnoEscolar\ICicloAnoEscolarRepository.cs" />
+    <Compile Include="Domain\Constructos\Constructo.cs" />
+    <Compile Include="Domain\Constructos\IConstructoRepository.cs" />
+    <Compile Include="Domain\Escolas\Escola.cs" />
+    <Compile Include="Domain\Escolas\IEscolaRepository.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\DRE\FatorAssociadoQuestionarioRespostaDRE.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\DRE\FatorAssociadoQuestionarioRespostaDREConstructo.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\DRE\IFatorAssociadoQuestionarioRespostaDREConstructoRepository.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\DRE\IFatorAssociadoQuestionarioRespostaDRERepository.cs" />
+    <Compile Include="Data\Repositories\FatoresAssociadosQuestionarioResposta\DRE\FatorAssociadoQuestionarioRespostaDRERepository.cs" />
+    <Compile Include="Domain\Abstractions\Entity.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\Escolas\FatorAssociadoQuestionarioRespostaEscola.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\Escolas\FatorAssociadoQuestionarioRespostaEscolaConstructo.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\Escolas\IFatorAssociadoQuestionarioRespostaEscolaConstructoRepository.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\Escolas\IFatorAssociadoQuestionarioRespostaEscolaRepository.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\FatorAssociadoQuestionarioResposta.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\SME\FatorAssociadoQuestionarioRespostaSME.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\SME\FatorAssociadoQuestionarioRespostaSMEConstructo.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\SME\IFatorAssociadoQuestionarioRespostaSMEConstructoRepository.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\SME\IFatorAssociadoQuestionarioRespostaSMERepository.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionario\FatorAssociadoQuestionario.cs" />
+    <Compile Include="Domain\FatoresAssociadosQuestionario\IFatorAssociadoQuestionarioRepository.cs" />
+    <Compile Include="Domain\FatoresAssociados\FatorAssociado.cs" />
+    <Compile Include="Domain\FatoresAssociados\IFatorAssociadoRepository.cs" />
+    <Compile Include="Domain\ImagensAlunos\IImagemAlunoRepository.cs" />
+    <Compile Include="Domain\ImagensAlunos\ImagemAluno.cs" />
+    <Compile Include="Domain\Questionarios\Itens\IQuestionarioItemRepository.cs" />
+    <Compile Include="Domain\Questionarios\Itens\QuestionarioItem.cs" />
+    <Compile Include="Forms\Constructos\ImportacaoDeConstructos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Constructos\ImportacaoDeConstructos.Designer.cs">
+      <DependentUpon>ImportacaoDeConstructos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FatoresAssociadosQuestionarioResposta\ImportacaoDeQuestionariosDeFatoresAssociadosQuestionariosFamilia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FatoresAssociadosQuestionarioResposta\ImportacaoDeQuestionariosDeFatoresAssociadosQuestionariosFamilia.Designer.cs">
+      <DependentUpon>ImportacaoDeQuestionariosDeFatoresAssociadosQuestionariosFamilia.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FatoresAssociadosQuestionario\ImportacaoDeFatorAssociadoQuestionario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FatoresAssociadosQuestionario\ImportacaoDeFatorAssociadoQuestionario.Designer.cs">
+      <DependentUpon>ImportacaoDeFatorAssociadoQuestionario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FatoresAssociados\ImportacaoDeFatoresAssociados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FatoresAssociados\ImportacaoDeFatoresAssociados.Designer.cs">
+      <DependentUpon>ImportacaoDeFatoresAssociados.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ImagensDeRedacoes\ImportacaoDeImagensDeRedacoes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ImagensDeRedacoes\ImportacaoDeImagensDeRedacoes.Designer.cs">
+      <DependentUpon>ImportacaoDeImagensDeRedacoes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Abstractions\BaseDto.cs" />
+    <Compile Include="Services\Constructos\ConstructoServices.cs" />
+    <Compile Include="Services\Constructos\Dtos\ImportacaoDeConstructosDto.cs" />
+    <Compile Include="Services\Constructos\IConstructoServices.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioRespostaFamilia\DRE\FatoresAssociadosQuestionarioRespostaFamiliaDREServices.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioRespostaFamilia\Dtos\ImportacaoDeQuestionariosDeFatoresAssociadosFamiliaDto.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioRespostaFamilia\Escolas\FatoresAssociadosQuestionarioRespostaFamiliaEscolaServices.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioRespostaFamilia\Factory\FatoresAssociadosQuestionarioRespostaFamiliaServicesFactory.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioRespostaFamilia\Factory\IFatoresAssociadosQuestionarioRespostaFamiliaServicesFactory.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioRespostaFamilia\FatoresAssociadosQuestionarioRespostaFamiliaServices.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioRespostaFamilia\IFatoresAssociadosQuestionarioRespostaFamiliaServices.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioRespostaFamilia\SME\FatoresAssociadosQuestionarioRespostaFamiliaSMEServices.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\DRE\Dtos\FatorAssociadoQuestionarioRespostaDREDto.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\Dtos\QuestaoConstructoDto.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\Dtos\ImportacaoDeQuestionariosDeFatoresAssociadosDto.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\Escolas\Dtos\FatorAssociadoQuestionarioRespostaEscolaDto.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\Escolas\FatorAssociadoQuestionarioRespostaEscolaServices.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\Factory\IImportacaoDeQuestionariosDeFatoresAssociadosFactory.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\Factory\ImportacaoDeQuestionariosDeFatoresAssociadosFactory.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\FatorAssociadoQuestionarioRespostaServices.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\IFatorAssociadoQuestionarioRespostaServices.cs" />
+    <Compile Include="Forms\FatoresAssociadosQuestionarioResposta\ImportacaoDeQuestionariosDeFatoresAssociadosQuestionarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FatoresAssociadosQuestionarioResposta\ImportacaoDeQuestionariosDeFatoresAssociadosQuestionarios.Designer.cs">
+      <DependentUpon>ImportacaoDeQuestionariosDeFatoresAssociadosQuestionarios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\DRE\FatorAssociadoQuestionarioRespostaDREServices.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\SME\Dtos\FatorAssociadoQuestionarioRespostaSMEDto.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionarioResposta\SME\FatorAssociadoQuestionarioRespostaSMEServices.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionario\Dtos\ImportacaoDeFatorAssociadoQuestionarioDto.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionario\FatorAssociadoQuestionarioServices.cs" />
+    <Compile Include="Services\FatoresAssociadosQuestionario\IFatorAssociadoQuestionarioServices.cs" />
+    <Compile Include="Services\FatoresAssociados\Dtos\ImportacaoDeFatoresAssociadosDto.cs" />
+    <Compile Include="Services\FatoresAssociados\FatorAssociadoServices.cs" />
+    <Compile Include="Services\FatoresAssociados\IFatorAssociadoServices.cs" />
+    <Compile Include="Services\ImagensDeAlunos\Dtos\ImportacaoDeImagemAlunoDto.cs" />
+    <Compile Include="Services\ImagensDeAlunos\IImagemAlunoServices.cs" />
+    <Compile Include="Services\ImagensDeAlunos\ImagemAlunoServices.cs" />
+    <Compile Include="StartupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartupForm.Designer.cs">
+      <DependentUpon>StartupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\CsvManager.cs" />
+    <Compile Include="Utils\Extensions.cs" />
+    <EmbeddedResource Include="Forms\Constructos\ImportacaoDeConstructos.resx">
+      <DependentUpon>ImportacaoDeConstructos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FatoresAssociadosQuestionarioResposta\ImportacaoDeQuestionariosDeFatoresAssociadosQuestionarios.resx">
+      <DependentUpon>ImportacaoDeQuestionariosDeFatoresAssociadosQuestionarios.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FatoresAssociadosQuestionarioResposta\ImportacaoDeQuestionariosDeFatoresAssociadosQuestionariosFamilia.resx">
+      <DependentUpon>ImportacaoDeQuestionariosDeFatoresAssociadosQuestionariosFamilia.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FatoresAssociadosQuestionario\ImportacaoDeFatorAssociadoQuestionario.resx">
+      <DependentUpon>ImportacaoDeFatorAssociadoQuestionario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FatoresAssociados\ImportacaoDeFatoresAssociados.resx">
+      <DependentUpon>ImportacaoDeFatoresAssociados.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ImagensDeRedacoes\ImportacaoDeImagensDeRedacoes.resx">
+      <DependentUpon>ImportacaoDeImagensDeRedacoes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="StartupForm.resx">
+      <DependentUpon>StartupForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
