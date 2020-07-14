@@ -241,33 +241,28 @@ namespace GestaoAvaliacao.Business
 		public async Task<List<ItemPercentageChoiceByAlternativeProjection>> GetItemPercentageChoiceByAlternative(long test_Id, long? discipline_id, Guid? dre_id, int? esc_id)
 		{
 			var itemsPercentageChoicePerAlternative = correctionResultsRepository
-													.GetItemPercentageChoiceByAlternative(test_Id, discipline_id, dre_id, esc_id);
+				.GetItemPercentageChoiceByAlternative(test_Id, discipline_id, dre_id, esc_id);
 
 			return await itemsPercentageChoicePerAlternative;
 		}
 
-		public async Task<CorrectionResults> Save(CorrectionResults entity)
-		{
-			CorrectionResults correctionResults = new CorrectionResults() { _id = entity._id };
-
-			var count = await correctionResultsRepository.Count(correctionResults);
-			if (count == 0)
-				return await correctionResultsRepository.Insert(correctionResults);
-			else
-				return await correctionResultsRepository.Replace(correctionResults);
-		}
-
 		public async Task<CorrectionResults> GetEntity(CorrectionResults entity)
 		{
-			long count = await correctionResultsRepository.Count(entity);
-
-			if (count > 0)
-				return await correctionResultsRepository.GetEntity(entity);
-			else
-			{
+			var result = await correctionResultsRepository.FindOneAsync(entity);
+			if(result is null)
+            {
 				string[] valores = entity._id.Split('_');
 				return await GenerateCorrectionResults(new Guid(valores[0]), long.Parse(valores[1]), long.Parse(valores[2]));
 			}
+
+			return result;
+			//if (count > 0)
+			//	return await correctionResultsRepository.GetEntity(entity);
+			//else
+			//{
+			//	string[] valores = entity._id.Split('_');
+			//	return await GenerateCorrectionResults(new Guid(valores[0]), long.Parse(valores[1]), long.Parse(valores[2]));
+			//}
 		}
 
 		public CorrectionResults GetResultFilterByDiscipline(CorrectionResults results, long? discipline_id)

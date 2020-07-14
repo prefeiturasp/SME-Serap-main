@@ -22,59 +22,34 @@ namespace GestaoAvaliacao.Business
 
         public async Task<StudentCorrection> SaveAPI(List<Answer> answerList, long alu_id, TestDTO testModel)
         {
-            SchoolDTO escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(testModel.tur_Id);
+            var escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(testModel.tur_Id);
 
-            StudentCorrection studentCorrection = new StudentCorrection(testModel.test_Id, testModel.tur_Id, alu_id, testModel.ent_Id, escola.dre_id, escola.esc_id);
+            var studentCorrection = new StudentCorrection(testModel.test_Id, testModel.tur_Id, alu_id, testModel.ent_Id, escola.dre_id, escola.esc_id);
 
-            var count = await _studentCorrectionRepository.Count(studentCorrection);
-            if (count == 0)
-            {
-                studentCorrection.Answers = answerList;
-                studentCorrection.Automatic = true;
-                return await _studentCorrectionRepository.Insert(studentCorrection);
-            }
-            else
-            {
-                var cadastred = await _studentCorrectionRepository.GetEntity(studentCorrection);
-                cadastred.Automatic = true;
-                cadastred.Answers = answerList;
-                return await _studentCorrectionRepository.Replace(cadastred);
-            }
+            studentCorrection.Answers = answerList;
+            studentCorrection.Automatic = true;
+            await _studentCorrectionRepository.InsertOrReplaceAsync(studentCorrection);
+            return studentCorrection;
         }
 
         public async Task<StudentCorrection> Save(Answer answer, long alu_id, long test_id, long tur_id, Guid ent_id, bool api, int ordemItem, bool provaEntregue)
         {
-            SchoolDTO escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(tur_id);
+            var escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(tur_id);
 
-            StudentCorrection studentCorrection = new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id);
+            var studentCorrection = await _studentCorrectionRepository.FindOneAsync(new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id));
+            if (studentCorrection is null)
+            {
+                studentCorrection = new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id);
+                studentCorrection.CreateDate = DateTime.Now;
+            }
 
+            studentCorrection.Automatic = api;
             studentCorrection.OrdemUltimaResposta = ordemItem;
             studentCorrection.provaFinalizada = provaEntregue;
 
-            var count = await _studentCorrectionRepository.Count(studentCorrection);
-            if (count == 0)
-            {
-                studentCorrection.Answers.Add(answer);
-                return await _studentCorrectionRepository.Insert(studentCorrection);
-            }
-            else
-            {
-                var cadastred = await _studentCorrectionRepository.GetEntity(studentCorrection);
-                if (api)
-                {
-                    cadastred.Automatic = true;
-                }
-                else
-                {
-                    cadastred.Automatic = false;
-                }
-                cadastred.OrdemUltimaResposta = ordemItem;
-                cadastred.provaFinalizada = provaEntregue;
-                cadastred.Answers.RemoveAll(a => a.Item_Id == answer.Item_Id);
-                cadastred.Answers.Add(answer);
-
-                return await _studentCorrectionRepository.Replace(cadastred);
-            }
+            studentCorrection.Answers.Add(answer);
+            await _studentCorrectionRepository.InsertOrReplaceAsync(studentCorrection);
+            return studentCorrection;
         }
 
         public async Task<List<StudentCorrection>> Save(List<StudentCorrection> corrections)
@@ -92,16 +67,15 @@ namespace GestaoAvaliacao.Business
 
         public async Task<StudentCorrection> Get(long alu_id, long test_id, long tur_id, Guid ent_id)
         {
-            SchoolDTO escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(tur_id);
-
-            var count = await _studentCorrectionRepository.Count(new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id));
-
-            if (count == 0)
-            {
-                return null;
-            }
-            else
-                return await _studentCorrectionRepository.GetEntity(new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id));
+            var escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(tur_id);
+            var result = await _studentCorrectionRepository.FindOneAsync(new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id));
+            return result;
+            //if (count == 0)
+            //{
+            //    return null;
+            //}
+            //else
+            //    return await _studentCorrectionRepository.GetEntity(new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id));
 
         }
 

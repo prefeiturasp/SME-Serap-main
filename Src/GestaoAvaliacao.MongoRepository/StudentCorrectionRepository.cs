@@ -2,27 +2,27 @@
 using GestaoAvaliacao.MongoEntities;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.MongoRepository
 {
-
     public class StudentCorrectionRepository : BaseRepository<StudentCorrection>, IStudentCorrectionRepository
-	{      
+    {
         public async Task<List<StudentCorrection>> GetByTest(long test_id, long tur_id)
-		{
-			var filter1 = Builders<StudentCorrection>.Filter.Eq("Test_Id", test_id);
-			var filter2 = Builders<StudentCorrection>.Filter.Eq("tur_id", tur_id);
-			var filter = Builders<StudentCorrection>.Filter.And(filter1, filter2);
+        {
+            var filter1 = Builders<StudentCorrection>.Filter.Eq("Test_Id", test_id);
+            var filter2 = Builders<StudentCorrection>.Filter.Eq("tur_id", tur_id);
+            var filter = Builders<StudentCorrection>.Filter.And(filter1, filter2);
 
-			var count = await base.Count(filter);
+            var count = await base.Count(filter);
 
-			if (count == 0)
-				return new List<StudentCorrection>();
-			else
-				return await base.Find(filter);
-		}
+            if (count == 0)
+                return new List<StudentCorrection>();
+            else
+                return await base.Find(filter);
+        }
 
         public async Task<List<StudentCorrection>> GetByTest(List<long> testId)
         {
@@ -38,24 +38,24 @@ namespace GestaoAvaliacao.MongoRepository
         }
 
         public async Task<long> CountInconsistency(long test_id, long tur_id)
-		{
-			var filter1 = Builders<StudentCorrection>.Filter.Eq("Test_Id", test_id);
-			var filter2 = Builders<StudentCorrection>.Filter.Eq("tur_id", tur_id);
-			var filter3 = Builders<StudentCorrection>.Filter.Eq("Answers.Empty", true);
-			var filter4 = Builders<StudentCorrection>.Filter.Eq("Answers.StrikeThrough", true);
+        {
+            var filter1 = Builders<StudentCorrection>.Filter.Eq("Test_Id", test_id);
+            var filter2 = Builders<StudentCorrection>.Filter.Eq("tur_id", tur_id);
+            var filter3 = Builders<StudentCorrection>.Filter.Eq("Answers.Empty", true);
+            var filter4 = Builders<StudentCorrection>.Filter.Eq("Answers.StrikeThrough", true);
 
-			var filterOr = Builders<StudentCorrection>.Filter.Or(filter3, filter4);
-			var filter = Builders<StudentCorrection>.Filter.And(filter1, filter2, filterOr);
+            var filterOr = Builders<StudentCorrection>.Filter.Or(filter3, filter4);
+            var filter = Builders<StudentCorrection>.Filter.And(filter1, filter2, filterOr);
 
-			return await base.Count(filter);
-		}
+            return await base.Count(filter);
+        }
 
         public StudentCorrection GetStudentCorrectionByTestAluId(long test_Id, long alu_id)
         {
             var studentCorrection = DataBase
                               .GetCollection<CorrectionResults>("StudentCorrection")
                               .Aggregate()
-                              .Match(new BsonDocument { { "Test_Id", test_Id }, { "alu_id", alu_id } })                              
+                              .Match(new BsonDocument { { "Test_Id", test_Id }, { "alu_id", alu_id } })
                               .Project(new BsonDocument {
                                    { "_id", 0 },
                                    { "Test_Id", "$_id.Test_Id" },
