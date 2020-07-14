@@ -16,12 +16,7 @@ namespace GestaoAvaliacao.MongoRepository
             var filter2 = Builders<StudentCorrection>.Filter.Eq("tur_id", tur_id);
             var filter = Builders<StudentCorrection>.Filter.And(filter1, filter2);
 
-            var count = await base.Count(filter);
-
-            if (count == 0)
-                return new List<StudentCorrection>();
-            else
-                return await base.Find(filter);
+            return await Find(filter) ?? new List<StudentCorrection>();
         }
 
         public async Task<List<StudentCorrection>> GetByTest(List<long> testId)

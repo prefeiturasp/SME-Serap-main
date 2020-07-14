@@ -17,12 +17,7 @@ namespace GestaoAvaliacao.MongoRepository
 			var filter2 = Builders<SectionTestStats>.Filter.Eq("tur_id", tur_id);
 			var filter = Builders<SectionTestStats>.Filter.And(filter1, filter2);
 
-			var count = await base.Count(filter);
-
-			if (count == 0)
-				return new SectionTestStats();
-			else
-				return await base.FindOne(filter);
+			return await FindOne(filter) ?? new SectionTestStats();
 		}
 
         public async Task<List<SectionTestStats>> GetByTest(long test_id)

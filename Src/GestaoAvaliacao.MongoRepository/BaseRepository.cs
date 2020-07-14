@@ -122,12 +122,12 @@ namespace GestaoAvaliacao.MongoRepository
 
         public async Task<List<T>> Find(FilterDefinition<T> filter)
         {
-            return await Collection.Find<T>(filter).ToListAsync();
+            return await Collection.Find<T>(filter)?.ToListAsync();
         }
 
         public async Task<T> FindOne(FilterDefinition<T> filter)
         {
-            return await Collection.Find<T>(filter).FirstAsync();
+            return await Collection.Find<T>(filter).FirstOrDefaultAsync();
         }
 
         public async Task<T> FindOneAsync(T entity)

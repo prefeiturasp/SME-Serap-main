@@ -46,7 +46,7 @@ namespace GestaoAvaliacao.Business
             studentCorrection.Automatic = api;
             studentCorrection.OrdemUltimaResposta = ordemItem;
             studentCorrection.provaFinalizada = provaEntregue;
-
+            studentCorrection.Answers.RemoveAll(a => a.Item_Id == answer.Item_Id);
             studentCorrection.Answers.Add(answer);
             await _studentCorrectionRepository.InsertOrReplaceAsync(studentCorrection);
             return studentCorrection;
@@ -68,15 +68,7 @@ namespace GestaoAvaliacao.Business
         public async Task<StudentCorrection> Get(long alu_id, long test_id, long tur_id, Guid ent_id)
         {
             var escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(tur_id);
-            var result = await _studentCorrectionRepository.FindOneAsync(new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id));
-            return result;
-            //if (count == 0)
-            //{
-            //    return null;
-            //}
-            //else
-            //    return await _studentCorrectionRepository.GetEntity(new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id));
-
+            return await _studentCorrectionRepository.FindOneAsync(new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id));
         }
 
         public async Task<List<StudentCorrection>> GetByTest(long test_id, long tur_id)
