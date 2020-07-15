@@ -7,8 +7,10 @@ namespace GestaoAvaliacao.IRepository
 {
     public interface ISectionTestStatsRepository
 	{
+		Task<SectionTestStats> FindOneAsync(SectionTestStats entity);
 		Task<SectionTestStats> GetEntity(SectionTestStats entity);
 		Task<SectionTestStats> Insert(SectionTestStats entity);
+		Task InsertOrReplaceAsync(SectionTestStats entity);
 		Task<long> Count(SectionTestStats entity);
 		Task<SectionTestStats> Replace(SectionTestStats entity);
 		Task<SectionTestStats> GetByTest(long test_id, long tur_id);      

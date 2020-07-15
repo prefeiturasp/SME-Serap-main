@@ -29,21 +29,19 @@ namespace GestaoAvaliacao.Business
 
 		public async Task<SectionTestStats> Save(SectionTestStats entity, Guid ent_id)
 		{
-			SectionTestStats sectionTestStats = new SectionTestStats(entity.Test_Id, entity.tur_id, ent_id, entity.dre_id, entity.esc_id);
-
-			var count = await sectionTestStatsRepository.Count(sectionTestStats);
-			if (count == 0)
-				return await sectionTestStatsRepository.Insert(entity);
+			var sectionTestStats = await sectionTestStatsRepository.FindOneAsync(entity);
+			if(sectionTestStats is null)
+				sectionTestStats = entity;
 			else
-			{
-				var cadastred = await sectionTestStatsRepository.GetEntity(sectionTestStats);
-				cadastred.GeneralGrade = entity.GeneralGrade;
-                cadastred.Answers = entity.Answers;
-				cadastred.GeneralHits = entity.GeneralHits;
-                cadastred.NumberAnswers = entity.NumberAnswers;
-
-                return await sectionTestStatsRepository.Replace(cadastred);
+            {
+				sectionTestStats.GeneralGrade = entity.GeneralGrade;
+				sectionTestStats.Answers = entity.Answers;
+				sectionTestStats.GeneralHits = entity.GeneralHits;
+				sectionTestStats.NumberAnswers = entity.NumberAnswers;
 			}
+
+			await sectionTestStatsRepository.InsertOrReplaceAsync(sectionTestStats);
+			return sectionTestStats;
 		}
 
 		public async Task<List<SectionTestStatsGroupDTO>> GetGrouped(long test_id, IEnumerable<long> turmas)

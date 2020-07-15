@@ -64,8 +64,6 @@ namespace GestaoAvaliacao.IBusiness
 		/// <param name="esc_id">Id da escola</param>
 		/// <returns>Lista de projection com as médias(porcentagem) de escolha da DRE por alternativa de cada item da prova</returns>
 		Task<List<ItemPercentageChoiceByAlternativeProjection>> GetItemPercentageChoiceByAlternative(long test_Id, long? discipline_id, Guid? dre_id, int? esc_id);
-
-		Task<CorrectionResults> Save(CorrectionResults entity);
 		Task<CorrectionResults> GetEntity(CorrectionResults entity);
 		CorrectionResults GetResultFilterByDiscipline(CorrectionResults results, long? discipline_id);
 		Task<bool> Delete(CorrectionResults entity);

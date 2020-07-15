@@ -234,22 +234,8 @@
 
             ElectronicTestModel.save({ alternativa: ng.alternativaSelecionada, test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId, ordemItem: ng.itens[ng.indiceItem].ItemOrder }, function (result) {
                 if (result.success) {
-                    ElectronicTestModel.loadAlternativesByItens({ itens: ng.idsItens, test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId }, function (result) {
-                        if (result.success) {
-                            if (result.alternatives.length > 0) {
-                                ng.alternatives = result.alternatives;
-                                ng.provaFinalizada = result.provaFinalizada;
-                            }
-                            else {
-                                ng.message = true;
-                                ng.test = null;
-                            }
-                        }
-                        else {
-                            $notification[result.type ? result.type : 'error'](result.message);
-                        }
-
-                    });
+                    var alternativaSelecionadaIndex = ng.alternatives.findIndex(x => x.Id == ng.alternativaSelecionada.Id);
+                    ng.alternatives[alternativaSelecionadaIndex].Selected = true;
                 }
                 else {
                     $notification[result.type ? result.type : 'error'](result.message);

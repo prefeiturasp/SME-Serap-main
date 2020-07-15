@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Repository
 {
@@ -54,6 +55,18 @@ namespace GestaoAvaliacao.Repository
             }            
         }
 
+        public async Task<TestSectionStatusCorrection> UpdateAsync(TestSectionStatusCorrection entity)
+        {
+            using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                entity.UpdateDate = DateTime.Now;
+                GestaoAvaliacaoContext.Entry(entity).State = System.Data.Entity.EntityState.Modified;
+                await GestaoAvaliacaoContext.SaveChangesAsync();
+
+                return entity;
+            }
+        }
+
         public TestSectionStatusCorrection SetStatusCorrectionUpdate(TestSectionStatusCorrection entity)
         {
 
@@ -86,9 +99,22 @@ namespace GestaoAvaliacao.Repository
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
-
                 return cn.Query<TestSectionStatusCorrection>(sql.ToString(), new { Test_Id = Test_Id, tur_id = tur_id }).FirstOrDefault();
+            }
+        }
 
+        public async Task<TestSectionStatusCorrection> GetAsync(long test_Id, long tur_id)
+        {
+            var sql = @"SELECT TOP 1 Id, Test_Id, tur_id, StatusCorrection, CreateDate, UpdateDate, State 
+                      FROM TestSectionStatusCorrection (NOLOCK)
+                      WHERE Test_Id = @test_Id AND tur_id = @tur_id ";
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+                var parametros = new { test_Id, tur_id };
+                var result = await cn.QueryAsync<TestSectionStatusCorrection>(sql, parametros);
+                return result.FirstOrDefault();
             }
         }
 
