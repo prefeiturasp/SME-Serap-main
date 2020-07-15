@@ -256,13 +256,6 @@ namespace GestaoAvaliacao.Business
 			}
 
 			return result;
-			//if (count > 0)
-			//	return await correctionResultsRepository.GetEntity(entity);
-			//else
-			//{
-			//	string[] valores = entity._id.Split('_');
-			//	return await GenerateCorrectionResults(new Guid(valores[0]), long.Parse(valores[1]), long.Parse(valores[2]));
-			//}
 		}
 
 		public CorrectionResults GetResultFilterByDiscipline(CorrectionResults results, long? discipline_id)
