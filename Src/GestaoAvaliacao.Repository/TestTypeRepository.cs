@@ -7,9 +7,11 @@ using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Repository
 {
@@ -17,7 +19,7 @@ namespace GestaoAvaliacao.Repository
     {
         #region CRUD
 
-        public TestType Save(TestType entity)
+        public async Task<TestType> SaveAsync(TestType entity)
         {
             using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
@@ -39,19 +41,22 @@ namespace GestaoAvaliacao.Repository
                 }
 
                 GestaoAvaliacaoContext.TestType.Add(entity);
-                GestaoAvaliacaoContext.SaveChanges();
+                await GestaoAvaliacaoContext.SaveChangesAsync();
 
                 return entity;
             }
         }
 
-        public TestType Update(TestType entity)
+        public async Task<TestType> UpdateAsync(TestType entity)
         {
             using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                TestType testType = gestaoAvaliacaoContext.TestType
+                var testType = await gestaoAvaliacaoContext.TestType
                     .Include("TestTypeItemLevel.ItemLevel")
-                    .Include("FormatType").Include("ItemType").FirstOrDefault(a => a.Id == entity.Id);
+                    .Include("FormatType")
+                    .Include("ItemType")
+                    .Include("TestTypeDeficiencies")
+                    .FirstOrDefaultAsync(a => a.Id == entity.Id);
 
                 var itemLevelDatabase = testType.TestTypeItemLevel != null ? testType.TestTypeItemLevel.Where(x => x.State == (byte)EnumState.ativo).Select(x => x.ItemLevel.Id).ToList() : null;
                 var itemLevelFront = entity.TestTypeItemLevel != null ? entity.TestTypeItemLevel.Select(x => x.ItemLevel.Id).ToList() : null;
@@ -78,8 +83,8 @@ namespace GestaoAvaliacao.Repository
                     {
                         if (testTypeItemLevel != null)
                         {
-                            testTypeItemLevel.ItemLevel = gestaoAvaliacaoContext.ItemLevel.FirstOrDefault(f => f.Id == testTypeItemLevel.ItemLevel.Id);
-                            testTypeItemLevel.TestType = gestaoAvaliacaoContext.TestType.FirstOrDefault(f => f.Id == entity.Id);
+                            testTypeItemLevel.ItemLevel = await gestaoAvaliacaoContext.ItemLevel.FirstOrDefaultAsync(f => f.Id == testTypeItemLevel.ItemLevel.Id);
+                            testTypeItemLevel.TestType = await gestaoAvaliacaoContext.TestType.FirstOrDefaultAsync(f => f.Id == entity.Id);
                             gestaoAvaliacaoContext.TestTypeItemLevel.Add(testTypeItemLevel);
                             gestaoAvaliacaoContext.SaveChanges();
                         }
@@ -96,13 +101,31 @@ namespace GestaoAvaliacao.Repository
                     }
                 }
 
+                ExcludeTestTypeDeficiencies(testType);
+                if (entity.TargetToStudentsWithDeficiencies)
+                {
+                    var testTypeDeficienciesIdsInDatabase = testType.TestTypeDeficiencies.Select(x => x.Id);
+                    foreach(var testTypeDeficiencyToUpdate in entity.TestTypeDeficiencies)
+                    {
+                        var testTypeDeficiency = testType.TestTypeDeficiencies.FirstOrDefault(x => x.Id == testTypeDeficiencyToUpdate.Id);
+                        if(testTypeDeficiency is null)
+                        {
+                            testType.TestTypeDeficiencies.Add(testTypeDeficiencyToUpdate);
+                        }
+                        else
+                        {
+                            testTypeDeficiency.State = Convert.ToByte(EnumState.ativo);
+                        }
+                    }
+                }
+
                 if (entity.FormatType != null)
-                    testType.FormatType = gestaoAvaliacaoContext.FormatType.FirstOrDefault(f => f.Id == entity.FormatType.Id);
+                    testType.FormatType = await gestaoAvaliacaoContext.FormatType.FirstOrDefaultAsync(f => f.Id == entity.FormatType.Id);
                 else
                     testType.FormatType = null;
 
                 if (entity.ItemType != null)
-                    testType.ItemType = gestaoAvaliacaoContext.ItemType.FirstOrDefault(f => f.Id == entity.ItemType.Id);
+                    testType.ItemType = await gestaoAvaliacaoContext.ItemType.FirstOrDefaultAsync(f => f.Id == entity.ItemType.Id);
                 else
                     testType.ItemType = null;
 
@@ -115,12 +138,20 @@ namespace GestaoAvaliacao.Repository
                 testType.UpdateDate = DateTime.Now;
 
                 gestaoAvaliacaoContext.Entry(testType).State = System.Data.Entity.EntityState.Modified;
-                gestaoAvaliacaoContext.SaveChanges();
+                await gestaoAvaliacaoContext.SaveChangesAsync();
 
                 return testType;
             }
         }
 
+        private void ExcludeTestTypeDeficiencies(TestType testType)
+        {
+            foreach (var testTypeDecifiency in testType?.TestTypeDeficiencies)
+            {
+                testTypeDecifiency.State = Convert.ToByte(EnumState.excluido);
+                testTypeDecifiency.UpdateDate = DateTime.Now;
+            }
+        }
 
         public void UnsetModelTest(TestType entity)
         {
@@ -137,7 +168,7 @@ namespace GestaoAvaliacao.Repository
         }
 
 
-        public TestType Get(long id, Guid EntityId)
+        public async Task<TestType> GetAsync(long id, Guid EntityId)
         {
             var transactionOptions = new System.Transactions.TransactionOptions
             {
@@ -148,9 +179,15 @@ namespace GestaoAvaliacao.Repository
             {
                 using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
                 {
-                    return GestaoAvaliacaoContext.TestType.AsNoTracking().Include("TestTypeItemLevel.ItemLevel")
-                        .Include("FormatType").Include("ItemType").Include("TestTypeCourses.TestTypeCourseCurriculumGrades")
-                        .Include("TestTypeCourses").FirstOrDefault(a => a.Id == id && a.EntityId == EntityId);
+                    return await GestaoAvaliacaoContext.TestType
+                        .AsNoTracking()
+                        .Include("TestTypeItemLevel.ItemLevel")
+                        .Include("FormatType")
+                        .Include("ItemType")
+                        .Include("TestTypeCourses.TestTypeCourseCurriculumGrades")
+                        .Include("TestTypeCourses")
+                        .Include("TestTypeDeficiencies")
+                        .FirstOrDefaultAsync(a => a.Id == id && a.EntityId == EntityId);
                 }
             }
         }
@@ -166,19 +203,23 @@ namespace GestaoAvaliacao.Repository
             {
                 using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
                 {
-                    return pager.Paginate(gestaoAvaliacaoContext.TestType.AsNoTracking().
-                        Where(x => x.State == (Byte)EnumState.ativo
-                        && x.EntityId == EntityId).OrderBy(x => x.Description));
+                    return pager.Paginate(gestaoAvaliacaoContext.TestType
+                        .AsNoTracking()
+                        .Where(x => x.State == (Byte)EnumState.ativo && x.EntityId == EntityId)
+                        .OrderBy(x => x.Description));
                 }
             }
         }
 
 
-        public void Delete(long id)
+        public async Task DeleteAsync(long id)
         {
             using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                TestType testType = GestaoAvaliacaoContext.TestType.Include("TestTypeItemLevel").Include("TestTypeCourses.TestTypeCourseCurriculumGrades").FirstOrDefault(a => a.Id == id);
+                var testType = await GestaoAvaliacaoContext.TestType
+                    .Include("TestTypeItemLevel")
+                    .Include("TestTypeCourses.TestTypeCourseCurriculumGrades")
+                    .FirstOrDefaultAsync(a => a.Id == id);
 
                 foreach (var testTypeItemLevel in testType.TestTypeItemLevel)
                 {
@@ -198,11 +239,20 @@ namespace GestaoAvaliacao.Repository
                     }
                 }
 
+                if(testType.TestTypeDeficiencies?.Any() ?? false)
+                {
+                    foreach(var testTypeDeficiency in testType.TestTypeDeficiencies)
+                    {
+                        testTypeDeficiency.State = Convert.ToByte(EnumState.excluido);
+                        testTypeDeficiency.UpdateDate = DateTime.Now;
+                    }
+                }
+
                 testType.State = Convert.ToByte(EnumState.excluido);
                 testType.UpdateDate = DateTime.Now;
 
                 GestaoAvaliacaoContext.Entry(testType).State = System.Data.Entity.EntityState.Modified;
-                GestaoAvaliacaoContext.SaveChanges();
+                await GestaoAvaliacaoContext.SaveChangesAsync();
             }
         }
 
@@ -248,7 +298,7 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public IEnumerable<TestType> LoadNotGlobal(Guid EntityId)
+        public async Task<IEnumerable<TestType>> LoadNotGlobalAsync(Guid EntityId)
         {
             var transactionOptions = new System.Transactions.TransactionOptions
             {
@@ -259,15 +309,16 @@ namespace GestaoAvaliacao.Repository
             {
                 using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
                 {
-                    return gestaoAvaliacaoContext.TestType.AsNoTracking().
-                        Where(x => x.State == (Byte)EnumState.ativo
-                        && x.EntityId == EntityId && !x.Global).OrderBy(x => x.Description).ToList();
-
+                    return await gestaoAvaliacaoContext.TestType
+                        .AsNoTracking()
+                        .Where(x => x.State == (Byte)EnumState.ativo && x.EntityId == EntityId && !x.Global)
+                        .OrderBy(x => x.Description)
+                        .ToListAsync();
                 }
             }
         }
 
-        public IEnumerable<TestType> LoadAll(Guid EntityId)
+        public async Task<IEnumerable<TestType>> LoadAllAsync(Guid EntityId)
         {
             var transactionOptions = new System.Transactions.TransactionOptions
             {
@@ -278,9 +329,11 @@ namespace GestaoAvaliacao.Repository
             {
                 using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
                 {
-                    return gestaoAvaliacaoContext.TestType.AsNoTracking().
-                        Where(x => x.State == (Byte)EnumState.ativo
-                        && x.EntityId == EntityId).OrderBy(x => x.Description).ToList();
+                    return await gestaoAvaliacaoContext.TestType
+                        .AsNoTracking()
+                        .Where(x => x.State == (Byte)EnumState.ativo && x.EntityId == EntityId)
+                        .OrderBy(x => x.Description)
+                        .ToListAsync();
                 }
             }
         }

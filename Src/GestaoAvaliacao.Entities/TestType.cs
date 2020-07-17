@@ -36,6 +36,7 @@ namespace GestaoAvaliacao.Entities
 		public long? ItemType_Id { get; set; }
 		public virtual ModelTest ModelTest { get; set; }
 		public Nullable<long> ModelTest_Id { get; set; }
-
-    }
+        public bool TargetToStudentsWithDeficiencies { get; set; }
+		public virtual List<TestTypeDeficiency> TestTypeDeficiencies { get; set; }
+	}
 }

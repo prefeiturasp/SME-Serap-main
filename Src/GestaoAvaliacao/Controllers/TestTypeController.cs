@@ -9,6 +9,7 @@ using GestaoEscolar.IBusiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace GestaoAvaliacao.Controllers
@@ -22,16 +23,18 @@ namespace GestaoAvaliacao.Controllers
         private readonly IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness;
         private readonly IACA_TipoNivelEnsinoBusiness levelEducationBusiness;
         private readonly IItemLevelBusiness itemLevelBusiness;
+        private readonly ITestTypeDeficiencyBusiness testTypeDeficiencyBusiness;
 
         public TestTypeController(ITestTypeBusiness testTypeBusiness, ITestTypeCourseCurriculumGradeBusiness testTypeCourseCurriculumGradeBusiness,
             IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness, IACA_TipoNivelEnsinoBusiness levelEducationBusiness,
-            IItemLevelBusiness itemLevelBusiness)
+            IItemLevelBusiness itemLevelBusiness, ITestTypeDeficiencyBusiness testTypeDeficiencyBusiness)
         {
             this.testTypeBusiness = testTypeBusiness;
             this.testTypeCourseCurriculumGradeBusiness = testTypeCourseCurriculumGradeBusiness;
             this.tipoCurriculoPeriodoBusiness = tipoCurriculoPeriodoBusiness;
             this.levelEducationBusiness = levelEducationBusiness;
             this.itemLevelBusiness = itemLevelBusiness;
+            this.testTypeDeficiencyBusiness = testTypeDeficiencyBusiness;
         }
 
         public ActionResult List()
@@ -125,18 +128,26 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
-        public JsonResult Find(int Id)
+        public async Task<JsonResult> Find(int Id)
         {
             try
             {
-                TestType testType = testTypeBusiness.Get(Id, SessionFacade.UsuarioLogado.Usuario.ent_id);
+                var testType = await testTypeBusiness.GetAsync(Id, SessionFacade.UsuarioLogado.Usuario.ent_id);
+                var deficiencies = await testTypeDeficiencyBusiness.GetDeficienciesAsync();
+
+                foreach(var testTypeDeficieny in testType.TestTypeDeficiencies.Where(x => x.State == (byte)EnumState.ativo))
+                {
+                    var deficiency = deficiencies.FirstOrDefault(x => x.Id == testTypeDeficieny.DeficiencyId);
+                    if (deficiency is null) continue;
+                    deficiency.Selected = true;
+                }
 
                 var retorno = new
                     {
-                        Id = testType.Id,
-                        Description = testType.Description,
-                        //CourseId = testType.CourseId,
-                        ModelTest_Id = testType.ModelTest_Id,
+                        testType.Id,
+                        testType.Description,
+                        testType.ModelTest_Id,
+                        Deficiencies = deficiencies,
                         FormatType = new
                         {
                             Id = testType.FormatType == null ? 0 : testType.FormatType.Id,
@@ -157,9 +168,10 @@ namespace GestaoAvaliacao.Controllers
                                                  IdItem = il.ItemLevel.Id,
                                                  Description = il.ItemLevel.Description
                                              }).ToList(),
-                        FrequencyApplication = testType.FrequencyApplication,
-                        Bib = testType.Bib,
-                        Global = testType.Global,
+                        testType.FrequencyApplication,
+                        testType.Bib,
+                        testType.Global,
+                        testType.TargetToStudentsWithDeficiencies,
                         TypeLevelEducation = levelEducationBusiness.GetCustom(testType.TypeLevelEducationId),
                         Disabled = testType.TestTypeCourses.FirstOrDefault(p => p.State == (Byte)EnumState.ativo) != null
                     };
@@ -246,11 +258,11 @@ namespace GestaoAvaliacao.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public JsonResult LoadByUserGroupSearchTest()
+        public async Task<JsonResult> LoadByUserGroupSearchTest()
         {
             try
             {
-                IEnumerable<TestType> lista = testTypeBusiness.LoadByUserGroup(SessionFacade.UsuarioLogado.Usuario.ent_id, SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Administracao);
+                var lista = await testTypeBusiness.LoadByUserGroupAsync(SessionFacade.UsuarioLogado.Usuario.ent_id, SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Administracao);
 
                 if (lista != null && lista.Count() > 0)
                 {
@@ -284,11 +296,11 @@ namespace GestaoAvaliacao.Controllers
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        public JsonResult FindTest(int Id)
+        public async Task<JsonResult> FindTest(int Id)
         {
             try
             {
-                TestType testType = testTypeBusiness.Get(Id, SessionFacade.UsuarioLogado.Usuario.ent_id);
+                var testType = await testTypeBusiness.GetAsync(Id, SessionFacade.UsuarioLogado.Usuario.ent_id);
                 List<TestTypeCourseCurriculumGrade> testTypeCourseCurriculumGrade = testTypeCourseCurriculumGradeBusiness.GetCurriculumGradesByTestType((int)testType.Id);
                 IEnumerable<ACA_TipoCurriculoPeriodo> listCurriculumGrades = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
                 IEnumerable<ItemLevel> listItemLevel = itemLevelBusiness.LoadLevels(SessionFacade.UsuarioLogado.Usuario.ent_id);
@@ -381,18 +393,13 @@ namespace GestaoAvaliacao.Controllers
         #region Write
 
         [HttpPost]
-        public JsonResult Save(TestType entity)
+        public async Task <JsonResult> Save(TestType entity)
         {
             try
             {
-                if (entity.Id > 0)
-                {
-                    entity = testTypeBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.ent_id);
-                }
-                else
-                {
-                    entity = testTypeBusiness.Save(entity, SessionFacade.UsuarioLogado.Usuario.ent_id);
-                }
+                entity = entity.Id > 0
+                    ? await testTypeBusiness.UpdateAsync(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.ent_id)
+                    : await testTypeBusiness.SaveAsync(entity, SessionFacade.UsuarioLogado.Usuario.ent_id);
             }
             catch (Exception ex)
             {
@@ -422,13 +429,13 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpPost]
-        public JsonResult Delete(int Id)
+        public async Task<JsonResult> Delete(int Id)
         {
             TestType entity = new TestType();
 
             try
             {
-                entity = testTypeBusiness.Delete(Id, SessionFacade.UsuarioLogado.Usuario.ent_id);
+                entity = await testTypeBusiness.DeleteAsync(Id, SessionFacade.UsuarioLogado.Usuario.ent_id);
             }
             catch (Exception ex)
             {
