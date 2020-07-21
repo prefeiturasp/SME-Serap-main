@@ -22,14 +22,13 @@ namespace GestaoAvaliacao.Business
         public async Task<IEnumerable<DeficiencyDto>> GetDeficienciesAsync()
         {
             var lstDeficiencies = PES_TipoDeficienciaBO.GetSelect();
-            if(lstDeficiencies?.Any() ?? true) return null;
+            if(!lstDeficiencies?.Any() ?? true) return null;
 
             var result = lstDeficiencies
                 .Select(x => new DeficiencyDto
                 {
                     Description = x.tde_nome,
-                    Id = x.tde_id,
-                    Selected = false
+                    Id = x.tde_id
                 })
                 .ToList();
 

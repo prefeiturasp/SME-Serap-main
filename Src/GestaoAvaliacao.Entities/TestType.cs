@@ -38,5 +38,11 @@ namespace GestaoAvaliacao.Entities
 		public Nullable<long> ModelTest_Id { get; set; }
         public bool TargetToStudentsWithDeficiencies { get; set; }
 		public virtual List<TestTypeDeficiency> TestTypeDeficiencies { get; set; }
+
+		public void AddTestTypeDeficiency(TestTypeDeficiency testTypeDeficiency)
+        {
+			testTypeDeficiency.TestType = this;
+			TestTypeDeficiencies.Add(testTypeDeficiency);
+		}
 	}
 }

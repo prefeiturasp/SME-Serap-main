@@ -5,7 +5,7 @@ GO
 
 CREATE TABLE TestTypeDeficiency
 (
-	Id BIGINT NOT NULL PRIMARY KEY,
+	Id BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	CreateDate DATETIME NOT NULL,
 	UpdateDate DATETIME NOT NULL,
 	State TINYINT NOT NULL,
@@ -13,4 +13,6 @@ CREATE TABLE TestTypeDeficiency
 	TestType_Id BIGINT NOT NULL,
 	FOREIGN KEY(TestType_Id) REFERENCES TestType(Id)
 );
+GO
+ALTER TABLE TestTypeDeficiency ADD UNIQUE (TestType_Id, DeficiencyId);
 GO

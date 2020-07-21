@@ -102,15 +102,16 @@ namespace GestaoAvaliacao.Repository
                 }
 
                 ExcludeTestTypeDeficiencies(testType);
+                testType.TargetToStudentsWithDeficiencies = entity.TargetToStudentsWithDeficiencies;
                 if (entity.TargetToStudentsWithDeficiencies)
                 {
-                    var testTypeDeficienciesIdsInDatabase = testType.TestTypeDeficiencies.Select(x => x.Id);
                     foreach(var testTypeDeficiencyToUpdate in entity.TestTypeDeficiencies)
                     {
-                        var testTypeDeficiency = testType.TestTypeDeficiencies.FirstOrDefault(x => x.Id == testTypeDeficiencyToUpdate.Id);
+                        var testTypeDeficiency = testType.TestTypeDeficiencies.FirstOrDefault(x => x.DeficiencyId == testTypeDeficiencyToUpdate.DeficiencyId);
                         if(testTypeDeficiency is null)
                         {
-                            testType.TestTypeDeficiencies.Add(testTypeDeficiencyToUpdate);
+                            testType.AddTestTypeDeficiency(testTypeDeficiencyToUpdate);
+                            gestaoAvaliacaoContext.TestTypeDeficiencies.Add(testTypeDeficiencyToUpdate);
                         }
                         else
                         {
@@ -170,25 +171,17 @@ namespace GestaoAvaliacao.Repository
 
         public async Task<TestType> GetAsync(long id, Guid EntityId)
         {
-            var transactionOptions = new System.Transactions.TransactionOptions
+            using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
-            };
-
-            using (new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Required, transactionOptions))
-            {
-                using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
-                {
-                    return await GestaoAvaliacaoContext.TestType
-                        .AsNoTracking()
-                        .Include("TestTypeItemLevel.ItemLevel")
-                        .Include("FormatType")
-                        .Include("ItemType")
-                        .Include("TestTypeCourses.TestTypeCourseCurriculumGrades")
-                        .Include("TestTypeCourses")
-                        .Include("TestTypeDeficiencies")
-                        .FirstOrDefaultAsync(a => a.Id == id && a.EntityId == EntityId);
-                }
+                return await GestaoAvaliacaoContext.TestType
+                    .AsNoTracking()
+                    .Include("TestTypeItemLevel.ItemLevel")
+                    .Include("FormatType")
+                    .Include("ItemType")
+                    .Include("TestTypeCourses.TestTypeCourseCurriculumGrades")
+                    .Include("TestTypeCourses")
+                    .Include("TestTypeDeficiencies")
+                    .FirstOrDefaultAsync(a => a.Id == id && a.EntityId == EntityId);
             }
         }
 

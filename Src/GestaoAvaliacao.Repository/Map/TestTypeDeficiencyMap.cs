@@ -12,7 +12,9 @@ namespace GestaoAvaliacao.Repository.Map
             Property(p => p.DeficiencyId)
               .IsRequired();
 
-            HasRequired(p => p.TestType);
+            HasRequired(p => p.TestType)
+                .WithMany(p => p.TestTypeDeficiencies)
+                .HasForeignKey(p => p.TestType_Id);
         }
     }
 }

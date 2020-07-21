@@ -50,6 +50,21 @@ namespace GestaoAvaliacao.Controllers
         #region Read
 
         [HttpGet]
+        public async Task<JsonResult> GetDeficiencies()
+        {
+            try
+            {
+                var deficiencies = await testTypeDeficiencyBusiness.GetDeficienciesAsync();
+                return Json(new { success = true, Deficiencies = deficiencies }, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao carregar as deficiências dos alunos." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
         public JsonResult GetFrequencyApplicationList()
         {
             try
@@ -133,48 +148,44 @@ namespace GestaoAvaliacao.Controllers
             try
             {
                 var testType = await testTypeBusiness.GetAsync(Id, SessionFacade.UsuarioLogado.Usuario.ent_id);
-                var deficiencies = await testTypeDeficiencyBusiness.GetDeficienciesAsync();
 
-                foreach(var testTypeDeficieny in testType.TestTypeDeficiencies.Where(x => x.State == (byte)EnumState.ativo))
-                {
-                    var deficiency = deficiencies.FirstOrDefault(x => x.Id == testTypeDeficieny.DeficiencyId);
-                    if (deficiency is null) continue;
-                    deficiency.Selected = true;
-                }
+                var deficiencies = await testTypeDeficiencyBusiness.GetDeficienciesAsync();
+                var atctvesTestTypeDeficienciesIds = testType.TestTypeDeficiencies.Where(x => x.State == (byte)EnumState.ativo).Select(x => x.DeficiencyId).ToList();
+                var deficienciesSelected = deficiencies.Where(x => atctvesTestTypeDeficienciesIds.Contains(x.Id)).ToList(); ;
 
                 var retorno = new
+                {
+                    testType.Id,
+                    testType.Description,
+                    testType.ModelTest_Id,
+                    DeficienciesSelected = deficienciesSelected,
+                    FormatType = new
                     {
-                        testType.Id,
-                        testType.Description,
-                        testType.ModelTest_Id,
-                        Deficiencies = deficiencies,
-                        FormatType = new
-                        {
-                            Id = testType.FormatType == null ? 0 : testType.FormatType.Id,
-                            Description = testType.FormatType == null ? string.Empty : testType.FormatType.Description
-                        },
-                        ItemType = new
-                        {
-                            Id = testType.ItemType == null ? 0 : testType.ItemType.Id,
-                            Description = testType.ItemType == null ? string.Empty : testType.ItemType.Description,
-                            IsDefault = (testType.ItemType != null) && testType.ItemType.IsDefault
-                        },
-                        TestTypeItemLevel = (from il in testType.TestTypeItemLevel
-                                             where il.State == (Byte)EnumState.ativo
-                                             select new
-                                             {
-                                                 Id = il.Id,
-                                                 Value = il.Value,
-                                                 IdItem = il.ItemLevel.Id,
-                                                 Description = il.ItemLevel.Description
-                                             }).ToList(),
-                        testType.FrequencyApplication,
-                        testType.Bib,
-                        testType.Global,
-                        testType.TargetToStudentsWithDeficiencies,
-                        TypeLevelEducation = levelEducationBusiness.GetCustom(testType.TypeLevelEducationId),
-                        Disabled = testType.TestTypeCourses.FirstOrDefault(p => p.State == (Byte)EnumState.ativo) != null
-                    };
+                        Id = testType.FormatType == null ? 0 : testType.FormatType.Id,
+                        Description = testType.FormatType == null ? string.Empty : testType.FormatType.Description
+                    },
+                    ItemType = new
+                    {
+                        Id = testType.ItemType == null ? 0 : testType.ItemType.Id,
+                        Description = testType.ItemType == null ? string.Empty : testType.ItemType.Description,
+                        IsDefault = (testType.ItemType != null) && testType.ItemType.IsDefault
+                    },
+                    TestTypeItemLevel = (from il in testType.TestTypeItemLevel
+                                            where il.State == (Byte)EnumState.ativo
+                                            select new
+                                            {
+                                                Id = il.Id,
+                                                Value = il.Value,
+                                                IdItem = il.ItemLevel.Id,
+                                                Description = il.ItemLevel.Description
+                                            }).ToList(),
+                    testType.FrequencyApplication,
+                    testType.Bib,
+                    testType.Global,
+                    testType.TargetToStudentsWithDeficiencies,
+                    TypeLevelEducation = levelEducationBusiness.GetCustom(testType.TypeLevelEducationId),
+                    Disabled = testType.TestTypeCourses.FirstOrDefault(p => p.State == (Byte)EnumState.ativo) != null
+                };
 
                 return Json(new { success = true, testType = retorno }, JsonRequestBehavior.AllowGet);
             }

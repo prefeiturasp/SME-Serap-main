@@ -6,6 +6,5 @@ namespace GestaoAvaliacao.Entities.DTO
     {
         public Guid Id { get; set; }
         public string Description { get; set; }
-        public bool Selected { get; set; }
     }
 }

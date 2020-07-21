@@ -7,5 +7,6 @@ namespace GestaoAvaliacao.Entities
     {
         public Guid DeficiencyId { get; set; }
         public virtual TestType TestType { get; set; }
+        public long TestType_Id { get; set; }
     }
 }
