@@ -168,7 +168,6 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-
         public async Task<TestType> GetAsync(long id, Guid EntityId)
         {
             using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
@@ -203,7 +202,6 @@ namespace GestaoAvaliacao.Repository
                 }
             }
         }
-
 
         public async Task DeleteAsync(long id)
         {
@@ -293,41 +291,25 @@ namespace GestaoAvaliacao.Repository
 
         public async Task<IEnumerable<TestType>> LoadNotGlobalAsync(Guid EntityId)
         {
-            var transactionOptions = new System.Transactions.TransactionOptions
+            using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
-            };
-
-            using (new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Required, transactionOptions))
-            {
-                using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
-                {
-                    return await gestaoAvaliacaoContext.TestType
-                        .AsNoTracking()
-                        .Where(x => x.State == (Byte)EnumState.ativo && x.EntityId == EntityId && !x.Global)
-                        .OrderBy(x => x.Description)
-                        .ToListAsync();
-                }
+                return await gestaoAvaliacaoContext.TestType
+                    .AsNoTracking()
+                    .Where(x => x.State == (Byte)EnumState.ativo && x.EntityId == EntityId && !x.Global)
+                    .OrderBy(x => x.Description)
+                    .ToListAsync();
             }
         }
 
         public async Task<IEnumerable<TestType>> LoadAllAsync(Guid EntityId)
         {
-            var transactionOptions = new System.Transactions.TransactionOptions
+            using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
-            };
-
-            using (new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Required, transactionOptions))
-            {
-                using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
-                {
-                    return await gestaoAvaliacaoContext.TestType
-                        .AsNoTracking()
-                        .Where(x => x.State == (Byte)EnumState.ativo && x.EntityId == EntityId)
-                        .OrderBy(x => x.Description)
-                        .ToListAsync();
-                }
+                return await gestaoAvaliacaoContext.TestType
+                    .AsNoTracking()
+                    .Where(x => x.State == (Byte)EnumState.ativo && x.EntityId == EntityId)
+                    .OrderBy(x => x.Description)
+                    .ToListAsync();
             }
         }
 
@@ -390,6 +372,19 @@ namespace GestaoAvaliacao.Repository
                 cn.Open();
 
                 return cn.Query<TestType>(sql.ToString(), new { ent_id = EntityId, state = (byte)EnumState.excluido, global = global });
+            }
+        }
+
+        public bool GetTestTypeTargetToStudentsWithDeficiencies(long id)
+        {
+            var sql = @"SELECT TargetToStudentsWithDeficiencies
+                      FROM [TestType] (NOLOCK)
+                      WHERE [Id] = @id AND [State] <> @state";
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+                return cn.Query<bool>(sql.ToString(), new { id, state = (byte)EnumState.excluido }).FirstOrDefault();
             }
         }
 

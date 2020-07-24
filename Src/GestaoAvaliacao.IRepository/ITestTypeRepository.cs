@@ -22,6 +22,7 @@ namespace GestaoAvaliacao.IRepository
         bool ExistsTestAssociated(long Id);
         TestType Get(long Id);
         IEnumerable<TestType> LoadFiltered(Guid EntityId, bool global);
+		bool GetTestTypeTargetToStudentsWithDeficiencies(long id);
 
-    }
+	}
 }

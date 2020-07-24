@@ -20,22 +20,24 @@ namespace GestaoAvaliacao.Business
 		private readonly ITestRepository testRepository;
 		private readonly IESC_EscolaBusiness escolaBusiness;
 		private readonly ITUR_TurmaBusiness turmaBusiness;
-		private readonly IACA_AlunoBusiness alunoBusiness;
 		private readonly ITestSectionStatusCorrectionBusiness testSectionStatusCorrectionBusiness;
 		private readonly ITestCurriculumGradeBusiness testCurriculumGradeBusiness;
+        private readonly ITestTypeRepository testTypeRepository;
+        private readonly ITestTypeDeficiencyRepository testTypeDeficiencyRepository;
 
-		public AdherenceBusiness(IAdherenceRepository adherenceRepository, ITestRepository testRepository, IESC_EscolaBusiness escolaBusiness, ITUR_TurmaBusiness turmaBusiness, IACA_AlunoBusiness alunoBusiness,
-
-			ITestSectionStatusCorrectionBusiness testSectionStatusCorrectionBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness)
+        public AdherenceBusiness(IAdherenceRepository adherenceRepository, ITestRepository testRepository, IESC_EscolaBusiness escolaBusiness, 
+			ITUR_TurmaBusiness turmaBusiness, ITestSectionStatusCorrectionBusiness testSectionStatusCorrectionBusiness, 
+			ITestCurriculumGradeBusiness testCurriculumGradeBusiness, ITestTypeRepository testTypeRepository, ITestTypeDeficiencyRepository testTypeDeficiencyRepository)
 		{
 			this.adherenceRepository = adherenceRepository;
 			this.testRepository = testRepository;
 			this.escolaBusiness = escolaBusiness;
 			this.turmaBusiness = turmaBusiness;
-			this.alunoBusiness = alunoBusiness;
 			this.testSectionStatusCorrectionBusiness = testSectionStatusCorrectionBusiness;
 			this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
-		}
+            this.testTypeRepository = testTypeRepository;
+            this.testTypeDeficiencyRepository = testTypeDeficiencyRepository;
+        }
 
 		#region Read
 
@@ -102,8 +104,13 @@ namespace GestaoAvaliacao.Business
 
 		public IEnumerable<AdherenceGrid> LoadStudent(long tur_id, long test_id)
 		{
-			Test test = testRepository.GetObject(test_id);
-			return adherenceRepository.LoadStudent(tur_id, test.Id, test.AllAdhered, test.ApplicationStartDate);
+			var test = testRepository.GetObject(test_id);
+			var targetToStudentsWithDeficiencies = testTypeRepository.GetTestTypeTargetToStudentsWithDeficiencies(test.TestType_Id);
+			var deficienciesToFilter = targetToStudentsWithDeficiencies
+				? testTypeDeficiencyRepository.GetDeficienciesIds(test.TestType_Id)
+				: null;
+
+			return adherenceRepository.LoadStudent(tur_id, test.Id, test.AllAdhered, test.ApplicationStartDate, deficienciesToFilter);
 		}
 
 		public IEnumerable<AdherenceGrid> LoadSelectedSchool(ref Pager pager, Guid uad_id, int esc_id, int ttn_id, long test_id, int crp_ordem, CoreSSO.SYS_Usuario user, CoreSSO.SYS_Grupo grupo)
