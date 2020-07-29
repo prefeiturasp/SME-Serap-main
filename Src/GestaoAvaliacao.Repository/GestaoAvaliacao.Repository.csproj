@@ -97,6 +97,7 @@
     <Compile Include="Map\TestGroupMap.cs" />
     <Compile Include="Map\TestPermissionMap.cs" />
     <Compile Include="Map\TestSubGroupMap.cs" />
+    <Compile Include="Map\TestTypeDeficiencyMap.cs" />
     <Compile Include="PageConfigurationRepository.cs" />
     <Compile Include="ReportItemPerformanceRepository.cs" />
     <Compile Include="ReportTestPerformanceRepository.cs" />
@@ -186,6 +187,7 @@
     <Compile Include="TestSubGroupRepository.cs" />
     <Compile Include="TestTypeCourseCurriculumGradeRepository.cs" />
     <Compile Include="TestTypeCourseRepository.cs" />
+    <Compile Include="TestTypeDeficiencyRepository.cs" />
     <Compile Include="TestTypeItemLevelRepository.cs" />
     <Compile Include="TestTypeRepository.cs" />
     <Compile Include="FormatTypeRepository.cs" />

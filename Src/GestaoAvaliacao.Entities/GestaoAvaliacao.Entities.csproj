@@ -68,6 +68,7 @@
     <Compile Include="CorrectionStudentGrid.cs" />
     <Compile Include="DTO\AdherenceDTO.cs" />
     <Compile Include="DTO\AnswerSheetLotDTO.cs" />
+    <Compile Include="DTO\DeficiencyDto.cs" />
     <Compile Include="DTO\DreDTO.cs" />
     <Compile Include="DTO\DresDTO.cs" />
     <Compile Include="DTO\ElectronicTestDTO.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="TestType.cs" />
     <Compile Include="TestTypeCourse.cs" />
     <Compile Include="TestTypeCourseCurriculumGrade.cs" />
+    <Compile Include="TestTypeDeficiency.cs" />
     <Compile Include="TestTypeItemLevel.cs" />
     <Compile Include="FormatType.cs" />
     <Compile Include="Uploader.cs" />

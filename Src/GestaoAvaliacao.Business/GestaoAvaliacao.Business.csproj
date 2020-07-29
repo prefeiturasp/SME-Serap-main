@@ -131,6 +131,7 @@
     <Compile Include="TestTypeBusiness.cs" />
     <Compile Include="TestTypeCourseBusiness.cs" />
     <Compile Include="TestTypeCourseCurriculumGradeBusiness.cs" />
+    <Compile Include="TestTypeDeficiencyBusiness.cs" />
     <Compile Include="TestTypeItemLevelBusiness.cs" />
     <Compile Include="FormatTypeBusiness.cs" />
   </ItemGroup>

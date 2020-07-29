@@ -527,15 +527,18 @@ namespace GestaoAvaliacao.Repository
 			}
 		}
 
-		public IEnumerable<AdherenceGrid> LoadStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao)
+		public IEnumerable<AdherenceGrid> LoadStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao, IEnumerable<Guid> deficienciesToFilter = null)
 		{
 			#region Query
-			var sql = string.Format(@"
+			var baseQuery = string.Format(@"
                         SELECT 
 	                        Alu.alu_id, 
+							Alu.pes_id,
+							Mtu.mtu_numeroChamada,
 	                        (CASE WHEN (Mtu.mtu_numeroChamada > 0) THEN CAST(Mtu.mtu_numeroChamada AS VARCHAR(MAX)) + ' - ' ELSE '' END + Alu.alu_nome) AS alu_nome, 
 	                        ISNULL(a.TypeSelection, {0}) AS TypeSelection,
                             CAST(CASE WHEN (a.Id IS NULL) THEN 0 ELSE 1 END AS BIT) AS existAdherence
+					    INTO #tempAlunos
                         FROM 
 	                        SGP_MTR_MatriculaTurma AS Mtu WITH(NOLOCK)
 	                        INNER JOIN SGP_ACA_Aluno AS Alu WITH(NOLOCK)
@@ -544,23 +547,54 @@ namespace GestaoAvaliacao.Repository
 	                        LEFT JOIN Adherence A WITH(NOLOCK) 
 		                        ON a.EntityId = alu.alu_id
 		                        AND a.TypeEntity = @typeEntity 
-		                        AND a.Test_Id = @Test_Id
-                        WHERE
-	                        Mtu.tur_id = @tur_id
-                            AND Mtu.mtu_situacao <> @stateExcluido
-	                        AND Mtu.mtu_dataMatricula <= @dataAplicacao
-	                        AND (Mtu.mtu_dataSaida IS NULL OR Mtu.mtu_dataSaida > @dataAplicacao)
-                        ORDER BY 
-	                        Mtu.mtu_numeroChamada, alu.alu_nome"
-					, AllAdhered ? (byte)EnumAdherenceSelection.Selected : (byte)EnumAdherenceSelection.NotSelected);
+		                        AND a.Test_Id = @Test_Id 
+						WHERE Mtu.tur_id = @tur_id
+						   AND Mtu.mtu_situacao <> @stateExcluido
+						   AND Mtu.mtu_dataMatricula <= @dataAplicacao
+						   AND(Mtu.mtu_dataSaida IS NULL OR Mtu.mtu_dataSaida > @dataAplicacao); ",
+					AllAdhered ? (byte)EnumAdherenceSelection.Selected : (byte)EnumAdherenceSelection.NotSelected);
 
+			var realizarFiltroPorAlunosComDefinciencia = deficienciesToFilter?.Any() ?? false;
+
+			baseQuery += realizarFiltroPorAlunosComDefinciencia
+				? @"SELECT
+						pes_id
+					INTO #tempPessoaIds
+					FROM #tempAlunos; "
+				: string.Empty;
+
+			var resultQuery = @"SELECT 
+								 alu_id, alu_nome, TypeSelection, existAdherence 
+							  FROM #tempAlunos temp ";
+
+			if(realizarFiltroPorAlunosComDefinciencia)
+            {
+				baseQuery += $@"SELECT
+								DISTINCT temp.pes_id
+							 INTO #tempPessoaIdsFiltrados
+							 FROM 
+								#tempPessoaIds temp
+							 INNER JOIN
+								[CoreSSO].[dbo].[PES_PessoaDeficiencia] pd (NOLOCK)
+								ON temp.pes_id = pd.pes_id
+							 WHERE 
+								pd.tde_id IN ('{string.Join("','", deficienciesToFilter)}'); ";
+
+				resultQuery += $@"INNER JOIN
+									#tempPessoaIdsFiltrados tempIds (NOLOCK)
+									ON temp.pes_id = tempIds.pes_id ";
+			}
+
+			resultQuery += "ORDER BY mtu_numeroChamada, alu_nome;";
+
+			var sql = baseQuery + resultQuery;
 			#endregion
 
 			using (IDbConnection cn = Connection)
 			{
 				cn.Open();
 
-				var retorno = cn.Query<AdherenceGrid>(sql.ToString(), new
+				var retorno = cn.Query<AdherenceGrid>(sql, new
 				{
 					tur_id = tur_id,
 					test_id = test_id,
@@ -1036,7 +1070,7 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<AdherenceGrid> LoadSelectedStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao)
 		{
 			#region Query
-			StringBuilder sql = new StringBuilder();
+			var sql = new StringBuilder();
 			sql.AppendFormat(@" SELECT 
 	                                Alu.alu_id, 
 	                                (CASE WHEN (Mtu.mtu_numeroChamada > 0) THEN CAST(Mtu.mtu_numeroChamada AS VARCHAR(MAX)) + ' - ' ELSE '' END + Alu.alu_nome) AS alu_nome, 

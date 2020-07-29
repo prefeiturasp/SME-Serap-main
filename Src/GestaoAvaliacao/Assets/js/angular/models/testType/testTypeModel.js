@@ -49,6 +49,10 @@
             'getFrequencyApplicationChildList': {
                 method: 'GET',
                 url: base_url('TestType/GetFrequencyApplicationChildList')
+            },
+            'getDeficiencies': {
+                method: 'GET',
+                url: base_url('TestType/GetDeficiencies')
             }
 
         };
