@@ -5027,7 +5027,7 @@ function definirEventHandlers() {
                                 var labelAtual = chartItem[0]._view.label;
                                 var labelSplitArray = labelAtual.split("(");
                                 var alunoID =
-                                    parseInt(labelSplitArray[labelSplitArray.length - 1].split(")")[0]);
+                                    Number(labelSplitArray[labelSplitArray.length - 1].split(")")[0]);
 
                                 if (!isNaN(alunoID)) {
                                     var E = $("#ddlResultadoEdicao").val(); //Edicação
