@@ -18,6 +18,6 @@ namespace GestaoAvaliacao.IBusiness
         Task<long> CountInconsistency(long test_id, long tur_id);
 
         Task<StudentCorrection> SaveAPI(List<Answer> answerList, long alu_id, TestDTO testModel);
-        StudentCorrection GetStudentCorrectionByTestAluId(long test_Id, long alu_id);
+        StudentCorrection GetStudentCorrectionByTestAluId(long test_Id, long alu_id, long tur_id);
     }
 }

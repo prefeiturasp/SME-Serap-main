@@ -139,7 +139,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                     sqlQuery.AppendLine("               ,[sg_tp_escola]");
                     sqlQuery.AppendLine("FROM TurmasEjaEol t");
                     sqlQuery.AppendLine(" INNER JOIN GestaoPedagogica..ESC_Escola e ON e.esc_codigo = t.cd_escola ");
-                    sqlQuery.AppendLine($" where cd_escola = {codigoDaEscola} ");
+                    sqlQuery.AppendLine($" where cd_escola = {codigoDaEscola} and cd_turma_escola=2124657 ");
 
                     var commandGestaoAvaliacao = new SqlCommand(sqlQuery.ToString(), conGestaoAvaliacao);
                     using (var drGestaoAvaliacao = commandGestaoAvaliacao.ExecuteReader())
@@ -770,87 +770,87 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                             }
                                         }
 
-                                        if (alunosComUsuario.Any())
-                                        {
-                                            using (var transaction = connCoreSSO.BeginTransaction())
-                                            {
-                                                //Criar Matricula dos ALunos                                                
-                                                foreach (var alunoComUsuario in alunosComUsuario)
-                                                {
-                                                    var pes_id = new Guid();
-                                                    var login = string.Concat("RA", alunoComUsuario.codigoAluno);
-                                                    var query = $"SELECT usu_id, pes_id FROM SYS_Usuario WHERE usu_login = '{login}' AND usu_situacao = 1";
-                                                    commandCoreSSO = new SqlCommand(query.ToString(), connCoreSSO, transaction);
-                                                    using (var dr = commandCoreSSO.ExecuteReader(CommandBehavior.SingleRow))
-                                                    {
-                                                        if (dr.Read())
-                                                        {
-                                                            pes_id = Guid.Parse(dr["pes_id"].ToString());
-                                                        }
-                                                    }
+                                        //if (alunosComUsuario.Any())
+                                        //{
+                                        //    using (var transaction = connCoreSSO.BeginTransaction())
+                                        //    {
+                                        //        //Criar Matricula dos ALunos                                                
+                                        //        foreach (var alunoComUsuario in alunosComUsuario)
+                                        //        {
+                                        //            var pes_id = new Guid();
+                                        //            var login = string.Concat("RA", alunoComUsuario.codigoAluno);
+                                        //            var query = $"SELECT usu_id, pes_id FROM SYS_Usuario WHERE usu_login = '{login}' AND usu_situacao = 1";
+                                        //            commandCoreSSO = new SqlCommand(query.ToString(), connCoreSSO, transaction);
+                                        //            using (var dr = commandCoreSSO.ExecuteReader(CommandBehavior.SingleRow))
+                                        //            {
+                                        //                if (dr.Read())
+                                        //                {
+                                        //                    pes_id = Guid.Parse(dr["pes_id"].ToString());
+                                        //                }
+                                        //            }
 
-                                                    var sqlQueryMatricula = new StringBuilder();
-                                                    sqlQueryMatricula.AppendLine("SELECT cd_aluno,");
-                                                    sqlQueryMatricula.AppendLine("       dt_status_matricula,");
-                                                    sqlQueryMatricula.AppendLine("       st_matricula");
-                                                    sqlQueryMatricula.AppendLine("    FROM MatriculasEjaEol");
-                                                    sqlQueryMatricula.AppendLine("WHERE cd_aluno = @cd_aluno");
+                                        //            var sqlQueryMatricula = new StringBuilder();
+                                        //            sqlQueryMatricula.AppendLine("SELECT cd_aluno,");
+                                        //            sqlQueryMatricula.AppendLine("       dt_status_matricula,");
+                                        //            sqlQueryMatricula.AppendLine("       st_matricula");
+                                        //            sqlQueryMatricula.AppendLine("    FROM MatriculasEjaEol");
+                                        //            sqlQueryMatricula.AppendLine("WHERE cd_aluno = @cd_aluno");
 
-                                                    var dadosMatricula = new List<Matricula>();
-                                                    var dataMatricula = alunoComUsuario.dataSituacao;
-                                                    using (var command = new SqlCommand(sqlQueryMatricula.ToString(), conGestaoAvaliacao, transactionGestaoAvaliacao))
-                                                    {
-                                                        command.Parameters.AddWithValue("@cd_aluno", alunoComUsuario.codigoAluno);
-                                                        using (var dr = command.ExecuteReader())
-                                                        {
-                                                            while (dr.Read())
-                                                            {
-                                                                dadosMatricula.Add(new Matricula()
-                                                                {
-                                                                    cd_aluno = dr.GetDouble(0),
-                                                                    dt_status_matricula = Convert.ToDateTime(dr.GetString(1)),
-                                                                    st_matricula = dr.GetDouble(2)
-                                                                });
-                                                            }
-                                                        }
+                                        //            var dadosMatricula = new List<Matricula>();
+                                        //            var dataMatricula = alunoComUsuario.dataSituacao;
+                                        //            using (var command = new SqlCommand(sqlQueryMatricula.ToString(), conGestaoAvaliacao, transactionGestaoAvaliacao))
+                                        //            {
+                                        //                command.Parameters.AddWithValue("@cd_aluno", alunoComUsuario.codigoAluno);
+                                        //                using (var dr = command.ExecuteReader())
+                                        //                {
+                                        //                    while (dr.Read())
+                                        //                    {
+                                        //                        dadosMatricula.Add(new Matricula()
+                                        //                        {
+                                        //                            cd_aluno = dr.GetDouble(0),
+                                        //                            dt_status_matricula = Convert.ToDateTime(dr.GetString(1)),
+                                        //                            st_matricula = dr.GetDouble(2)
+                                        //                        });
+                                        //                    }
+                                        //                }
 
-                                                        if (dadosMatricula.Any())
-                                                        {
-                                                            if (dadosMatricula.Count == 1)
-                                                                dataMatricula = dadosMatricula.Single().dt_status_matricula;
-                                                            else if (dadosMatricula.Count > 1 && dadosMatricula.Any(x => x.st_matricula == 1))
-                                                            {
-                                                                dataMatricula = dadosMatricula.Where(x => x.st_matricula == 1)
-                                                                    .OrderBy(x => x.dt_status_matricula)
-                                                                    .First().dt_status_matricula;
-                                                            }
-                                                            else
-                                                            {
-                                                                dataMatricula = dadosMatricula
-                                                                    .OrderBy(x => x.dt_status_matricula)
-                                                                    .First().dt_status_matricula;
-                                                            }
-                                                        }
-                                                    }
+                                        //                if (dadosMatricula.Any())
+                                        //                {
+                                        //                    if (dadosMatricula.Count == 1)
+                                        //                        dataMatricula = dadosMatricula.Single().dt_status_matricula;
+                                        //                    else if (dadosMatricula.Count > 1 && dadosMatricula.Any(x => x.st_matricula == 1))
+                                        //                    {
+                                        //                        dataMatricula = dadosMatricula.Where(x => x.st_matricula == 1)
+                                        //                            .OrderBy(x => x.dt_status_matricula)
+                                        //                            .First().dt_status_matricula;
+                                        //                    }
+                                        //                    else
+                                        //                    {
+                                        //                        dataMatricula = dadosMatricula
+                                        //                            .OrderBy(x => x.dt_status_matricula)
+                                        //                            .First().dt_status_matricula;
+                                        //                    }
+                                        //                }
+                                        //            }
 
-                                                    sqlQuery.Clear();
-                                                    sqlQuery.AppendLine(GetSqlQueryMatriculaTurmaEAcaAluno());
-                                                    using (var commandGestaoAvaliacaoSgp = new SqlCommand(sqlQuery.ToString(), conGestaoAvaliacao_SGP, transactionGestaoAvaliacaoSgp))
-                                                    {
-                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_nome", alunoComUsuario.nomeAluno);
-                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_matricula", alunoComUsuario.codigoAluno);
-                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@pes_id", pes_id);
-                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cur_id", cur_id);
-                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_numeroChamada", alunoComUsuario.numeroChamada);
-                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_dataMtricula", dataMatricula);
-                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@esc_codigo", novaTurma.CodigoEscola.ToString().PadLeft(6, '0'));
-                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@tur_codigo", string.Concat("EJA-", novaTurma.DescricaoTurma));
-                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cal_id", idCalendarioAnual);
-                                                        commandGestaoAvaliacaoSgp.ExecuteNonQuery();
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        //            sqlQuery.Clear();
+                                        //            sqlQuery.AppendLine(GetSqlQueryMatriculaTurmaEAcaAluno());
+                                        //            using (var commandGestaoAvaliacaoSgp = new SqlCommand(sqlQuery.ToString(), conGestaoAvaliacao_SGP, transactionGestaoAvaliacaoSgp))
+                                        //            {
+                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_nome", alunoComUsuario.nomeAluno);
+                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_matricula", alunoComUsuario.codigoAluno);
+                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@pes_id", pes_id);
+                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cur_id", cur_id);
+                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_numeroChamada", alunoComUsuario.numeroChamada);
+                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_dataMtricula", dataMatricula);
+                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@esc_codigo", novaTurma.CodigoEscola.ToString().PadLeft(6, '0'));
+                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@tur_codigo", string.Concat("EJA-", novaTurma.DescricaoTurma));
+                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cal_id", idCalendarioAnual);
+                                        //                commandGestaoAvaliacaoSgp.ExecuteNonQuery();
+                                        //            }
+                                        //        }
+                                        //    }
+                                        //}
                                     }
                                 }
                             }
@@ -1009,7 +1009,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
             sqlQuery.AppendLine("        INNER JOIN ESC_TipoClassificacaoEscola tce");
             sqlQuery.AppendLine("            ON ec.tce_id = tce.tce_id");
             sqlQuery.AppendLine("WHERE tce.tce_id = @tce_id and");
-            sqlQuery.AppendLine("      e.esc_situacao = 1 ");
+            sqlQuery.AppendLine("      e.esc_situacao = 1 and e.esc_codigo='094927' ");
             sqlQuery.AppendLine("ORDER BY e.esc_id");
 
             var codigoEscola = new List<string>();
