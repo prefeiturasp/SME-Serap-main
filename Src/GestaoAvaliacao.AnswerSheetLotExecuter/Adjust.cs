@@ -27,6 +27,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
         //private const string PREFIXO_URL_API_EOL = @"http://hom-smeintegracaoapi.sme.prefeitura.sp.gov.br/";
         private const string PREFIXO_URL_API_EOL = @"http://smeintegracaoapi.sme.prefeitura.sp.gov.br/";
         private readonly IWindsorContainer container;
+        private const string dataCriacaoEAlteracao = @"2020-08-04 00:00:00";
 
         public Adjust()
         {
@@ -139,7 +140,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                     sqlQuery.AppendLine("               ,[sg_tp_escola]");
                     sqlQuery.AppendLine("FROM TurmasEjaEol t");
                     sqlQuery.AppendLine(" INNER JOIN GestaoPedagogica..ESC_Escola e ON e.esc_codigo = t.cd_escola ");
-                    sqlQuery.AppendLine($" where cd_escola = {codigoDaEscola} and cd_turma_escola=2124657 ");
+                    sqlQuery.AppendLine($" where cd_escola = {codigoDaEscola} ");
 
                     var commandGestaoAvaliacao = new SqlCommand(sqlQuery.ToString(), conGestaoAvaliacao);
                     using (var drGestaoAvaliacao = commandGestaoAvaliacao.ExecuteReader())
@@ -237,8 +238,8 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                     sqlQuery.AppendLine("	             @cal_id,");
                                     sqlQuery.AppendLine("	             tt.ttn_id,");
                                     sqlQuery.AppendLine("	             1,");
-                                    sqlQuery.AppendLine("	             GETDATE(),");
-                                    sqlQuery.AppendLine("	             GETDATE(),");
+                                    sqlQuery.AppendLine("	             '2020-08-04 00:00:00',");
+                                    sqlQuery.AppendLine("	             '2020-08-04 00:00:00',");
                                     sqlQuery.AppendLine("	             1");
                                     sqlQuery.AppendLine("	FROM ESC_Escola e,");
                                     sqlQuery.AppendLine("		 ACA_TipoTurno tt");
@@ -302,8 +303,8 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                     sqlQuery.AppendLine("	    @cur_nome,");
                                     sqlQuery.AppendLine("	    @cur_nome_abreviado,");
                                     sqlQuery.AppendLine("	    1,");
-                                    sqlQuery.AppendLine("	    GETDATE(),");
-                                    sqlQuery.AppendLine("	    GETDATE()");
+                                    sqlQuery.AppendLine("	    '2020-08-04 00:00:00',");
+                                    sqlQuery.AppendLine("	    '2020-08-04 00:00:00'");
                                     sqlQuery.AppendLine("	FROM ACA_TipoNivelEnsino tne, ");
                                     sqlQuery.AppendLine("	     ACA_TipoModalidadeEnsino tme");
                                     sqlQuery.AppendLine("WHERE tne.tne_ordem = @tne_ordem AND");
@@ -409,8 +410,8 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                         sqlQuery.AppendLine("	    @tcp_descricao,");
                                         sqlQuery.AppendLine("	    @tcp_ordem,");
                                         sqlQuery.AppendLine("	    1,");
-                                        sqlQuery.AppendLine("	    GETDATE(),");
-                                        sqlQuery.AppendLine("	    GETDATE()");
+                                        sqlQuery.AppendLine("	    '2020-08-04 00:00:00',");
+                                        sqlQuery.AppendLine("	    '2020-08-04 00:00:00'");
                                         sqlQuery.AppendLine("	FROM ACA_TipoNivelEnsino tne,");
                                         sqlQuery.AppendLine("		 ACA_TipoModalidadeEnsino tme");
                                         sqlQuery.AppendLine("WHERE tne.tne_nome like '%EJA%' AND");
@@ -432,8 +433,8 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                 sqlQuery.Clear();
                                 sqlQuery.AppendLine("INSERT INTO TestCurriculumGrade");
                                 sqlQuery.AppendLine("	SELECT DISTINCT @tcp_id,");
-                                sqlQuery.AppendLine("					GETDATE(),");
-                                sqlQuery.AppendLine("					GETDATE(),");
+                                sqlQuery.AppendLine("					'2020-08-04 00:00:00',");
+                                sqlQuery.AppendLine("					'2020-08-04 00:00:00',");
                                 sqlQuery.AppendLine("					1,");
                                 sqlQuery.AppendLine("					@Test_Id");
                                 sqlQuery.AppendLine("	WHERE NOT EXISTS (SELECT Id");
@@ -473,8 +474,8 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                 sqlQuery.Clear();
                                 sqlQuery.AppendLine("INSERT INTO TestTypeCourse");
                                 sqlQuery.AppendLine("	SELECT DISTINCT @cur_id,");
-                                sqlQuery.AppendLine("					GETDATE(),");
-                                sqlQuery.AppendLine("					GETDATE(),");
+                                sqlQuery.AppendLine("					'2020-08-04 00:00:00',");
+                                sqlQuery.AppendLine("					'2020-08-04 00:00:00',");
                                 sqlQuery.AppendLine("					1,");
                                 sqlQuery.AppendLine("					21,");
                                 sqlQuery.AppendLine("					tme.tme_id");
@@ -506,8 +507,8 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                             1,
                                             NULL,
                                             1,
-                                            GETDATE(),
-                                            GETDATE()
+                                            '2020-08-04 00:00:00',
+                                            '2020-08-04 00:00:00'
                                     END      
 
                                     IF EXISTS (SELECT cur_id FROM ACA_CurriculoPeriodo 
@@ -525,38 +526,10 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                             @tcp_ordem,
                                             @tcp_descricao,
                                             1,
-                                            GETDATE(),
-                                            GETDATE(),
+                                            '2020-08-04 00:00:00',
+                                            '2020-08-04 00:00:00',
                                             @tcp_id
                                     END  ");
-                                //sqlQuery.AppendLine("INSERT INTO ACA_Curriculo");
-                                //sqlQuery.AppendLine("	SELECT DISTINCT @cur_id,");
-                                //sqlQuery.AppendLine("				    1,");
-                                //sqlQuery.AppendLine("				    NULL,");
-                                //sqlQuery.AppendLine("				    1,");
-                                //sqlQuery.AppendLine("				    GETDATE(),");
-                                //sqlQuery.AppendLine("				    GETDATE()");
-                                //sqlQuery.AppendLine("	WHERE NOT EXISTS (SELECT cur_id");
-                                //sqlQuery.AppendLine("					  FROM ACA_Curriculo");
-                                //sqlQuery.AppendLine("					  WHERE cur_id = @cur_id AND");
-                                //sqlQuery.AppendLine("							crr_id = 1)");
-                                //sqlQuery.AppendLine("	INSERT INTO ACA_CurriculoPeriodo");
-                                //sqlQuery.AppendLine("	SELECT @cur_id,");
-                                //sqlQuery.AppendLine("		   1,");
-                                //sqlQuery.AppendLine("		   @tcp_ordem,");
-                                //sqlQuery.AppendLine("		   @tcp_ordem,");
-                                //sqlQuery.AppendLine("		   @tcp_descricao,");
-                                //sqlQuery.AppendLine("		   1,");
-                                //sqlQuery.AppendLine("		   GETDATE(),");
-                                //sqlQuery.AppendLine("		   GETDATE(),");
-                                //sqlQuery.AppendLine("		   @tcp_id");
-                                //sqlQuery.AppendLine("	WHERE NOT EXISTS (SELECT cur_id");
-                                //sqlQuery.AppendLine("						FROM ACA_CurriculoPeriodo");
-                                //sqlQuery.AppendLine("					  WHERE cur_id = @cur_id AND");
-                                //sqlQuery.AppendLine("						    crr_id = 1 AND");
-                                //sqlQuery.AppendLine("							crp_id = @tcp_ordem AND");
-                                //sqlQuery.AppendLine("							crp_ordem = @tcp_ordem AND");
-                                //sqlQuery.AppendLine("							tcp_id = @tcp_id)");
 
                                 using (var command = new SqlCommand(sqlQuery.ToString(), conGestaoAvaliacao_SGP, transactionGestaoAvaliacaoSgp))
                                 {
@@ -580,8 +553,8 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
 					                                    1,
 					                                    @crp_id,
 					                                    1,
-					                                    GETDATE(),
-					                                    GETDATE(),
+					                                    '2020-08-04 00:00:00',
+					                                    '2020-08-04 00:00:00',
 					                                    @tcp_id
                                     END
                                 ");
@@ -770,87 +743,87 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                                             }
                                         }
 
-                                        //if (alunosComUsuario.Any())
-                                        //{
-                                        //    using (var transaction = connCoreSSO.BeginTransaction())
-                                        //    {
-                                        //        //Criar Matricula dos ALunos                                                
-                                        //        foreach (var alunoComUsuario in alunosComUsuario)
-                                        //        {
-                                        //            var pes_id = new Guid();
-                                        //            var login = string.Concat("RA", alunoComUsuario.codigoAluno);
-                                        //            var query = $"SELECT usu_id, pes_id FROM SYS_Usuario WHERE usu_login = '{login}' AND usu_situacao = 1";
-                                        //            commandCoreSSO = new SqlCommand(query.ToString(), connCoreSSO, transaction);
-                                        //            using (var dr = commandCoreSSO.ExecuteReader(CommandBehavior.SingleRow))
-                                        //            {
-                                        //                if (dr.Read())
-                                        //                {
-                                        //                    pes_id = Guid.Parse(dr["pes_id"].ToString());
-                                        //                }
-                                        //            }
+                                        if (alunosComUsuario.Any())
+                                        {
+                                            using (var transaction = connCoreSSO.BeginTransaction())
+                                            {
+                                                //Criar Matricula dos ALunos                                                
+                                                foreach (var alunoComUsuario in alunosComUsuario)
+                                                {
+                                                    var pes_id = new Guid();
+                                                    var login = string.Concat("RA", alunoComUsuario.codigoAluno);
+                                                    var query = $"SELECT usu_id, pes_id FROM SYS_Usuario WHERE usu_login = '{login}' AND usu_situacao = 1";
+                                                    commandCoreSSO = new SqlCommand(query.ToString(), connCoreSSO, transaction);
+                                                    using (var dr = commandCoreSSO.ExecuteReader(CommandBehavior.SingleRow))
+                                                    {
+                                                        if (dr.Read())
+                                                        {
+                                                            pes_id = Guid.Parse(dr["pes_id"].ToString());
+                                                        }
+                                                    }
 
-                                        //            var sqlQueryMatricula = new StringBuilder();
-                                        //            sqlQueryMatricula.AppendLine("SELECT cd_aluno,");
-                                        //            sqlQueryMatricula.AppendLine("       dt_status_matricula,");
-                                        //            sqlQueryMatricula.AppendLine("       st_matricula");
-                                        //            sqlQueryMatricula.AppendLine("    FROM MatriculasEjaEol");
-                                        //            sqlQueryMatricula.AppendLine("WHERE cd_aluno = @cd_aluno");
+                                                    var sqlQueryMatricula = new StringBuilder();
+                                                    sqlQueryMatricula.AppendLine("SELECT cd_aluno,");
+                                                    sqlQueryMatricula.AppendLine("       dt_status_matricula,");
+                                                    sqlQueryMatricula.AppendLine("       st_matricula");
+                                                    sqlQueryMatricula.AppendLine("    FROM MatriculasEjaEol");
+                                                    sqlQueryMatricula.AppendLine("WHERE cd_aluno = @cd_aluno");
 
-                                        //            var dadosMatricula = new List<Matricula>();
-                                        //            var dataMatricula = alunoComUsuario.dataSituacao;
-                                        //            using (var command = new SqlCommand(sqlQueryMatricula.ToString(), conGestaoAvaliacao, transactionGestaoAvaliacao))
-                                        //            {
-                                        //                command.Parameters.AddWithValue("@cd_aluno", alunoComUsuario.codigoAluno);
-                                        //                using (var dr = command.ExecuteReader())
-                                        //                {
-                                        //                    while (dr.Read())
-                                        //                    {
-                                        //                        dadosMatricula.Add(new Matricula()
-                                        //                        {
-                                        //                            cd_aluno = dr.GetDouble(0),
-                                        //                            dt_status_matricula = Convert.ToDateTime(dr.GetString(1)),
-                                        //                            st_matricula = dr.GetDouble(2)
-                                        //                        });
-                                        //                    }
-                                        //                }
+                                                    var dadosMatricula = new List<Matricula>();
+                                                    var dataMatricula = alunoComUsuario.dataSituacao;
+                                                    using (var command = new SqlCommand(sqlQueryMatricula.ToString(), conGestaoAvaliacao, transactionGestaoAvaliacao))
+                                                    {
+                                                        command.Parameters.AddWithValue("@cd_aluno", alunoComUsuario.codigoAluno);
+                                                        using (var dr = command.ExecuteReader())
+                                                        {
+                                                            while (dr.Read())
+                                                            {
+                                                                dadosMatricula.Add(new Matricula()
+                                                                {
+                                                                    cd_aluno = dr.GetDouble(0),
+                                                                    dt_status_matricula = Convert.ToDateTime(dr.GetString(1)),
+                                                                    st_matricula = dr.GetDouble(2)
+                                                                });
+                                                            }
+                                                        }
 
-                                        //                if (dadosMatricula.Any())
-                                        //                {
-                                        //                    if (dadosMatricula.Count == 1)
-                                        //                        dataMatricula = dadosMatricula.Single().dt_status_matricula;
-                                        //                    else if (dadosMatricula.Count > 1 && dadosMatricula.Any(x => x.st_matricula == 1))
-                                        //                    {
-                                        //                        dataMatricula = dadosMatricula.Where(x => x.st_matricula == 1)
-                                        //                            .OrderBy(x => x.dt_status_matricula)
-                                        //                            .First().dt_status_matricula;
-                                        //                    }
-                                        //                    else
-                                        //                    {
-                                        //                        dataMatricula = dadosMatricula
-                                        //                            .OrderBy(x => x.dt_status_matricula)
-                                        //                            .First().dt_status_matricula;
-                                        //                    }
-                                        //                }
-                                        //            }
+                                                        if (dadosMatricula.Any())
+                                                        {
+                                                            if (dadosMatricula.Count == 1)
+                                                                dataMatricula = dadosMatricula.Single().dt_status_matricula;
+                                                            else if (dadosMatricula.Count > 1 && dadosMatricula.Any(x => x.st_matricula == 1))
+                                                            {
+                                                                dataMatricula = dadosMatricula.Where(x => x.st_matricula == 1)
+                                                                    .OrderBy(x => x.dt_status_matricula)
+                                                                    .First().dt_status_matricula;
+                                                            }
+                                                            else
+                                                            {
+                                                                dataMatricula = dadosMatricula
+                                                                    .OrderBy(x => x.dt_status_matricula)
+                                                                    .First().dt_status_matricula;
+                                                            }
+                                                        }
+                                                    }
 
-                                        //            sqlQuery.Clear();
-                                        //            sqlQuery.AppendLine(GetSqlQueryMatriculaTurmaEAcaAluno());
-                                        //            using (var commandGestaoAvaliacaoSgp = new SqlCommand(sqlQuery.ToString(), conGestaoAvaliacao_SGP, transactionGestaoAvaliacaoSgp))
-                                        //            {
-                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_nome", alunoComUsuario.nomeAluno);
-                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_matricula", alunoComUsuario.codigoAluno);
-                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@pes_id", pes_id);
-                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cur_id", cur_id);
-                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_numeroChamada", alunoComUsuario.numeroChamada);
-                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_dataMtricula", dataMatricula);
-                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@esc_codigo", novaTurma.CodigoEscola.ToString().PadLeft(6, '0'));
-                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@tur_codigo", string.Concat("EJA-", novaTurma.DescricaoTurma));
-                                        //                commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cal_id", idCalendarioAnual);
-                                        //                commandGestaoAvaliacaoSgp.ExecuteNonQuery();
-                                        //            }
-                                        //        }
-                                        //    }
-                                        //}
+                                                    sqlQuery.Clear();
+                                                    sqlQuery.AppendLine(GetSqlQueryMatriculaTurmaEAcaAluno());
+                                                    using (var commandGestaoAvaliacaoSgp = new SqlCommand(sqlQuery.ToString(), conGestaoAvaliacao_SGP, transactionGestaoAvaliacaoSgp))
+                                                    {
+                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_nome", alunoComUsuario.nomeAluno);
+                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@alu_matricula", alunoComUsuario.codigoAluno);
+                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@pes_id", pes_id);
+                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cur_id", cur_id);
+                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_numeroChamada", alunoComUsuario.numeroChamada);
+                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@mtu_dataMtricula", dataMatricula);
+                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@esc_codigo", novaTurma.CodigoEscola.ToString().PadLeft(6, '0'));
+                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@tur_codigo", string.Concat("EJA-", novaTurma.DescricaoTurma));
+                                                        commandGestaoAvaliacaoSgp.Parameters.AddWithValue("@cal_id", idCalendarioAnual);
+                                                        commandGestaoAvaliacaoSgp.ExecuteNonQuery();
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -865,7 +838,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                             MessageBox.Show(string.Concat("Erro: ", ex.Message));
                         }
                     }
-                }
+                } 
             }
 
 
@@ -876,46 +849,83 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
 
         private string GetSqlQueryMatriculaTurmaEAcaAluno()
         {
-            return @" 
-                    DECLARE @alu_id BIGINT = (SELECT TOP 1 alu_id FROM ACA_Aluno ORDER BY alu_id DESC) + 1
+            return $@" 
+                    DECLARE @alu_id BIGINT = (SELECT alu_id FROM ACA_Aluno WHERE pes_id = @pes_id and alu_situacao = 1)
+                    IF (@alu_id IS NULL)
+                    BEGIN
+                        SET @alu_id = (SELECT TOP 1 alu_id FROM ACA_Aluno ORDER BY alu_id DESC) + 1
+                        
+                        INSERT INTO ACA_Aluno
+                        SELECT DISTINCT @alu_id,
+                                            @alu_nome,
+                                            '6CF424DC-8EC3-E011-9B36-00155D033206',
+                                            @alu_matricula,
+                                            '2020-08-04 00:00:00',
+                                            '2020-08-04 00:00:00',
+                                            1,
+                                            NULL,
+                                            NULL,
+                                            @pes_id
+                        
+                        {SqlQueryInsertMatriculaTurma()} 
+                    END
+                    ELSE
+                    BEGIN
+                        IF NOT EXISTS(SELECT top 1 mat.alu_id from MTR_MatriculaTurma mat
+                            INNER JOIN ESC_Escola e ON e.esc_id = mat.esc_id
+                            INNER JOIN TUR_Turma t ON t.esc_id = e.esc_id and mat.tur_id = t.tur_id
+                            INNER JOIN TUR_TurmaCurriculo tc ON tc.tur_id = t.tur_id
+                            WHERE e.esc_codigo = @esc_codigo AND
+                                    t.tur_codigo = @tur_codigo AND
+                                    tc.cur_id = @cur_id AND
+                                    t.cal_id = @cal_id AND
+                                    mat.alu_id = @alu_id)
+                        BEGIN
+                            {SqlQueryInsertMatriculaTurma()}
+                        END
+                        ELSE
+                        BEGIN
+                            UPDATE mat SET mat.mtu_situacao = 1, mat.mtu_dataCriacao = '2020-08-04 00:00:00', mat.mtu_dataAlteracao = '2020-08-04 00:00:00'
+                            FROM MTR_MatriculaTurma mat
+                                INNER JOIN ESC_Escola e ON e.esc_id = mat.esc_id
+                                INNER JOIN TUR_Turma t ON t.esc_id = e.esc_id and mat.tur_id = t.tur_id
+                                INNER JOIN TUR_TurmaCurriculo tc ON tc.tur_id = t.tur_id
+                            WHERE e.esc_codigo = @esc_codigo AND
+                                t.tur_codigo = @tur_codigo AND
+                                tc.cur_id = @cur_id AND
+                                t.cal_id = @cal_id AND
+                                mat.alu_id = @alu_id
+                        END
+                    END";
+        }
 
-                    INSERT INTO ACA_Aluno
-                    SELECT DISTINCT @alu_id,
-                                        @alu_nome,
-                                        '6CF424DC-8EC3-E011-9B36-00155D033206',
-                                        @alu_matricula,
-                                        GETDATE(),
-                                        GETDATE(),
-                                        1,
-                                        NULL,
-                                        NULL,
-                                        @pes_id
-
+        private string SqlQueryInsertMatriculaTurma() {
+            return @"
                     INSERT INTO MTR_MatriculaTurma
-                    SELECT TOP 1 @alu_id,
-                                    1,
-                                    e.esc_id,
-                                    t.tur_id,
-                                    @cur_id,
-                                    1,
-                                    tc.crp_id,
-                                    1,
-                                    GETDATE(),
-                                    GETDATE(),
-                                    @mtu_numeroChamada,
-                                    @mtu_dataMtricula,
-                                    NULL,
-                                    tc.tcp_id
-                    FROM ESC_Escola e,
-                            TUR_Turma t,
-                            TUR_TurmaCurriculo tc
-                    WHERE e.esc_codigo = @esc_codigo AND
-                            t.tur_codigo = @tur_codigo AND
-                            tc.cur_id = @cur_id AND
-                            t.esc_id = e.esc_id AND
-                            t.tur_id = tc.tur_id AND
-                            t.cal_id = @cal_id 
-                    ORDER BY t.tur_id ";
+                            SELECT TOP 1 @alu_id,
+                                            (select ISNULL(MAX(mtu_id),1) + 1 from MTR_MatriculaTurma where alu_id = @alu_id),
+                                            e.esc_id,
+                                            t.tur_id,
+                                            @cur_id,
+                                            1,
+                                            tc.crp_id,
+                                            1,
+                                            '2020-08-04 00:00:00',
+                                            '2020-08-04 00:00:00',
+                                            @mtu_numeroChamada,
+                                            @mtu_dataMtricula,
+                                            NULL,
+                                            tc.tcp_id
+                            FROM ESC_Escola e,
+                                    TUR_Turma t,
+                                    TUR_TurmaCurriculo tc
+                            WHERE e.esc_codigo = @esc_codigo AND
+                                    t.tur_codigo = @tur_codigo AND
+                                    tc.cur_id = @cur_id AND
+                                    t.esc_id = e.esc_id AND
+                                    t.tur_id = tc.tur_id AND
+                                    t.cal_id = @cal_id 
+                            ORDER BY t.tur_id ";
         }
 
         private string GetQueryInsertUsuarioPessoaEUsuarioGrupo()
@@ -927,10 +937,10 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
                 IF (@usuario_id IS NULL)
                 BEGIN
 	                INSERT INTO PES_Pessoa (pes_id, pes_nome, pes_dataNascimento, pes_situacao, pes_dataCriacao, pes_dataAlteracao, pes_integridade)
-	                VALUES (@pes_id, @pes_nome, @pes_dataNascimento, 1, GETDATE(), GETDATE(), 0);
+	                VALUES (@pes_id, @pes_nome, @pes_dataNascimento, 1, '2020-08-04 00:00:00', '2020-08-04 00:00:00', 0);
 			
 	                INSERT INTO SYS_Usuario (usu_id, usu_login, usu_senha, usu_criptografia, usu_situacao, usu_dataCriacao, usu_dataAlteracao, pes_id, usu_integridade, ent_id, usu_integracaoAD, usu_dataAlteracaoSenha)
-	                VALUES(@usu_id, @login, @senha, 3, 1, GETDATE(), GETDATE(), @pes_id, 0, '6CF424DC-8EC3-E011-9B36-00155D033206', 0, GETDATE());
+	                VALUES(@usu_id, @login, @senha, 3, 1, '2020-08-04 00:00:00', '2020-08-04 00:00:00', @pes_id, 0, '6CF424DC-8EC3-E011-9B36-00155D033206', 0, '2020-08-04 00:00:00');
 			
 	                INSERT INTO SYS_UsuarioGrupo (usu_id, gru_id, usg_situacao) VALUES(@usu_id, (SELECT TOP 1 gru_id FROM SYS_Grupo WHERE sis_id = 204 AND gru_situacao = 1 AND gru_nome = 'Aluno'), 1);
                 END
@@ -1009,7 +1019,7 @@ namespace GestaoAvaliacao.AnswerSheetLotExecuter
             sqlQuery.AppendLine("        INNER JOIN ESC_TipoClassificacaoEscola tce");
             sqlQuery.AppendLine("            ON ec.tce_id = tce.tce_id");
             sqlQuery.AppendLine("WHERE tce.tce_id = @tce_id and");
-            sqlQuery.AppendLine("      e.esc_situacao = 1 and e.esc_codigo='094927' ");
+            sqlQuery.AppendLine("      e.esc_situacao = 1 ");
             sqlQuery.AppendLine("ORDER BY e.esc_id");
 
             var codigoEscola = new List<string>();
