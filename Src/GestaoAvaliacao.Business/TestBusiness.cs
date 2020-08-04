@@ -128,7 +128,10 @@ namespace GestaoAvaliacao.Business
 			if (cadastred.NumberItem > 0)
 				totalItemsCadastred = (int)cadastred.NumberItem;
 
-			if (entity.TestType.Id != cadastred.TestType_Id || (entity.Discipline != null && entity.Discipline.Id != cadastred.Discipline_Id)
+			var disciplineChanged = entity.Multidiscipline != cadastred.Multidiscipline
+				|| (!entity.Multidiscipline && entity.Discipline.Id != cadastred.Discipline_Id);
+
+			if (entity.TestType.Id != cadastred.TestType_Id || disciplineChanged
 				|| !entity.Description.Equals(cadastred.Description) || !entity.FrequencyApplication.Equals(cadastred.FrequencyApplication)
 				|| !totalItems.Equals(totalItemsCadastred))
 				entity.TestSituation = EnumTestSituation.Pending;

@@ -235,6 +235,7 @@
                 Inicio: null,
                 Final: null
             };
+            ng.applicationActiveOrDone = false;
             // Data da correção
             ng.e1_correcao = {
                 Inicio: null,
@@ -1047,7 +1048,7 @@
                 $notification.success('Prova salva com sucesso!');
 
                 ng.alterouEtapaAtual = self.etapa1.alterou = false;
-
+                ng.applicationActiveOrDone = r.ApplicationActiveOrDone;
                 ng.situacao = procurarElementoEm([{ Id: r.TestSituation }], self.situacaoList)[0];
 
             } else {
@@ -1349,6 +1350,7 @@
                         Inicio: r.ApplicationStartDate,
                         Final: r.ApplicationEndDate
                     };
+                    ng.applicationActiveOrDone = r.ApplicationActiveOrDone;
                     ng.e1_correcao = {
                         Inicio: r.CorrectionStartDate,
                         Final: r.CorrectionEndDate
@@ -3778,20 +3780,22 @@
             });
         };
 
-        ng.confirmChangeVersionItem = function confirmChangeVersionItem(item, versao) {
-
-            ng.item = item;
-            ng.versaoItem = versao;
-
-            angular.element("#confirmChangeVersionItem").modal({ backdrop: 'static' });
-        };
-
         ng.changeVersionItem = function changeVersionItem() {
             TestModel.saveChangeItem({ item: ng.versaoItem, test_id: ng.params, itemIdAntigo: ng.item.Id }, function (result) {
                 if (result.success) {
                     $notification.success(result.message);
-                    e2_itensCarregar();
+
                     for (var k = 0; k < ng.e2_ListaItemSelecionados.length; k++) {
+                        if (ng.e2_ListaItemSelecionados[k].Id == item.Id) {
+                            ng.e2_ListaItemSelecionados[k].Id = versao.Id;
+                            ng.e2_ListaItemSelecionados[k].BaseTextId = versao.BaseText.Id;
+                            ng.e2_ListaItemSelecionados[k].BaseTextDescription = versao.BaseText.Description;
+                            ng.e2_ListaItemSelecionados[k].Code = versao.ItemCode;
+                            ng.e2_ListaItemSelecionados[k].ItemCodeVersion = versao.ItemCodeVersion;
+                            ng.e2_ListaItemSelecionados[k].ItemVersion = versao.ItemVersion;
+                            ng.e2_ListaItemSelecionados[k].Statement = versao.Statement;
+                        }
+
                         ng.e2_ListaItemSelecionados[k].expanded = false;
                     };
                 }
