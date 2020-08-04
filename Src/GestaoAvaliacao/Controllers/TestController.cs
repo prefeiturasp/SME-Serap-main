@@ -191,7 +191,7 @@ namespace GestaoAvaliacao.Controllers
                         NumberItem = entity.NumberItem,
                         ApplicationStartDate = entity.ApplicationStartDate.ToString("yyyy/MM/dd"),
                         ApplicationEndDate = entity.ApplicationEndDate.ToString("yyyy/MM/dd"),
-						ApplicationActiveOrDone = DateTime.Today >= entity.ApplicationEndDate.Date,
+						ApplicationActiveOrDone = entity.ApplicationActiveOrDone,
 						CorrectionStartDate = entity.CorrectionStartDate.ToString("yyyy/MM/dd"),
                         CorrectionEndDate = entity.CorrectionEndDate.ToString("yyyy/MM/dd"),
                         BlockItem = blockBusiness.CountItemTest(Id),
@@ -788,10 +788,8 @@ namespace GestaoAvaliacao.Controllers
 							SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
 				}
 
-				if (entity.Validate.IsValid)
-				{
-					testSituation = testBusiness.TestSituation(entity);
-				}
+				if (entity.Validate.IsValid) 
+					entity.TestSituation = testBusiness.TestSituation(entity);
 			}
 			catch (Exception ex)
 			{
@@ -802,8 +800,7 @@ namespace GestaoAvaliacao.Controllers
 				LogFacade.SaveError(ex);
 			}
 
-			var applicationActive = DateTime.Today >= entity.ApplicationEndDate.Date && DateTime.Today <= entity.ApplicationEndDate.Date;
-			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id, TestSituation = testSituation, ApplicationActive = applicationActive }, JsonRequestBehavior.AllowGet);
+			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id, TestSituation = entity.TestSituation, entity.ApplicationActiveOrDone }, JsonRequestBehavior.AllowGet);
 		}
 
 		[HttpPost]
