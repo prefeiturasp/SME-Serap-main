@@ -235,6 +235,7 @@
                 Inicio: null,
                 Final: null
             };
+            ng.applicationActiveOrDone = false;
             // Data da correção
             ng.e1_correcao = {
                 Inicio: null,
@@ -1047,7 +1048,7 @@
                 $notification.success('Prova salva com sucesso!');
 
                 ng.alterouEtapaAtual = self.etapa1.alterou = false;
-
+                ng.applicationActiveOrDone = r.ApplicationActiveOrDone;
                 ng.situacao = procurarElementoEm([{ Id: r.TestSituation }], self.situacaoList)[0];
 
             } else {
@@ -1349,6 +1350,7 @@
                         Inicio: r.ApplicationStartDate,
                         Final: r.ApplicationEndDate
                     };
+                    ng.applicationActiveOrDone = r.ApplicationActiveOrDone;
                     ng.e1_correcao = {
                         Inicio: r.CorrectionStartDate,
                         Final: r.CorrectionEndDate

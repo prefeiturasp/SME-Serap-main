@@ -191,7 +191,8 @@ namespace GestaoAvaliacao.Controllers
                         NumberItem = entity.NumberItem,
                         ApplicationStartDate = entity.ApplicationStartDate.ToString("yyyy/MM/dd"),
                         ApplicationEndDate = entity.ApplicationEndDate.ToString("yyyy/MM/dd"),
-                        CorrectionStartDate = entity.CorrectionStartDate.ToString("yyyy/MM/dd"),
+						ApplicationActiveOrDone = DateTime.Today >= entity.ApplicationEndDate.Date,
+						CorrectionStartDate = entity.CorrectionStartDate.ToString("yyyy/MM/dd"),
                         CorrectionEndDate = entity.CorrectionEndDate.ToString("yyyy/MM/dd"),
                         BlockItem = blockBusiness.CountItemTest(Id),
                         FrequencyApplication = entity.FrequencyApplication,
@@ -801,7 +802,8 @@ namespace GestaoAvaliacao.Controllers
 				LogFacade.SaveError(ex);
 			}
 
-			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id, TestSituation = testSituation }, JsonRequestBehavior.AllowGet);
+			var applicationActive = DateTime.Today >= entity.ApplicationEndDate.Date && DateTime.Today <= entity.ApplicationEndDate.Date;
+			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id, TestSituation = testSituation, ApplicationActive = applicationActive }, JsonRequestBehavior.AllowGet);
 		}
 
 		[HttpPost]
