@@ -63,8 +63,7 @@ namespace GestaoEscolar.Repository
         {
             var sql = new StringBuilder(@"SELECT [alu_id] ");
             sql.Append("FROM ACA_Aluno (NOLOCK) ");
-            sql.Append("WHERE pes_id = @pes_id ");
-
+            sql.Append("WHERE pes_id = @pes_id and alu_situacao = 1 ");
 
             using (IDbConnection cn = Connection)
             {
