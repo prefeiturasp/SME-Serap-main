@@ -48,9 +48,9 @@ namespace GestaoAvaliacao.MongoRepository
         public StudentCorrection GetStudentCorrectionByTestAluId(long test_Id, long alu_id, long tur_id)
         {
             var studentCorrection = DataBase
-                              .GetCollection<CorrectionResults>("StudentCorrection")
+                              .GetCollection<StudentCorrection>("StudentCorrection")
                               .Aggregate()
-                              .Match(new BsonDocument { { "Test_Id", test_Id }, { "Tur_id", tur_id }, { "alu_id", alu_id } })                              
+                              .Match(new BsonDocument { { "Test_Id", test_Id }, { "tur_id", tur_id }, { "alu_id", alu_id } })                              
                               .Project(new BsonDocument {
                                    { "_id", 0 },
                                    { "Test_Id", "$_id.Test_Id" },
