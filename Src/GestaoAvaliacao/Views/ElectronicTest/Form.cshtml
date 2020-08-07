@@ -75,7 +75,7 @@
         <div class="gabarito-respostas" ng-repeat="item in itens">
             <div id="divAlternativa">
                 <span>{{ item.ItemOrder + 1 }}</span>
-                <span class="{{alternativa.Selected ? 'respondido' : ''}}" ng-repeat="alternativa in alternatives | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">{{ alternativa.NumerationSem }}</span>
+                <span class="{{alternative.Selected ? 'respondido' : ''}}" ng-repeat="alternative in alternatives | filter:{ Item_Id:item.Item_Id }:true">{{ alternative.NumerationSem }}</span>
             </div>
         </div>
     </div>
