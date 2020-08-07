@@ -43,6 +43,7 @@ namespace GestaoAvaliacao.Controllers
         {
             if (TestId.HasValue && AluId.HasValue && TurId.HasValue)
             {
+
                 if (VerifyPermission(TestId, AluId, TurId))
                 {
                     return View();
@@ -53,7 +54,9 @@ namespace GestaoAvaliacao.Controllers
                 }
             }
             else
+            {
                 return RedirectToAction("index", "home");
+            }
         }
 
         private bool VerifyPermission(long? TestId, long? AluId, long? TurId)
@@ -66,6 +69,7 @@ namespace GestaoAvaliacao.Controllers
                 {
                     return false;
                 }
+
                 if (!testBusiness.ExistsAdherenceByAluIdTestId(AluId.Value, TestId.Value))
                 {
                     return false;
@@ -135,7 +139,7 @@ namespace GestaoAvaliacao.Controllers
 
                         foreach (var item in ret)
                         {
-                            StudentCorrection studentCorrection = _studentCorrectionBusiness.GetStudentCorrectionByTestAluId(item.Id, item.alu_id);
+                            StudentCorrection studentCorrection = _studentCorrectionBusiness.GetStudentCorrectionByTestAluId(item.Id, item.alu_id, item.tur_id);
 
                             if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
                             {

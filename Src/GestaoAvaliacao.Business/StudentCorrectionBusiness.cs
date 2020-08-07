@@ -86,9 +86,9 @@ namespace GestaoAvaliacao.Business
             return await _studentCorrectionRepository.CountInconsistency(test_id, tur_id);
         }
 
-        public StudentCorrection GetStudentCorrectionByTestAluId(long test_Id, long alu_id)
+        public StudentCorrection GetStudentCorrectionByTestAluId(long test_Id, long alu_id, long tur_id)
         {
-            return _studentCorrectionRepository.GetStudentCorrectionByTestAluId(test_Id, alu_id);
+            return _studentCorrectionRepository.GetStudentCorrectionByTestAluId(test_Id, alu_id, tur_id);
         }
     }
 }
