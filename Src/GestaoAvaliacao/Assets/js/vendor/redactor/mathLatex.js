@@ -764,6 +764,7 @@ RedactorPlugins.mathLatex = function () {
                 var key = $(s).attr('key');
                 var dictionary_type = $(s).attr('dictionary_type');
                 var latex = this.mathLatex[dictionary_type + '_dictionary'][key];
+                latex = "\\(" + latex + "\\)";
                 if (key === 'equation') {
                     this.mathLatex.insertEquationSpan(latex);
                 }
