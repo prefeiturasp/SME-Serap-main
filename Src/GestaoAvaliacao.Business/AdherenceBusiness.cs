@@ -110,7 +110,41 @@ namespace GestaoAvaliacao.Business
 				? testTypeDeficiencyRepository.GetDeficienciesIds(test.TestType_Id)
 				: null;
 
-			return adherenceRepository.LoadStudent(tur_id, test.Id, test.AllAdhered, test.ApplicationStartDate, deficienciesToFilter);
+			var studentsToDoTest = adherenceRepository.LoadStudent(tur_id, test.Id, test.AllAdhered, test.ApplicationStartDate, deficienciesToFilter);
+			if((!studentsToDoTest?.Any() ?? true) || (!deficienciesToFilter?.Any() ?? true)) return studentsToDoTest;
+
+			var studentsToDoTestWithDeficiency = GetAdherenceStudentsWithDeficiency(studentsToDoTest.Select(x => x.pes_id), deficienciesToFilter);
+			if(!studentsToDoTestWithDeficiency?.Any() ?? true) return studentsToDoTest;
+
+			var studentsToDoTestWithDeficiencyFiltered = studentsToDoTest
+				.Where(x => studentsToDoTestWithDeficiency.Contains(x.pes_id))
+				.ToList();
+
+			return studentsToDoTestWithDeficiencyFiltered;
+		}
+
+		private IEnumerable<Guid> GetAdherenceStudentsWithDeficiency(IEnumerable<Guid> studentsPesIds, IEnumerable<Guid> deficienciesIds)
+        {
+			var page = 0;
+			var studentsPerPage = 500;
+			var result = new List<Guid>();
+
+			do
+			{
+				var studentsIds = studentsPesIds
+					.Skip(page++ * studentsPerPage)
+					.Take(studentsPerPage)
+					.ToList();
+
+				if (!studentsIds.Any()) break;
+				var studentsSelected = adherenceRepository.GetAdherenceStudentsWithDeficiency(studentsIds, deficienciesIds);
+				if (!studentsSelected?.Any() ?? true) continue;
+				result.AddRange(studentsSelected);
+
+			} while (true);
+
+			return result;
+
 		}
 
 		public IEnumerable<AdherenceGrid> LoadSelectedSchool(ref Pager pager, Guid uad_id, int esc_id, int ttn_id, long test_id, int crp_ordem, CoreSSO.SYS_Usuario user, CoreSSO.SYS_Grupo grupo)

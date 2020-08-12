@@ -14,5 +14,14 @@ namespace GestaoAvaliacao.Repository.Context
                 return new SqlConnection(collection["GestaoAvaliacao"].GetConnection.ConnectionString);
             }
         }
+
+        internal IDbConnection ConnectionCoreSSO
+        {
+            get
+            {
+                var collection = new TalkDBTransactionCollection();
+                return new SqlConnection(collection["CoreSSO"].GetConnection.ConnectionString);
+            }
+        }
     }
 }
