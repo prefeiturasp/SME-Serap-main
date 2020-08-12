@@ -16,7 +16,7 @@ namespace GestaoAvaliacao.IRepository
 
 		IEnumerable<AdherenceGrid> LoadSectionGrid(int esc_id, long test_id, long TestType_Id, bool AllAdhered, int ttn_id = 0, int crp_ordem = 0, Guid? pes_id = null, Guid? ent_id = null);
 		IEnumerable<AdherenceGrid> LoadStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao, IEnumerable<Guid> deficienciesToFilter = null);
-
+		IEnumerable<Guid> GetAdherenceStudentsWithDeficiency(IEnumerable<Guid> studentsPesIds, IEnumerable<Guid> deficienciesIds);
 		int GetDisponibleSectionTest(int esc_id, long test_id, long TestType_Id, bool AllAdhered, int ttn_id = 0, int crp_ordem = 0, Guid? pes_id = null, Guid? ent_id = null);
 		IEnumerable<AdherenceGrid> LoadOnlySelectedSchool(long test_id, ref Util.Pager pager, bool AllSelected, Guid uad_id, int esc_id, int ttn_id = 0, int crp_ordem = 0, Guid? pes_id = null, Guid? ent_id = null, IEnumerable<string> uadGestor = null, IEnumerable<string> uadCoordenador = null);
 		IEnumerable<AdherenceGrid> LoadOnlySelectedSection(long test_id, int esc_id, bool AllSelected, int ttn_id, int crp_ordem, Guid? pes_id = null);

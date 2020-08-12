@@ -8,6 +8,7 @@ using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
@@ -530,7 +531,7 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<AdherenceGrid> LoadStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao, IEnumerable<Guid> deficienciesToFilter = null)
 		{
 			#region Query
-			var baseQuery = string.Format(@"
+			var sql = string.Format(@"
                         SELECT 
 	                        Alu.alu_id, 
 							Alu.pes_id,
@@ -538,7 +539,6 @@ namespace GestaoAvaliacao.Repository
 	                        (CASE WHEN (Mtu.mtu_numeroChamada > 0) THEN CAST(Mtu.mtu_numeroChamada AS VARCHAR(MAX)) + ' - ' ELSE '' END + Alu.alu_nome) AS alu_nome, 
 	                        ISNULL(a.TypeSelection, {0}) AS TypeSelection,
                             CAST(CASE WHEN (a.Id IS NULL) THEN 0 ELSE 1 END AS BIT) AS existAdherence
-					    INTO #tempAlunos
                         FROM 
 	                        SGP_MTR_MatriculaTurma AS Mtu WITH(NOLOCK)
 	                        INNER JOIN SGP_ACA_Aluno AS Alu WITH(NOLOCK)
@@ -551,43 +551,9 @@ namespace GestaoAvaliacao.Repository
 						WHERE Mtu.tur_id = @tur_id
 						   AND Mtu.mtu_situacao <> @stateExcluido
 						   AND Mtu.mtu_dataMatricula <= @dataAplicacao
-						   AND(Mtu.mtu_dataSaida IS NULL OR Mtu.mtu_dataSaida > @dataAplicacao); ",
+						   AND(Mtu.mtu_dataSaida IS NULL OR Mtu.mtu_dataSaida > @dataAplicacao)
+						ORDER BY mtu_numeroChamada, alu_nome;",
 					AllAdhered ? (byte)EnumAdherenceSelection.Selected : (byte)EnumAdherenceSelection.NotSelected);
-
-			var realizarFiltroPorAlunosComDefinciencia = deficienciesToFilter?.Any() ?? false;
-
-			baseQuery += realizarFiltroPorAlunosComDefinciencia
-				? @"SELECT
-						pes_id
-					INTO #tempPessoaIds
-					FROM #tempAlunos; "
-				: string.Empty;
-
-			var resultQuery = @"SELECT 
-								 alu_id, alu_nome, TypeSelection, existAdherence 
-							  FROM #tempAlunos temp ";
-
-			if(realizarFiltroPorAlunosComDefinciencia)
-            {
-				baseQuery += $@"SELECT
-								DISTINCT temp.pes_id
-							 INTO #tempPessoaIdsFiltrados
-							 FROM 
-								#tempPessoaIds temp
-							 INNER JOIN
-								[CoreSSO].[dbo].[PES_PessoaDeficiencia] pd (NOLOCK)
-								ON temp.pes_id = pd.pes_id
-							 WHERE 
-								pd.tde_id IN ('{string.Join("','", deficienciesToFilter)}'); ";
-
-				resultQuery += $@"INNER JOIN
-									#tempPessoaIdsFiltrados tempIds (NOLOCK)
-									ON temp.pes_id = tempIds.pes_id ";
-			}
-
-			resultQuery += "ORDER BY mtu_numeroChamada, alu_nome;";
-
-			var sql = baseQuery + resultQuery;
 			#endregion
 
 			using (IDbConnection cn = Connection)
@@ -604,6 +570,27 @@ namespace GestaoAvaliacao.Repository
 				});
 
 				return retorno;
+			}
+		}
+
+		public IEnumerable<Guid> GetAdherenceStudentsWithDeficiency(IEnumerable<Guid> studentsPesIds, IEnumerable<Guid> deficienciesIds)
+        {
+			if (!studentsPesIds?.Any() ?? true) return null;
+			if (!deficienciesIds?.Any() ?? true) return null;
+
+			var pesIdsFilter = string.Join("','", studentsPesIds);
+
+			var query = $@"SELECT
+							pes_id
+						FROM
+							PES_PessoaDeficiencia (NOLOCK) 
+						WHERE
+							pes_id IN ('{pesIdsFilter}')";
+
+			using (IDbConnection cn = ConnectionCoreSSO)
+            {
+				cn.Open();
+				return cn.Query<Guid>(query);
 			}
 		}
 
