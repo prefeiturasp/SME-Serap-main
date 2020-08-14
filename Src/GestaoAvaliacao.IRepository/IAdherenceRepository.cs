@@ -15,7 +15,7 @@ namespace GestaoAvaliacao.IRepository
 		Adherence GetByTest(long test_id, EnumAdherenceEntity typeEntity, long EntityId);
 
 		IEnumerable<AdherenceGrid> LoadSectionGrid(int esc_id, long test_id, long TestType_Id, bool AllAdhered, int ttn_id = 0, int crp_ordem = 0, Guid? pes_id = null, Guid? ent_id = null);
-		IEnumerable<AdherenceGrid> LoadStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao, IEnumerable<Guid> deficienciesToFilter = null);
+		IEnumerable<AdherenceGrid> LoadStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao);
 		IEnumerable<Guid> GetAdherenceStudentsWithDeficiency(IEnumerable<Guid> studentsPesIds, IEnumerable<Guid> deficienciesIds);
 		int GetDisponibleSectionTest(int esc_id, long test_id, long TestType_Id, bool AllAdhered, int ttn_id = 0, int crp_ordem = 0, Guid? pes_id = null, Guid? ent_id = null);
 		IEnumerable<AdherenceGrid> LoadOnlySelectedSchool(long test_id, ref Util.Pager pager, bool AllSelected, Guid uad_id, int esc_id, int ttn_id = 0, int crp_ordem = 0, Guid? pes_id = null, Guid? ent_id = null, IEnumerable<string> uadGestor = null, IEnumerable<string> uadCoordenador = null);
@@ -47,6 +47,8 @@ namespace GestaoAvaliacao.IRepository
 		IEnumerable<AdheredEntityDTO> LoadSchoolSimpleTeacherAdherence(long test_id, Guid ent_id, Guid pes_id, Guid uad_id, bool allAdhered);
 
 		List<TeamsDTO> GetInfoTeams(List<long?> turmas);
+        IEnumerable<AdherenceStudentOfSchoolDTO> GetAdherenceStudentsOfSchools(long testId, long testTypeId, IEnumerable<int> schoolIds);
+		IEnumerable<AdherenceStudentOfSectionDTO> GetAdherenceStudentsOfSections(IEnumerable<int> sectionIds);
 
 		IEnumerable<TeamsDTO> GetSectionByTestAndTcpId(List<long> test_id, Guid? uad_id, int? esc_id, long? tcp_id,
 							Guid? pes_id = null, Guid? ent_id = null, IEnumerable<string> uadGestor = null, IEnumerable<string> uadCoordenador = null);

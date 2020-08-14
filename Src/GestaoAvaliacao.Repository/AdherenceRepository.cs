@@ -528,7 +528,7 @@ namespace GestaoAvaliacao.Repository
 			}
 		}
 
-		public IEnumerable<AdherenceGrid> LoadStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao, IEnumerable<Guid> deficienciesToFilter = null)
+		public IEnumerable<AdherenceGrid> LoadStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao)
 		{
 			#region Query
 			var sql = string.Format(@"
@@ -559,8 +559,7 @@ namespace GestaoAvaliacao.Repository
 			using (IDbConnection cn = Connection)
 			{
 				cn.Open();
-
-				var retorno = cn.Query<AdherenceGrid>(sql, new
+				var retorno = cn.Query<AdherenceGrid>(sql, new 
 				{
 					tur_id = tur_id,
 					test_id = test_id,
@@ -568,8 +567,106 @@ namespace GestaoAvaliacao.Repository
 					typeEntity = (byte)EnumAdherenceEntity.Student,
 					dataAplicacao = dataAplicacao
 				});
-
 				return retorno;
+			}
+		}
+
+		public IEnumerable<AdherenceStudentOfSchoolDTO> GetAdherenceStudentsOfSchools(long testId, long testTypeId, IEnumerable<int> schoolIds)
+		{
+			if (!schoolIds?.Any() ?? true) return null;
+
+			var schoolIdsFilter = string.Join(",", schoolIds);
+
+			var query = $@"SELECT 
+							tur.tur_id, tur.esc_id
+						INTO #tempTurmas
+						FROM
+							sgp_tur_turma tur (NOLOCK)
+						INNER JOIN 
+							sgp_aca_tipoturno ttn (NOLOCK)
+							ON ttn.ttn_id = tur.ttn_id
+						INNER JOIN 
+							SGP_TUR_TurmaTipoCurriculoPeriodo ttcp (NOLOCK)
+							ON tur.tur_id = ttcp.tur_id 
+						INNER JOIN 
+							SGP_TUR_TurmaCurriculo tc (NOLOCK)
+							ON ttcp.tur_id = tc.tur_id AND ttcp.crp_ordem = tc.crp_id 
+						INNER JOIN 
+							sgp_aca_tipocurriculoperiodo tcg (NOLOCK)
+							ON tcg.tcp_id = tc.tcp_id 
+						INNER JOIN 
+							testtypecourse ttc (NOLOCK)
+							ON tc.cur_id = ttc.CourseId 
+						INNER JOIN 
+							sgp_aca_curso cur (NOLOCK)
+							ON cur.cur_id = tc.cur_id AND ttcp.tme_id = cur.tme_id            
+						INNER JOIN 
+							sgp_aca_curriculoperiodo crp (NOLOCK)
+							ON crp.cur_id = cur.cur_id AND crp.crp_ordem = tcg.tcp_ordem AND crp.tcp_id = tcg.tcp_id
+						INNER JOIN 
+							testcurriculumgrade tcc (NOLOCK)
+							ON tcc.typecurriculumgradeid = tcg.tcp_id
+						INNER JOIN 
+							[Test] t (NOLOCK)
+							ON tcc.Test_Id = t.Id AND t.[State] = @state
+						INNER JOIN 
+							SGP_ACA_CalendarioAnual ca (NOLOCK)
+							ON tur.cal_id = ca.cal_id AND ca.cal_situacao = @state
+						WHERE 
+							tur.esc_id IN ({schoolIdsFilter})
+							AND ttc.testtype_id = @testTypeId 
+							AND tcc.test_id = @testId
+							AND ttcp.ttcr_situacao = @state
+							AND tc.tcr_situacao = @state
+							AND tc.tcr_situacao = @state
+							AND ttc.state = @state
+							AND tcc.state = @state;
+
+						SELECT
+							alu.pes_id, temp.esc_id
+						FROM
+							#tempTurmas temp
+						INNER JOIN
+							SGP_MTR_MatriculaTurma mtr (NOLOCK)
+							ON temp.tur_id = mtr.tur_id
+						INNER JOIN
+							SGP_ACA_Aluno alu (NOLOCK)
+							ON mtr.alu_id = alu.alu_id;";
+
+			using (IDbConnection cn = Connection)
+			{
+				cn.Open();
+				var retorno = cn.Query<AdherenceStudentOfSchoolDTO>(query, new 
+				{ 
+					state = (byte)1,
+					testId,
+					testTypeId
+				});
+				return retorno;
+			}
+		}
+
+		public IEnumerable<AdherenceStudentOfSectionDTO> GetAdherenceStudentsOfSections(IEnumerable<int> sectionIds)
+		{
+			if (!sectionIds?.Any() ?? true) return null;
+
+			var sectionIdsFilter = string.Join(",", sectionIds);
+
+			var query = $@"
+						SELECT
+							alu.pes_id, mtr.tur_id
+						FROM
+							SGP_MTR_MatriculaTurma mtr (NOLOCK)
+						INNER JOIN
+							SGP_ACA_Aluno alu (NOLOCK)
+							ON mtr.alu_id = alu.alu_id
+						WHERE
+							mtr.tur_id IN ({sectionIdsFilter});";
+
+			using (IDbConnection cn = Connection)
+			{
+				cn.Open();
+				return cn.Query<AdherenceStudentOfSectionDTO>(query);
 			}
 		}
 
@@ -579,13 +676,15 @@ namespace GestaoAvaliacao.Repository
 			if (!deficienciesIds?.Any() ?? true) return null;
 
 			var pesIdsFilter = string.Join("','", studentsPesIds);
+			var deficiencyIdsFilter = string.Join("','", deficienciesIds);
 
 			var query = $@"SELECT
 							pes_id
 						FROM
 							PES_PessoaDeficiencia (NOLOCK) 
 						WHERE
-							pes_id IN ('{pesIdsFilter}')";
+							pes_id IN ('{pesIdsFilter}')
+							AND tde_id IN ('{deficiencyIdsFilter}');";
 
 			using (IDbConnection cn = ConnectionCoreSSO)
             {
@@ -1513,6 +1612,6 @@ namespace GestaoAvaliacao.Repository
 			}
 		}
 
-		#endregion
-	}
+        #endregion
+    }
 }

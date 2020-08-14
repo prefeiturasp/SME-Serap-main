@@ -67,6 +67,8 @@
     <Compile Include="AnswerSheetBatchLog.cs" />
     <Compile Include="CorrectionStudentGrid.cs" />
     <Compile Include="DTO\AdherenceDTO.cs" />
+    <Compile Include="DTO\AdherenceStudentOfSchoolDTO.cs" />
+    <Compile Include="DTO\AdherenceStudentOfSectionDTO.cs" />
     <Compile Include="DTO\AnswerSheetLotDTO.cs" />
     <Compile Include="DTO\DeficiencyDto.cs" />
     <Compile Include="DTO\DreDTO.cs" />
