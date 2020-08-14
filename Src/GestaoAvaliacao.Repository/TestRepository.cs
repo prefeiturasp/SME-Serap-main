@@ -1082,7 +1082,9 @@ namespace GestaoAvaliacao.Repository
                                                         T.ApplicationEndDate,
 	                                                    t.AllAdhered,
 	                                                    mtu.alu_id,
-	                                                    mtu.tur_id
+	                                                    mtu.tur_id,
+                                                        TT.Id AS TestTypeId,
+                                                        TT.TargetToStudentsWithDeficiencies
                                                     FROM
                                                         Test AS T WITH(NOLOCK)
                                                         INNER JOIN TestType AS TT WITH(NOLOCK)
@@ -1124,7 +1126,9 @@ namespace GestaoAvaliacao.Repository
                                                         T.ApplicationEndDate,
 	                                                    t.AllAdhered,
 	                                                    mtu.alu_id,
-	                                                    mtu.tur_id");
+	                                                    mtu.tur_id,
+                                                        TT.Id,
+                                                        TT.TargetToStudentsWithDeficiencies");
 
             using (IDbConnection cn = Connection)
             {
@@ -1141,6 +1145,22 @@ namespace GestaoAvaliacao.Repository
                 });
 
                 return result.ToList();
+            }
+        }
+
+        public IEnumerable<Guid> GetStudentDeficiencies(Guid pes_id)
+        {
+            var query = @"SELECT
+                            tde_id
+                        FROM
+                            PES_PessoaDeficiencia (NOLOCK)
+                        WHERE
+                            pes_id = @pes_id";
+
+            using (IDbConnection cn = ConnectionCoreSSO)
+            {
+                cn.Open();
+                return cn.Query<Guid>(query, new { pes_id });
             }
         }
 
