@@ -132,37 +132,37 @@ namespace GestaoAvaliacao.Controllers
                 TestType testType = testTypeBusiness.Get(Id, SessionFacade.UsuarioLogado.Usuario.ent_id);
 
                 var retorno = new
+                {
+                    Id = testType.Id,
+                    Description = testType.Description,
+                    //CourseId = testType.CourseId,
+                    ModelTest_Id = testType.ModelTest_Id,
+                    FormatType = new
                     {
-                        Id = testType.Id,
-                        Description = testType.Description,
-                        //CourseId = testType.CourseId,
-                        ModelTest_Id = testType.ModelTest_Id,
-                        FormatType = new
-                        {
-                            Id = testType.FormatType == null ? 0 : testType.FormatType.Id,
-                            Description = testType.FormatType == null ? string.Empty : testType.FormatType.Description
-                        },
-                        ItemType = new
-                        {
-                            Id = testType.ItemType == null ? 0 : testType.ItemType.Id,
-                            Description = testType.ItemType == null ? string.Empty : testType.ItemType.Description,
-                            IsDefault = (testType.ItemType != null) && testType.ItemType.IsDefault
-                        },
-                        TestTypeItemLevel = (from il in testType.TestTypeItemLevel
-                                             where il.State == (Byte)EnumState.ativo
-                                             select new
-                                             {
-                                                 Id = il.Id,
-                                                 Value = il.Value,
-                                                 IdItem = il.ItemLevel.Id,
-                                                 Description = il.ItemLevel.Description
-                                             }).ToList(),
-                        FrequencyApplication = testType.FrequencyApplication,
-                        Bib = testType.Bib,
-                        Global = testType.Global,
-                        TypeLevelEducation = levelEducationBusiness.GetCustom(testType.TypeLevelEducationId),
-                        Disabled = testType.TestTypeCourses.FirstOrDefault(p => p.State == (Byte)EnumState.ativo) != null
-                    };
+                        Id = testType.FormatType == null ? 0 : testType.FormatType.Id,
+                        Description = testType.FormatType == null ? string.Empty : testType.FormatType.Description
+                    },
+                    ItemType = new
+                    {
+                        Id = testType.ItemType == null ? 0 : testType.ItemType.Id,
+                        Description = testType.ItemType == null ? string.Empty : testType.ItemType.Description,
+                        IsDefault = (testType.ItemType != null) && testType.ItemType.IsDefault
+                    },
+                    TestTypeItemLevel = (from il in testType.TestTypeItemLevel
+                                         where il.State == (Byte)EnumState.ativo
+                                         select new
+                                         {
+                                             Id = il.Id,
+                                             Value = il.Value,
+                                             IdItem = il.ItemLevel.Id,
+                                             Description = il.ItemLevel.Description
+                                         }).ToList(),
+                    FrequencyApplication = testType.FrequencyApplication,
+                    Bib = testType.Bib,
+                    Global = testType.Global,
+                    TypeLevelEducation = levelEducationBusiness.GetCustom(testType.TypeLevelEducationId),
+                    Disabled = testType.TestTypeCourses.FirstOrDefault(p => p.State == (Byte)EnumState.ativo) != null
+                };
 
                 return Json(new { success = true, testType = retorno }, JsonRequestBehavior.AllowGet);
             }
@@ -286,6 +286,7 @@ namespace GestaoAvaliacao.Controllers
         [HttpGet]
         public JsonResult FindTest(int Id)
         {
+            LogFacade.SaveError(null, "Chegou na rota");
             try
             {
                 TestType testType = testTypeBusiness.Get(Id, SessionFacade.UsuarioLogado.Usuario.ent_id);
@@ -294,33 +295,33 @@ namespace GestaoAvaliacao.Controllers
                 IEnumerable<ItemLevel> listItemLevel = itemLevelBusiness.LoadLevels(SessionFacade.UsuarioLogado.Usuario.ent_id);
 
                 var retorno = new
+                {
+                    Id = testType.Id,
+                    TestTypeItemLevel = listItemLevel.Select(x => new
                     {
-                        Id = testType.Id,
-                        TestTypeItemLevel = listItemLevel.Select(x => new
-                        {
-                            Id = testType.TestTypeItemLevel.FirstOrDefault(p => p.ItemLevel.Id == x.Id) != null ? testType.TestTypeItemLevel.FirstOrDefault(p => p.ItemLevel.Id == x.Id).Id : 0,
-                            Value = testType.TestTypeItemLevel.FirstOrDefault(p => p.ItemLevel.Id == x.Id && p.State == (byte)EnumState.ativo) != null ? testType.TestTypeItemLevel.FirstOrDefault(p => p.ItemLevel.Id == x.Id && p.State == (byte)EnumState.ativo).Value : null,
-                            IdItem = x.Id,
-                            Description = x.Description
-                        }),
-                        FrequencyApplication = testType.FrequencyApplication,
-                        Bib = testType.Bib,
-                        FormatType = testType.FormatType != null ? new { Id = testType.FormatType.Id, Description = testType.FormatType.Description } : null,
-                        ItemType = testType.ItemType != null ? new
-                        {
-                            Id = testType.ItemType.Id,
-                            Description = testType.ItemType.Description,
-                            IsDefault = testType.ItemType.IsDefault,
-                            QuantityAlternative = testType.ItemType.QuantityAlternative != null ? testType.ItemType.QuantityAlternative : 0
-                        } : null,
-                        TypeCurriculumGrade = testTypeCourseCurriculumGrade.Select(p => new
-                        {
-                            Id = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId).tcp_id,
-                            Description = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId).tcp_descricao,
-                            Order = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId).tcp_ordem
-                        }),
-						TypeLevelEducation = levelEducationBusiness.GetCustom(testType.TypeLevelEducationId)
-                    };
+                        Id = testType.TestTypeItemLevel.FirstOrDefault(p => p.ItemLevel.Id == x.Id) != null ? testType.TestTypeItemLevel.FirstOrDefault(p => p.ItemLevel.Id == x.Id).Id : 0,
+                        Value = testType.TestTypeItemLevel.FirstOrDefault(p => p.ItemLevel.Id == x.Id && p.State == (byte)EnumState.ativo) != null ? testType.TestTypeItemLevel.FirstOrDefault(p => p.ItemLevel.Id == x.Id && p.State == (byte)EnumState.ativo).Value : null,
+                        IdItem = x.Id,
+                        Description = x.Description
+                    }).ToList(),
+                    FrequencyApplication = testType.FrequencyApplication,
+                    Bib = testType.Bib,
+                    FormatType = testType.FormatType != null ? new { Id = testType.FormatType.Id, Description = testType.FormatType.Description } : null,
+                    ItemType = testType.ItemType != null ? new
+                    {
+                        Id = testType.ItemType.Id,
+                        Description = testType.ItemType.Description,
+                        IsDefault = testType.ItemType.IsDefault,
+                        QuantityAlternative = testType.ItemType.QuantityAlternative != null ? testType.ItemType.QuantityAlternative : 0
+                    } : null,
+                    TypeCurriculumGrade = testTypeCourseCurriculumGrade.Select(p => new
+                    {
+                        Id = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId)?.tcp_id,
+                        Description = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId)?.tcp_descricao,
+                        Order = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId)?.tcp_ordem
+                    }),
+                    TypeLevelEducation = levelEducationBusiness.GetCustom(testType.TypeLevelEducationId)
+                };
 
                 return Json(new { success = true, testType = retorno }, JsonRequestBehavior.AllowGet);
             }
@@ -403,21 +404,21 @@ namespace GestaoAvaliacao.Controllers
                 LogFacade.SaveError(ex);
             }
 
-            return Json(new 
-            { 
-                success = entity.Validate.IsValid, 
-                type = entity.Validate.Type, 
-                message = entity.Validate.Message, 
+            return Json(new
+            {
+                success = entity.Validate.IsValid,
+                type = entity.Validate.Type,
+                message = entity.Validate.Message,
                 testTypeID = entity.Id,
                 testTypeItemLevel = (from il in entity.TestTypeItemLevel
-                                    where il.State == (Byte)EnumState.ativo
-                                    select new
-                                    {
-                                        Id = il.Id,
-                                        Value = il.Value,
-                                        IdItem = il.ItemLevel.Id,
-                                        Description = il.ItemLevel.Description
-                                    }).ToList()
+                                     where il.State == (Byte)EnumState.ativo
+                                     select new
+                                     {
+                                         Id = il.Id,
+                                         Value = il.Value,
+                                         IdItem = il.ItemLevel.Id,
+                                         Description = il.ItemLevel.Description
+                                     }).ToList()
             }, JsonRequestBehavior.AllowGet);
         }
 
