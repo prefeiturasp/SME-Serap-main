@@ -286,7 +286,6 @@ namespace GestaoAvaliacao.Controllers
         [HttpGet]
         public JsonResult FindTest(int Id)
         {
-            LogFacade.SaveError(null, "Chegou na rota");
             try
             {
                 TestType testType = testTypeBusiness.Get(Id, SessionFacade.UsuarioLogado.Usuario.ent_id);
