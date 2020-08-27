@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using MSTech.Data.Common;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace GestaoAvaliacao.Manutencao.MultiMatriculasAtivas.Data.Abstractions
@@ -9,7 +10,8 @@ namespace GestaoAvaliacao.Manutencao.MultiMatriculasAtivas.Data.Abstractions
         {
             get
             {
-                return new SqlConnection("Data Source=SMESQLCLUSTER\\SME_PRD;Initial Catalog=GestaoAvaliacao;User Id=user_gestaoavaliacao;Password=gestaoavaliacao@adm;");
+                TalkDBTransactionCollection collection = new TalkDBTransactionCollection();
+                return new SqlConnection(collection["GestaoAvaliacao"].GetConnection.ConnectionString);
             }
         }
     }
