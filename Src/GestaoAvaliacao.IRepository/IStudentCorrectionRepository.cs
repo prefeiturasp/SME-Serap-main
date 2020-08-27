@@ -14,7 +14,7 @@ namespace GestaoAvaliacao.IRepository
         Task<List<StudentCorrection>> GetByTest(List<long> testId);
         Task<bool> Delete(StudentCorrection entity);
 		Task<long> CountInconsistency(long test_id, long tur_id);
-        StudentCorrection GetStudentCorrectionByTestAluId(long test_Id, long alu_id);
+        StudentCorrection GetStudentCorrectionByTestAluId(long test_Id, long alu_id, long tur_id);
 
     }
 }

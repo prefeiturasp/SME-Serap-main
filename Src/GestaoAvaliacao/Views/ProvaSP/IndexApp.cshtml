@@ -30,7 +30,6 @@ não exclua esse comentário.
     </script>
 </head>
 
-
 <body style="height:100%;" data-role="page">
     <!--MSTECH
     *Estrutura de loading
@@ -96,7 +95,6 @@ não exclua esse comentário.
                     <button id="btnTermoAplicadorConcordo" data-role="button">Concordo</button>
                     <button id="btnTermoAplicadorDiscordo" data-role="button">Discordo</button>
                 </div>
-
 
                 <div id="divMenuPrincipal" style="margin-top:15px;">
                     <div id="provaSP_disponivel">
@@ -258,7 +256,6 @@ não exclua esse comentário.
                     <option value="" selected="selected">(Edição...)</option>
                 </select>
             </form>
-
 
             <div id="divResultadoApresentacaoAluno" style="display:none; margin-top:15px;">
                 <span class="lblResultadoTituloEscalaSaeb_1"></span>
@@ -536,7 +533,6 @@ não exclua esse comentário.
                                         <option value="TURMA" id="ddlResultadoNivel_optionTurma">Turma detalhando Alunos</option>
                                         <option value="ALUNO">Aluno</option>
                                     </select>
-
                                 </td>
                                 <td>
                                     <select id="ddlResultadoEdicao" data-mini="true" disabled="disabled">
@@ -664,7 +660,6 @@ não exclua esse comentário.
                                         </label>
                                     </div>
                                     <span id="lblResultadoSelecaoTotalDRE" class="resultadoInfoSelecao"></span>
-
                                 </td>
                                 <td>
                                     <div id="divResultadoEscola" style="display:none;">
@@ -672,7 +667,6 @@ não exclua esse comentário.
                                         <div id="divResultadoEscolaItens" style="overflow:auto; height:155px;"></div>
                                         <span id="lblResultadoSelecaoTotalEscola" class="resultadoInfoSelecao"></span>
                                     </div>
-
                                 </td>
                             </tr>
                         </table>
@@ -753,7 +747,6 @@ não exclua esse comentário.
                         </div>
                     </div>
 
-
                     <!--OPÇÃO 2 - QUESTIONÁRIOS - FATORES ASSOCIADOS-->
                     <p id="resultados_tab1" class="resultados_headerTitle" onclick="divResultadoProva(1)">
                         QUESTIONÁRIO - FATORES ASSOCIADOS
@@ -773,12 +766,27 @@ não exclua esse comentário.
                                         </select>
                                     </td>
                                     <td>
-                                        <select id="ddlFACiclo" data-mini="true" disabled="disabled">
-                                            <option value="" selected="selected">(Ciclo)</option>
-                                            <option value="1">Ciclo de Alfabetização</option>
-                                            <option value="2">Ciclo Interdisciplinar</option>
-                                            <option value="3">Ciclo Autoral</option>
-                                        </select>
+                                        <div id="filtro_FACiclo">
+                                            <select id="ddlFACiclo" data-mini="true" disabled="disabled">
+                                                <option value="" selected="selected">(Ciclo)</option>
+                                                <option value="1">Ciclo de Alfabetização</option>
+                                                <option value="2">Ciclo Interdisciplinar</option>
+                                                <option value="3">Ciclo Autoral</option>
+                                            </select>
+                                        </div>
+
+                                        <div id="filtro_FAAnoEscolar" style="display:none">
+                                            <select id="ddlFAAnoEscolar" data-mini="true" disabled="disabled">
+                                                <option value="" selected="selected">(Ano escolar)</option>
+                                                <option value="3">3º ano</option>
+                                                <option value="4">4º ano</option>
+                                                <option value="5">5º ano</option>
+                                                <option value="6">6º ano</option>
+                                                <option value="7">7º ano</option>
+                                                <option value="8">8º ano</option>
+                                                <option value="9">9º ano</option>
+                                            </select>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
@@ -871,17 +879,14 @@ não exclua esse comentário.
                                                 SAO MIGUEL
                                             </label>
                                         </div>
-
                                     </td>
                                     <td>
                                         <div id="divCFEEscola" style="display:none;">
                                             <div id="divCFEEscolaItens" style="overflow:auto; height: 200px;"></div>
                                         </div>
-
                                     </td>
                                 </tr>
                             </table>
-
 
                             <table style="width:100%;">
                                 <tr>
@@ -893,14 +898,29 @@ não exclua esse comentário.
                                         </select>
                                     </td>
                                     <td>
-                                        <select id="ddlCFECiclo" data-mini="true" disabled="disabled">
-                                            <option value="" selected="selected">(Ciclo)</option>
-                                            <option value="1">Ciclo de Alfabetização</option>
-                                            <option value="2">Ciclo Interdisciplinar</option>
-                                            <option value="3">Ciclo Autoral</option>
-                                        </select>
-                                    </td>
+                                        <div id="filtro_CFECiclo">
+                                            <select id="ddlCFECiclo" data-mini="true" disabled="disabled">
+                                                <option value="" selected="selected">(Ciclo)</option>
+                                                <option value="1">Ciclo de Alfabetização</option>
+                                                <option value="2">Ciclo Interdisciplinar</option>
+                                                <option value="3">Ciclo Autoral</option>
+                                            </select>
+                                        </div>
 
+                                        <div id="filtro_CFEAnoEscolar" style="display:none">
+                                            <select id="ddlCFEAnoEscolar" data-mini="true" disabled="disabled">
+                                                <option value="" selected="selected">(Ano escolar)</option>
+                                                <option value="2">2º ano</option>
+                                                <option value="3">3º ano</option>
+                                                <option value="4">4º ano</option>
+                                                <option value="5">5º ano</option>
+                                                <option value="6">6º ano</option>
+                                                <option value="7">7º ano</option>
+                                                <option value="8">8º ano</option>
+                                                <option value="9">9º ano</option>
+                                            </select>
+                                        </div>
+                                    </td>
                                 </tr>
                             </table>
 
@@ -953,7 +973,18 @@ não exclua esse comentário.
                     <a class="link-exportar-imagem-detalhes" href="#" data-image-format="jpg">JPG</a>
                 </p>
 
-                    
+                <p id="exportar-dados" class="resultados_headerTitle" data-html2canvas-ignore="true">
+                    Exportar dados em:
+                    <a href="#" class="link-exportar-dados-csv-alunos">CSV Alunos</a>
+                    <text class="">,</text>
+                    <a href="#" class="link-exportar-dados-csv-graficos">CSV Radar e Barras</a>
+                </p>
+
+                <p id="exportar-dados-csv-alunos" class="resultados_headerTitle" data-html2canvas-ignore="true">
+                    Exportar dados em:
+                    <a href="#" class="link-exportar-dados-csv-alunos">CSV Alunos</a>
+                </p>
+
                 <a id="imprimir_graficos" style="display:none;" href="#" onclick="document.getElementById('divChartResultadoDetalhe').style.overflow='visible'; document.getElementById('divChartResultadoDetalhe').style.height='100%'; window.print();">Imprimir</a>
 
                 <div id="divResultadoTituloAgregacao" style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
@@ -961,20 +992,19 @@ não exclua esse comentário.
                 </div>
 
                 <!--MSTECH
-        *Principais gráficos - Agregação e Ciclo de Aprendizagem.
-        OBS: O gráfico de Ciclo de Aprendizagem deve aparecer somente quando existe
-        a informação do ciclo e quando for nível SME ou DRE
+                    *Principais gráficos - Agregação e Ciclo de Aprendizagem.
+                    OBS: O gráfico de Ciclo de Aprendizagem deve aparecer somente quando existe
+                    a informação do ciclo e quando for nível SME ou DRE
 
-        ATUALIZAÇÃO: Agora os gráficos de Ciclo de Aprendizagem são também adicionados aos
-        gráficos legados de agregação. Desta maneira, pode-se montar N gráficos de
-        Ciclo de Aprendizagem, dependendo do filtro selecionado
-    -->
+                    ATUALIZAÇÃO: Agora os gráficos de Ciclo de Aprendizagem são também adicionados aos
+                    gráficos legados de agregação. Desta maneira, pode-se montar N gráficos de
+                    Ciclo de Aprendizagem, dependendo do filtro selecionado
+                -->
                 <div id="divChartResultadoAgregacao"></div>
 
                 <div id="divResultadoTituloAmostral" style="background-color:rgb(255,215,215); color:rgb(255,50,50); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none; display:none;">
                     <span>Por falta de representatividade das turmas amostrais, não existe cálculo de média nem tão pouco percentuais de acertos por habilidade para os níveis Escola e Turma.</span>
                 </div>
-
 
                 <div data-role="tabs" id="tabs" style="margin-top:15px;">
                     <div id="divTabsProficienciaHabilidade" data-role="navbar">
@@ -985,7 +1015,6 @@ não exclua esse comentário.
                     </div>
 
                     <div id="divResultadoTabProficiencias" class="ui-body-d ui-content">
-
 
                         <table style="width:100%;" data-html2canvas-ignore="true">
                             <tr>
@@ -1047,147 +1076,145 @@ não exclua esse comentário.
                             <a id="btnResultadoAlterarParametros" style="width:50%;" href="#" data-role="button" class="btnInfo">Voltar às opções</a>
                         </div>
                     </div>
-
-                </div>
-
-                <!--MSTECH
-    *Popup para mostrar dados de participação da ProvaSP
-    -->
-                <div id="divResultadoFA" class="page generico_mainDiv" style="display: none;">
-                    <div class="container generico_subDiv">
-                        <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
-
-                        <div class="generico_headerDiv">
-                            <p class="generico_headerTitle">SME</p>
-                            <p id="faHeaderText" class="generico_headerText"></p>
-                        </div>
-
-                        <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
-                            O gráfico abaixo apresenta a influência do fator selecionado no desempenho dos estudantes, por componente curricular.<br /><br />
-                            Toque em uma variável específica para mais informações.
-                        </div>
-
-                        <div class="fatoresassociados_headerDiv">
-                            <p class="fatoresassociados_title">INFLUÊNCIA DO FATOR DO DESEMPENHO</p>
-                            <p id="faHeaderTitle" class="fatoresassociados_text"></p>
-                        </div>
-
-                        <!--Quadros-->
-                        <div class="fatoresassociados_quadrosDiv">
-                            <!--LÍNGUA PORTUGUESA-->
-                            <div class="fatoresassociados_quadrosBlockDiv">
-                                <div class="fatoresassociados_quadrosBlockLeftDiv">
-                                    <p class="fatoresassociados_quadrosVText">PONTOS</p>
-                                </div>
-                                <div class="fatoresassociados_quadrosBlockRightDiv">
-                                    <div class="fatoresassociados_quadrosBlockHeight" style="background: #F4CB01;">
-                                        <p id="faTitle2" class="fatoresassociados_quadrosBlockHeader"></p>
-                                    </div>
-                                    <div class="fatoresassociados_quadrosBlockHeight">
-                                        <p id="faValor2" class="fatoresassociados_quadrosBlockBody">0</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--MATEMÁTICA-->
-                            <div class="fatoresassociados_quadrosBlockDiv">
-                                <div class="fatoresassociados_quadrosBlockLeftDiv">
-                                    <p class="fatoresassociados_quadrosVText">PONTOS</p>
-                                </div>
-                                <div class="fatoresassociados_quadrosBlockRightDiv">
-                                    <div class="fatoresassociados_quadrosBlockHeight" style="background: #EA7458;">
-                                        <p id="faTitle3" class="fatoresassociados_quadrosBlockHeader"></p>
-                                    </div>
-                                    <div class="fatoresassociados_quadrosBlockHeight">
-                                        <p id="faValor3" class="fatoresassociados_quadrosBlockBody">0</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--CIÊNCIA NATURAIS-->
-                            <div class="fatoresassociados_quadrosBlockDiv">
-                                <div class="fatoresassociados_quadrosBlockLeftDiv">
-                                    <p class="fatoresassociados_quadrosVText">PONTOS</p>
-                                </div>
-                                <div class="fatoresassociados_quadrosBlockRightDiv">
-                                    <div class="fatoresassociados_quadrosBlockHeight" style="background: #6B91A8;">
-                                        <p id="faTitle1" class="fatoresassociados_quadrosBlockHeader"></p>
-                                    </div>
-                                    <div class="fatoresassociados_quadrosBlockHeight">
-                                        <p id="faValor1" class="fatoresassociados_quadrosBlockBody">0</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <p class="fatoresassociados_resenha">
-                            O fator (variável contextual) que não apresentou impacto significativo sobre
-                            o desempenho do estudante no componente curricular e/ou sobre a média
-                            escolar é representado por um traço (-).
-                        </p>
-
-                        <!--Variáveis-->
-                        <div class="fatoresassociados_variaveisDiv">
-                            <!--Variáveis Table HEADER-->
-                            <!--MSTECH - Tabela removida para retirar imagem do estado de SP-->
-                            <!--<table class="fatoresassociados_variaveisTable"><tr>-->
-                            <!--<td class="fatoresassociados_variaveisTDLeft">-->
-                            <!--<p class="fatoresassociados_variaveisTDLeftText">-->
-                            <!--Observe abaixo as variáveis que compõem o constructo<br />-->
-                            <!--<b>-->
-                            <!--<span class='mdi mdi-chevron-right'></span>-->
-                            <!--<span id="faVarsConstructo"></span>-->
-                            <!--</b>-->
-                            <!--</p>-->
-                            <!--</td>-->
-                            <!--<td class="fatoresassociados_variaveisTDRight">-->
-                            <!--<img class="fatoresassociados_variaveisTDRightImg" src="/AppProvaSP/images/fa_background.png" />-->
-                            <!--</td>-->
-                            <!--</tr></table>-->
-                            <p class="fatoresassociados_variaveisText">
-                                Observe abaixo as variáveis que compõem o constructo<br />
-                                <b>
-                                    <span class='mdi mdi-chevron-right'></span>
-                                    <span id="faVarsConstructo"></span>
-                                </b>
-                            </p>
-
-                            <!--Variáveis em si-->
-                            <div id="fa_variaveisDoConstructo"></div>
-                        </div>
-
-                        <!--BOTÃO VOLTAR-->
-                        <button id="btnFAVoltar" data-role="button">Voltar às opções</button>
-                    </div>
-                </div>
-
-                <!--MSTECH
-    *Popup para mostrar dados de participação da ProvaSP
-    -->
-                <div id="divResultadoConstructo" class="page generico_mainDiv" style="display: none;">
-                    <div class="container generico_subDiv">
-                        <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
-
-                        <div class="generico_headerDiv">
-                            <p id="constructoHeaderTitle" class="generico_headerTitle"></p>
-                            <p id="constructoHeaderText" class="generico_headerText"></p>
-                        </div>
-
-                        <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
-                            Nos gráficos abaixo são mostrados os dados de caracterização das famílias e das escolas
-                        </div>
-
-                        <!--Conteúdo do contructo em si-->
-                        <div id="constructDivContent"></div>
-
-                        <!--BOTÃO VOLTAR-->
-                        <button id="btnConstructoVoltar" data-role="button">Voltar</button>
-                    </div>
                 </div>
             </div>
-        <!--MSTECH
-        *Adicionado DIV de fechamento que estava faltando
-        -->
-    </div>
 
+            <!--MSTECH
+            *Popup para mostrar dados de participação da ProvaSP
+            -->
+            <div id="divResultadoFA" class="page generico_mainDiv" style="display: none;">
+                <div class="container generico_subDiv">
+                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+                    <div class="generico_headerDiv">
+                        <p class="generico_headerTitle">SME</p>
+                        <p id="faHeaderText" class="generico_headerText"></p>
+                    </div>
+
+                    <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
+                        O gráfico abaixo apresenta a influência do fator selecionado no desempenho dos estudantes, por componente curricular.<br /><br />
+                        Toque em uma variável específica para mais informações.
+                    </div>
+
+                    <div class="fatoresassociados_headerDiv">
+                        <p class="fatoresassociados_title">INFLUÊNCIA DO FATOR DO DESEMPENHO</p>
+                        <p id="faHeaderTitle" class="fatoresassociados_text"></p>
+                    </div>
+
+                    <!--Quadros-->
+                    <div class="fatoresassociados_quadrosDiv">
+                        <!--LÍNGUA PORTUGUESA-->
+                        <div class="fatoresassociados_quadrosBlockDiv">
+                            <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                            </div>
+                            <div class="fatoresassociados_quadrosBlockRightDiv">
+                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #F4CB01;">
+                                    <p id="faTitle2" class="fatoresassociados_quadrosBlockHeader"></p>
+                                </div>
+                                <div class="fatoresassociados_quadrosBlockHeight">
+                                    <p id="faValor2" class="fatoresassociados_quadrosBlockBody">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--MATEMÁTICA-->
+                        <div class="fatoresassociados_quadrosBlockDiv">
+                            <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                            </div>
+                            <div class="fatoresassociados_quadrosBlockRightDiv">
+                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #EA7458;">
+                                    <p id="faTitle3" class="fatoresassociados_quadrosBlockHeader"></p>
+                                </div>
+                                <div class="fatoresassociados_quadrosBlockHeight">
+                                    <p id="faValor3" class="fatoresassociados_quadrosBlockBody">0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--CIÊNCIA NATURAIS-->
+                        <div class="fatoresassociados_quadrosBlockDiv">
+                            <div class="fatoresassociados_quadrosBlockLeftDiv">
+                                <p class="fatoresassociados_quadrosVText">PONTOS</p>
+                            </div>
+                            <div class="fatoresassociados_quadrosBlockRightDiv">
+                                <div class="fatoresassociados_quadrosBlockHeight" style="background: #6B91A8;">
+                                    <p id="faTitle1" class="fatoresassociados_quadrosBlockHeader"></p>
+                                </div>
+                                <div class="fatoresassociados_quadrosBlockHeight">
+                                    <p id="faValor1" class="fatoresassociados_quadrosBlockBody">0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p id="fatoresassociados_referencia" class="fatoresassociados_referencia"></p>
+
+                    <p class="fatoresassociados_resenha">
+                        O fator (variável contextual) que não apresentou impacto significativo sobre
+                        o desempenho do estudante no componente curricular e/ou sobre a média
+                        escolar é representado por um traço (-).
+                    </p>
+
+                    <!--Variáveis-->
+                    <div class="fatoresassociados_variaveisDiv">
+                        <!--Variáveis Table HEADER-->
+                        <!--MSTECH - Tabela removida para retirar imagem do estado de SP-->
+                        <!--<table class="fatoresassociados_variaveisTable"><tr>-->
+                        <!--<td class="fatoresassociados_variaveisTDLeft">-->
+                        <!--<p class="fatoresassociados_variaveisTDLeftText">-->
+                        <!--Observe abaixo as variáveis que compõem o constructo<br />-->
+                        <!--<b>-->
+                        <!--<span class='mdi mdi-chevron-right'></span>-->
+                        <!--<span id="faVarsConstructo"></span>-->
+                        <!--</b>-->
+                        <!--</p>-->
+                        <!--</td>-->
+                        <!--<td class="fatoresassociados_variaveisTDRight">-->
+                        <!--<img class="fatoresassociados_variaveisTDRightImg" src="/AppProvaSP/images/fa_background.png" />-->
+                        <!--</td>-->
+                        <!--</tr></table>-->
+                        <p class="fatoresassociados_variaveisText">
+                            Observe abaixo as variáveis que compõem o constructo<br />
+                            <b>
+                                <span class='mdi mdi-chevron-right'></span>
+                                <span id="faVarsConstructo"></span>
+                            </b>
+                        </p>
+
+                        <!--Variáveis em si-->
+                        <div id="fa_variaveisDoConstructo"></div>
+                    </div>
+
+                    <!--BOTÃO VOLTAR-->
+                    <button id="btnFAVoltar" data-role="button">Voltar às opções</button>
+                </div>
+            </div>
+
+            <!--MSTECH
+            *Popup para mostrar dados de participação da ProvaSP
+            -->
+            <div id="divResultadoConstructo" class="page generico_mainDiv" style="display: none;">
+                <div class="container generico_subDiv">
+                    <img src="/AppProvaSP/images/logo_provaSP.png" class="generic_logo" alt="Prova São Paulo" />
+
+                    <div class="generico_headerDiv">
+                        <p id="constructoHeaderTitle" class="generico_headerTitle"></p>
+                        <p id="constructoHeaderText" class="generico_headerText"></p>
+                    </div>
+
+                    <div style="background-color:rgb(189,243,255); color:rgb(66,142,218); font-size:11pt; border-radius: 10px; margin:15px; padding:15px; font-weight:bold; text-shadow:none;">
+                        Nos gráficos abaixo são mostrados os dados de caracterização das famílias e das escolas
+                    </div>
+
+                    <!--Conteúdo do contructo em si-->
+                    <div id="constructDivContent"></div>
+
+                    <!--BOTÃO VOLTAR-->
+                    <button id="btnConstructoVoltar" data-role="button">Voltar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!--AMCOM
     *Popup para consulta de revistas pedagógicas e boletins
@@ -1315,7 +1342,6 @@ não exclua esse comentário.
                         </td>
                     </tr>
                 </table>
-
             </form>
 
             <button id="btnRevistasBoletinsVoltar" data-role="button">Voltar</button>
@@ -1462,7 +1488,6 @@ não exclua esse comentário.
                                 <input id="Questionario_8_Questao_1_tur_id" type="text" name="Questionario_8_Questao_1" readonly="readonly" />
                             </fieldset>
 
-
                             <h3>
                                 2. Data de Aplicação:
                             </h3>
@@ -1473,7 +1498,6 @@ não exclua esse comentário.
                                 -->
                                 <input id="Questionario_8_Questao_2_Data" data-role="date" data-inline="true" type="text" name="Questionario_8_Questao_2" />
                             </fieldset>
-
 
                             <h3>
                                 3. Disciplina:
@@ -1492,7 +1516,6 @@ não exclua esse comentário.
                                     Ciências da Natureza
                                 </label>
                             </fieldset>
-
 
                             <!-- CHAMADA -->
                             <h3>
@@ -1692,7 +1715,6 @@ não exclua esse comentário.
                                     </tr>
                                 </table>
                             </fieldset>
-
 
                             <h3>14. Fatos relevantes ocorridos durante a aplicação:</h3>
                             <fieldset>
@@ -2054,7 +2076,6 @@ não exclua esse comentário.
     <script src="/AppProvaSP/scripts/jquery-1.8.0.min.js"></script>
     <script src="/AppProvaSP/scripts/jquery.mobile-1.4.5.min.js"></script>
 
-
     <!--SWEETALERT_INICIO-->
     <script src="/AppProvaSP/scripts/sha512.js"></script>
     <script src="/AppProvaSP/scripts/sweetalert.min.js"></script>
@@ -2071,7 +2092,9 @@ não exclua esse comentário.
     <script type="text/javascript" src="/AppProvaSP/scripts/global.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/model/QuestionarioUsuario.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/model/QuestionarioRespostaItem.js?v=1.30.7.2"></script>
-    <script src="/AppProvaSP/scripts/model/ExportarDreEscolas.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/model/ExportarDreEmCsv.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/model/ExportarDreGraficosEmImagem.js?v=1.30.7.2"></script>
+    <script src="/AppProvaSP/scripts/model/ExportarDreGraficosEmPdf.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/app.js?v=1.30.7.2" type="text/javascript"></script>
 
     <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/jspdf.min.js"></script>
