@@ -80,6 +80,8 @@ namespace GestaoAvaliacao.MongoRepository
             Collection.InsertMany(entity);
         }
 
+        public async Task InsertManyAsync(List<T> entity) => await Collection.InsertManyAsync(entity);
+
         public async Task InsertOrReplaceAsync(T entity)
         {
             if(entity.State == (byte)EnumState.naoDefinido)
