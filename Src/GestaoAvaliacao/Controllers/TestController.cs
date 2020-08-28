@@ -223,6 +223,8 @@ namespace GestaoAvaliacao.Controllers
                         Multidiscipline = entity.Multidiscipline,
                         KnowledgeAreaBlock = entity.KnowledgeAreaBlock,
                         ElectronicTest = entity.ElectronicTest,
+						entity.ShowVideoFiles,
+						entity.ShowAudioFiles,
                         TestSubGroup = entity.TestSubGroup != null ? new { Id = entity.TestSubGroup.Id, Description = entity.TestSubGroup.Description } : null,
                     };
 
@@ -773,8 +775,6 @@ namespace GestaoAvaliacao.Controllers
         [HttpPost]
 		public JsonResult Save(Test entity)
 		{
-			EnumTestSituation testSituation = EnumTestSituation.Pending;
-
 			try
 			{
 				if (entity.Id > 0)

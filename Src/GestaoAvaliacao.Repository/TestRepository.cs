@@ -28,7 +28,7 @@ namespace GestaoAvaliacao.Repository
 
                 var sql = new StringBuilder("SELECT Id, Description, Bib, NumberItemsBlock, NumberBlock, NumberItem, ApplicationStartDate, ApplicationEndDate, ");
                 sql.Append("CorrectionStartDate, CorrectionEndDate, UsuId, FrequencyApplication, TestSituation, CreateDate, UpdateDate, State, Discipline_Id, ");
-                sql.Append("FormatType_Id, TestType_Id, AllAdhered, ProcessedCorrectionDate, KnowledgeAreaBlock, Multidiscipline ");
+                sql.Append("FormatType_Id, TestType_Id, AllAdhered, ProcessedCorrectionDate, KnowledgeAreaBlock, Multidiscipline, ShowVideoFiles, ShowAudioFiles ");
                 sql.Append("FROM Test WITH (NOLOCK) ");
                 sql.Append("WHERE Id = @id");
 
@@ -1234,7 +1234,9 @@ namespace GestaoAvaliacao.Repository
                                                              ELSE 0 
                                                         END AS quantDiasRestantes, 
 	                                                    TT.FrequencyApplication,
-	                                                    T.ApplicationEndDate
+	                                                    T.ApplicationEndDate,
+                                                        T.ShowVideoFiles,
+                                                        T.ShowAudioFiles
                                                     FROM
 	                                                    Test AS T WITH(NOLOCK)
 	                                                    INNER JOIN TestType AS TT WITH(NOLOCK)
@@ -1462,6 +1464,8 @@ namespace GestaoAvaliacao.Repository
                 test.Multidiscipline = entity.Multidiscipline;
                 test.KnowledgeAreaBlock = entity.KnowledgeAreaBlock;
                 test.ElectronicTest = entity.ElectronicTest;
+                test.ShowVideoFiles = entity.ShowVideoFiles;
+                test.ShowAudioFiles = entity.ShowAudioFiles;
 
                 test.UpdateDate = DateTime.Now;
 

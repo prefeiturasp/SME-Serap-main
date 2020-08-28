@@ -92,5 +92,8 @@ namespace GestaoAvaliacao.Entities
         [NotMapped]
         public int quantDiasRestantes { get; set; }
 
+        public bool ShowVideoFiles { get; set; }
+        public bool ShowAudioFiles { get; set; }
+
     }
 }
