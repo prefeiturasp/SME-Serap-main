@@ -158,6 +158,15 @@
                                          ng-class="{'off': !isElectronicTest}" style="position: absolute; margin: 4px 206px;"><input type="button" /></div>
                                 </div>
 
+                                <div class="campoLabel col-md-6">
+                                    <label class="label-pos-inline">  {{labels.showVideoFiles}}: </label>
+                                    <div class="switch" ng-click="selectShowVideoFiles();" ng-class="{'off': !showVideoFiles}" style="position: absolute; margin: 4px 250px;"><input type="button" /></div>
+                                </div>
+                                <div class="campoLabel col-md-6>
+                                    <label class="label-pos-inline">  {{labels.showAudioFiles}}: </label>
+                                    <div class="switch" ng-click="selectShowAudioFiles();" ng-class="{'off': !showAudioFiles}" style="position: absolute; margin: 4px 255px;"><input type="button" /></div>
+                                </div>
+
                             </div>
                         </div>
                     </div>

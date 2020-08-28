@@ -164,8 +164,9 @@
                 keywords: 'Palavra-chave',
                 multidiscipline: 'Multidisciplinar',
                 knowledgeAreaBlock: 'Gabarito com blocos de área de conhecimento',
-                electronicTest: 'Prova eletrônica'
-
+                electronicTest: 'Prova eletrônica',
+                showVideoFiles: 'Exibir conteúdo de vídeo',
+                showAudioFiles: 'Exibir conteúdo de áudio'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
             //Lista de escolha 
@@ -247,6 +248,8 @@
             ng.e1_radios = 3;
             ng.isKnowledgeAreaBlock = false;
             ng.isElectronicTest = false;
+            ng.showVideoFiles = false;
+            ng.showAudioFiles = false;
             //Lista de dificuldades do tipo de prova
             ng.e1_listaDificuldades = [];
             ng.Global = false;
@@ -589,6 +592,16 @@
 
         ng.selectProvaEletronica = function () {
             ng.isElectronicTest = !ng.isElectronicTest;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selectShowVideoFiles = function () {
+            ng.showVideoFiles = !ng.showVideoFiles;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selectShowAudioFiles = function () {
+            ng.showAudioFiles = !ng.showAudioFiles;
             self.etapa1.alterou = true;
         };
 
@@ -1020,6 +1033,8 @@
                 "Multidiscipline": ng.isMultidiscipline,
                 "KnowledgeAreaBlock": ng.isKnowledgeAreaBlock,
                 "ElectronicTest": ng.isElectronicTest,
+                "ShowVideoFiles": ng.showVideoFiles,
+                "ShowAudioFiles": ng.showAudioFiles,
                 "TestSubGroup": ng.e1_grupoSubgrupo
             };
 
@@ -1338,9 +1353,11 @@
                     ng.e1_cbTipoProva.BlockItem = r.BlockItem;
                     ng.e1_testDescription = r.Description;
                     ng.e1_cbComponenteCurricular = procurarElementoEm([r.Discipline], ng.e1_listaComponenteCurricular)[0];
-                    ng.isMultidiscipline = r.Multidiscipline,
-                    ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock,
-                    ng.isElectronicTest = r.ElectronicTest,
+                    ng.isMultidiscipline = r.Multidiscipline;
+                    ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock;
+                    ng.isElectronicTest = r.ElectronicTest;
+                    ng.showVideoFiles = r.ShowVideoFiles;
+                    ng.showAudioFiles = r.ShowAudioFiles;
 					e1_formato_findTest = true;
                     ng.e1_folhaResp = true;
                     ng.frequencyApplication = r.FrequencyApplication;

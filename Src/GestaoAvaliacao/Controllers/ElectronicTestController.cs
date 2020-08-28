@@ -187,7 +187,9 @@ namespace GestaoAvaliacao.Controllers
                     NumberItem = test.NumberItem,
                     quantDiasRestantes = test.quantDiasRestantes,
                     FrequencyApplication = EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)test.FrequencyApplication),
-                    ApplicationEndDate = test.ApplicationEndDate.ToString("dd/MM/yyyy")
+                    ApplicationEndDate = test.ApplicationEndDate.ToString("dd/MM/yyyy"),
+                    test.ShowAudioFiles,
+                    test.ShowVideoFiles
                 };
 
                 if (test != null)
