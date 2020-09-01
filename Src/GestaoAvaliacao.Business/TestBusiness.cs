@@ -732,7 +732,9 @@ namespace GestaoAvaliacao.Business
 			return entity;
 		}
 
-		public GenerateTestDTO GenerateTest(long Id, bool sheet, bool publicFeedback, bool CDNMathJax, string separator, SYS_Usuario Usuario, SYS_Grupo Grupo, string UrlSite, string VirtualDirectory, string PhysicalDirectory)
+        public TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId) => testRepository.GetTestShowVideoAudioFiles(testId);
+
+        public GenerateTestDTO GenerateTest(long Id, bool sheet, bool publicFeedback, bool CDNMathJax, string separator, SYS_Usuario Usuario, SYS_Grupo Grupo, string UrlSite, string VirtualDirectory, string PhysicalDirectory)
 		{
 			Booklet entity = bookletBusiness.GetTestBooklet(Id);
 			GenerateTestDTO ret = new GenerateTestDTO();

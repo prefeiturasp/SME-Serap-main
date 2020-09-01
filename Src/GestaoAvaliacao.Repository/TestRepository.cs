@@ -1700,6 +1700,24 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
+        public TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId)
+        {
+            var query = @"SELECT
+                            Id AS TestId,
+                            ShowVideoFiles,
+                            ShowAudioFiles
+                        FROM [Test] (NOLOCK)
+                        WHERE
+                            Id = @testId";
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+                var result = cn.Query<TestShowVideoAudioFilesDto>(query, new { testId });
+                return result.FirstOrDefault();
+            }
+        }
+
         #endregion
     }
 }
