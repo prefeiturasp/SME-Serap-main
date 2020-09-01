@@ -45,9 +45,16 @@
             ng.mensagemEntregaProva;
             ng.admin = getCurrentVision() != EnumVisions.INDIVIDUAL ? true : false;
             ng.provaFinalizada = false;
+            ng.showHeaderDetails = false;
+            ng.enunciadoFontSize = 14;
+            ng.alternativasFontSize = 14;
 
             ng.videos = null;
             ng.audios = null;
+        };
+
+        ng.loadHeaderDetais = function __loadHeaderDetais() {
+            ng.showHeaderDetails = !ng.showHeaderDetails;
         };
 
         ng.abrirGabarito = function __abrirGabarito() {
@@ -222,6 +229,27 @@
 
             });
         }
+
+        ng.zoomAlternativas = function (up) {
+            if (up == true && ng.alternativasFontSize < 22)
+                ng.alternativasFontSize = ng.alternativasFontSize + 4;
+            
+            if (up == false && ng.alternativasFontSize > 14)
+                ng.alternativasFontSize = ng.alternativasFontSize - 4;
+
+            $('label.alternativeElementClass p').css("font-size", ng.alternativasFontSize + "px");
+        };
+
+        ng.zoomEnunciado = function (up) {
+            if (up == true && ng.enunciadoFontSize < 22)
+                ng.enunciadoFontSize = ng.enunciadoFontSize + 4;
+
+            if (up == false && ng.enunciadoFontSize > 14)
+                ng.enunciadoFontSize = ng.enunciadoFontSize - 4;
+
+            $('div.baseTextElementClass p').css("font-size", ng.enunciadoFontSize + "px");
+            $('div.statementElementClass p').css("font-size", ng.enunciadoFontSize + "px");
+        };
 
         ng.handleRadioClick = function (alternativa) {
 

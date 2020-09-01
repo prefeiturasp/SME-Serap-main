@@ -52,6 +52,8 @@ namespace GestaoAvaliacao.IBusiness
 		void ChangeOrderTestUp(long Id, long order);
 		void ChangeOrderTestDown(long Id, long order);
 		IEnumerable<TestResult> GetTestsBySubGroup(long id);
+
+		TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
 		List<ElectronicTestDTO> SearchEletronicTests();
 		Test SearchInfoTest(long test_id);
 		List<ElectronicTestDTO> SearchEletronicTestsByPesId(Guid pes_id);

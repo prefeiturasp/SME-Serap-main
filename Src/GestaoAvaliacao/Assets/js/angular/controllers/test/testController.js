@@ -3798,6 +3798,7 @@
         };
 
         ng.changeVersionItem = function changeVersionItem() {
+            debugger;
             TestModel.saveChangeItem({ item: ng.versaoItem, test_id: ng.params, itemIdAntigo: ng.item.Id }, function (result) {
                 if (result.success) {
                     $notification.success(result.message);

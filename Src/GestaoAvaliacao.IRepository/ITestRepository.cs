@@ -49,5 +49,6 @@ namespace GestaoAvaliacao.IRepository
         bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id);
         IEnumerable<TestResult> GetTestsBySubGroupTcpId(long Id, long tcp_id);
         IEnumerable<Guid> GetStudentDeficiencies(Guid pes_id);
+        TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
     }
 }
