@@ -35,9 +35,10 @@ namespace GestaoAvaliacao.Controllers
 		private readonly ITestCurriculumGradeBusiness testCurriculumGradeBusiness;
 		private readonly ITestPermissionBusiness testPermissionBusiness;
 
-		public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
-			IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness,
-			IRequestRevokeBusiness requestRevokeBusiness, IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness, ITestPermissionBusiness testPermissionBusiness)
+        public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
+			IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness, 
+			IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness, 
+			ITestPermissionBusiness testPermissionBusiness)
 		{
 			this.testBusiness = testBusiness;
 			this.testFilesBusiness = testFilesBusiness;
@@ -50,14 +51,11 @@ namespace GestaoAvaliacao.Controllers
 			this.escolaBusiness = escolaBusiness;
 			this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
 			this.testPermissionBusiness = testPermissionBusiness;
-		}
+        }
 
-		public ActionResult Index()
-		{
-			return View();
-		}
+        public ActionResult Index() => View();
 
-		[ActionAuthorizeAttribute(Permission.CreateOrUpdate)]
+        [ActionAuthorizeAttribute(Permission.CreateOrUpdate)]
 		public ActionResult IndexForm(long Id = -1)
 		{
 			return View(new Test { Id = Id });
