@@ -5,6 +5,7 @@ using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Business
 {
@@ -21,7 +22,7 @@ namespace GestaoAvaliacao.Business
 
 		#region Custom
 
-		private Validate Validate(TestType entity, ValidateAction action, Guid ent_id, Validate valid)
+		private async Task<Validate> ValidateAsync(TestType entity, ValidateAction action, Guid ent_id, Validate valid)
 		{
 			valid.Message = null;
 
@@ -48,7 +49,7 @@ namespace GestaoAvaliacao.Business
 
 			if (action == ValidateAction.Delete)
 			{
-				TestType ent = Get(entity.Id, ent_id);
+				var ent = await GetAsync(entity.Id, ent_id);
 				if (ent == null)
 				{
 					valid.Message = "Não foi encontrado o tipo de prova a ser excluído.";
@@ -78,54 +79,39 @@ namespace GestaoAvaliacao.Business
 			return valid;
 		}
 
-		#endregion
+        #endregion
 
-		#region Read
+        #region Read
 
-		public TestType Get(long Id, Guid EntityId)
-		{
-			return testTypeRepository.Get(Id, EntityId);
-		}
+        public async Task<TestType> GetAsync(long Id, Guid EntityId) => await testTypeRepository.GetAsync(Id, EntityId);
 
-		public IEnumerable<TestType> Load(ref Pager pager, Guid EntityId)
-		{
-			return testTypeRepository.Load(ref pager, EntityId);
-		}
+        public IEnumerable<TestType> Load(ref Pager pager, Guid EntityId) => testTypeRepository.Load(ref pager, EntityId);
 
-		public IEnumerable<TestType> Search(string search, ref Pager pager, Guid EntityId)
-		{
-			return testTypeRepository.Search(search, ref pager, EntityId);
-		}
+        public IEnumerable<TestType> Search(string search, ref Pager pager, Guid EntityId) => testTypeRepository.Search(search, ref pager, EntityId);
 
-		public IEnumerable<TestType> LoadByUserGroup(Guid EntityId, bool IsAdmin)
+        public async Task<IEnumerable<TestType>> LoadByUserGroupAsync(Guid EntityId, bool IsAdmin)
 		{
 			if (IsAdmin)
-				return testTypeRepository.LoadAll(EntityId);
+				return await testTypeRepository.LoadAllAsync(EntityId);
 			else
-				return testTypeRepository.LoadNotGlobal(EntityId);
+				return await testTypeRepository.LoadNotGlobalAsync(EntityId);
 		}
 
-        public bool ExistsTestAssociated(long Id)
-        {
-            return testTypeRepository.ExistsTestAssociated(Id);
-        }
+        public bool ExistsTestAssociated(long Id) => testTypeRepository.ExistsTestAssociated(Id);
 
-        public IEnumerable<TestType> LoadFiltered(Guid EntityId, bool IsAdmin)
-        {
-            return testTypeRepository.LoadFiltered(EntityId, IsAdmin);
-        }
+        public IEnumerable<TestType> LoadFiltered(Guid EntityId, bool IsAdmin) => testTypeRepository.LoadFiltered(EntityId, IsAdmin);
 
         #endregion
 
         #region Write
 
-        public TestType Save(TestType entity, Guid ent_id)
+        public async Task<TestType> SaveAsync(TestType entity, Guid ent_id)
 		{
-			entity.Validate = Validate(entity, ValidateAction.Save, ent_id, entity.Validate);
+			entity.Validate = await ValidateAsync(entity, ValidateAction.Save, ent_id, entity.Validate);
 			if (entity.Validate.IsValid)
 			{
 				entity.EntityId = ent_id;
-				entity = testTypeRepository.Save(entity);
+				entity = await testTypeRepository.SaveAsync(entity);
 				entity.Validate.Type = ValidateType.Save.ToString();
 				entity.Validate.Message = "Tipo de prova salvo com sucesso.";
 			}
@@ -133,13 +119,13 @@ namespace GestaoAvaliacao.Business
 			return entity;
 		}
 
-		public TestType Update(long Id, TestType entity, Guid ent_id)
+		public async Task<TestType> UpdateAsync(long Id, TestType entity, Guid ent_id)
 		{
-			entity.Validate = Validate(entity, ValidateAction.Update, ent_id, entity.Validate);
+			entity.Validate = await ValidateAsync(entity, ValidateAction.Update, ent_id, entity.Validate);
 			if (entity.Validate.IsValid)
 			{
 				entity.Id = Id;
-				testTypeRepository.Update(entity);
+				await testTypeRepository.UpdateAsync(entity);
 				entity.Validate.Type = ValidateType.Update.ToString();
 				entity.Validate.Message = "Tipo de prova alterado com sucesso.";
 			}
@@ -147,13 +133,13 @@ namespace GestaoAvaliacao.Business
 			return entity;
 		}
 
-		public TestType Delete(long id, Guid ent_id)
+		public async Task<TestType> DeleteAsync(long id, Guid ent_id)
 		{
 			TestType entity = new TestType { Id = id };
-			entity.Validate = Validate(entity, ValidateAction.Delete, ent_id, entity.Validate);
+			entity.Validate = await ValidateAsync(entity, ValidateAction.Delete, ent_id, entity.Validate);
 			if (entity.Validate.IsValid)
 			{
-				testTypeRepository.Delete(entity.Id);
+				await testTypeRepository.DeleteAsync(entity.Id);
 				entity.Validate.Type = ValidateType.Delete.ToString();
 				entity.Validate.Message = "Tipo de prova excluído com sucesso.";
 			}

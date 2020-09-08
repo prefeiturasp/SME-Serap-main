@@ -28,7 +28,7 @@ namespace GestaoAvaliacao.Repository
 
                 var sql = new StringBuilder("SELECT Id, Description, Bib, NumberItemsBlock, NumberBlock, NumberItem, ApplicationStartDate, ApplicationEndDate, ");
                 sql.Append("CorrectionStartDate, CorrectionEndDate, UsuId, FrequencyApplication, TestSituation, CreateDate, UpdateDate, State, Discipline_Id, ");
-                sql.Append("FormatType_Id, TestType_Id, AllAdhered, ProcessedCorrectionDate, KnowledgeAreaBlock ");
+                sql.Append("FormatType_Id, TestType_Id, AllAdhered, ProcessedCorrectionDate, KnowledgeAreaBlock, Multidiscipline, ShowVideoFiles, ShowAudioFiles ");
                 sql.Append("FROM Test WITH (NOLOCK) ");
                 sql.Append("WHERE Id = @id");
 
@@ -1082,7 +1082,9 @@ namespace GestaoAvaliacao.Repository
                                                         T.ApplicationEndDate,
 	                                                    t.AllAdhered,
 	                                                    mtu.alu_id,
-	                                                    mtu.tur_id
+	                                                    mtu.tur_id,
+                                                        TT.Id AS TestTypeId,
+                                                        TT.TargetToStudentsWithDeficiencies
                                                     FROM
                                                         Test AS T WITH(NOLOCK)
                                                         INNER JOIN TestType AS TT WITH(NOLOCK)
@@ -1124,7 +1126,9 @@ namespace GestaoAvaliacao.Repository
                                                         T.ApplicationEndDate,
 	                                                    t.AllAdhered,
 	                                                    mtu.alu_id,
-	                                                    mtu.tur_id");
+	                                                    mtu.tur_id,
+                                                        TT.Id,
+                                                        TT.TargetToStudentsWithDeficiencies");
 
             using (IDbConnection cn = Connection)
             {
@@ -1141,6 +1145,22 @@ namespace GestaoAvaliacao.Repository
                 });
 
                 return result.ToList();
+            }
+        }
+
+        public IEnumerable<Guid> GetStudentDeficiencies(Guid pes_id)
+        {
+            var query = @"SELECT
+                            tde_id
+                        FROM
+                            PES_PessoaDeficiencia (NOLOCK)
+                        WHERE
+                            pes_id = @pes_id";
+
+            using (IDbConnection cn = ConnectionCoreSSO)
+            {
+                cn.Open();
+                return cn.Query<Guid>(query, new { pes_id });
             }
         }
 
@@ -1214,7 +1234,9 @@ namespace GestaoAvaliacao.Repository
                                                              ELSE 0 
                                                         END AS quantDiasRestantes, 
 	                                                    TT.FrequencyApplication,
-	                                                    T.ApplicationEndDate
+	                                                    T.ApplicationEndDate,
+                                                        T.ShowVideoFiles,
+                                                        T.ShowAudioFiles
                                                     FROM
 	                                                    Test AS T WITH(NOLOCK)
 	                                                    INNER JOIN TestType AS TT WITH(NOLOCK)
@@ -1442,6 +1464,8 @@ namespace GestaoAvaliacao.Repository
                 test.Multidiscipline = entity.Multidiscipline;
                 test.KnowledgeAreaBlock = entity.KnowledgeAreaBlock;
                 test.ElectronicTest = entity.ElectronicTest;
+                test.ShowVideoFiles = entity.ShowVideoFiles;
+                test.ShowAudioFiles = entity.ShowAudioFiles;
 
                 test.UpdateDate = DateTime.Now;
 
@@ -1673,6 +1697,24 @@ namespace GestaoAvaliacao.Repository
                 cn.Open();
 
                 return cn.Query<long>(sql.ToString()).FirstOrDefault();
+            }
+        }
+
+        public TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId)
+        {
+            var query = @"SELECT
+                            Id AS TestId,
+                            ShowVideoFiles,
+                            ShowAudioFiles
+                        FROM [Test] (NOLOCK)
+                        WHERE
+                            Id = @testId";
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+                var result = cn.Query<TestShowVideoAudioFilesDto>(query, new { testId });
+                return result.FirstOrDefault();
             }
         }
 

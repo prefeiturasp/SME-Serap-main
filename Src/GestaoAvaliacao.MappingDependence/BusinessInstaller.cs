@@ -133,6 +133,11 @@ namespace GestaoAvaliacao.MappingDependence
 								.WithService.AllInterfaces()
 								.SetLifestyle(LifestylePerWebRequest));
 
+			container.Register(Classes.FromAssemblyContaining<TestTypeDeficiencyBusiness>()
+								.BasedOn(typeof(ITestTypeDeficiencyBusiness))
+								.WithService.AllInterfaces()
+								.SetLifestyle(LifestylePerWebRequest));
+
 			container.Register(Classes.FromAssemblyContaining<TestTypeItemLevelBusiness>()
 						   .BasedOn(typeof(ITestTypeItemLevelBusiness))
 						   .WithService.AllInterfaces()

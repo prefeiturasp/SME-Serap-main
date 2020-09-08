@@ -13,8 +13,9 @@ namespace GestaoAvaliacao.IBusiness
         TestSectionStatusCorrection Save(TestSectionStatusCorrection entity);
         TestSectionStatusCorrection Update(TestSectionStatusCorrection entity);
         TestSectionStatusCorrection SetStatusCorrection(long test_id, long tur_id, EnumStatusCorrection status);
-
+        Task SetCorrectionStatusAsync(long test_id, long tur_id, EnumStatusCorrection status);
         TestSectionStatusCorrection Get(long test_id, long tur_id);
+        Task<TestSectionStatusCorrection> GetAsync(long test_Id, long tur_id);
         IEnumerable<TestSectionStatusCorrection> GetByTest(long test_id);
         IEnumerable<TestSectionStatusCorrection> GetBySchool(long Test_Id, int esc_id);
         IEnumerable<TestStatsEntitiesDTO> GetFinalizedEntities(long? Test_Id = null, string Year = null, Guid? uad_id = null, int? esc_id = null, long? tur_id = null,

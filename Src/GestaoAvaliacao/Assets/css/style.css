@@ -5873,3 +5873,18 @@ h3.label-menu {
   margin-top: 5px;
   margin-right: 0px; }
 
+.electronicTestHeader b {
+    font-size: 22px;
+    color: inherit;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.electronicTestHeader input {
+    height: 28px;
+    width: 28px;
+    margin-top: 20px;
+    border: solid 1px;
+}
+
+
