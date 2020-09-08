@@ -1105,7 +1105,6 @@
 		function getGroups() {
 		    TestListModel.getGroups({}, function (result) {
 				ng.group = true;
-				debugger;
 		        if (result.success) {
 		            ng.listFilter.Groups = result.lista;
 		            if (ng.listFilter.Groups.length === 1) {
