@@ -1,0 +1,39 @@
+CREATE TABLE MatriculaDosALunosEjaEol(
+	CodigoDoAluno INT,
+	DataStatusMatricula DATETIME,
+	SituacaoMatricula CHAR
+)
+
+CREATE TABLE AlunosDoCieja 
+(
+	CodigoTurmaEscola int,
+	CodigoAluno int,
+	NomeAluno VARCHAR(70),
+	DataNascimento DATETIME,
+	NomeSocialAluno VARCHAR(70),
+	CodigoSituacaoMatricula INT,
+	SituacaoMatricula VARCHAR(40),
+	DataSituacao DATETIME,
+	NumeroAlunoChamada VARCHAR(5),
+	PossuiDeficiencia BIT
+)
+
+CREATE TABLE TurmasEjaEol(
+	[cd_escola] [float] NULL,
+	[cd_turma_escola] [int] NULL,
+	[dc_turma_escola] [varchar](255) ,
+	[an_letivo] [float] NULL,
+	[dc_tipo_periodicidade] [varchar](255)  ,
+	[dc_tipo_turno] [varchar](255) ,
+	[st_turma_escola] [varchar](255) ,
+	[cd_tipo_turma] [float] NULL,
+	[dt_inicio_turma] [varchar](255) NULL,
+	[dt_fim_turma] [varchar](255) NULL,
+	[nr_ordem_serie] [float] NULL,
+	[cd_modalidade_ensino] [float] NULL,
+	[cd_etapa_ensino] [float] NULL,
+	[nr_ordem_etapa] [float] NULL,
+	[dc_serie_ensino] [varchar](255) ,
+	[sg_modalidade_ensino] [varchar](255) ,
+	[sg_tp_escola] [varchar](255) 
+)
