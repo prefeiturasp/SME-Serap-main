@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Entities.DTO
 {
@@ -17,5 +13,7 @@ namespace GestaoAvaliacao.Entities.DTO
         public int FrequencyApplication { get; set; }
         public string FrequencyApplicationText { get; set; }
         public DateTime ApplicationEndDate { get; set; }
+        public long TestTypeId { get; set; }
+        public bool TargetToStudentsWithDeficiencies { get; set; }
     }
 }

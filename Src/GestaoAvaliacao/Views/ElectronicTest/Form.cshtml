@@ -1,46 +1,58 @@
 ﻿@* Alertas *@
 <alert></alert>
 <div class="wellCustom" data-ng-controller="FormElectronicTestController">
-    <div class="headerCustom">
-        <h4>Prova online <span>Responda as questões corretamentes</span></h4>
-    </div>
-    <div class="accordion-prova">
-        @*Accordion*@
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingOne">
-                    <div role="button" data-toggle="collapse" data-parent="" href="" aria-expanded="true" aria-controls="">
-                        <strong>{{ test.Description }}</strong> | {{ test.FrequencyApplication }}
-                    </div>
-                </div>
-                <div id="" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="">
-                    <div class="panel-body">
-                        <p>{{ test.NumberItem }} <i class="fa fa-file-text" aria-hidden="true"></i> <small>Questões totais</small></p>
-                        <p ng-show="test.quantDiasRestantes > 0">{{ test.quantDiasRestantes }} <i class="fa fa-calendar-o" aria-hidden="true"></i> <small>{{ provaEmAndamento.quantDiasRestantes > 1 ? 'Dias restantes' : 'Dia restante' }}</small></p>
-                        <data ng-show="test.quantDiasRestantes == 0">{{ test.ApplicationEndDate }} <i class="fa fa-calendar-o" aria-hidden="true"></i> <small>Data final da aplicação</small></data>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="well well-large questao">
         <div class="row">
-            <div class="col-sm-8">
-                <h3>Questão {{ itens[indiceItem].ItemOrder + 1 }}</h3>
+            <div class="col-sm-12">
+                <div class="electronicTestHeader">
+                    <b>Questão {{ itens[indiceItem].ItemOrder + 1 }}</b>
+                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;"/>
+                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" />
+                </div>
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="position:absolute; right: 0px; top: 0px; color: #5a94d6;">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <div role="button" data-toggle="collapse" data-parent="" href="" aria-expanded="true" aria-controls="" ng-click="loadHeaderDetais();" style="cursor:pointer; color: #5a94d6;">
+                                <b>{{ test.Description }}</b> | {{ test.FrequencyApplication }}
+                            </div>
+                        </div>
+                        <div class="panel-collapse" ng-class="{'am-fade-and-slide-top am-fade-and-slide-top-remove am-fade-and-slide-top ng-hide': showHeaderDetails == false, 'am-fade-and-slide-top': showHeaderDetails == true}">
+                            <div class="panel-body">
+                                <div class="col-md-6"><i class="fa fa-file-text" aria-hidden="true"></i> {{ test.NumberItem }} {{ test.NumberItem > 1 ? 'questões no total' : 'questão no total' }}</div>
+                                <div class="col-md-6">
+                                    <data ng-show="test.quantDiasRestantes > 0"> <i class="fa fa-calendar-o" aria-hidden="true"></i> {{ test.quantDiasRestantes }} {{ test.quantDiasRestantes > 1 ? 'dias restantes' : 'dia restante' }}</data>
+                                    <data ng-show="test.quantDiasRestantes == 0">{{ test.ApplicationEndDate }} <i class="fa fa-calendar-o" aria-hidden="true"></i> Data final da aplicação</data>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <hr />
-                <p ng-if="possuiTextoBase"><small>Texto base</small></p>
-                <p ng-if="possuiTextoBase" ng-bind-html="itens[indiceItem].BaseTextDescription | trustedHtml"></p>
-                <hr ng-if="possuiTextoBase" />
-                <p><small>Enunciado</small></p>
-                <p ng-bind-html="itens[indiceItem].Statement | trustedHtml"></p>
-                @*Video/Audio*@
-                <div class="playlistItem" ng-repeat="video in itens[indiceItem].Videos | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">
+            </div>
+            <div id="divEnunciado" ng-class="(itens[indiceItem].ShowVideoFiles || itens[indiceItem].ShowAudioFiles) ? 'col-sm-6' : 'col-sm-12'">
+                <div class="baseTextElementClass" ng-if="possuiTextoBase" ng-bind-html="itens[indiceItem].BaseTextDescription | trustedHtml"></div>
+                <div class="statementElementClass" ng-bind-html="itens[indiceItem].Statement | trustedHtml"></div>
+
+                <br />
+                <div class="electronicTestHeader" style="margin-bottom: 18px;">
+                    <b>Alternativas</b>
+                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomAlternativas(true)" style="margin-left: 15px;" />
+                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomAlternativas(false)" />
+                </div>
+                <div class="alternativas" ng-repeat="alternativa in alternatives | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">
+                    <input ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)" type="radio" name="alternative" ng-checked="alternativa.Selected" ng-change="handleRadioClick(alternativa)" ng-model="selectedValue.alternative" value="{{alternative.price}}">{{ alternativa.Numeration }}
+                    <label class="alternativeElementClass" ng-bind-html="alternativa.Description | trustedHtml"></label>
+                </div>
+            </div>
+            <div id="divVideosEAudios" ng-if="itens[indiceItem].ShowVideoFiles || itens[indiceItem].ShowAudioFiles" class="col-sm-6">
+                <div class="playlistItem" ng-if="itens[indiceItem].ShowVideoFiles" ng-repeat="video in itens[indiceItem].Videos | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">
                     <video height="400" width="400" preload="none" controls poster="{{ video.ThumbnailPath }}" src="{{ trustSrc(video.Path) }}">
                         Seu navegador não suporta vídeos.
                     </video>
                 </div>
 
-                <ul style="list-style-type: none;">
+                <ul style="list-style-type: none;" ng-if="itens[indiceItem].ShowAudioFiles">
                     <li ng-repeat="audio in itens[indiceItem].Audios | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">
                         <audio controls>
                             <source src="{{ trustSrc(audio.Path) }}" />
@@ -48,13 +60,6 @@
                         </audio>
                     </li>
                 </ul>
-            </div>
-            <div class="col-sm-4">
-                <h3 style="margin-bottom: 18px;">Alternativas</h3>
-                <div class="alternativas" ng-repeat="alternativa in alternatives | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">
-                    <input ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)" type="radio" name="alternative" ng-checked="alternativa.Selected" ng-change="handleRadioClick(alternativa)" ng-model="selectedValue.alternative" value="{{alternative.price}}">{{ alternativa.Numeration }}
-                    <p ng-bind-html="alternativa.Description | trustedHtml"></p>
-                </div>
             </div>
         </div>
         <div class="maxWidth opcoesProva">

@@ -174,6 +174,13 @@ namespace GestaoAvaliacao.Util
 		public string GenerationData { get; set; }
 	}
 
+	public class TestShowVideoAudioFilesDto
+    {
+        public long TestId { get; set; }
+        public bool ShowVideoFiles { get; set; }
+        public bool ShowAudioFiles { get; set; }
+    }
+
 	public class DisciplineItem
 	{
 		public long Item_Id { get; set; }

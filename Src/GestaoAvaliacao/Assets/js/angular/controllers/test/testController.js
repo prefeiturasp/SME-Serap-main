@@ -164,8 +164,9 @@
                 keywords: 'Palavra-chave',
                 multidiscipline: 'Multidisciplinar',
                 knowledgeAreaBlock: 'Gabarito com blocos de área de conhecimento',
-                electronicTest: 'Prova eletrônica'
-
+                electronicTest: 'Prova eletrônica',
+                showVideoFiles: 'Exibir conteúdo de vídeo',
+                showAudioFiles: 'Exibir conteúdo de áudio'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
             //Lista de escolha 
@@ -235,6 +236,7 @@
                 Inicio: null,
                 Final: null
             };
+            ng.applicationActiveOrDone = false;
             // Data da correção
             ng.e1_correcao = {
                 Inicio: null,
@@ -246,6 +248,8 @@
             ng.e1_radios = 3;
             ng.isKnowledgeAreaBlock = false;
             ng.isElectronicTest = false;
+            ng.showVideoFiles = false;
+            ng.showAudioFiles = false;
             //Lista de dificuldades do tipo de prova
             ng.e1_listaDificuldades = [];
             ng.Global = false;
@@ -588,6 +592,16 @@
 
         ng.selectProvaEletronica = function () {
             ng.isElectronicTest = !ng.isElectronicTest;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selectShowVideoFiles = function () {
+            ng.showVideoFiles = !ng.showVideoFiles;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selectShowAudioFiles = function () {
+            ng.showAudioFiles = !ng.showAudioFiles;
             self.etapa1.alterou = true;
         };
 
@@ -1019,6 +1033,8 @@
                 "Multidiscipline": ng.isMultidiscipline,
                 "KnowledgeAreaBlock": ng.isKnowledgeAreaBlock,
                 "ElectronicTest": ng.isElectronicTest,
+                "ShowVideoFiles": ng.showVideoFiles,
+                "ShowAudioFiles": ng.showAudioFiles,
                 "TestSubGroup": ng.e1_grupoSubgrupo
             };
 
@@ -1047,7 +1063,7 @@
                 $notification.success('Prova salva com sucesso!');
 
                 ng.alterouEtapaAtual = self.etapa1.alterou = false;
-
+                ng.applicationActiveOrDone = r.ApplicationActiveOrDone;
                 ng.situacao = procurarElementoEm([{ Id: r.TestSituation }], self.situacaoList)[0];
 
             } else {
@@ -1337,9 +1353,11 @@
                     ng.e1_cbTipoProva.BlockItem = r.BlockItem;
                     ng.e1_testDescription = r.Description;
                     ng.e1_cbComponenteCurricular = procurarElementoEm([r.Discipline], ng.e1_listaComponenteCurricular)[0];
-                    ng.isMultidiscipline = r.Multidiscipline,
-                    ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock,
-                    ng.isElectronicTest = r.ElectronicTest,
+                    ng.isMultidiscipline = r.Multidiscipline;
+                    ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock;
+                    ng.isElectronicTest = r.ElectronicTest;
+                    ng.showVideoFiles = r.ShowVideoFiles;
+                    ng.showAudioFiles = r.ShowAudioFiles;
 					e1_formato_findTest = true;
                     ng.e1_folhaResp = true;
                     ng.frequencyApplication = r.FrequencyApplication;
@@ -1349,6 +1367,7 @@
                         Inicio: r.ApplicationStartDate,
                         Final: r.ApplicationEndDate
                     };
+                    ng.applicationActiveOrDone = r.ApplicationActiveOrDone;
                     ng.e1_correcao = {
                         Inicio: r.CorrectionStartDate,
                         Final: r.CorrectionEndDate
@@ -3778,20 +3797,23 @@
             });
         };
 
-        ng.confirmChangeVersionItem = function confirmChangeVersionItem(item, versao) {
-
-            ng.item = item;
-            ng.versaoItem = versao;
-
-            angular.element("#confirmChangeVersionItem").modal({ backdrop: 'static' });
-        };
-
         ng.changeVersionItem = function changeVersionItem() {
+            debugger;
             TestModel.saveChangeItem({ item: ng.versaoItem, test_id: ng.params, itemIdAntigo: ng.item.Id }, function (result) {
                 if (result.success) {
                     $notification.success(result.message);
-                    e2_itensCarregar();
+
                     for (var k = 0; k < ng.e2_ListaItemSelecionados.length; k++) {
+                        if (ng.e2_ListaItemSelecionados[k].Id == item.Id) {
+                            ng.e2_ListaItemSelecionados[k].Id = versao.Id;
+                            ng.e2_ListaItemSelecionados[k].BaseTextId = versao.BaseText.Id;
+                            ng.e2_ListaItemSelecionados[k].BaseTextDescription = versao.BaseText.Description;
+                            ng.e2_ListaItemSelecionados[k].Code = versao.ItemCode;
+                            ng.e2_ListaItemSelecionados[k].ItemCodeVersion = versao.ItemCodeVersion;
+                            ng.e2_ListaItemSelecionados[k].ItemVersion = versao.ItemVersion;
+                            ng.e2_ListaItemSelecionados[k].Statement = versao.Statement;
+                        }
+
                         ng.e2_ListaItemSelecionados[k].expanded = false;
                     };
                 }

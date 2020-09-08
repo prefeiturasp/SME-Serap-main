@@ -321,7 +321,7 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/directives/_bundle/page/page.js")
                 .Include("~/Assets/js/angular/services/_bundle/pager/services.js")
                 .Include("~/Assets/js/angular/directives/_bundle/checkbox-group/ckeckbox-group.js")
-
+                .Include("~/Assets/js/angular/directives/_bundle/radio-select/radio-select.js")
             );
 
             bundles.Add(
