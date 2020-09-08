@@ -1,0 +1,493 @@
+{
+	"info": {
+		"_postman_id": "aec80cc9-8fb6-49db-b57a-b26587683160",
+		"name": "FGV Ensino Médio",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Autenticação auth/authorize",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "79eb507b-f434-4f15-8915-1b17be647bea",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "cc7c63ed-8c7e-4c3a-887d-c8044067f7ad",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"let keyNumber = jsonData.returns.secret_key_index;\r",
+							"pm.environment.set(\"keyNumber\", keyNumber);\r",
+							"\r",
+							"let expiresDateTime = jsonData.returns.expires_datetime;\r",
+							"pm.environment.set(\"expiresDateTime\", expiresDateTime);\r",
+							"\r",
+							"let clientID = pm.environment.get(\"clientID\");\r",
+							"let secretKey = pm.environment.get(\"secretKey\" + keyNumber);\r",
+							"\r",
+							"let authToken = CryptoJS.MD5(clientID + secretKey + expiresDateTime).toString();\r",
+							"pm.environment.set(\"authToken\", authToken);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-ClientID",
+						"value": "{{clientID}}",
+						"type": "text"
+					},
+					{
+						"key": "x-AuthToken",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}auth/authorize",
+					"host": [
+						"{{baseURL}}auth"
+					],
+					"path": [
+						"authorize"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Autenticação auth/authorize URL direta",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-ClientID",
+						"value": "20200400011719244",
+						"type": "text"
+					},
+					{
+						"key": "x-AuthToken",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://piloto2.ensinomediodigital.fgv.br/api/auth/authorize",
+					"protocol": "https",
+					"host": [
+						"piloto2",
+						"ensinomediodigital",
+						"fgv",
+						"br"
+					],
+					"path": [
+						"api",
+						"auth",
+						"authorize"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar Rede rede/consultar",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "057afefd-3c28-49d3-ba9f-536ae79ac4c2",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-ClientID",
+						"type": "text",
+						"value": "{{clientID}}"
+					},
+					{
+						"key": "x-AuthToken",
+						"value": "{{authToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}rede/consultar",
+					"host": [
+						"{{baseURL}}rede"
+					],
+					"path": [
+						"consultar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Rede rede/registrar",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "057afefd-3c28-49d3-ba9f-536ae79ac4c2",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-ClientID",
+						"type": "text",
+						"value": "{{clientID}}"
+					},
+					{
+						"key": "x-AuthToken",
+						"type": "text",
+						"value": "{{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"NomeDaRede\": \"Secretaria Municipal de Educação Cidade de São Paulo\",\r\n\t\"NomeDoResponsavel\": \"Thiago Fernando Ferreira Costa\",\r\n\t\"CargoDoResponsavel\": \"ATE I\",\r\n\t\"CPFDoResponsavel\": \"32061953816\",\r\n\t\"UF\": \"SP\",\r\n\t\"Cidade\": \"3550308\",\r\n\t\"CNPJ\": \"46392114000125\",\r\n\t\"WebSite\": \"https://educacao.sme.prefeitura.sp.gov.br/\",\r\n\t\"Tipo\": \"3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}rede/registrar",
+					"host": [
+						"{{baseURL}}rede"
+					],
+					"path": [
+						"registrar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar Escola escola/consultar",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "057afefd-3c28-49d3-ba9f-536ae79ac4c2",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-ClientID",
+						"type": "text",
+						"value": "{{clientID}}"
+					},
+					{
+						"key": "x-AuthToken",
+						"type": "text",
+						"value": "{{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}escola/consultar",
+					"host": [
+						"{{baseURL}}escola"
+					],
+					"path": [
+						"consultar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar Coordenador coordenador/consultar",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b8a58996-d419-4163-aef6-a064439b0279",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-ClientID",
+						"type": "text",
+						"value": "{{clientID}}"
+					},
+					{
+						"key": "x-AuthToken",
+						"type": "text",
+						"value": "{{authToken}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}coordenador/consultar",
+					"host": [
+						"{{baseURL}}coordenador"
+					],
+					"path": [
+						"consultar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Escola escola/registrar",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f88d4d61-0c55-4f7e-ba6f-255f3f5f0e26",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-ClientID",
+						"type": "text",
+						"value": "{{clientID}}"
+					},
+					{
+						"key": "x-AuthToken",
+						"type": "text",
+						"value": "{{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"Email\": \"jorfelizardo@globo.com\",\r\n        \"NomeEscola\": \"EMEFM - ANTONIO SAMPAIO, VER.\",\r\n        \"NomeDoResponsavel\": \"JORGE LUIS FELIZARDO DOS SANTOS\",\r\n        \"CargoDoResponsavel\": \"DIRETOR DE ESCOLA\",\r\n        \"CPFDoResponsavel\": \"28532585809\",\r\n        \"UF\": \"SP\",\r\n        \"Cidade\": 3550308,\r\n        \"CNPJ\": \"46392114000125\",\r\n        \"WebSite\": \"https://educacao.sme.prefeitura.sp.gov.br/\",\r\n        \"Tipo\": 3,\r\n        \"Seq\": 1234567891011121314151617\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}escola/registrar",
+					"host": [
+						"{{baseURL}}escola"
+					],
+					"path": [
+						"registrar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Coordenador coordenador/registrar",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c7812cfd-07c3-4704-876c-2370b9525c38",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-ClientID",
+						"type": "text",
+						"value": "{{clientID}}"
+					},
+					{
+						"key": "x-AuthToken",
+						"type": "text",
+						"value": "{{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"EmailDaEscola\": \"jorfelizardo@globo.com\",\r\n        \"EmailDoCoordenador\": \"kzucampos@yahoo.com.br\",\r\n        \"Tipo\": 2,\r\n        \"Nome\": \"ALEXANDRE DE CAMPOS\",\r\n        \"Sobrenome\": \"LIMA\",\r\n        \"CPF\": \"24934168800\",\r\n        \"Sexo\": \"M\",\r\n        \"DataNascimento\": \"12/09/1977 00:00:00\",\r\n        \"Seq\": 2\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}coordenador/registrar",
+					"host": [
+						"{{baseURL}}coordenador"
+					],
+					"path": [
+						"registrar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Professor professor/registrar",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "fb4ad89d-d8e3-49db-95fb-e8da0e9728b2",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-ClientID",
+						"type": "text",
+						"value": "{{clientID}}"
+					},
+					{
+						"key": "x-AuthToken",
+						"type": "text",
+						"value": "{{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"EmailDaEscola\": \"jorfelizardo@globo.com\",\r\n        \"EmailDoProfessor\": \"0287144A-12F2-E111-A89D-00155D02E702@sme.prefeitura.sp.gov.br\",\r\n        \"Nome\": \"ADRIANA VASCONCELLOS VIEIRA DE OLIVEIRA\",\r\n        \"Sobrenome\": \"LUIZ\",\r\n        \"CPF\": \"16385289850\",\r\n        \"Sexo\": \"M\",\r\n        \"DataNascimento\": \"18/11/1972 00:00:00\",\r\n        \"Seq\": 3\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}professor/registrar",
+					"host": [
+						"{{baseURL}}professor"
+					],
+					"path": [
+						"registrar"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Registrar Aluno aluno/registrar",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2f607826-ad37-4cd4-8ad3-9f4d0685b117",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-ClientID",
+						"type": "text",
+						"value": "{{clientID}}"
+					},
+					{
+						"key": "x-AuthToken",
+						"type": "text",
+						"value": "{{authToken}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"EmailDaEscola\": \"jorfelizardo@globo.com\",\r\n        \"EmailDoAluno\": \"5866BEDC-6C77-4D8B-9082-5BC895A7E8F7@sme.prefeitura.sp.gov.br\",\r\n        \"Nome\": \"EDENILTON SANTOS DE\",\r\n        \"Sobrenome\": \"JESUS\",\r\n        \"CPF\": \"86374862589\",\r\n        \"RG\": null,\r\n        \"Sexo\": \"M\",\r\n        \"DataNascimento\": \"31/03/2001 00:00:00\",\r\n        \"CodigoDaTurma\": \"329173\",\r\n        \"Seq\": 229\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}aluno/registrar",
+					"host": [
+						"{{baseURL}}aluno"
+					],
+					"path": [
+						"registrar"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "92093876-139f-4db6-aae3-3a4d1dbda0af",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "ea2d9897-0faa-479b-8b50-839aff977873",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
