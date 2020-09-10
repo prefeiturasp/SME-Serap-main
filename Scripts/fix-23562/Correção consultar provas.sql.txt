@@ -1,0 +1,2 @@
+UPDATE TestCurriculumGrade set State=1
+where Test_Id in( 562,563,564,565) AND TypeCurriculumGradeId=125
