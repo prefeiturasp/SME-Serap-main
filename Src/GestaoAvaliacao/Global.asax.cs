@@ -58,7 +58,8 @@ namespace GestaoAvaliacao
                 .Install(new BusinessInstaller())
                 .Install(new RepositoriesInstaller())
                 .Install(new StorageInstaller())
-                .Install(new PDFConverterInstaller());
+                .Install(new PDFConverterInstaller())
+                .Install(new UtilIntaller());
 
 
             GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator), new WindsorCompositionRoot(container));

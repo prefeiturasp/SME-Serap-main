@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NReco.VideoConverter, Version=1.1.4.0, Culture=neutral, PublicKeyToken=395ccb334978a0cd, processorArchitecture=MSIL">
+      <HintPath>..\packages\NReco.VideoConverter.1.1.4\lib\net40\NReco.VideoConverter.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -74,6 +77,9 @@
     <Compile Include="StringHelper.cs" />
     <Compile Include="Structs\RoundedDouble.cs" />
     <Compile Include="Validate.cs" />
+    <Compile Include="Videos\Dtos\ConvertedVideoDto.cs" />
+    <Compile Include="Videos\IVideoConverter.cs" />
+    <Compile Include="Videos\VideoConverter.cs" />
     <Compile Include="ZipFileCreator.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="JwtHelper.cs" />
@@ -88,6 +94,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
