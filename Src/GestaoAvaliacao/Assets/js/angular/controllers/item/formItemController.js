@@ -247,6 +247,8 @@
             $scope.itens = [];
 
             $scope.videos = [];
+            $scope.convertedVideoThumbailToView = "";
+            $scope.convertedVideoToView = "";
 
             $scope.audios = [];
 
@@ -334,7 +336,6 @@
             $scope.videos.splice($scope.itemDeletado, 1);
 
             $scope.itemDeletado = undefined;
-
 
             if ($scope.videos.length < 1)
                 $scope.addModal();// inicia um elemento
@@ -503,6 +504,33 @@
 
             $scope.itemDeletado = i;
             angular.element("#modalAudios").modal({ backdrop: 'static' });
+        };
+
+        /**
+          * @function - Chama a modal de vizualização do vídeo convertido
+          * @public
+          * @params {string} filePath, {string} thumbnailPath
+        */
+        $scope.callModalViewConvertedVideo = function (filePath, thumbnailPath) {
+
+            if (filePath == "") return;
+
+            $scope.convertedVideoThumbailToView = thumbnailPath;
+            $scope.convertedVideoToView = filePath;
+            angular.element("#modalViewConvertedVideo").modal({ backdrop: 'static' });
+        };
+
+        /**
+          * @function - Fecha a modal de vizualização do vídeo convertido
+          * @public
+        */
+        $scope.closeModalViewConvertedVideo = function () {
+
+            let convertedVideoPlayer = document.getElementById("convertedVideoPlayer");
+            convertedVideoPlayer.pause();
+
+            $scope.convertedVideoThumbailToView = "";
+            $scope.convertedVideoToView = "";
         };
 
         /**

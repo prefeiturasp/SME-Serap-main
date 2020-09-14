@@ -470,6 +470,8 @@
     <Content Include="Assets\images\Ciencia.png" />
     <Content Include="Assets\images\default.jpg" />
     <Content Include="Assets\images\favicon.ico" />
+    <Content Include="Assets\images\font-size-icon-minus.jpg" />
+    <Content Include="Assets\images\font-size-icon-plus.jpg" />
     <Content Include="Assets\images\foto_fundo_provasp.jpg" />
     <Content Include="Assets\images\Geral.png" />
     <Content Include="Assets\images\grafico.jpg" />
@@ -556,6 +558,7 @@
     <Content Include="Assets\js\angular\directives\_bundle\ng-title\ng-title.js" />
     <Content Include="Assets\js\angular\directives\_bundle\page\page.html" />
     <Content Include="Assets\js\angular\directives\_bundle\rating\rating.tpl.html" />
+    <Content Include="Assets\js\angular\directives\_bundle\uploader\video-upload.js" />
     <Content Include="Assets\js\angular\filters\_bundle\capitalize\capitalize.js" />
     <Content Include="Assets\js\angular\models\administrativeUnitType\administrativeUnitTypeModel.js" />
     <Content Include="Assets\js\angular\models\electronicTest\electronicTestModel.js" />

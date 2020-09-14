@@ -1,0 +1,2 @@
+INSERT INTO [Parameter] VALUES
+('SIZE_TO_CONVERT_VIDEO_FILE', 10000000, 'Tamanho do vídeo maior ou igual para ser convertido.', GETDATE(), NULL, GETDATE(), GETDATE(), 1, '6CF424DC-8EC3-E011-9B36-00155D033206', NULL, NULL, 1, 1, 1)

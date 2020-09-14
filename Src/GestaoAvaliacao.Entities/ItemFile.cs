@@ -9,6 +9,9 @@ namespace GestaoAvaliacao.Entities
 
         public virtual File File { get; set; }
 
+        public virtual File ConvertedFile { get; set; }
+        public long? ConvertedFile_Id { get; set; }
+
         public virtual File Thumbnail { get; set; }    
         public long? Thumbnail_Id { get; set; }
 
@@ -25,6 +28,9 @@ namespace GestaoAvaliacao.Entities
         public long FileId { get; set; }
 
         [NotMapped]
+        public string FileType { get; set; }
+
+        [NotMapped]
         public long ThumbnailId { get; set; }
 
         [NotMapped]
@@ -35,5 +41,17 @@ namespace GestaoAvaliacao.Entities
 
         [NotMapped]
         public long Item_Id { get; set; }
+
+        [NotMapped]
+        public long? ConvertedFileId { get; set; }
+
+        [NotMapped]
+        public string ConvertedFileName { get; set; }
+
+        [NotMapped]
+        public string ConvertedFilePath { get; set; }
+
+        [NotMapped]
+        public string ConvertedFileType { get; set; }
     }
 }
