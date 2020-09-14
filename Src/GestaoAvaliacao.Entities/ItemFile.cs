@@ -28,6 +28,9 @@ namespace GestaoAvaliacao.Entities
         public long FileId { get; set; }
 
         [NotMapped]
+        public string FileType { get; set; }
+
+        [NotMapped]
         public long ThumbnailId { get; set; }
 
         [NotMapped]
@@ -47,5 +50,8 @@ namespace GestaoAvaliacao.Entities
 
         [NotMapped]
         public string ConvertedFilePath { get; set; }
+
+        [NotMapped]
+        public string ConvertedFileType { get; set; }
     }
 }

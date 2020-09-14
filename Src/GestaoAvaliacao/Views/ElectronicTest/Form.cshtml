@@ -47,8 +47,10 @@
             </div>
             <div id="divVideosEAudios" ng-if="itens[indiceItem].ShowVideoFiles || itens[indiceItem].ShowAudioFiles" class="col-sm-6">
                 <div class="playlistItem" ng-if="itens[indiceItem].ShowVideoFiles" ng-repeat="video in itens[indiceItem].Videos | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">
-                    <video height="400" width="400" preload="none" controls poster="{{ video.ThumbnailPath }}" src="{{ trustSrc(video.Path) }}">
+                    <video height="400" width="400" preload="none" controls poster="{{ video.ThumbnailPath }}">
                         Seu navegador não suporta vídeos.
+                        <source src="{{ trustSrc(video.Path) }}" type="{{ video.FileType }}">
+                        <source ng-if="video.ConvertedFilePath" src="{{ trustSrc(video.ConvertedFilePath) }}" type="{{ video.ConvertedFileType }}">
                     </video>
                 </div>
 

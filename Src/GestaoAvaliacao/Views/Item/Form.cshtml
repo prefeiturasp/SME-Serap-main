@@ -532,6 +532,8 @@
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-md-12 cards">
+                                        <label class="label-alert-video-conversion">**Vídeos com tamanho acima de 10mb serão convertidos para o formato WEBM. Este processo pode demorar alguns minutos.**</label>
+
                                         <table class="table table-responsive" style="margin:0;">
                                             <thead>
                                                 <tr>
@@ -1164,7 +1166,7 @@
                 <div class="modal-body">
                     <span>Vídeo convertido para o formato WEBM.</span>
                     <div class="playlistItem">
-                        <video height="400" width="600" preload="none" controls poster="{{ convertedVideoThumbailToView }}" src="{{ convertedVideoToView }}">
+                        <video id="convertedVideoPlayer" height="400" width="600" preload="none" controls poster="{{ convertedVideoThumbailToView }}" src="{{ convertedVideoToView }}">
                             Seu navegador não suporta vídeos.
                         </video>
                     </div>

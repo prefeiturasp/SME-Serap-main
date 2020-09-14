@@ -337,7 +337,6 @@
 
             $scope.itemDeletado = undefined;
 
-
             if ($scope.videos.length < 1)
                 $scope.addModal();// inicia um elemento
             else
@@ -526,6 +525,9 @@
           * @public
         */
         $scope.closeModalViewConvertedVideo = function () {
+
+            let convertedVideoPlayer = document.getElementById("convertedVideoPlayer");
+            convertedVideoPlayer.pause();
 
             $scope.convertedVideoThumbailToView = "";
             $scope.convertedVideoToView = "";
