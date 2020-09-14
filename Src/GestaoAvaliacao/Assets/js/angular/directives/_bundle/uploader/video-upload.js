@@ -76,7 +76,8 @@
             	clearField();
             	if ($scope.component.File.Id !== undefined && $scope.component.File.Id !== null) {
             		var form = new FormData();
-            		form.append('id', $scope.component.File.Id);
+                    form.append('id', $scope.component.File.Id);
+                    form.append('convertedFileId', $scope.component.ConvertedFile.Id);
             		$http.post($util.getWindowLocation('/File/DeleteVideoAsync'), form, {
             			transformRequest: angular.identity,
             			headers: { 'Content-Type': undefined }

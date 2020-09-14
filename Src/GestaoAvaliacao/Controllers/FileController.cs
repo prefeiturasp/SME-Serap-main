@@ -404,6 +404,29 @@ namespace GestaoAvaliacao.Controllers
 		}
 
         [HttpPost]
+        public async Task<JsonResult> DeleteVideoAsync(long id, long? convertedFileId)
+        {
+            EntityFile entity = new EntityFile();
+
+            try
+            {
+                entity = fileBusiness.Delete(id);
+
+                if(convertedFileId != null)
+                    fileBusiness.Delete(convertedFileId.GetValueOrDefault());
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao tentar excluir o arquivo.";
+                LogFacade.SaveError(ex);
+            }
+
+            return await Task.FromResult(Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet));
+        }
+
+        [HttpPost]
         public JsonResult LogicalDelete(long id)
         {
             EntityFile entity = new EntityFile();
