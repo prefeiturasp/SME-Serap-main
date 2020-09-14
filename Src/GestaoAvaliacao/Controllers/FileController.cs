@@ -269,8 +269,6 @@ namespace GestaoAvaliacao.Controllers
                     ? ConvertVideoAsync(file.InputStream, file.ContentType, file.FileName)
                     : null;
 
-                conversionVideoTask =  ConvertVideoAsync(file.InputStream, file.ContentType, file.FileName);
-
                 var upload = new UploadModel
                 {
                     ContentLength = file.ContentLength,
