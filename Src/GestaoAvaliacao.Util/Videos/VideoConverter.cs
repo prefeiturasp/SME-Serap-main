@@ -51,25 +51,24 @@ namespace GestaoAvaliacao.Util.Videos
         private Task<ConvertedVideoDto> Convert(Stream inputStream, string inputFormat, string fileName, string outputFormat, ConvertSettings settings) 
             => Task.Run(() =>
                 {
-                    using (var outputStream = new MemoryStream())
+                    var ffMpeg = new FFMpegConverter();
+                    if (_reportProgress != null)
+                        ffMpeg.ConvertProgress += _reportProgress;
+
+                    settings = settings ?? new ConvertSettings();
+                    var outputStream = new MemoryStream();
+                    inputStream.Position = 0;
+                    var convertTask = ffMpeg.ConvertLiveMedia(inputStream, inputFormat, outputStream, outputFormat, settings);
+
+                    convertTask.Start();
+                    convertTask.Wait();
+
+                    var outputFileName = $"{fileName}.{outputFormat}";
+                    return new ConvertedVideoDto
                     {
-                        var ffMpeg = new FFMpegConverter();
-                        if (_reportProgress != null)
-                            ffMpeg.ConvertProgress += _reportProgress;
-
-                        settings = settings ?? new ConvertSettings();
-                        var convertTask = ffMpeg.ConvertLiveMedia(inputStream, inputFormat, outputStream, outputFormat, settings);
-
-                        convertTask.Start();
-                        convertTask.Wait();
-
-                        var outputFileName = fileName + outputFormat;
-                        return new ConvertedVideoDto
-                        {
-                            FileName = outputFileName,
-                            Stream = outputStream
-                        };
-                    }
+                        FileName = outputFileName,
+                        Stream = outputStream
+                    };
                 });
     }
 }
