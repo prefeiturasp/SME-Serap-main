@@ -57,6 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoriesInstaller.cs" />
     <Compile Include="StorageInstaller.cs" />
+    <Compile Include="UtilIntaller.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -118,6 +119,10 @@
     <ProjectReference Include="..\GestaoAvaliacao.Repository\GestaoAvaliacao.Repository.csproj">
       <Project>{20f146e2-63fd-4e62-bd1b-512bd01f9c6b}</Project>
       <Name>GestaoAvaliacao.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
+      <Project>{638B2BDC-AA34-4DCD-A041-AB4EB9C4D831}</Project>
+      <Name>GestaoAvaliacao.Util</Name>
     </ProjectReference>
     <ProjectReference Include="..\GestaoEscola.Dll\GestaoEscolar.Repository.csproj">
       <Project>{0ee260bc-992e-4c7a-9dbd-a743b48509d6}</Project>

@@ -44,7 +44,10 @@ namespace GestaoAvaliacao.Entities
 
 		public DateTime ApplicationEndDate { get; set; }
 
-		public DateTime CorrectionStartDate { get; set; }
+        [NotMapped]
+        public bool ApplicationActiveOrDone => TestSituation != EnumTestSituation.Pending && DateTime.Today >= ApplicationStartDate;
+
+        public DateTime CorrectionStartDate { get; set; }
 
 		public DateTime CorrectionEndDate { get; set; }
 
@@ -88,6 +91,9 @@ namespace GestaoAvaliacao.Entities
 
         [NotMapped]
         public int quantDiasRestantes { get; set; }
+
+        public bool ShowVideoFiles { get; set; }
+        public bool ShowAudioFiles { get; set; }
 
     }
 }

@@ -624,6 +624,12 @@ namespace GestaoAvaliacao.Controllers
                                 Name = v.Name,
                                 Path = v.Path
                             },
+                            ConvertedFile = new
+                                {
+                                    Id = v?.ConvertedFileId,
+                                    Name = v?.ConvertedFileName,
+                                    Path = v?.ConvertedFilePath
+                                },
                             Thumbnail = new
                             {
                                 Id = v.ThumbnailId,

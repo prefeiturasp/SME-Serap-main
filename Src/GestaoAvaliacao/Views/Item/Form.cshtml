@@ -532,6 +532,8 @@
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-md-12 cards">
+                                        <label class="label-alert-video-conversion">**Vídeos com tamanho acima de 10mb serão convertidos para o formato WEBM. Este processo pode demorar alguns minutos.**</label>
+
                                         <table class="table table-responsive" style="margin:0;">
                                             <thead>
                                                 <tr>
@@ -546,8 +548,11 @@
                                                 <tr ng-repeat="v in videos track by $index">
                                                     <td>
                                                         <div class="uploadImage">
-                                                            <div ng-show="v.File.Id <= 0" upload="" type="@(EnumFileType.Video)" component="v.File" placeholder="um vídeo" data-listextensions="listextensionsVideo"></div>
+                                                            <div ng-show="v.File.Id <= 0" video-upload="" component="v" data-listextensions="listextensionsVideo"></div>
                                                             <label ng-show="v.File.Id > 0">{{(v.File.Name != undefined ? v.File.Name : v.File.Path) | minimize:50}}</label>
+                                                            <span ng-show="v.File.Id > 0 && v.ConvertedFile.Id > 0">
+                                                                <button class="view-converted-video-button" ng-click="callModalViewConvertedVideo(v.ConvertedFile.Path,v.Thumbnail.Path)" title="Veja aqui o seu vídeo convertido." id="view_converted_video_{{component.Guid}}"><i class="fa fa-play-circle view-converted-video"></i></button>
+                                                            </span>
                                                         </div>
                                                     </td>
                                                     <td>
@@ -1146,6 +1151,25 @@
                 <div class="modal-footer">
                     <button type="button" class="btnPadrao" ng-click="delModal()">Excluir</button>
                     <button type="button" class="btnCancelar2" ng-click="canceldelete()">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* Modal de exibição do vídeo convertido *@
+    <div class="modal fade" id="modalViewConvertedVideo" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeModalViewConvertedVideo">&times;</button>
+                    <h4 class="modal-title">Verifique o seu vídeo convertido</h4>
+                </div>
+                <div class="modal-body">
+                    <span>Vídeo convertido para o formato WEBM.</span>
+                    <div class="playlistItem">
+                        <video id="convertedVideoPlayer" height="400" width="600" preload="none" controls poster="{{ convertedVideoThumbailToView }}" src="{{ convertedVideoToView }}">
+                            Seu navegador não suporta vídeos.
+                        </video>
+                    </div>
                 </div>
             </div>
         </div>

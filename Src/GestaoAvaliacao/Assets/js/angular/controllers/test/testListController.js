@@ -241,14 +241,17 @@
 		 * @param {object} dados
 		 * @return
 		 */
-		ng.getAuthorize = function __getAuthorize(dados) {
-		    if (!(dados === undefined) && !(dados.global === undefined)) {
+		ng.getAuthorize = function __getAuthorize(dados, groupFilter) {
+		    if (!(dados === null) && !(dados === undefined) && !(dados.global === undefined)) {
 		        searchFilter = { global: dados.global };
-		    }
-				
+			}
 
-			ng.getSearchResult();
+			if (groupFilter === null || groupFilter === undefined || groupFilter.TestGroupId === undefined || groupFilter.TestGroupId === null) {
+				ng.getSearchResult();
+				return;
+			}
 
+			ng.searchByGroup(groupFilter);
 		};
 
 		/**
@@ -486,7 +489,8 @@
 		    //}
 
 		    if (leavingTest && arrivingTest && searchFilterTest) {
-		        searchFilter = JSON.parse(searchFilterTest)
+				searchFilter = JSON.parse(searchFilterTest)
+				ng.getGroup = searchFilter.getGroup;
 		        loadFilterFromCache();
 		    } else {
 		        sessionStorage.removeItem('searchFilterTest')
@@ -670,8 +674,6 @@
 			ng.paginate.indexPage(0);
 			ng.pageSize = ng.paginate.getPageSize();
 			ng.getSearchResult(searchCode);
-
-			sessionStorage.setItem('searchFilterTest', JSON.stringify(searchFilter));
 		};
 
 		ng.searchByGroup = function __searchByGroup(group) {
@@ -680,7 +682,7 @@
 		    searchFilter.TestGroupId = parseInt(group.TestGroupId);
 		    searchFilter.TestSubGroupId = parseInt(group.TestSubGroupId);
 
-		    ng.getSearchResult();
+			ng.getSearchResult();
 		}
 
 		/**
@@ -717,6 +719,8 @@
 				if (!searchCode && searchCode == undefined) {
 					ng.codItem = "";
 				}
+
+				sessionStorage.setItem('searchFilterTest', JSON.stringify(searchFilter));
 			},
 			function (result) {
 				ng.searchResult = null;
@@ -1100,7 +1104,7 @@
 		 */
 		function getGroups() {
 		    TestListModel.getGroups({}, function (result) {
-		        ng.group = true;
+				ng.group = true;
 		        if (result.success) {
 		            ng.listFilter.Groups = result.lista;
 		            if (ng.listFilter.Groups.length === 1) {

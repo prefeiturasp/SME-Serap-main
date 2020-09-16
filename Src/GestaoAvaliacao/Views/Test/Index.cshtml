@@ -1,6 +1,6 @@
 ﻿@using GestaoAvaliacao.WebProject.Facade
 <alert></alert>
-<div class="wellCustom" ng-controller="TestListController" ng-show="labels.show" ng-init='getAuthorize(@(ViewBag.dados != null ? Json.Encode(ViewBag.dados) : string.Empty));'>
+<div class="wellCustom" ng-controller="TestListController" ng-show="labels.show" ng-init="getAuthorize(@Json.Encode(ViewBag.dados), @Json.Encode(ViewBag.GroupFilter));">
     @* Header *@
     <div class="headerCustom">
         <h4>{{labels.header}}<span></span></h4>

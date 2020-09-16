@@ -2,11 +2,13 @@
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
+using GestaoAvaliacao.Util.Videos;
 using GestaoAvaliacao.WebProject.Facade;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using EntityFile = GestaoAvaliacao.Entities.File;
@@ -19,11 +21,16 @@ namespace GestaoAvaliacao.Controllers
 	{
 		private readonly IFileBusiness fileBusiness;
 		private readonly ITestBusiness testBusiness;
+        private readonly IParameterBusiness parameterBusiness;
+        private readonly IVideoConverter videoConverter;
+        private const string VideoConvertedContentType = "video/webm";
 
-        public FileController(IFileBusiness fileBusiness, ITestBusiness testBusiness)
+        public FileController(IFileBusiness fileBusiness, ITestBusiness testBusiness, IParameterBusiness parameterBusiness, IVideoConverter videoConverter)
 		{
 			this.fileBusiness = fileBusiness;
 			this.testBusiness = testBusiness;
+            this.parameterBusiness = parameterBusiness;
+            this.videoConverter = videoConverter;
         }
 
 		public ActionResult Index(long? Id)
@@ -250,6 +257,99 @@ namespace GestaoAvaliacao.Controllers
 			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, filelink = entity.Path, idFile = entity.Id }, JsonRequestBehavior.AllowGet);
 		}
 
+        [HttpPost]
+        public async Task<JsonResult> UploadVideoAsync(HttpPostedFileBase file)
+        {
+            var entity = new EntityFile();
+
+            try
+            {
+                var sizeToConvertVideo = parameterBusiness.GetByKey(EnumParameterKey.SIZE_TO_CONVERT_VIDEO_FILE.GetDescription());
+                var conversionVideoTask = file.ContentLength >= int.Parse(sizeToConvertVideo.Value)
+                    ? ConvertVideoAsync(file.InputStream, file.ContentType, file.FileName)
+                    : null;
+
+                var upload = new UploadModel
+                {
+                    ContentLength = file.ContentLength,
+                    ContentType = file.ContentType,
+                    InputStream = null,
+                    Stream = file.InputStream,
+                    FileName = file.FileName,
+                    VirtualDirectory = ApplicationFacade.VirtualDirectory,
+                    PhysicalDirectory = ApplicationFacade.PhysicalDirectory,
+                    FileType = EnumFileType.Video,
+                    UsuId = SessionFacade.UsuarioLogado.Usuario.usu_id
+                };
+
+                entity = fileBusiness.Upload(upload);
+
+                if(conversionVideoTask != null)
+                {
+                    await conversionVideoTask;
+                    if(!conversionVideoTask.Result.Validate.IsValid)
+                    {
+                        entity.Validate.Message += conversionVideoTask.Result.Validate.Message;
+                    }
+                }
+
+                return Json(new 
+                { 
+                    success = entity.Validate.IsValid, 
+                    type = entity.Validate.Type, 
+                    message = entity.Validate.Message, 
+                    filelink = entity.Path, 
+                    idFile = entity.Id, 
+                    idConvertedFile = conversionVideoTask?.Result?.Id, 
+                    convertedVideoLink = conversionVideoTask?.Result?.Path 
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao realizar o upload do arquivo.";
+                LogFacade.SaveError(ex);
+            }
+
+            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, filelink = entity.Path, idFile = entity.Id }, JsonRequestBehavior.AllowGet);
+        }
+
+        private async Task<EntityFile> ConvertVideoAsync(Stream inputStream, string contentType, string fileName)
+        {
+            using (var tempStream = new MemoryStream())
+            {
+                await inputStream.CopyToAsync(tempStream);
+                var entity = new EntityFile();
+
+                var inputFomat = contentType.Substring(contentType.IndexOf("/") + 1, contentType.Length - contentType.IndexOf("/") - 1);
+                fileName = fileName.Replace($".{inputFomat}", string.Empty);
+
+                var convertedVideoDto = await videoConverter.Convert(tempStream, inputFomat, fileName, VideoConverter.webm);
+                if (convertedVideoDto is null)
+                {
+                    entity.Validate.IsValid = false;
+                    entity.Validate.Type = ValidateType.error.ToString();
+                    entity.Validate.Message = "Não foi possível realizar a conversão do vídeo para um tamanho menor. O vídeo origianl será mantido.";
+                }
+
+                var uploadConvertedVideo = new UploadModel
+                {
+                    ContentLength = (int)convertedVideoDto.Stream.Length,
+                    ContentType = VideoConvertedContentType,
+                    InputStream = null,
+                    Stream = convertedVideoDto.Stream,
+                    FileName = convertedVideoDto.FileName,
+                    VirtualDirectory = ApplicationFacade.VirtualDirectory,
+                    PhysicalDirectory = ApplicationFacade.PhysicalDirectory,
+                    FileType = EnumFileType.Video,
+                    UsuId = SessionFacade.UsuarioLogado.Usuario.usu_id
+                };
+
+                return fileBusiness.Upload(uploadConvertedVideo);
+            }
+        }
+
 		[HttpPost]
 		public JsonResult UploadFile(HttpPostedFileBase file, EnumFileType fileType)
 		{
@@ -302,6 +402,29 @@ namespace GestaoAvaliacao.Controllers
 
 			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet);
 		}
+
+        [HttpPost]
+        public async Task<JsonResult> DeleteVideoAsync(long id, long? convertedFileId)
+        {
+            EntityFile entity = new EntityFile();
+
+            try
+            {
+                entity = fileBusiness.Delete(id);
+
+                if(convertedFileId != null)
+                    fileBusiness.Delete(convertedFileId.GetValueOrDefault());
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao tentar excluir o arquivo.";
+                LogFacade.SaveError(ex);
+            }
+
+            return await Task.FromResult(Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet));
+        }
 
         [HttpPost]
         public JsonResult LogicalDelete(long id)

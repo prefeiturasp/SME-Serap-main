@@ -55,7 +55,7 @@ namespace GestaoAvaliacao.Business
 
 		public async Task<StudentCorrection> SaveCorrectionApi(long studentId, List<ItemModelDTO> itemModelList, TestDTO testModel, MongoEntities.TestTemplate testTemplate)
 		{
-			this.SetCorrection(testModel.test_Id, testModel.tur_Id);
+			await _testSectionStatusCorrectionBusiness.SetCorrectionStatusAsync(testModel.test_Id, testModel.tur_Id, EnumStatusCorrection.Processing);
 			itemModelList.ForEach(a => a.ValidateAlternative());
 
 			var answerList = ItemModelAdapter.ToAnswer(itemModelList);
@@ -88,28 +88,30 @@ namespace GestaoAvaliacao.Business
 					return new StudentCorrection() { Validate = valid };
 			}
 
-			this.SetCorrection(test_id, tur_id);
+			var testTemplate = await GetTestTemplate(test_id, ent_id);
 
-			var taskTestTemplate = await GetTestTemplate(test_id, ent_id);
-
-			Answer answer = new Answer()
+			var answer = new Answer
 			{
 				AnswerChoice = alternative_id,
-				Correct = taskTestTemplate.Items.Any(i => i.Item_Id == item_id && i.Alternative_Id == alternative_id),
+				Correct = testTemplate.Items.Any(i => i.Item_Id == item_id && i.Alternative_Id == alternative_id),
 				Item_Id = item_id,
 				Empty = n,
 				StrikeThrough = r,
 				Automatic = !manual
 			};
 
-			var studentAnswers = await GetStudentAnswer(test_id, tur_id, alu_id, ent_id);
+			var taskLogs = Task.Run(async () =>
+			{
+				var studentAnswers = await GetStudentAnswer(test_id, tur_id, alu_id, ent_id);
+				await _responseChangeLogBusiness.Save(answer, alu_id, test_id, tur_id, ent_id, usuId, manual, studentAnswers, 0, 0);
+			});
 
-			var retornoLog = await _responseChangeLogBusiness.Save(answer, alu_id, test_id, tur_id, ent_id, usuId, manual, studentAnswers, 0, 0);
+			var taskCorrectionStatus = _testSectionStatusCorrectionBusiness.SetCorrectionStatusAsync(test_id, tur_id, EnumStatusCorrection.Processing);
+			var taskCorrection = _studentCorrectionBusiness.Save(answer, alu_id, test_id, tur_id, ent_id, api, ordemItem, false);
+			var taskTempCorrectionResult = _testSectionStatusCorrectionBusiness.GetTempCorrection(ent_id, test_id, tur_id);
+			await Task.WhenAll(taskCorrectionStatus, taskLogs, taskCorrection, taskTempCorrectionResult);
 
-			var retorno = await _studentCorrectionBusiness.Save(answer, alu_id, test_id, tur_id, ent_id, api, ordemItem, false);
-
-			var retornoTempCorrection = _testSectionStatusCorrectionBusiness.GetTempCorrection(ent_id, test_id, tur_id);
-
+			var retorno = taskCorrection.Result;
 			retorno.Validate = new Validate() { IsValid = true, Message = "Nota do usuário salva com sucesso", Type = ValidateType.Save.ToString() };
 
 			return retorno;
@@ -481,16 +483,9 @@ namespace GestaoAvaliacao.Business
 
 		public async Task<MongoEntities.TestTemplate> GetTestTemplate(long test_id, Guid ent_id)
 		{
-			var testTemplate = await _testTemplateRepository.Count(new MongoEntities.TestTemplate(ent_id, test_id));
-
-			if (testTemplate == 0)
-			{
-				return await GenerateTestTemplate(test_id, ent_id);
-			}
-			else
-			{
-				return await _testTemplateRepository.GetEntity(new MongoEntities.TestTemplate(ent_id, test_id));
-			}
+			var result = await _testTemplateRepository.FindOneAsync(new MongoEntities.TestTemplate(ent_id, test_id));
+			if (result is null) return await GenerateTestTemplate(test_id, ent_id);
+			return result;
 		}
 
 		#endregion
@@ -510,7 +505,6 @@ namespace GestaoAvaliacao.Business
 					tur_id = tur_id
 				};
 				_testSectionStatusCorrectionBusiness.Save(entity);
-				statusCorrection = entity;
 			}
 			else if (statusCorrection.StatusCorrection == EnumStatusCorrection.Pending)
 				_testSectionStatusCorrectionBusiness.SetStatusCorrection(test_id, tur_id, EnumStatusCorrection.Processing);
