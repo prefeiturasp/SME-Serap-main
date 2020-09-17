@@ -46,6 +46,7 @@ namespace GestaoAvaliacao.Repository.Context
 			modelBuilder.Configurations.Add(new TestTypeCourseMap());
 			modelBuilder.Configurations.Add(new TestTypeCourseCurriculumGradeMap());
 			modelBuilder.Configurations.Add(new TestTypeItemLevelMap());
+			modelBuilder.Configurations.Add(new TestTypeDeficiencyMap());
 			modelBuilder.Configurations.Add(new FormatTypeMap());
 			modelBuilder.Configurations.Add(new TestTypeMap());
 			modelBuilder.Configurations.Add(new ItemSituationMap());
@@ -132,6 +133,7 @@ namespace GestaoAvaliacao.Repository.Context
 		public DbSet<Skill> Skill { get; set; }
 		public DbSet<TestTypeCourse> TestTypeCourse { get; set; }
 		public DbSet<TestTypeCourseCurriculumGrade> TestTypeCourseCurriculumGrade { get; set; }
+		public DbSet<TestTypeDeficiency> TestTypeDeficiencies { get; set; }
 		public DbSet<TestTypeItemLevel> TestTypeItemLevel { get; set; }
 		public DbSet<FormatType> FormatType { get; set; }
 		public DbSet<TestType> TestType { get; set; }

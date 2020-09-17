@@ -2,25 +2,27 @@
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.IRepository
 {
     public interface ITestTypeRepository
 	{
-		TestType Save(TestType entity);
-		TestType Update(TestType entity);
-		TestType Get(long id, Guid EntityId);
+		Task<TestType> SaveAsync(TestType entity);
+		Task<TestType> UpdateAsync(TestType entity);
+		Task<TestType> GetAsync(long id, Guid EntityId);
 		void UnsetModelTest(TestType entity);
 		IEnumerable<TestType> Load(ref Pager pager, Guid EntityId);
-		void Delete(long id);
+		Task DeleteAsync(long id);
 		IEnumerable<TestType> Search(string search, ref Pager pager, Guid EntityId);
 		bool ExistsDescriptionNamed(string description, long id);
-		IEnumerable<TestType> LoadNotGlobal(Guid EntityId);
-		IEnumerable<TestType> LoadAll(Guid EntityId);
+		Task<IEnumerable<TestType>> LoadNotGlobalAsync(Guid EntityId);
+		Task<IEnumerable<TestType>> LoadAllAsync(Guid EntityId);
 		IEnumerable<TestType> GetByModelTest(long modelTestId);
         bool ExistsTestAssociated(long Id);
         TestType Get(long Id);
         IEnumerable<TestType> LoadFiltered(Guid EntityId, bool global);
+		bool GetTestTypeTargetToStudentsWithDeficiencies(long id);
 
-    }
+	}
 }

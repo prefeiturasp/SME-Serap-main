@@ -428,7 +428,9 @@ namespace GestaoAvaliacao.Util
         [Description("QUANTIDADE_MESES_ANTES_DEPOIS_FILTRO_DATA")]
         QUANTIDADE_MESES_ANTES_DEPOIS_FILTRO_DATA,
         [Description("HTML_PAGINA_INICIAL")]
-        HTML_PAGINA_INICIAL
+        HTML_PAGINA_INICIAL,
+        [Description("SIZE_TO_CONVERT_VIDEO_FILE")]
+        SIZE_TO_CONVERT_VIDEO_FILE
     }
 
     public enum MimeType

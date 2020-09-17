@@ -105,6 +105,8 @@
 			ng.courseList = null;
 			ng.courseListGrid = null;
 			ng.modelTestList = [];
+			ng.Deficiencies = [];
+			ng.DeficienciesSelected = [];
 			ng.objCurriculumGradesEdit = {
 				Id: undefined,
 				TestTypeCourse: undefined,
@@ -118,7 +120,21 @@
 				TestTypeCurriculumGrade: undefined,
                 Modality: undefined
 			};
+
+			ng.direcionadoParaAlunosDeficientesOptions = [
+				{
+					Id: true,
+					Description: 'Sim'
+				},
+				{
+					Id: false,
+					Description: 'Não'
+				}
+			];
+			ng.direcionadoParaAlunosDeficientesOptionSelected = ng.direcionadoParaAlunosDeficientesOptions[1];
+
 			ng.loadFrenquencyApplication();
+			ng.loadDeficiencies();
 		};
 
 		ng.carregaUpdate = function carregaUpdate() {
@@ -152,9 +168,22 @@
 					}
 				}
 
+				ng.DeficienciesSelected = result.testType.DeficienciesSelected;
+				ng.direcionadoParaAlunosDeficientesOptionSelected = ng.direcionadoParaAlunosDeficientesOptions.find(x => x.Id == result.testType.TargetToStudentsWithDeficiencies);
+
 				flagEdit = true;
 				cloneModels();
 			};
+		};
+
+		ng.direcionadoParaAlunosDeficientesOptionChange = direcionadoParaAlunosDeficientesOptionChange;
+		function direcionadoParaAlunosDeficientesOptionChange(optionSelected) {
+			if (optionSelected.Id == true) {
+				angular.element("#divDeficiencies").show();
+			}
+			else {
+				angular.element("#divDeficiencies").hide();
+            }
 		};
 
 		ng.modalActive = function _modalActive() {
@@ -181,6 +210,18 @@
 
 		    for (var i = 0; i < list.length; i++)
 		        if (list[i].Id == id) return list[i];
+		};
+
+		ng.loadDeficiencies = function _loadDeficiencies() {
+			debugger;
+			TestTypeModel.getDeficiencies({}, function (result) {
+				if (result.success) {
+					ng.Deficiencies = result.Deficiencies;
+				}
+				else {
+					$notification[result.type ? result.type : 'error'](result.message);
+				}
+			});
 		};
 
 		ng.loadFrenquencyApplication = function __loadFrenquencyApplication() {
@@ -272,6 +313,7 @@
 					});
 				}
 			}
+
 			var obj = {
 				Id: ng.testType.Id,
 				Description: ng.testType.Description,
@@ -283,7 +325,9 @@
 				Global: ng.testType.Global,
 				TestTypeItemLevel: listTestTypeItemLevel,
 				TypeLevelEducationId: ng.testType.TypeLevelEducationId,
-				ModelTest_Id: ng.selectedModelTest.Id
+				ModelTest_Id: ng.selectedModelTest.Id,
+				TargetToStudentsWithDeficiencies: ng.direcionadoParaAlunosDeficientesOptionSelected.Id,
+				TestTypeDeficiencies: GetSelectedDeficienciesToSave(),
 			};
 			TestTypeModel.save(obj, function (result) {
 			    if (!result.success) {
@@ -312,6 +356,22 @@
 			});
 			
 		};
+
+		function GetSelectedDeficienciesToSave() {
+			if (ng.direcionadoParaAlunosDeficientesOptionSelected.Id == false) return null;
+			var result = [];
+			var index = 0;
+
+			debugger;
+			for (index; index < ng.DeficienciesSelected.length; index++) {
+				result.push({
+					DeficiencyId: ng.DeficienciesSelected[index].Id,
+					TestType: { Id: ng.testType.Id }
+				});
+			}
+
+			return result;
+        }
 
 		ng.verifica = function verifica() {
 
@@ -493,6 +553,7 @@
 		ng.carregaItemType = function carregaItemType(result) {
 		    ItemTypeModel.loadTestType({}, function (result) {
 				if (result.success) {
+					debugger;
 					ng.itemTypeList = result.lista;
 					try {
 						for (var i = 0; i < ng.itemTypeList.length; i++) {

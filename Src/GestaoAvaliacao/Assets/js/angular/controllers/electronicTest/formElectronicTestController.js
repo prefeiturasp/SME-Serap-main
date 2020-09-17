@@ -45,9 +45,16 @@
             ng.mensagemEntregaProva;
             ng.admin = getCurrentVision() != EnumVisions.INDIVIDUAL ? true : false;
             ng.provaFinalizada = false;
+            ng.showHeaderDetails = false;
+            ng.enunciadoFontSize = 14;
+            ng.alternativasFontSize = 14;
 
             ng.videos = null;
             ng.audios = null;
+        };
+
+        ng.loadHeaderDetais = function __loadHeaderDetais() {
+            ng.showHeaderDetails = !ng.showHeaderDetails;
         };
 
         ng.abrirGabarito = function __abrirGabarito() {
@@ -223,6 +230,27 @@
             });
         }
 
+        ng.zoomAlternativas = function (up) {
+            if (up == true && ng.alternativasFontSize < 22)
+                ng.alternativasFontSize = ng.alternativasFontSize + 4;
+            
+            if (up == false && ng.alternativasFontSize > 14)
+                ng.alternativasFontSize = ng.alternativasFontSize - 4;
+
+            $('label.alternativeElementClass p').css("font-size", ng.alternativasFontSize + "px");
+        };
+
+        ng.zoomEnunciado = function (up) {
+            if (up == true && ng.enunciadoFontSize < 22)
+                ng.enunciadoFontSize = ng.enunciadoFontSize + 4;
+
+            if (up == false && ng.enunciadoFontSize > 14)
+                ng.enunciadoFontSize = ng.enunciadoFontSize - 4;
+
+            $('div.baseTextElementClass p').css("font-size", ng.enunciadoFontSize + "px");
+            $('div.statementElementClass p').css("font-size", ng.enunciadoFontSize + "px");
+        };
+
         ng.handleRadioClick = function (alternativa) {
 
             ng.params = $util.getUrlParams();
@@ -234,22 +262,8 @@
 
             ElectronicTestModel.save({ alternativa: ng.alternativaSelecionada, test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId, ordemItem: ng.itens[ng.indiceItem].ItemOrder }, function (result) {
                 if (result.success) {
-                    ElectronicTestModel.loadAlternativesByItens({ itens: ng.idsItens, test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId }, function (result) {
-                        if (result.success) {
-                            if (result.alternatives.length > 0) {
-                                ng.alternatives = result.alternatives;
-                                ng.provaFinalizada = result.provaFinalizada;
-                            }
-                            else {
-                                ng.message = true;
-                                ng.test = null;
-                            }
-                        }
-                        else {
-                            $notification[result.type ? result.type : 'error'](result.message);
-                        }
-
-                    });
+                    var alternativaSelecionadaIndex = ng.alternatives.findIndex(x => x.Id == ng.alternativaSelecionada.Id);
+                    ng.alternatives[alternativaSelecionadaIndex].Selected = true;
                 }
                 else {
                     $notification[result.type ? result.type : 'error'](result.message);

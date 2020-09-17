@@ -107,6 +107,7 @@
     <Compile Include="ITestTemplateRepository.cs" />
     <Compile Include="ITestTypeCourseRepository.cs" />
     <Compile Include="ITestTypeCourseCurriculumGradeRepository.cs" />
+    <Compile Include="ITestTypeDeficiencyRepository.cs" />
     <Compile Include="ITestTypeItemLevelRepository.cs" />
     <Compile Include="ITestTypeRepository.cs" />
     <Compile Include="IFormatTypeRepository.cs" />

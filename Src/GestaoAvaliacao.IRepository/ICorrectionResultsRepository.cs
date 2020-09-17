@@ -9,6 +9,8 @@ namespace GestaoAvaliacao.IRepository
 {
 	public interface ICorrectionResultsRepository
 	{
+		Task<CorrectionResults> FindOneAsync(CorrectionResults entity);
+
 		/// <summary>
 		/// Busca as informações do aluno na prova informada, como nome, número de matricula e desempenho na mesma
 		/// </summary>

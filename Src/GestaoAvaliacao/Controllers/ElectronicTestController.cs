@@ -187,7 +187,9 @@ namespace GestaoAvaliacao.Controllers
                     NumberItem = test.NumberItem,
                     quantDiasRestantes = test.quantDiasRestantes,
                     FrequencyApplication = EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)test.FrequencyApplication),
-                    ApplicationEndDate = test.ApplicationEndDate.ToString("dd/MM/yyyy")
+                    ApplicationEndDate = test.ApplicationEndDate.ToString("dd/MM/yyyy"),
+                    test.ShowAudioFiles,
+                    test.ShowVideoFiles
                 };
 
                 if (test != null)
@@ -210,11 +212,11 @@ namespace GestaoAvaliacao.Controllers
             try
             {
                 var blockItems = testBusiness.GetItemsByTest(test_id, SessionFacade.UsuarioLogado.Usuario.usu_id);
-
                 List<long> lstItens = blockItems.Select(x => x.Item.Id).Distinct().ToList();
 
-                var itemVideos = itemFileBusiness.GetVideosByLstItemId(lstItens);
-                var itemAudios = itemAudioBusiness.GetAudiosByLstItemId(lstItens);
+                var testShowVideoAudioFilesDto = testBusiness.GetTestShowVideoAudioFiles(test_id);
+                var itemVideos = testShowVideoAudioFilesDto.ShowVideoFiles ? itemFileBusiness.GetVideosByLstItemId(lstItens) : new List<ItemFile>();
+                var itemAudios = testShowVideoAudioFilesDto.ShowAudioFiles ? itemAudioBusiness.GetAudiosByLstItemId(lstItens) : new List<ItemAudio>();
 
                 var retorno = blockItems.Select(bi => new
                 {
@@ -231,7 +233,9 @@ namespace GestaoAvaliacao.Controllers
                     BlockItem_Id = bi.Id,
                     Justification = bi.RequestRevokes != null ? bi.RequestRevokes.First().Justification : "",
                     Videos = itemVideos.Where(p => p.Item_Id == bi.Item.Id),
-                    Audios = itemAudios.Where(p => p.Item_Id == bi.Item.Id)
+                    Audios = itemAudios.Where(p => p.Item_Id == bi.Item.Id),
+                    ShowVideoFiles = testShowVideoAudioFilesDto.ShowVideoFiles && itemVideos.Any(p => p.Item_Id == bi.Item.Id),
+                    ShowAudioFiles = testShowVideoAudioFilesDto.ShowAudioFiles && itemAudios.Any(p => p.Item_Id == bi.Item.Id)
                 }).ToList();
 
                 return Json(new { success = true, itens = retorno }, JsonRequestBehavior.AllowGet);

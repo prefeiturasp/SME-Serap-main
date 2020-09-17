@@ -118,41 +118,67 @@
                                     </p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
                             <div class="cards">
                                 <div class="campoLabel">
-                                    <label><b>Itens por dificuldade:</b></label>
+                                    <label style="max-width:none">Este tipo de prova é direcionado para alunos com deficiências?</label>
+                                    <div radio-select radiolist="direcionadoParaAlunosDeficientesOptions"
+                                         radioselected="direcionadoParaAlunosDeficientesOptionSelected"
+                                         changer="direcionadoParaAlunosDeficientesOptionChange"
+                                         custom-class="radio-inline"></div>
                                 </div>
-                                <div class="campoLabel">
-                                    <label for="testType.CurriculumGradeId">Formato:</label>
-                                    <div>
-                                        <select id="formatyType" class="form-control"
-                                                ng-model="selectedObjFormatType"
-                                                ng-options="formatType as (formatType.Description | minimize:35) for formatType in formatTypeList"
-                                                ng-title="formatTypeList"
-                                                ng-title-propertie="Description"
-                                                ng-title-index="1"
-                                                ng-title-selected>
-                                            <option value="">--Selecione--</option>
-                                        </select>
+
+                                @*Períodos de aplicação*@
+                                <div id="divDeficiencies" class="campoLabel linhaQuebra" ng-show="Deficiencies">
+                                    <label> Deficiências*: </label>
+                                    <div class="campoperido">
+                                        <div ng-repeat="deficiency in Deficiencies">
+                                            <div class="checkbox checkbox-primary checkbox-inline">
+                                                <input id="c{{deficiency.Id}}"
+                                                       type="checkbox"
+                                                       checklist-model="DeficienciesSelected"
+                                                       checklist-value="deficiency">
+
+                                                <label for="c{{deficiency.Id}}"> {{deficiency.Description}}</label>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="campoLabel">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr ng-repeat="item in itensLevel | orderBy: 'Ordem'">
-                                                <th>{{ item.Description }} </th>
-                                                <th>
-                                                    <input ng-model="item.Value" type="text" size="4" maxlength="3" ng-change="replaceValue(item)">
-                                                    <span>{{(selectedObjFormatType.Description === "Porcentagem") ? ' %' : ""}}</span>
-                                                </th>
-                                            </tr>
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                                <div class="cards">
+                                    <div class="campoLabel">
+                                        <label><b>Itens por dificuldade:</b></label>
+                                    </div>
+                                    <div class="campoLabel">
+                                        <label for="testType.CurriculumGradeId">Formato:</label>
+                                        <div>
+                                            <select id="formatyType" class="form-control"
+                                                    ng-model="selectedObjFormatType"
+                                                    ng-options="formatType as (formatType.Description | minimize:35) for formatType in formatTypeList"
+                                                    ng-title="formatTypeList"
+                                                    ng-title-propertie="Description"
+                                                    ng-title-index="1"
+                                                    ng-title-selected>
+                                                <option value="">--Selecione--</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="campoLabel">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr ng-repeat="item in itensLevel | orderBy: 'Ordem'">
+                                                    <th>{{ item.Description }} </th>
+                                                    <th>
+                                                        <input ng-model="item.Value" type="text" size="4" maxlength="3" ng-change="replaceValue(item)">
+                                                        <span>{{(selectedObjFormatType.Description === "Porcentagem") ? ' %' : ""}}</span>
+                                                    </th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
                 </div>
                 <div class="botoes">

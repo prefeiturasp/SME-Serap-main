@@ -5,6 +5,7 @@ namespace GestaoAvaliacao.IRepository
 {
     public interface ITestTemplateRepository
 	{
+		Task<TestTemplate> FindOneAsync(TestTemplate entity);
 		Task<TestTemplate> GetEntity(TestTemplate entity);
 		Task<TestTemplate> Insert(TestTemplate entity);
 		Task<long> Count(TestTemplate entity);

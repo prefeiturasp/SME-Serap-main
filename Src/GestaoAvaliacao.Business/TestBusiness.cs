@@ -31,12 +31,12 @@ namespace GestaoAvaliacao.Business
 		private readonly ITUR_TurmaBusiness turmaBusiness;
 		private readonly ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness;
 		private readonly IESC_EscolaBusiness escolaBusiness;
-		private readonly IBlockBusiness blockBusiness;
+        private readonly ITestTypeDeficiencyRepository testTypeDeficiencyRepository;
 
-		public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
+        public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
 			ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
 			IBlockRepository blockRepository, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
-			IESC_EscolaBusiness escolaBusiness, IBlockBusiness blockBusiness)
+			IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository)
 		{
 			this.testRepository = testRepository;
 			this.fileRepository = fileRepository;
@@ -50,8 +50,8 @@ namespace GestaoAvaliacao.Business
 			this.turmaBusiness = turmaBusiness;
 			this.unidadeAdministrativaBusiness = unidadeAdministrativaBusiness;
 			this.escolaBusiness = escolaBusiness;
-			this.blockBusiness = blockBusiness;
-		}
+            this.testTypeDeficiencyRepository = testTypeDeficiencyRepository;
+        }
 
 		#region Custom
 
@@ -128,7 +128,10 @@ namespace GestaoAvaliacao.Business
 			if (cadastred.NumberItem > 0)
 				totalItemsCadastred = (int)cadastred.NumberItem;
 
-			if (entity.TestType.Id != cadastred.TestType_Id || (entity.Discipline != null && entity.Discipline.Id != cadastred.Discipline_Id)
+			var disciplineChanged = entity.Multidiscipline != cadastred.Multidiscipline
+				|| (!entity.Multidiscipline && entity.Discipline.Id != cadastred.Discipline_Id);
+
+			if (entity.TestType.Id != cadastred.TestType_Id || disciplineChanged
 				|| !entity.Description.Equals(cadastred.Description) || !entity.FrequencyApplication.Equals(cadastred.FrequencyApplication)
 				|| !totalItems.Equals(totalItemsCadastred))
 				entity.TestSituation = EnumTestSituation.Pending;
@@ -435,10 +438,31 @@ namespace GestaoAvaliacao.Business
 
 		public List<ElectronicTestDTO> SearchEletronicTestsByPesId(Guid pes_id)
 		{
-			return testRepository.SearchEletronicTestsByPesId(pes_id);
+			var tests = testRepository.SearchEletronicTestsByPesId(pes_id);
+			tests = FilterTestsTargetToStudentsWithDeficiencies(pes_id, tests);
+			return tests;
 		}
 
-		public Test SearchInfoTest(long test_id)
+        private List<ElectronicTestDTO> FilterTestsTargetToStudentsWithDeficiencies(Guid pes_id, List<ElectronicTestDTO> tests)
+        {
+			var testsTargetToStudentsWithDeficiencies = tests.Where(x => x.TargetToStudentsWithDeficiencies).ToList();
+			if (!testsTargetToStudentsWithDeficiencies.Any()) return tests;
+
+			var studentDeficiencies = testRepository.GetStudentDeficiencies(pes_id);
+			if (!studentDeficiencies?.Any() ?? true)
+				return tests.Except(testsTargetToStudentsWithDeficiencies).ToList();
+
+			foreach(var test in testsTargetToStudentsWithDeficiencies)
+            {
+				var testTypeDeficiencies = testTypeDeficiencyRepository.Get(test.TestTypeId);
+				if (!studentDeficiencies.Any(x => testTypeDeficiencies.Any(y => y.DeficiencyId == x)))
+					tests.RemoveAll(x => x.Id == test.Id);
+			}
+
+			return tests;
+		}
+
+        public Test SearchInfoTest(long test_id)
 		{
 			return testRepository.SearchInfoTest(test_id);
 		}
@@ -708,7 +732,9 @@ namespace GestaoAvaliacao.Business
 			return entity;
 		}
 
-		public GenerateTestDTO GenerateTest(long Id, bool sheet, bool publicFeedback, bool CDNMathJax, string separator, SYS_Usuario Usuario, SYS_Grupo Grupo, string UrlSite, string VirtualDirectory, string PhysicalDirectory)
+        public TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId) => testRepository.GetTestShowVideoAudioFiles(testId);
+
+        public GenerateTestDTO GenerateTest(long Id, bool sheet, bool publicFeedback, bool CDNMathJax, string separator, SYS_Usuario Usuario, SYS_Grupo Grupo, string UrlSite, string VirtualDirectory, string PhysicalDirectory)
 		{
 			Booklet entity = bookletBusiness.GetTestBooklet(Id);
 			GenerateTestDTO ret = new GenerateTestDTO();

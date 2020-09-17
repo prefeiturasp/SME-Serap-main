@@ -1005,7 +1005,8 @@ namespace GestaoAvaliacao.Repository
                                 CreateDate = dateNow,
                                 UpdateDate = dateNow,
                                 File = GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == videoModel.File.Id),
-                                Thumbnail = GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == videoModel.Thumbnail.Id)
+                                Thumbnail = GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == videoModel.Thumbnail.Id),
+                                ConvertedFile = videoModel.ConvertedFile?.Id > 0 ? GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == videoModel.ConvertedFile.Id) : null
                             };
                             newItemFileVersions.Add(newVideo);
                         }
@@ -1132,7 +1133,8 @@ namespace GestaoAvaliacao.Repository
                             CreateDate = dateNow,
                             UpdateDate = dateNow,
                             File = GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == videoModel.File.Id),
-                            Thumbnail = GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == videoModel.Thumbnail.Id)
+                            Thumbnail = GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == videoModel.Thumbnail.Id),
+                            ConvertedFile = videoModel.ConvertedFile?.Id > 0 ? GestaoAvaliacaoContext.File.FirstOrDefault(s => s.Id == videoModel.ConvertedFile.Id) : null
                         };
                         newItemFile.Add(newVideo);
                     }

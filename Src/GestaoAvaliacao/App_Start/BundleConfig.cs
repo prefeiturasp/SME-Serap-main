@@ -321,7 +321,7 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/directives/_bundle/page/page.js")
                 .Include("~/Assets/js/angular/services/_bundle/pager/services.js")
                 .Include("~/Assets/js/angular/directives/_bundle/checkbox-group/ckeckbox-group.js")
-
+                .Include("~/Assets/js/angular/directives/_bundle/radio-select/radio-select.js")
             );
 
             bundles.Add(
@@ -579,6 +579,7 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/services/_bundle/util/util.js")
                 .Include("~/Assets/js/angular/directives/_bundle/uploader/uploader.js")
                 .Include("~/Assets/js/angular/directives/_bundle/uploader/upload.js")
+                .Include("~/Assets/js/angular/directives/_bundle/uploader/video-upload.js")
                 .Include("~/Assets/js/angular/directives/_bundle/checkbox-group/ckeckbox-group.js")
                 .Include("~/Assets/js/vendor/datepicker/datepicker.js")
                 .Include("~/Assets/js/angular/directives/_bundle/datepicker/datepicker-directive.js")
@@ -661,6 +662,7 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/directives/_bundle/tags-input/ng-tags-input.js")
                 .Include("~/Assets/js/angular/directives/_bundle/uploader/uploader.js")
                 .Include("~/Assets/js/angular/directives/_bundle/uploader/upload.js")
+                .Include("~/Assets/js/angular/directives/_bundle/uploader/video-upload.js")
             );
 
             bundles.Add(
@@ -1750,6 +1752,7 @@ namespace GestaoAvaliacao.App_Start
                     .Include("~/Assets/js/angular/services/_bundle/util/util.js")
                     .Include("~/Assets/js/angular/directives/_bundle/uploader/uploader.js")
                     .Include("~/Assets/js/angular/directives/_bundle/uploader/upload.js")
+                    .Include("~/Assets/js/angular/directives/_bundle/uploader/video-upload.js")
                     .Include("~/Assets/js/angular/directives/_bundle/modal/modal.js")
                     .Include("~/Assets/js/angular/directives/_bundle/checkbox-group/ckeckbox-group.js")
                     .Include("~/Assets/js/angular/directives/_bundle/radio-select/radio-select.js")
