@@ -270,12 +270,23 @@ namespace GestaoAvaliacao.Controllers
                         {
                             foreach (var alternativa in alternatives)
                             {
+                                alternativa.Justificative = null;
+                                alternativa.Correct = false;
                                 alternativa.Selected = studentCorrection.Answers.Exists(p => p.Item_Id == alternativa.Item_Id && p.AnswerChoice == alternativa.Id);
                             }
 
                             ordemUltimaResposta = studentCorrection.OrdemUltimaResposta.Value;
                             provaFinalizada = studentCorrection.provaFinalizada.Value;
                         }
+                        else
+                        {
+                            foreach (var alternativa in alternatives)
+                            {
+                                alternativa.Justificative = null;
+                                alternativa.Correct = false;
+                            }
+                        }
+
                         return Json(new { success = true, alternatives = alternatives, ordemUltimaResposta = ordemUltimaResposta, provaFinalizada = provaFinalizada, existemDados = studentCorrection != null }, JsonRequestBehavior.AllowGet);
                     }
                     return Json(new { success = true, alternatives = alternatives, ordemUltimaResposta = 0, provaFinalizada = provaFinalizada, existemDados = false }, JsonRequestBehavior.AllowGet);
