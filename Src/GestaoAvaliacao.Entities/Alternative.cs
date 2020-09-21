@@ -28,7 +28,7 @@ namespace GestaoAvaliacao.Entities
         public int ItemOrder { get; set; }
 
         [NotMapped]
-        public int Item_Id { get; set; }
+        public long Item_Id { get; set; }
 
         [NotMapped]
         public bool Selected { get; set; }
@@ -36,7 +36,5 @@ namespace GestaoAvaliacao.Entities
         [NotMapped]
         public string NumerationSem { get; set; }
 
-        [NotMapped]
-        public bool Changed { get; set; }
     }
 }

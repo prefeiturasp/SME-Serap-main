@@ -1,6 +1,7 @@
 ﻿using GestaoAvaliacao.Business.Adapters;
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
+using GestaoAvaliacao.Entities.DTO.Tests;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.MongoEntities;
@@ -77,7 +78,7 @@ namespace GestaoAvaliacao.Business
 			return retorno;
 		}
 
-		public async Task<StudentCorrection> SaveCorrectionAsync(long test_id, long alu_id, long tur_id, IEnumerable<Alternative> chosenAlternatives,
+		public async Task<StudentCorrection> SaveCorrectionAsync(long test_id, long alu_id, long tur_id, IEnumerable<AnswerModelDto> chosenAlternatives,
 			Guid ent_id, Guid usuId, Guid pesId, EnumSYS_Visao visao, int ordemItem = 0)
         {
 			var valid = ValidateTest(test_id, tur_id, alu_id, usuId, pesId, visao);
@@ -90,9 +91,9 @@ namespace GestaoAvaliacao.Business
 			var answers = chosenAlternatives
 				.Select(x => new Answer
 				{
-					AnswerChoice = x.Id,
-					Correct = testTemplate.Items.Any(i => i.Item_Id == x.Item_Id && i.Alternative_Id == x.Id),
-					Item_Id = x.Item_Id,
+					AnswerChoice = x.AlternativeId,
+					Correct = testTemplate.Items.Any(i => i.Item_Id == x.ItemId && i.Alternative_Id == x.AlternativeId),
+					Item_Id = x.ItemId,
 					Empty = false,
 					StrikeThrough = false,
 					Automatic = false

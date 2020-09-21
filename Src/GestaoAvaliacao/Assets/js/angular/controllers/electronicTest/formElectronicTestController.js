@@ -140,92 +140,49 @@
         }
 
         function load() {
-
             ng.params = $util.getUrlParams();
             ng.testId = ng.params.TestId;
             ng.aluId = ng.params.AluId;
             ng.turId = ng.params.TurId;
 
-            ElectronicTestModel.loadByTestId({ test_id: ng.testId }, function (result) {
-                if (result.success) {
+            let testKeyStorage = GetTestStorageKey(ng.testId, ng.alu_id, ng.tur_id);
+            let testFromStorage = localStorage.getItem(testKeyStorage);
+            debugger;
 
-                    if (result.test.Id > 0) {
-                        ng.test = result.test;
-                        CarregarItens();
+            if (testFromStorage != null) {
+                ng.test = testFromStorage;
+                finalizeLoad();
+            }
+            else {
+                ElectronicTestModel.loadByTestId({ test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId }, function (result) {
+                    if (result.success) {
+
+                        if (result.test.Id > 0) {
+                            ng.test = result.test;
+                            localStorage.setItem(GetTestStorageKey(ng.testId, ng.alu_id, ng.tur_id), JSON.stringify(ng.test));
+                            finalizeLoad();
+                        }
+                        else {
+                            ng.message = true;
+                            ng.test = null;
+                        }
                     }
                     else {
-                        ng.message = true;
-                        ng.test = null;
+                        $notification[result.type ? result.type : 'error'](result.message);
                     }
-                }
-                else {
-                    $notification[result.type ? result.type : 'error'](result.message);
-                }
-            });
+                });
+            }
         };
 
-        function CarregarItens() {
+        function finalizeLoad() {
 
-            ng.params = $util.getUrlParams();
-            ng.testId = ng.params.TestId;
-            ng.aluId = ng.params.AluId;
-            ng.turId = ng.params.TurId;
+            if (ng.test.LastAnswer != null && ng.itens.length > ng.test.LastAnswer + 1) {
+                ng.indiceItem = result.ordemUltimaResposta + 1;
+            }
 
-            ElectronicTestModel.loadItensByTestId({ test_id: ng.testId }, function (result) {
-                if (result.success) {
-                    if (result.itens.length > 0) {
-                        ng.itens = result.itens;
-                        ng.idsItens = ng.itens.map(function (v) {
-                            return v.Item_Id;
-                        });
-
-                        CarregarAlternativas();
-                    }
-                    else {
-                        ng.message = true;
-                        ng.test = null;
-                    }
-                }
-                else {
-                    $notification[result.type ? result.type : 'error'](result.message);
-                }
-
-            });
-        }
-
-        function CarregarAlternativas() {
-
-            ng.params = $util.getUrlParams();
-            ng.testId = ng.params.TestId;
-            ng.aluId = ng.params.AluId;
-            ng.turId = ng.params.TurId;
-
-            ElectronicTestModel.loadAlternativesByItens({ itens: ng.idsItens, test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId }, function (result) {
-                if (result.success) {
-                    if (result.alternatives.length > 0) {
-                        ng.alternatives = result.alternatives;
-
-                        if (!result.existemDados) {
-                            ng.indiceItem = 0;
-                        }
-                        if (result.existemDados && (ng.itens.length > result.ordemUltimaResposta + 1)) {
-                            ng.indiceItem = result.ordemUltimaResposta + 1;
-                        }
-
-                        ng.possuiTextoBase = ng.itens[ng.indiceItem].BaseTextId > 0 && ng.itens[ng.indiceItem].BaseTextDescription != null && ng.itens[ng.indiceItem].BaseTextDescription != "";
-                        ng.provaFinalizada = result.provaFinalizada;
-                        ng.inicioProva = false;
-                    }
-                    else {
-                        ng.message = true;
-                        ng.test = null;
-                    }
-                }
-                else {
-                    $notification[result.type ? result.type : 'error'](result.message);
-                }
-
-            });
+            ng.possuiTextoBase = ng.test.Itens[ng.indiceItem].BaseTextId > 0 && ng.itens[ng.indiceItem].BaseTextDescription != null && ng.itens[ng.indiceItem].BaseTextDescription != "";
+            ng.provaFinalizada = ng.test.Done;
+            ng.inicioProva = false;
         }
 
         ng.handleRadioClick = function (chosenAlternative) {
@@ -234,13 +191,23 @@
             ng.aluId = ng.params.AluId;
             ng.turId = ng.params.TurId;
 
-            let keyStorage = GetAnswerStorageKey(ng.testId, ng.aluId, ng.turId, chosenAlternative.Item_Id);
-            localStorage.setItem(keyStorage, JSON.stringify(chosenAlternative));
+            var answer = {
+                ItemId: chosenAlternative.Item_Id,
+                AlternativeId: chosenAlternative.Id,
+                Changed: true
+            };
+
+            let keyStorage = GetAnswerStorageKey(ng.testId, ng.aluId, ng.turId, answer.ItemId);
+            localStorage.setItem(keyStorage, JSON.stringify(answer));
 
             for (let i = 0; i < ng.alternatives.length; i++) {
                 ng.alternatives[i].Selected = ng.alternatives.findIndex(x => ng.alternatives[i].Id == chosenAlternative.Id)
             }
         };
+
+        function GetTestStorageKey(testId, aluId, turId) {
+            return "test-" + testId + "-" + aluId + "-" + turId;
+        }
 
         function GetAnswerStorageKey(testId, aluId, turId, itemId) {
             return "answerTest-" + testId + "-" + aluId + "-" + turId + "-" + itemId;

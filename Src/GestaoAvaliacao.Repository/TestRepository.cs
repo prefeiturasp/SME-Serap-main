@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Repository
 {
@@ -1220,39 +1221,37 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public Test SearchInfoTest(long test_id)
+        public async Task<Test> SearchInfoTestAsync(long test_id)
         {
-            StringBuilder sql = new StringBuilder(@"SELECT
-	                                                    T.Id,
-	                                                    T.[Description] + ' - ' + CASE 
-								                                                    WHEN Discipline_Id IS NULL THEN 'Multidisciplinar'
-								                                                    ELSE D.[Description]
-							                                                      END 
-	                                                    AS Description,
-	                                                    NumberItem,
-	                                                    CASE WHEN DATEDIFF(dd, GETDATE(), ApplicationEndDate) >= 0 THEN (DATEDIFF(dd, GETDATE(), ApplicationEndDate) + 1)
-                                                             ELSE 0 
-                                                        END AS quantDiasRestantes, 
-	                                                    TT.FrequencyApplication,
-	                                                    T.ApplicationEndDate,
-                                                        T.ShowVideoFiles,
-                                                        T.ShowAudioFiles
-                                                    FROM
-	                                                    Test AS T WITH(NOLOCK)
-	                                                    INNER JOIN TestType AS TT WITH(NOLOCK)
-		                                                    ON TT.Id = T.TestType_Id
-	                                                    LEFT JOIN Discipline AS D WITH(NOLOCK)
-		                                                    ON D.Id = T.Discipline_Id	
-                                                    WHERE 
-	                                                    T.[State] <> @State
-                                                        AND T.Id = @TestId");
+            var sql = @"SELECT
+	                    T.Id,
+	                    T.[Description] + ' - ' + CASE 
+								                    WHEN Discipline_Id IS NULL THEN 'Multidisciplinar'
+								                    ELSE D.[Description]
+							                        END 
+	                    AS Description,
+	                    NumberItem,
+	                    CASE WHEN DATEDIFF(dd, GETDATE(), ApplicationEndDate) >= 0 THEN (DATEDIFF(dd, GETDATE(), ApplicationEndDate) + 1)
+                                ELSE 0 
+                        END AS quantDiasRestantes, 
+	                    TT.FrequencyApplication,
+	                    T.ApplicationEndDate,
+                        T.ShowVideoFiles,
+                        T.ShowAudioFiles
+                    FROM
+	                    Test AS T WITH(NOLOCK)
+	                    INNER JOIN TestType AS TT WITH(NOLOCK)
+		                    ON TT.Id = T.TestType_Id
+	                    LEFT JOIN Discipline AS D WITH(NOLOCK)
+		                    ON D.Id = T.Discipline_Id	
+                    WHERE 
+	                    T.[State] <> @State
+                        AND T.Id = @TestId";
 
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
-
-                var result = cn.Query<Test>(sql.ToString(), new { State = (Byte)EnumState.excluido, TestId = test_id });
-
+                var result = await cn.QueryAsync<Test>(sql, new { State = (Byte)EnumState.excluido, TestId = test_id });
                 return result.FirstOrDefault();
             }
         }

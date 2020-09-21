@@ -1,4 +1,5 @@
 ﻿using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.DTO.Tests;
 using GestaoAvaliacao.MongoEntities;
 using GestaoAvaliacao.MongoEntities.DTO;
 using GestaoAvaliacao.Util;
@@ -38,7 +39,7 @@ namespace GestaoAvaliacao.IBusiness
 
         Task<StudentCorrection> SaveCorrectionApi(long studentId, List<ItemModelDTO> itemModel, TestDTO testModel, MongoEntities.TestTemplate testTemplate);
 
-        Task<StudentCorrection> SaveCorrectionAsync(long test_id, long alu_id, long tur_id, IEnumerable<Alternative> chosenAlternatives,
+        Task<StudentCorrection> SaveCorrectionAsync(long test_id, long alu_id, long tur_id, IEnumerable<AnswerModelDto> chosenAlternatives,
             Guid ent_id, Guid usuId, Guid pesId, EnumSYS_Visao visao, int ordemItem = 0);
     }
 }

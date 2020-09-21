@@ -5,6 +5,7 @@ using GestaoAvaliacao.Util;
 using MSTech.CoreSSO.Entities;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.IBusiness
 {
@@ -26,7 +27,7 @@ namespace GestaoAvaliacao.IBusiness
 		IEnumerable<AnswerSheetStudentInformation> GetTeamStudents(int SchoolId, long SectionId, long StudentId, long test_id, bool allAdhered);
 		Test GetObjectWithTestType(long Id);
 		IEnumerable<BlockItem> GetItemsByTest(long test_id, Guid UsuId, ref Pager pager);
-		IEnumerable<BlockItem> GetItemsByTest(long test_id, Guid UsuId);
+		Task<IEnumerable<BlockItem>> GetItemsByTestAsync(long test_id, Guid UsuId);
 		IEnumerable<BlockItem> GetPendingRevokeItems(ref Pager pager, string ItemCode, DateTime? StartDate, DateTime? EndDate, EnumSituation? Situation);
 		EnumTestSituation TestSituation(Test entity);
 		IEnumerable<AnswerSheetBatch> GetTestAutomaticCorrectionSituation(long testId, long schoolId);
@@ -55,7 +56,7 @@ namespace GestaoAvaliacao.IBusiness
 
 		TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
 		List<ElectronicTestDTO> SearchEletronicTests();
-		Test SearchInfoTest(long test_id);
+		Task<Test> SearchInfoTestAsync(long test_id);
 		List<ElectronicTestDTO> SearchEletronicTestsByPesId(Guid pes_id);
 		bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id);
 		void ChangeOrder(long idOrigem, long idDestino);

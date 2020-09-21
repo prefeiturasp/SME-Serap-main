@@ -14,15 +14,7 @@
             'loadByTestId': {
                 method: 'GET',
                 url: base_url('ElectronicTest/LoadByTestId')
-            },
-            'loadItensByTestId': {
-                method: 'GET',
-                url: base_url('ElectronicTest/LoadItensByTestId')
-            },
-            'loadAlternativesByItens': {
-                method: 'GET',
-                url: base_url('ElectronicTest/LoadAlternativesByItens')
-            },            
+            },          
             'save': {
                 method: 'POST',
                 url: base_url('ElectronicTest/Save')

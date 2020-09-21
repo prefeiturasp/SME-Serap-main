@@ -3,6 +3,7 @@ using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.IRepository
 {
@@ -45,7 +46,7 @@ namespace GestaoAvaliacao.IRepository
 		IEnumerable<TestResult> GetTestsBySubGroup(long id);
         List<ElectronicTestDTO> SearchEletronicTests();
         List<ElectronicTestDTO> SearchEletronicTestsByPesId(Guid pes_id);
-        Test SearchInfoTest(long test_id);
+        Task<Test> SearchInfoTestAsync(long test_id);
         bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id);
         IEnumerable<TestResult> GetTestsBySubGroupTcpId(long Id, long tcp_id);
         IEnumerable<Guid> GetStudentDeficiencies(Guid pes_id);
