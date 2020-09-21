@@ -35,5 +35,8 @@ namespace GestaoAvaliacao.Entities
 
         [NotMapped]
         public string NumerationSem { get; set; }
+
+        [NotMapped]
+        public bool Changed { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace GestaoAvaliacao.IBusiness
     public interface IResponseChangeLogBusiness
     {
         Task<ResponseChangeLog> Save(Answer answer, long alu_id, long test_id, long tur_id, Guid ent_id, Guid usuId, bool manual, IEnumerable<StudentCorrectionAnswerGrid> studentsAnswers, long AbsenceReason_IdAnterior, long AbsenceReason_IdAtual);
+        Task SaveAsync(IEnumerable<Answer> answers, long alu_id, long test_id, long tur_id, Guid ent_id, Guid usuId, bool manual, IEnumerable<StudentCorrectionAnswerGrid> studentsAnswers, long AbsenceReason_IdAnterior, long AbsenceReason_IdAtual);
         List<ResponseChangeLogDTO> GetResponseChangeLog(long test_id, Guid ent_id, Guid? uad_id, long? esc_id, long? tur_id, DateTime? DateStartChange, DateTime? DateEndChange, ref Pager pager);
         List<StudentDTO> GetInfoStudents(List<long> alunos);
         List<DresDTO> GetInfoDresSchools(List<string> dres, Guid ent_id);

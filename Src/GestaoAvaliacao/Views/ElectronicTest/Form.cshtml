@@ -41,7 +41,8 @@
                     <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomAlternativas(false)" />
                 </div>
                 <div class="alternativas" ng-repeat="alternativa in alternatives | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">
-                    <input ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)" type="radio" name="alternative" ng-checked="alternativa.Selected" ng-change="handleRadioClick(alternativa)" ng-model="selectedValue.alternative" value="{{alternative.price}}">{{ alternativa.Numeration }}
+                    <input ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)" type="radio" name="alternative" ng-checked="alternativa.Selected" 
+                           ng-change="handleRadioClick(alternativa)" ng-model="selectedValue.alternative" value="{{alternative.price}}">{{ alternativa.Numeration }}
                     <label class="alternativeElementClass" ng-bind-html="alternativa.Description | trustedHtml"></label>
                 </div>
             </div>

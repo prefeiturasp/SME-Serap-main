@@ -77,6 +77,46 @@ namespace GestaoAvaliacao.Business
 			return retorno;
 		}
 
+		public async Task<StudentCorrection> SaveCorrectionAsync(long test_id, long alu_id, long tur_id, IEnumerable<Alternative> chosenAlternatives,
+			Guid ent_id, Guid usuId, Guid pesId, EnumSYS_Visao visao, int ordemItem = 0)
+        {
+			var valid = ValidateTest(test_id, tur_id, alu_id, usuId, pesId, visao);
+			if (!valid.IsValid) return new StudentCorrection() { Validate = valid };
+
+			var testTemplate = await GetTestTemplate(test_id, ent_id);
+			if(testTemplate is null)
+				return new StudentCorrection { Validate = new Validate { IsValid = true, Message = "Template adprova não encontrado.", Type = ValidateType.Save.ToString() } };
+
+			var answers = chosenAlternatives
+				.Select(x => new Answer
+				{
+					AnswerChoice = x.Id,
+					Correct = testTemplate.Items.Any(i => i.Item_Id == x.Item_Id && i.Alternative_Id == x.Id),
+					Item_Id = x.Item_Id,
+					Empty = false,
+					StrikeThrough = false,
+					Automatic = false
+				})
+				.ToList();
+
+			var taskLogs = Task.Run(async () =>
+			{
+				var studentAnswers = await GetStudentAnswer(test_id, tur_id, alu_id, ent_id);
+				await _responseChangeLogBusiness.SaveAsync(answers, alu_id, test_id, tur_id, ent_id, usuId, manual: false, studentAnswers, 0, 0);
+			});
+
+			var taskCorrectionStatus = _testSectionStatusCorrectionBusiness.SetCorrectionStatusAsync(test_id, tur_id, EnumStatusCorrection.Processing);
+			var taskCorrection = _studentCorrectionBusiness.SaveAsync(answers, alu_id, test_id, tur_id, ent_id, api: false, ordemItem, false);
+			var taskTempCorrectionResult = _testSectionStatusCorrectionBusiness.GetTempCorrection(ent_id, test_id, tur_id);
+
+			await Task.WhenAll(taskCorrectionStatus, taskLogs, taskCorrection, taskTempCorrectionResult);
+
+			var retorno = taskCorrection.Result;
+			retorno.Validate = new Validate() { IsValid = true, Message = "Nota do usuário salva com sucesso", Type = ValidateType.Save.ToString() };
+
+			return retorno;
+		}
+
 		public async Task<StudentCorrection> SaveCorrection(long alu_id, long alternative_id, long item_id, bool n, bool r, long test_id,
 			long tur_id, Guid ent_id, Guid usuId, Guid pesId, EnumSYS_Visao visao, bool manual, bool api = false, int ordemItem = 0, bool provaEletronica = false)
 		{

@@ -27,6 +27,10 @@
                 method: 'POST',
                 url: base_url('ElectronicTest/Save')
             },
+            'saveAnswersAsync': {
+                method: 'POST',
+                url: base_url('ElectronicTest/SaveAnswersAsync')
+            },
             'finalizeCorrection': {
                 method: 'POST',
                 url: base_url('ElectronicTest/FinalizeCorrection')

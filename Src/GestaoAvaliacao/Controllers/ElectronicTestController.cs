@@ -255,16 +255,14 @@ namespace GestaoAvaliacao.Controllers
                 var itensConcat = itens.Distinct().AsEnumerable().Select(x => string.Concat("'", x, "'"));
 
                 var alternatives = alternativeBusiness.GetAlternativesByItens(itensConcat, test_id);
-
-                bool provaFinalizada = false;
+                var provaFinalizada = false;
 
                 if (alternatives != null)
                 {
                     if (alu_id > 0 && tur_id > 0)
                     {
-                        StudentCorrection studentCorrection = await _studentCorrectionBusiness.Get(alu_id, test_id, tur_id, SessionFacade.UsuarioLogado.Usuario.ent_id);
-
-                        int ordemUltimaResposta = 0;
+                        var studentCorrection = await _studentCorrectionBusiness.Get(alu_id, test_id, tur_id, SessionFacade.UsuarioLogado.Usuario.ent_id);
+                        var ordemUltimaResposta = 0;
 
                         if (studentCorrection != null)
                         {
@@ -289,8 +287,10 @@ namespace GestaoAvaliacao.Controllers
 
                         return Json(new { success = true, alternatives = alternatives, ordemUltimaResposta = ordemUltimaResposta, provaFinalizada = provaFinalizada, existemDados = studentCorrection != null }, JsonRequestBehavior.AllowGet);
                     }
+
                     return Json(new { success = true, alternatives = alternatives, ordemUltimaResposta = 0, provaFinalizada = provaFinalizada, existemDados = false }, JsonRequestBehavior.AllowGet);
                 }
+
                 return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Dados não encontrados." }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -319,6 +319,26 @@ namespace GestaoAvaliacao.Controllers
             {
                 LogFacade.SaveError(ex);
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar a área de conhecimento pesquisada." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SaveAnswersAsync(IEnumerable<Alternative> answers, long test_id, long alu_id, long tur_id, int ordemItem)
+        {
+            try
+            {
+                var ent_id = SessionFacade.UsuarioLogado.Usuario.ent_id;
+                var usu_id = SessionFacade.UsuarioLogado.Usuario.usu_id;
+                var pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id;
+                var vis_id = (EnumSYS_Visao)SessionFacade.UsuarioLogado.Grupo.vis_id;
+
+                await correctionBusiness.SaveCorrectionAsync(test_id, alu_id, tur_id, answers, ent_id, usu_id, pes_id, vis_id, ordemItem);
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar salvar as resposta da prova." }, JsonRequestBehavior.AllowGet);
             }
         }
 

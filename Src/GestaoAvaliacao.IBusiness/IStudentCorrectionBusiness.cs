@@ -9,6 +9,7 @@ namespace GestaoAvaliacao.IBusiness
     public interface IStudentCorrectionBusiness
     {
         Task<StudentCorrection> Save(Answer entity, long alu_id, long test_id, long tur_id, Guid ent_id, bool api, int ordemItem, bool provaEntregue);
+        Task<StudentCorrection> SaveAsync(IEnumerable<Answer> answers, long alu_id, long test_id, long tur_id, Guid ent_id, bool api, int ordemItem, bool provaEntregue);
         Task<StudentCorrection> Get(long alu_id, long test_id, long tur_id, Guid ent_id);
         Task<List<StudentCorrection>> GetByTest(long test_id, long tur_id);
         Task<List<StudentCorrection>> GetByTest(List<long> testId);
