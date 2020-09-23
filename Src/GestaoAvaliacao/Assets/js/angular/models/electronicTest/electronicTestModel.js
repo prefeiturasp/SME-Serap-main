@@ -14,7 +14,11 @@
             'loadByTestId': {
                 method: 'GET',
                 url: base_url('ElectronicTest/LoadByTestId')
-            },          
+            },
+            'loadAnswersAsync': {
+                method: 'GET',
+                url: base_url('ElectronicTest/LoadAnswersAsync')
+            },
             'save': {
                 method: 'POST',
                 url: base_url('ElectronicTest/Save')

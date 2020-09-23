@@ -11,7 +11,7 @@ namespace GestaoAvaliacao.Entities.DTO.Tests
             Alternatives = new List<AlternativeModelDto>();
         }
 
-        public long Item_Id { get; set; }
+        public long Id { get; set; }
         public string ItemCode { get; set; }
         public int ItemVersion { get; set; }
         public int ItemOrder { get; set; }

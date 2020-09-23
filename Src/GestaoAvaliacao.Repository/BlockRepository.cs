@@ -456,7 +456,8 @@ namespace GestaoAvaliacao.Repository
 
         public async Task<IEnumerable<BlockItem>> GetItemsByTestIdAsync(long test_id, Guid UsuId)
         {
-            var sql = @"SELECT 
+            var sql = @"
+                        SELECT 
 	                        bi.Id AS BlockItem_Id,
 	                        bi.[Order], 
 	                        i.Id AS Item_Id,
@@ -478,22 +479,13 @@ namespace GestaoAvaliacao.Repository
                         SELECT BlockItem_Id AS Id, [Order], 
                                 Item_Id AS Id, ItemCode,ItemVersion,Statement,   
                                 BaseText_Id AS Id, Description  
-                        FROM #tempBlockItens  
+                        FROM #tempBlockItens   
                         ORDER BY RowNumber;";
-
-            var sqlRequest = @"SELECT t1.Id, t1.Situation, t1.Justification  
-                              FROM 
-                                RequestRevoke t1 (NOLOCK)
-                              INNER JOIN
-                                #tempBlockItens temp
-                                ON t1.BlockItem_Id = temp.BlockItem_Id
-                              WHERE
-                                UsuId = @UsuId  
-                                AND State = @State";
 
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
+                var transaction = cn.BeginTransaction();
 
                 var blockItems = await cn.QueryAsync<BlockItem, Item, BaseText, BlockItem>(sql,
                     (bi, i, bx) =>
@@ -501,9 +493,17 @@ namespace GestaoAvaliacao.Repository
                         i.BaseText = bx;
                         bi.Item = i;
                         return bi;
-                    }, new { state = (Byte)EnumState.ativo, id = test_id });
+                    }, new { state = (Byte)EnumState.ativo, id = test_id }, transaction);
+                if (!blockItems.Any()) return blockItems;
 
-                var revokes = await cn.QueryAsync<RequestRevoke>(sqlRequest, new { state = (Byte)EnumState.ativo, UsuId });
+                var sqlRequest = $@"SELECT t1.Id, t1.Situation, t1.Justification  
+                             FROM 
+                                RequestRevoke t1 (NOLOCK)
+                             WHERE
+                                UsuId = @UsuId  
+                                AND State = @State
+                                AND t1.BlockItem_Id IN ({ string.Join(",", blockItems.Select(x => x.Id)) })";
+                var revokes = await cn.QueryAsync<RequestRevoke>(sqlRequest, new { state = (Byte)EnumState.ativo, UsuId }, transaction);
                 if(!revokes?.Any() ?? true) return blockItems;
 
                 foreach(var revoke in revokes)

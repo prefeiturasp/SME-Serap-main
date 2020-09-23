@@ -213,6 +213,33 @@ namespace GestaoAvaliacao.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<JsonResult> LoadAnswersAsync(long test_id, long alu_id, long tur_id)
+        {
+            try
+            {
+                var studentCorrection = await _studentCorrectionBusiness.Get(alu_id, test_id, tur_id, SessionFacade.UsuarioLogado.Usuario.ent_id);
+                if(studentCorrection is null)
+                    return Json(new { success = true, answers = new List<AnswerModelDto>() }, JsonRequestBehavior.AllowGet);
+
+                var answers = studentCorrection.Answers
+                    .Select(x => new AnswerModelDto
+                    {
+                        AlternativeId = x.AnswerChoice,
+                        Changed = false,
+                        ItemId = x.Item_Id
+                    })
+                    .ToList();
+
+                return Json(new { success = true, answers }, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar os dados da prova." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         private async Task<IEnumerable<ItemModelDto>> LoadItensAsync(long test_id)
         {
             var blockItems = await testBusiness.GetItemsByTestAsync(test_id, SessionFacade.UsuarioLogado.Usuario.usu_id);
@@ -226,7 +253,7 @@ namespace GestaoAvaliacao.Controllers
             {
                 var item = new ItemModelDto
                 {
-                    Item_Id = bi.Item.Id,
+                    Id = bi.Item.Id,
                     ItemCode = bi.Item.ItemCode,
                     ItemVersion = bi.Item.ItemVersion,
                     ItemOrder = bi.Order,
@@ -240,7 +267,7 @@ namespace GestaoAvaliacao.Controllers
                     ShowAudioFiles = testShowVideoAudioFilesDto.ShowAudioFiles && itemAudios.Any(p => p.Item_Id == bi.Item.Id)
                 };
 
-                var requestRevoke = bi.RequestRevokes.FirstOrDefault();
+                var requestRevoke = bi.RequestRevokes?.FirstOrDefault();
                 if(requestRevoke != null)
                 {
                     item.Revoked = requestRevoke.Situation;
@@ -261,10 +288,10 @@ namespace GestaoAvaliacao.Controllers
 
         private async Task LoadAlternativesByItensAsync(long test_id, IEnumerable<ItemModelDto> itens)
         {
-            var itensIdsConcat = itens.Select(x => string.Concat("'", x.Item_Id, "'"));
+            var itensIdsConcat = itens.Select(x => string.Concat("'", x.Id, "'"));
 
             var alternatives = await alternativeBusiness.GetAlternativesByItensAsync(itensIdsConcat, test_id);
-            if (alternatives?.Any() ?? true) throw new NullReferenceException("Não foram encontradas alternativas para os itens da prova.");
+            if (!alternatives?.Any() ?? true) throw new NullReferenceException("Não foram encontradas alternativas para os itens da prova.");
 
             var alternativesModel = alternatives
                 .Select(x => new AlternativeModelDto
@@ -282,7 +309,7 @@ namespace GestaoAvaliacao.Controllers
 
             foreach(var item in itens)
             {
-                var artenativesOfItem = alternativesModel.Where(x => x.Item_Id == item.Item_Id).ToList();
+                var artenativesOfItem = alternativesModel.Where(x => x.Item_Id == item.Id).ToList();
                 item.Alternatives.AddRange(artenativesOfItem);
             }
         }
