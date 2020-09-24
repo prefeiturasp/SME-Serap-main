@@ -1,0 +1,2 @@
+update GestaoAvaliacao_SGP..ACA_TipoCurriculoPeriodo set tme_id = 6 --3 
+where tcp_id in (78,82)
