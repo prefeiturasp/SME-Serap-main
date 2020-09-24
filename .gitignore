@@ -35,6 +35,10 @@
 /Src/GestaoAvaliacao.ExportAnalysisService/obj/Debug
 /Src/GestaoAvaliacao.FileServer/bin/Debug
 /Src/GestaoAvaliacao.FileServer/obj/Debug
+/Src/GestaoAvaliacao.TestesDeMetodos/obj/Debug
+/Src/GestaoAvaliacao.TestesDeMetodos/bin/Debug
+/Src/GestaoAvaliacao.Manutencao.MultiMatriculasAtivas/obj/Debug
+/Src/GestaoAvaliacao.Manutencao.MultiMatriculasAtivas/bin/Debug
 /Src/GestaoAvaliacao.GenerateNewCorrectionResultInstaller/obj/Debug
 /Src/GestaoAvaliacao.GenerateNewCorrectionResultService/obj/Debug
 /Src/GestaoAvaliacao.IBusiness/bin/Debug
