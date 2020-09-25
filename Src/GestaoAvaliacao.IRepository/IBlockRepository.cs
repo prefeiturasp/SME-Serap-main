@@ -30,7 +30,7 @@ namespace GestaoAvaliacao.IRepository
         int CountItemTest(long Id);
         IEnumerable<StudentCorrectionAnswerGrid> GetTestQuestions(long Id);
         IEnumerable<BlockItem> GetItemsByTestId(long test_id, Guid UsuId, ref Pager pager);
-        IEnumerable<BlockItem> GetItemsByTestId(long test_id, Guid UsuId);
+        Task<IEnumerable<BlockItem>> GetItemsByTestIdAsync(long test_id, Guid UsuId);
         IEnumerable<BlockItem> GetPendingRevokeItems(ref Pager pager, string ItemCode, DateTime? StartDate, DateTime? EndDate, EnumSituation? Situation);
     }
 }

@@ -44,5 +44,14 @@ namespace GestaoAvaliacao.MongoEntities
 		public bool Empty { get; set; }
 		public bool StrikeThrough { get; set; }
         public bool Automatic { get; set; }
+
+        public override bool Equals(object obj)
+        {
+			if (obj.GetType() != typeof(Answer)) return false;
+			if (Item_Id == ((Answer)obj).Item_Id) return true;
+			return false;
+        }
+
+        public override int GetHashCode() => Item_Id.GetHashCode();
     }
 }

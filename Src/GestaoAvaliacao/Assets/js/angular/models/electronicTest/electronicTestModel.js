@@ -15,14 +15,10 @@
                 method: 'GET',
                 url: base_url('ElectronicTest/LoadByTestId')
             },
-            'loadItensByTestId': {
+            'loadStudentCorrectionAsync': {
                 method: 'GET',
-                url: base_url('ElectronicTest/LoadItensByTestId')
+                url: base_url('ElectronicTest/LoadStudentCorrectionAsync')
             },
-            'loadAlternativesByItens': {
-                method: 'GET',
-                url: base_url('ElectronicTest/LoadAlternativesByItens')
-            },            
             'save': {
                 method: 'POST',
                 url: base_url('ElectronicTest/Save')

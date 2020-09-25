@@ -208,6 +208,7 @@ namespace GestaoAvaliacao.Business
 				{
 					using (MemoryStream ms = new MemoryStream())
 					{
+						model.Stream.Position = 0;
 						model.Stream.CopyTo(ms);
 						data = ms.ToArray();
 					}

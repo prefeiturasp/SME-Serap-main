@@ -15,14 +15,12 @@ namespace GestaoAvaliacao.Business
             _alternativeRepository = alternativeRepository;
         }
 
-        public async Task<IEnumerable<AlternativesWithNumerationAndOrderProjection>> GetAlternativesWithNumerationAndOrderByTest(long test_id)
-        {
-            return await _alternativeRepository.GetAlternativesWithNumerationAndOrderByTest(test_id);
-        }
+        public async Task<IEnumerable<AlternativesWithNumerationAndOrderProjection>> GetAlternativesWithNumerationAndOrderByTest(long test_id) 
+            => await _alternativeRepository.GetAlternativesWithNumerationAndOrderByTest(test_id);
 
-        public List<Alternative> GetAlternativesByItens(IEnumerable<string> itens, long test_id)
-        {
-            return _alternativeRepository.GetAlternativesByItens(itens, test_id);
-        }        
+        public List<Alternative> GetAlternativesByItens(IEnumerable<string> itens, long test_id) => _alternativeRepository.GetAlternativesByItens(itens, test_id);
+
+        public async Task<IEnumerable<Alternative>> GetAlternativesByItensAsync(IEnumerable<string> itens, long test_id) 
+            => await _alternativeRepository.GetAlternativesByItensAsync(itens, test_id);
     }
 }

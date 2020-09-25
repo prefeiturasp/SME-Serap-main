@@ -28,6 +28,61 @@ namespace GestaoAvaliacao.Business
             _absenceReasonRepository = absenceReasonRepository;
         }
 
+        public async Task SaveAsync(IEnumerable<Answer> answers, long alu_id, long test_id, long tur_id, Guid ent_id, Guid usuId, bool manual, IEnumerable<StudentCorrectionAnswerGrid> studentsAnswers, long AbsenceReason_IdAnterior, long AbsenceReason_IdAtual)
+        {
+            var escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(tur_id);
+
+            var responsesChangeLog = answers
+                .Select(a =>
+                {
+                    var responseChangeLog = new ResponseChangeLog
+                    {
+                        Ent_id = ent_id,
+                        Usu_id = usuId,
+                        Dre_id = escola.dre_id,
+                        Esc_id = escola.esc_id,
+                        Tur_id = tur_id,
+                        Test_id = test_id,
+                        Alu_id = alu_id,
+                        Item_Id = a != null ? a.Item_Id : 0,
+                        Alternative_IdAtual = (a != null ? a.AnswerChoice : 0),
+                    };
+
+                    responseChangeLog.Alternative_Atual = (a != null && a.AnswerChoice > 0
+                                            ? studentsAnswers.FirstOrDefault(p => p.Item_Id == a.Item_Id).Alternatives.FirstOrDefault(p => p.Id == a.AnswerChoice).Numeration.Replace(")", "")
+                                            : (a != null && a.AnswerChoice == 0 && a.Empty
+                                                ? "N"
+                                                : (a != null && a.AnswerChoice == 0 && a.StrikeThrough
+                                                    ? "R"
+                                                    : string.Empty))
+                                        );
+
+                    responseChangeLog.Alternative_IdAnterior = studentsAnswers != null
+                                                    ? (studentsAnswers.FirstOrDefault(p => p.Item_Id == a.Item_Id).Alternatives.Exists(p => p.Selected == true)
+                                                        ? studentsAnswers.FirstOrDefault(p => p.Item_Id == a.Item_Id).Alternatives.FirstOrDefault(p => p.Selected == true).Id
+                                                        : 0)
+                                                    : 0;
+                    responseChangeLog.Alternative_Anterior = (studentsAnswers == null
+                                                    ? string.Empty
+                                                        : studentsAnswers.FirstOrDefault(p => p.Item_Id == a.Item_Id).Null
+                                                            ? "N"
+                                                            : studentsAnswers.FirstOrDefault(p => p.Item_Id == a.Item_Id).StrikeThrough
+                                                                ? "R"
+                                                                : studentsAnswers.FirstOrDefault(p => p.Item_Id == a.Item_Id).Alternatives.Exists(p => p.Selected == true)
+                                                                    ? studentsAnswers.FirstOrDefault(p => p.Item_Id == a.Item_Id).Alternatives.FirstOrDefault(p => p.Selected == true).Numeration.Replace(")", "")
+                                                            : string.Empty);
+                    responseChangeLog.Automatic = !manual;
+                    responseChangeLog.Absence = a == null;
+                    responseChangeLog.AbsenceReason_IdAnterior = AbsenceReason_IdAnterior;
+                    responseChangeLog.AbsenceReason_IdAtual = AbsenceReason_IdAtual;
+
+                    return responseChangeLog;
+                })
+                .ToList();
+
+            await _responseChangeLogMongoRepository.InsertManyAsync(responsesChangeLog);
+        }
+
         public async Task<ResponseChangeLog> Save(Answer answer, long alu_id, long test_id, long tur_id, Guid ent_id, Guid usuId, bool manual, IEnumerable<StudentCorrectionAnswerGrid> studentsAnswers, long AbsenceReason_IdAnterior, long AbsenceReason_IdAtual)
         {
             SchoolDTO escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(tur_id);

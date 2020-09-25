@@ -1,5 +1,6 @@
 ﻿using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
+using GestaoAvaliacao.Entities.DTO.Tests;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.MongoEntities;
@@ -174,30 +175,33 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
-        public JsonResult LoadByTestId(long test_id)
+        public async Task<JsonResult> LoadByTestId(long test_id)
         {
             try
             {
-                var test = testBusiness.SearchInfoTest(test_id);
+                var testTask = testBusiness.SearchInfoTestAsync(test_id);
+                var itensTask = LoadItensAsync(test_id);
+                await Task.WhenAll(testTask, itensTask);
 
-                var ret = new
+                if (testTask.Result is null  || itensTask.Result is null)
                 {
-                    Id = test.Id,
-                    Description = test.Description,
-                    NumberItem = test.NumberItem,
-                    quantDiasRestantes = test.quantDiasRestantes,
-                    FrequencyApplication = EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)test.FrequencyApplication),
-                    ApplicationEndDate = test.ApplicationEndDate.ToString("dd/MM/yyyy"),
-                    test.ShowAudioFiles,
-                    test.ShowVideoFiles
-                };
-
-                if (test != null)
-                {
-                    return Json(new { success = true, test = ret }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Dados não encontrados." }, JsonRequestBehavior.AllowGet);
                 }
 
-                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Dados não encontrados." }, JsonRequestBehavior.AllowGet);
+                await LoadAlternativesByItensAsync(test_id, itensTask.Result);
+
+                var ret = new TestModelDto
+                {
+                    Id = testTask.Result.Id,
+                    Description = testTask.Result.Description,
+                    NumberItem = testTask.Result.NumberItem,
+                    QuantDiasRestantes = testTask.Result.quantDiasRestantes,
+                    FrequencyApplication = EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)testTask.Result.FrequencyApplication),
+                    ApplicationEndDate = testTask.Result.ApplicationEndDate.ToString("dd/MM/yyyy"),
+                    Itens = itensTask.Result
+                };
+
+                return Json(new { success = true, test = ret }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -207,96 +211,110 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
-        public JsonResult LoadItensByTestId(long test_id)
+        public async Task<JsonResult> LoadStudentCorrectionAsync(long test_id, long alu_id, long tur_id)
         {
             try
             {
-                var blockItems = testBusiness.GetItemsByTest(test_id, SessionFacade.UsuarioLogado.Usuario.usu_id);
-                List<long> lstItens = blockItems.Select(x => x.Item.Id).Distinct().ToList();
+                var studentCorrection = await _studentCorrectionBusiness.Get(alu_id, test_id, tur_id, SessionFacade.UsuarioLogado.Usuario.ent_id);
+                if(studentCorrection is null)
+                    return Json(new { success = true, answers = new StudentCorrectionModelDto() }, JsonRequestBehavior.AllowGet);
 
-                var testShowVideoAudioFilesDto = testBusiness.GetTestShowVideoAudioFiles(test_id);
-                var itemVideos = testShowVideoAudioFilesDto.ShowVideoFiles ? itemFileBusiness.GetVideosByLstItemId(lstItens) : new List<ItemFile>();
-                var itemAudios = testShowVideoAudioFilesDto.ShowAudioFiles ? itemAudioBusiness.GetAudiosByLstItemId(lstItens) : new List<ItemAudio>();
+                var answers = studentCorrection.Answers
+                    .Select(x => new AnswerModelDto
+                    {
+                        AlternativeId = x.AnswerChoice,
+                        Changed = false,
+                        ItemId = x.Item_Id
+                    })
+                    .ToList();
 
-                var retorno = blockItems.Select(bi => new
+                var result = new StudentCorrectionModelDto
                 {
-                    Item_Id = bi.Item.Id,
+                    LastAnswer = studentCorrection.OrdemUltimaResposta,
+                    Done = studentCorrection.provaFinalizada ?? false,
+                    Answers = answers
+                };
+
+                return Json(new { success = true, studentCorrection = result }, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar os dados da prova." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private async Task<IEnumerable<ItemModelDto>> LoadItensAsync(long test_id)
+        {
+            var blockItems = await testBusiness.GetItemsByTestAsync(test_id, SessionFacade.UsuarioLogado.Usuario.usu_id);
+            var lstItens = blockItems.Select(x => x.Item.Id).Distinct().ToList();
+
+            var testShowVideoAudioFilesDto = testBusiness.GetTestShowVideoAudioFiles(test_id);
+            var itemVideos = testShowVideoAudioFilesDto.ShowVideoFiles ? itemFileBusiness.GetVideosByLstItemId(lstItens) : new List<ItemFile>();
+            var itemAudios = testShowVideoAudioFilesDto.ShowAudioFiles ? itemAudioBusiness.GetAudiosByLstItemId(lstItens) : new List<ItemAudio>();
+
+            return blockItems.Select(bi =>
+            {
+                var item = new ItemModelDto
+                {
+                    Id = bi.Item.Id,
                     ItemCode = bi.Item.ItemCode,
                     ItemVersion = bi.Item.ItemVersion,
                     ItemOrder = bi.Order,
-                    BaseTextDescription = bi.Item.BaseText != null ? bi.Item.BaseText.Description : "",
-                    BaseTextId = bi.Item.BaseText != null ? bi.Item.BaseText.Id : 0,
-                    Statement = bi.Item.Statement != null ? bi.Item.Statement : "",
-                    Revoked = bi.RequestRevokes != null ? bi.RequestRevokes.First().Situation : EnumSituation.NotRevoked,
-                    ItemSituation = bi.RequestRevokes != null ? bi.RequestRevokes.First().Situation : EnumSituation.NotRevoked,
-                    RequestRevoke_Id = bi.RequestRevokes != null ? bi.RequestRevokes.First().Id : 0,
+                    Statement = bi.Item.Statement,
+                    Revoked = EnumSituation.NotRevoked,
+                    ItemSituation = EnumSituation.NotRevoked,
                     BlockItem_Id = bi.Id,
-                    Justification = bi.RequestRevokes != null ? bi.RequestRevokes.First().Justification : "",
                     Videos = itemVideos.Where(p => p.Item_Id == bi.Item.Id),
                     Audios = itemAudios.Where(p => p.Item_Id == bi.Item.Id),
                     ShowVideoFiles = testShowVideoAudioFilesDto.ShowVideoFiles && itemVideos.Any(p => p.Item_Id == bi.Item.Id),
                     ShowAudioFiles = testShowVideoAudioFilesDto.ShowAudioFiles && itemAudios.Any(p => p.Item_Id == bi.Item.Id)
-                }).ToList();
+                };
 
-                return Json(new { success = true, itens = retorno }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                LogFacade.SaveError(ex);
-                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar os itens da prova." }, JsonRequestBehavior.AllowGet);
-            }
+                var requestRevoke = bi.RequestRevokes?.FirstOrDefault();
+                if(requestRevoke != null)
+                {
+                    item.Revoked = requestRevoke.Situation;
+                    item.ItemSituation = requestRevoke.Situation;
+                    item.RequestRevoke_Id = requestRevoke.Id;
+                    item.Justification = requestRevoke.Justification;
+                }
+
+                if(bi.Item.BaseText != null)
+                {
+                    item.BaseTextDescription = bi.Item.BaseText.Description;
+                    item.BaseTextId = bi.Item.BaseText.Id;
+                }
+
+                return item;
+            }).ToList();
         }
 
-        [HttpGet]
-        public async Task<JsonResult> LoadAlternativesByItens(long[] itens, long test_id, long alu_id, long tur_id)
+        private async Task LoadAlternativesByItensAsync(long test_id, IEnumerable<ItemModelDto> itens)
         {
-            try
-            {
-                var itensConcat = itens.Distinct().AsEnumerable().Select(x => string.Concat("'", x, "'"));
+            var itensIdsConcat = itens.Select(x => string.Concat("'", x.Id, "'"));
 
-                var alternatives = alternativeBusiness.GetAlternativesByItens(itensConcat, test_id);
+            var alternatives = await alternativeBusiness.GetAlternativesByItensAsync(itensIdsConcat, test_id);
+            if (!alternatives?.Any() ?? true) throw new NullReferenceException("Não foram encontradas alternativas para os itens da prova.");
 
-                bool provaFinalizada = false;
-
-                if (alternatives != null)
+            var alternativesModel = alternatives
+                .Select(x => new AlternativeModelDto
                 {
-                    if (alu_id > 0 && tur_id > 0)
-                    {
-                        StudentCorrection studentCorrection = await _studentCorrectionBusiness.Get(alu_id, test_id, tur_id, SessionFacade.UsuarioLogado.Usuario.ent_id);
+                    Id = x.Id,
+                    Description = x.Description,
+                    Item_Id = x.Item_Id,
+                    Justificative = x.Justificative,
+                    Numeration = x.Numeration,
+                    NumerationSem = x.NumerationSem,
+                    Order = x.Order,
+                    Selected = false
+                })
+                .ToList();
 
-                        int ordemUltimaResposta = 0;
-
-                        if (studentCorrection != null)
-                        {
-                            foreach (var alternativa in alternatives)
-                            {
-                                alternativa.Justificative = null;
-                                alternativa.Correct = false;
-                                alternativa.Selected = studentCorrection.Answers.Exists(p => p.Item_Id == alternativa.Item_Id && p.AnswerChoice == alternativa.Id);
-                            }
-
-                            ordemUltimaResposta = studentCorrection.OrdemUltimaResposta.Value;
-                            provaFinalizada = studentCorrection.provaFinalizada.Value;
-                        }
-                        else
-                        {
-                            foreach (var alternativa in alternatives)
-                            {
-                                alternativa.Justificative = null;
-                                alternativa.Correct = false;
-                            }
-                        }
-
-                        return Json(new { success = true, alternatives = alternatives, ordemUltimaResposta = ordemUltimaResposta, provaFinalizada = provaFinalizada, existemDados = studentCorrection != null }, JsonRequestBehavior.AllowGet);
-                    }
-                    return Json(new { success = true, alternatives = alternatives, ordemUltimaResposta = 0, provaFinalizada = provaFinalizada, existemDados = false }, JsonRequestBehavior.AllowGet);
-                }
-                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Dados não encontrados." }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
+            foreach(var item in itens)
             {
-                LogFacade.SaveError(ex);
-                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar a área de conhecimento pesquisada." }, JsonRequestBehavior.AllowGet);
+                var artenativesOfItem = alternativesModel.Where(x => x.Item_Id == item.Id).ToList();
+                item.Alternatives.AddRange(artenativesOfItem);
             }
         }
 
@@ -319,6 +337,26 @@ namespace GestaoAvaliacao.Controllers
             {
                 LogFacade.SaveError(ex);
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar a área de conhecimento pesquisada." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SaveAnswersAsync(long test_id, long alu_id, long tur_id, int ordemItem, IEnumerable<AnswerModelDto> answers)
+        {
+            try
+            {
+                var ent_id = SessionFacade.UsuarioLogado.Usuario.ent_id;
+                var usu_id = SessionFacade.UsuarioLogado.Usuario.usu_id;
+                var pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id;
+                var vis_id = (EnumSYS_Visao)SessionFacade.UsuarioLogado.Grupo.vis_id;
+
+                await correctionBusiness.SaveCorrectionAsync(test_id, alu_id, tur_id, answers, ent_id, usu_id, pes_id, vis_id, ordemItem);
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar salvar as resposta da prova." }, JsonRequestBehavior.AllowGet);
             }
         }
 

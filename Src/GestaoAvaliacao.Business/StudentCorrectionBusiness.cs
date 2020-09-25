@@ -5,6 +5,7 @@ using GestaoAvaliacao.MongoEntities;
 using GestaoAvaliacao.MongoEntities.DTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Business
@@ -48,6 +49,27 @@ namespace GestaoAvaliacao.Business
             studentCorrection.provaFinalizada = provaEntregue;
             studentCorrection.Answers.RemoveAll(a => a.Item_Id == answer.Item_Id);
             studentCorrection.Answers.Add(answer);
+            await _studentCorrectionRepository.InsertOrReplaceAsync(studentCorrection);
+            return studentCorrection;
+        }
+
+        public async Task<StudentCorrection> SaveAsync(IEnumerable<Answer> answers, long alu_id, long test_id, long tur_id, Guid ent_id, bool api, int ordemItem, 
+            bool provaEntregue)
+        {
+            var escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(tur_id);
+
+            var studentCorrection = await _studentCorrectionRepository.FindOneAsync(new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id));
+            if (studentCorrection is null)
+            {
+                studentCorrection = new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id);
+                studentCorrection.CreateDate = DateTime.Now;
+            }
+
+            studentCorrection.Automatic = api;
+            studentCorrection.OrdemUltimaResposta = ordemItem;
+            studentCorrection.provaFinalizada = provaEntregue;
+            studentCorrection.Answers.RemoveAll(a => answers.Contains(a));
+            studentCorrection.Answers.AddRange(answers);
             await _studentCorrectionRepository.InsertOrReplaceAsync(studentCorrection);
             return studentCorrection;
         }
