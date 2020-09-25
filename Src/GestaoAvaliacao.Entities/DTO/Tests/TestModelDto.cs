@@ -11,7 +11,5 @@ namespace GestaoAvaliacao.Entities.DTO.Tests
         public string FrequencyApplication { get; set; }
         public string ApplicationEndDate { get; set; }
         public IEnumerable<ItemModelDto> Itens { get; set; }
-        public int? LastAnswer { get; set; }
-        public bool Done { get; set; }
     }
 }
