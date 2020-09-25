@@ -84,6 +84,11 @@
     <Compile Include="DTO\TeamsDTO.cs" />
     <Compile Include="DTO\TestBatchFilesDTO.cs" />
     <Compile Include="DTO\TestSectionStatusCorrectionDTO.cs" />
+    <Compile Include="DTO\Tests\AlternativeModelDto.cs" />
+    <Compile Include="DTO\Tests\AnswerModelDto.cs" />
+    <Compile Include="DTO\Tests\ItemModelDto.cs" />
+    <Compile Include="DTO\Tests\StudentCorrectionModelDto.cs" />
+    <Compile Include="DTO\Tests\TestModelDto.cs" />
     <Compile Include="DTO\UnitsInformationAndPerformanceTestDTO.cs" />
     <Compile Include="DTO\UsersDTO.cs" />
     <Compile Include="EnumAdherenceType.cs" />
