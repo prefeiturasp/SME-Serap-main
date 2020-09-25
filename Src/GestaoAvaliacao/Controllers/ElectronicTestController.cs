@@ -175,14 +175,13 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> LoadByTestId(long test_id, long alu_id, long tur_id)
+        public async Task<JsonResult> LoadByTestId(long test_id)
         {
             try
             {
                 var testTask = testBusiness.SearchInfoTestAsync(test_id);
                 var itensTask = LoadItensAsync(test_id);
-                var studentCorrectionTask = _studentCorrectionBusiness.Get(alu_id, test_id, tur_id, SessionFacade.UsuarioLogado.Usuario.ent_id);
-                await Task.WhenAll(testTask, itensTask, studentCorrectionTask);
+                await Task.WhenAll(testTask, itensTask);
 
                 if (testTask.Result is null  || itensTask.Result is null)
                 {
@@ -199,8 +198,6 @@ namespace GestaoAvaliacao.Controllers
                     QuantDiasRestantes = testTask.Result.quantDiasRestantes,
                     FrequencyApplication = EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)testTask.Result.FrequencyApplication),
                     ApplicationEndDate = testTask.Result.ApplicationEndDate.ToString("dd/MM/yyyy"),
-                    LastAnswer = studentCorrectionTask.Result?.OrdemUltimaResposta,
-                    Done = studentCorrectionTask.Result?.provaFinalizada ?? false,
                     Itens = itensTask.Result
                 };
 
@@ -214,13 +211,13 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> LoadAnswersAsync(long test_id, long alu_id, long tur_id)
+        public async Task<JsonResult> LoadStudentCorrectionAsync(long test_id, long alu_id, long tur_id)
         {
             try
             {
                 var studentCorrection = await _studentCorrectionBusiness.Get(alu_id, test_id, tur_id, SessionFacade.UsuarioLogado.Usuario.ent_id);
                 if(studentCorrection is null)
-                    return Json(new { success = true, answers = new List<AnswerModelDto>() }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, answers = new StudentCorrectionModelDto() }, JsonRequestBehavior.AllowGet);
 
                 var answers = studentCorrection.Answers
                     .Select(x => new AnswerModelDto
@@ -231,7 +228,14 @@ namespace GestaoAvaliacao.Controllers
                     })
                     .ToList();
 
-                return Json(new { success = true, answers }, JsonRequestBehavior.AllowGet);
+                var result = new StudentCorrectionModelDto
+                {
+                    LastAnswer = studentCorrection.OrdemUltimaResposta,
+                    Done = studentCorrection.provaFinalizada ?? false,
+                    Answers = answers
+                };
+
+                return Json(new { success = true, studentCorrection = result }, JsonRequestBehavior.AllowGet);
             }
             catch(Exception ex)
             {
@@ -337,7 +341,7 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> SaveAnswersAsync(IEnumerable<AnswerModelDto> answers, long test_id, long alu_id, long tur_id, int ordemItem)
+        public async Task<JsonResult> SaveAnswersAsync(long test_id, long alu_id, long tur_id, int ordemItem, IEnumerable<AnswerModelDto> answers)
         {
             try
             {

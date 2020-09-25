@@ -5913,4 +5913,56 @@ h3.label-menu {
     border: solid 1px;
 }
 
+.infoSaveAnswersNotification {
+    padding: 0 0px;
+    display: inline-block;
+    width: 40%;
+    color: #428bca;
+    font-size: 14px;
+}
+
+.saveAnswersNotification {
+    padding: 0 0px;
+    display: inline-block;
+    width: 20%;
+    color: #428bca;
+    font-size: 14px;
+}
+
+.saveAnswersNotification span {
+    float: left;
+}
+
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.saveAnswersNotificationLoader {
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #428bca;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
 

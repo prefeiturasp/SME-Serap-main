@@ -15,17 +15,13 @@
                 method: 'GET',
                 url: base_url('ElectronicTest/LoadByTestId')
             },
-            'loadAnswersAsync': {
+            'loadStudentCorrectionAsync': {
                 method: 'GET',
-                url: base_url('ElectronicTest/LoadAnswersAsync')
+                url: base_url('ElectronicTest/LoadStudentCorrectionAsync')
             },
             'save': {
                 method: 'POST',
                 url: base_url('ElectronicTest/Save')
-            },
-            'saveAnswersAsync': {
-                method: 'POST',
-                url: base_url('ElectronicTest/SaveAnswersAsync')
             },
             'finalizeCorrection': {
                 method: 'POST',

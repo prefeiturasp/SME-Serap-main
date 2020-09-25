@@ -8,10 +8,11 @@
                     <b>Questão {{ test.Itens[indiceItem].ItemOrder + 1 }}</b>
                     <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;"/>
                     <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" />
+
                 </div>
 
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="position:absolute; right: 0px; top: 0px; color: #5a94d6;">
-                    <div class="panel panel-default">
+                    <div class="panel panel-default" style="margin-top: 10px;">
                         <div class="panel-heading" role="tab" id="headingOne">
                             <div role="button" data-toggle="collapse" data-parent="" href="" aria-expanded="true" aria-controls="" ng-click="loadHeaderDetais();" style="cursor:pointer; color: #5a94d6;">
                                 <b>{{ test.Description }}</b> | {{ test.FrequencyApplication }}
@@ -69,14 +70,18 @@
             </div>
         </div>
         <div class="maxWidth opcoesProva">
-            <a ng-click="proximaQuestao(test.Itens[indiceItem])" ng-hide="indiceItem + 1 == itens.length" class="pull-right">Próxima <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+            <a ng-click="proximaQuestao(test.Itens[indiceItem])" ng-hide="indiceItem + 1 == test.Itens.length" class="pull-right">Próxima <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
             <a ng-click="voltaQuestao(test.Itens[indiceItem])" ng-hide="indiceItem == 0" class="pull-right" style="margin-right: 10px"><i class="fa fa-arrow-left" aria-hidden="true"></i> Anterior</a>
-            <label class="pull-right" style="font-size: 16px;" ng-show="(!admin) && (!provaFinalizada) && (test.quantDiasRestantes > 0)"> <input type="checkbox" ng-model="pularRespondidas">Pular questões respondidas</label>
+            <label class="pull-right" style="font-size: 16px;" ng-show="(!admin) && (!provaFinalizada) && (test.QuantDiasRestantes > 0)"> <input type="checkbox" ng-model="pularRespondidas">Pular questões respondidas</label>
             <a class="pull-right" ng-click="abrirGabarito();" ng-show="(!admin)" style="margin-right: 20px"><i class="fa fa-check-square-o" aria-hidden="true"></i> Ver respostas</a>
         </div>
         <div>
+            <span class="infoSaveAnswersNotification" style="margin-top:20px;">As respostas serão enviadas para o servidor a cada 1 (um) minuto.</span>
+            <span ng-if="savingAnswers" class="saveAnswersNotification" id="popupSaveAnswers">
+                <span class="saveAnswersNotificationLoader"></span>Enviando respostas...
+            </span>
             <button class="btnPadrao2 pull-right" ng-click="sair();">Sair</button>
-            <button class="btnPadrao2 pull-right" ng-click="openModalEntregaProva();" ng-show="(indiceItem + 1) === itens.length && ((!admin) && (!provaFinalizada) && (test.quantDiasRestantes > 0))">Entregar prova</button>
+            <button class="btnPadrao2 pull-right" ng-click="openModalEntregaProva();" ng-show="(indiceItem + 1) === test.Itens.length && ((!admin) && (!provaFinalizada) && (test.QuantDiasRestantes > 0))">Entregar prova</button>
         </div>
     </div>
     <div class="gabarito-novo">
