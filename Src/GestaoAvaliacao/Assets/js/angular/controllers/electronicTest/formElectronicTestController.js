@@ -313,7 +313,7 @@
         }
 
         function initializeJobToSaveAnswers() {
-            ng.intervalToSaveAnswers = setInterval(saveAnswers, 20000);
+            ng.intervalToSaveAnswers = setInterval(saveAnswers, 60000);
         };
 
         function stopJobToSaveAnswers() {
