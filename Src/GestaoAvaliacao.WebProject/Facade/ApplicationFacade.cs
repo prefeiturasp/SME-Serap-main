@@ -220,6 +220,9 @@ namespace GestaoAvaliacao.WebProject.Facade
 					baseURL = baseURL.Replace("http://", "https://");
 				else if (baseURL.StartsWith("http://itens-"))// ambiente de itens usa HTTPS aplicado pelo Proxy
 					baseURL = baseURL.Replace("http://", "https://");
+				else if(baseURL.StartsWith("http://serap.sme"))
+					baseURL = baseURL.Replace("http://", "https://");
+
 				return baseURL;
 			}
 		}
