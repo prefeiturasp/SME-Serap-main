@@ -2,7 +2,7 @@
 <alert></alert>
 <div class="wellCustom" data-ng-controller="IndexElectronicTestController">
     <div class="headerCustom">
-        <h4>Gerenciador de Provas Online <span>Receba e resolva provas, visualize provas realizadas e suas correções</span></h4>
+        <h4>Gerenciador de Provas Online e Questionários<span>Receba e resolva provas, visualize provas realizadas e suas correções</span></h4>
     </div>
 
     <div class="panel-group" style="text-align:center;">
@@ -10,60 +10,50 @@
     </div>
 
     <div class="accordion-prova">
-        <p class="nresultados" ng-show="!(eletronicTestListNaoIniciadas.length > 0 || eletronicTestListEmAndamento.length > 0 || eletronicTestFinalizadas.length > 0)">Nenhum resultado encontrado.</p>
-        <div class="a-gerenciar" ng-show="!admin && eletronicTestListNaoIniciadas.length > 0">
-            <label class="pull-left" style="margin:0;">Provas não iniciadas</label>
-        </div>
-        @*Accordion*@
-        <div class="panel-group" id="divProvasNaoIniciadas" ng-show="!admin && eletronicTestListNaoIniciadas.length > 0" ng-repeat="provaNaoIniciada in eletronicTestListNaoIniciadas">
-            <div class="panel panel-default cardNaoIniciado">
-                <div class="panel-heading" role="tab" id="headingOne">
+        @*Não iniciadas*@
+        <button class="accordion-test nao-iniciadas">Provas não iniciadas <span>({{getListLength(eletronicTestListNaoIniciadas)}} provas)</span></button>
+        <div class="accordion-test-panel-group">
+            <div class="accordion-test-panel" ng-repeat="provaNaoIniciada in eletronicTestListNaoIniciadas">
+                <div class="panel-heading" role="tab" id="headingThree">
                     <div>
-                        <strong>{{ provaNaoIniciada.Description }}</strong> | {{ provaNaoIniciada.FrequencyApplicationText }} <a class="btnPadrao pull-right menor-btn" ng-click="abrirProvaNaoIniciada(provaNaoIniciada)">INICIAR</a>
+                        <strong>{{ provaNaoIniciada.Description }}</strong> | {{ provaNaoIniciada.FrequencyApplicationText }} <a class="btnPadrao pull-right menor-btn" ng-click="abrirProvaNaoIniciada(provaNaoIniciada)">Iniciar</a>
                     </div>
                 </div>
-                <div id="divInformacoesProvaNaoIniciada">
-                    <div class="panel-body cardNaoIniciado">
-                        <p>{{ provaNaoIniciada.NumberItem }} <i class="fa fa-file-text" aria-hidden="true"></i> <small>Questões totais</small></p>
-                        <p>{{ provaNaoIniciada.quantDiasRestantes }} <i class="fa fa-calendar-o" aria-hidden="true"></i> <small>{{ provaNaoIniciada.quantDiasRestantes > 1 ? 'Dias restantes' : 'Dia restante' }}</small></p>
-                    </div>
+                <div class="panel-body">
+                    <p><i class="fa fa-file-text" aria-hidden="true"></i><small>{{ provaNaoIniciada.NumberItem }} questões no total</small></p>
+                    <data><i class="fa fa-calendar-o" aria-hidden="true"></i><small> {{ provaNaoIniciada.quantDiasRestantes }} {{ provaNaoIniciada.quantDiasRestantes > 1 ? 'dias restantes' : 'dia restante' }}</small></data>
                 </div>
             </div>
         </div>
 
-        <div class="a-gerenciar" ng-show="eletronicTestListEmAndamento.length > 0">
-            <label class="pull-left" style="margin:0;">Provas em andamento</label>
-        </div>
-        <div class="panel-group" id="divProvasEmAndamento" ng-show="eletronicTestListEmAndamento.length > 0" ng-repeat="provaEmAndamento in eletronicTestListEmAndamento">
-            <div class="panel panel-default cardEmAndamento" >
-                <div class="panel-heading" role="tab" id="headingTwo">
+        @*Em andamento*@
+        <button class="accordion-test em-andamento">Provas em andamento <span>({{getListLength(eletronicTestListEmAndamento)}} provas)</span></button>
+        <div class="accordion-test-panel-group">
+            <div class="accordion-test-panel" ng-repeat="provaEmAndamento in eletronicTestListEmAndamento">
+                <div class="panel-heading" role="tab" id="headingThree">
                     <div>
-                        <strong>{{ provaEmAndamento.Description }}</strong> | {{ provaEmAndamento.FrequencyApplicationText }}<a class="btnPadrao pull-right menor-btn" ng-click="abrirProvaEmProgresso(provaEmAndamento)"> {{admin ? 'VISUALIZAR' : 'CONTINUAR'}}</a>
+                        <strong>{{ provaEmAndamento.Description }}</strong> | {{ provaEmAndamento.FrequencyApplicationText }} <a class="btnPadrao pull-right menor-btn" ng-click="abrirProvaEmProgresso(provaEmAndamento)">{{admin ? 'Visualizar' : 'Continuar'}}</a>
                     </div>
                 </div>
-                <div id="divInformacoesProvaEmAndamento">
-                    <div class="panel-body cardEmAndamento">
-                        <p>{{ provaEmAndamento.NumberItem }} <i class="fa fa-file-text" aria-hidden="true"></i> <small>Questões totais</small></p>
-                        <p>{{ provaEmAndamento.quantDiasRestantes }} <i class="fa fa-calendar-o" aria-hidden="true"></i> <small>{{ provaEmAndamento.quantDiasRestantes > 1 ? 'Dias restantes' : 'Dia restante' }}</small></p>
-                    </div>
+                <div class="panel-body">
+                    <p><i class="fa fa-file-text" aria-hidden="true"></i><small>{{ provaEmAndamento.NumberItem }} questões no total</small></p>
+                    <data><i class="fa fa-calendar-o" aria-hidden="true"></i><small> {{ provaEmAndamento.quantDiasRestantes }} {{ provaEmAndamento.quantDiasRestantes > 1 ? 'dias restantes' : 'dia restante' }}</small></data>
                 </div>
             </div>
         </div>
-        <div class="a-gerenciar" ng-show="eletronicTestFinalizadas.length > 0">
-            <label class="pull-left" style="margin:0;">Provas finalizadas</label>
-        </div>
-        <div class="panel-group" id="divProvasFinalizadas" ng-show="eletronicTestFinalizadas.length > 0" ng-repeat="provaFinalizada in eletronicTestFinalizadas">
-            <div class="panel panel-default cardFinalizada" >
+
+        @*Finalizadas*@
+        <button class="accordion-test finalizadas">Provas finalizadas <span>({{getListLength(eletronicTestFinalizadas)}} provas)</span></button>
+        <div class="accordion-test-panel-group">
+            <div class="accordion-test-panel" ng-repeat="provaFinalizada in eletronicTestFinalizadas">
                 <div class="panel-heading" role="tab" id="headingThree">
                     <div>
-                        <strong>{{ provaFinalizada.Description }}</strong> | {{ provaFinalizada.FrequencyApplicationText }} <a class="btnPadrao pull-right menor-btn" ng-click="abrirProvaFinalizada(provaFinalizada)">VISUALIZAR</a>
+                        <strong>{{ provaFinalizada.Description }}</strong> | {{ provaFinalizada.FrequencyApplicationText }} <a class="btnPadrao pull-right menor-btn" ng-click="abrirProvaFinalizada(provaFinalizada)">Visualizar</a>
                     </div>
                 </div>
-                <div id="divInformacoesProvaFinalizada">
-                    <div class="panel-body cardFinalizada">
-                        <p>{{ provaFinalizada.NumberItem }} <i class="fa fa-file-text" aria-hidden="true"></i> <small>Questões totais</small></p>
-                        <data>{{ provaFinalizada.ApplicationEndDate | moment:"DD/MM/YYYY" }} <i class="fa fa-calendar-o" aria-hidden="true"></i> <small>Data final da aplicação</small></data>
-                    </div>
+                <div class="panel-body">
+                    <p><i class="fa fa-file-text" aria-hidden="true"></i><small>{{ provaFinalizada.NumberItem }} questões no total</small></p>
+                    <data><i class="fa fa-calendar-o" aria-hidden="true"></i><small> {{ provaFinalizada.ApplicationEndDate | moment:"DD/MM/YYYY" }} data final da aplicação</small></data>
                 </div>
             </div>
         </div>
