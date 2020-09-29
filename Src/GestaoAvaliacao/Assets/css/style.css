@@ -5965,4 +5965,131 @@ h3.label-menu {
     margin-right: 10px;
 }
 
+.accordion-test {
+    color: #fff;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+    margin-top: 20px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+}
+    .accordion-test span {
+        margin-left: 10px;
+    }
+
+    .nao-iniciadas {
+        background-color: #E9967A;
+    }
+
+    .em-andamento {
+        background-color: #928c44;
+    }
+
+    .finalizadas {
+        background-color: #458b74;
+    }
+
+    .accordion-test:after {
+        content: '\002B';
+        color: #fff;
+        font-weight: bold;
+        float: right;
+        margin-left: 5px;
+    }
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-heading {
+    border-bottom: 1px solid #e6e6e6 !important;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-heading .btnPadrao{
+    background-color: dimgray;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-heading > div {
+    padding: 10px;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-heading > div a.btnPadrao {
+    position: relative;
+    top: -7px;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-heading *:not(a) {
+    color: dimgray;
+    font-size: 1.8rem;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-body {
+    border-bottom: 1px !important;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-body data {
+    display: inline-block;
+    font-size: 1.8rem;
+    color: dimgray;
+    margin-left: 30px;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-body data i {
+    font-size: 1.8rem;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-body data small {
+    font-size: 1.8rem;
+    width: 100px;
+    vertical-align: middle;
+    line-height: 1.8rem;
+    margin-left: 5px;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-body p {
+    display: inline-block;
+    font-size: 1.8rem;
+    color: dimgray;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-body p i {
+    font-size: 1.8rem;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-body p small {
+    font-size: 1.8rem;
+    width: 100px;
+    vertical-align: middle;
+    line-height: 1.8rem;
+    margin-left: 5px;
+}
+
+.accordion-prova .accordion-test-panel-group .accordion-test-panel .panel-body p:first-child {
+    margin-left: 10px;
+}
+
+.active:after {
+    content: "\2212";
+}
+
+.accordion-test-panel-group {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background-color: transparent;
+}
+
+.accordion-test-panel-group .accordion-test-panel {
+    display: inline-block;
+    background-color: white;
+    width: 100%;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 7px #c7c7c7;
+}
+
 
