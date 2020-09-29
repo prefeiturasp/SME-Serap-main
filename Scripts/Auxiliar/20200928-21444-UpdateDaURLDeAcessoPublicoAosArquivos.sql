@@ -1,0 +1,1 @@
+UPDATE Parameter SET Value = 'https://hom-serap.sme.prefeitura.sp.gov.br/Files' WHERE Id = 46
