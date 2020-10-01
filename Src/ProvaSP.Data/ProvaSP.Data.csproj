@@ -80,6 +80,10 @@
     <Compile Include="Data\DataTurma.cs" />
     <Compile Include="Data\DataUsuario.cs" />
     <Compile Include="Data\Enum.cs" />
+    <Compile Include="Data\UploadFiles\DataUploadFileBatch.cs" />
+    <Compile Include="Data\UploadFiles\IDataUploadFileBatch.cs" />
+    <Compile Include="Data\UploadFiles\Itens\DataUploadFileItem.cs" />
+    <Compile Include="Data\UploadFiles\Itens\IDataUploadFileItem.cs" />
     <Compile Include="Funcionalidades\Prova.cs" />
     <Compile Include="Funcionalidades\StringsConexao.cs" />
     <Compile Include="Funcionalidades\TipoBaseDados.cs" />
@@ -106,5 +110,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

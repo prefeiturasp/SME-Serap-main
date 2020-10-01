@@ -59,9 +59,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstractions\BaseEntity.cs" />
     <Compile Include="Entidades\Configuracao.cs" />
     <Compile Include="Entidades\Constructo.cs" />
     <Compile Include="Entidades\Corte.cs" />
+    <Compile Include="Entidades\UploadFiles\Itens\UploadFileItem.cs" />
+    <Compile Include="Entidades\UploadFiles\UploadFileBatch.cs" />
     <Compile Include="Entidades\NivelDeProficiencia.cs" />
     <Compile Include="Entidades\FatorAssociado.cs" />
     <Compile Include="Entidades\Grupo.cs" />
