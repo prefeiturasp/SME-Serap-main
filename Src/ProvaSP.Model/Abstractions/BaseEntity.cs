@@ -6,7 +6,7 @@ namespace ProvaSP.Model.Abstractions
     public abstract class BaseEntity
     {
         public bool Valid => !ErrorMessages?.Any() ?? true;
-        public List<string> ErrorMessages { get; private set; }
+        public ICollection<string> ErrorMessages { get; private set; }
 
         public BaseEntity()
         {
@@ -14,7 +14,5 @@ namespace ProvaSP.Model.Abstractions
         }
 
         protected void AddErrorMessage(string message) => ErrorMessages.Add(message);
-
-        protected void AddErrorMessages(IEnumerable<string> messages) => ErrorMessages.AddRange(messages);
     }
 }

@@ -20,11 +20,10 @@ namespace ProvaSP.Web.Controllers.UploadFiles
         [HttpPost]
         public async Task<HttpResponseMessage> AddBatch([FromBody]AddUploadFileBatchDto dto)
         {
-
-
             try
             {
-                return GetResponse(dto);
+                var result = await _uploadFileServices.AddBatchAsync(dto);
+                return GetResponse(result);
             }
             catch(Exception ex)
             {

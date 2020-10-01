@@ -4,6 +4,7 @@ using ProvaSP.Model.Entidades.UploadFiles;
 using ProvaSP.Model.Entidades.UploadFiles.Itens;
 using ProvaSP.Web.Services.UploadFiles.Dtos;
 using ProvaSP.Web.Services.UploadFiles.Dtos.Itens;
+using ProvaSP.Web.Services.UploadFiles.Dtos.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,14 @@ namespace ProvaSP.Web.Services.UploadFiles
                 return resultDto;
             }
 
+            var validator = new AddUploadFileBatchDtoValidator();
+            var validationResult = validator.Validate(dto);
+            if(!validationResult.IsValid)
+            {
+                resultDto.AddErrorMessages(validationResult.Errors);
+                return resultDto;
+            }
+
             try
             {
                 if(await _dataUploadFileBatch.AnyBatchActiveAsync())
@@ -42,6 +51,11 @@ namespace ProvaSP.Web.Services.UploadFiles
 
                 var entity = new UploadFileBatch(dto.Edicao, (UploadFileBatchAreaDeConhecimento)dto.AreaDeConhecimento,
                     (UploadFileBatchCicloDeAprendizagem)dto.CicloDeAprendizagem, dto.UsuId);
+                if(!entity.Valid)
+                {
+                    resultDto.AddErrorMessages(entity.ErrorMessages);
+                    return resultDto;
+                }
 
                 var id = await _dataUploadFileBatch.AddAsync(entity);
                 if(id is null)

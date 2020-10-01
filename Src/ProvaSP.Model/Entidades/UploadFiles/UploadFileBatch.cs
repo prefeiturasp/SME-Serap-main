@@ -9,7 +9,7 @@ namespace ProvaSP.Model.Entidades.UploadFiles
 {
     public class UploadFileBatch : BaseEntity
     {
-        private const short EdicaoMaxLength = 4;
+        public const short EdicaoMaxLength = 4;
 
         public long Id { get; private set; }
         public DateTime CreatedDate { get; private set; }

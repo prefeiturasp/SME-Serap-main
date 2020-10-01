@@ -197,6 +197,7 @@
     <Compile Include="Services\UploadFiles\Dtos\Itens\ListUploadFileItemDto.cs" />
     <Compile Include="Services\UploadFiles\Dtos\UploadFileBatchDto.cs" />
     <Compile Include="Services\UploadFiles\Dtos\Itens\UploadFileItemDto.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\Validators\AddUploadFileBatchDtoValidator.cs" />
     <Compile Include="Services\UploadFiles\IUploadFileServices.cs" />
     <Compile Include="Services\UploadFiles\UploadFileServices.cs" />
     <Compile Include="ViewModel\ResultadoEnturmacao.cs" />

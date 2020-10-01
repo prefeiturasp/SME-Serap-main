@@ -1,5 +1,7 @@
-﻿using ProvaSP.Web.Services.Abstractions;
+﻿using FluentValidation.Results;
+using ProvaSP.Web.Services.Abstractions;
 using System;
+using System.Collections.Generic;
 
 namespace ProvaSP.Web.Services.UploadFiles.Dtos
 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation.Results;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,10 +15,12 @@ namespace ProvaSP.Web.Services.Abstractions
             ErrorMessages = new List<string>();
         }
 
-        public void AddErrorMessage(string message) => ErrorMessages.Add(message);
+        internal void AddErrorMessage(string message) => ErrorMessages.Add(message);
 
-        public void AddErrorMessages(IEnumerable<string> messages) => ErrorMessages.AddRange(messages);
+        internal void AddErrorMessages(IEnumerable<string> messages) => ErrorMessages.AddRange(messages);
 
-        public void AddErrorMessage(Exception exception) => ErrorMessages.Add(exception.InnerException?.Message ?? exception.Message);
+        internal void AddErrorMessages(IList<ValidationFailure> errors) => AddErrorMessages(errors.Select(x => x.ErrorMessage));
+
+        internal void AddErrorMessage(Exception exception) => ErrorMessages.Add(exception.InnerException?.Message ?? exception.Message);
     }
 }
