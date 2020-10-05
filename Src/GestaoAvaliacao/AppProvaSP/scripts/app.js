@@ -3018,8 +3018,7 @@ function abrirLinkRevistaBoletim(source) {
     if (edicao && edicoesRevistasPedagogicas.includes(edicao)) {
         //REVISTA
         let urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
-            + edicao + "/"  
-            + "Revistas Pedagógicas/" + descAreaConhecimento
+            + "Revistas Pedagógicas/" + edicao + "/" + descAreaConhecimento
             + "/Ciclo " + descCicloAprendizagem
             + "/" + parseInt(esc_codigo) + ".pdf";
 
