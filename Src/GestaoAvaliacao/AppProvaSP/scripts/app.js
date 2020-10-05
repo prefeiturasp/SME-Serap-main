@@ -59,7 +59,7 @@ var corteCache = [];
  Fichas de registro: Perguntas aos diretores e responsáveis sobre andamento técnico da ProvaSP
 */
 var edicoesComTurmasAmostrais = ["2017", "2018", "2019"];
-var edicoesRevistasPedagogicas = ["2018", "2019"]; // ["2017"] é Boletim
+var edicoesRevistasPedagogicas = []; // ["2017"] é Boletim
 var questionarios = [
     "1",/*Questionário Supervisor*/
     //"2",/*Questionário Diretor 2018*/
@@ -3018,6 +3018,7 @@ function abrirLinkRevistaBoletim(source) {
     if (edicao && edicoesRevistasPedagogicas.includes(edicao)) {
         //REVISTA
         let urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
+            + edicao + "/"  
             + "Revistas Pedagógicas/" + descAreaConhecimento
             + "/Ciclo " + descCicloAprendizagem
             + "/" + parseInt(esc_codigo) + ".pdf";
@@ -7160,6 +7161,27 @@ function abrirResultados(limparFiltros) {
 /*
     Funcionalidades para Revistas Pedagógicas e Boletins
  */
+function loadEdicoesDaRevistaPedagogica() {
+    var edicoes = []
+
+    let anoAtual = new Date().getFullYear();
+    for (var i = anoAtual; i >= 2017; i--) {
+        edicoes.push(i);
+        if (i > 2017)
+            edicoesRevistasPedagogicas.push(i.toString());
+    }
+
+    edicoes.forEach(function (item) {
+        $('#ddlRevistasBoletinsEdicao').append($('<option>', {
+            value: item,
+            text: "Edição " + item
+        }));
+    });
+
+    $('#ddlRevistasBoletinsEdicao').val(anoAtual);
+}
+
+
 function abrirConsultaRevistasBoletins() {
     try {
         /**
@@ -7171,6 +7193,9 @@ function abrirConsultaRevistasBoletins() {
             -Esconde divs de revistasBoletins;
             -Desabilita o botão Mostrar RevistasBoletins (ele será habilitado no método revistasBoletins_configurarControles)
         */
+
+        loadEdicoesDaRevistaPedagogica();
+
         $(".page").hide();
         $("#revistasBoletins-page").show();
 
