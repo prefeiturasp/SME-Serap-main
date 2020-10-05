@@ -184,7 +184,7 @@
     <Compile Include="Controllers\RetornarAppJsonController.cs" />
     <Compile Include="Controllers\SequenciaDidaticaController.cs" />
     <Compile Include="Controllers\SincronizarQuestionarioController.cs" />
-    <Compile Include="Controllers\UploadFiles\UploadFileController.cs" />
+    <Compile Include="Controllers\UploadFiles\UploadRevistasEBoletinsController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -197,8 +197,10 @@
     <Compile Include="Services\UploadFiles\Dtos\Itens\ListUploadFileItemDto.cs" />
     <Compile Include="Services\UploadFiles\Dtos\UploadFileBatchDto.cs" />
     <Compile Include="Services\UploadFiles\Dtos\Itens\UploadFileItemDto.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\UploadFilePageDto.cs" />
     <Compile Include="Services\UploadFiles\Dtos\Validators\AddUploadFileBatchDtoValidator.cs" />
-    <Compile Include="Services\UploadFiles\IUploadFileServices.cs" />
+    <Compile Include="Services\UploadFiles\RevistasEBoletins\IUploadRevistasEBoletinsServices.cs" />
+    <Compile Include="Services\UploadFiles\RevistasEBoletins\UploadRevistasEBoletinsServices.cs" />
     <Compile Include="Services\UploadFiles\UploadFileServices.cs" />
     <Compile Include="ViewModel\ResultadoEnturmacao.cs" />
     <Compile Include="ViewModel\RelatorioAcompanhamentoEscola.cs" />

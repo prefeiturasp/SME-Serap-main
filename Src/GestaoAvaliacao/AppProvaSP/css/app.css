@@ -348,6 +348,12 @@ table.greyGridTable tfoot td {
     border: 1px solid #a0a0a0;
     cursor: pointer;
 }
+.headerTitleDisabled {
+    cursor: default !important;
+    color: #c2bebe !important;
+    border: 1px solid #c2bebe !important;
+    pointer-events: none !important;
+}
 .resultados_botaoDownload {
     display: inline-block;
     background: #3388CC;
@@ -797,4 +803,7 @@ table.greyGridTable tfoot td {
     margin: 5px 0px;
 }
 
+.uploadDeArquivosDiv {
+    display: none;
+}
 

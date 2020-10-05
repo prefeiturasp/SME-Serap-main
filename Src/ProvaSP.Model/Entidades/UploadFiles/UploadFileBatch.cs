@@ -15,6 +15,7 @@ namespace ProvaSP.Model.Entidades.UploadFiles
         public DateTime CreatedDate { get; private set; }
         public DateTime? BeginDate { get; private set; }
         public DateTime? UpdateDate { get; private set; }
+        public UploadFileBatchType UploadFileBatchType { get; private set; }
         public string Edicao { get; set; }
         public UploadFileBatchAreaDeConhecimento AreaDeConhecimento { get; private set; }
         public UploadFileBatchCicloDeAprendizagem CicloDeAprendizagem { get; private set; }
@@ -22,10 +23,14 @@ namespace ProvaSP.Model.Entidades.UploadFiles
         public ICollection<UploadFileItem> Itens { get; private set; }
         public Guid UsuId { get; private set; }
 
-        public UploadFileBatch(string edicao, UploadFileBatchAreaDeConhecimento areaDeConhecimento, UploadFileBatchCicloDeAprendizagem cicloDeAprendizagem, Guid usuId)
+        public UploadFileBatch(UploadFileBatchType uploadFileBatchType, string edicao, UploadFileBatchAreaDeConhecimento areaDeConhecimento, 
+            UploadFileBatchCicloDeAprendizagem cicloDeAprendizagem, Guid usuId)
         {
+            UploadFileBatchType = uploadFileBatchType;
             SetEdicao(edicao);
             SetUsuId(usuId);
+            // To Do: Alteração do tipo
+            UploadFileBatchType = UploadFileBatchType.RevistasEBoletins;
             AreaDeConhecimento = areaDeConhecimento;
             CicloDeAprendizagem = cicloDeAprendizagem;
 
@@ -62,6 +67,11 @@ namespace ProvaSP.Model.Entidades.UploadFiles
 
             UsuId = usuId;
         }
+    }
+
+    public enum UploadFileBatchType : short
+    {
+        RevistasEBoletins = 1
     }
 
     public enum UploadFileBatchSituation : short

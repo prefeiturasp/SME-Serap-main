@@ -51,6 +51,6 @@ namespace ProvaSP.Data.Data.UploadFiles.Itens
         }
 
         private static string GetCommandAddItem(UploadFileItem entity)
-            => $@"({entity.Id}, {entity.CreatedDate}, {entity.FileName}, {entity.OriginPath}, {(short)entity.Situation}, {entity.UploadFileBatchId})";
+            => $@"({entity.Id}, {entity.CreatedDate}, {entity.FileName}, {entity.OriginPath}, {(short)entity.Situation}, {entity.UploadFileBatch.Id})";
     }
 }

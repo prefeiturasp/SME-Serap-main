@@ -13,15 +13,40 @@ using System.Web;
 
 namespace ProvaSP.Web.Services.UploadFiles
 {
-    public class UploadFileServices : IUploadFileServices
+    public abstract class UploadFileServices
     {
         private readonly IDataUploadFileBatch _dataUploadFileBatch;
         private readonly IDataUploadFileItem _dataUploadFileItem;
+
+        protected abstract UploadFileBatchType Type { get; }
 
         public UploadFileServices()
         {
             _dataUploadFileBatch = new DataUploadFileBatch();
             _dataUploadFileItem = new DataUploadFileItem();
+        }
+
+        public async Task<UploadFilePageDto> LoadAsync(Guid usuId)
+        {
+            var resultDto = new UploadFilePageDto();
+            if(usuId == Guid.Empty)
+            {
+                resultDto.AddErrorMessage("O usuário logado deve ser informado.");
+                return resultDto;
+            }
+
+            try
+            {
+                var activeUploadFileBatch = await _dataUploadFileBatch.GetActiveBatchAsync(Type);
+                resultDto.BatchInProgressExists = activeUploadFileBatch != null;
+                resultDto.BatchInProgressOwner = activeUploadFileBatch?.UsuId == usuId;
+            }
+            catch(Exception ex)
+            {
+                resultDto.AddErrorMessage(ex);
+            }
+
+            return resultDto;
         }
 
         public async Task<UploadFileBatchDto> AddBatchAsync(AddUploadFileBatchDto dto)
@@ -43,14 +68,18 @@ namespace ProvaSP.Web.Services.UploadFiles
 
             try
             {
-                if(await _dataUploadFileBatch.AnyBatchActiveAsync())
+                if(await _dataUploadFileBatch.AnyBatchActiveAsync(Type))
                 {
                     resultDto.AddErrorMessage("Já existe um lote em andameto. Aguarde a finalização.");
                     return resultDto;
                 }
 
-                var entity = new UploadFileBatch(dto.Edicao, (UploadFileBatchAreaDeConhecimento)dto.AreaDeConhecimento,
-                    (UploadFileBatchCicloDeAprendizagem)dto.CicloDeAprendizagem, dto.UsuId);
+                var entity = new UploadFileBatch(
+                    Type,
+                    dto.Edicao, 
+                    (UploadFileBatchAreaDeConhecimento)dto.AreaDeConhecimento,
+                    (UploadFileBatchCicloDeAprendizagem)dto.CicloDeAprendizagem, 
+                    dto.UsuId);
                 if(!entity.Valid)
                 {
                     resultDto.AddErrorMessages(entity.ErrorMessages);

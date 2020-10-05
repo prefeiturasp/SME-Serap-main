@@ -463,10 +463,66 @@ não exclua esse comentário.
                 </div>
 
                 <!--Voltar das configurações-->
+                <button id="btnRevistasBoletinsUpload" data-role="button" onclick="abrirPaginaDeUploadDeArquivos()">Upload de arquivos</button>
                 <button id="btnConfiguracoesSair"
                         data-role="button" style="color: rgb(205,0,0) !important;">
                     Voltar ao menu
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="uploadArquivos-page" class="page generico_mainDiv" style="display: none;">
+        <div class="container generico_subDiv">
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">UPLOAD DE ARQUIVOS</p>
+            </div>
+
+            <p class="resultados_headerTitle" onclick="abrirPaginaDeUploadDeRevistasEBoletins()">
+                REVISTAS PEDAGÓGICAS E BOLETINS
+                <span id="configuracoes_icone4">
+                    <span class="mdi mdi-arrow-right-drop-circle-outline"></span>
+                </span>
+            </p>
+
+            <button id="btnRevistasBoletinsVoltar" data-role="button">Voltar</button>
+        </div>
+    </div>
+
+    <div id="uploadRevistasBoletins-page" class="page generico_mainDiv" style="display: none;">
+        <div class="container generico_subDiv">
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">UPLOAD DE REVISTAS PEDAGÓGICAS E BOLETINS</p>
+            </div>
+
+            <div id="menuUploadRevistasBoletins" class="uploadDeArquivosDiv">
+                <p id="iniciarNovoLoteDeArquivos" class="resultados_headerTitle">
+                    INICIAR UM NOVO LOTE DE ARQUIVOS PARA UPLOAD
+                    <span id="configuracoes_icone4">
+                        <span class="mdi mdi-arrow-right-drop-circle-outline"></span>
+                    </span>
+                </p>
+
+                <p class="resultados_headerTitle">
+                    HISTÓRICO DE LOTES
+                    <span id="configuracoes_icone4">
+                        <span class="mdi mdi-arrow-right-drop-circle-outline"></span>
+                    </span>
+                </p>
+            </div>
+
+            <div id="detalhesDoLoteAtual" class="uploadDeArquivosDiv">
+
+            </div>
+
+            <button id="btnRevistasBoletinsVoltar" data-role="button">Voltar</button>
+        </div>
+    </div>
+
+    <div id="uploadRevistasBoletinsHistorico-page" class="page generico_mainDiv" style="display: none;">
+        <div class="container generico_subDiv">
+            <div class="generico_headerDiv">
+                <p class="generico_headerTitle">UPLOAD DEREVISTAS PEDAGÓGICAS E BOLETINS</p>
             </div>
         </div>
     </div>
@@ -1347,7 +1403,7 @@ não exclua esse comentário.
             <button id="btnRevistasBoletinsVoltar" data-role="button">Voltar</button>
         </div>
     </div>
-
+    =
     <!--MSTECH
     *Popup para mostrar dados de participação da ProvaSP
     -->
@@ -2096,6 +2152,8 @@ não exclua esse comentário.
     <script src="/AppProvaSP/scripts/model/ExportarDreGraficosEmImagem.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/model/ExportarDreGraficosEmPdf.js?v=1.30.7.2"></script>
     <script src="/AppProvaSP/scripts/app.js?v=1.30.7.2" type="text/javascript"></script>
+    <script src="/AppProvaSP/scripts/upload-arquivos/uploadDeArquivos.js" type="text/javascript"></script>
+    <script src="/AppProvaSP/scripts/upload-arquivos/uploadRevistasBoletins.js" type="text/javascript"></script>
 
     <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/jspdf.min.js"></script>
     <script src="/AppProvaSP/scripts/external/jsPDF-2.1.1/html2canvas.min.js"></script>
