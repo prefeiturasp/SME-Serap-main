@@ -3027,7 +3027,7 @@ function abrirLinkRevistaBoletim(source) {
         //BOLETIM
         if (idAreaConhecimento == 4)
             idAreaConhecimento = 2;//Redação (4) está junto com Lingua Portuguesa (2)
-        let urlBoletim = urlBackEnd + "boletim_escola/" + edicao
+        let urlBoletim = provaSP_configuracoes.configuracoes.UrlImagemAlunos + "boletim_escola/" + edicao
             + "/" + idAreaConhecimento
             + "/" + esc_codigo + ".pdf";
 
