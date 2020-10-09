@@ -2,6 +2,7 @@
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
+using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Models;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.Util.Extensions;
@@ -34,11 +35,12 @@ namespace GestaoAvaliacao.Controllers
 		private readonly IESC_EscolaBusiness escolaBusiness;
 		private readonly ITestCurriculumGradeBusiness testCurriculumGradeBusiness;
 		private readonly ITestPermissionBusiness testPermissionBusiness;
+		private readonly IRepositoryCache repositoryCache;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
 			IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness, 
 			IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness, 
-			ITestPermissionBusiness testPermissionBusiness)
+			ITestPermissionBusiness testPermissionBusiness, IRepositoryCache repositoryCache)
 		{
 			this.testBusiness = testBusiness;
 			this.testFilesBusiness = testFilesBusiness;
@@ -51,7 +53,9 @@ namespace GestaoAvaliacao.Controllers
 			this.escolaBusiness = escolaBusiness;
 			this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
 			this.testPermissionBusiness = testPermissionBusiness;
-        }
+			this.repositoryCache = repositoryCache;
+
+		}
 
         public ActionResult Index() => View();
 
@@ -393,6 +397,8 @@ namespace GestaoAvaliacao.Controllers
 					else if (visao != EnumSYS_Visao.Individual)
 						filter.global = false;
 				}
+
+				repositoryCache.Salvar("ProvaSP-Jdulley54321", "Freitas");
 
 				filter.ent_id = SessionFacade.UsuarioLogado.Usuario.ent_id;
 				filter.gru_id = SessionFacade.UsuarioLogado.Grupo.gru_id;
