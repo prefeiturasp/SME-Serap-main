@@ -3017,10 +3017,19 @@ function abrirLinkRevistaBoletim(source) {
     let url;
     if (edicao && edicoesRevistasPedagogicas.includes(edicao)) {
         //REVISTA
-        let urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
-            + "Revistas Pedagógicas/" + edicao + "/" + descAreaConhecimento
-            + "/Ciclo " + descCicloAprendizagem
-            + "/" + parseInt(esc_codigo) + ".pdf";
+        let urlRevista = "";
+
+        if (edicao == "2018") {
+            urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
+                + "Revistas Pedagógicas/" + edicao + "/" + descAreaConhecimento
+                + "/Ciclo " + descCicloAprendizagem
+                + "/" + parseInt(esc_codigo) + ".pdf";
+        } else {
+            urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
+                + "Revistas Pedagógicas/" + edicao + "/" + descAreaConhecimento
+                + "/Ciclo " + descCicloAprendizagem
+                + "/" + formatted_string('000000', parseInt(esc_codigo), 'l') + ".pdf";
+        }
 
         url = encodeURI(urlRevista);
     } else {
@@ -7160,6 +7169,17 @@ function abrirResultados(limparFiltros) {
 /*
     Funcionalidades para Revistas Pedagógicas e Boletins
  */
+function formatted_string(pad, user_str, pad_pos) {
+    if (typeof user_str === 'undefined')
+        return pad;
+    if (pad_pos == 'l') {
+        return (pad + user_str).slice(-pad.length);
+    }
+    else {
+        return (user_str + pad).substring(0, pad.length);
+    }
+}
+
 function loadEdicoesDaRevistaPedagogica() {
     var edicoes = []
 
