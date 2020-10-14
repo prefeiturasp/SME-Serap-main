@@ -7183,7 +7183,7 @@ function formatted_string(pad, user_str, pad_pos) {
 function loadEdicoesDaRevistaPedagogica() {
     var edicoes = []
 
-    let anoAtual = new Date().getFullYear();
+    let anoAtual = new Date().getFullYear() - 1;
     for (var i = anoAtual; i >= 2017; i--) {
         edicoes.push(i);
         if (i > 2017)
