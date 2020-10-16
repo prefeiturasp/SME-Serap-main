@@ -15,10 +15,10 @@ namespace ProvaSP.Web.Controllers
     {            
         public HttpResponseMessage Get(string edicao, string usu_id)
         {
-            var listaConfiguracao = DataConfiguracao.RetornarConfiguracao();
+            var listaConfiguracao = DataConfiguracao.RetornarConfiguracaoParaInicar();
             var json = new StringBuilder();
             json.Append("{");
-            foreach(var configuracao in listaConfiguracao)
+            foreach (var configuracao in listaConfiguracao)
             {
                 json.Append(@"""");
                 json.Append(configuracao.Chave);

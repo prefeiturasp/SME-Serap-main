@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Abstractions\BaseData.cs" />
     <Compile Include="Data\DataAluno.cs" />
     <Compile Include="Data\DataConfiguracao.cs" />
     <Compile Include="Data\DataFatorAssociado.cs" />
@@ -82,8 +83,6 @@
     <Compile Include="Data\Enum.cs" />
     <Compile Include="Data\UploadFiles\DataUploadFileBatch.cs" />
     <Compile Include="Data\UploadFiles\IDataUploadFileBatch.cs" />
-    <Compile Include="Data\UploadFiles\Itens\DataUploadFileItem.cs" />
-    <Compile Include="Data\UploadFiles\Itens\IDataUploadFileItem.cs" />
     <Compile Include="Funcionalidades\Prova.cs" />
     <Compile Include="Funcionalidades\StringsConexao.cs" />
     <Compile Include="Funcionalidades\TipoBaseDados.cs" />

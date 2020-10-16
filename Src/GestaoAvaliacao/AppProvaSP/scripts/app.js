@@ -218,7 +218,7 @@ function onDeviceReady() {
          *Basicamente esta primeira requisição determina a visibilidade de dois botões do App, referentes às
          funcionalidades controladas pelas Flags
         */
-        Usuario = ObterUsuario();
+        Usuario = obterUsuario();
 
         $.ajax({
             url: urlBackEnd + "api/RetornarAppJson",
@@ -682,7 +682,7 @@ function onDeviceReady() {
     }
 }
 
-function ObterUsuario() {
+function obterUsuario() {
     if (!mobile) {
         if (window.location.href.indexOf("file:///") == 0) {
             return JSON.parse(localStorage.getItem("Usuario"));

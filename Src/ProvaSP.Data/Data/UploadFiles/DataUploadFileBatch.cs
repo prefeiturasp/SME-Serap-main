@@ -1,18 +1,15 @@
 ﻿using Dapper;
-using ProvaSP.Data.Funcionalidades;
+using ProvaSP.Data.Data.Abstractions;
 using ProvaSP.Model.Entidades.UploadFiles;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ProvaSP.Data.Data.UploadFiles
 {
-    public class DataUploadFileBatch : IDataUploadFileBatch
+    public class DataUploadFileBatch : BaseData, IDataUploadFileBatch
     {
-        private IDbConnection _dbConnection;
-
         private const string BaseSelect = @"SELECT
                             Id,
                             CreatedDate,
@@ -20,8 +17,9 @@ namespace ProvaSP.Data.Data.UploadFiles
                             UploadFileBatchType,
                             Edicao,
                             AreaDeConhecimento,
-                            UploadFileBatchCicloDeAprendizagem,
-                            Situacao,
+                            CicloDeAprendizagem,
+                            Situation,
+                            FileCount,
                             UsuId
                         FROM
                             UploadFileBatch (NOLOCK)";
@@ -31,19 +29,22 @@ namespace ProvaSP.Data.Data.UploadFiles
             if (entity is null || !entity.Valid) return null;
 
             var command = @"INSERT INTO UploadFileBatch
-                            (CreatedDate, Edicao, AreaDeConhecimento, CicloDeAprendizagem, Situation)
+                            (CreatedDate, UploadFileBatchType, Edicao, AreaDeConhecimento, CicloDeAprendizagem, Situation, FileCount, UsuId)
                             VALUES
-                            (@createdDate, @edicao, @areaDeConhecimento, @cicloDeAprendizagem, @situation);
+                            (@createdDate, @uploadFileBatchType, @edicao, @areaDeConhecimento, @cicloDeAprendizagem, @situation, @fileCount, @usuId);
 
                             SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY]; ";
 
             return await GetSqlConnection().QuerySingleAsync<long>(command, new
             {
                 createdDate = entity.CreatedDate,
+                uploadFileBatchType = (short)entity.UploadFileBatchType,
                 edicao = entity.Edicao,
                 areaDeConhecimento = (short)entity.AreaDeConhecimento,
                 cicloDeAprendizagem = (short)entity.CicloDeAprendizagem,
-                situation = entity.Situation
+                situation = entity.Situation,
+                fileCount = entity.FileCount,
+                usuId = entity.UsuId
             });
         }
 
@@ -66,6 +67,14 @@ namespace ProvaSP.Data.Data.UploadFiles
             });
         }
 
+        public async Task UpdateAsync(IEnumerable<UploadFileBatch> entities)
+        {
+            if (!entities?.Any() ?? true) return;
+
+            await Task.WhenAll(entities
+                .Select(entity => UpdateAsync(entity)));
+        }
+
         public Task<UploadFileBatch> GetAsync(long id)
         {
             var query = $@"{BaseSelect}
@@ -78,18 +87,20 @@ namespace ProvaSP.Data.Data.UploadFiles
             });
         }
 
-        public Task<UploadFileBatch> GetActiveBatchAsync(UploadFileBatchType uploadFileBatchType)
+        public Task<IEnumerable<UploadFileBatch>> GetActiveBatchesAsync(Guid usuId, UploadFileBatchType uploadFileBatchType)
         {
             var query = $@"{BaseSelect}
                         WHERE
-                            UploadFileBatchType = @uploadFileBatchType
+                            UsuId = @usuId
+                            AND UploadFileBatchType = @uploadFileBatchType
                             AND Situation IN (@situationNotStarted, @situationInProgress);";
 
-            return GetSqlConnection().QueryFirstAsync<UploadFileBatch>(query, new
+            return GetSqlConnection().QueryAsync<UploadFileBatch>(query, new
             {
+                usuId,
                 uploadFileBatchType = (short)uploadFileBatchType,
-                situationNotStarted = UploadFileBatchSituation.NotStarted,
-                situationInProgress = UploadFileBatchSituation.InProgress
+                situationNotStarted = (short)UploadFileBatchSituation.NotStarted,
+                situationInProgress = (short)UploadFileBatchSituation.InProgress
             });
         }
 
@@ -100,7 +111,7 @@ namespace ProvaSP.Data.Data.UploadFiles
                             UploadFileBatch (NOLOCK)
                         WHERE
                             UploadFileBatchType = @uploadFileBatchType
-                            Situation IN (@situationNotStarted, @situationInProgress);";
+                            AND Situation IN (@situationNotStarted, @situationInProgress);";
 
             var result = await GetSqlConnection().ExecuteScalarAsync<short?>(query, new
             {
@@ -110,14 +121,6 @@ namespace ProvaSP.Data.Data.UploadFiles
             });
 
             return result is null ? false : true;
-        }
-
-        private IDbConnection GetSqlConnection()
-        {
-            _dbConnection = _dbConnection ?? new SqlConnection(StringsConexao.ProvaSP);
-            if (_dbConnection.State != ConnectionState.Open) _dbConnection.Open();
-
-            return _dbConnection;
         }
     }
 }

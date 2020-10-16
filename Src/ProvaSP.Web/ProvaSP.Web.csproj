@@ -46,6 +46,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.7.0.1\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="FluentValidation, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentValidation.8.6.3\lib\net45\FluentValidation.dll</HintPath>
     </Reference>
@@ -190,15 +193,25 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Mappers\Config\AutoMapperConfig.cs" />
+    <Compile Include="Mappers\Config\ProvaSPApiProfile.cs" />
+    <Compile Include="Mappers\UploadFiles\UploadFileBatchToDtoConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Abstractions\BaseDto.cs" />
     <Compile Include="Services\UploadFiles\Dtos\AddUploadFileBatchDto.cs" />
-    <Compile Include="Services\UploadFiles\Dtos\Itens\AddUploadFileItemDto.cs" />
-    <Compile Include="Services\UploadFiles\Dtos\Itens\ListUploadFileItemDto.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\CancelBatchDto.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\CancelOpenedBatchesDto.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\Files\UploadFileItemDto.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\FinalizeBatchDto.cs" />
     <Compile Include="Services\UploadFiles\Dtos\UploadFileBatchDto.cs" />
-    <Compile Include="Services\UploadFiles\Dtos\Itens\UploadFileItemDto.cs" />
-    <Compile Include="Services\UploadFiles\Dtos\UploadFilePageDto.cs" />
     <Compile Include="Services\UploadFiles\Dtos\Validators\AddUploadFileBatchDtoValidator.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\Validators\CancelBatchDtoValidator.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\Validators\CancelOpenedBatchesDtoValidator.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\StartBatchDto.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\Validators\FinalizeBatchDtoValidator.cs" />
+    <Compile Include="Services\UploadFiles\Dtos\Validators\StartBatchDtoValidator.cs" />
+    <Compile Include="Services\UploadFiles\FileManagerServices.cs" />
+    <Compile Include="Services\UploadFiles\IFileManagerServices.cs" />
     <Compile Include="Services\UploadFiles\RevistasEBoletins\IUploadRevistasEBoletinsServices.cs" />
     <Compile Include="Services\UploadFiles\RevistasEBoletins\UploadRevistasEBoletinsServices.cs" />
     <Compile Include="Services\UploadFiles\UploadFileServices.cs" />

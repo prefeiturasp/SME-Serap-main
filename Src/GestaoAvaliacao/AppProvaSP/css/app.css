@@ -807,3 +807,167 @@ table.greyGridTable tfoot td {
     display: none;
 }
 
+.alertaDeLoteJaIniciado {
+    color: brown;
+    display: none;
+}
+
+.detalhesDoLote {
+    border: 1px solid #a0a0a0;
+    padding: 20px 10px;
+    margin: 20px 0px;
+}
+
+    .detalhesDoLote .cabecalhoDetalhesDoLote {
+        text-align: left;
+    }
+
+        .detalhesDoLote .cabecalhoDetalhesDoLote .tableInformacoesDoLote {
+            font-size: 12px;
+            color: dimgray;
+            display: inline;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+            .detalhesDoLote .cabecalhoDetalhesDoLote .tableInformacoesDoLote td {
+                padding: 0px 10px;
+            }
+
+            .detalhesDoLote .cabecalhoDetalhesDoLote .tableInformacoesDoLote .tituloCabecalho {
+                background-color: cadetblue;
+                color: #fff;
+                border-radius: 3px;
+                font-size: 18px;
+                text-align: center;
+                padding: 10px;
+            }
+
+        .detalhesDoLote .cabecalhoDetalhesDoLote .divAdicionarArquivos {
+            font-size: 12px;
+            text-align: center;
+            display: inline-flex;
+            padding-left: 0;
+            list-style: none;
+            margin-left: 10px;
+            width: auto;
+            float: right;
+            margin-top: -5px;
+        }
+
+            .detalhesDoLote .cabecalhoDetalhesDoLote .divAdicionarArquivos button {
+                display: inline;
+                width: 100%;
+                border-radius: 4px;
+                border: none;
+                color: #FFFFFF;
+                transition: all 0.5s;
+                cursor: pointer;
+                background-color: dimgray;
+            }
+
+    .detalhesDoLote .itensDetalhesDoLote {
+        display: none;
+        margin-top: 15px;
+    }
+
+        .detalhesDoLote .itensDetalhesDoLote .progresso {
+            width: 100%;
+            background-color: #ddd;
+        }
+
+        .detalhesDoLote .itensDetalhesDoLote .barraDeProgresso {
+            width: 1%;
+            height: 30px;
+            background-color: seagreen;
+        }
+
+        .detalhesDoLote .itensDetalhesDoLote .barraDeProgresso-descricao {
+            width: 100%;
+            height: 12px;
+            margin-top: 5px;
+        }
+
+        .detalhesDoLote .itensDetalhesDoLote .barraDeProgresso-descricao span{
+            color: dimgray;
+            font-size: 12px;
+        }
+
+        .detalhesDoLote .itensDetalhesDoLote .tableArquivosComErro {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote {
+            width: 100%;
+            margin-top: 5px;
+            text-align: end;
+        }
+
+            .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote button {
+                display: inline;
+                border-radius: 4px;
+                border: none;
+                color: #FFFFFF;
+                transition: all 0.5s;
+                cursor: pointer;
+                margin: 5px;
+            }
+
+            .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .iniciar {
+                background-color: seagreen;
+                width: 30%;
+            }
+
+                .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .iniciar span {
+                    cursor: pointer;
+                    display: inline-block;
+                    position: relative;
+                    transition: 0.5s;
+                }
+
+                .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .iniciar span:after {
+                    content: '\00bb';
+                    position: absolute;
+                    opacity: 0;
+                    top: 0;
+                    right: -20px;
+                    transition: 0.5s;
+                }
+
+                .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .iniciar:hover span {
+                    padding-right: 25px;
+                }
+
+                .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .iniciar:hover span:after {
+                    opacity: 1;
+                    right: 0;
+                }
+
+            .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .cancelar {
+                background-color: brown;
+                width: 10%;
+            }
+
+.loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #428bca;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+    display: none;
+    float: right;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+

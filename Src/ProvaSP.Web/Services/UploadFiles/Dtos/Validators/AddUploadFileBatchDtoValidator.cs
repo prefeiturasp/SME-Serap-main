@@ -10,7 +10,7 @@ namespace ProvaSP.Web.Services.UploadFiles.Dtos.Validators
             RuleFor(x => x.Edicao)
                 .NotEmpty()
                 .WithMessage("O ano de edição deve ser informado.")
-                .Matches("^[0-9]{" + UploadFileBatch.EdicaoMaxLength + "}+$")
+                .Matches("^[0-9]{" + UploadFileBatch.EdicaoMaxLength + "}$")
                 .WithMessage("O ano de edição informado é inválido.");
 
             RuleFor(x => x.AreaDeConhecimento)

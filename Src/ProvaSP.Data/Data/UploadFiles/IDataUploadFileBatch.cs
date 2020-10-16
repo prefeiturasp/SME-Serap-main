@@ -1,4 +1,5 @@
 ﻿using ProvaSP.Model.Entidades.UploadFiles;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,9 +11,11 @@ namespace ProvaSP.Data.Data.UploadFiles
 
         Task UpdateAsync(UploadFileBatch entity);
 
+        Task UpdateAsync(IEnumerable<UploadFileBatch> entities);
+
         Task<UploadFileBatch> GetAsync(long id);
 
-        Task<UploadFileBatch> GetActiveBatchAsync(UploadFileBatchType uploadFileBatchType);
+        Task<IEnumerable<UploadFileBatch>> GetActiveBatchesAsync(Guid usuId, UploadFileBatchType uploadFileBatchType);
 
         Task<bool> AnyBatchActiveAsync(UploadFileBatchType uploadFileBatchType);
     }

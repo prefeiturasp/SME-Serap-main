@@ -12,7 +12,21 @@ namespace ProvaSP.Data
 {
     public static class DataConfiguracao
     {
-        public static List<Configuracao> RetornarConfiguracao()
+        public static Configuracao RetornarConfiguracao(string chave)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                return conn.QuerySingle<Configuracao>(
+                    sql: @"
+                        SELECT Chave, Valor
+                        FROM Configuracao
+                        WHERE chave = @chave", new { chave }
+                    );
+            }
+
+        }
+
+        public static List<Configuracao> RetornarConfiguracaoParaInicar()
         {
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
             {
@@ -20,7 +34,7 @@ namespace ProvaSP.Data
                     sql: @"
                         SELECT Chave, Valor
                         FROM Configuracao
-                    "
+                        WHERE Chave <> @chaveFileDirectoryPath", new { chaveFileDirectoryPath = Configuracao.ChaveFileDirectoryPath }
                     ).ToList<Configuracao>();
             }
             
