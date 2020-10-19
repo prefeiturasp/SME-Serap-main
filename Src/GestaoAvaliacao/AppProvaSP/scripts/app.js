@@ -59,7 +59,7 @@ var corteCache = [];
  Fichas de registro: Perguntas aos diretores e responsáveis sobre andamento técnico da ProvaSP
 */
 var edicoesComTurmasAmostrais = ["2017", "2018", "2019"];
-var edicoesRevistasPedagogicas = ["2018", "2019"]; // ["2017"] é Boletim
+var edicoesRevistasPedagogicas = []; // ["2017"] é Boletim
 var questionarios = [
     "1",/*Questionário Supervisor*/
     //"2",/*Questionário Diretor 2018*/
@@ -3017,17 +3017,26 @@ function abrirLinkRevistaBoletim(source) {
     let url;
     if (edicao && edicoesRevistasPedagogicas.includes(edicao)) {
         //REVISTA
-        let urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
-            + "Revistas Pedagógicas/" + descAreaConhecimento
-            + "/Ciclo " + descCicloAprendizagem
-            + "/" + parseInt(esc_codigo) + ".pdf";
+        let urlRevista = "";
+
+        if (edicao == "2018") {
+            urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
+                + "Revistas Pedagógicas/" + edicao + "/" + descAreaConhecimento
+                + "/Ciclo " + descCicloAprendizagem
+                + "/" + parseInt(esc_codigo) + ".pdf";
+        } else {
+            urlRevista = provaSP_configuracoes.configuracoes.UrlImagemAlunos
+                + "Revistas Pedagógicas/" + edicao + "/" + descAreaConhecimento
+                + "/Ciclo " + descCicloAprendizagem
+                + "/" + formatted_string('000000', parseInt(esc_codigo), 'l') + ".pdf";
+        }
 
         url = encodeURI(urlRevista);
     } else {
         //BOLETIM
         if (idAreaConhecimento == 4)
             idAreaConhecimento = 2;//Redação (4) está junto com Lingua Portuguesa (2)
-        let urlBoletim = urlBackEnd + "boletim_escola/" + edicao
+        let urlBoletim = provaSP_configuracoes.configuracoes.UrlImagemAlunos + "boletim_escola/" + edicao
             + "/" + idAreaConhecimento
             + "/" + esc_codigo + ".pdf";
 
@@ -7160,6 +7169,38 @@ function abrirResultados(limparFiltros) {
 /*
     Funcionalidades para Revistas Pedagógicas e Boletins
  */
+function formatted_string(pad, user_str, pad_pos) {
+    if (typeof user_str === 'undefined')
+        return pad;
+    if (pad_pos == 'l') {
+        return (pad + user_str).slice(-pad.length);
+    }
+    else {
+        return (user_str + pad).substring(0, pad.length);
+    }
+}
+
+function loadEdicoesDaRevistaPedagogica() {
+    var edicoes = []
+
+    let anoAtual = new Date().getFullYear() - 1;
+    for (var i = anoAtual; i >= 2017; i--) {
+        edicoes.push(i);
+        if (i > 2017)
+            edicoesRevistasPedagogicas.push(i.toString());
+    }
+
+    edicoes.forEach(function (item) {
+        $('#ddlRevistasBoletinsEdicao').append($('<option>', {
+            value: item,
+            text: "Edição " + item
+        }));
+    });
+
+    $('#ddlRevistasBoletinsEdicao').val(anoAtual);
+}
+
+
 function abrirConsultaRevistasBoletins() {
     try {
         /**
@@ -7171,6 +7212,9 @@ function abrirConsultaRevistasBoletins() {
             -Esconde divs de revistasBoletins;
             -Desabilita o botão Mostrar RevistasBoletins (ele será habilitado no método revistasBoletins_configurarControles)
         */
+
+        loadEdicoesDaRevistaPedagogica();
+
         $(".page").hide();
         $("#revistasBoletins-page").show();
 
