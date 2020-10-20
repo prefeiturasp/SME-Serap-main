@@ -348,6 +348,12 @@ table.greyGridTable tfoot td {
     border: 1px solid #a0a0a0;
     cursor: pointer;
 }
+.headerTitleDisabled {
+    cursor: default !important;
+    color: #c2bebe !important;
+    border: 1px solid #c2bebe !important;
+    pointer-events: none !important;
+}
 .resultados_botaoDownload {
     display: inline-block;
     background: #3388CC;
@@ -797,4 +803,292 @@ table.greyGridTable tfoot td {
     margin: 5px 0px;
 }
 
+.uploadDeArquivosDiv {
+    display: none;
+}
+
+.alertaDeLoteJaIniciado {
+    color: brown;
+    display: none;
+}
+
+.detalhesDoLote {
+    border: 1px solid #a0a0a0;
+    padding: 20px 10px;
+    margin: 20px 0px;
+}
+
+    .detalhesDoLote .cabecalhoDetalhesDoLote {
+        text-align: left;
+    }
+
+        .detalhesDoLote .cabecalhoDetalhesDoLote .tableInformacoesDoLote {
+            font-size: 12px;
+            color: dimgray;
+            display: inline;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+            .detalhesDoLote .cabecalhoDetalhesDoLote .tableInformacoesDoLote td {
+                padding: 0px 10px;
+            }
+
+            .detalhesDoLote .cabecalhoDetalhesDoLote .tableInformacoesDoLote .tituloCabecalho {
+                background-color: cadetblue;
+                color: #fff;
+                border-radius: 3px;
+                font-size: 18px;
+                text-align: center;
+                padding: 10px;
+            }
+
+        .detalhesDoLote .cabecalhoDetalhesDoLote .divAdicionarArquivos {
+            font-size: 12px;
+            text-align: center;
+            display: inline-flex;
+            padding-left: 0;
+            list-style: none;
+            margin-left: 10px;
+            width: auto;
+            float: right;
+            margin-top: -5px;
+        }
+
+            .detalhesDoLote .cabecalhoDetalhesDoLote .divAdicionarArquivos button {
+                display: inline;
+                width: 100%;
+                border-radius: 4px;
+                border: none;
+                color: #FFFFFF;
+                transition: all 0.5s;
+                cursor: pointer;
+                background-color: dimgray;
+                font-weight: 100;
+            }
+
+    .detalhesDoLote .itensDetalhesDoLote {
+        display: none;
+        margin-top: 15px;
+    }
+
+        .detalhesDoLote .itensDetalhesDoLote .progresso {
+            width: 100%;
+            background-color: #ddd;
+        }
+
+        .detalhesDoLote .itensDetalhesDoLote .barraDeProgresso {
+            width: 1%;
+            height: 30px;
+            background-color: seagreen;
+        }
+
+        .detalhesDoLote .itensDetalhesDoLote .barraDeProgresso-descricao {
+            width: 100%;
+            height: 12px;
+            margin-top: 5px;
+        }
+
+        .detalhesDoLote .itensDetalhesDoLote .barraDeProgresso-descricao span{
+            color: dimgray;
+            font-size: 12px;
+        }
+
+        .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote {
+            width: 100%;
+            margin-top: 5px;
+            text-align: end;
+        }
+
+            .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote button {
+                display: inline;
+                border-radius: 4px;
+                border: none;
+                color: #FFFFFF;
+                transition: all 0.5s;
+                cursor: pointer;
+                margin: 5px;
+            }
+
+            .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .iniciar {
+                background-color: seagreen;
+                width: 30%;
+            }
+
+                .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .iniciar span {
+                    cursor: pointer;
+                    display: inline-block;
+                    position: relative;
+                    transition: 0.5s;
+                }
+
+                .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .iniciar span:after {
+                    content: '\00bb';
+                    position: absolute;
+                    opacity: 0;
+                    top: 0;
+                    right: -20px;
+                    transition: 0.5s;
+                }
+
+                .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .iniciar:hover span {
+                    padding-right: 25px;
+                }
+
+                .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .iniciar:hover span:after {
+                    opacity: 1;
+                    right: 0;
+                }
+
+            .detalhesDoLote .itensDetalhesDoLote .divAcoesDoLote .cancelar {
+                background-color: brown;
+                width: 10%;
+            }
+
+        .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro {
+            margin-top: 20px;
+            display: none;
+            width: 100%;
+        }
+
+            .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro {
+                font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+                .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro td,
+                .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro th {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                }
+
+                .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro tr:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+
+                .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro tr:hover {
+                    background-color: #ddd;
+                }
+
+                .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro th {
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                    text-align: left;
+                    background-color: dimgray;
+                    color: white;
+                    font-weight: 100;
+                }
+
+                .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro td {
+                    text-align: left;
+                }
+
+.loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #428bca;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+    display: none;
+    float: right;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.historicoDeLotes-semResultados {
+    width: 100%;
+    height: 500px;
+    text-align: center;
+    color: dimgray;
+    display: none;
+}
+
+.tituloHistoricoDeLotes {
+    padding: 10px;
+    color: dimgray;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+}
+
+    .tituloHistoricoDeLotes span {
+        padding: 8px;
+    }
+
+    .tituloHistoricoDeLotes .filterItem {
+        margin-left: 10px;
+        background-color: lightsteelblue;
+    }
+
+.historicoDeLotes-resultados {
+    width: 100%;
+    border: 1px solid #a0a0a0;
+    border-radius: 2.5px;
+    margin-top: 10px;
+    display: none;
+}
+
+    .historicoDeLotes-resultados .resultados {
+        padding: 10px 0px;
+        color: dimgray;
+        width: 100%;
+    }
+
+    .historicoDeLotes-resultados .resultados table{
+        width: 100%;
+    }
+
+        .historicoDeLotes-resultados .resultados table tr th {
+            padding: 8px;
+            text-align: center;
+        }
+
+        .historicoDeLotes-resultados .resultados table tr td {
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .historicoDeLotes-resultados .resultados table tr td .detalhesHistoricoItem{
+            width: 100%;
+            background-color:lightgray;
+            padding: 8px;
+            display: inline-flex;
+            text-align: left;
+        }
+
+            .historicoDeLotes-resultados .resultados table tr td .detalhesHistoricoItem div span{
+                font-weight: 600;
+            }
+
+    .historicoDeLotes-resultados .paginacao {
+        display: inline-flex;
+        text-align: center;
+        padding: 10px;
+    }
+
+        .historicoDeLotes-resultados .paginacao span {
+            color: dimgray;
+            font-size: 14px;
+            margin: 0px 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .historicoDeLotes-resultados .paginacao .paginaAtual {
+            border: 1px solid #a0a0a0;
+            border-radius: 3px;
+            background-color: lightgray;
+            cursor: default;
+        }
 

@@ -52,7 +52,7 @@ function ConfigurarUsuarioSerap(grupoSerap, jsonUsuario) {
  impedindo a interação com a interface de usuário.
  *Na versão Web do App, o popup continua sendo o sweetAlert
 */
-function ProvaSP_Erro (title, msg) {
+function ProvaSP_Erro(title, msg) {
     try {
         $.mobile.loading("hide");
 
@@ -66,6 +66,24 @@ function ProvaSP_Erro (title, msg) {
             );
         }
         else { sweetAlert(title, msg, "error"); }
+    }
+    catch (error) { console.log(error); }
+}
+
+function ProvaSP_Alerta(title, msg) {
+    try {
+        $.mobile.loading("hide");
+
+        var isMobile = false;
+        if (typeof cordova !== "undefined") { isMobile = true; }
+
+        if (isMobile) {
+            navigator.notification.alert(
+                msg,
+                function () { }, title, "OK"
+            );
+        }
+        else { sweetAlert(title, msg, "warning"); }
     }
     catch (error) { console.log(error); }
 }

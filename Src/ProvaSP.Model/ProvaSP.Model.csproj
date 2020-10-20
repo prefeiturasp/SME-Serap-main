@@ -59,9 +59,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstractions\Notificable.cs" />
     <Compile Include="Entidades\Configuracao.cs" />
     <Compile Include="Entidades\Constructo.cs" />
     <Compile Include="Entidades\Corte.cs" />
+    <Compile Include="Entidades\UploadFiles\UploadFileBatch.cs" />
     <Compile Include="Entidades\NivelDeProficiencia.cs" />
     <Compile Include="Entidades\FatorAssociado.cs" />
     <Compile Include="Entidades\Grupo.cs" />
@@ -84,7 +86,11 @@
     <Compile Include="Entidades\QuestionarioRespostaItem.cs" />
     <Compile Include="Entidades\QuestionarioUsuario.cs" />
     <Compile Include="Entidades\RelatorioItem.cs" />
+    <Compile Include="Entidades\UploadFiles\Pagination\UploadFileBatchFilter.cs" />
+    <Compile Include="Entidades\UploadFiles\Pagination\UploadFileBatchPaginated.cs" />
     <Compile Include="Entidades\Usuario.cs" />
+    <Compile Include="Utils\Attributes\PathAttribute.cs" />
+    <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Participacao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -102,6 +108,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
+      <Project>{638B2BDC-AA34-4DCD-A041-AB4EB9C4D831}</Project>
+      <Name>GestaoAvaliacao.Util</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
