@@ -6,7 +6,7 @@ function abrirPaginaDeUploadDeArquivos() {
         $("#uploadArquivos-page").show();
     }
     catch (error) {
-        console.log(error);
+        voltarParaConfiguracoes();
     }
 };
 

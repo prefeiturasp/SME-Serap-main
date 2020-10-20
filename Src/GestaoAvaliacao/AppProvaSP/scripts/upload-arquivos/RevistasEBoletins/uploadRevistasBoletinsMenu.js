@@ -8,7 +8,7 @@ function abrirPaginaDeUploadDeRevistasEBoletins() {
         validarLotesAtivos();
     }
     catch (error) {
-        console.log(error);
+        voltarParaTiposDeArquivos();
     }
 };
 
