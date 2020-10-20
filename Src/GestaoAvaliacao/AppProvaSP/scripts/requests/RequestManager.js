@@ -6,6 +6,7 @@
 	function RequestManager(amountOfRequests, finallyCallback) {
 		var requestsPending = [];
 		var amountOfRequestProcessing = 0;
+		var hadFinalized = false;
 
 		if (!this) {
 			return new RequestManager(amountOfRequests);
@@ -45,8 +46,14 @@
 				processRequest(request);
 			}
 			else {
-				finallyCallback();
+				finalize();
             }
+		}
+
+		function finalize() {
+			if (hadFinalized) return;
+			hadFinalized = true;
+			finallyCallback();
 		}
 	}
 

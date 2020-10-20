@@ -3,8 +3,10 @@ using ProvaSP.Data;
 using ProvaSP.Data.Data.UploadFiles;
 using ProvaSP.Model.Entidades;
 using ProvaSP.Model.Entidades.UploadFiles;
+using ProvaSP.Model.Entidades.UploadFiles.Pagination;
 using ProvaSP.Web.Services.UploadFiles.Dtos;
 using ProvaSP.Web.Services.UploadFiles.Dtos.Files;
+using ProvaSP.Web.Services.UploadFiles.Dtos.Search;
 using ProvaSP.Web.Services.UploadFiles.Dtos.Validators;
 using System;
 using System.IO;
@@ -25,6 +27,37 @@ namespace ProvaSP.Web.Services.UploadFiles
         {
             _fileManagerServices = new FileManagerServices();
             _dataUploadFileBatch = new DataUploadFileBatch();
+        }
+
+        public async Task<UploadFileSearchPageDto> GetAsync(UploadFileSearchDto dto)
+        {
+            var resultDto = new UploadFileSearchPageDto();
+            if (dto is null)
+            {
+                resultDto.AddErrorMessage("Os dados do lote para ser finalizado não foram informados.");
+                return resultDto;
+            }
+
+            try
+            {
+                var filter = new UploadFileBatchFilter(dto.Page, Type, dto.Edicao, dto.AreaDeConhecimento, dto.CicloDeAprendizagem);
+                if(!filter.Valid)
+                {
+                    resultDto.AddErrorMessages(filter.ErrorMessages);
+                    return resultDto;
+                }
+
+                var entitiesPaginated = await _dataUploadFileBatch.GetAsync(filter);
+                if (entitiesPaginated is null || (!entitiesPaginated.Entities?.Any() ?? true)) return resultDto;
+
+                resultDto = Mapper.Map<UploadFileSearchPageDto>(entitiesPaginated);
+            }
+            catch(Exception ex)
+            {
+                resultDto.AddErrorMessage(ex);
+            }
+
+            return resultDto;
         }
 
         public async Task<UploadFileBatchDto> AddBatchAsync(AddUploadFileBatchDto dto)
@@ -57,7 +90,8 @@ namespace ProvaSP.Web.Services.UploadFiles
                     dto.Edicao,
                     (UploadFileBatchAreaDeConhecimento)dto.AreaDeConhecimento,
                     (UploadFileBatchCicloDeAprendizagem)dto.CicloDeAprendizagem,
-                    dto.UsuId);
+                    dto.UsuId,
+                    dto.UsuName);
                 if (!entity.Valid)
                 {
                     resultDto.AddErrorMessages(entity.ErrorMessages);
@@ -255,7 +289,7 @@ namespace ProvaSP.Web.Services.UploadFiles
 
                 if (uploadFileBatch.Situation == UploadFileBatchSituation.Done) return dto;
 
-                uploadFileBatch.FinalizeBatch();
+                uploadFileBatch.FinalizeBatch(dto.FileErrorCount);
                 await _dataUploadFileBatch.UpdateAsync(uploadFileBatch);
             }
             catch(Exception ex)

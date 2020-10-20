@@ -3,12 +3,12 @@ using System.Linq;
 
 namespace ProvaSP.Model.Abstractions
 {
-    public abstract class BaseEntity
+    public abstract class Notificable
     {
         public bool Valid => !ErrorMessages?.Any() ?? true;
         public ICollection<string> ErrorMessages { get; private set; }
 
-        public BaseEntity()
+        public Notificable()
         {
             ErrorMessages = new List<string>();
         }

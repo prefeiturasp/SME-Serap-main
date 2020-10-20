@@ -8,5 +8,6 @@ namespace ProvaSP.Web.Services.UploadFiles.Dtos
         public short AreaDeConhecimento { get; set; }
         public short CicloDeAprendizagem { get; set; }
         public Guid UsuId { get; set; }
+        public string UsuName { get; set; }
     }
 }

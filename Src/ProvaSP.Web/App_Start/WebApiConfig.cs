@@ -33,6 +33,7 @@ namespace ProvaSP.Web
             config.Routes.MapHttpRoute("UploadFilesUploadFile", "api/UploadRevistasEBoletins/UploadFile", new { controller = "UploadRevistasEBoletins", action = "UploadFile" });
             config.Routes.MapHttpRoute("UploadFilesCancelBatch", "api/UploadRevistasEBoletins/CancelBatch", new { controller = "UploadRevistasEBoletins", action = "CancelBatch" });
             config.Routes.MapHttpRoute("UploadFilesFinalizeBatch", "api/UploadRevistasEBoletins/FinalizeBatch", new { controller = "UploadRevistasEBoletins", action = "FinalizeBatch" });
+            config.Routes.MapHttpRoute("UploadRevistasEBoletinsHistoricoGet", "api/UploadRevistasEBoletinsHistorico/Get", new { controller = "UploadRevistasEBoletinsHistorico", action = "Get" });
         }
     }
 }

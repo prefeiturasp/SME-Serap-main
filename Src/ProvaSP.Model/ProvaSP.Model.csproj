@@ -59,7 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstractions\BaseEntity.cs" />
+    <Compile Include="Abstractions\Notificable.cs" />
     <Compile Include="Entidades\Configuracao.cs" />
     <Compile Include="Entidades\Constructo.cs" />
     <Compile Include="Entidades\Corte.cs" />
@@ -86,6 +86,8 @@
     <Compile Include="Entidades\QuestionarioRespostaItem.cs" />
     <Compile Include="Entidades\QuestionarioUsuario.cs" />
     <Compile Include="Entidades\RelatorioItem.cs" />
+    <Compile Include="Entidades\UploadFiles\Pagination\UploadFileBatchFilter.cs" />
+    <Compile Include="Entidades\UploadFiles\Pagination\UploadFileBatchPaginated.cs" />
     <Compile Include="Entidades\Usuario.cs" />
     <Compile Include="Utils\Attributes\PathAttribute.cs" />
     <Compile Include="Utils\Extensions.cs" />

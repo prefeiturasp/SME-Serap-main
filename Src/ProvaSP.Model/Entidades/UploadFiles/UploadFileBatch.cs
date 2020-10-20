@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace ProvaSP.Model.Entidades.UploadFiles
 {
-    public class UploadFileBatch : BaseEntity
+    public class UploadFileBatch : Notificable
     {
         public const short EdicaoMaxLength = 4;
         public const int PageItensCount = 20;
@@ -24,14 +24,16 @@ namespace ProvaSP.Model.Entidades.UploadFiles
         public UploadFileBatchSituation Situation { get; private set; }
         public string DirectoryPath => Path.Combine(UploadFileBatchType.GetPath(), Edicao, AreaDeConhecimento.GetPath(), CicloDeAprendizagem.GetPath());
         public long FileCount { get; private set; }
+        public long FileErrorCount { get; private set; }
         public Guid UsuId { get; private set; }
+        public string UsuName { get; private set; }
 
         public UploadFileBatch(UploadFileBatchType uploadFileBatchType, string edicao, UploadFileBatchAreaDeConhecimento areaDeConhecimento,
-            UploadFileBatchCicloDeAprendizagem cicloDeAprendizagem, Guid usuId)
+            UploadFileBatchCicloDeAprendizagem cicloDeAprendizagem, Guid usuId, string usuName)
         {
             UploadFileBatchType = uploadFileBatchType;
             SetEdicao(edicao);
-            SetUsuId(usuId);
+            SetUser(usuId, usuName);
             UploadFileBatchType = UploadFileBatchType.RevistasEBoletins;
             AreaDeConhecimento = areaDeConhecimento;
             CicloDeAprendizagem = cicloDeAprendizagem;
@@ -62,7 +64,7 @@ namespace ProvaSP.Model.Entidades.UploadFiles
             Edicao = edicao;
         }
 
-        private void SetUsuId(Guid usuId)
+        private void SetUser(Guid usuId, string usuName)
         {
             if (usuId == Guid.Empty)
             {
@@ -70,7 +72,14 @@ namespace ProvaSP.Model.Entidades.UploadFiles
                 return;
             }
 
+            if(string.IsNullOrWhiteSpace(usuName))
+            {
+                AddErrorMessage("O nome do usuário responsável pelo lote deve ser informado.");
+                return;
+            }
+
             UsuId = usuId;
+            UsuName = usuName;
         }
 
         public void CancelBatch()
@@ -79,10 +88,11 @@ namespace ProvaSP.Model.Entidades.UploadFiles
             Situation = UploadFileBatchSituation.Canceled;
         }
 
-        public void FinalizeBatch()
+        public void FinalizeBatch(long fileErrorCount)
         {
             UpdateDate = DateTime.Now;
-            Situation = UploadFileBatchSituation.Done;
+            FileErrorCount = fileErrorCount;
+            Situation = fileErrorCount > 0 ? UploadFileBatchSituation.DoneWithErrors : UploadFileBatchSituation.Done;
         }
     }
 
@@ -101,7 +111,9 @@ namespace ProvaSP.Model.Entidades.UploadFiles
         [Description("Finalizado")]
         Done = 2,
         [Description("Cancelado")]
-        Canceled = 3
+        Canceled = 3,
+        [Description("Finalizado com erros")]
+        DoneWithErrors = 4
     }
 
     public enum UploadFileBatchAreaDeConhecimento : short

@@ -1,4 +1,5 @@
 ﻿using ProvaSP.Model.Entidades.UploadFiles;
+using ProvaSP.Model.Entidades.UploadFiles.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,5 +19,7 @@ namespace ProvaSP.Data.Data.UploadFiles
         Task<IEnumerable<UploadFileBatch>> GetActiveBatchesAsync(Guid usuId, UploadFileBatchType uploadFileBatchType);
 
         Task<bool> AnyBatchActiveAsync(UploadFileBatchType uploadFileBatchType);
+
+        Task<UploadFileBatchPaginated> GetAsync(UploadFileBatchFilter filter);
     }
 }

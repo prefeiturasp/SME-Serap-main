@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using ProvaSP.Data.Data.Abstractions;
 using ProvaSP.Model.Entidades.UploadFiles;
+using ProvaSP.Model.Entidades.UploadFiles.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,8 @@ namespace ProvaSP.Data.Data.UploadFiles
                             CicloDeAprendizagem,
                             Situation,
                             FileCount,
-                            UsuId
+                            UsuId,
+                            UsuName
                         FROM
                             UploadFileBatch (NOLOCK)";
 
@@ -29,9 +31,9 @@ namespace ProvaSP.Data.Data.UploadFiles
             if (entity is null || !entity.Valid) return null;
 
             var command = @"INSERT INTO UploadFileBatch
-                            (CreatedDate, UploadFileBatchType, Edicao, AreaDeConhecimento, CicloDeAprendizagem, Situation, FileCount, UsuId)
+                            (CreatedDate, UploadFileBatchType, Edicao, AreaDeConhecimento, CicloDeAprendizagem, Situation, FileCount, UsuId, UsuName)
                             VALUES
-                            (@createdDate, @uploadFileBatchType, @edicao, @areaDeConhecimento, @cicloDeAprendizagem, @situation, @fileCount, @usuId);
+                            (@createdDate, @uploadFileBatchType, @edicao, @areaDeConhecimento, @cicloDeAprendizagem, @situation, @fileCount, @usuId, @usuName);
 
                             SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY]; ";
 
@@ -44,7 +46,8 @@ namespace ProvaSP.Data.Data.UploadFiles
                 cicloDeAprendizagem = (short)entity.CicloDeAprendizagem,
                 situation = entity.Situation,
                 fileCount = entity.FileCount,
-                usuId = entity.UsuId
+                usuId = entity.UsuId,
+                usuName = entity.UsuName
             });
         }
 
@@ -54,7 +57,10 @@ namespace ProvaSP.Data.Data.UploadFiles
 
             var command = @"UPDATE UploadFileBatch
                             SET
+                                BeginDate = @beginDate,
                                 UpdateDate = @updateDate,
+                                FileCount = @fileCount,
+                                FileErrorCount = @fileErrorCount,
                                 Situation = @situation
                             WHERE
                                 Id = @id;";
@@ -62,7 +68,10 @@ namespace ProvaSP.Data.Data.UploadFiles
             await GetSqlConnection().ExecuteAsync(command, new
             {
                 id = entity.Id,
+                beginDate = entity.BeginDate,
                 updateDate = entity.UpdateDate,
+                fileCount = entity.FileCount,
+                fileErrorCount = entity.FileErrorCount,
                 situation = entity.Situation,
             });
         }
@@ -122,5 +131,51 @@ namespace ProvaSP.Data.Data.UploadFiles
 
             return result is null ? false : true;
         }
+
+        public async Task<UploadFileBatchPaginated> GetAsync(UploadFileBatchFilter filter)
+        {
+            var query = $@"{BaseSelect}
+                        {GetSearchConditions()}
+                        OFFSET @skip ROWS FETCH NEXT @rows ROWS ONLY;";
+
+            var entitiesTask = GetSqlConnection().QueryAsync<UploadFileBatch>(query, GetSearchParameters(filter));
+            var maxPageTask = GetMaxPageAsync(filter);
+            await Task.WhenAll(entitiesTask, maxPageTask);
+
+            return new UploadFileBatchPaginated
+            {
+                Entities = entitiesTask.Result,
+                MaxPage = maxPageTask.Result,
+                Page = filter.Page
+            };
+        }
+
+        private Task<int?> GetMaxPageAsync(UploadFileBatchFilter filter)
+        {
+            var query = $@"SELECT TOP 1 (COUNT(*) OVER() + @rows - 1)/@rows 
+                        FROM UploadFileBatch
+                        {GetSearchConditions()};";
+
+            return GetSqlConnection().QuerySingleOrDefaultAsync<int?>(query, GetSearchParameters(filter));
+        }
+
+        private object GetSearchParameters(UploadFileBatchFilter filter)
+            => new
+            {
+                uploadFileBatchType = filter.UploadFileBatchType,
+                edicao = filter.Edicao,
+                areaDeConhecimento = (short?)filter.AreaDeConhecimento,
+                cicloDeAprendizagem = (short?)filter.CicloDeAprendizagem,
+                skip = (filter.Page - 1) * UploadFileBatchFilter.RowsPerPage,
+                rows = UploadFileBatchFilter.RowsPerPage
+            };
+
+        private static string GetSearchConditions()
+            => $@"WHERE
+                    UploadFileBatchType = @uploadFileBatchType
+                    AND Edicao = @edicao
+                    AND (AreaDeConhecimento = @areaDeConhecimento OR @areaDeConhecimento IS NULL)
+                    AND (CicloDeAprendizagem = @cicloDeAprendizagem OR @cicloDeAprendizagem IS NULL)
+                ORDER BY CreatedDate DESC";
     }
 }

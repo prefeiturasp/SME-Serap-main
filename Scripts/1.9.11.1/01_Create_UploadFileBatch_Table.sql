@@ -10,7 +10,9 @@ CREATE TABLE UploadFileBatch
 	CicloDeAprendizagem SMALLINT NOT NULL,
 	Situation TINYINT NOT NULL,
 	UsuId UNIQUEIDENTIFIER NOT NULL,
-	FileCount INT NULL
+	UsuName VARCHAR(200) NOT NULL,
+	FileCount INT NULL,
+	FileErrorCount INT NULL
 );
 GO
 
