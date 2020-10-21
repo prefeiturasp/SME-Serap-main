@@ -617,7 +617,7 @@ namespace GestaoAvaliacao.Controllers
 			{
 				Pager pager1 = this.GetPager();
 
-				var blockItems = testBusiness.GetItemsByTest(TestId, SessionFacade.UsuarioLogado.Usuario.usu_id, ref pager1);
+				var blockItems = testBusiness.GetItemsByTest(repositoryCache, TestId, SessionFacade.UsuarioLogado.Usuario.usu_id, ref pager1);
 
 				if (!string.IsNullOrEmpty(ItemCode))
 				{

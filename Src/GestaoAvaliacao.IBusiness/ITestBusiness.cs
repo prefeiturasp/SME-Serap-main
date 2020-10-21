@@ -1,6 +1,7 @@
 ﻿using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.Enumerator;
+using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using MSTech.CoreSSO.Entities;
 using System;
@@ -25,7 +26,7 @@ namespace GestaoAvaliacao.IBusiness
 		KeyValuePair<long, long> GetTestItem(long Id, int ItemOrder, int AlternativeOrder);
 		IEnumerable<AnswerSheetStudentInformation> GetTeamStudents(int SchoolId, long SectionId, long StudentId, long test_id, bool allAdhered);
 		Test GetObjectWithTestType(long Id);
-		IEnumerable<BlockItem> GetItemsByTest(long test_id, Guid UsuId, ref Pager pager);
+		IEnumerable<BlockItem> GetItemsByTest(IRepositoryCache repositoryCache, long test_id, Guid UsuId, ref Pager pager);
 		IEnumerable<BlockItem> GetItemsByTest(long test_id, Guid UsuId);
 		IEnumerable<BlockItem> GetPendingRevokeItems(ref Pager pager, string ItemCode, DateTime? StartDate, DateTime? EndDate, EnumSituation? Situation);
 		EnumTestSituation TestSituation(Test entity);

@@ -19,6 +19,8 @@ namespace GestaoAvaliacao.Repository
             this.connectionMultiplexerSME = connectionMultiplexerSME ?? throw new ArgumentNullException(nameof(connectionMultiplexerSME));
         }
 
+        public string CriarChaveDeCache(params object[] chaves) => string.Join(":", chaves.Where(x => !string.IsNullOrWhiteSpace(x?.ToString())));
+
         public string Obter(string nomeChave, bool utilizarGZip = false)
         {
             var inicioOperacao = DateTime.UtcNow;
@@ -65,6 +67,34 @@ namespace GestaoAvaliacao.Repository
                 LogFacade.LogFacade.SaveError(ex);
             }
             return default(T);
+        }
+
+        public T Obter<T>(string nomeChave, Func<T> buscarDados, int minutosParaExpirar = 720, bool utilizarGZip = false)
+        {
+            try
+            {
+                var stringCache = connectionMultiplexerSME.GetDatabase()?.StringGet(nomeChave).ToString();
+                if (!string.IsNullOrWhiteSpace(stringCache))
+                {
+                    if (utilizarGZip)
+                    {
+                        stringCache = UtilGZip.Descomprimir(Convert.FromBase64String(stringCache));
+                    }
+                    return JsonConvert.DeserializeObject<T>(stringCache);
+                }
+
+                var dados = buscarDados();
+
+                Salvar(nomeChave, JsonConvert.SerializeObject(dados), minutosParaExpirar, utilizarGZip);
+
+                return dados;
+            }
+            catch (Exception ex)
+            {
+                //Caso o cache esteja indisponível a aplicação precisa continuar funcionando mesmo sem o cache
+                LogFacade.LogFacade.SaveError(ex);
+                return buscarDados();
+            }
         }
 
         public async Task<T> Obter<T>(string nomeChave, Func<Task<T>> buscarDados, int minutosParaExpirar = 720, bool utilizarGZip = false)

@@ -8,9 +8,13 @@ namespace GestaoAvaliacao.IRepository
 {
     public interface IRepositoryCache
     {
+        string CriarChaveDeCache(params object[] chaves);
+
         string Obter(string nomeChave, bool utilizarGZip = false);
 
         T Obter<T>(string nomeChave, bool utilizarGZip = false);
+
+        T Obter<T>(string nomeChave, Func<T> buscarDados, int minutosParaExpirar = 720, bool utilizarGZip = false);
 
         Task<T> Obter<T>(string nomeChave, Func<Task<T>> buscarDados, int minutosParaExpirar = 720, bool utilizarGZip = false);
 

@@ -165,9 +165,9 @@ namespace GestaoAvaliacao.Business
 			return testRepository.GetByTestType(Id);
 		}
 
-		public IEnumerable<BlockItem> GetItemsByTest(long test_id, Guid UsuId, ref Pager pager)
+		public IEnumerable<BlockItem> GetItemsByTest(IRepositoryCache repositoryCache, long test_id, Guid UsuId, ref Pager pager)
 		{
-			return blockRepository.GetItemsByTestId(test_id, UsuId, ref pager);
+			return blockRepository.GetItemsByTestId(repositoryCache, test_id, UsuId, ref pager);
 		}
 
 		public IEnumerable<BlockItem> GetItemsByTest(long test_id, Guid UsuId)
