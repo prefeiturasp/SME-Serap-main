@@ -2,6 +2,7 @@
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
+using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Models;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.Util.Extensions;
@@ -51,9 +52,10 @@ namespace GestaoAvaliacao.Controllers
 			this.escolaBusiness = escolaBusiness;
 			this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
 			this.testPermissionBusiness = testPermissionBusiness;
-        }
 
-        public ActionResult Index() => View();
+		}
+
+		public ActionResult Index() => View();
 
         [ActionAuthorizeAttribute(Permission.CreateOrUpdate)]
 		public ActionResult IndexForm(long Id = -1)

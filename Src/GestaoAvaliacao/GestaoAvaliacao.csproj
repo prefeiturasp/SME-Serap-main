@@ -1885,6 +1885,10 @@
       <Project>{4f696134-e4e6-422b-9286-8332fd194616}</Project>
       <Name>GestaoAvaliacao.IBusiness</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IRepository\GestaoAvaliacao.IRepository.csproj">
+      <Project>{E76144DD-15B5-4F3F-9681-3F0E2D5C90B5}</Project>
+      <Name>GestaoAvaliacao.IRepository</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.MappingDependence\GestaoAvaliacao.MappingDependence.csproj">
       <Project>{be1e5a8f-69d3-4b9d-b6b4-a71f94fb7840}</Project>
       <Name>GestaoAvaliacao.MappingDependence</Name>
