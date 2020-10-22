@@ -17,6 +17,9 @@ namespace GestaoAvaliacao.Repository
 {
     public class BlockRepository : ConnectionReadOnly, IBlockRepository
     {
+        private const int TempoDeExpiracao = 72000;
+
+
         #region Read
 
         public IEnumerable<ItemWithOrderAndRevoked> GetTestItemBlocks(Int64 TestId)
@@ -382,7 +385,7 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public IEnumerable<BlockItem> GetItemsByTestId(IRepositoryCache repositoryCache, long test_id, Guid UsuId, ref Pager pager)
+        public IEnumerable<BlockItem> GetItemsByTestId(long test_id, Guid UsuId, ref Pager pager)
         {
             var sql = @"WITH NumberedTestItems (BlockItem_Id,[Order],Item_Id,ItemCode,ItemVersion,Statement, BaseText_Id,Description, RowNumber) AS " +
                         "( " +
@@ -432,15 +435,7 @@ namespace GestaoAvaliacao.Repository
 
                 foreach (var blockItem in blockItems)
                 {
-                    var chave = repositoryCache.CriarChaveDeCache("ProvaSP", UsuId, "GetRequestRevoke");
-                    var tempoDeExpiracao = 72000;
-                    var requestRevoke = repositoryCache.Obter(chave, () => GetRequestRevoke(cn, (Byte)EnumState.ativo, blockItem.Id, UsuId), tempoDeExpiracao, false);
-
-                    if (requestRevoke != null)
-                    {
-                        blockItem.RequestRevokes = new List<RequestRevoke>();
-                        blockItem.RequestRevokes.Add(requestRevoke);
-                    }
+                    blockItem.RequestRevokes = new List<RequestRevoke>();
                 }
 
                 pager.SetTotalPages((int)Math.Ceiling(count / (double)pager.PageSize));
@@ -448,18 +443,6 @@ namespace GestaoAvaliacao.Repository
 
                 return blockItems;
             }
-        }
-
-        private RequestRevoke GetRequestRevoke(IDbConnection cn, byte ativo, long blockItemId, Guid usuId)
-        {
-            var sqlRequest = @"SELECT Id,Situation,Justification " +
-                              "FROM RequestRevoke " +
-                              "WHERE BlockItem_Id = @BlockItem_Id " +
-                              "AND UsuId = @UsuId " +
-                              "AND State = @State ";
-
-            return cn.Query<RequestRevoke>(sqlRequest,
-                        new { state = ativo, BlockItem_Id = blockItemId, UsuId = usuId }).FirstOrDefault();
         }
 
         public IEnumerable<BlockItem> GetItemsByTestId(long test_id, Guid UsuId)
@@ -484,12 +467,6 @@ namespace GestaoAvaliacao.Repository
                             "FROM NumberedTestItems " +
                             "ORDER BY RowNumber ";
 
-            var sqlRequest = @"SELECT Id,Situation,Justification " +
-                              "FROM RequestRevoke " +
-                              "WHERE BlockItem_Id = @BlockItem_Id " +
-                              "AND UsuId = @UsuId " +
-                              "AND State = @State ";
-
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
@@ -504,13 +481,7 @@ namespace GestaoAvaliacao.Repository
 
                 foreach (var blockItem in blockItems)
                 {
-                    RequestRevoke requestRevoke = cn.Query<RequestRevoke>(sqlRequest,
-                        new { state = (Byte)EnumState.ativo, BlockItem_Id = blockItem.Id, UsuId = UsuId }).FirstOrDefault();
-                    if (requestRevoke != null)
-                    {
-                        blockItem.RequestRevokes = new List<RequestRevoke>();
-                        blockItem.RequestRevokes.Add(requestRevoke);
-                    }
+                    blockItem.RequestRevokes = new List<RequestRevoke>();
                 }
 
                 return blockItems;

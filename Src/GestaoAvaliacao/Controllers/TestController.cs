@@ -35,12 +35,11 @@ namespace GestaoAvaliacao.Controllers
 		private readonly IESC_EscolaBusiness escolaBusiness;
 		private readonly ITestCurriculumGradeBusiness testCurriculumGradeBusiness;
 		private readonly ITestPermissionBusiness testPermissionBusiness;
-		private readonly IRepositoryCache repositoryCache;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
 			IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness, 
 			IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness, 
-			ITestPermissionBusiness testPermissionBusiness, IRepositoryCache repositoryCache)
+			ITestPermissionBusiness testPermissionBusiness)
 		{
 			this.testBusiness = testBusiness;
 			this.testFilesBusiness = testFilesBusiness;
@@ -53,8 +52,6 @@ namespace GestaoAvaliacao.Controllers
 			this.escolaBusiness = escolaBusiness;
 			this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
 			this.testPermissionBusiness = testPermissionBusiness;
-			this.repositoryCache = repositoryCache;
-
 		}
 
         public ActionResult Index() => View();
@@ -398,8 +395,6 @@ namespace GestaoAvaliacao.Controllers
 						filter.global = false;
 				}
 
-				repositoryCache.Salvar("ProvaSP-Jdulley54321", "Freitas");
-
 				filter.ent_id = SessionFacade.UsuarioLogado.Usuario.ent_id;
 				filter.gru_id = SessionFacade.UsuarioLogado.Grupo.gru_id;
 				filter.pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id;
@@ -617,7 +612,7 @@ namespace GestaoAvaliacao.Controllers
 			{
 				Pager pager1 = this.GetPager();
 
-				var blockItems = testBusiness.GetItemsByTest(repositoryCache, TestId, SessionFacade.UsuarioLogado.Usuario.usu_id, ref pager1);
+				var blockItems = testBusiness.GetItemsByTest(TestId, SessionFacade.UsuarioLogado.Usuario.usu_id, ref pager1);
 
 				if (!string.IsNullOrEmpty(ItemCode))
 				{
