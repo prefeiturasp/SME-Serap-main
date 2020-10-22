@@ -52,9 +52,10 @@ namespace GestaoAvaliacao.Controllers
 			this.escolaBusiness = escolaBusiness;
 			this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
 			this.testPermissionBusiness = testPermissionBusiness;
+
 		}
 
-        public ActionResult Index() => View();
+		public ActionResult Index() => View();
 
         [ActionAuthorizeAttribute(Permission.CreateOrUpdate)]
 		public ActionResult IndexForm(long Id = -1)
