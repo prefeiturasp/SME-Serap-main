@@ -1,6 +1,7 @@
 ﻿using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.Enumerator;
+using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using MSTech.CoreSSO.Entities;
 using System;

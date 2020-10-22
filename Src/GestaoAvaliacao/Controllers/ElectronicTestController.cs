@@ -3,6 +3,7 @@ using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.DTO.Tests;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
+using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.MongoEntities;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;

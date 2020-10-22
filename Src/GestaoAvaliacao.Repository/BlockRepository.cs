@@ -416,12 +416,6 @@ namespace GestaoAvaliacao.Repository
                             "LEFT JOIN BaseText bx  WITH (NOLOCK) on i.BaseText_Id = bx.Id " +
                             "WHERE t.id = @id";
 
-            var sqlRequest = @"SELECT Id,Situation,Justification " +
-                              "FROM RequestRevoke " +
-                              "WHERE BlockItem_Id = @BlockItem_Id " +
-                              "AND UsuId = @UsuId " +
-                              "AND State = @State ";
-
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
@@ -435,17 +429,6 @@ namespace GestaoAvaliacao.Repository
                     }, new { state = (Byte)EnumState.ativo, pageSize = pager.PageSize, page = pager.CurrentPage, id = test_id });
 
                 var count = (int)cn.ExecuteScalar(countSql, new { state = (Byte)EnumState.ativo, id = test_id, usuId = UsuId });
-
-                foreach (var blockItem in blockItems)
-                {
-                    RequestRevoke requestRevoke = cn.Query<RequestRevoke>(sqlRequest,
-                        new { state = (Byte)EnumState.ativo, BlockItem_Id = blockItem.Id, UsuId = UsuId }).FirstOrDefault();
-                    if (requestRevoke != null)
-                    {
-                        blockItem.RequestRevokes = new List<RequestRevoke>();
-                        blockItem.RequestRevokes.Add(requestRevoke);
-                    }
-                }
 
                 pager.SetTotalPages((int)Math.Ceiling(count / (double)pager.PageSize));
                 pager.SetTotalItens(count);
@@ -495,23 +478,6 @@ namespace GestaoAvaliacao.Repository
                         return bi;
                     }, new { state = (Byte)EnumState.ativo, id = test_id }, transaction);
                 if (!blockItems.Any()) return blockItems;
-
-                var sqlRequest = $@"SELECT t1.Id, t1.Situation, t1.Justification  
-                             FROM 
-                                RequestRevoke t1 (NOLOCK)
-                             WHERE
-                                UsuId = @UsuId  
-                                AND State = @State
-                                AND t1.BlockItem_Id IN ({ string.Join(",", blockItems.Select(x => x.Id)) })";
-                var revokes = await cn.QueryAsync<RequestRevoke>(sqlRequest, new { state = (Byte)EnumState.ativo, UsuId }, transaction);
-                if(!revokes?.Any() ?? true) return blockItems;
-
-                foreach(var revoke in revokes)
-                {
-                    var blockItem = blockItems.First(x => x.Id == revoke.BlockItem_Id);
-                    blockItem.RequestRevokes = blockItem.RequestRevokes ?? new List<RequestRevoke>();
-                    blockItem.RequestRevokes.Add(revoke);
-                }
 
                 return blockItems;
             }
