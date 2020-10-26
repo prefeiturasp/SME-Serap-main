@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentValidation, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentValidation.8.6.3\lib\net45\FluentValidation.dll</HintPath>
+    </Reference>
     <Reference Include="MSTech.Business.Common">
       <HintPath>..\MSTech.Library\CoreSSO\MSTech.Business.Common.dll</HintPath>
     </Reference>
@@ -51,6 +54,7 @@
       <HintPath>..\MSTech.Library\MSTech\MSTech.Data.Common.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -99,6 +103,7 @@
     <Compile Include="ReportTestPerformanceBusiness.cs" />
     <Compile Include="StudentCorrectionBusiness.cs" />
     <Compile Include="StudentTestAbsenceReasonBusiness.cs" />
+    <Compile Include="StudentTestSessionBusiness.cs" />
     <Compile Include="SubjectBusiness.cs" />
     <Compile Include="SubSubjectBusiness.cs" />
     <Compile Include="TestFilesBusiness.cs" />
@@ -134,6 +139,8 @@
     <Compile Include="TestTypeDeficiencyBusiness.cs" />
     <Compile Include="TestTypeItemLevelBusiness.cs" />
     <Compile Include="FormatTypeBusiness.cs" />
+    <Compile Include="Validators\EndStudentTestSessionValidator.cs" />
+    <Compile Include="Validators\StartStudentTestSessionValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Domain\AvaliaMais.FolhaRespostas.Domain.csproj">
@@ -195,6 +202,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

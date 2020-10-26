@@ -68,6 +68,7 @@
     <Compile Include="IReportTestPerformanceRepository.cs" />
     <Compile Include="IStudentCorrectionRepository.cs" />
     <Compile Include="IStudentTestAbsenceReasonRepository.cs" />
+    <Compile Include="IStudentTestSessionRepository.cs" />
     <Compile Include="ISubjectRepository.cs" />
     <Compile Include="ISubSubjectRepository.cs" />
     <Compile Include="ITempCorrectionResultRepository.cs" />

@@ -131,7 +131,8 @@ namespace GestaoAvaliacao.Repository.Context
 		public DbSet<ParameterCategory> ParameterCategory { get; set; }
 		public DbSet<ParameterType> ParameterType { get; set; }
 		public DbSet<Skill> Skill { get; set; }
-		public DbSet<TestTypeCourse> TestTypeCourse { get; set; }
+        public DbSet<StudentTestSession> StudentTestSessions { get; set; }
+        public DbSet<TestTypeCourse> TestTypeCourse { get; set; }
 		public DbSet<TestTypeCourseCurriculumGrade> TestTypeCourseCurriculumGrade { get; set; }
 		public DbSet<TestTypeDeficiency> TestTypeDeficiencies { get; set; }
 		public DbSet<TestTypeItemLevel> TestTypeItemLevel { get; set; }

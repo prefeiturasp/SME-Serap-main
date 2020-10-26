@@ -10,10 +10,14 @@ using AvaliaMais.FolhaRespostas.Domain.ProcessamentoProva.Services;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using FluentValidation;
 using GestaoAvaliacao.Business;
+using GestaoAvaliacao.Business.Validators;
+using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.IBusiness;
 using GestaoEscolar.Business;
 using GestaoEscolar.IBusiness;
+using System.Configuration;
 
 namespace GestaoAvaliacao.MappingDependence
 {
@@ -416,10 +420,14 @@ namespace GestaoAvaliacao.MappingDependence
                     .WithService.AllInterfaces()
                     .SetLifestyle(LifestylePerWebRequest));
 
+			container.Register(Classes.FromAssemblyContaining<StudentTestSessionBusiness>()
+					.BasedOn(typeof(IStudentTestSessionBusiness))
+					.WithService.AllInterfaces()
+					.SetLifestyle(LifestylePerWebRequest));
 
-            #region GestaoEscolar
+			#region GestaoEscolar
 
-            container.Register(Classes.FromAssemblyContaining<ACA_CursoBusiness>()
+			container.Register(Classes.FromAssemblyContaining<ACA_CursoBusiness>()
 				   .BasedOn(typeof(IACA_CursoBusiness))
 				   .WithService.AllInterfaces()
 				   .SetLifestyle(LifestylePerWebRequest));
@@ -480,6 +488,21 @@ namespace GestaoAvaliacao.MappingDependence
 				  .SetLifestyle(LifestylePerWebRequest));
 
 			#endregion
+
+			InstallValidators(container);
+		}
+
+		private void InstallValidators(IWindsorContainer container)
+        {
+			container.Register(Classes.FromAssemblyContaining<StartStudentTestSessionValidator>()
+								.BasedOn(typeof(IValidator<StartStudentTestSessionDto>))
+								.WithService.AllInterfaces()
+								.SetLifestyle(LifestylePerWebRequest));
+
+			container.Register(Classes.FromAssemblyContaining<EndStudentTestSessionValidator>()
+								.BasedOn(typeof(IValidator<EndStudentTestSessionDto>))
+								.WithService.AllInterfaces()
+								.SetLifestyle(LifestylePerWebRequest));
 		}
 	}
 }

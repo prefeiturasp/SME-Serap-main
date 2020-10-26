@@ -112,6 +112,7 @@
     <Compile Include="Map\RequestRevokeMap.cs" />
     <Compile Include="RequestRevokeRepository.cs" />
     <Compile Include="ResponseChangeLogRepository.cs" />
+    <Compile Include="StudentTestSessionRepository.cs" />
     <Compile Include="SubjectRepository.cs" />
     <Compile Include="SubSubjectRepository.cs" />
     <Compile Include="TestGroupRepository.cs" />
