@@ -1068,68 +1068,79 @@ namespace GestaoAvaliacao.Repository
 
         public List<ElectronicTestDTO> SearchEletronicTestsByPesId(Guid pes_id)
         {
-            StringBuilder sql = new StringBuilder(@"SELECT
-                                                        T.Id,
-                                                        T.[Description] + ' - ' + CASE 
-                                                                                    WHEN Discipline_Id IS NULL THEN 'Multidisciplinar'
-                                                                                    ELSE D.[Description]
-                                                                                  END 
-                                                        AS Description,
-                                                        NumberItem,
-                                                        CASE WHEN DATEDIFF(dd, GETDATE(), ApplicationEndDate) >= 0 THEN (DATEDIFF(dd, GETDATE(), ApplicationEndDate) + 1)
-                                                             ELSE 0 
-                                                        END AS quantDiasRestantes, 
-                                                        TT.FrequencyApplication,
-                                                        T.ApplicationEndDate,
-	                                                    t.AllAdhered,
-	                                                    mtu.alu_id,
-	                                                    mtu.tur_id,
-                                                        TT.Id AS TestTypeId,
-                                                        TT.TargetToStudentsWithDeficiencies
-                                                    FROM
-                                                        Test AS T WITH(NOLOCK)
-                                                        INNER JOIN TestType AS TT WITH(NOLOCK)
-                                                            ON TT.Id = T.TestType_Id
-	                                                    INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) 
-		                                                    ON T.Id = tcc.Test_Id
-		                                                    AND tcc.[State] = 1
-	                                                    INNER JOIN SGP_ACA_CurriculoPeriodo AS Crp WITH(NOLOCK)
-		                                                    ON tcc.TypeCurriculumGradeId = Crp.tcp_id
-		                                                    AND Crp.crp_situacao <> 3
-                                                        INNER JOIN SGP_MTR_MatriculaTurma mtu WITH(NOLOCK) 
-                                                            ON mtu.cur_id = Crp.cur_id
-		                                                    AND mtu.crr_id = Crp.crr_id
-		                                                    AND mtu.crp_id = Crp.crp_id
-                                                            AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= CAST(T.CorrectionEndDate AS DATE) 
-		                                                    AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= CAST(T.ApplicationStartDate AS DATE)))) 
-	                                                    INNER JOIN SGP_ACA_Aluno AS ALU WITH(NOLOCK)
-		                                                    ON ALU.alu_id = mtu.alu_id
-                                                        LEFT JOIN Discipline AS D WITH(NOLOCK)
-                                                            ON D.Id = T.Discipline_Id
-	                                                    LEFT JOIN Adherence AS A WITH(NOLOCK)
-		                                                    ON T.Id = A.Test_Id
-		                                                    AND ALU.alu_id = A.EntityId	
-                                                            AND A.TypeEntity = @TypeEntityStudent
-                                                            AND A.[State] = 1
-                                                    WHERE 
-                                                        ElectronicTest = 1
-                                                        AND T.[State] <> 3
-	                                                    AND (T.AllAdhered = 1 AND ISNULL(A.TypeSelection, 0) NOT IN (@TypeSelectionNaoSelecionado,@TypeSelectionBloqueado)
-		                                                    OR (T.AllAdhered = 0 AND TypeSelection = @TypeSelectionSelecionado))
-	                                                    AND ALU.pes_id = @PesId
-                                                    GROUP BY
-                                                        T.Id,
-                                                        T.[Description],
-	                                                    T.Discipline_Id,
-	                                                    D.[Description],
-	                                                    T.NumberItem,
-                                                        TT.FrequencyApplication,
-                                                        T.ApplicationEndDate,
-	                                                    t.AllAdhered,
-	                                                    mtu.alu_id,
-	                                                    mtu.tur_id,
-                                                        TT.Id,
-                                                        TT.TargetToStudentsWithDeficiencies");
+            StringBuilder sql = new StringBuilder(@"
+                SELECT 
+	                mtu.mtu_dataMatricula, 
+	                mtu.mtu_dataSaida, 
+	                mtu.cur_id, 
+	                mtu.crr_id, 
+	                mtu.crp_id,
+	                mtu.alu_id,
+	                mtu.tur_id
+	                INTO #Matricula
+                FROM SGP_MTR_MatriculaTurma mtu WITH(NOLOCK) 
+                INNER JOIN SGP_ACA_Aluno AS alu WITH(NOLOCK) ON alu.alu_id = mtu.alu_id
+                WHERE  
+	                alu.pes_id = @PesId
+
+                SELECT 
+                    T.Id,
+                    T.[Description] + ' - ' + CASE 
+                                                WHEN Discipline_Id IS NULL THEN 'Multidisciplinar'
+                                                ELSE D.[Description]
+                                                END 
+                    AS Description,
+                    NumberItem,
+                    CASE WHEN DATEDIFF(dd, GETDATE(), ApplicationEndDate) >= 0 THEN (DATEDIFF(dd, GETDATE(), ApplicationEndDate) + 1)
+                            ELSE 0 
+                    END AS quantDiasRestantes, 
+                    TT.FrequencyApplication,
+                    T.ApplicationEndDate,
+	                t.AllAdhered,
+	                mtu.alu_id,
+	                mtu.tur_id,
+                    TT.Id AS TestTypeId,
+                    TT.TargetToStudentsWithDeficiencies
+                FROM Test AS T WITH(NOLOCK)
+                INNER JOIN TestType AS TT WITH(NOLOCK)
+	                ON TT.Id = T.TestType_Id
+                INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) 
+	                ON T.Id = tcc.Test_Id AND tcc.[State] = 1
+                INNER JOIN SGP_ACA_CurriculoPeriodo AS Crp WITH(NOLOCK)
+		                ON tcc.TypeCurriculumGradeId = Crp.tcp_id
+		                AND Crp.crp_situacao <> 3	
+                INNER JOIN #Matricula mtu ON
+	                mtu.cur_id = Crp.cur_id
+	                AND mtu.crr_id = Crp.crr_id
+	                AND mtu.crp_id = Crp.crp_id
+                    AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= CAST(T.CorrectionEndDate AS DATE) 
+	                AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= CAST(T.ApplicationStartDate AS DATE)))) 
+                LEFT JOIN Discipline AS D WITH(NOLOCK)
+                    ON D.Id = T.Discipline_Id
+                LEFT JOIN Adherence AS A WITH(NOLOCK)
+	                ON T.Id = A.Test_Id
+	                AND A.EntityId = mtu.alu_id 	
+                    AND A.TypeEntity = @TypeEntityStudent
+                    AND A.[State] = 1
+                WHERE 
+                    ElectronicTest = 1
+                    AND T.[State] <> 3
+	                AND (T.AllAdhered = 1 AND ISNULL(A.TypeSelection, 0) NOT IN (@TypeSelectionNaoSelecionado,@TypeSelectionBloqueado)
+		                OR (T.AllAdhered = 0 AND TypeSelection = @TypeSelectionSelecionado))
+                GROUP BY
+                    T.Id,
+                    T.[Description],
+	                T.Discipline_Id,
+	                D.[Description],
+	                T.NumberItem,
+                    TT.FrequencyApplication,
+                    T.ApplicationEndDate,
+	                t.AllAdhered,
+	                mtu.alu_id,
+	                mtu.tur_id,
+                    TT.Id,
+                    TT.TargetToStudentsWithDeficiencies
+                ");
 
             using (IDbConnection cn = Connection)
             {
