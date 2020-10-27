@@ -1,0 +1,5 @@
+CREATE NONCLUSTERED INDEX IX_TestCurriculumGrade_Test_Id_State ON TestCurriculumGrade(TypeCurriculumGradeId) INCLUDE (Test_Id, [State])
+
+CREATE NONCLUSTERED INDEX IX_MTR_MatriculaTurma_alu_id_DataMatricula_DataSaida_cur_id_crr_id_crp_id ON MTR_MatriculaTurma (alu_id) INCLUDE (mtu_dataMatricula, mtu_dataSaida, cur_id, crr_id, crp_id)
+
+CREATE NONCLUSTERED INDEX IX_Test_TestType_Id ON Test (TestType_Id)
