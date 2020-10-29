@@ -1698,8 +1698,11 @@ namespace GestaoAvaliacao.App_Start
             bundles.Add(
                 new ScriptBundle("~/bundles/ElectronicTest_Form_js")
                     //Controller e model js
+                    .Include("~/scripts/jquery.signalR-2.4.1.min.js")
+                    .Include("~/scripts/signalRBundle.js")
                     .Include("~/Assets/js/angular/controllers/electronicTest/formElectronicTestController.js")
                     .Include("~/Assets/js/angular/models/electronicTest/electronicTestModel.js")
+                    .Include("~/Assets/js/angular/controllers/electronicTest/sessions/SessionManager.js")
                     .Include("~/Assets/js/angular/directives/_bundle/modal/modal.js")
                     //directiva util
                     .Include("~/Assets/js/angular/services/_bundle/util/util.js")

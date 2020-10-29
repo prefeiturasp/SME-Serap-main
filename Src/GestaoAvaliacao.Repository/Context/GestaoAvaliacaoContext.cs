@@ -1,4 +1,5 @@
 ﻿using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.StudentTestAccoplishments;
 using GestaoAvaliacao.Repository.Map;
 using GestaoAvaliacao.Repository.Migrations;
 using System.Data.Entity;
@@ -88,8 +89,10 @@ namespace GestaoAvaliacao.Repository.Context
             modelBuilder.Configurations.Add(new ItemFileMap());
             modelBuilder.Configurations.Add(new BlockKnowledgeAreaMap());
             modelBuilder.Configurations.Add(new ItemAudioMap());
+			modelBuilder.Configurations.Add(new StudentTestAccoplishmentMap());
+			modelBuilder.Configurations.Add(new StudentTestSessionMap());
 
-            modelBuilder.Entity<Subject>()
+			modelBuilder.Entity<Subject>()
                 .HasMany<Discipline>(s => s.Disciplines)
                 .WithMany(c => c.Subjects)
                 .Map(cs =>
@@ -131,7 +134,8 @@ namespace GestaoAvaliacao.Repository.Context
 		public DbSet<ParameterCategory> ParameterCategory { get; set; }
 		public DbSet<ParameterType> ParameterType { get; set; }
 		public DbSet<Skill> Skill { get; set; }
-        public DbSet<StudentTestSession> StudentTestSessions { get; set; }
+        public DbSet<StudentTestAccoplishment> StudentTestAccoplishments { get; set; }
+		public DbSet<StudentTestSession> StudentTestSessions { get; set; }
         public DbSet<TestTypeCourse> TestTypeCourse { get; set; }
 		public DbSet<TestTypeCourseCurriculumGrade> TestTypeCourseCurriculumGrade { get; set; }
 		public DbSet<TestTypeDeficiency> TestTypeDeficiencies { get; set; }

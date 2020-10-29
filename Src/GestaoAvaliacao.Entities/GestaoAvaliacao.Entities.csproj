@@ -78,13 +78,14 @@
     <Compile Include="DTO\DreDTO.cs" />
     <Compile Include="DTO\DresDTO.cs" />
     <Compile Include="DTO\ElectronicTestDTO.cs" />
-    <Compile Include="DTO\EndStudentTestSessionDto.cs" />
+    <Compile Include="DTO\StudentTestAccoplishments\EndStudentTestAccoplishmentDto.cs" />
+    <Compile Include="DTO\StudentTestAccoplishments\EndStudentTestSessionDto.cs" />
     <Compile Include="DTO\ExportAnalysisDTO.cs" />
     <Compile Include="DTO\ItemPercentageChoiceByAlternativeWithOrderResult.cs" />
     <Compile Include="DTO\ReportTestDTO.cs" />
     <Compile Include="DTO\RequestRevokeDTO.cs" />
     <Compile Include="DTO\SchoolDTO.cs" />
-    <Compile Include="DTO\StartStudentTestSessionDto.cs" />
+    <Compile Include="DTO\StudentTestAccoplishments\StartStudentTestSessionDto.cs" />
     <Compile Include="DTO\StudentDTO.cs" />
     <Compile Include="DTO\StudentInformationAndPerformanceTestResult.cs" />
     <Compile Include="DTO\TeamsDTO.cs" />
@@ -123,7 +124,8 @@
     <Compile Include="SelectedSection.cs" />
     <Compile Include="StudentCorrectionAnswerGrid.cs" />
     <Compile Include="StudentTestAbsenceReason.cs" />
-    <Compile Include="StudentTestSession.cs" />
+    <Compile Include="StudentTestAccoplishments\StudentTestAccoplishment.cs" />
+    <Compile Include="StudentTestAccoplishments\StudentTestSession.cs" />
     <Compile Include="Subject.cs" />
     <Compile Include="SubSubject.cs" />
     <Compile Include="TestGroup.cs" />

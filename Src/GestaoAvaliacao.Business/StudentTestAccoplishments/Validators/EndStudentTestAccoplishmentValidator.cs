@@ -1,16 +1,11 @@
 ﻿using FluentValidation;
-using GestaoAvaliacao.Entities.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GestaoAvaliacao.Entities.DTO.StudentTestAccoplishments;
 
-namespace GestaoAvaliacao.Business.Validators
+namespace GestaoAvaliacao.Business.StudentTestAccoplishments.Validators
 {
-    public class StartStudentTestSessionValidator : AbstractValidator<StartStudentTestSessionDto>
+    public class EndStudentTestAccoplishmentValidator : AbstractValidator<EndStudentTestAccoplishmentDto>
     {
-        public StartStudentTestSessionValidator()
+        public EndStudentTestAccoplishmentValidator()
         {
             RuleFor(x => x.AluId)
                 .NotEmpty()
@@ -27,10 +22,6 @@ namespace GestaoAvaliacao.Business.Validators
             RuleFor(x => x.TurId)
                 .NotEmpty()
                 .WithMessage("A identificação da turma do aluno deve ser informada.");
-
-            RuleFor(x => x.UsuId)
-                .NotEmpty()
-                .WithMessage("A identificação do usuário logado deve ser informada.");
         }
     }
 }

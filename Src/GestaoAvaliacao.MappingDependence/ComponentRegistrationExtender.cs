@@ -1,5 +1,6 @@
 ﻿using Castle.MicroKernel.Registration;
 using GestaoAvaliacao.IFileServer;
+using System.Collections;
 
 namespace GestaoAvaliacao.MappingDependence
 {

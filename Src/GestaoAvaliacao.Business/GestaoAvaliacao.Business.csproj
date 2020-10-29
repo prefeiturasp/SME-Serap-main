@@ -103,7 +103,8 @@
     <Compile Include="ReportTestPerformanceBusiness.cs" />
     <Compile Include="StudentCorrectionBusiness.cs" />
     <Compile Include="StudentTestAbsenceReasonBusiness.cs" />
-    <Compile Include="StudentTestSessionBusiness.cs" />
+    <Compile Include="StudentTestAccoplishments\StudentTestAccoplishmentBusiness.cs" />
+    <Compile Include="StudentTestAccoplishments\Validators\EndStudentTestAccoplishmentValidator.cs" />
     <Compile Include="SubjectBusiness.cs" />
     <Compile Include="SubSubjectBusiness.cs" />
     <Compile Include="TestFilesBusiness.cs" />
@@ -139,8 +140,8 @@
     <Compile Include="TestTypeDeficiencyBusiness.cs" />
     <Compile Include="TestTypeItemLevelBusiness.cs" />
     <Compile Include="FormatTypeBusiness.cs" />
-    <Compile Include="Validators\EndStudentTestSessionValidator.cs" />
-    <Compile Include="Validators\StartStudentTestSessionValidator.cs" />
+    <Compile Include="StudentTestAccoplishments\Validators\EndStudentTestSessionValidator.cs" />
+    <Compile Include="StudentTestAccoplishments\Validators\StartStudentTestSessionValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Domain\AvaliaMais.FolhaRespostas.Domain.csproj">

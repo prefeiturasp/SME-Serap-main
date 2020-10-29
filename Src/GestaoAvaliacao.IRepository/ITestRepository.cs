@@ -9,6 +9,7 @@ namespace GestaoAvaliacao.IRepository
 {
 	public interface ITestRepository
 	{
+		Task<bool> AnyAsync(long testId);
 		Test Save(Test entity, Guid usu_id);
 		Test Update(Test entity);
 		Test Update(long Id, Test entity);

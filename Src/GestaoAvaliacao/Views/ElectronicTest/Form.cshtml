@@ -6,7 +6,7 @@
             <div class="col-sm-12">
                 <div class="electronicTestHeader">
                     <b>Questão {{ test.Itens[indiceItem].ItemOrder + 1 }}</b>
-                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;"/>
+                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;" />
                     <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" />
 
                 </div>
@@ -42,9 +42,9 @@
                     <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomAlternativas(false)" />
                 </div>
                 <div class="alternativas" ng-repeat="alternativa in test.Itens[indiceItem].Alternatives">
-                    <input ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)" 
-                           type="radio" name="alternative" 
-                           ng-checked="alternativa.Selected" 
+                    <input ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)"
+                           type="radio" name="alternative"
+                           ng-checked="alternativa.Selected"
                            ng-click="handleRadioClick(alternativa)">
                     {{ alternativa.Numeration }}
                     <label class="alternativeElementClass" ng-bind-html="alternativa.Description | trustedHtml"></label>
@@ -109,3 +109,31 @@
         </div>
     </modal>
 </div>
+
+@*@section scripts{
+    <script>
+        $(function () {
+            $.connection.hub.logging = true;
+            var sessionHub = $.connection.studentTestSessionHub;
+            sessionHub.client.reportStartSessionError = function (messages) {
+                notificationSessionErrors(messages);
+            };
+
+            sessionHub.client.reportEndSessionError = function (messages) {
+                notificationSessionErrors(messages);
+            };
+
+            debugger;
+            $.connection.hub.start().done(function () {
+                sessionHub.server.startSession(1, 1, 1).done(function () {
+                    console.log('Invocation of startSession succeeded');
+                    finalizeLoad();
+                }).fail(function (error) {
+                    console.log('Invocation of startSession failed. Error: ' + error);
+                });
+            }).fail(function (error) {
+                console.log('Connection Start FAIl. Error: ' + error);
+            });
+        });
+    </script>
+}*@

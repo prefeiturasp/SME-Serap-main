@@ -1,57 +1,82 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using GestaoAvaliacao.Entities.DTO;
+﻿using GestaoAvaliacao.Entities.DTO.StudentTestAccoplishments;
 using GestaoAvaliacao.IBusiness;
+using GestaoAvaliacao.WebProject.Facade;
 using Microsoft.AspNet.SignalR;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Hubs.Tests
 {
     public class StudentTestSessionHub : Hub
     {
-        private readonly IStudentTestSessionBusiness _studentTestSessionBusiness;
+        private readonly IStudentTestAccoplishmentBusiness _studentTestSessionBusiness;
+        private const string errorLogType = "StudentTestSession";
 
-        public StudentTestSessionHub(IStudentTestSessionBusiness studentTestSessionBusiness)
+        public StudentTestSessionHub(IStudentTestAccoplishmentBusiness studentTestSessionBusiness)
         {
             _studentTestSessionBusiness = studentTestSessionBusiness;
         }
 
-        public async Task StartSession(long aluId, long turId, long testId, Guid usuId)
+        public async Task StartSession(long aluId, long turId, long testId)
         {
             var dto = new StartStudentTestSessionDto
             {
                 AluId = aluId,
                 TurId = turId,
                 TestId = testId,
-                UsuId = usuId,
                 ConnectionId = Context.ConnectionId
             };
 
             await _studentTestSessionBusiness.StartSessionAsync(dto);
-            if(!dto.IsValid)
+            if (!dto.IsValid)
             {
                 Clients.Caller.reportStartSessionError(dto.Errors);
-                return;
+                LogErrors(dto.Errors);
             }
-
-            Clients.Caller.reportStartSessionSuccess();
+            else
+            {
+                Clients.Caller.reportStartSessionSuccess();
+            }
         }
 
-        public async Task EndSession(long aluId, long turId, long testId)
+        public async Task EndSession()
         {
             var dto = new EndStudentTestSessionDto
             {
-                AluId = aluId,
-                TurId = turId,
-                TestId = testId
+                ConnectionId = Context.ConnectionId,
             };
 
             await _studentTestSessionBusiness.EndSessionAsync(dto);
             if (!dto.IsValid)
             {
                 Clients.Caller.reportEndSessionError(dto.Errors);
+                LogErrors(dto.Errors);
+            }
+            else
+            {
+                Clients.Caller.reportEndSessionSuccess();
+            }
+        }
+
+        public async Task EndTest(long aluId, long turId, long testId)
+        {
+            var dto = new EndStudentTestAccoplishmentDto
+            {
+                AluId = aluId,
+                TurId = turId,
+                TestId = testId,
+                ConnectionId = Context.ConnectionId
+            };
+
+            await _studentTestSessionBusiness.EndStudentTestAccoplishmentAsync(dto);
+            if (!dto.IsValid)
+            {
+                Clients.Caller.reportEndSessionError(dto.Errors);
+                LogErrors(dto.Errors);
+            }
+            else
+            {
+                Clients.Caller.reportEndSessionSuccess();
             }
         }
 
@@ -64,6 +89,17 @@ namespace GestaoAvaliacao.Hubs.Tests
             };
 
             await Task.WhenAll(_studentTestSessionBusiness.EndSessionAsync(dto), base.OnDisconnected(stopCalled));
+            if (!dto.IsValid)
+            {
+                Clients.Caller.reportEndSessionError(dto.Errors);
+                LogErrors(dto.Errors);
+            }
+        }
+
+        private void LogErrors(IEnumerable<string> errorMessages)
+        {
+            foreach (var errorMessage in errorMessages)
+                LogFacade.SaveBasicError(errorMessage, errorLogType);
         }
     }
 }

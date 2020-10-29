@@ -2,7 +2,19 @@
 
 namespace GestaoAvaliacao.Entities.Enumerator
 {
-    public enum Sessionituation
+    public enum AccoplishmentoSituation : short
+    {
+        [Description("Iniciada")]
+        Started = 1,
+
+        [Description("Finalizada")]
+        Done = 2,
+
+        [Description("Finalizada com sessões pendentes")]
+        DoneWithIncompleteSessions = 3,
+    }
+
+    public enum Sessionituation : short
     {
         [Description("Não iniciada")]
         NotStarted = 1,

@@ -1676,9 +1676,11 @@
     <Content Include="scripts\chart.js" />
     <Content Include="scripts\jquery.signalR-2.4.1.js" />
     <Content Include="scripts\jquery.signalR-2.4.1.min.js" />
+    <Content Include="scripts\signalRBundle.js" />
     <Content Include="version.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Assets\js\angular\controllers\electronicTest\sessions\SessionManager.js" />
     <Content Include="Views\Shared\DisplayTemplates\MenuHelperModel.ascx" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapHelperModel.ascx" />
     <Content Include="Views\Shared\DisplayTemplates\SiteMapNodeModel.ascx" />
