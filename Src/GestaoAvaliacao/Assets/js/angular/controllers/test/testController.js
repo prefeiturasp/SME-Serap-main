@@ -3797,8 +3797,8 @@
             });
         };
 
-        ng.changeVersionItem = function changeVersionItem() {
-            TestModel.saveChangeItem({ item: ng.versaoItem, test_id: ng.params, itemIdAntigo: ng.item.Id }, function (result) {
+        ng.changeVersionItem = function changeVersionItem(itens, versoes) {
+            TestModel.saveChangeItem({ item: versoes, test_id: ng.params, itemIdAntigo: itens.Id }, function (result) {
                 if (result.success) {
                     $notification.success(result.message);
 
