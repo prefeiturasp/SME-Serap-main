@@ -21,7 +21,8 @@
 
 
     function FormElectronicTestController(ng, $notification, $location, $anchorScroll, $util, $timeout, ElectronicTestModel, $window, $sce, $http) {
-        Init();
+
+        var sessionManager = {};
 
         function Init() {
 
@@ -36,7 +37,6 @@
             ng.pularRespondidas;
             angular.element('#modalConfirmacaoEntregaProva').modal('hide');
             ng.mensagemEntregaProva;
-            ng.admin = getCurrentVision() != EnumVisions.INDIVIDUAL ? true : false;
             ng.provaFinalizada = false;
             ng.showHeaderDetails = false;
             ng.enunciadoFontSize = 14;
@@ -44,7 +44,6 @@
             ng.savingAnswers = false;
 
             load();
-            initializeJobToSaveAnswers();
         };
 
         ng.loadHeaderDetais = function __loadHeaderDetais() {
@@ -107,11 +106,15 @@
             return false;
         }
 
-        function load() {
+        function loadPagePros() {
             ng.params = $util.getUrlParams();
             ng.testId = ng.params.TestId;
             ng.aluId = ng.params.AluId;
             ng.turId = ng.params.TurId;
+        }
+
+        function load() {
+            loadPagePros();
 
             let testKeyStorage = getTestStorageKey(ng.testId);
             let testFromStorage = JSON.parse(localStorage.getItem(testKeyStorage));
@@ -142,6 +145,12 @@
         };
 
         function loadStudentCorrection() {
+            ng.provaFinalizada = ng.test.QuantDiasRestantes <= 0;
+            if (ng.admin) {
+                finalizeLoad();
+                return;
+            }
+
             let keyStorage = getStudentCorrectionStorageKey(ng.testId, ng.aluId, ng.turId);
             var studentCorrection = JSON.parse(localStorage.getItem(keyStorage));
 
@@ -154,7 +163,7 @@
                 if (result.success) {
 
                     if (result.studentCorrection == null) {
-                        finalizeLoad();
+                        startSession();
                     }
                     else {
                         localStorage.setItem(keyStorage, JSON.stringify(result.studentCorrection));
@@ -182,13 +191,44 @@
                 ng.indiceItem = studentCorrection.LastAnswer + 1;
             }
 
-            ng.provaFinalizada = studentCorrection.Done;
+            ng.provaFinalizada = ng.provaFinalizada || studentCorrection.Done;
+            startSession();
+        };
+
+        function startSession() {
+            if (ng.admin || ng.provaFinalizada) {
+                finalizeLoad();
+                return;
+            }
+
+            sessionManager = new SessionManager(ng.aluId, ng.turId, ng.testId, notificationSessionErrors, notificationSessionErrors);
+            sessionManager.startSession();
             finalizeLoad();
         };
+
+        function endSession(entregarProva, callback) {
+            if (ng.admin || ng.provaFinalizada) {
+                return;
+            }
+
+            if (entregarProva) {
+                sessionManager.endTest(callback);
+            }
+            else {
+                sessionManager.endSession(callback);
+            }
+        };
+
+        function notificationSessionErrors(messages) {
+            for (var index = 0; index < messages.length; index++) {
+                $notification['error'](messages[index]);
+            }
+        }
 
         function finalizeLoad() {
             ng.possuiTextoBase = ng.test.Itens[ng.indiceItem].BaseTextId > 0 && ng.test.Itens[ng.indiceItem].BaseTextDescription != null && ng.test.Itens[ng.indiceItem].BaseTextDescription != "";
             ng.inicioProva = false;
+            initializeJobToSaveAnswers();
         };
 
         ng.handleRadioClick = function (chosenAlternative) {
@@ -307,12 +347,19 @@
             $('div.statementElementClass p').css("font-size", ng.enunciadoFontSize + "px");
         };
 
-        ng.sair = function () {
+        ng.sair = sair;
+
+        function sair() {
             stopJobToSaveAnswers();
+            endSession(false, redirectToIndexPage);
+        }
+
+        function redirectToIndexPage() {
             $window.location.href = '/ElectronicTest/Index';
         }
 
         function initializeJobToSaveAnswers() {
+            if (ng.admin || ng.provaFinalizada) return;
             ng.intervalToSaveAnswers = setInterval(saveAnswers, 60000);
         };
 
@@ -342,10 +389,7 @@
         ng.entregarProva = function __entregarProva() {
 
             stopJobToSaveAnswers();
-            ng.params = $util.getUrlParams();
-            ng.testId = ng.params.TestId;
-            ng.aluId = ng.params.AluId;
-            ng.turId = ng.params.TurId;
+            loadPagePros();
             
             saveAnswers();
 
@@ -360,7 +404,7 @@
                     localStorage.setItem(keyStorage, JSON.stringify(studentCorrection));
 
                     angular.element("#modalConfirmacaoEntregaProva").modal("hide");
-                    $window.location.href = '/ElectronicTest/Index';
+                    endSession(true, redirectToIndexPage);
                 }
                 else {
                     initializeJobToSaveAnswers();
@@ -373,5 +417,7 @@
         ng.trustSrc = function (src) {
             return $sce.trustAsResourceUrl(src);
         }
+
+        Init();
     };
 })(angular, jQuery);

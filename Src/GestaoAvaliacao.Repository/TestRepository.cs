@@ -8,6 +8,7 @@ using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,14 @@ namespace GestaoAvaliacao.Repository
         #region Read
 
         private const string CACHE_KEY_GETOBJECT = "TestRepository_GetObject_{0}";
+
+        public Task<bool> AnyAsync(long testId)
+        {
+            using (var ctx = new GestaoAvaliacaoContext())
+            {
+                return ctx.Test.AnyAsync(x => x.Id == testId);
+            }
+        }
 
         public Test GetObject(long Id)
         {

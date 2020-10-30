@@ -1,6 +1,9 @@
 ﻿using Castle.Windsor;
 using GestaoAvaliacao.App_Start;
+using GestaoAvaliacao.Hubs.Tests;
+using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.MappingDependence;
+using Microsoft.AspNet.SignalR;
 using System;
 using System.Web.Http;
 using System.Web.Http.Dispatcher;
@@ -21,11 +24,10 @@ namespace GestaoAvaliacao
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             BootstrapContainer();
-
-            
+            SignalRHubRegistration();
 
             #if DEBUG
-                BundleTable.EnableOptimizations = false;
+            BundleTable.EnableOptimizations = false;
             #else 
                 BundleTable.EnableOptimizations = true;
             #endif
@@ -63,9 +65,14 @@ namespace GestaoAvaliacao
 
 
             GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator), new WindsorCompositionRoot(container));
-
+            
             var controllerFactory = new WindsorControllerFactory(container.Kernel);
             ControllerBuilder.Current.SetControllerFactory(controllerFactory);
+        }
+
+        private static void SignalRHubRegistration()
+        {
+            GlobalHost.DependencyResolver.Register(typeof(StudentTestSessionHub), () => new StudentTestSessionHub(BusinessInstaller.GetIStudentTestAccoplishmentBusinessForHub()));
         }
     }
 }

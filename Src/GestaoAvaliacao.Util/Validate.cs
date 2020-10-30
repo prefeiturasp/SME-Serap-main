@@ -17,5 +17,11 @@ namespace GestaoAvaliacao.Util
 		public string Type { get; set; }
 
 		public string Message { get; set; }
+
+		public void SetErrorMessage(string message)
+        {
+			IsValid = false;
+			Message = message;
+        }
 	}
 }
