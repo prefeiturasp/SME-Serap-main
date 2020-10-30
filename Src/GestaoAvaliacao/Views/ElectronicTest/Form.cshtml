@@ -109,31 +109,3 @@
         </div>
     </modal>
 </div>
-
-@*@section scripts{
-    <script>
-        $(function () {
-            $.connection.hub.logging = true;
-            var sessionHub = $.connection.studentTestSessionHub;
-            sessionHub.client.reportStartSessionError = function (messages) {
-                notificationSessionErrors(messages);
-            };
-
-            sessionHub.client.reportEndSessionError = function (messages) {
-                notificationSessionErrors(messages);
-            };
-
-            debugger;
-            $.connection.hub.start().done(function () {
-                sessionHub.server.startSession(1, 1, 1).done(function () {
-                    console.log('Invocation of startSession succeeded');
-                    finalizeLoad();
-                }).fail(function (error) {
-                    console.log('Invocation of startSession failed. Error: ' + error);
-                });
-            }).fail(function (error) {
-                console.log('Connection Start FAIl. Error: ' + error);
-            });
-        });
-    </script>
-}*@
