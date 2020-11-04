@@ -416,12 +416,6 @@ namespace GestaoAvaliacao.Repository
                             "LEFT JOIN BaseText bx  WITH (NOLOCK) on i.BaseText_Id = bx.Id " +
                             "WHERE t.id = @id";
 
-            var sqlRequest = @"SELECT Id,Situation,Justification " +
-                              "FROM RequestRevoke " +
-                              "WHERE BlockItem_Id = @BlockItem_Id " +
-                              "AND UsuId = @UsuId " +
-                              "AND State = @State ";
-
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
@@ -436,17 +430,6 @@ namespace GestaoAvaliacao.Repository
 
                 var count = (int)cn.ExecuteScalar(countSql, new { state = (Byte)EnumState.ativo, id = test_id, usuId = UsuId });
 
-                foreach (var blockItem in blockItems)
-                {
-                    RequestRevoke requestRevoke = cn.Query<RequestRevoke>(sqlRequest,
-                        new { state = (Byte)EnumState.ativo, BlockItem_Id = blockItem.Id, UsuId = UsuId }).FirstOrDefault();
-                    if (requestRevoke != null)
-                    {
-                        blockItem.RequestRevokes = new List<RequestRevoke>();
-                        blockItem.RequestRevokes.Add(requestRevoke);
-                    }
-                }
-
                 pager.SetTotalPages((int)Math.Ceiling(count / (double)pager.PageSize));
                 pager.SetTotalItens(count);
 
@@ -454,56 +437,47 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public IEnumerable<BlockItem> GetItemsByTestId(long test_id, Guid UsuId)
+        public async Task<IEnumerable<BlockItem>> GetItemsByTestIdAsync(long test_id, Guid UsuId)
         {
-            var sql = @"WITH NumberedTestItems (BlockItem_Id,[Order],Item_Id,ItemCode,ItemVersion,Statement, BaseText_Id,Description, RowNumber) AS " +
-                        "( " +
-                            "SELECT bi.Id,bi.[Order]," +
-                            "i.Id,i.ItemCode,i.ItemVersion,i.Statement," +
-                            "bx.Id, bx.Description, " +
-                            "ROW_NUMBER() OVER (ORDER BY bi.[Order]) AS RowNumber " +
-                            "FROM Test t " +
-                            "INNER JOIN Booklet bt WITH (NOLOCK) on t.ID = bt.Test_Id " +
-                            "INNER JOIN Block bl WITH (NOLOCK) on bt.Id = bl.Booklet_Id " +
-                            "INNER JOIN BlockItem  bi WITH (NOLOCK) on bl.Id = bi.Block_Id AND bi.State = @state " +
-                            "INNER JOIN Item i  WITH (NOLOCK) on i.Id = bi.Item_Id " +
-                            "LEFT JOIN BaseText bx  WITH (NOLOCK) on i.BaseText_Id = bx.Id " +
-                            "WHERE t.id = @id " +
-                            ") " +
-                            "SELECT BlockItem_Id AS Id, [Order]," +
-                                    "Item_Id AS Id, ItemCode,ItemVersion,Statement,  " +
-                                    "BaseText_Id AS Id, Description " +
-                            "FROM NumberedTestItems " +
-                            "ORDER BY RowNumber ";
+            var sql = @"
+                        SELECT 
+	                        bi.Id AS BlockItem_Id,
+	                        bi.[Order], 
+	                        i.Id AS Item_Id,
+	                        i.ItemCode,
+	                        i.ItemVersion,
+	                        i.Statement, 
+	                        bx.Id AS BaseText_Id, 
+	                        bx.Description,  
+	                        ROW_NUMBER() OVER (ORDER BY bi.[Order]) AS RowNumber 
+                        INTO #tempBlockItens
+                        FROM Test t  
+                        INNER JOIN Booklet bt WITH (NOLOCK) on t.ID = bt.Test_Id  
+                        INNER JOIN Block bl WITH (NOLOCK) on bt.Id = bl.Booklet_Id  
+                        INNER JOIN BlockItem  bi WITH (NOLOCK) on bl.Id = bi.Block_Id AND bi.State = @state
+                        INNER JOIN Item i  WITH (NOLOCK) on i.Id = bi.Item_Id  
+                        LEFT JOIN BaseText bx  WITH (NOLOCK) on i.BaseText_Id = bx.Id  
+                        WHERE t.id = @id;
 
-            var sqlRequest = @"SELECT Id,Situation,Justification " +
-                              "FROM RequestRevoke " +
-                              "WHERE BlockItem_Id = @BlockItem_Id " +
-                              "AND UsuId = @UsuId " +
-                              "AND State = @State ";
+                        SELECT BlockItem_Id AS Id, [Order], 
+                                Item_Id AS Id, ItemCode,ItemVersion,Statement,   
+                                BaseText_Id AS Id, Description  
+                        FROM #tempBlockItens   
+                        ORDER BY RowNumber;";
 
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
+                var transaction = cn.BeginTransaction();
 
-                var blockItems = cn.Query<BlockItem, Item, BaseText, BlockItem>(sql,
+                var blockItems = await cn.QueryAsync<BlockItem, Item, BaseText, BlockItem>(sql,
                     (bi, i, bx) =>
                     {
                         i.BaseText = bx;
                         bi.Item = i;
                         return bi;
-                    }, new { state = (Byte)EnumState.ativo, id = test_id });
-
-                foreach (var blockItem in blockItems)
-                {
-                    RequestRevoke requestRevoke = cn.Query<RequestRevoke>(sqlRequest,
-                        new { state = (Byte)EnumState.ativo, BlockItem_Id = blockItem.Id, UsuId = UsuId }).FirstOrDefault();
-                    if (requestRevoke != null)
-                    {
-                        blockItem.RequestRevokes = new List<RequestRevoke>();
-                        blockItem.RequestRevokes.Add(requestRevoke);
-                    }
-                }
+                    }, new { state = (Byte)EnumState.ativo, id = test_id }, transaction);
+                if (!blockItems.Any()) return blockItems;
 
                 return blockItems;
             }

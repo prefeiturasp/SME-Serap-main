@@ -17,40 +17,33 @@
         .controller("FormElectronicTestController", FormElectronicTestController);
 
 
-    FormElectronicTestController.$inject = ['$scope', '$notification', '$location', '$anchorScroll', '$util', '$timeout', 'ElectronicTestModel', '$window', '$sce'];
+    FormElectronicTestController.$inject = ['$scope', '$notification', '$location', '$anchorScroll', '$util', '$timeout', 'ElectronicTestModel', '$window', '$sce', '$http'];
 
 
-    function FormElectronicTestController(ng, $notification, $location, $anchorScroll, $util, $timeout, ElectronicTestModel, $window, $sce) {
-        Init();
+    function FormElectronicTestController(ng, $notification, $location, $anchorScroll, $util, $timeout, ElectronicTestModel, $window, $sce, $http) {
+
+        var sessionManager = {};
 
         function Init() {
 
             $notification.clear();
             ng.message = false;
             ng.test = null;
-            ng.itens = null;
-            ng.alternatives = null;
-            ng.idsItens = null;
-            ng.dadosAlternativaSelecionada = null;
             ng.admin = getCurrentVision() != EnumVisions.INDIVIDUAL;
-            load();
-            ng.gabaritoAberto = false;
             ng.indiceItem = 0;
+            ng.gabaritoAberto = false;
             ng.alternativaSelecionada = 0;
             ng.inicioProva = true;
             ng.pularRespondidas;
-            ng.itensNaoPreenchidos = [];
-            ng.itensPreenchidos = [];
             angular.element('#modalConfirmacaoEntregaProva').modal('hide');
             ng.mensagemEntregaProva;
-            ng.admin = getCurrentVision() != EnumVisions.INDIVIDUAL ? true : false;
             ng.provaFinalizada = false;
             ng.showHeaderDetails = false;
             ng.enunciadoFontSize = 14;
             ng.alternativasFontSize = 14;
+            ng.savingAnswers = false;
 
-            ng.videos = null;
-            ng.audios = null;
+            load();
         };
 
         ng.loadHeaderDetais = function __loadHeaderDetais() {
@@ -68,66 +61,39 @@
         };
 
         ng.proximaQuestao = function __proximaQuestao(item) {
-            ng.itensPreenchidos = [];
-
-            for (var i = 0; i < ng.alternatives.length ; i++) {
-                if (ng.alternatives[i].Selected === true) {
-                    ng.itensPreenchidos.push(ng.alternatives[i].ItemOrder);
-                }
-            }
-
-            if (ng.itensPreenchidos.length !== 0 && ng.pularRespondidas) {
-                var contador = 1;
-
-                while (ng.itens.length > contador && ng.itensPreenchidos.contains(item.ItemOrder + contador)) {
-                    contador++;
-                }
-
-                if ((ng.indiceItem + contador) >= ng.itens.length) {
-                    ng.indiceItem = ng.itens.length - 1;
-                }
-                else {
-                    ng.indiceItem = ng.indiceItem + contador;
-                }
-            }
-            else {
+            if (ng.indiceItem == ng.test.Itens.length - 1) return;
+            if (!ng.pularRespondidas) {
                 ng.indiceItem = ng.indiceItem + 1;
+                ng.possuiTextoBase = ng.test.Itens[ng.indiceItem].BaseTextId > 0 && ng.test.Itens[ng.indiceItem].BaseTextDescription != null && ng.test.Itens[ng.indiceItem].BaseTextDescription != "";
+                return;
             }
 
-            ng.possuiTextoBase = ng.itens[ng.indiceItem].BaseTextId > 0 && ng.itens[ng.indiceItem].BaseTextDescription != null && ng.itens[ng.indiceItem].BaseTextDescription != "";
+            let nextItem = 0;
+            for (nextItem = ng.indiceItem + 1; nextItem < ng.test.Itens.length; nextItem++) {
+                if (!ng.tes.Itens[nextItem].Alternatives.some(x => x.Selected))
+                    break;
+            }
 
+            ng.indiceItem = nextItem;
+            ng.possuiTextoBase = ng.test.Itens[ng.indiceItem].BaseTextId > 0 && ng.test.Itens[ng.indiceItem].BaseTextDescription != null && ng.test.Itens[ng.indiceItem].BaseTextDescription != "";
         };
 
         ng.voltaQuestao = function __voltaQuestao(item) {
-            ng.itensPreenchidos = [];
-
-            for (var i = 0; i < ng.alternatives.length ; i++) {
-                if (ng.alternatives[i].Selected === true) {
-                    ng.itensPreenchidos.push(ng.alternatives[i].ItemOrder);
-                }
-            }
-
-            if (ng.itensPreenchidos.length !== 0 && ng.pularRespondidas) {
-                var contador = 1;
-                var ordem = item.ItemOrder;
-
-                while (ordem > 0 && ng.itensPreenchidos.contains(ordem - 1)) {
-                    contador++;
-                    ordem--;
-                }
-
-                if ((ng.indiceItem - contador) <= 0) {
-                    ng.indiceItem = ng.indiceItem - ng.indiceItem;
-                }
-                else {
-                    ng.indiceItem = ng.indiceItem - contador;
-                }
-            }
-            else {
+            if (ng.indiceItem == 0) return;
+            if (!ng.pularRespondidas) {
                 ng.indiceItem = ng.indiceItem - 1;
+                ng.possuiTextoBase = ng.test.Itens[ng.indiceItem].BaseTextId > 0 && ng.test.Itens[ng.indiceItem].BaseTextDescription != null && ng.test.Itens[ng.indiceItem].BaseTextDescription != "";
+                return;
             }
 
-            ng.possuiTextoBase = ng.itens[ng.indiceItem].BaseTextId > 0 && ng.itens[ng.indiceItem].BaseTextDescription != null && ng.itens[ng.indiceItem].BaseTextDescription != "";
+            let nextItem = 0;
+            for (nextItem = ng.indiceItem - 1; nextItem < 0; nextItem--) {
+                if (!ng.tes.Itens[nextItem].Alternatives.some(x => x.Selected))
+                    break;
+            }
+
+            ng.indiceItem = nextItem;
+            ng.possuiTextoBase = ng.test.Itens[ng.indiceItem].BaseTextId > 0 && ng.test.Itens[ng.indiceItem].BaseTextDescription != null && ng.test.Itens[ng.indiceItem].BaseTextDescription != "";
         };
 
         Array.prototype.contains = function (obj) {
@@ -140,23 +106,68 @@
             return false;
         }
 
-        function load() {
-
+        function loadPagePros() {
             ng.params = $util.getUrlParams();
             ng.testId = ng.params.TestId;
             ng.aluId = ng.params.AluId;
             ng.turId = ng.params.TurId;
+        }
 
-            ElectronicTestModel.loadByTestId({ test_id: ng.testId }, function (result) {
-                if (result.success) {
+        function load() {
+            loadPagePros();
 
-                    if (result.test.Id > 0) {
-                        ng.test = result.test;
-                        CarregarItens();
+            let testKeyStorage = getTestStorageKey(ng.testId);
+            let testFromStorage = JSON.parse(localStorage.getItem(testKeyStorage));
+
+            if (testFromStorage != null) {
+                ng.test = testFromStorage;
+                loadStudentCorrection();
+            }
+            else {
+                ElectronicTestModel.loadByTestId({ test_id: ng.testId }, function (result) {
+                    if (result.success) {
+
+                        if (result.test.Id > 0) {
+                            ng.test = result.test;
+                            localStorage.setItem(testKeyStorage, JSON.stringify(ng.test));
+                            loadStudentCorrection();
+                        }
+                        else {
+                            ng.message = true;
+                            ng.test = null;
+                        }
                     }
                     else {
-                        ng.message = true;
-                        ng.test = null;
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
+            }
+        };
+
+        function loadStudentCorrection() {
+            ng.provaFinalizada = ng.test.QuantDiasRestantes <= 0;
+            if (ng.admin) {
+                finalizeLoad();
+                return;
+            }
+
+            let keyStorage = getStudentCorrectionStorageKey(ng.testId, ng.aluId, ng.turId);
+            var studentCorrection = JSON.parse(localStorage.getItem(keyStorage));
+
+            if (studentCorrection != null) {
+                updateChosenAlternatives(studentCorrection);
+                return;
+            }
+
+            ElectronicTestModel.loadStudentCorrectionAsync({ test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId }, function (result) {
+                if (result.success) {
+
+                    if (result.studentCorrection == null) {
+                        startSession();
+                    }
+                    else {
+                        localStorage.setItem(keyStorage, JSON.stringify(result.studentCorrection));
+                        updateChosenAlternatives(result.studentCorrection);
                     }
                 }
                 else {
@@ -165,68 +176,153 @@
             });
         };
 
-        function CarregarItens() {
+        function updateChosenAlternatives(studentCorrection) {
+            for (let i = 0; i < studentCorrection.Answers.length; i++) {
+                var item = ng.test.Itens.find(x => x.Id == studentCorrection.Answers[i].ItemId);
+                if (item == null) continue;
 
-            ng.params = $util.getUrlParams();
-            ng.testId = ng.params.TestId;
-            ng.aluId = ng.params.AluId;
-            ng.turId = ng.params.TurId;
+                var alternative = item.Alternatives.find(x => x.Id == studentCorrection.Answers[i].AlternativeId);
+                if (alternative == null) continue;
 
-            ElectronicTestModel.loadItensByTestId({ test_id: ng.testId }, function (result) {
-                if (result.success) {
-                    if (result.itens.length > 0) {
-                        ng.itens = result.itens;
-                        ng.idsItens = ng.itens.map(function (v) {
-                            return v.Item_Id;
-                        });
+                alternative.Selected = true;
+            }
 
-                        CarregarAlternativas();
-                    }
-                    else {
-                        ng.message = true;
-                        ng.test = null;
-                    }
-                }
-                else {
-                    $notification[result.type ? result.type : 'error'](result.message);
-                }
+            if (studentCorrection.LastAnswer != null && ng.test.Itens.length > studentCorrection.LastAnswer + 1) {
+                ng.indiceItem = studentCorrection.LastAnswer + 1;
+            }
 
-            });
+            ng.provaFinalizada = ng.provaFinalizada || studentCorrection.Done;
+            startSession();
+        };
+
+        function startSession() {
+            if (ng.admin || ng.provaFinalizada) {
+                finalizeLoad();
+                return;
+            }
+
+            sessionManager = new SessionManager(ng.aluId, ng.turId, ng.testId, notificationSessionErrors, notificationSessionErrors);
+            sessionManager.startSession();
+            finalizeLoad();
+        };
+
+        function endSession(entregarProva, callback) {
+            if (ng.admin || ng.provaFinalizada) {
+                return;
+            }
+
+            if (entregarProva) {
+                sessionManager.endTest(callback);
+            }
+            else {
+                sessionManager.endSession(callback);
+            }
+        };
+
+        function notificationSessionErrors(messages) {
+            for (var index = 0; index < messages.length; index++) {
+                $notification['error'](messages[index]);
+            }
         }
 
-        function CarregarAlternativas() {
+        function finalizeLoad() {
+            ng.possuiTextoBase = ng.test.Itens[ng.indiceItem].BaseTextId > 0 && ng.test.Itens[ng.indiceItem].BaseTextDescription != null && ng.test.Itens[ng.indiceItem].BaseTextDescription != "";
+            ng.inicioProva = false;
+            initializeJobToSaveAnswers();
+        };
+
+        ng.handleRadioClick = function (chosenAlternative) {
+            if (chosenAlternative.Selected) return;
 
             ng.params = $util.getUrlParams();
             ng.testId = ng.params.TestId;
             ng.aluId = ng.params.AluId;
             ng.turId = ng.params.TurId;
 
-            ElectronicTestModel.loadAlternativesByItens({ itens: ng.idsItens, test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId }, function (result) {
-                if (result.success) {
-                    if (result.alternatives.length > 0) {
-                        ng.alternatives = result.alternatives;
+            var answer = {
+                ItemId: chosenAlternative.Item_Id,
+                AlternativeId: chosenAlternative.Id,
+                Changed: true
+            };
 
-                        if (!result.existemDados) {
-                            ng.indiceItem = 0;
-                        }
-                        if (result.existemDados && (ng.itens.length > result.ordemUltimaResposta + 1)) {
-                            ng.indiceItem = result.ordemUltimaResposta + 1;
-                        }
+            let keyStorage = getStudentCorrectionStorageKey(ng.testId, ng.aluId, ng.turId);
+            var studentCorrection = JSON.parse(localStorage.getItem(keyStorage));
 
-                        ng.possuiTextoBase = ng.itens[ng.indiceItem].BaseTextId > 0 && ng.itens[ng.indiceItem].BaseTextDescription != null && ng.itens[ng.indiceItem].BaseTextDescription != "";
+            if (studentCorrection == null) {
+                studentCorrection = {
+                    Done: false,
+                    Answers: []
+                };
+                studentCorrection.Answers.push(answer);
+            }
+            else {
+                studentCorrection.Answers = addOrReplaceAnswer(studentCorrection.Answers, answer);
+            }
 
-                        ng.provaFinalizada = result.provaFinalizada;
-                        ng.inicioProva = false;
+            studentCorrection.LastAnswer = ng.indiceItem;
+            localStorage.setItem(keyStorage, JSON.stringify(studentCorrection));
+
+            var item = ng.test.Itens.find(x => x.Id == chosenAlternative.Item_Id);
+            for (let i = 0; i < item.Alternatives.length; i++) {
+                item.Alternatives[i].Selected = item.Alternatives[i].Id == chosenAlternative.Id;
+            }
+        };
+
+        function addOrReplaceAnswer(answers, newAnswer) {
+            if (answers.some(x => x.ItemId === newAnswer.ItemId)) {
+                answers = answers.map(a => newAnswer.ItemId === a.ItemId ? newAnswer : a);
+            }
+            else {
+                answers.push(newAnswer);
+            }
+            return answers;
+        };
+
+        function getTestStorageKey(testId) {
+            return "Test-" + testId;
+        }
+
+        function getStudentCorrectionStorageKey(testId, aluId, turId) {
+            return "answerTest-" + testId + "-" + aluId + "-" + turId;
+        }
+
+        function saveAnswers() {
+            if (ng.savingAnswers) return;
+
+            let keyStorage = getStudentCorrectionStorageKey(ng.testId, ng.aluId, ng.turId);
+            var studentCorrection = JSON.parse(localStorage.getItem(keyStorage));
+            if (studentCorrection == null || studentCorrection.Answers.length <= 0) return;
+
+            var changedAnswers = studentCorrection.Answers.filter(x => x.Changed);
+            if (changedAnswers == null || changedAnswers.length <= 0) return;
+            for (var i = 0; i < changedAnswers.length; i++)
+                changedAnswers[i].Changed = false;
+
+            ng.savingAnswers = true;
+            ng.$digest();
+
+            $.ajax({
+                url: base_url('ElectronicTest/SaveAnswersAsync'),
+                data: { test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId, ordemItem: ng.test.Itens[ng.indiceItem].ItemOrder, answers: changedAnswers },
+                type: "POST",
+                dataType: "JSON",
+                success: function (result) {
+                    if (result.success) {
+                        var recentStudentCorrection = JSON.parse(localStorage.getItem(keyStorage));
+                        recentStudentCorrection.Answers = recentStudentCorrection.Answers.map(a => changedAnswers.find(x => x.ItemId == a.ItemId && x.AlternativeId == a.AlternativeId) ?? a);
+                        localStorage.setItem(keyStorage, JSON.stringify(recentStudentCorrection));
                     }
                     else {
-                        ng.message = true;
-                        ng.test = null;
+                        $notification[result.type ? result.type : 'error'](result.message);
                     }
-                }
-                else {
+                    ng.savingAnswers = false;
+                    ng.$digest();
+                },
+                error: function (result) {
                     $notification[result.type ? result.type : 'error'](result.message);
+                    ng.savingAnswers = false;
+                    ng.$digest();
                 }
-
             });
         }
 
@@ -251,87 +347,77 @@
             $('div.statementElementClass p').css("font-size", ng.enunciadoFontSize + "px");
         };
 
-        ng.handleRadioClick = function (alternativa) {
+        ng.sair = sair;
 
-            ng.params = $util.getUrlParams();
-            ng.testId = ng.params.TestId;
-            ng.aluId = ng.params.AluId;
-            ng.turId = ng.params.TurId;
+        function sair() {
+            stopJobToSaveAnswers();
+            endSession(false, redirectToIndexPage);
+        }
 
-            ng.alternativaSelecionada = alternativa;
-
-            ElectronicTestModel.save({ alternativa: ng.alternativaSelecionada, test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId, ordemItem: ng.itens[ng.indiceItem].ItemOrder }, function (result) {
-                if (result.success) {
-                    var alternativaSelecionadaIndex = ng.alternatives.findIndex(x => x.Id == ng.alternativaSelecionada.Id);
-                    ng.alternatives[alternativaSelecionadaIndex].Selected = true;
-                }
-                else {
-                    $notification[result.type ? result.type : 'error'](result.message);
-                }
-
-            });
-
-        };
-
-        ng.sair = function () {
+        function redirectToIndexPage() {
             $window.location.href = '/ElectronicTest/Index';
         }
 
+        function initializeJobToSaveAnswers() {
+            if (ng.admin || ng.provaFinalizada) return;
+            ng.intervalToSaveAnswers = setInterval(saveAnswers, 60000);
+        };
+
+        function stopJobToSaveAnswers() {
+            clearInterval(ng.intervalToSaveAnswers);
+        };
+
         ng.openModalEntregaProva = function () {
+            let itensNaoPreenchidos = [];
 
-            ng.itensPreenchidos = [];
+            for (var i = 0; i < ng.test.Itens.length; i++) {
+                if (ng.test.Itens[i].Alternatives.some(x => x.Selected))
+                    continue;
 
-            for (var i = 0; i < ng.alternatives.length ; i++) {
-                if (ng.alternatives[i].Selected === true) {
-                    ng.itensPreenchidos.push(ng.alternatives[i].ItemOrder);
-                }
+                itensNaoPreenchidos.push(ng.test.Itens[i].ItemOrder + 1);
             }
 
-            ng.mensagemEntregaProva = '';
-            if (ng.itensPreenchidos.length !== ng.itens.length) {
-
-                ng.mensagemEntregaProva = "O(s) item(ns) ";
-
-                for (var i = 0; i < ng.itens.length; i++) {
-                    if (!ng.itensPreenchidos.contains(ng.itens[i].ItemOrder)) {
-                        ng.mensagemEntregaProva += ng.itens[i].ItemOrder + 1 + ", ";
-                    }
-                }
-                ng.mensagemEntregaProva = ng.mensagemEntregaProva.substring(0, (ng.mensagemEntregaProva.length - 2));
-
-                ng.mensagemEntregaProva += " não está(ão) preenchido(s). Deseja entregar a prova mesmo assim?";
+            if (itensNaoPreenchidos.length > 0) {
+                ng.mensagemEntregaProva = "O(s) item(ns) " + itensNaoPreenchidos.join() + " não está(ão) preenchido(s). Deseja entregar a prova mesmo assim?";
             }
             else {
                 ng.mensagemEntregaProva = "Deseja entregar a prova?";
             }
-
             angular.element("#modalConfirmacaoEntregaProva").modal({ backdrop: 'static' });
         };
 
         ng.entregarProva = function __entregarProva() {
 
-            ng.params = $util.getUrlParams();
-            ng.testId = ng.params.TestId;
-            ng.aluId = ng.params.AluId;
-            ng.turId = ng.params.TurId;
+            stopJobToSaveAnswers();
+            loadPagePros();
+            
+            saveAnswers();
 
             ElectronicTestModel.finalizeCorrection({ tur_id: ng.turId, test_id: ng.testId, alu_id: ng.aluId }, function (result) {
                 if (result.success) {
                     $notification.success(result.message);
+
+                    let keyStorage = getStudentCorrectionStorageKey(ng.testId, ng.aluId, ng.turId);
+                    var studentCorrection = JSON.parse(localStorage.getItem(keyStorage));
+                    studentCorrection.Done = true;
+                    studentCorrection.LastAnswer = 0;
+                    localStorage.setItem(keyStorage, JSON.stringify(studentCorrection));
+
                     angular.element("#modalConfirmacaoEntregaProva").modal("hide");
-                    $window.location.href = '/ElectronicTest/Index';
+                    endSession(true, redirectToIndexPage);
                 }
                 else {
+                    initializeJobToSaveAnswers();
                     $notification[result.type ? result.type : 'error'](result.message);
                 }
 
             });
-
-
         };
 
         ng.trustSrc = function (src) {
             return $sce.trustAsResourceUrl(src);
         }
+
+        Init();
     };
 })(angular, jQuery);

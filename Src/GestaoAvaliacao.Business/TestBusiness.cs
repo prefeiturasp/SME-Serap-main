@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.Business
@@ -170,12 +171,9 @@ namespace GestaoAvaliacao.Business
 			return blockRepository.GetItemsByTestId(test_id, UsuId, ref pager);
 		}
 
-		public IEnumerable<BlockItem> GetItemsByTest(long test_id, Guid UsuId)
-		{
-			return blockRepository.GetItemsByTestId(test_id, UsuId);
-		}
+        public async Task<IEnumerable<BlockItem>> GetItemsByTestAsync(long test_id, Guid UsuId) => await blockRepository.GetItemsByTestIdAsync(test_id, UsuId);
 
-		public IEnumerable<BlockItem> GetPendingRevokeItems(ref Pager pager, string ItemCode, DateTime? StartDate, DateTime? EndDate, EnumSituation? Situation)
+        public IEnumerable<BlockItem> GetPendingRevokeItems(ref Pager pager, string ItemCode, DateTime? StartDate, DateTime? EndDate, EnumSituation? Situation)
 		{
 			return blockRepository.GetPendingRevokeItems(ref pager, ItemCode, StartDate, EndDate, Situation);
 		}
@@ -462,21 +460,15 @@ namespace GestaoAvaliacao.Business
 			return tests;
 		}
 
-        public Test SearchInfoTest(long test_id)
-		{
-			return testRepository.SearchInfoTest(test_id);
-		}
+        public async Task<Test> SearchInfoTestAsync(long test_id) => await testRepository.SearchInfoTestAsync(test_id);
 
-		public bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id)
-		{
-			return testRepository.ExistsAdherenceByAluIdTestId(alu_id, test_id);
-		}
+        public bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id) => testRepository.ExistsAdherenceByAluIdTestId(alu_id, test_id);
 
-		#endregion
+        #endregion
 
-		#region Write
+        #region Write
 
-		public Test Save(Test entity, Guid usu_id, bool isAdmin)
+        public Test Save(Test entity, Guid usu_id, bool isAdmin)
 		{
 			entity.Validate = Validate(entity, ValidateAction.Save, entity.Validate, isAdmin);
 			if (entity.Validate.IsValid)

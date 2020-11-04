@@ -77,6 +77,7 @@
     <Compile Include="IReportTestPerformanceBusiness.cs" />
     <Compile Include="IStudentCorrectionBusiness.cs" />
     <Compile Include="IStudentTestAbsenceReasonBusiness.cs" />
+    <Compile Include="IStudentTestAccoplishmentBusiness.cs" />
     <Compile Include="ISubjectBusiness.cs" />
     <Compile Include="ISubSubjectBusiness.cs" />
     <Compile Include="ITestFilesBusiness.cs" />
@@ -125,6 +126,10 @@
     <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
       <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>
       <Name>GestaoAvaliacao.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.IRepository\GestaoAvaliacao.IRepository.csproj">
+      <Project>{E76144DD-15B5-4F3F-9681-3F0E2D5C90B5}</Project>
+      <Name>GestaoAvaliacao.IRepository</Name>
     </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.MongoEntities\GestaoAvaliacao.MongoEntities.csproj">
       <Project>{5ab49ee2-f4ea-428d-8ec1-257d1ee4ea37}</Project>

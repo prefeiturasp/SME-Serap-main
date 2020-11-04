@@ -31,6 +31,7 @@
             ng.eletronicTestFinalizadas = null;
             ng.admin = getCurrentVision() != EnumVisions.INDIVIDUAL;
             ng.load();
+            configAccordion();
         };
 
         ng.load = function __load() {
@@ -78,6 +79,28 @@
 
         ng.abrirProvaFinalizada = function (obj) {
             $window.location.href = '/ElectronicTest/Form?TestId=' + obj.Id + '&AluId=' + obj.alu_id + '&TurId=' + obj.tur_id;
+        };
+
+        ng.getListLength = function (list) {
+            if (list == null) return 0;
+            if (list === undefined) return 0;
+            return list.length;
+        }
+
+        function configAccordion() {
+            var acc = document.getElementsByClassName("accordion-test");
+
+            for (var i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    var panel = this.nextElementSibling;
+                    if (panel.style.maxHeight) {
+                        panel.style.maxHeight = null;
+                    } else {
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                    }
+                });
+            }
         };
 
         Init();

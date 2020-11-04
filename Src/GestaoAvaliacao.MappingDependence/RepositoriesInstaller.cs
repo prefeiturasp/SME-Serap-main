@@ -4,8 +4,10 @@ using Castle.Windsor;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.MongoRepository;
 using GestaoAvaliacao.Repository;
+using GestaoAvaliacao.Repository.StudentTestAccoplishments;
 using GestaoEscolar.IRepository;
 using GestaoEscolar.Repository;
+using System.Configuration;
 
 namespace GestaoAvaliacao.MappingDependence
 {
@@ -149,6 +151,11 @@ namespace GestaoAvaliacao.MappingDependence
 						 .BasedOn(typeof(IPerformanceLevelRepository))
 						 .WithService.AllInterfaces()
 						 .SetLifestyle(LifestylePerWebRequest));
+
+			container.Register(Classes.FromAssemblyContaining<StudentTestAccoplishmentRepository>()
+								.BasedOn(typeof(IStudentTestAccoplishmentRepository))
+								.WithService.AllInterfaces()
+								.SetLifestyle(LifestylePerWebRequest));
 
 			container.Register(Classes.FromAssemblyContaining<TestRepository>()
 								.BasedOn(typeof(ITestRepository))
@@ -416,7 +423,18 @@ namespace GestaoAvaliacao.MappingDependence
                    .BasedOn(typeof(ITempCorrectionResultRepository))
                    .WithService.AllInterfaces()
                    .SetLifestyle(LifestylePerWebRequest));
-            #endregion
-        }
+
+			container.Register(Component.For<IConnectionMultiplexerSME>()
+				.ImplementedBy<ConnectionMultiplexerSME>()
+				.DependsOn(Dependency.OnValue("host", ConfigurationManager.AppSettings["EndPointRedis"]))
+				.LifestyleSingleton());
+
+			container.Register(Classes.FromAssemblyContaining<RepositoryCache>()
+					.BasedOn(typeof(IRepositoryCache))
+					.WithService.AllInterfaces()
+					.SetLifestyle(LifestylePerWebRequest));
+
+			#endregion
+		}
 	}
 }

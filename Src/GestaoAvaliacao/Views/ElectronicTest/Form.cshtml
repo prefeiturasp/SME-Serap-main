@@ -5,13 +5,14 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="electronicTestHeader">
-                    <b>Questão {{ itens[indiceItem].ItemOrder + 1 }}</b>
-                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;"/>
+                    <b>Questão {{ test.Itens[indiceItem].ItemOrder + 1 }}</b>
+                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;" />
                     <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" />
+
                 </div>
 
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="position:absolute; right: 0px; top: 0px; color: #5a94d6;">
-                    <div class="panel panel-default">
+                    <div class="panel panel-default" style="margin-top: 10px;">
                         <div class="panel-heading" role="tab" id="headingOne">
                             <div role="button" data-toggle="collapse" data-parent="" href="" aria-expanded="true" aria-controls="" ng-click="loadHeaderDetais();" style="cursor:pointer; color: #5a94d6;">
                                 <b>{{ test.Description }}</b> | {{ test.FrequencyApplication }}
@@ -30,9 +31,9 @@
                 </div>
                 <hr />
             </div>
-            <div id="divEnunciado" ng-class="(itens[indiceItem].ShowVideoFiles || itens[indiceItem].ShowAudioFiles) ? 'col-sm-6' : 'col-sm-12'">
-                <div class="baseTextElementClass" ng-if="possuiTextoBase" ng-bind-html="itens[indiceItem].BaseTextDescription | trustedHtml"></div>
-                <div class="statementElementClass" ng-bind-html="itens[indiceItem].Statement | trustedHtml"></div>
+            <div id="divEnunciado" ng-class="(test.Itens[indiceItem].ShowVideoFiles || test.Itens[indiceItem].ShowAudioFiles) ? 'col-sm-6' : 'col-sm-12'">
+                <div class="baseTextElementClass" ng-if="possuiTextoBase" ng-bind-html="test.Itens[indiceItem].BaseTextDescription | trustedHtml"></div>
+                <div class="statementElementClass" ng-bind-html="test.Itens[indiceItem].Statement | trustedHtml"></div>
 
                 <br />
                 <div class="electronicTestHeader" style="margin-bottom: 18px;">
@@ -40,13 +41,17 @@
                     <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomAlternativas(true)" style="margin-left: 15px;" />
                     <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomAlternativas(false)" />
                 </div>
-                <div class="alternativas" ng-repeat="alternativa in alternatives | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">
-                    <input ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)" type="radio" name="alternative" ng-checked="alternativa.Selected" ng-change="handleRadioClick(alternativa)" ng-model="selectedValue.alternative" value="{{alternative.price}}">{{ alternativa.Numeration }}
+                <div class="alternativas" ng-repeat="alternativa in test.Itens[indiceItem].Alternatives">
+                    <input ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)"
+                           type="radio" name="alternative"
+                           ng-checked="alternativa.Selected"
+                           ng-click="handleRadioClick(alternativa)">
+                    {{ alternativa.Numeration }}
                     <label class="alternativeElementClass" ng-bind-html="alternativa.Description | trustedHtml"></label>
                 </div>
             </div>
-            <div id="divVideosEAudios" ng-if="itens[indiceItem].ShowVideoFiles || itens[indiceItem].ShowAudioFiles" class="col-sm-6">
-                <div class="playlistItem" ng-if="itens[indiceItem].ShowVideoFiles" ng-repeat="video in itens[indiceItem].Videos | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">
+            <div id="divVideosEAudios" ng-if="test.Itens[indiceItem].ShowVideoFiles || test.Itens[indiceItem].ShowAudioFiles" class="col-sm-6">
+                <div class="playlistItem" ng-if="test.Itens[indiceItem].ShowVideoFiles" ng-repeat="video in test.Itens[indiceItem].Videos | filter:{ Item_Id:test.Itens[indiceItem].Item_Id }:true">
                     <video height="400" width="400" preload="none" controls poster="{{ video.ThumbnailPath }}">
                         Seu navegador não suporta vídeos.
                         <source src="{{ trustSrc(video.Path) }}" type="{{ video.FileType }}">
@@ -54,8 +59,8 @@
                     </video>
                 </div>
 
-                <ul style="list-style-type: none;" ng-if="itens[indiceItem].ShowAudioFiles">
-                    <li ng-repeat="audio in itens[indiceItem].Audios | filter:{ Item_Id:itens[indiceItem].Item_Id }:true">
+                <ul style="list-style-type: none;" ng-if="test.Itens[indiceItem].ShowAudioFiles">
+                    <li ng-repeat="audio in test.Itens[indiceItem].Audios | filter:{ Item_Id:test.Itens[indiceItem].Item_Id }:true">
                         <audio controls>
                             <source src="{{ trustSrc(audio.Path) }}" />
                             Seu navegador não suporta áudios.
@@ -65,24 +70,28 @@
             </div>
         </div>
         <div class="maxWidth opcoesProva">
-            <a ng-click="proximaQuestao(itens[indiceItem])" ng-hide="indiceItem + 1 == itens.length" class="pull-right">Próxima <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
-            <a ng-click="voltaQuestao(itens[indiceItem])" ng-hide="indiceItem == 0" class="pull-right" style="margin-right: 10px"><i class="fa fa-arrow-left" aria-hidden="true"></i> Anterior</a>
-            <label class="pull-right" style="font-size: 16px;" ng-show="(!admin) && (!provaFinalizada) && (test.quantDiasRestantes > 0)"> <input type="checkbox" ng-model="pularRespondidas">Pular questões respondidas</label>
+            <a ng-click="proximaQuestao(test.Itens[indiceItem])" ng-hide="indiceItem + 1 == test.Itens.length" class="pull-right">Próxima <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+            <a ng-click="voltaQuestao(test.Itens[indiceItem])" ng-hide="indiceItem == 0" class="pull-right" style="margin-right: 10px"><i class="fa fa-arrow-left" aria-hidden="true"></i> Anterior</a>
+            <label class="pull-right" style="font-size: 16px;" ng-show="(!admin) && (!provaFinalizada) && (test.QuantDiasRestantes > 0)"> <input type="checkbox" ng-model="pularRespondidas">Pular questões respondidas</label>
             <a class="pull-right" ng-click="abrirGabarito();" ng-show="(!admin)" style="margin-right: 20px"><i class="fa fa-check-square-o" aria-hidden="true"></i> Ver respostas</a>
         </div>
         <div>
+            <span class="infoSaveAnswersNotification" style="margin-top:20px;">As respostas serão enviadas para o servidor a cada 1 (um) minuto.</span>
+            <span ng-if="savingAnswers" class="saveAnswersNotification" id="popupSaveAnswers">
+                <span class="saveAnswersNotificationLoader"></span>Enviando respostas...
+            </span>
             <button class="btnPadrao2 pull-right" ng-click="sair();">Sair</button>
-            <button class="btnPadrao2 pull-right" ng-click="openModalEntregaProva();" ng-show="(indiceItem + 1) === itens.length && ((!admin) && (!provaFinalizada) && (test.quantDiasRestantes > 0))">Entregar prova</button>
+            <button class="btnPadrao2 pull-right" ng-click="openModalEntregaProva();" ng-show="(indiceItem + 1) === test.Itens.length && ((!admin) && (!provaFinalizada) && (test.QuantDiasRestantes > 0))">Entregar prova</button>
         </div>
     </div>
     <div class="gabarito-novo">
         <a><i class="fa fa-check-square-o" aria-hidden="true"></i>Respostas</a>
         <a class="pull-right" ng-click="abrirGabarito();"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
         <hr />
-        <div class="gabarito-respostas" ng-repeat="item in itens">
+        <div class="gabarito-respostas" ng-repeat="item in test.Itens">
             <div id="divAlternativa">
                 <span>{{ item.ItemOrder + 1 }}</span>
-                <span class="{{alternative.Selected ? 'respondido' : ''}}" ng-repeat="alternative in alternatives | filter:{ Item_Id:item.Item_Id }:true">{{ alternative.NumerationSem }}</span>
+                <span class="{{alternative.Selected ? 'respondido' : ''}}" ng-repeat="alternative in item.Alternatives | filter:{ Item_Id:item.Item_Id }:true">{{ alternative.NumerationSem }}</span>
             </div>
         </div>
     </div>

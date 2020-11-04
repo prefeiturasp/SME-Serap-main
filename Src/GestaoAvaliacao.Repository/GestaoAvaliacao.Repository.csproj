@@ -53,9 +53,16 @@
     <Reference Include="MSTech.Data.Common">
       <HintPath>..\MSTech.Library\MSTech\MSTech.Data.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.2.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Redis.1.2.6\lib\net45\StackExchange.Redis.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -74,6 +81,7 @@
     <Compile Include="BlockRepository.cs" />
     <Compile Include="BookletRepository.cs" />
     <Compile Include="CognitiveCompetenceRepository.cs" />
+    <Compile Include="ConnectionMultiplexerSME.cs" />
     <Compile Include="Context\Connection.cs" />
     <Compile Include="Context\ConnectionReadOnly.cs" />
     <Compile Include="Context\ContextConfiguration.cs" />
@@ -92,6 +100,8 @@
     <Compile Include="Map\KnowledgeAreaDisciplineMap.cs" />
     <Compile Include="Map\KnowledgeAreaMap.cs" />
     <Compile Include="Map\PageConfigurationMap.cs" />
+    <Compile Include="Map\StudentTestAccoplishmentMap.cs" />
+    <Compile Include="Map\StudentTestSessionMap.cs" />
     <Compile Include="Map\SubjectMap.cs" />
     <Compile Include="Map\SubSubjectMap.cs" />
     <Compile Include="Map\TestGroupMap.cs" />
@@ -110,8 +120,10 @@
     <Compile Include="Map\AnswerSheetLotMap.cs" />
     <Compile Include="Map\ExportAnalysisMap.cs" />
     <Compile Include="Map\RequestRevokeMap.cs" />
+    <Compile Include="RepositoryCache.cs" />
     <Compile Include="RequestRevokeRepository.cs" />
     <Compile Include="ResponseChangeLogRepository.cs" />
+    <Compile Include="StudentTestAccoplishments\StudentTestAccoplishmentRepository.cs" />
     <Compile Include="SubjectRepository.cs" />
     <Compile Include="SubSubjectRepository.cs" />
     <Compile Include="TestGroupRepository.cs" />
@@ -205,6 +217,10 @@
       <Project>{e76144dd-15b5-4f3f-9681-3f0e2d5c90b5}</Project>
       <Name>GestaoAvaliacao.IRepository</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.LogFacade\GestaoAvaliacao.LogFacade.csproj">
+      <Project>{6AE4EC99-BF93-4E74-B732-978FB5AF8980}</Project>
+      <Name>GestaoAvaliacao.LogFacade</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
       <Project>{638b2bdc-aa34-4dcd-a041-ab4eb9c4d831}</Project>
       <Name>GestaoAvaliacao.Util</Name>
@@ -216,6 +232,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="QueryFactory\" />
+    <Folder Include="RepositoryCache\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

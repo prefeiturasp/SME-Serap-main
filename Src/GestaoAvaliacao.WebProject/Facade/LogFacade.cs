@@ -14,7 +14,54 @@ namespace GestaoAvaliacao.WebProject.Facade
 
         #region Public methods
 
-        
+        /// <summary>
+        /// Logs personalizable errors that are thrown on routines in this web site.
+        /// In case of error, tries to log the exception on error file.
+        /// </summary>
+        public static void SaveBasicError(string errorMessage, string errorType = null)
+        {
+            LOG_Erros entity = new LOG_Erros();
+            try
+            {
+                entity.err_descricao = errorMessage;
+                entity.err_tipoErro = errorType;
+                entity.err_dataHora = DateTime.Now;
+                if (HttpContext.Current != null && HttpContext.Current.Request != null)
+                {
+                    entity.err_ip = HttpContext.Current.Request.UserHostAddress;
+                    entity.err_machineName = HttpContext.Current.Server.MachineName;
+                    entity.err_caminhoArq = HttpContext.Current.Request.AppRelativeCurrentExecutionFilePath;
+                    try
+                    {
+                        entity.err_browser = String.Concat(new[] { HttpContext.Current.Request.Browser.Browser, HttpContext.Current.Request.Browser.MajorVersion.ToString(), HttpContext.Current.Request.Browser.MinorVersionString });
+                    }
+                    catch
+                    {
+                        entity.err_browser = string.Empty;
+                    }
+
+                    SYS_Sistema sistema = SYS_SistemaBO.GetEntity(new SYS_Sistema() { sis_id = GestaoAvaliacao.Util.Constants.IdSistema });
+                    entity.sis_id = sistema.sis_id;
+                    entity.sis_decricao = sistema.sis_nome;
+
+                    if (HttpContext.Current.Session != null)
+                    {
+                        UsuarioLogado session = SessionFacade.UsuarioLogado;
+                        if (session != null && session.Usuario != null)
+                        {
+                            entity.usu_id = session.Usuario.usu_id;
+                            entity.usu_login = session.Usuario.usu_login;
+                        }
+                    }
+                }
+
+                LOG_ErrosBO.Save(entity);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         /// <summary>
         /// Logs exceptions that are thrown on routines in this web site.

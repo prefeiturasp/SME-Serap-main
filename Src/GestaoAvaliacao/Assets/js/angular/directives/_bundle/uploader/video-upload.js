@@ -130,7 +130,6 @@
                         })
                         .success(function (data, status) {
                             if (data.success) {
-                                debugger;
                                 $notification.success(data.message);
                                 $scope.component.File.Id = data.idFile;
                                 $scope.component.File.Path = data.filelink;

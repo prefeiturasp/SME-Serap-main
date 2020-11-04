@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentValidation, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentValidation.8.6.3\lib\net45\FluentValidation.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -66,6 +69,7 @@
     <Compile Include="AnswerSheetBatchFiles.cs" />
     <Compile Include="AnswerSheetBatchLog.cs" />
     <Compile Include="CorrectionStudentGrid.cs" />
+    <Compile Include="DTO\Abstractions\NotificableDto.cs" />
     <Compile Include="DTO\AdherenceDTO.cs" />
     <Compile Include="DTO\AdherenceStudentOfSchoolDTO.cs" />
     <Compile Include="DTO\AdherenceStudentOfSectionDTO.cs" />
@@ -74,16 +78,24 @@
     <Compile Include="DTO\DreDTO.cs" />
     <Compile Include="DTO\DresDTO.cs" />
     <Compile Include="DTO\ElectronicTestDTO.cs" />
+    <Compile Include="DTO\StudentTestAccoplishments\EndStudentTestAccoplishmentDto.cs" />
+    <Compile Include="DTO\StudentTestAccoplishments\EndStudentTestSessionDto.cs" />
     <Compile Include="DTO\ExportAnalysisDTO.cs" />
     <Compile Include="DTO\ItemPercentageChoiceByAlternativeWithOrderResult.cs" />
     <Compile Include="DTO\ReportTestDTO.cs" />
     <Compile Include="DTO\RequestRevokeDTO.cs" />
     <Compile Include="DTO\SchoolDTO.cs" />
+    <Compile Include="DTO\StudentTestAccoplishments\StartStudentTestSessionDto.cs" />
     <Compile Include="DTO\StudentDTO.cs" />
     <Compile Include="DTO\StudentInformationAndPerformanceTestResult.cs" />
     <Compile Include="DTO\TeamsDTO.cs" />
     <Compile Include="DTO\TestBatchFilesDTO.cs" />
     <Compile Include="DTO\TestSectionStatusCorrectionDTO.cs" />
+    <Compile Include="DTO\Tests\AlternativeModelDto.cs" />
+    <Compile Include="DTO\Tests\AnswerModelDto.cs" />
+    <Compile Include="DTO\Tests\ItemModelDto.cs" />
+    <Compile Include="DTO\Tests\StudentCorrectionModelDto.cs" />
+    <Compile Include="DTO\Tests\TestModelDto.cs" />
     <Compile Include="DTO\UnitsInformationAndPerformanceTestDTO.cs" />
     <Compile Include="DTO\UsersDTO.cs" />
     <Compile Include="EnumAdherenceType.cs" />
@@ -94,6 +106,7 @@
     <Compile Include="Enumerator\EnumIdentificationType.cs" />
     <Compile Include="Enumerator\EnumPosition.cs" />
     <Compile Include="Enumerator\EnumSituation.cs" />
+    <Compile Include="Enumerator\EnumStudentTestSessionSituation.cs" />
     <Compile Include="ExportAnalysis.cs" />
     <Compile Include="FileFilter.cs" />
     <Compile Include="ItemAudio.cs" />
@@ -111,6 +124,8 @@
     <Compile Include="SelectedSection.cs" />
     <Compile Include="StudentCorrectionAnswerGrid.cs" />
     <Compile Include="StudentTestAbsenceReason.cs" />
+    <Compile Include="StudentTestAccoplishments\StudentTestAccoplishment.cs" />
+    <Compile Include="StudentTestAccoplishments\StudentTestSession.cs" />
     <Compile Include="Subject.cs" />
     <Compile Include="SubSubject.cs" />
     <Compile Include="TestGroup.cs" />
@@ -170,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">

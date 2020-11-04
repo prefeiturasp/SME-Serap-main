@@ -176,6 +176,28 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
+        public async Task<IEnumerable<Alternative>> GetAlternativesByItensAsync(IEnumerable<string> itens, long test_id)
+        {
+            var sql = new StringBuilder("SELECT  A.[Id], A.[Description], [Correct], A.[Order], [Justificative], [Numeration], REPLACE(Numeration, ')', '') AS NumerationSem, [TCTBiserialCoefficient], [TCTDificulty], [TCTDiscrimination], A.[Item_Id], BI.[Order] AS ItemOrder ");
+            sql.Append("FROM Alternative AS A WITH(NOLOCK) ");
+            sql.Append("INNER JOIN Item AS I WITH(NOLOCK) ON I.Id = A.Item_Id ");
+            sql.Append("INNER JOIN BlockItem AS BI WITH(NOLOCK) ON BI.Item_Id = I.Id ");
+            sql.Append("INNER JOIN Block AS BL WITH(NOLOCK) ON BL.Id = BI.Block_Id ");
+            sql.Append("WHERE A.State <> @State ");
+            sql.Append("AND I.State <> @State ");
+            sql.Append("AND BI.State <> @State ");
+            sql.Append("AND BL.State <> @State ");
+            sql.Append("AND BL.Test_Id = @TestId ");
+            sql.AppendFormat("AND A.Item_Id IN ({0}) ", string.Join(",", itens));
+            sql.Append("ORDER BY BI.[Order], A.[Order] ");
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+                return await cn.QueryAsync<Alternative>(sql.ToString(), new { State = (Byte)EnumState.excluido, TestId = test_id });
+            }
+        }
+
         #endregion Read
     }
 }

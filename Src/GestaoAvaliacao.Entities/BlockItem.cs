@@ -6,6 +6,11 @@ namespace GestaoAvaliacao.Entities
 {
     public class BlockItem : EntityBase
     {
+        public BlockItem()
+        {
+            RequestRevokes = new List<RequestRevoke>();
+        }
+
         public virtual Block Block { get; set; }
         public long Block_Id { get; set; }
 
