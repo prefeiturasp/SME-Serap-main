@@ -72,9 +72,10 @@ namespace ProvaSP.Web.Controllers.UploadFiles
             }
             catch(Exception ex)
             {
+                var message = ex.InnerException?.Message ?? ex.Message;
                 return new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
                 {
-                    ReasonPhrase = ex.InnerException?.Message ?? ex.Message
+                    ReasonPhrase = message.Replace(Environment.NewLine, " ")
                 };
             }
         }

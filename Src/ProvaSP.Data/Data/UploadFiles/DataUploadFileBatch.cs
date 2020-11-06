@@ -11,8 +11,7 @@ namespace ProvaSP.Data.Data.UploadFiles
 {
     public class DataUploadFileBatch : BaseData, IDataUploadFileBatch
     {
-        private const string BaseSelect = @"SELECT
-                            Id,
+        private const string BaseColumnsSelect = @"Id,
                             CreatedDate,
                             BeginDate,
                             UploadFileBatchType,
@@ -21,10 +20,15 @@ namespace ProvaSP.Data.Data.UploadFiles
                             CicloDeAprendizagem,
                             Situation,
                             FileCount,
+                            FileErrorCount,
                             UsuId,
-                            UsuName
-                        FROM
-                            UploadFileBatch (NOLOCK)";
+                            UsuName";
+
+        private const string BaseConditionsSelect = @"WHERE
+                    UploadFileBatchType = @uploadFileBatchType
+                    AND Edicao = @edicao
+                    AND (AreaDeConhecimento = @areaDeConhecimento OR @areaDeConhecimento IS NULL)
+                    AND (CicloDeAprendizagem = @cicloDeAprendizagem OR @cicloDeAprendizagem IS NULL) ";
 
         public async Task<long?> AddAsync(UploadFileBatch entity)
         {
@@ -86,7 +90,10 @@ namespace ProvaSP.Data.Data.UploadFiles
 
         public Task<UploadFileBatch> GetAsync(long id)
         {
-            var query = $@"{BaseSelect}
+            var query = $@"SELECT
+                        {BaseColumnsSelect}
+                        FROM
+                            UploadFileBatch (NOLOCK)
                         WHERE
                             Id = @id;";
 
@@ -98,7 +105,10 @@ namespace ProvaSP.Data.Data.UploadFiles
 
         public Task<IEnumerable<UploadFileBatch>> GetActiveBatchesAsync(Guid usuId, UploadFileBatchType uploadFileBatchType)
         {
-            var query = $@"{BaseSelect}
+            var query = $@"SELECT
+                        {BaseColumnsSelect}
+                        FROM
+                            UploadFileBatch (NOLOCK)
                         WHERE
                             UsuId = @usuId
                             AND UploadFileBatchType = @uploadFileBatchType
@@ -134,9 +144,17 @@ namespace ProvaSP.Data.Data.UploadFiles
 
         public async Task<UploadFileBatchPaginated> GetAsync(UploadFileBatchFilter filter)
         {
-            var query = $@"{BaseSelect}
-                        {GetSearchConditions()}
-                        OFFSET @skip ROWS FETCH NEXT @rows ROWS ONLY;";
+            var query = $@"SELECT 
+                        TOP (@rows) {BaseColumnsSelect}
+                        FROM    
+                        (SELECT
+                            ROW_NUMBER() OVER (ORDER BY CreatedDate DESC) AS RowNum,
+                            {BaseColumnsSelect}
+                            FROM
+                            UploadFileBatch (NOLOCK)
+                            {BaseConditionsSelect}
+                        ) AS RowConstrainedResult
+                        WHERE RowNum > (@skip);";
 
             var entitiesTask = GetSqlConnection().QueryAsync<UploadFileBatch>(query, GetSearchParameters(filter));
             var maxPageTask = GetMaxPageAsync(filter);
@@ -153,8 +171,9 @@ namespace ProvaSP.Data.Data.UploadFiles
         private Task<int?> GetMaxPageAsync(UploadFileBatchFilter filter)
         {
             var query = $@"SELECT TOP 1 (COUNT(*) OVER() + @rows - 1)/@rows 
-                        FROM UploadFileBatch
-                        {GetSearchConditions()};";
+                        FROM UploadFileBatch (NOLOCK)
+                        {BaseConditionsSelect}
+                        ORDER BY CreatedDate DESC;";
 
             return GetSqlConnection().QuerySingleOrDefaultAsync<int?>(query, GetSearchParameters(filter));
         }
@@ -169,13 +188,5 @@ namespace ProvaSP.Data.Data.UploadFiles
                 skip = (filter.Page - 1) * UploadFileBatchFilter.RowsPerPage,
                 rows = UploadFileBatchFilter.RowsPerPage
             };
-
-        private static string GetSearchConditions()
-            => $@"WHERE
-                    UploadFileBatchType = @uploadFileBatchType
-                    AND Edicao = @edicao
-                    AND (AreaDeConhecimento = @areaDeConhecimento OR @areaDeConhecimento IS NULL)
-                    AND (CicloDeAprendizagem = @cicloDeAprendizagem OR @cicloDeAprendizagem IS NULL)
-                ORDER BY CreatedDate DESC";
     }
 }

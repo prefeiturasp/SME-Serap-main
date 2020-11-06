@@ -208,6 +208,7 @@
 
         function endSession(entregarProva, callback) {
             if (ng.admin || ng.provaFinalizada) {
+                callback();
                 return;
             }
 

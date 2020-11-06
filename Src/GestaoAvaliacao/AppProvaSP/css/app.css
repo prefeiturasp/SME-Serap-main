@@ -953,6 +953,7 @@ table.greyGridTable tfoot td {
 
             .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro {
                 font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+                font-size: 12px;
                 border-collapse: collapse;
                 width: 100%;
             }
@@ -960,7 +961,7 @@ table.greyGridTable tfoot td {
                 .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro td,
                 .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro th {
                     border: 1px solid #ddd;
-                    padding: 8px;
+                    padding: 5px;
                 }
 
                 .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro tr:nth-child(even) {
@@ -972,6 +973,7 @@ table.greyGridTable tfoot td {
                 }
 
                 .detalhesDoLote .itensDetalhesDoLote .divArquivosComErro .tableArquivosComErro th {
+                    font-size: 14px;
                     padding-top: 12px;
                     padding-bottom: 12px;
                     text-align: left;

@@ -641,11 +641,14 @@ não exclua esse comentário.
                         <button id="btnCancelar" class="cancelar" data-toggle="modal" data-target="#modalCancelarLoteDeUpload"><i class="fa fa-trash" aria-hidden="true"></i></button>
                     </div>
 
-                    <div class="divArquivosComErro">
+                    <div id="divArquivosComErro" class="divArquivosComErro">
                         <h5 style="color:dimgray;">Arquivos com erro</h5>
                         <table id="tableArquivosComErro" class="tableArquivosComErro">
                             <tr>
-                                <th style="width: 30%;">
+                                <th style="width: 10%;">
+                                    >>
+                                </th>
+                                <th style="width: 20%;">
                                     Arquivo
                                 </th>
                                 <th style="width: 70%;">
@@ -658,6 +661,7 @@ não exclua esse comentário.
             </div>
 
             <button id="btnUploadArquivosHistoricoVoltar" data-role="button" data-toggle="modal" data-target="#modalCancelarLoteDeUpload">Voltar</button>
+            <button id="btnFinalizarLote" onclick="finalizarLote()" style="display:none;">Finalizar Lote</button>
         </div>
     </div>
 

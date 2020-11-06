@@ -29,7 +29,7 @@ namespace ProvaSP.Web.Controllers.Abstractions
             var message = string.Join(" ", result.ErrorMessages);
             return new HttpResponseMessage(HttpStatusCode.ExpectationFailed)
             {
-                ReasonPhrase = message
+                ReasonPhrase = message.Replace(Environment.NewLine, " ")
             };
         }
 
