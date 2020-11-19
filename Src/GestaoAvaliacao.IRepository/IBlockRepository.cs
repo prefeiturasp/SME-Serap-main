@@ -20,7 +20,7 @@ namespace GestaoAvaliacao.IRepository
         IEnumerable<ItemWithOrderAndRevoked> GetTestItemBlocks(Int64 TestId);
         IEnumerable<Block> GetTestBlocks(Int64 TestId);
         IEnumerable<Block> GetBlocksByItensTests(List<long> tests);
-        IEnumerable<Item> GetBlockItens(Int64 Id);
+        IEnumerable<Item> GetBlockItens(Int64 Id, int page, int pageItens);
         IEnumerable<BlockKnowledgeArea> GetBlockKnowledgeAreas(long Id);
         void RemoveBlockItem(Int64 Id, Int64 ItemId);
         Block Save(Block block);
