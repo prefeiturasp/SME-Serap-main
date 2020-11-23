@@ -210,3 +210,10 @@
 /Src/GestaoAvaliacao/bin
 /Src/ProvaSP.App/www
 **/*.pubxml.user
+**/*.obj
+**/obj/
+.vs
+**/*.csprojAssemblyReference.cache
+
+
+
