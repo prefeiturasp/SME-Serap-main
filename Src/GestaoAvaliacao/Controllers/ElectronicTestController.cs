@@ -179,29 +179,39 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                var testTask = testBusiness.SearchInfoTestAsync(test_id);
-                var itensTask = LoadItensAsync(test_id);
-                await Task.WhenAll(testTask, itensTask);
-
-                if (testTask.Result is null  || itensTask.Result is null)
+                var test = await testBusiness.SearchInfoTestAsync(test_id);
+                if (test is null)
                 {
                     return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Dados não encontrados." }, JsonRequestBehavior.AllowGet);
                 }
 
-                await LoadAlternativesByItensAsync(test_id, itensTask.Result);
-
                 var ret = new TestModelDto
                 {
-                    Id = testTask.Result.Id,
-                    Description = testTask.Result.Description,
-                    NumberItem = testTask.Result.NumberItem,
-                    QuantDiasRestantes = testTask.Result.quantDiasRestantes,
-                    FrequencyApplication = EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)testTask.Result.FrequencyApplication),
-                    ApplicationEndDate = testTask.Result.ApplicationEndDate.ToString("dd/MM/yyyy"),
-                    Itens = itensTask.Result
+                    Id = test.Id,
+                    Description = test.Description,
+                    NumberItem = test.NumberItem,
+                    QuantDiasRestantes = test.quantDiasRestantes,
+                    FrequencyApplication = EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)test.FrequencyApplication),
+                    ApplicationEndDate = test.ApplicationEndDate.ToString("dd/MM/yyyy"),
                 };
 
                 return Json(new { success = true, test = ret }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar os dados da prova." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> LoadTestItensByTestId(long test_id, int page, int pageItens)
+        {
+            try
+            {
+                var itens = await LoadItensAsync(test_id, page, pageItens);
+                await LoadAlternativesByItensAsync(test_id, itens);
+                return Json(new { success = true, itens }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -244,9 +254,11 @@ namespace GestaoAvaliacao.Controllers
             }
         }
 
-        private async Task<IEnumerable<ItemModelDto>> LoadItensAsync(long test_id)
+        private async Task<IEnumerable<ItemModelDto>> LoadItensAsync(long test_id, int page, int pageItens)
         {
-            var blockItems = await testBusiness.GetItemsByTestAsync(test_id, SessionFacade.UsuarioLogado.Usuario.usu_id);
+            var blockItems = await testBusiness.GetItemsByTestAsync(test_id, SessionFacade.UsuarioLogado.Usuario.usu_id, page, pageItens);
+            if (!blockItems?.Any() ?? true) return null;
+
             var lstItens = blockItems.Select(x => x.Item.Id).Distinct().ToList();
 
             var testShowVideoAudioFilesDto = testBusiness.GetTestShowVideoAudioFiles(test_id);
@@ -292,6 +304,7 @@ namespace GestaoAvaliacao.Controllers
 
         private async Task LoadAlternativesByItensAsync(long test_id, IEnumerable<ItemModelDto> itens)
         {
+            if (!itens?.Any() ?? true) return;
             var itensIdsConcat = itens.Select(x => string.Concat("'", x.Id, "'"));
 
             var alternatives = await alternativeBusiness.GetAlternativesByItensAsync(itensIdsConcat, test_id);

@@ -126,11 +126,8 @@
             else {
                 ElectronicTestModel.loadByTestId({ test_id: ng.testId }, function (result) {
                     if (result.success) {
-
                         if (result.test.Id > 0) {
-                            ng.test = result.test;
-                            localStorage.setItem(testKeyStorage, JSON.stringify(ng.test));
-                            loadStudentCorrection();
+                            loadItens(result.test);
                         }
                         else {
                             ng.message = true;
@@ -143,6 +140,57 @@
                 });
             }
         };
+
+        // Load Itens paginated
+        // --------------------
+        function loadItens(test) {
+            if (!test || test == null) {
+                $notification['error']('Não foi possível localizar a prova informada. Por favor tente novamente.');
+                return;
+            }
+
+            var page = 0;
+            var pageItens = 5;
+            test.Itens = [];
+            loadItensPage(test, page, pageItens);
+        };
+
+        function loadItensPage(test, page, pageItens) {
+            ElectronicTestModel.loadTestItensByTestId({ test_id: test.Id, page, pageItens }, function (result) {
+                validateLoadItensPageResult(test, result, page, pageItens);
+            });
+        };
+
+        function validateLoadItensPageResult(test, result, page, pageItens) {
+            if (!result || !result.success) {
+                $notification.alert('Não há itens carregados');
+                return;
+            }
+
+            if (result.itens instanceof Array) {
+                if (result.itens <= 0) {
+                    finalizeLoadItens(test);
+                }
+                else {
+                    test.Itens = test.Itens.concat(result.itens);
+                    page++;
+                    loadItensPage(test, page, pageItens);
+                }
+            }
+            else {
+                finalizeLoadItens(test);
+            }
+        };
+
+        function finalizeLoadItens(test) {
+            ng.test = test;
+
+            let testKeyStorage = getTestStorageKey(ng.testId);
+            localStorage.setItem(testKeyStorage, JSON.stringify(ng.test));
+            loadStudentCorrection();
+        };
+
+        // --------------------
 
         function loadStudentCorrection() {
             ng.provaFinalizada = ng.test.QuantDiasRestantes <= 0;

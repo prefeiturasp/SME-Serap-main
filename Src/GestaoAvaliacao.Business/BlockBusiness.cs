@@ -84,9 +84,9 @@ namespace GestaoAvaliacao.Business
             return blockRepository.GetTestBlocks(TestId);
         }
 
-        public IEnumerable<Item> GetBlockItens(Int64 Id)
+        public IEnumerable<Item> GetBlockItens(Int64 Id, int page, int pageItens)
         {
-            return blockRepository.GetBlockItens(Id);
+            return blockRepository.GetBlockItens(Id, page, pageItens);
         }
 
         public IEnumerable<BlockKnowledgeArea> GetBlockKnowledgeAreas(long Id)

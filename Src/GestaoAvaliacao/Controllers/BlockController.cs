@@ -110,11 +110,11 @@ namespace GestaoAvaliacao.Controllers
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        public JsonResult GetBlockItens(Int64 Id)
+        public JsonResult GetBlockItens(Int64 Id, int page, int pageItens)
         {
             try
             {
-                IEnumerable<Item> blockItens = blockBusiness.GetBlockItens(Id);
+                IEnumerable<Item> blockItens = blockBusiness.GetBlockItens(Id, page, pageItens);
 
                 if (blockItens != null && blockItens.Count() > 0)
                 {
