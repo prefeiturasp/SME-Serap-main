@@ -335,44 +335,52 @@
             return "answerTest-" + testId + "-" + aluId + "-" + turId;
         }
 
-        function saveAnswers() {
-            if (ng.savingAnswers) return;
+        function saveAnswers(finalizeTest) {
+            return  new Promise(
+                function (resolve, reject) {
+                    if (ng.savingAnswers) return resolve();
 
-            let keyStorage = getStudentCorrectionStorageKey(ng.testId, ng.aluId, ng.turId);
-            var studentCorrection = JSON.parse(localStorage.getItem(keyStorage));
-            if (studentCorrection == null || studentCorrection.Answers.length <= 0) return;
+                    let keyStorage = getStudentCorrectionStorageKey(ng.testId, ng.aluId, ng.turId);
+                    var studentCorrection = JSON.parse(localStorage.getItem(keyStorage));
+                    if (studentCorrection == null || studentCorrection.Answers.length <= 0) return resolve();
 
-            var changedAnswers = studentCorrection.Answers.filter(x => x.Changed);
-            if (changedAnswers == null || changedAnswers.length <= 0) return;
-            for (var i = 0; i < changedAnswers.length; i++)
-                changedAnswers[i].Changed = false;
+                    var changedAnswers = studentCorrection.Answers.filter(x => x.Changed);
+                    if (changedAnswers == null || changedAnswers.length <= 0) return resolve();
+                    for (var i = 0; i < changedAnswers.length; i++)
+                        changedAnswers[i].Changed = false;
 
-            ng.savingAnswers = true;
-            ng.$digest();
+                    ng.savingAnswers = true;
+                    if (!finalizeTest) ng.$digest();
 
-            $.ajax({
-                url: base_url('ElectronicTest/SaveAnswersAsync'),
-                data: { test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId, ordemItem: ng.test.Itens[ng.indiceItem].ItemOrder, answers: changedAnswers },
-                type: "POST",
-                dataType: "JSON",
-                success: function (result) {
-                    if (result.success) {
-                        var recentStudentCorrection = JSON.parse(localStorage.getItem(keyStorage));
-                        recentStudentCorrection.Answers = recentStudentCorrection.Answers.map(a => changedAnswers.find(x => x.ItemId == a.ItemId && x.AlternativeId == a.AlternativeId) ?? a);
-                        localStorage.setItem(keyStorage, JSON.stringify(recentStudentCorrection));
-                    }
-                    else {
-                        $notification[result.type ? result.type : 'error'](result.message);
-                    }
-                    ng.savingAnswers = false;
-                    ng.$digest();
-                },
-                error: function (result) {
-                    $notification[result.type ? result.type : 'error'](result.message);
-                    ng.savingAnswers = false;
-                    ng.$digest();
-                }
-            });
+                    $.ajax({
+                        url: base_url('ElectronicTest/SaveAnswersAsync'),
+                        data: { test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId, ordemItem: ng.test.Itens[ng.indiceItem].ItemOrder, answers: changedAnswers },
+                        type: "POST",
+                        dataType: "JSON",
+                        success: function (result) {
+                            if (result.success) {
+                                var recentStudentCorrection = JSON.parse(localStorage.getItem(keyStorage));
+                                recentStudentCorrection.Answers = recentStudentCorrection.Answers.map(a => changedAnswers.find(x => x.ItemId == a.ItemId && x.AlternativeId == a.AlternativeId) ?? a);
+                                localStorage.setItem(keyStorage, JSON.stringify(recentStudentCorrection));
+                                ng.savingAnswers = false;
+                                if (!finalizeTest) ng.$digest();
+                                resolve();
+                            }
+                            else {
+                                $notification[result.type ? result.type : 'error'](result.message);
+                                ng.savingAnswers = false;
+                                if (!finalizeTest) ng.$digest();
+                                reject();
+                            }
+                        },
+                        error: function (result) {
+                            $notification[result.type ? result.type : 'error'](result.message);
+                            ng.savingAnswers = false;
+                            if (!finalizeTest) ng.$digest();
+                            reject();
+                        }
+                    });
+                });
         }
 
         ng.zoomAlternativas = function (up) {
@@ -440,27 +448,30 @@
             stopJobToSaveAnswers();
             loadPagePros();
             
-            saveAnswers();
+            saveAnswers(true)
+                .then(function () {
+                    ElectronicTestModel.finalizeCorrection({ tur_id: ng.turId, test_id: ng.testId, alu_id: ng.aluId }, function (result) {
+                        if (result.success) {
+                            $notification.success(result.message);
 
-            ElectronicTestModel.finalizeCorrection({ tur_id: ng.turId, test_id: ng.testId, alu_id: ng.aluId }, function (result) {
-                if (result.success) {
-                    $notification.success(result.message);
+                            let keyStorage = getStudentCorrectionStorageKey(ng.testId, ng.aluId, ng.turId);
+                            var studentCorrection = JSON.parse(localStorage.getItem(keyStorage));
+                            studentCorrection.Done = true;
+                            studentCorrection.LastAnswer = 0;
+                            localStorage.setItem(keyStorage, JSON.stringify(studentCorrection));
 
-                    let keyStorage = getStudentCorrectionStorageKey(ng.testId, ng.aluId, ng.turId);
-                    var studentCorrection = JSON.parse(localStorage.getItem(keyStorage));
-                    studentCorrection.Done = true;
-                    studentCorrection.LastAnswer = 0;
-                    localStorage.setItem(keyStorage, JSON.stringify(studentCorrection));
-
-                    angular.element("#modalConfirmacaoEntregaProva").modal("hide");
-                    endSession(true, redirectToIndexPage);
-                }
-                else {
+                            angular.element("#modalConfirmacaoEntregaProva").modal("hide");
+                            endSession(true, redirectToIndexPage);
+                        }
+                        else {
+                            initializeJobToSaveAnswers();
+                            $notification[result.type ? result.type : 'error'](result.message);
+                        }
+                    })
+                })
+                .catch(function (erro) {
                     initializeJobToSaveAnswers();
-                    $notification[result.type ? result.type : 'error'](result.message);
-                }
-
-            });
+                });
         };
 
         ng.trustSrc = function (src) {
