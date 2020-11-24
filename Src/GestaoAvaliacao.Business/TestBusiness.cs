@@ -171,7 +171,8 @@ namespace GestaoAvaliacao.Business
 			return blockRepository.GetItemsByTestId(test_id, UsuId, ref pager);
 		}
 
-        public async Task<IEnumerable<BlockItem>> GetItemsByTestAsync(long test_id, Guid UsuId) => await blockRepository.GetItemsByTestIdAsync(test_id, UsuId);
+        public async Task<IEnumerable<BlockItem>> GetItemsByTestAsync(long test_id, Guid UsuId, int page, int pageItens) 
+			=> await blockRepository.GetItemsByTestIdAsync(test_id, UsuId, page, pageItens);
 
         public IEnumerable<BlockItem> GetPendingRevokeItems(ref Pager pager, string ItemCode, DateTime? StartDate, DateTime? EndDate, EnumSituation? Situation)
 		{

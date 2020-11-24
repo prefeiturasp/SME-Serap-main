@@ -445,7 +445,7 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public async Task<IEnumerable<BlockItem>> GetItemsByTestIdAsync(long test_id, Guid UsuId)
+        public async Task<IEnumerable<BlockItem>> GetItemsByTestIdAsync(long test_id, Guid UsuId, int page, int pageItens)
         {
             var sql = @"
                         SELECT 
@@ -470,7 +470,8 @@ namespace GestaoAvaliacao.Repository
                         SELECT BlockItem_Id AS Id, [Order], 
                                 Item_Id AS Id, ItemCode,ItemVersion,Statement,   
                                 BaseText_Id AS Id, Description  
-                        FROM #tempBlockItens   
+                        FROM #tempBlockItens
+                        WHERE RowNumber BETWEEN @initialPageItem AND @finalPageItem
                         ORDER BY RowNumber;";
 
             using (IDbConnection cn = Connection)
@@ -478,13 +479,16 @@ namespace GestaoAvaliacao.Repository
                 cn.Open();
                 var transaction = cn.BeginTransaction();
 
+                var initialPageItem = (page * pageItens) + 1;
+                var parameters = new { state = (Byte)EnumState.ativo, id = test_id, initialPageItem, finalPageItem = initialPageItem + pageItens - 1 };
+
                 var blockItems = await cn.QueryAsync<BlockItem, Item, BaseText, BlockItem>(sql,
                     (bi, i, bx) =>
                     {
                         i.BaseText = bx;
                         bi.Item = i;
                         return bi;
-                    }, new { state = (Byte)EnumState.ativo, id = test_id }, transaction);
+                    }, parameters, transaction);
                 if (!blockItems.Any()) return blockItems;
 
                 return blockItems;

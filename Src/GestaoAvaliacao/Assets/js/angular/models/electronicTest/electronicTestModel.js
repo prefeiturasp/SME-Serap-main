@@ -15,6 +15,10 @@
                 method: 'GET',
                 url: base_url('ElectronicTest/LoadByTestId')
             },
+            'loadTestItensByTestId': {
+                method: 'GET',
+                url: base_url('ElectronicTest/LoadTestItensByTestId')
+            },
             'loadStudentCorrectionAsync': {
                 method: 'GET',
                 url: base_url('ElectronicTest/LoadStudentCorrectionAsync')
