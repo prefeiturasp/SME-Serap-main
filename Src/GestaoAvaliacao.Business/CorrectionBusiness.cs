@@ -295,7 +295,7 @@ namespace GestaoAvaliacao.Business
 			}
 
 			var finalizeStudentCorrection = _studentCorrectionBusiness.FinalizeStudentCorrectionAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId);
-			var saveStudentTestSent = _studentTestSentBusiness.SaveAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId, dto.Visao);
+			var saveStudentTestSent = _studentTestSentBusiness.SaveAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId, dto.Visao, cancellationToken);
 			await Task.WhenAll(finalizeStudentCorrection, saveStudentTestSent);
 
 			var studentTestSent = saveStudentTestSent.Result;

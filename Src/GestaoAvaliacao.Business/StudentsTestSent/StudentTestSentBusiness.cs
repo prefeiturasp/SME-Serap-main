@@ -19,11 +19,11 @@ namespace GestaoAvaliacao.Business.StudentsTestSent
 
         public async Task<StudentTestSent> SaveAsync(long testId, long turId, long aluId, Guid entId, EnumSYS_Visao visao, CancellationToken cancellationToken)
         {
-            var studentTestSent = await _studentTestSentRepository.GetFirstOrDefaultAsync(testId, turId, aluId);
+            var studentTestSent = await _studentTestSentRepository.GetFirstOrDefaultAsync(testId, turId, aluId, cancellationToken);
             if (studentTestSent != null) return studentTestSent;
 
             studentTestSent = new StudentTestSent(testId, turId, aluId, entId, visao);
-            await _studentTestSentRepository.AddAsync(studentTestSent);
+            await _studentTestSentRepository.AddAsync(studentTestSent, cancellationToken);
             return studentTestSent;
         }
     }
