@@ -3,6 +3,7 @@ using GestaoAvaliacao.IBusiness.StudentsTestSent;
 using GestaoAvaliacao.IRepository.StudentsTestSent;
 using GestaoAvaliacao.Util;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Business.StudentsTestSent
@@ -16,7 +17,7 @@ namespace GestaoAvaliacao.Business.StudentsTestSent
             _studentTestSentRepository = studentTestSentRepository;
         }
 
-        public async Task<StudentTestSent> SaveAsync(long testId, long turId, long aluId, Guid entId, EnumSYS_Visao visao)
+        public async Task<StudentTestSent> SaveAsync(long testId, long turId, long aluId, Guid entId, EnumSYS_Visao visao, CancellationToken cancellationToken)
         {
             var studentTestSent = await _studentTestSentRepository.GetFirstOrDefaultAsync(testId, turId, aluId);
             if (studentTestSent != null) return studentTestSent;
