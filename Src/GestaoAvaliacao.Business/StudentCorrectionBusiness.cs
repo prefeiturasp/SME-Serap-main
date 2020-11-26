@@ -111,17 +111,15 @@ namespace GestaoAvaliacao.Business
         public Task<StudentCorrection> GetStudentCorrectionByTestAluId(long test_Id, long alu_id, long tur_id) 
             => _studentCorrectionRepository.GetStudentCorrectionByTestAluId(test_Id, alu_id, tur_id);
 
-        public async Task<StudentCorrection> FinalizeStudentCorrectionAsync(long alu_id, long test_id, long tur_id, Guid ent_id)
+        public async Task<StudentCorrection> FinalizeStudentCorrectionAsync(long test_id, long tur_id, long alu_id, Guid ent_id)
         {
-            var studentCorrection = await GetOrCreateAsync(alu_id, test_id, tur_id, ent_id);
-            if (studentCorrection.Validate.IsValid) return studentCorrection;
-
+            var studentCorrection = await GetOrCreateAsync(test_id, tur_id, alu_id, ent_id);
             studentCorrection.provaFinalizada = true;
             await _studentCorrectionRepository.InsertOrReplaceAsync(studentCorrection);
             return studentCorrection;
         }
 
-        private async Task<StudentCorrection> GetOrCreateAsync(long alu_id, long test_id, long tur_id, Guid ent_id)
+        private async Task<StudentCorrection> GetOrCreateAsync(long test_id, long tur_id, long alu_id, Guid ent_id)
         {
             var studentCorrection = await Get(alu_id, test_id, tur_id, ent_id);
             if (studentCorrection != null) return studentCorrection;

@@ -21,6 +21,6 @@ namespace GestaoAvaliacao.IBusiness
         Task<StudentCorrection> SaveAPI(List<Answer> answerList, long alu_id, TestDTO testModel);
         Task<StudentCorrection> GetStudentCorrectionByTestAluId(long test_Id, long alu_id, long tur_id);
 
-        Task<StudentCorrection> FinalizeStudentCorrectionAsync(long alu_id, long test_id, long tur_id, Guid ent_id);
+        Task<StudentCorrection> FinalizeStudentCorrectionAsync(long test_id, long tur_id, long alu_id, Guid ent_id);
     }
 }

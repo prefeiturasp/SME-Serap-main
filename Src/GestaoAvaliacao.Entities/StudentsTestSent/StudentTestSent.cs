@@ -22,6 +22,7 @@ namespace GestaoAvaliacao.Entities.StudentsTestSent
             SetAluId(aluId);
             SetEntId(entId);
             Vision = vision;
+            Situation = StudentTestSentSituation.Pending;
         }
 
         protected StudentTestSent()
