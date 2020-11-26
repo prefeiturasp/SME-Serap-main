@@ -2,8 +2,10 @@
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using GestaoAvaliacao.IRepository;
+using GestaoAvaliacao.IRepository.StudentsTestSent;
 using GestaoAvaliacao.MongoRepository;
 using GestaoAvaliacao.Repository;
+using GestaoAvaliacao.Repository.StudentsTestSent;
 using GestaoAvaliacao.Repository.StudentTestAccoplishments;
 using GestaoEscolar.IRepository;
 using GestaoEscolar.Repository;
@@ -154,6 +156,11 @@ namespace GestaoAvaliacao.MappingDependence
 
 			container.Register(Classes.FromAssemblyContaining<StudentTestAccoplishmentRepository>()
 								.BasedOn(typeof(IStudentTestAccoplishmentRepository))
+								.WithService.AllInterfaces()
+								.SetLifestyle(LifestylePerWebRequest));
+
+			container.Register(Classes.FromAssemblyContaining<StudentTestSentRepository>()
+								.BasedOn(typeof(IStudentTestSentRepository))
 								.WithService.AllInterfaces()
 								.SetLifestyle(LifestylePerWebRequest));
 

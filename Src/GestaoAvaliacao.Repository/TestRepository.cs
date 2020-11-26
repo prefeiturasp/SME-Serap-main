@@ -1040,9 +1040,9 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public List<ElectronicTestDTO> SearchEletronicTests()
+        public async Task<List<ElectronicTestDTO>> SearchEletronicTests()
         {
-            StringBuilder sql = new StringBuilder(@"SELECT
+            var sql = new StringBuilder(@"SELECT
 	                                                    T.Id,
 	                                                    T.[Description] + ' - ' + CASE 
 								                                                    WHEN Discipline_Id IS NULL THEN 'Multidisciplinar'
@@ -1068,16 +1068,14 @@ namespace GestaoAvaliacao.Repository
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
-
-                var result = cn.Query<ElectronicTestDTO>(sql.ToString(), new { State = (Byte)EnumState.excluido });
-
+                var result = await cn.QueryAsync<ElectronicTestDTO>(sql.ToString(), new { State = (Byte)EnumState.excluido });
                 return result.ToList();
             }
         }
 
-        public List<ElectronicTestDTO> SearchEletronicTestsByPesId(Guid pes_id)
+        public async Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id)
         {
-            StringBuilder sql = new StringBuilder(@"
+            var sql = new StringBuilder(@"
                 SELECT 
 	                mtu.mtu_dataMatricula, 
 	                mtu.mtu_dataSaida, 
@@ -1155,7 +1153,7 @@ namespace GestaoAvaliacao.Repository
             {
                 cn.Open();
 
-                var result = cn.Query<ElectronicTestDTO>(sql.ToString(), new
+                var result = await cn.QueryAsync<ElectronicTestDTO>(sql.ToString(), new
                 {
                     State = (Byte)EnumState.excluido,
                     PesId = pes_id,
@@ -1169,7 +1167,7 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public IEnumerable<Guid> GetStudentDeficiencies(Guid pes_id)
+        public async Task<IEnumerable<Guid>> GetStudentDeficiencies(Guid pes_id)
         {
             var query = @"SELECT
                             tde_id
@@ -1181,7 +1179,7 @@ namespace GestaoAvaliacao.Repository
             using (IDbConnection cn = ConnectionCoreSSO)
             {
                 cn.Open();
-                return cn.Query<Guid>(query, new { pes_id });
+                return await cn.QueryAsync<Guid>(query, new { pes_id });
             }
         }
 

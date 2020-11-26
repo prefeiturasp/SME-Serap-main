@@ -121,6 +121,7 @@
     <Compile Include="ITestTypeItemLevelBusiness.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ITestTypeCourseBusiness.cs" />
+    <Compile Include="StudentsTestSent\IStudentTestSentBusiness.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">

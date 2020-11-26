@@ -1,10 +1,12 @@
 ﻿using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.DTO.StudentsTestSent;
 using GestaoAvaliacao.Entities.DTO.Tests;
 using GestaoAvaliacao.MongoEntities;
 using GestaoAvaliacao.MongoEntities.DTO;
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using CoreSSO = MSTech.CoreSSO.Entities;
 
@@ -21,6 +23,8 @@ namespace GestaoAvaliacao.IBusiness
         Task<Adherence> FinalizeCorrectionElectronicTest(long tur_id, long test_id, long alu_id, CoreSSO.SYS_Usuario user, EnumSYS_Visao visao);
 
         Task<Adherence> FinalizeAutomaticCorrection(long team, long test_id, Guid EntityId, MongoEntities.TestTemplate testTemplate);
+
+        Task<FinalizeCorrectionDto> SendElectronicTestAsync(FinalizeCorrectionDto dto, CancellationToken cancellationToken);
 
         Task<CorrectionResults> GetResultCorrectionGrid(long tur_id, long test_id, long? discipline_id, Guid ent_id);
 

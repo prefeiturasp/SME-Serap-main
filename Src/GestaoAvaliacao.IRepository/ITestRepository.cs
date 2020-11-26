@@ -45,12 +45,12 @@ namespace GestaoAvaliacao.IRepository
 		Test SelectOrderTestUp(long order);
 		Test SelectOrderTestDown(long order);
 		IEnumerable<TestResult> GetTestsBySubGroup(long id);
-        List<ElectronicTestDTO> SearchEletronicTests();
-        List<ElectronicTestDTO> SearchEletronicTestsByPesId(Guid pes_id);
+        Task<List<ElectronicTestDTO>> SearchEletronicTests();
+        Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id);
         Task<Test> SearchInfoTestAsync(long test_id);
         bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id);
         IEnumerable<TestResult> GetTestsBySubGroupTcpId(long Id, long tcp_id);
-        IEnumerable<Guid> GetStudentDeficiencies(Guid pes_id);
+        Task<IEnumerable<Guid>> GetStudentDeficiencies(Guid pes_id);
         TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
     }
 }

@@ -13,10 +13,12 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using FluentValidation;
 using GestaoAvaliacao.Business;
+using GestaoAvaliacao.Business.StudentsTestSent;
 using GestaoAvaliacao.Business.StudentTestAccoplishments;
 using GestaoAvaliacao.Business.StudentTestAccoplishments.Validators;
 using GestaoAvaliacao.Entities.DTO.StudentTestAccoplishments;
 using GestaoAvaliacao.IBusiness;
+using GestaoAvaliacao.IBusiness.StudentsTestSent;
 using GestaoAvaliacao.Repository;
 using GestaoAvaliacao.Repository.StudentTestAccoplishments;
 using GestaoEscolar.Business;
@@ -426,6 +428,11 @@ namespace GestaoAvaliacao.MappingDependence
 
             container.Register(Classes.FromAssemblyContaining<StudentTestAccoplishmentBusiness>()
                     .BasedOn(typeof(IStudentTestAccoplishmentBusiness))
+                    .WithService.AllInterfaces()
+                    .SetLifestyle(LifestylePerWebRequest));
+
+            container.Register(Classes.FromAssemblyContaining<StudentTestSentBusiness>()
+                    .BasedOn(typeof(IStudentTestSentBusiness))
                     .WithService.AllInterfaces()
                     .SetLifestyle(LifestylePerWebRequest));
 
