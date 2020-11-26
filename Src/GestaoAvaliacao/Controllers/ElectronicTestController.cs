@@ -1,16 +1,16 @@
 ﻿using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
+using GestaoAvaliacao.Entities.DTO.StudentsTestSent;
 using GestaoAvaliacao.Entities.DTO.Tests;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
-using GestaoAvaliacao.MongoEntities;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace GestaoAvaliacao.Controllers
@@ -44,7 +44,6 @@ namespace GestaoAvaliacao.Controllers
         {
             if (TestId.HasValue && AluId.HasValue && TurId.HasValue)
             {
-
                 if (VerifyPermission(TestId, AluId, TurId))
                 {
                     return View();
@@ -81,97 +80,68 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
-        public JsonResult Load()
+        public async Task<JsonResult> Load()
         {
             try
             {
                 var vis_id = (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString());
-
-                List<ElectronicTestDTO> lista = new List<ElectronicTestDTO>();
-
-                if (vis_id != EnumSYS_Visao.Individual)
-                {
-                    lista = testBusiness.SearchEletronicTests();
-
-                    if (lista != null)
-                    {
-                        var ret = lista.Select(entity => new ElectronicTestDTO
-                        {
-                            Id = entity.Id,
-                            Description = entity.Description,
-                            NumberItem = entity.NumberItem,
-                            quantDiasRestantes = entity.quantDiasRestantes,
-                            FrequencyApplicationText = EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)entity.FrequencyApplication),
-                            ApplicationEndDate = entity.ApplicationEndDate
-                        }).ToList();
-
-                        List<ElectronicTestDTO> listaNaoIniciada = new List<ElectronicTestDTO>();
-                        List<ElectronicTestDTO> listaEmAndamento = new List<ElectronicTestDTO>();
-                        List<ElectronicTestDTO> listaFinalizadas = new List<ElectronicTestDTO>();
-
-                        listaEmAndamento = ret.Where(p => p.quantDiasRestantes > 0).ToList();
-
-                        listaFinalizadas = ret.Where(p => p.quantDiasRestantes == 0).ToList();
-
-                        return Json(new { success = true, listaNaoIniciada = listaNaoIniciada, listaEmAndamento = listaEmAndamento, listaFinalizadas = listaFinalizadas }, JsonRequestBehavior.AllowGet);
-                    }
-                }
-                else
-                {
-                    lista = testBusiness.SearchEletronicTestsByPesId(SessionFacade.UsuarioLogado.Usuario.pes_id);
-
-                    if (lista != null)
-                    {
-                        var ret = lista.Select(entity => new ElectronicTestDTO
-                        {
-                            Id = entity.Id,
-                            Description = entity.Description,
-                            NumberItem = entity.NumberItem,
-                            quantDiasRestantes = entity.quantDiasRestantes,
-                            FrequencyApplicationText = EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)entity.FrequencyApplication),
-                            ApplicationEndDate = entity.ApplicationEndDate,
-                            alu_id = entity.alu_id,
-                            tur_id = entity.tur_id
-                        }).ToList();
-
-                        List<ElectronicTestDTO> listaNaoIniciada = new List<ElectronicTestDTO>();
-                        List<ElectronicTestDTO> listaEmAndamento = new List<ElectronicTestDTO>();
-                        List<ElectronicTestDTO> listaFinalizadas = new List<ElectronicTestDTO>();
-
-                        foreach (var item in ret)
-                        {
-                            StudentCorrection studentCorrection = _studentCorrectionBusiness.GetStudentCorrectionByTestAluId(item.Id, item.alu_id, item.tur_id);
-
-                            if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
-                            {
-                                studentCorrection.provaFinalizada = false;
-                            }
-
-                            if (studentCorrection == null && item.quantDiasRestantes > 0)
-                            {
-                                listaNaoIniciada.Add(item);
-                            }
-                            else if (studentCorrection != null && !studentCorrection.provaFinalizada.Value && item.quantDiasRestantes > 0)
-                            {
-                                listaEmAndamento.Add(item);
-                            }
-                            else
-                            {
-                                listaFinalizadas.Add(item);
-                            }
-                        }
-
-                        return Json(new { success = true, listaNaoIniciada = listaNaoIniciada, listaEmAndamento = listaEmAndamento, listaFinalizadas = listaFinalizadas }, JsonRequestBehavior.AllowGet);
-                    }
-                }
-
-                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Provas não encontradas." }, JsonRequestBehavior.AllowGet);
+                return vis_id == EnumSYS_Visao.Individual
+                    ? await LoadByIndividualVisionAsync()
+                    : await LoadByAdminVisionAsync();
             }
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar as provas." }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        private async Task<JsonResult> LoadByAdminVisionAsync()
+        {
+            var electronicTests = await testBusiness.SearchEletronicTests();
+            if (electronicTests is null)
+                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Provas não encontradas." }, JsonRequestBehavior.AllowGet);
+
+            var listaNaoIniciada = new List<ElectronicTestDTO>();
+            var listaEmAndamento = electronicTests.Where(p => p.quantDiasRestantes > 0).ToList();
+            var listaFinalizadas = electronicTests.Where(p => p.quantDiasRestantes == 0).ToList();
+
+            return Json(new { success = true, listaNaoIniciada, listaEmAndamento, listaFinalizadas }, JsonRequestBehavior.AllowGet);
+        }
+
+        private async Task<JsonResult> LoadByIndividualVisionAsync()
+        {
+            var electronicTests = await testBusiness.SearchEletronicTestsByPesId(SessionFacade.UsuarioLogado.Usuario.pes_id);
+            if (electronicTests is null)
+                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Provas não encontradas." }, JsonRequestBehavior.AllowGet);
+
+            var listaNaoIniciada = new List<ElectronicTestDTO>();
+            var listaEmAndamento = new List<ElectronicTestDTO>();
+            var listaFinalizadas = new List<ElectronicTestDTO>();
+
+            foreach (var electronicTest in electronicTests)
+            {
+                var studentCorrection = await _studentCorrectionBusiness.GetStudentCorrectionByTestAluId(electronicTest.Id, electronicTest.alu_id, electronicTest.tur_id);
+                if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
+                {
+                    studentCorrection.provaFinalizada = false;
+                }
+
+                if (studentCorrection == null && electronicTest.quantDiasRestantes > 0)
+                {
+                    listaNaoIniciada.Add(electronicTest);
+                }
+                else if (studentCorrection != null && !studentCorrection.provaFinalizada.Value && electronicTest.quantDiasRestantes > 0)
+                {
+                    listaEmAndamento.Add(electronicTest);
+                }
+                else
+                {
+                    listaFinalizadas.Add(electronicTest);
+                }
+            }
+
+            return Json(new { success = true, listaNaoIniciada, listaEmAndamento, listaFinalizadas }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -226,7 +196,7 @@ namespace GestaoAvaliacao.Controllers
             try
             {
                 var studentCorrection = await _studentCorrectionBusiness.Get(alu_id, test_id, tur_id, SessionFacade.UsuarioLogado.Usuario.ent_id);
-                if(studentCorrection is null)
+                if (studentCorrection is null)
                     return Json(new { success = true, answers = new StudentCorrectionModelDto() }, JsonRequestBehavior.AllowGet);
 
                 var answers = studentCorrection.Answers
@@ -247,7 +217,7 @@ namespace GestaoAvaliacao.Controllers
 
                 return Json(new { success = true, studentCorrection = result }, JsonRequestBehavior.AllowGet);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar os dados da prova." }, JsonRequestBehavior.AllowGet);
@@ -284,7 +254,7 @@ namespace GestaoAvaliacao.Controllers
                 };
 
                 var requestRevoke = bi.RequestRevokes?.FirstOrDefault();
-                if(requestRevoke != null)
+                if (requestRevoke != null)
                 {
                     item.Revoked = requestRevoke.Situation;
                     item.ItemSituation = requestRevoke.Situation;
@@ -292,7 +262,7 @@ namespace GestaoAvaliacao.Controllers
                     item.Justification = requestRevoke.Justification;
                 }
 
-                if(bi.Item.BaseText != null)
+                if (bi.Item.BaseText != null)
                 {
                     item.BaseTextDescription = bi.Item.BaseText.Description;
                     item.BaseTextId = bi.Item.BaseText.Id;
@@ -324,7 +294,7 @@ namespace GestaoAvaliacao.Controllers
                 })
                 .ToList();
 
-            foreach(var item in itens)
+            foreach (var item in itens)
             {
                 var artenativesOfItem = alternativesModel.Where(x => x.Item_Id == item.Id).ToList();
                 item.Alternatives.AddRange(artenativesOfItem);
@@ -366,7 +336,7 @@ namespace GestaoAvaliacao.Controllers
                 await correctionBusiness.SaveCorrectionAsync(test_id, alu_id, tur_id, answers, ent_id, usu_id, pes_id, vis_id, ordemItem);
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar salvar as resposta da prova." }, JsonRequestBehavior.AllowGet);
@@ -374,23 +344,33 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> FinalizeCorrection(long tur_id, long test_id, long alu_id)
+        public async Task<JsonResult> FinalizeCorrection(long tur_id, long test_id, long alu_id, CancellationToken cancellationToken)
         {
-            Adherence entity = new Adherence();
+            var usuarioLogado = SessionFacade.UsuarioLogado;
+            var dto = new FinalizeCorrectionDto
+            {
+                AluId = alu_id,
+                EntId = usuarioLogado.Usuario.ent_id,
+                TestId = test_id,
+                TurId = tur_id,
+                Visao = (EnumSYS_Visao)usuarioLogado.Grupo.vis_id
+            };
+
             try
             {
-                entity = await correctionBusiness.FinalizeCorrectionElectronicTest(tur_id, test_id, alu_id, SessionFacade.UsuarioLogado.Usuario, (EnumSYS_Visao)SessionFacade.UsuarioLogado.Grupo.vis_id);
-                return Json(new { success = true, message = "Prova entregue com sucesso." }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                entity.Validate.IsValid = false;
-                entity.Validate.Type = ValidateType.error.ToString();
-                entity.Validate.Message = "Erro ao entregar prova.";
+                dto = await correctionBusiness.SendElectronicTestAsync(dto, cancellationToken);
+                if (dto.IsValid)
+                    return Json(new { success = true, message = "Prova entregue com sucesso." }, JsonRequestBehavior.AllowGet);
 
-                LogFacade.SaveError(ex);
+                var erroFormatado = string.Join(". ", dto.Errors);
+                LogFacade.SaveBasicError(erroFormatado);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = erroFormatado }, JsonRequestBehavior.AllowGet);
             }
-            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet);
+            catch(Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao entregar prova." }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

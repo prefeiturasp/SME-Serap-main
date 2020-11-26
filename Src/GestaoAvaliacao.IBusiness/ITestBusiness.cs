@@ -55,9 +55,9 @@ namespace GestaoAvaliacao.IBusiness
 		IEnumerable<TestResult> GetTestsBySubGroup(long id);
 
 		TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
-		List<ElectronicTestDTO> SearchEletronicTests();
+		Task<List<ElectronicTestDTO>> SearchEletronicTests();
 		Task<Test> SearchInfoTestAsync(long test_id);
-		List<ElectronicTestDTO> SearchEletronicTestsByPesId(Guid pes_id);
+		Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id);
 		bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id);
 		void ChangeOrder(long idOrigem, long idDestino);
 		IEnumerable<TestResult> GetTestsBySubGroupTcpId(long id, long tcp_id);

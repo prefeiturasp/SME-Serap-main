@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestaoAvaliacao.Util;
+using System;
 
 namespace GestaoAvaliacao.Entities.DTO
 {
@@ -11,9 +12,15 @@ namespace GestaoAvaliacao.Entities.DTO
         public long alu_id { get; set; }
         public long tur_id { get; set; }
         public int FrequencyApplication { get; set; }
-        public string FrequencyApplicationText { get; set; }
+        public string FrequencyApplicationText => GetFrequenciyApplicationDescription();
         public DateTime ApplicationEndDate { get; set; }
         public long TestTypeId { get; set; }
         public bool TargetToStudentsWithDeficiencies { get; set; }
+
+        private string GetFrequenciyApplicationDescription()
+        {
+            if (FrequencyApplication <= 0) return string.Empty;
+            return EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)FrequencyApplication);
+        }
     }
 }
