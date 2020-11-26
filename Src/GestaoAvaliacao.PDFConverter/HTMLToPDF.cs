@@ -89,6 +89,7 @@ namespace GestaoAvaliacao.PDFConverter
 			pdfConverter.PdfDocumentOptions.LiveUrlsEnabled = true;
 			pdfConverter.PrerenderEnabled = true;
 			pdfConverter.JavaScriptEnabled = true;
+			pdfConverter.NavigationTimeout = 240;
 
 			pdfConverter.PdfDocumentInfo.Title = title;
 			pdfConverter.PdfDocumentInfo.CreatedDate = DateTime.Now;

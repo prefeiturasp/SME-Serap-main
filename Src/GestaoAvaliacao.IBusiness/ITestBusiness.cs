@@ -27,7 +27,7 @@ namespace GestaoAvaliacao.IBusiness
 		IEnumerable<AnswerSheetStudentInformation> GetTeamStudents(int SchoolId, long SectionId, long StudentId, long test_id, bool allAdhered);
 		Test GetObjectWithTestType(long Id);
 		IEnumerable<BlockItem> GetItemsByTest(long test_id, Guid UsuId, ref Pager pager);
-		Task<IEnumerable<BlockItem>> GetItemsByTestAsync(long test_id, Guid UsuId);
+		Task<IEnumerable<BlockItem>> GetItemsByTestAsync(long test_id, Guid UsuId, int page, int pageItens);
 		IEnumerable<BlockItem> GetPendingRevokeItems(ref Pager pager, string ItemCode, DateTime? StartDate, DateTime? EndDate, EnumSituation? Situation);
 		EnumTestSituation TestSituation(Test entity);
 		IEnumerable<AnswerSheetBatch> GetTestAutomaticCorrectionSituation(long testId, long schoolId);

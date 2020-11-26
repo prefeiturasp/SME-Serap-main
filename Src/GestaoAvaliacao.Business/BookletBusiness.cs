@@ -4,6 +4,7 @@ using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IFileServer;
 using GestaoAvaliacao.IPDFConverter;
 using GestaoAvaliacao.IRepository;
+using GestaoAvaliacao.LogFacade;
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
@@ -122,7 +123,8 @@ namespace GestaoAvaliacao.Business
 				filter.Logo = GetLogo(filter.Test.TestType.ModelTest.Id, filter.Test.TestType.ModelTest.Id);
 			}
 
-			filter.HtmlContent = string.Format("http://{0}/TestContent?id={1}&EntityId={2}&generateType={3}&fileType={4}", filter.UrlSite, filter.Booklet.Id, EntityId, (byte)filter.GenerateType, (byte)filter.FileType);
+			filter.HtmlContent = string.Format("https://{0}/TestContent?id={1}&EntityId={2}&generateType={3}&fileType={4}", filter.UrlSite, filter.Booklet.Id, EntityId, (byte)filter.GenerateType, (byte)filter.FileType);
+			
 			string header = string.Empty;
 			string footer = string.Empty;
 			bool showBorder = false;

@@ -1,15 +1,17 @@
 ﻿"use strict";
 
 var formularioParaBuscarHistoricoUploadRevistasBoletinsAberto = false;
+var loteEnviado = false;
 var uploadFileBatch = null;
 var uploadFileItens = [];
 var uploadFileItensCount = 0;
 var uploadFileItensEnviados = 0;
 var uploadFileItensComErro = [];
-var quantidadeDeDeTentativasDeUpload = 0;
+var quantidadeDeDeTentativasDeUpload = 1;
 
 const quantidadeMaximaDeArquivosSendoEnviados = 5;
 const quantidadeMaximaDeTentativasDeUploadPorArquivo = 3;
+const desktopIniFile = "desktop.ini";
 
 function getLoteUrl(endpoint) {
     return urlBackEnd + "api/UploadRevistasEBoletins/" + endpoint;
@@ -81,7 +83,7 @@ function carregarArquivos(e) {
         return;
     }
 
-    uploadFileItens = fileselector.files;
+    filtrarArquivos();
     uploadFileItensCount = uploadFileItens.length;
 
     let quantidadeDeArquivos = document.getElementById("quantidadeDeArquivos");
@@ -89,6 +91,18 @@ function carregarArquivos(e) {
 
     document.getElementById("detalhesDoLoteBarraDeProgresso").style.width = "1%";
     $("#divItensDetalhesDoLote").show();
+}
+
+function filtrarArquivos() {
+    for (var i = 0; i < fileselector.files.length; i++) {
+        if (!isIniFile(fileselector.files[i])) {
+            uploadFileItens.push(fileselector.files[i]);
+        }
+    }
+};
+
+function isIniFile(file) {
+    return file.name == desktopIniFile;
 }
 
 function habilitarAcoes(habilitar) {
@@ -117,7 +131,7 @@ function iniciarLote() {
 };
 
 function iniciarEnvio() {
-    var queue = new RequestManager(quantidadeMaximaDeArquivosSendoEnviados, finalizarLote);
+    var queue = new RequestManager(quantidadeMaximaDeArquivosSendoEnviados, finalizarEnvio);
 
     for (var i = 0; i < uploadFileItens.length; i++) {
         var request = montarRequest(uploadFileItens[i]);
@@ -160,22 +174,35 @@ function reportarErroAoEnviarArquivo(file, erro) {
 
     uploadFileItensComErro.push(file);
     var tableArquivosComErro = document.getElementById("tableArquivosComErro");
-    var row = tableArquivosComErro.insertRow(0);
-    var cellNomeDoArquivo = row.insertCell(0);
-    var cellDescricaoDoErro = row.insertCell(1);
-    cellNomeDoArquivo.innerHTML = file.FileName;
+    var row = tableArquivosComErro.insertRow(1);
+    var cellTentativa = row.insertCell(0);
+    var cellNomeDoArquivo = row.insertCell(1);
+    var cellDescricaoDoErro = row.insertCell(2);
+    cellTentativa.innerHTML = quantidadeDeDeTentativasDeUpload;
+    cellNomeDoArquivo.innerHTML = file.name;
     cellDescricaoDoErro.innerHTML = erro.statusText; 
 };
 
-function finalizarLote() {
+function finalizarEnvio() {
     if (uploadFileItensComErro.length > 0 && quantidadeDeDeTentativasDeUpload < quantidadeMaximaDeTentativasDeUploadPorArquivo) {
         reenviarItensComErro();
         return;
     }
 
+    $("#btnUploadArquivosHistoricoVoltar").hide();
+    $("#btnFinalizarLote").show();
+
+    if (uploadFileItensComErro.length > 0) {
+        ProvaSP_Alerta("Lote finalizado", "Alguns arquivos não puderam ser enviados ao servidor. Verifique na lista abaixo.");
+    }
+    else {
+        ProvaSP_Alerta("Sucesso", "Lote enviado com sucesso.");
+    }
+}
+
+function finalizarLote() {
     $.post(getLoteUrl("FinalizeBatch"), { Id: uploadFileBatch.Id, FileErrorCount: uploadFileItensComErro.length })
         .done(function (result) {
-            ProvaSP_Alerta("Sucesso", "Lote enviado com sucesso.");
             inicializarVariaveis();
             exibirMenu();
         })
@@ -185,7 +212,7 @@ function finalizarLote() {
 };
 
 function reenviarItensComErro() {
-    if (quantidadeDeDeTentativasDeUpload >= quantidadeMaximaDeTentativasDeUploadPorArquivo) {
+    if (quantidadeDeDeTentativasDeUpload > quantidadeMaximaDeTentativasDeUploadPorArquivo) {
         finalizarLote();
         return;
     }

@@ -1624,11 +1624,51 @@
 		* @private
 		* @param
 		*/
+
+        var itensCache = [];
+        var page = 0;
+        var pageItens = 10;
+
         function e2_itensCarregar() {
             addEventkeyUp();
-            if (ng.e2_blockAtual.Id)
-                self.etapa2.itensBloco({ Id: ng.e2_blockAtual.Id }, e2_itensCarregado);
+            if (ng.e2_blockAtual.Id) {
+                inicarCarregamentoDosItensPaginados();
+            }
+            //self.etapa2.itensBloco({ Id: ng.e2_blockAtual.Id }, e2_itensCarregado);
+        };
 
+        function inicarCarregamentoDosItensPaginados() {
+            page = 0;
+            pageItens = 10;
+            itensCache = [];
+
+            debugger;
+            carregarItensPorPagina();
+        };
+
+        function carregarItensPorPagina() {
+            self.etapa2.itensBloco({ Id: ng.e2_blockAtual.Id, page, pageItens }, validarResultado);
+        }
+
+        function validarResultado(result) {
+            if (!result || !result.success) {
+                $notification.alert('Não há itens carregados');
+                return;
+            }
+
+            if (result.lista instanceof Array) {
+                if (result.lista <= 0) {
+                    e2_itensCarregado(itensCache);
+                }
+                else {
+                    itensCache = itensCache.concat(result.lista);
+                    page++;
+                    carregarItensPorPagina();
+                }
+            }
+            else {
+                e2_itensCarregado(itensCache);
+            }
         };
 
         /**
@@ -1649,16 +1689,11 @@
 		* @private
 		* @param r = resposta do servidor
 		*/
-        function e2_itensCarregado(r) {
+        function e2_itensCarregado(lista) {
 
-            if (!r || !r.success) {
-                $notification.alert('Não há itens carregados');
-                return false;
-            }
-
-            if (r.lista instanceof Array) {
-                self.etapa2.selecionados = angular.copy(r.lista);
-                ng.e2_ListaItemSelecionados = ng.e2_blockAtual.SelectedItens = angular.copy(r.lista);
+            if (lista instanceof Array && lista.length > 0) {
+                self.etapa2.selecionados = angular.copy(lista);
+                ng.e2_ListaItemSelecionados = ng.e2_blockAtual.SelectedItens = angular.copy(lista);
                 ng.e2_blockAtual.QtdeKnowledgeArea = calculaQtdeKnowledgeArea(ng.e2_blockAtual.SelectedItens);;
                 e2_ResultadoSelecionados();
             }

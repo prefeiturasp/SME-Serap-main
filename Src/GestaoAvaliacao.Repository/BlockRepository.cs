@@ -122,24 +122,32 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public IEnumerable<Item> GetBlockItens(Int64 Id)
+        public IEnumerable<Item> GetBlockItens(Int64 Id, int page, int pageItens)
         {
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
 
-                var sql = @"SELECT I.Id, I.ItemCode, I.ItemVersion, I.Statement, I.Revoked, I.KnowledgeArea_Id, I.ItemCodeVersion, K.Description AS KnowledgeArea_Description, CASE WHEN (T.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) ELSE 0 END AS KnowledgeArea_Order " +
-                               "FROM Item I WITH (NOLOCK) " +
-                               "INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id " +
-                               "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
-                               "INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] " +
-                               "LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state " +
-                               "LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = K.Id AND B.Id = Bka.Block_Id AND Bka.State = @state " +
-                               "WHERE BI.Block_Id = @id " +
-                               "AND BI.State = @state AND I.State = @state " +
-                               "ORDER BY BI.[Order]";
+                var sql = @"WITH ItensPage AS
+                            (
+                                SELECT ROW_NUMBER() OVER (ORDER BY BI.[Order]) AS RowNum, I.Id, I.ItemCode, I.ItemVersion, I.Statement, I.Revoked, I.KnowledgeArea_Id, I.ItemCodeVersion, K.Description AS KnowledgeArea_Description, CASE WHEN (T.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) ELSE 0 END AS KnowledgeArea_Order 
+                                FROM Item I WITH (NOLOCK) 
+                                INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id 
+                                INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
+                                INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
+                                LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state 
+                                LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = K.Id AND B.Id = Bka.Block_Id AND Bka.State = @state 
+                                WHERE BI.Block_Id = @id 
+                                AND BI.State = @state AND I.State = @state 
+                            )
 
-                var listItems = cn.Query<Item>(sql, new { id = Id, state = (Byte)EnumState.ativo });
+                            SELECT
+                                *
+                            FROM ItensPage
+                            WHERE RowNum BETWEEN @initialPageItem AND @finalPageItem;";
+
+                var initialPageItem = (page * pageItens) + 1;
+                var listItems = cn.Query<Item>(sql, new { id = Id, state = (Byte)EnumState.ativo, initialPageItem, finalPageItem = initialPageItem + pageItens - 1 });
 
                 foreach (var item in listItems)
                 {
@@ -437,7 +445,7 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public async Task<IEnumerable<BlockItem>> GetItemsByTestIdAsync(long test_id, Guid UsuId)
+        public async Task<IEnumerable<BlockItem>> GetItemsByTestIdAsync(long test_id, Guid UsuId, int page, int pageItens)
         {
             var sql = @"
                         SELECT 
@@ -462,7 +470,8 @@ namespace GestaoAvaliacao.Repository
                         SELECT BlockItem_Id AS Id, [Order], 
                                 Item_Id AS Id, ItemCode,ItemVersion,Statement,   
                                 BaseText_Id AS Id, Description  
-                        FROM #tempBlockItens   
+                        FROM #tempBlockItens
+                        WHERE RowNumber BETWEEN @initialPageItem AND @finalPageItem
                         ORDER BY RowNumber;";
 
             using (IDbConnection cn = Connection)
@@ -470,13 +479,16 @@ namespace GestaoAvaliacao.Repository
                 cn.Open();
                 var transaction = cn.BeginTransaction();
 
+                var initialPageItem = (page * pageItens) + 1;
+                var parameters = new { state = (Byte)EnumState.ativo, id = test_id, initialPageItem, finalPageItem = initialPageItem + pageItens - 1 };
+
                 var blockItems = await cn.QueryAsync<BlockItem, Item, BaseText, BlockItem>(sql,
                     (bi, i, bx) =>
                     {
                         i.BaseText = bx;
                         bi.Item = i;
                         return bi;
-                    }, new { state = (Byte)EnumState.ativo, id = test_id }, transaction);
+                    }, parameters, transaction);
                 if (!blockItems.Any()) return blockItems;
 
                 return blockItems;
