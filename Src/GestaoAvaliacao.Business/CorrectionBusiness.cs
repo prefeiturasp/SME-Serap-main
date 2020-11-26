@@ -1,8 +1,10 @@
 ﻿using GestaoAvaliacao.Business.Adapters;
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
+using GestaoAvaliacao.Entities.DTO.StudentsTestSent;
 using GestaoAvaliacao.Entities.DTO.Tests;
 using GestaoAvaliacao.IBusiness;
+using GestaoAvaliacao.IBusiness.StudentsTestSent;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.MongoEntities;
 using GestaoAvaliacao.MongoEntities.DTO;
@@ -11,6 +13,7 @@ using GestaoEscolar.IBusiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CoreSSO = MSTech.CoreSSO.Entities;
 
@@ -30,13 +33,14 @@ namespace GestaoAvaliacao.Business
 		private readonly ITestSectionStatusCorrectionBusiness _testSectionStatusCorrectionBusiness;
 		private readonly IRequestRevokeBusiness _requestRevokeBusiness;
 		private readonly IResponseChangeLogBusiness _responseChangeLogBusiness;
+        private readonly IStudentTestSentBusiness _studentTestSentBusiness;
 
-		public CorrectionBusiness(ICorrectionRepository correctionRepository, ITestBusiness testBusiness,
+        public CorrectionBusiness(ICorrectionRepository correctionRepository, ITestBusiness testBusiness,
 			ITestTemplateRepository testTemplateRepository, IStudentCorrectionBusiness studentCorrectionBusiness, IBlockBusiness blockBusiness,
 			IStudentTestAbsenceReasonBusiness studentTestAbsenceReasonBusiness,
 			ISectionTestStatsBusiness sectionTestStatsBusiness, ICorrectionResultsBusiness correctionResultsBusiness, ITUR_TurmaBusiness turmaBusiness,
 			ITestSectionStatusCorrectionBusiness testSectionStatusCorrectionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
-			IResponseChangeLogBusiness responseChangeLogBusiness)
+			IResponseChangeLogBusiness responseChangeLogBusiness, IStudentTestSentBusiness studentTestSentBusiness)
 		{
 			_correctionRepository = correctionRepository;
 			_testBusiness = testBusiness;
@@ -50,7 +54,8 @@ namespace GestaoAvaliacao.Business
 			_testSectionStatusCorrectionBusiness = testSectionStatusCorrectionBusiness;
 			_requestRevokeBusiness = requestRevokeBusiness;
 			_responseChangeLogBusiness = responseChangeLogBusiness;
-		}
+            _studentTestSentBusiness = studentTestSentBusiness;
+        }
 
 		#region Write
 
@@ -273,7 +278,42 @@ namespace GestaoAvaliacao.Business
 		}
 
 		/// <summary>
-		/// Finaliza a correção da prova eletrônica.
+		/// Envia prova eletrônica para a fila de processamento.
+		/// </summary>
+		/// <param name="tur_id"></param>
+		/// <param name="test_id"></param>
+		/// <param name="user"></param>
+		/// <param name="visao"></param>
+		/// <returns></returns>
+		public async Task<FinalizeCorrectionDto> SendElectronicTestAsync(FinalizeCorrectionDto dto, CancellationToken cancellationToken)
+        {
+			if(dto is null)
+            {
+				dto = new FinalizeCorrectionDto();
+				dto.AddError("Não foram informados os dados para entrega da prova. Por favor tente novamente.");
+				return dto;
+			}
+
+			var finalizeStudentCorrection = _studentCorrectionBusiness.FinalizeStudentCorrectionAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId);
+			var saveStudentTestSent = _studentTestSentBusiness.SaveAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId, dto.Visao);
+			await Task.WhenAll(finalizeStudentCorrection, saveStudentTestSent);
+
+			var studentTestSent = saveStudentTestSent.Result;
+			var studentCorrection = finalizeStudentCorrection.Result;
+
+			if (studentTestSent is null || studentCorrection is null)
+			{
+				dto.AddError("Não foi possível concluir a entrega da prova. Por favor tente novamente.");
+				return dto;
+			}
+
+			if (!studentTestSent.Validate.IsValid) dto.AddError(studentTestSent.Validate.Message);
+			if (!studentCorrection.Validate.IsValid) dto.AddError(studentCorrection.Validate.Message);
+			return dto;
+		}
+
+		/// <summary>
+		/// Processa a correção da prova eletrônica.
 		/// </summary>
 		/// <param name="tur_id"></param>
 		/// <param name="test_id"></param>
@@ -332,7 +372,7 @@ namespace GestaoAvaliacao.Business
 			lstStudentCorrection.Add(studentCorrection);
 
 			//Processar notas
-			await this.ProcessGrades(lstStudentCorrection, test_id, tur_id, user.ent_id, templateTest, lstStudentCorrection.Count(), dre_id, esc_id);
+			await ProcessGrades(lstStudentCorrection, test_id, tur_id, user.ent_id, templateTest, lstStudentCorrection.Count(), dre_id, esc_id);
 
 			await _correctionResultsBusiness.GenerateCorrectionResults(user.ent_id, test_id, tur_id);
 

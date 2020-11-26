@@ -69,6 +69,8 @@
     <Compile Include="AnswerSheetBatchFiles.cs" />
     <Compile Include="AnswerSheetBatchLog.cs" />
     <Compile Include="CorrectionStudentGrid.cs" />
+    <Compile Include="DTO\StudentsTestSent\FinalizeCorrectionDto.cs" />
+    <Compile Include="StudentsTestSent\StudentTestSent.cs" />
     <Compile Include="DTO\Abstractions\NotificableDto.cs" />
     <Compile Include="DTO\AdherenceDTO.cs" />
     <Compile Include="DTO\AdherenceStudentOfSchoolDTO.cs" />
@@ -193,6 +195,7 @@
       <Name>GestaoAvaliacao.Util</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

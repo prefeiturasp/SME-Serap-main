@@ -101,6 +101,7 @@
     <Compile Include="Map\KnowledgeAreaMap.cs" />
     <Compile Include="Map\PageConfigurationMap.cs" />
     <Compile Include="Map\StudentTestAccoplishmentMap.cs" />
+    <Compile Include="Map\StudentTestSentMap.cs" />
     <Compile Include="Map\StudentTestSessionMap.cs" />
     <Compile Include="Map\SubjectMap.cs" />
     <Compile Include="Map\SubSubjectMap.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="RepositoryCache.cs" />
     <Compile Include="RequestRevokeRepository.cs" />
     <Compile Include="ResponseChangeLogRepository.cs" />
+    <Compile Include="StudentsTestSent\StudentTestSentRepository.cs" />
     <Compile Include="StudentTestAccoplishments\StudentTestAccoplishmentRepository.cs" />
     <Compile Include="SubjectRepository.cs" />
     <Compile Include="SubSubjectRepository.cs" />

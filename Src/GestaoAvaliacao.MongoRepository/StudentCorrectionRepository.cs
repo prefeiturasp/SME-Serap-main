@@ -45,24 +45,20 @@ namespace GestaoAvaliacao.MongoRepository
             return await base.Count(filter);
         }
 
-        public StudentCorrection GetStudentCorrectionByTestAluId(long test_Id, long alu_id, long tur_id)
-        {
-            var studentCorrection = DataBase
-                              .GetCollection<StudentCorrection>("StudentCorrection")
-                              .Aggregate()
-                              .Match(new BsonDocument { { "Test_Id", test_Id }, { "tur_id", tur_id }, { "alu_id", alu_id } })                              
-                              .Project(new BsonDocument {
-                                   { "_id", 0 },
-                                   { "Test_Id", "$_id.Test_Id" },
-                                   { "alu_id", "$_id.alu_id" },
-                                   { "tur_id", "$_id.tur_id" },
-                                   { "provaFinalizada", "$provaFinalizada" },
-                                   { "Answers", "$_id.Answers" },
-                              })
-                              .As<StudentCorrection>()
-                              .FirstOrDefault();
-
-            return studentCorrection;
-        }
+        public Task<StudentCorrection> GetStudentCorrectionByTestAluId(long test_Id, long alu_id, long tur_id) 
+            => DataBase
+                .GetCollection<StudentCorrection>("StudentCorrection")
+                .Aggregate()
+                .Match(new BsonDocument { { "Test_Id", test_Id }, { "tur_id", tur_id }, { "alu_id", alu_id } })
+                .Project(new BsonDocument {
+                    { "_id", 0 },
+                    { "Test_Id", "$_id.Test_Id" },
+                    { "alu_id", "$_id.alu_id" },
+                    { "tur_id", "$_id.tur_id" },
+                    { "provaFinalizada", "$provaFinalizada" },
+                    { "Answers", "$_id.Answers" },
+                })
+                .As<StudentCorrection>()
+                .FirstOrDefaultAsync();
     }
 }

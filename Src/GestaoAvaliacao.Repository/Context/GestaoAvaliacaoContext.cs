@@ -1,4 +1,5 @@
 ﻿using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.StudentsTestSent;
 using GestaoAvaliacao.Entities.StudentTestAccoplishments;
 using GestaoAvaliacao.Repository.Map;
 using GestaoAvaliacao.Repository.Migrations;
@@ -91,6 +92,7 @@ namespace GestaoAvaliacao.Repository.Context
             modelBuilder.Configurations.Add(new ItemAudioMap());
 			modelBuilder.Configurations.Add(new StudentTestAccoplishmentMap());
 			modelBuilder.Configurations.Add(new StudentTestSessionMap());
+			modelBuilder.Configurations.Add(new StudentTestSentMap());
 
 			modelBuilder.Entity<Subject>()
                 .HasMany<Discipline>(s => s.Disciplines)
@@ -136,7 +138,8 @@ namespace GestaoAvaliacao.Repository.Context
 		public DbSet<Skill> Skill { get; set; }
         public DbSet<StudentTestAccoplishment> StudentTestAccoplishments { get; set; }
 		public DbSet<StudentTestSession> StudentTestSessions { get; set; }
-        public DbSet<TestTypeCourse> TestTypeCourse { get; set; }
+		public DbSet<StudentTestSent> StudentTestsSent { get; set; }
+		public DbSet<TestTypeCourse> TestTypeCourse { get; set; }
 		public DbSet<TestTypeCourseCurriculumGrade> TestTypeCourseCurriculumGrade { get; set; }
 		public DbSet<TestTypeDeficiency> TestTypeDeficiencies { get; set; }
 		public DbSet<TestTypeItemLevel> TestTypeItemLevel { get; set; }

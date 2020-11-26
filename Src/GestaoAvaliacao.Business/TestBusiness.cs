@@ -430,24 +430,21 @@ namespace GestaoAvaliacao.Business
 			return testRepository.GetTestsBySubGroupTcpId(id, tcp_id);
 		}
 
-		public List<ElectronicTestDTO> SearchEletronicTests()
-		{
-			return testRepository.SearchEletronicTests();
-		}
+        public Task<List<ElectronicTestDTO>> SearchEletronicTests() => testRepository.SearchEletronicTests();
 
-		public List<ElectronicTestDTO> SearchEletronicTestsByPesId(Guid pes_id)
+        public async Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id)
 		{
-			var tests = testRepository.SearchEletronicTestsByPesId(pes_id);
-			tests = FilterTestsTargetToStudentsWithDeficiencies(pes_id, tests);
+			var tests = await testRepository.SearchEletronicTestsByPesId(pes_id);
+			tests = await FilterTestsTargetToStudentsWithDeficiencies(pes_id, tests);
 			return tests;
 		}
 
-        private List<ElectronicTestDTO> FilterTestsTargetToStudentsWithDeficiencies(Guid pes_id, List<ElectronicTestDTO> tests)
+        private async Task<List<ElectronicTestDTO>> FilterTestsTargetToStudentsWithDeficiencies(Guid pes_id, List<ElectronicTestDTO> tests)
         {
 			var testsTargetToStudentsWithDeficiencies = tests.Where(x => x.TargetToStudentsWithDeficiencies).ToList();
 			if (!testsTargetToStudentsWithDeficiencies.Any()) return tests;
 
-			var studentDeficiencies = testRepository.GetStudentDeficiencies(pes_id);
+			var studentDeficiencies = await testRepository.GetStudentDeficiencies(pes_id);
 			if (!studentDeficiencies?.Any() ?? true)
 				return tests.Except(testsTargetToStudentsWithDeficiencies).ToList();
 

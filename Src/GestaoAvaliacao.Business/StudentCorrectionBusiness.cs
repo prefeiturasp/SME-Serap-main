@@ -108,9 +108,33 @@ namespace GestaoAvaliacao.Business
             return await _studentCorrectionRepository.CountInconsistency(test_id, tur_id);
         }
 
-        public StudentCorrection GetStudentCorrectionByTestAluId(long test_Id, long alu_id, long tur_id)
+        public Task<StudentCorrection> GetStudentCorrectionByTestAluId(long test_Id, long alu_id, long tur_id) 
+            => _studentCorrectionRepository.GetStudentCorrectionByTestAluId(test_Id, alu_id, tur_id);
+
+        public async Task<StudentCorrection> FinalizeStudentCorrectionAsync(long alu_id, long test_id, long tur_id, Guid ent_id)
         {
-            return _studentCorrectionRepository.GetStudentCorrectionByTestAluId(test_Id, alu_id, tur_id);
+            var studentCorrection = await GetOrCreateAsync(alu_id, test_id, tur_id, ent_id);
+            if (studentCorrection.Validate.IsValid) return studentCorrection;
+
+            studentCorrection.provaFinalizada = true;
+            await _studentCorrectionRepository.InsertOrReplaceAsync(studentCorrection);
+            return studentCorrection;
+        }
+
+        private async Task<StudentCorrection> GetOrCreateAsync(long alu_id, long test_id, long tur_id, Guid ent_id)
+        {
+            var studentCorrection = await Get(alu_id, test_id, tur_id, ent_id);
+            if (studentCorrection != null) return studentCorrection;
+
+            var escola = _studentTestAbsenceReasonRepository.GetEscIdDreIdByTeam(tur_id);
+            if (escola is null)
+                throw new NullReferenceException("Não foi possível encontrar a escola do aluno. Por favor tente novamente.");
+
+            studentCorrection = new StudentCorrection(test_id, tur_id, alu_id, ent_id, escola.dre_id, escola.esc_id);
+            studentCorrection.CreateDate = DateTime.Now;
+            studentCorrection.Automatic = false;
+            studentCorrection.OrdemUltimaResposta = 0;
+            return studentCorrection;
         }
     }
 }

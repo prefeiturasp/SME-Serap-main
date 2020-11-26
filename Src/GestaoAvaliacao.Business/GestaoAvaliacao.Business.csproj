@@ -102,6 +102,7 @@
     <Compile Include="ServiceAnswerSheetInfoBusiness.cs" />
     <Compile Include="ReportTestPerformanceBusiness.cs" />
     <Compile Include="StudentCorrectionBusiness.cs" />
+    <Compile Include="StudentsTestSent\StudentTestSentBusiness.cs" />
     <Compile Include="StudentTestAbsenceReasonBusiness.cs" />
     <Compile Include="StudentTestAccoplishments\StudentTestAccoplishmentBusiness.cs" />
     <Compile Include="StudentTestAccoplishments\Validators\EndStudentTestAccoplishmentValidator.cs" />
@@ -167,6 +168,10 @@
     <ProjectReference Include="..\GestaoAvaliacao.IRepository\GestaoAvaliacao.IRepository.csproj">
       <Project>{e76144dd-15b5-4f3f-9681-3f0e2d5c90b5}</Project>
       <Name>GestaoAvaliacao.IRepository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.LogFacade\GestaoAvaliacao.LogFacade.csproj">
+      <Project>{6AE4EC99-BF93-4E74-B732-978FB5AF8980}</Project>
+      <Name>GestaoAvaliacao.LogFacade</Name>
     </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.MongoEntities\GestaoAvaliacao.MongoEntities.csproj">
       <Project>{5ab49ee2-f4ea-428d-8ec1-257d1ee4ea37}</Project>
