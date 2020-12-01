@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.11.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.MongoEntities\GestaoAvaliacao.MongoEntities.csproj" />
+    <ProjectReference Include="..\GestaoAvaliacao.Worker.Database.MongoDB\GestaoAvaliacao.Worker.Database.MongoDB.csproj" />
+  </ItemGroup>
+
+</Project>
