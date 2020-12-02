@@ -1,17 +1,27 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using GestaoAvaliacao.Worker.Repository.Contracts;
+using GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands;
+using MediatR;
+using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
 {
-    public class StudentTestSentWorker : BackgroundService
+    public class StudentTestSentWorker : IHostedService
     {
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        private readonly IMediator _mediator;
+
+        public StudentTestSentWorker(IMediator mediator)
         {
-            throw new NotImplementedException();
+            _mediator = mediator;
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken) => _mediator.Send(new ProcessStudentTestSentCommand());
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            Console.WriteLine("WORKER FINISHED.");
         }
     }
 }

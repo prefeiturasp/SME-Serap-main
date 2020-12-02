@@ -10,10 +10,10 @@ namespace GestaoAvaliacao.Worker.Repository.MongoDB.IoC
     {
         public void Register(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IStudentCorrectionMongoDBRepository, StudentCorrectionMongoDBRepository>();
-            services.AddScoped<ITestTemplateMongoDBRepository, TestTemplateMongoDBRepository>();
-            services.AddScoped<ISectionTestStatsMongoDBRepository, SectionTestStatsMongoDBRepository>();
-            services.AddScoped<ICorrectionResultsMongoDBRepository, CorrectionResultsMongoDBRepository>();
+            services.AddTransient<IStudentCorrectionMongoDBRepository, StudentCorrectionMongoDBRepository>();
+            services.AddTransient<ITestTemplateMongoDBRepository, TestTemplateMongoDBRepository>();
+            services.AddTransient<ISectionTestStatsMongoDBRepository, SectionTestStatsMongoDBRepository>();
+            services.AddTransient<ICorrectionResultsMongoDBRepository, CorrectionResultsMongoDBRepository>();
         }
     }
 }

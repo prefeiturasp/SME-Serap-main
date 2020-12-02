@@ -6,6 +6,8 @@ using GestaoAvaliacao.Worker.StudentTestsSent.Workers;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Reflection;
 
 namespace GestaoAvaliacao.Worker.StudentTestsSent
 {
@@ -22,12 +24,12 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    _ioCStartup.Register(services, hostContext.Configuration);
-                    services.AddScoped<IGenerateCorrectionResultsServices, GenerateCorrectionResultsServices>();
-                    services.AddScoped<IProcessGradesServices, ProcessGradesServices>();
-                    services.AddScoped<IStudentTestSentProcessingChain, StudentTestSentProcessingChain>();
-                    services.AddMediatR(typeof(Program));
                     services.AddHostedService<StudentTestSentWorker>();
+                    _ioCStartup.Register(services, hostContext.Configuration);
+                    services.AddTransient<IGenerateCorrectionResultsServices, GenerateCorrectionResultsServices>();
+                    services.AddTransient<IProcessGradesServices, ProcessGradesServices>();
+                    services.AddTransient<IStudentTestSentProcessingChain, StudentTestSentProcessingChain>();
+                    services.AddMediatR(Assembly.GetExecutingAssembly());
                 });
     }
 }

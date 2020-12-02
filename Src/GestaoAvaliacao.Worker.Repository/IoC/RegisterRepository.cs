@@ -11,10 +11,10 @@ namespace GestaoAvaliacao.Worker.Repository.IoC
     {
         public void Register(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IStudentTestSentRepository, StudentTestSentRepository>();
-            services.AddScoped<IParameterRepository, ParameterRepository>();
-            services.AddScoped<IStudentCorrectionAuxiliarRepository, StudentCorrectionAuxiliarRepository>();
-            services.AddScoped<ITestSectionStatusCorrectionRepository, TestSectionStatusCorrectionRepository>();
+            services.AddTransient<IStudentTestSentRepository, StudentTestSentRepository>();
+            services.AddTransient<IParameterRepository, ParameterRepository>();
+            services.AddTransient<IStudentCorrectionAuxiliarRepository, StudentCorrectionAuxiliarRepository>();
+            services.AddTransient<ITestSectionStatusCorrectionRepository, TestSectionStatusCorrectionRepository>();
         }
     }
 }
