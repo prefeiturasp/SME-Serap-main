@@ -1,5 +1,5 @@
-﻿using GestaoAvaliacao.Entities;
-using GestaoAvaliacao.Entities.StudentsTestSent;
+﻿using GestaoAvaliacao.Worker.Domain.Entities.Parameters;
+using GestaoAvaliacao.Worker.Domain.Entities.Tests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Threading;
@@ -9,9 +9,9 @@ namespace GestaoAvaliacao.Worker.Database.Contexts.EF
 {
     public interface IGestaoAvaliacaoWorkerContext
     {
-        DbSet<StudentTestSent> StudentTestsSent { get; }
-        DbSet<Parameter> Parameters { get; }
-        DbSet<TestSectionStatusCorrection> TestsSectionStatusCorrection { get; }
+        DbSet<StudentTestSentEntityWorker> StudentTestsSent { get; }
+        DbSet<ParameterEntityWorker> Parameters { get; }
+        DbSet<TestSectionStatusCorrectionEntityWorker> TestsSectionStatusCorrection { get; }
 
         EntityEntry<TEntity> Entry<TEntity>(TEntity entity)
         where TEntity : class;

@@ -1,13 +1,13 @@
-﻿using GestaoAvaliacao.Entities;
-using GestaoAvaliacao.Worker.Database.Configs.Base;
+﻿using GestaoAvaliacao.Worker.Database.Configs.Base;
+using GestaoAvaliacao.Worker.Domain.Entities.Parameters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GestaoAvaliacao.Worker.Database.Configs.Parameters
 {
-    public class ParameterConfig : BaseEntityConfig<Parameter>
+    public class ParameterConfig : BaseEntityConfig<ParameterEntityWorker>
     {
-        protected override void OnConfiguring(EntityTypeBuilder<Parameter> builder)
+        protected override void OnConfiguring(EntityTypeBuilder<ParameterEntityWorker> builder)
         {
             builder.Property(p => p.Key)
                 .IsRequired()
@@ -27,10 +27,8 @@ namespace GestaoAvaliacao.Worker.Database.Configs.Parameters
                 .IsRequired();
 
             builder.Property(p => p.EndDate);
-
-            builder.Ignore(p => p.ParameterPage);
-            builder.Ignore(p => p.ParameterCategory);
-            builder.Ignore(p => p.ParameterType);
         }
+
+        protected override string GetTableName() => "Parameter";
     }
 }

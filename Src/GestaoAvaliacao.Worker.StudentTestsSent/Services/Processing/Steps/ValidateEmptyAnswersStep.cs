@@ -28,6 +28,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Processing.Steps
             var answeredItensIds = dto.StudentCorrection.Answers.Select(x => x.Item_Id).ToList();
             var templateItensIds = dto.TestTemplate.Items.Select(x => x.Item_Id).ToList();
             var emptyItensIds = templateItensIds.Except(answeredItensIds);
+            if (!emptyItensIds.Any()) return;
 
             var emptyAnswers = emptyItensIds
                 .Select(x => new Answer

@@ -1,5 +1,5 @@
-﻿using GestaoAvaliacao.Entities.Base;
-using GestaoAvaliacao.Worker.Database.Contexts.EF;
+﻿using GestaoAvaliacao.Worker.Database.Contexts.EF;
+using GestaoAvaliacao.Worker.Domain.Base;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace GestaoAvaliacao.Worker.Repository.Base
 {
     public abstract class BaseWorkerRepository<TEntity>
-        where TEntity : EntityBase
+        where TEntity : EntityWorkerBase
     {
         protected readonly IGestaoAvaliacaoWorkerContext _gestaoAvaliacaoWorkerContext;
 
@@ -22,7 +22,7 @@ namespace GestaoAvaliacao.Worker.Repository.Base
 
         protected abstract DbSet<TEntity> DbSet { get; }
 
-        protected Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken) 
+        protected Task<TEntity> GetFirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken)
             => DbSet.FirstOrDefaultAsync(predicate, cancellationToken);
 
         protected Task<List<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken)
@@ -30,7 +30,7 @@ namespace GestaoAvaliacao.Worker.Repository.Base
 
         public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
         {
-            if (entity is null || !entity.Validate.IsValid) return;
+            if (entity is null || !entity.IsValid) return;
             entity.UpdateDate = DateTime.Now;
             _gestaoAvaliacaoWorkerContext.Entry(entity).State = EntityState.Modified;
             await _gestaoAvaliacaoWorkerContext.SaveChangesAsync(cancellationToken);

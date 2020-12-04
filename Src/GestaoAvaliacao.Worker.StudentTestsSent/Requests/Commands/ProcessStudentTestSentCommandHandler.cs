@@ -1,5 +1,6 @@
-﻿using GestaoAvaliacao.Entities.StudentsTestSent;
+﻿using GestaoAvaliacao.Worker.Domain.Entities.Tests;
 using GestaoAvaliacao.Worker.Repository.Contracts;
+using GestaoAvaliacao.Worker.StudentTestsSent.Logging;
 using GestaoAvaliacao.Worker.StudentTestsSent.Processing;
 using GestaoAvaliacao.Worker.StudentTestsSent.Processing.Dtos;
 using MediatR;
@@ -35,7 +36,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands
                 await _studentTestSentProcessingChain.ExecuteAsync(dto, cancellationToken);
                 if (!dto.IsValid)
                 {
-                    // TO DO LOG
+                    SentryLogger.LogErrors(dto.Errors);
                     await ReturnStudentTestSentToBeProcessedAsync(studentTestSent, cancellationToken);
                     return;
                 }
@@ -45,12 +46,12 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands
             }
             catch (Exception ex)
             {
-                // TO DO LOG
+                SentryLogger.LogError(ex);
                 await ReturnStudentTestSentToBeProcessedAsync(studentTestSent, cancellationToken);
             }
         }
 
-        private async Task<StudentTestSent> GetStudentTestSentToProcessAsync(CancellationToken cancellationToken)
+        private async Task<StudentTestSentEntityWorker> GetStudentTestSentToProcessAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -58,9 +59,9 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands
                 if (studentTestSent is null) return null;
 
                 studentTestSent.SetInProgress();
-                if (!studentTestSent.Validate.IsValid)
+                if (!studentTestSent.IsValid)
                 {
-                    // TO DO LOG
+                    SentryLogger.LogErrors(studentTestSent.Errors);
                     return null;
                 }
 
@@ -69,12 +70,12 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands
             }
             catch (Exception ex)
             {
-                // TO DO LOG
+                SentryLogger.LogError(ex);
                 return null;
             }
         }
 
-        private async Task ReturnStudentTestSentToBeProcessedAsync(StudentTestSent studentTestSent, CancellationToken cancellationToken)
+        private async Task ReturnStudentTestSentToBeProcessedAsync(StudentTestSentEntityWorker studentTestSent, CancellationToken cancellationToken)
         {
             if (studentTestSent is null) return;
             studentTestSent.SetPending();

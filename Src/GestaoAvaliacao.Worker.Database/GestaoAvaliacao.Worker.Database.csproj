@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj" />
+    <ProjectReference Include="..\GestaoAvaliacao.Worker.Domain\GestaoAvaliacao.Worker.Domain.csproj" />
     <ProjectReference Include="..\GestaoAvaliacao.Worker.IoC.Contracts\GestaoAvaliacao.Worker.IoC.Contracts.csproj" />
   </ItemGroup>
 

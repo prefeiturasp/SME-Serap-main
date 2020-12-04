@@ -1,14 +1,13 @@
-﻿using GestaoAvaliacao.Worker.Repository.Contracts;
-using GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands;
+﻿using GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands;
+using GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling;
 using MediatR;
-using Microsoft.Extensions.Hosting;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
 {
-    public class StudentTestSentWorker : IHostedService
+    [SchedulingConfig(Cron = "0 22 * * *")]
+    public class StudentTestSentWorker : BaseScheduledWorker
     {
         private readonly IMediator _mediator;
 
@@ -17,11 +16,8 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
             _mediator = mediator;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken) => _mediator.Send(new ProcessStudentTestSentCommand());
+        protected override string WorkerDescription => nameof(StudentTestSentWorker);
 
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            Console.WriteLine("WORKER FINISHED.");
-        }
+        protected override Task ExecuteAsync(CancellationToken cancellationToken) => _mediator.Send(new ProcessStudentTestSentCommand());
     }
 }

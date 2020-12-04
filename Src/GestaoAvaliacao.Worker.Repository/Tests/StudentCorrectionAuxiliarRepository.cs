@@ -1,8 +1,10 @@
-﻿using GestaoAvaliacao.Entities;
-using GestaoAvaliacao.Entities.DTO;
-using GestaoAvaliacao.Entities.Enumerator;
-using GestaoAvaliacao.Util;
+﻿using GestaoAvaliacao.Util;
 using GestaoAvaliacao.Worker.Database.Contexts.Dapper;
+using GestaoAvaliacao.Worker.Domain.Base;
+using GestaoAvaliacao.Worker.Domain.Entities.AbsenceReasons;
+using GestaoAvaliacao.Worker.Domain.Entities.Schools;
+using GestaoAvaliacao.Worker.Domain.Entities.StudentCorrections;
+using GestaoAvaliacao.Worker.Domain.Enums;
 using GestaoAvaliacao.Worker.Repository.Base;
 using GestaoAvaliacao.Worker.Repository.Contracts;
 using System;
@@ -15,12 +17,12 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
 {
     public class StudentCorrectionAuxiliarRepository : BaseWorkerDapperRepository, IStudentCorrectionAuxiliarRepository
     {
-        public StudentCorrectionAuxiliarRepository(IGestaoAvaliacaoWorkerDapperContext gestaoAvaliacaoWorkerDapperContext) 
+        public StudentCorrectionAuxiliarRepository(IGestaoAvaliacaoWorkerDapperContext gestaoAvaliacaoWorkerDapperContext)
             : base(gestaoAvaliacaoWorkerDapperContext)
         {
         }
 
-        public async Task<IEnumerable<StudentCorrectionAnswerGrid>> GetTestQuestionsAsync(long Id)
+        public async Task<IEnumerable<StudentCorrectionAnswerGridEntityWorker>> GetTestQuestionsAsync(long Id)
         {
             var sql = new StringBuilder("SELECT I.Id AS Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS [Order], A.Id, A.[Order], A.Numeration ");
             sql.Append("FROM Item I WITH (NOLOCK) ");
@@ -33,15 +35,15 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
             sql.Append("AND B.State = @state AND BI.State = @state AND I.State = @state ");
             sql.Append("ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order], A.[Order] ");
 
-            var lookup = new Dictionary<long, StudentCorrectionAnswerGrid>();
+            var lookup = new Dictionary<long, StudentCorrectionAnswerGridEntityWorker>();
 
-            await _gestaoAvaliacaoWorkerDapperContext.QueryAsync<StudentCorrectionAnswerGrid, StudentCorrectionAnswerGridAlternatives, StudentCorrectionAnswerGrid>(sql.ToString(),
+            await _gestaoAvaliacaoWorkerDapperContext.QueryAsync<StudentCorrectionAnswerGridEntityWorker, StudentCorrectionAnswerGridAlternativesWorker, StudentCorrectionAnswerGridEntityWorker>(sql.ToString(),
                 (question, alternative) =>
                 {
-                    StudentCorrectionAnswerGrid found;
+                    StudentCorrectionAnswerGridEntityWorker found;
                     if (!lookup.TryGetValue(question.Item_Id, out found))
                     {
-                        question.Alternatives = new List<StudentCorrectionAnswerGridAlternatives>();
+                        question.Alternatives = new List<StudentCorrectionAnswerGridAlternativesWorker>();
                         lookup.Add(question.Item_Id, question);
 
                         found = question;
@@ -53,7 +55,7 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
             return lookup.Values;
         }
 
-        public async Task<IEnumerable<CorrectionStudentGrid>> GetByTestSectionAsync(long test_id, long tur_id, IEnumerable<long> aluMongoList, bool ignoreBlocked)
+        public async Task<IEnumerable<CorrectionStudentGridEntityWorker>> GetByTestSectionAsync(long test_id, long tur_id, IEnumerable<long> aluMongoList, bool ignoreBlocked)
         {
             var sql = new StringBuilder();
             sql.Append("DECLARE @CorrectionStartDate DATE, @CorrectionEndDate DATE, @AllAdhered BIT ");
@@ -93,7 +95,7 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
             }
             sql.AppendLine("ORDER BY mtu.mtu_numeroChamada ");
 
-            var result = await _gestaoAvaliacaoWorkerDapperContext.QueryAsync<CorrectionStudentGrid>(sql.ToString(),
+            var result = await _gestaoAvaliacaoWorkerDapperContext.QueryAsync<CorrectionStudentGridEntityWorker>(sql.ToString(),
                     new
                     {
                         test_id = test_id,
@@ -114,15 +116,16 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
             return result;
         }
 
-        public Task<IEnumerable<StudentTestAbsenceReason>> GetAbsencesByTestSectionAsync(long test_id, long tur_id)
+        public Task<IEnumerable<StudentTestAbsenceReasonEntityWorker>> GetAbsencesByTestSectionAsync(long test_id, long tur_id)
         {
             var sql = new StringBuilder("SELECT s.alu_id, ar.Id, ar.Description ");
             sql.Append("FROM StudentTestAbsenceReason s WITH (NOLOCK) ");
             sql.Append("INNER JOIN AbsenceReason ar WITH (NOLOCK) on s.AbsenceReason_Id = ar.Id ");
             sql.Append("WHERE tur_id = @tur_id AND Test_Id = @test_Id");
 
-            return _gestaoAvaliacaoWorkerDapperContext.QueryAsync<StudentTestAbsenceReason, AbsenceReason, StudentTestAbsenceReason>(sql.ToString(),
-                (s, a) => {
+            return _gestaoAvaliacaoWorkerDapperContext.QueryAsync<StudentTestAbsenceReasonEntityWorker, AbsenceReasonEntityWorker, StudentTestAbsenceReasonEntityWorker>(sql.ToString(),
+                (s, a) =>
+                {
                     s.AbsenceReason = a;
                     return s;
                 },
@@ -147,7 +150,7 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
             });
         }
 
-        public Task<SchoolDTO> GetEscIdDreIdByTeamAsync(long tur_id)
+        public Task<SchoolEntityWorker> GetEscIdDreIdByTeamAsync(long tur_id)
         {
             var sql = new StringBuilder();
             sql.AppendLine("SELECT Esc.esc_id, Esc.uad_idSuperiorGestao AS dre_id");
@@ -155,7 +158,7 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
             sql.AppendLine("INNER JOIN SGP_ESC_Escola Esc WITH (NOLOCK) ON Esc.esc_id = Tur.esc_id ");
             sql.Append("WHERE tur_id = @tur_id");
 
-            return _gestaoAvaliacaoWorkerDapperContext.QuerySingleAsync<SchoolDTO>(sql.ToString(), new { tur_id = tur_id });
+            return _gestaoAvaliacaoWorkerDapperContext.QuerySingleAsync<SchoolEntityWorker>(sql.ToString(), new { tur_id = tur_id });
         }
 
         public Task<IEnumerable<long>> GetRevokedItemsByTestAsync(long test_id)

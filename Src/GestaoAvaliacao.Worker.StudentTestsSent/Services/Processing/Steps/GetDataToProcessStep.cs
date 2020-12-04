@@ -24,8 +24,6 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Processing.Steps
 
         protected override async Task OnExecuting(StudentTestSentProcessingChainDto dto, CancellationToken cancellationToken)
         {
-            if (dto.StudentCorrection is null) return;
-
             var loadStudentCorrection = LoadStudentCorrectionAsync(dto, cancellationToken);
             var loadTesTemplate = LoadTestTemplate(dto, cancellationToken);
             var loadSchool = LoadSchool(dto, cancellationToken);

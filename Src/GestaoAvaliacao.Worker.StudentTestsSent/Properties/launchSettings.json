@@ -3,7 +3,7 @@
     "GestaoAvaliacao.Worker.StudentTestSentWorker": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+        "DOTNET_ENVIRONMENT": "Production"
       }
     },
     "Docker": {

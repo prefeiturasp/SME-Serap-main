@@ -1,5 +1,5 @@
-﻿using GestaoAvaliacao.Entities;
-using GestaoAvaliacao.Entities.StudentsTestSent;
+﻿using GestaoAvaliacao.Worker.Domain.Entities.Parameters;
+using GestaoAvaliacao.Worker.Domain.Entities.Tests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -15,9 +15,9 @@ namespace GestaoAvaliacao.Worker.Database.Contexts.EF
             _configuration = configuration;
         }
 
-        public DbSet<StudentTestSent> StudentTestsSent { get; internal set; }
-        public DbSet<Parameter> Parameters { get; internal set; }
-        public DbSet<TestSectionStatusCorrection> TestsSectionStatusCorrection { get; internal set; }
+        public DbSet<StudentTestSentEntityWorker> StudentTestsSent { get; internal set; }
+        public DbSet<ParameterEntityWorker> Parameters { get; internal set; }
+        public DbSet<TestSectionStatusCorrectionEntityWorker> TestsSectionStatusCorrection { get; internal set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -28,6 +28,12 @@ namespace GestaoAvaliacao.Worker.Database.Contexts.EF
             });
 
             base.OnConfiguring(optionsBuilder);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(IGestaoAvaliacaoWorkerContext).Assembly);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

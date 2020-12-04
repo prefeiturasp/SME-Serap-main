@@ -6,7 +6,8 @@ using GestaoAvaliacao.Worker.StudentTestsSent.Workers;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
 namespace GestaoAvaliacao.Worker.StudentTestsSent
@@ -22,6 +23,15 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostContext, config) =>
+                {
+                    config.AddEnvironmentVariables();
+                })
+                .ConfigureLogging((context, logging) =>
+                {
+                    logging.AddConfiguration(context.Configuration);
+                    logging.AddSentry();
+                })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<StudentTestSentWorker>();
