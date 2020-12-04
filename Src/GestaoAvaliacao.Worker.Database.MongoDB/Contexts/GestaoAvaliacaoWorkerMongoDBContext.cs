@@ -11,7 +11,7 @@ namespace GestaoAvaliacao.Worker.Database.MongoDB.Contexts
         private readonly IMongoClient _client;
         private readonly IMongoDatabase _dataBase;
 
-        public GestaoAvaliacaoWorkerMongoDBContext(IGestaoAvaliacaoWorkerMongoDSettings gestaoAvaliacaoWorkerMongoDSettings)
+        public GestaoAvaliacaoWorkerMongoDBContext(IGestaoAvaliacaoWorkerMongoDBSettings gestaoAvaliacaoWorkerMongoDSettings)
         {
             _client = new MongoClient(gestaoAvaliacaoWorkerMongoDSettings.ConnectionString);
             _dataBase = _client.GetDatabase(gestaoAvaliacaoWorkerMongoDSettings.Database);
