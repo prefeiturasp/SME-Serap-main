@@ -1,0 +1,174 @@
+https://github.com/prefeiturasp/SME-Serap-main/pull/115
+
+--Script dos alunos
+UPDATE CoreSSO..Sys_usuario SET usu_criptografia = 3 WHERE PES_ID='362C26D5-221E-4B57-B355-F3B9094A5F02'
+UPDATE CoreSSO..Sys_usuario SET usu_criptografia = 3 WHERE PES_ID='A218B631-DAD6-4E3D-B6A0-4D3D452D467B'
+UPDATE CoreSSO..Sys_usuario SET usu_criptografia = 3 WHERE PES_ID='5299792B-8CCC-42BA-A259-A9236BF9C3D1'
+UPDATE CoreSSO..Sys_usuario SET usu_criptografia = 3 WHERE PES_ID='AAD5B7EF-D005-455B-B344-F6C2CA5C0C15'
+UPDATE CoreSSO..Sys_usuario SET usu_criptografia = 3 WHERE PES_ID='FCBE39D5-33B8-4276-BF1B-A570169A996B'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='759B475A-1997-EA11-BF08-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='887CF2EE-2EBD-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='82499501-F0B6-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='A7EE6F77-6500-EB11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='F1EB22A4-C4F1-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='9D499501-F0B6-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='63469501-F0B6-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='4A449501-F0B6-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='67F122A4-C4F1-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='5A4A9501-F0B6-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='EDFA22A4-C4F1-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='5C7FF2EE-2EBD-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='65F222A4-C4F1-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='EDEB22A4-C4F1-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='B79B475A-1997-EA11-BF08-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='50ED22A4-C4F1-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='58489501-F0B6-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='A4FA22A4-C4F1-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='E14D238F-68F5-EA11-BF09-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='37405359-E73D-E711-9320-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='F1203698-198C-EA11-BF08-782BCB3D2D76'
+Update CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_id='29F422A4-C4F1-EA11-BF09-782BCB3D2D76'
+update mtr_matriculaTurma set mtu_dataMatricula= null where alu_id=2671373
+
+--
+UPDATE CoreSSO..Sys_usuario SET usu_email='elainecataneosilva@gmail.com' where usu_login='7704208'
+
+--
+Update CoreSSO..Sys_usuario set usu_senha='6YpXB/uekDO/5mnOQDsCSIT9T2jAM2d/hYVmRyzLrslItfaQ40X4huxoIIMdN1O32+EC3ijOPD8X6wFJ/fqDbg==' where usu_login='RA4217230'
+Update CoreSSO..Sys_usuario set usu_senha='4aJf8aVwGKOr1TX4Gcsnek8g0+91QTR5dNrcTMrqWPUYA/EDA+BVhofckM1XpYBeWRDeK5XnxANvuwlLJKnYqA==' where usu_login='RA6016639'
+Update mtr_matriculaTurma set mtu_dataMAtricula=null where alu_id=2664822
+Update mtr_matriculaTurma set mtu_dataMAtricula=null where alu_id=2672243
+
+--
+UPDATE CoreSSO..Sys_Usuario SET usu_senha='qL6QHzr964q0LlKzGsUIcsnXfbZ0RT/zGoudI6ISR85NwUaBuDraR5inqMCZ9MqvBOV46yjox4/GQTV7U7mvyw==' where usu_login='RA7613749'
+   
+INSERT INTO ACA_ALUNO VALUES (2881323,'LUIS FERNANDO ASSUNCAO DIAS DE OLIVEIRA FILHO','6CF424DC-8EC3-E011-9B36-00155D033206','7613749',GETDATE(),GETDATE(),1,NULL,NULL,'B447E1D8-CA2A-4CEB-945C-4143E8FF7EC4')
+INSERT INTO Mtr_MatriculaTurma VALUES(2881323,1,388,327135,117,1,9,1,GETDATE(),GETDATE(),34,'2020-02-05',NULL,9)
+
+--
+UPDATE CoreSSO..Sys_usuario SET usu_criptografia = 1 where usu_login='RA5032940'
+
+UPDATE CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_login='RA7615089'
+DECLARE @Alu_id INT = (SELECT MAX(alu_id) FROM ACA_ALUNO)+ 1
+INSERT INTO ACA_ALUNO VALUES (@Alu_id,'EDUARDA SAORI DINIZ HIRATA','6CF424DC-8EC3-E011-9B36-00155D033206','7615089',GETDATE(),GETDATE(),1,NULL,NULL,'6D2B1934-ED09-4D4A-98B1-FB97632F0AF9')
+INSERT INTO Mtr_MatriculaTurma VALUES(@Alu_id,1,274,324078,117,1,4,1,GETDATE(),GETDATE(),32,'2020-02-05',NULL,4)
+
+UPDATE CoreSSO..Sys_usuario SET usu_criptografia = 3 where usu_login='RA7615088'
+DECLARE @Alu_id INT = (SELECT MAX(alu_id) FROM ACA_ALUNO)+ 1
+INSERT INTO ACA_ALUNO VALUES (@Alu_id,'RAFAEL MASARU DINIZ HIRATA','6CF424DC-8EC3-E011-9B36-00155D033206','7615088',GETDATE(),GETDATE(),1,NULL,NULL,'2000A3E6-32FA-4B35-B8F0-A02FB73ABFD4')
+INSERT INTO Mtr_MatriculaTurma VALUES(@Alu_id,1,274,324085,117,1,6,1,GETDATE(),GETDATE(),33,'2020-02-05',NULL,6)
+
+--
+
+DECLARE @Alu_id INT = (SELECT MAX(alu_id) FROM ACA_ALUNO)+ 1
+INSERT INTO ACA_ALUNO VALUES (@Alu_id,'JULIANA SILVA BRITO','6CF424DC-8EC3-E011-9B36-00155D033206','7616305',GETDATE(),GETDATE(),1,NULL,NULL,'11CFD17E-50B2-4A42-B11F-93A3F6C46F1F')
+INSERT INTO Mtr_MatriculaTurma VALUES(@Alu_id,1,25,317349,117,1,7,1,GETDATE(),GETDATE(),36,'2020-02-05',NULL,7)
+
+---
+INSERT INTO CoreSSO..PES_PessoaDeficiencia
+select
+    DISTINCT
+    sgp_aluno.pes_id,
+    def.tde_id
+from BD_PRODAM..v_alunos_da_turma_MSTECH  aluno
+INNER JOIN Manutencao..DEPARA_DEFICIENCIA def ON def.id_nee = aluno.id_nee
+INNER JOIN CoreSSO..PES_TipoDeficiencia tipo ON tipo.tde_id = def.tde_id
+INNER JOIN GestaoAvaliacao_SGP..ACA_Aluno sgp_aluno ON sgp_aluno.alu_matricula = aluno.CL_ALU_CODIGO
+where CL_DATST>='2020-01-01' AND CL_ALU_CODIGO IN (5616052,7365042,5060011,4511983,7496170,7241412,4508921,7542045)
+
+INSERT INTO CoreSSO..PES_PessoaDeficiencia
+select
+    DISTINCT
+    sgp_aluno.pes_id,
+    def.tde_id
+from BD_PRODAM..v_alunos_da_turma_MSTECH  aluno
+INNER JOIN Manutencao..DEPARA_DEFICIENCIA def ON def.id_nee = aluno.id_nee
+INNER JOIN CoreSSO..PES_TipoDeficiencia tipo ON tipo.tde_id = def.tde_id
+INNER JOIN GestaoAvaliacao_SGP..ACA_Aluno sgp_aluno ON sgp_aluno.alu_matricula = aluno.CL_ALU_CODIGO
+where CL_DATST>='2020-01-01' AND CL_ALU_CODIGO IN (5616052,7365042,5060011,4511983,7496170,7241412,4508921,7542045)
+
+
+DECLARE @Alu_id INT = (SELECT MAX(alu_id) FROM ACA_ALUNO)+ 1
+INSERT INTO ACA_ALUNO VALUES (@Alu_id,'JULIANA SILVA BRITO','6CF424DC-8EC3-E011-9B36-00155D033206','7616305',GETDATE(),GETDATE(),1,NULL,NULL,'11CFD17E-50B2-4A42-B11F-93A3F6C46F1F')
+INSERT INTO Mtr_MatriculaTurma VALUES(@Alu_id,1,25,317349,117,1,7,1,GETDATE(),GETDATE(),36,'2020-02-05',NULL,7)
+
+Update mtr_matriculaTurma set mtu_dataSaida=null where alu_id=2665862
+
+--
+-- RA7531577 - KAUA EVARISTO PORTO SENA
+update mtr_MatriculaTurma set mtu_dataMatricula=null where alu_id=2672053
+
+update CoreSSO..Sys_Usuario SET usu_senha = (select HASH from Manutencao..SenhaHash WHERE Senha ='6810' ) where usu_login='RA7566810'
+DECLARE @Alu_id INT = (SELECT MAX(alu_id) FROM ACA_ALUNO)+ 1
+INSERT INTO ACA_ALUNO VALUES (@Alu_id,'LETICIA BOTELHO PINHEIRO BOTAO','6CF424DC-8EC3-E011-9B36-00155D033206','7566810',GETDATE(),GETDATE(),1,NULL,NULL,'B3547340-48C1-41E6-A800-EEC38AE25E23')
+INSERT INTO Mtr_MatriculaTurma VALUES(@Alu_id,1,130,320154,111,1,2,1,GETDATE(),GETDATE(),21,'2020-02-05',NULL,39)
+
+-- RA7566810 - LETICIA BOTELHO PINHEIRO BOTAO
+update CoreSSO..Sys_Usuario SET usu_senha = (select HASH from Manutencao..SenhaHash WHERE Senha ='6810' ) where usu_login='RA7566810'
+DECLARE @Alu_id INT = (SELECT MAX(alu_id) FROM ACA_ALUNO)+ 1
+INSERT INTO ACA_ALUNO VALUES (@Alu_id,'LETICIA BOTELHO PINHEIRO BOTAO','6CF424DC-8EC3-E011-9B36-00155D033206','7566810',GETDATE(),GETDATE(),1,NULL,NULL,'B3547340-48C1-41E6-A800-EEC38AE25E23')
+INSERT INTO Mtr_MatriculaTurma VALUES(@Alu_id,1,130,320154,111,1,2,1,GETDATE(),GETDATE(),21,'2020-02-05',NULL,39)
+
+-- RA4545656 - CRISTOVAO MOURA DOS SANTOS
+UPDATE Mtr_matriculaTurma SET mtu_dataMatricula = null where alu_id=2666217
+
+-- RA4457367 - GUILHERME ABILIO NUNES DE MELO SILVA
+update CoreSSO..Sys_Usuario SET usu_senha = (select HASH from Manutencao..SenhaHash WHERE Senha ='7367' ) where usu_login='RA4457367'
+update Aca_aluno SET alu_matricula='4457367' where alu_id='2671657'
+Update Mtr_MatriculaTurma set esc_id=130, tur_id=320174, cur_id=111, crr_id=1, crp_id=1,tcp_id=38, mtu_dataMatricula=null where alu_id='2671657'
+
+-- RA4456056 - MARIANA PEREIRA DA SILVA
+Update Mtr_MatriculaTurma set mtu_dataMatricula=null where alu_id=1206372 and mtu_id=3
+
+-------------
+PROblema: De Matriculas ativas de 7 e 8 ano
+update MTR_matriculaTurma set mtu_dataSaida='2018-12-30' where alu_id=948604 and mtu_id=6
+
+-- Identificação dos alunos com problema De Matriculas ativas de 7 e 8 ano
+select alu_id from MTR_MatriculaTurma where esc_id=86
+and mtu_dataSaida IS NULL
+Group by alu_id
+Having count(*)>1
+
+SELECT *
+FROM MTR_MatriculaTurma
+WHERE
+mtu_dataSaida IS NULL AND
+alu_id IN (SELECT DISTINCT alu_id FROM #AluId)
+ORDER BY alu_id, mtu_id
+
+
+--
+INSERT INTO CoreSSO..PEs_pessoaDeficiencia
+select
+DISTINCT
+sgp_aluno.pes_id
+,deParaDef.tde_id
+from BD_PRODAM..v_alunos_da_turma_MSTECH  aluno
+INNER JOIN Manutencao..DEPARA_DEFICIENCIA deParaDef ON deParaDef.id_nee = aluno.id_nee
+INNER JOIN CoreSSO..PES_TipoDeficiencia tipo ON tipo.tde_id = deParaDef.tde_id
+INNER JOIN GestaoAvaliacao_SGP..ACA_Aluno sgp_aluno ON sgp_aluno.alu_matricula = aluno.CL_ALU_CODIGO
+INNER JOIN GestaoAvaliacao_SGP..MTR_MAtriculaTurma mtu ON sgp_aluno.alu_id = mtu.alu_id
+LEFT JOIN COreSSO..PEs_pessoaDeficiencia def ON def.pes_id= sgp_aluno.pes_id
+where mtu.esc_id=557 and mtu.mtu_dataSaida is null and mtu.mtu_situacao=1 and def.pes_id is null
+
+
+----
+INSERT INTO BaseText
+select
+Description,
+Getdate(),
+Getdate(),
+State,
+Source,
+InitialOrientation,
+InitialStatement,
+NarrationInitialStatement,
+StudentBaseText,
+NarrationStudentBaseText,
+BaseTextOrientation
+ from BaseText where Id=5994
+
+UPDATE item SET BaseText_id = 9185 where Id=7841
+UPDATE item SET BaseText_id = 9184 where Id=7848
+UPDATE item SET BaseText_id = 9183 where Id=7861
