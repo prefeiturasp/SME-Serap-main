@@ -1,6 +1,6 @@
 # GestaoAvaliacao.Worker.StudentTestsSent
 Este projeto visa prover o processamento das provas realizadas no SERAP. Este processamento consiste na coleta das respostas dos alunos e na geração de métricas em função dos percentuais de acerto nos níveis de **TURMA, ESCOLA, DRE e SME**.
-O projeto compõe um HostedService com execução agendada utilizando a library NCronTab
+O projeto compõe um [HostedService](https://docs.microsoft.com/pt-br/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-5.0&tabs=visual-studio) com execução agendada utilizando a library [NCronTab](https://github.com/atifaziz/NCrontab)
 
 ------------
 
@@ -17,7 +17,7 @@ Para os demais ambientes, a chave deverá ser obtida através das plataforams de
 #### Variáveis de ambiente
 > Todas as variáveis de configuração são mantidas como variáveis de ambiente. 
 
-**Modificar o arquivo /Environments/create-environment-variables.ps1 com a chave do Sentry obtida, a instância SQL do banco GestaoAvaliacao e a instância   MongoDB do GestaoAvaliacao_OMR.
+**Modificar o arquivo /Environments/create-environment-variables.ps1 com a chave do Sentry obtida, a instância SQL do banco GestaoAvaliacao e a instância   MongoDB do GestaoAvaliacao_OMR.**
 
 1- Procurar por **POWERSHELL** no inciar. 
 
@@ -44,7 +44,7 @@ Para os demais ambientes, a chave deverá ser obtida através das plataforams de
 #### Variáveis de ambiente
 > As variáveis de ambiente são declaradas no arquivo `sme-serap-worker.env` localizado na pasta da solução.
 
-**Modificar o arquivo sme-serap-worker.env com a chave do Sentry obtida, a instância SQL do banco GestaoAvaliacao e a instância   MongoDB do GestaoAvaliacao_OMR.
+**Modificar o arquivo sme-serap-worker.env com a chave do Sentry obtida, a instância SQL do banco GestaoAvaliacao e a instância   MongoDB do GestaoAvaliacao_OMR.**
 
 #### Executanto
 
