@@ -1,0 +1,4 @@
+db.StudentCorrection.updateOne(
+   { Test_Id:586, "Answers.Item_Id": 11064, "Answers.AnswerChoice":45325 },
+   { $set: { "Answers.$.AnswerChoice":45326, "Answers.$.Correct":true } }
+)
