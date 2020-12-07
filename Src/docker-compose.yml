@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  gestaoavaliacao.worker.studenttestssent:
+    image: ${DOCKER_REGISTRY-}gestaoavaliacaoworkerstudenttestssent
+    build:
+      context: .
+      dockerfile: GestaoAvaliacao.Worker.StudentTestsSent/Dockerfile
+    env_file:
+      - sme-serap-worker.env
