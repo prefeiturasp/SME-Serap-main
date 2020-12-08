@@ -35,8 +35,8 @@ pipeline {
          
     stage('Build projeto') {
             steps {
-              sh "echo executando build de projeto"
-              //sh 'dotnet build'
+              sh "echo executando build Worker de projeto"
+              sh 'cd Src/GestaoAvaliacao.Worker.StudentTestsSent/ && dotnet build'
             }
         }
         
