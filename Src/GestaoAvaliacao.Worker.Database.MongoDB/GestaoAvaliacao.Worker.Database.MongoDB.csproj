@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\GestaoAvaliacao.Worker.Domain.MongoDB\GestaoAvaliacao.Worker.Domain.MongoDB.csproj" />
+    <ProjectReference Include="..\GestaoAvaliacao.Worker.Domain.MongoDB\GestaoAvaliacao.Worker.Domain.MongoDB.csproj" />
     <ProjectReference Include="..\GestaoAvaliacao.Worker.IoC.Contracts\GestaoAvaliacao.Worker.IoC.Contracts.csproj" />
   </ItemGroup>
 

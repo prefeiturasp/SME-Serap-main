@@ -1,5 +1,4 @@
-﻿using GestaoAvaliacao.Util;
-using GestaoAvaliacao.Worker.Database.Contexts.Dapper;
+﻿using GestaoAvaliacao.Worker.Database.Contexts.Dapper;
 using GestaoAvaliacao.Worker.Domain.Base;
 using GestaoAvaliacao.Worker.Domain.Entities.AbsenceReasons;
 using GestaoAvaliacao.Worker.Domain.Entities.Schools;
@@ -132,7 +131,7 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
                 new { tur_id = tur_id, state = (byte)1, test_id = test_id });
         }
 
-        public Task<IEnumerable<DisciplineItem>> GetDisciplineItemByTestIdAsync(long test_id)
+        public Task<IEnumerable<DisciplineItemEntityWorker>> GetDisciplineItemByTestIdAsync(long test_id)
         {
             var sql = new StringBuilder();
 
@@ -144,7 +143,7 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
             sql.AppendLine("INNER JOIN EvaluationMatrix Em WITH(NOLOCK) ON I.EvaluationMatrix_Id = Em.Id AND Em.State <> 3 ");
             sql.AppendLine("WHERE T.Id = @test_Id AND T.State <> 3 ");
 
-            return _gestaoAvaliacaoWorkerDapperContext.QueryAsync<DisciplineItem>(sql.ToString(), new
+            return _gestaoAvaliacaoWorkerDapperContext.QueryAsync<DisciplineItemEntityWorker>(sql.ToString(), new
             {
                 test_id = test_id
             });

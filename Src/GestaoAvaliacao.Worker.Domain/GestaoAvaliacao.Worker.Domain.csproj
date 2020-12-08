@@ -4,8 +4,4 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj" />
-  </ItemGroup>
-
 </Project>

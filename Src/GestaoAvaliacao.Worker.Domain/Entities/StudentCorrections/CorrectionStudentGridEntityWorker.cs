@@ -1,4 +1,4 @@
-﻿using GestaoAvaliacao.Util;
+﻿using GestaoAvaliacao.Worker.Domain.Enums;
 using System;
 using System.Collections.Generic;
 

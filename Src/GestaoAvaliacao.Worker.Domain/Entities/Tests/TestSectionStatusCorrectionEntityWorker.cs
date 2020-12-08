@@ -1,5 +1,5 @@
-﻿using GestaoAvaliacao.Util;
-using GestaoAvaliacao.Worker.Domain.Base;
+﻿using GestaoAvaliacao.Worker.Domain.Base;
+using GestaoAvaliacao.Worker.Domain.Enums;
 
 namespace GestaoAvaliacao.Worker.Domain.Entities.Tests
 {

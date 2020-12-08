@@ -1,4 +1,4 @@
-﻿using GestaoAvaliacao.Util;
+﻿using GestaoAvaliacao.Worker.Domain.Enums;
 using GestaoAvaliacao.Worker.Domain.MongoDB.Entities.Tests;
 using GestaoAvaliacao.Worker.Repository.Contracts;
 using GestaoAvaliacao.Worker.Repository.MongoDB.Contracts;

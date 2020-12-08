@@ -1,6 +1,6 @@
-﻿using GestaoAvaliacao.Util;
-using GestaoAvaliacao.Worker.Database.Contexts.EF;
+﻿using GestaoAvaliacao.Worker.Database.Contexts.EF;
 using GestaoAvaliacao.Worker.Domain.Entities.Tests;
+using GestaoAvaliacao.Worker.Domain.Enums;
 using GestaoAvaliacao.Worker.Repository.Base;
 using GestaoAvaliacao.Worker.Repository.Contracts;
 using Microsoft.EntityFrameworkCore;
