@@ -46,4 +46,61 @@ namespace GestaoAvaliacao.Worker.Domain.Enums
         [Description("Recusado")]
         Refused = 5
     }
+
+    public enum StudentTestSentSituation : short
+    {
+        [Description("Pendente")]
+        Pending = 1,
+
+        [Description("Em processamento")]
+        InProcess = 2,
+
+        [Description("Finalizada")]
+        Done = 3
+    }
+
+    public enum EnumSYS_Visao
+    {
+        [Description("Administração")]
+        Administracao = 1,
+
+        [Description("Gestão")]
+        Gestao = 2,
+
+        [Description("Unidade Administrativa")]
+        UnidadeAdministrativa = 3,
+
+        [Description("Individual")]
+        Individual = 4
+    }
+
+    public enum StatusProvaEletronica : byte
+    {
+        [Description("Não iniciada")]
+        NaoIniciada = 1,
+
+        [Description("Em andamento")]
+        EmAndamento = 2,
+
+        [Description("Finalizada")]
+        Finalizada = 3
+    }
+
+    public enum EnumStatusCorrection : byte
+    {
+        [Description("Não iniciada")]
+        Pending = 0,
+
+        [Description("Em andamento")]
+        Processing = 1,
+
+        [Description("Concluída")]
+        Success = 2,
+
+        [Description("Parcialmente concluída")]
+        PartialSuccess = 3,
+
+        [Description("Processando turma")]
+        ProcessingSection = 4
+    }
 }

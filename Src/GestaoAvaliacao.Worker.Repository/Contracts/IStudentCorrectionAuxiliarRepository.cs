@@ -1,5 +1,4 @@
-﻿using GestaoAvaliacao.Util;
-using GestaoAvaliacao.Worker.Domain.Entities.AbsenceReasons;
+﻿using GestaoAvaliacao.Worker.Domain.Entities.AbsenceReasons;
 using GestaoAvaliacao.Worker.Domain.Entities.Schools;
 using GestaoAvaliacao.Worker.Domain.Entities.StudentCorrections;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ namespace GestaoAvaliacao.Worker.Repository.Contracts
 
         Task<IEnumerable<StudentTestAbsenceReasonEntityWorker>> GetAbsencesByTestSectionAsync(long test_id, long tur_id);
 
-        Task<IEnumerable<DisciplineItem>> GetDisciplineItemByTestIdAsync(long test_id);
+        Task<IEnumerable<DisciplineItemEntityWorker>> GetDisciplineItemByTestIdAsync(long test_id);
 
         Task<SchoolEntityWorker> GetEscIdDreIdByTeamAsync(long tur_id);
 

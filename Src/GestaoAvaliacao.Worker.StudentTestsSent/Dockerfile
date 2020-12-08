@@ -6,11 +6,9 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-bionic AS build
 WORKDIR /src
 COPY ["GestaoAvaliacao.Worker.StudentTestsSent/GestaoAvaliacao.Worker.StudentTestsSent.csproj", "GestaoAvaliacao.Worker.StudentTestsSent/"]
+COPY ["GestaoAvaliacao.Worker.Domain.MongoDB/GestaoAvaliacao.Worker.Domain.MongoDB.csproj", "GestaoAvaliacao.Worker.Domain.MongoDB/"]
 COPY ["GestaoAvaliacao.Worker.IoC/GestaoAvaliacao.Worker.IoC.csproj", "GestaoAvaliacao.Worker.IoC/"]
 COPY ["GestaoAvaliacao.Worker.Database.MongoDB/GestaoAvaliacao.Worker.Database.MongoDB.csproj", "GestaoAvaliacao.Worker.Database.MongoDB/"]
-COPY ["GestaoAvaliacao.MongoEntities/GestaoAvaliacao.MongoEntities.csproj", "GestaoAvaliacao.MongoEntities/"]
-COPY ["GestaoAvaliacao.Entities/GestaoAvaliacao.Entities.csproj", "GestaoAvaliacao.Entities/"]
-COPY ["GestaoAvaliacao.Util/GestaoAvaliacao.Util.csproj", "GestaoAvaliacao.Util/"]
 COPY ["GestaoAvaliacao.Worker.IoC.Contracts/GestaoAvaliacao.Worker.IoC.Contracts.csproj", "GestaoAvaliacao.Worker.IoC.Contracts/"]
 COPY ["GestaoAvaliacao.Worker.Repository.MongoDB/GestaoAvaliacao.Worker.Repository.MongoDB.csproj", "GestaoAvaliacao.Worker.Repository.MongoDB/"]
 COPY ["GestaoAvaliacao.Worker.Database/GestaoAvaliacao.Worker.Database.csproj", "GestaoAvaliacao.Worker.Database/"]

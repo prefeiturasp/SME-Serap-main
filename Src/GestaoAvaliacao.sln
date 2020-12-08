@@ -199,6 +199,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtualizarCriptografiaDosUsuarios", "AtualizarCriptografiaDosUsuarios\AtualizarCriptografiaDosUsuarios.csproj", "{699FB55A-6831-4FF3-ABDA-F36FF331BB8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoAvaliacao.Worker.Domain.MongoDB", "GestaoAvaliacao.Worker.Domain.MongoDB\GestaoAvaliacao.Worker.Domain.MongoDB.csproj", "{935F5FE3-E609-4547-8145-9CC87E92DBF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Android = Debug|Android
@@ -3383,6 +3385,54 @@ Global
 		{699FB55A-6831-4FF3-ABDA-F36FF331BB8F}.teste|Windows-x64.Build.0 = Release|Any CPU
 		{699FB55A-6831-4FF3-ABDA-F36FF331BB8F}.teste|Windows-x86.ActiveCfg = Release|Any CPU
 		{699FB55A-6831-4FF3-ABDA-F36FF331BB8F}.teste|Windows-x86.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|Android.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|iOS.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|Windows-x64.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Debug|Windows-x86.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|Android.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|Android.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|Any CPU.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|Any CPU.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|iOS.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|iOS.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|Windows-ARM.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|Windows-x64.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|Windows-x64.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|Windows-x86.ActiveCfg = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Development|Windows-x86.Build.0 = Debug|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|Android.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|Android.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|iOS.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|iOS.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|Windows-ARM.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|Windows-x64.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|Windows-x86.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|Android.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|Android.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|Any CPU.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|Any CPU.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|iOS.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|iOS.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|Windows-ARM.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|Windows-ARM.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|Windows-x64.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|Windows-x64.Build.0 = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|Windows-x86.ActiveCfg = Release|Any CPU
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6}.teste|Windows-x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -3469,6 +3519,7 @@ Global
 		{6693CC09-E1C3-4FBE-9B76-EB7C2F28E61C} = {5C92DD02-1B59-44A9-8019-430692EE2F03}
 		{85121B51-0FEF-48B1-A2F2-93D63E8316A5} = {5C92DD02-1B59-44A9-8019-430692EE2F03}
 		{699FB55A-6831-4FF3-ABDA-F36FF331BB8F} = {8BA4EAE2-5B89-4F52-9937-E0C502F52924}
+		{935F5FE3-E609-4547-8145-9CC87E92DBF6} = {5C92DD02-1B59-44A9-8019-430692EE2F03}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {333EFFE8-E47C-4FCF-AC5B-C4019A0927F8}

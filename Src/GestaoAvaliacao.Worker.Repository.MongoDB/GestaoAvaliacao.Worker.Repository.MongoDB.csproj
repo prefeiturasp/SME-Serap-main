@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\GestaoAvaliacao.Worker.Domain.MongoDB\GestaoAvaliacao.Worker.Domain.MongoDB.csproj" />
     <ProjectReference Include="..\GestaoAvaliacao.Worker.Database.MongoDB\GestaoAvaliacao.Worker.Database.MongoDB.csproj" />
+    <ProjectReference Include="..\GestaoAvaliacao.Worker.Domain.MongoDB\GestaoAvaliacao.Worker.Domain.MongoDB.csproj" />
   </ItemGroup>
 
 </Project>

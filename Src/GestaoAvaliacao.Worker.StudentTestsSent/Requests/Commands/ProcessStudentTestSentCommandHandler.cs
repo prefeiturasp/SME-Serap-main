@@ -23,32 +23,35 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands
 
         protected override async Task Handle(ProcessStudentTestSentCommand request, CancellationToken cancellationToken)
         {
-            var studentTestSent = await GetStudentTestSentToProcessAsync(cancellationToken);
-            if (studentTestSent is null) return;
-
-            try
+            do
             {
-                var dto = new StudentTestSentProcessingChainDto
-                {
-                    StudentTestSent = studentTestSent
-                };
+                var studentTestSent = await GetStudentTestSentToProcessAsync(cancellationToken);
+                if (studentTestSent is null) return;
 
-                await _studentTestSentProcessingChain.ExecuteAsync(dto, cancellationToken);
-                if (!dto.IsValid)
+                try
                 {
-                    SentryLogger.LogErrors(dto.Errors);
-                    await ReturnStudentTestSentToBeProcessedAsync(studentTestSent, cancellationToken);
-                    return;
+                    var dto = new StudentTestSentProcessingChainDto
+                    {
+                        StudentTestSent = studentTestSent
+                    };
+
+                    await _studentTestSentProcessingChain.ExecuteAsync(dto, cancellationToken);
+                    if (!dto.IsValid)
+                    {
+                        SentryLogger.LogErrors(dto.Errors);
+                        await ReturnStudentTestSentToBeProcessedAsync(studentTestSent, cancellationToken);
+                        return;
+                    }
+
+                    studentTestSent.SetDone();
+                    await _studentTestSentRepository.UpdateAsync(studentTestSent, cancellationToken);
                 }
-
-                studentTestSent.SetDone();
-                await _studentTestSentRepository.UpdateAsync(studentTestSent, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                SentryLogger.LogError(ex);
-                await ReturnStudentTestSentToBeProcessedAsync(studentTestSent, cancellationToken);
-            }
+                catch (Exception ex)
+                {
+                    SentryLogger.LogError(ex);
+                    await ReturnStudentTestSentToBeProcessedAsync(studentTestSent, cancellationToken);
+                }
+            } while (!cancellationToken.IsCancellationRequested);
         }
 
         private async Task<StudentTestSentEntityWorker> GetStudentTestSentToProcessAsync(CancellationToken cancellationToken)
