@@ -1,4 +1,4 @@
-﻿using GestaoAvaliacao.MongoEntities;
+﻿using GestaoAvaliacao.Worker.Domain.MongoDB.Entities.Tests;
 using GestaoAvaliacao.Worker.Repository.Contracts;
 using GestaoAvaliacao.Worker.Repository.MongoDB.Contracts;
 using GestaoAvaliacao.Worker.StudentTestsSent.Services.Grades.Dtos;
@@ -71,7 +71,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Services.Grades
                 await _studentCorrectionMongoDBRepository.InsertOrReplaceAsync(studentCorrection, cancellationToken);
             }
 
-            var sectionTestStats = new SectionTestStats(dto.TestId, dto.TurId, dto.EntId, dto.DreId, dto.EscId)
+            var sectionTestStats = new SectionTestStatsEntityWorker(dto.TestId, dto.TurId, dto.EntId, dto.DreId, dto.EscId)
             {
                 GeneralGrade = dto.QuantidadeDeAlunos == 0 ? 0 : Math.Round((desempenho / (double)dto.QuantidadeDeAlunos), 2),
                 GeneralHits = dto.QuantidadeDeAlunos == 0 ? 0 : Math.Round((acertos / (double)dto.QuantidadeDeAlunos), 2),

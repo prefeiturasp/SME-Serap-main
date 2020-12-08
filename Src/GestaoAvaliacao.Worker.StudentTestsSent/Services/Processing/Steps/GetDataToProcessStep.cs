@@ -1,4 +1,4 @@
-﻿using GestaoAvaliacao.MongoEntities;
+﻿using GestaoAvaliacao.Worker.Domain.MongoDB.Entities.Tests;
 using GestaoAvaliacao.Worker.Repository.Contracts;
 using GestaoAvaliacao.Worker.Repository.MongoDB.Contracts;
 using GestaoAvaliacao.Worker.StudentTestsSent.Processing.Contracts;
@@ -32,7 +32,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Processing.Steps
 
         private async Task LoadStudentCorrectionAsync(StudentTestSentProcessingChainDto dto, CancellationToken cancellationToken)
         {
-            var studentCorrectionFilter = new StudentCorrection(dto.StudentTestSent.TestId, dto.StudentTestSent.TurId, dto.StudentTestSent.AluId, dto.StudentTestSent.EntId);
+            var studentCorrectionFilter = new StudentCorrectionEntityWorker(dto.StudentTestSent.TestId, dto.StudentTestSent.TurId, dto.StudentTestSent.AluId, dto.StudentTestSent.EntId);
             dto.StudentCorrection = await _studentCorrectionMongoDBRepository.GetEntityAsync(studentCorrectionFilter, cancellationToken);
             if (dto.StudentCorrection is null)
             {
@@ -42,7 +42,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Processing.Steps
 
         private async Task LoadTestTemplate(StudentTestSentProcessingChainDto dto, CancellationToken cancellationToken)
         {
-            var testTemplateFilter = new TestTemplate(dto.StudentTestSent.EntId, dto.StudentTestSent.TestId);
+            var testTemplateFilter = new TestTemplateEntityWorker(dto.StudentTestSent.EntId, dto.StudentTestSent.TestId);
             dto.TestTemplate = await _testTemplateMongoDBRepository.FindOneAsync(testTemplateFilter, cancellationToken);
             if (dto.TestTemplate is null)
             {

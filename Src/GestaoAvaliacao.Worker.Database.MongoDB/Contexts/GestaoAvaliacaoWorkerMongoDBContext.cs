@@ -1,6 +1,6 @@
-﻿using GestaoAvaliacao.MongoEntities;
-using GestaoAvaliacao.MongoEntities.Attribute;
-using GestaoAvaliacao.Worker.Database.MongoDB.Settings;
+﻿using GestaoAvaliacao.Worker.Database.MongoDB.Settings;
+using GestaoAvaliacao.Worker.Domain.MongoDB.Base;
+using GestaoAvaliacao.Worker.Domain.MongoDB.Base.Attributes;
 using MongoDB.Driver;
 using System;
 
@@ -18,11 +18,11 @@ namespace GestaoAvaliacao.Worker.Database.MongoDB.Contexts
         }
 
         public IMongoCollection<T> GetCollection<T>()
-            where T : EntityBase
+            where T : EntityWorkerMongoDBBase
             => _dataBase.GetCollection<T>(GetCollectionName<T>());
 
         private static string GetCollectionName<T>()
-            where T : EntityBase
-            => ((CollectionNameAttribute)Attribute.GetCustomAttribute(typeof(T), typeof(CollectionNameAttribute))).Name;
+            where T : EntityWorkerMongoDBBase
+            => ((CollectionNameWorkerAttribute)Attribute.GetCustomAttribute(typeof(T), typeof(CollectionNameWorkerAttribute))).Name;
     }
 }
