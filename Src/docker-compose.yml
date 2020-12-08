@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  gestaoavaliacao.worker.studenttestssent:
+    image: ${DOCKER_REGISTRY-}gestaoavaliacaoworkerstudenttestssent
+    build:
+      context: .
+      dockerfile: GestaoAvaliacao.Worker.StudentTestsSent/Dockerfile
+    networks:
+      - default
+    env_file:
+      - sme-serap-worker.env
+
+networks:
+  default:
+    driver: bridge

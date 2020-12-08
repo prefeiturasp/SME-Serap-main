@@ -541,6 +541,18 @@ namespace GestaoAvaliacao.Util
         School = 2
     }
 
+    public enum StudentTestSentSituation : short
+    {
+        [Description("Pendente")]
+        Pending = 1,
+
+        [Description("Em processamento")]
+        InProcess = 2,
+
+        [Description("Finalizada")]
+        Done = 3
+    }
+
     #endregion
 
     #region EnumHelper
