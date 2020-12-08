@@ -1,6 +1,6 @@
-﻿using GestaoAvaliacao.Entities.Enumerator;
-using GestaoAvaliacao.MongoEntities;
-using GestaoAvaliacao.Worker.Database.MongoDB.Contexts;
+﻿using GestaoAvaliacao.Worker.Database.MongoDB.Contexts;
+using GestaoAvaliacao.Worker.Domain.MongoDB.Base;
+using GestaoAvaliacao.Worker.Domain.MongoDB.Enums;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace GestaoAvaliacao.Worker.Repository.MongoDB.Base
 {
     public abstract class BaseWorkerMongoRepository<T>
-         where T : EntityBase, new()
+         where T : EntityWorkerMongoDBBase, new()
     {
         private readonly IMongoCollection<T> _collection;
 

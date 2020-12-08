@@ -1,4 +1,4 @@
-﻿using GestaoAvaliacao.MongoEntities;
+﻿using GestaoAvaliacao.Worker.Domain.MongoDB.Entities.Tests;
 using GestaoAvaliacao.Worker.Repository.MongoDB.Contracts;
 using GestaoAvaliacao.Worker.StudentTestsSent.Processing.Contracts;
 using GestaoAvaliacao.Worker.StudentTestsSent.Processing.Dtos;

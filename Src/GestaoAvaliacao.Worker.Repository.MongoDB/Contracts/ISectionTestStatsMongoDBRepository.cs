@@ -1,4 +1,4 @@
-﻿using GestaoAvaliacao.MongoEntities;
+﻿using GestaoAvaliacao.Worker.Domain.MongoDB.Entities.Tests;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,8 +6,10 @@ namespace GestaoAvaliacao.Worker.Repository.MongoDB.Contracts
 {
     public interface ISectionTestStatsMongoDBRepository
     {
-        Task<SectionTestStats> GetClassSectionStatsAsync(long testId, long turId, CancellationToken cancellationToken);
-        Task<SectionTestStats> GetEntityAsync(SectionTestStats entity, CancellationToken cancellationToken);
-        Task InsertOrReplaceAsync(SectionTestStats entity, CancellationToken cancellationToken);
+        Task<SectionTestStatsEntityWorker> GetClassSectionStatsAsync(long testId, long turId, CancellationToken cancellationToken);
+
+        Task<SectionTestStatsEntityWorker> GetEntityAsync(SectionTestStatsEntityWorker entity, CancellationToken cancellationToken);
+
+        Task InsertOrReplaceAsync(SectionTestStatsEntityWorker entity, CancellationToken cancellationToken);
     }
 }

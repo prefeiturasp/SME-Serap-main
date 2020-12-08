@@ -1,4 +1,4 @@
-﻿using GestaoAvaliacao.MongoEntities;
+﻿using GestaoAvaliacao.Worker.Domain.MongoDB.Entities.Tests;
 using GestaoAvaliacao.Worker.StudentTestsSent.Processing.Contracts;
 using GestaoAvaliacao.Worker.StudentTestsSent.Processing.Dtos;
 using GestaoAvaliacao.Worker.StudentTestsSent.Services.Grades;
@@ -25,7 +25,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Processing.Steps
                 DreId = dto.School.dre_id,
                 EntId = dto.StudentTestSent.EntId,
                 EscId = dto.School.esc_id,
-                StudentCorrections = new List<StudentCorrection> { dto.StudentCorrection },
+                StudentCorrections = new List<StudentCorrectionEntityWorker> { dto.StudentCorrection },
                 QuantidadeDeAlunos = 1,
                 TestId = dto.StudentTestSent.TestId,
                 TestTemplate = dto.TestTemplate,

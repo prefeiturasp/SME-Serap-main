@@ -12,7 +12,6 @@ namespace GestaoAvaliacao.Worker.Database.MongoDB.IoC
     {
         public void Register(IServiceCollection services, IConfiguration configuration)
         {
-            var teste = Environment.GetEnvironmentVariable("ConnectionStrings__GestaoAvaliacaoWorkerContext");
             services.Configure<GestaoAvaliacaoWorkerMongoDBSettings>(configuration.GetSection(nameof(GestaoAvaliacaoWorkerMongoDBSettings)));
             services.AddSingleton<IGestaoAvaliacaoWorkerMongoDBSettings>(sp => sp.GetRequiredService<IOptions<GestaoAvaliacaoWorkerMongoDBSettings>>().Value);
             services.AddTransient<IGestaoAvaliacaoWorkerMongoDBContext, GestaoAvaliacaoWorkerMongoDBContext>();

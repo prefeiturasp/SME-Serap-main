@@ -1,5 +1,5 @@
-﻿using GestaoAvaliacao.MongoEntities;
-using GestaoAvaliacao.Util;
+﻿using GestaoAvaliacao.Util;
+using GestaoAvaliacao.Worker.Domain.MongoDB.Entities.Tests;
 using GestaoAvaliacao.Worker.Repository.Contracts;
 using GestaoAvaliacao.Worker.Repository.MongoDB.Contracts;
 using GestaoAvaliacao.Worker.StudentTestsSent.Services.CorrectionResult.Dtos;
@@ -125,7 +125,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Services.CorrectionResult
                 int crr_id = alunos.First().crr_id;
                 int crp_id = alunos.First().crp_id;
 
-                var entity = new CorrectionResults(dto.EntId, dto.TestId, dto.TurId, dto.DreId, dto.EscId, cur_id, crr_id, crp_id)
+                var entity = new CorrectionResultsEntityWorker(dto.EntId, dto.TestId, dto.TurId, dto.DreId, dto.EscId, cur_id, crr_id, crp_id)
                 {
                     Answers = dto.TestTemplate.Items.Select(i => new CorrectionResultsItems()
                     {
@@ -150,7 +150,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Services.CorrectionResult
 
                 entity.NumberAnswers = entity.Answers.Count;
 
-                await _correctionResultsMongoDBRepository.DeleteAsync(new CorrectionResults(dto.EntId, dto.TestId, dto.TurId), cancellationToken);
+                await _correctionResultsMongoDBRepository.DeleteAsync(new CorrectionResultsEntityWorker(dto.EntId, dto.TestId, dto.TurId), cancellationToken);
                 await _correctionResultsMongoDBRepository.InsertOrReplaceAsync(entity, cancellationToken);
             }
             catch (Exception ex)
