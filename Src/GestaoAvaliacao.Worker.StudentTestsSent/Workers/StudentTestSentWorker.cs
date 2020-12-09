@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
 {
-    [SchedulingConfig(Cron = "0 23 30 * *")]
+    [SchedulingConfig(Cron = "30 23 * * *")]
     public class StudentTestSentWorker : BaseScheduledWorker
     {
         private readonly IMediator _mediator;
