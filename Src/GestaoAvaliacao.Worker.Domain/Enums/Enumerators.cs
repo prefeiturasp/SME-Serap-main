@@ -56,7 +56,10 @@ namespace GestaoAvaliacao.Worker.Domain.Enums
         InProcess = 2,
 
         [Description("Finalizada")]
-        Done = 3
+        Done = 3,
+
+        [Description("Atenção")]
+        Warning = 4,
     }
 
     public enum EnumSYS_Visao
