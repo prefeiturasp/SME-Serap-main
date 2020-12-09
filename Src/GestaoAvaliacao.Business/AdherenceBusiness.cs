@@ -91,7 +91,7 @@ namespace GestaoAvaliacao.Business
 			if (!studentsOfSchoolsAdherence?.Any() ?? true) return adherenceSchools;
 
 			var studentsToDoTestWithDeficiency = GetAdherenceStudentsWithDeficiency(studentsOfSchoolsAdherence.Select(x => x.pes_id), deficienciesToFilter);
-			if (!studentsToDoTestWithDeficiency?.Any() ?? true) return adherenceSchools;
+			if (!studentsToDoTestWithDeficiency?.Any() ?? true) return new List<AdherenceGrid>();
 
 			var schoolIdsWithStudentsWithDeficiency = studentsOfSchoolsAdherence
 				.Where(x => studentsToDoTestWithDeficiency.Contains(x.pes_id))
@@ -143,7 +143,7 @@ namespace GestaoAvaliacao.Business
 			if (!studentsOfSectionsAdherence?.Any() ?? true) return adherenceSections;
 
 			var studentsToDoTestWithDeficiency = GetAdherenceStudentsWithDeficiency(studentsOfSectionsAdherence.Select(x => x.pes_id), deficienciesToFilter);
-			if (!studentsToDoTestWithDeficiency?.Any() ?? true) return adherenceSections;
+			if (!studentsToDoTestWithDeficiency?.Any() ?? true) return new List<AdherenceGrid>();
 
 			var sectionIdsWithStudentsWithDeficiency = studentsOfSectionsAdherence
 				.Where(x => studentsToDoTestWithDeficiency.Contains(x.pes_id))
@@ -167,7 +167,7 @@ namespace GestaoAvaliacao.Business
 			if((!studentsToDoTest?.Any() ?? true) || (!deficienciesToFilter?.Any() ?? true)) return studentsToDoTest;
 
 			var studentsToDoTestWithDeficiency = GetAdherenceStudentsWithDeficiency(studentsToDoTest.Select(x => x.pes_id), deficienciesToFilter);
-			if(!studentsToDoTestWithDeficiency?.Any() ?? true) return studentsToDoTest;
+			if(!studentsToDoTestWithDeficiency?.Any() ?? true) return new List<AdherenceGrid>();
 
 			var studentsToDoTestWithDeficiencyFiltered = studentsToDoTest
 				.Where(x => studentsToDoTestWithDeficiency.Contains(x.pes_id))

@@ -1,0 +1,9 @@
+UPDATE GestaoAvaliacao_SGP..MTR_MatriculaTurma SET esc_id=115, cur_id=111 where alu_id=2751198 and mtu_id=1	
+UPDATE CoreSSO..Sys_Usuario SET usu_griptografia = 1 where usu_id='460F3196-CE53-E111-B754-00155D033206'
+INSERT INTO Coresso..Sys_UsuarioGrupo VALUES('541df3d3-4a78-e111-b754-00155d033206','bd6d9ce6-9456-e711-9451-782bcb3d218e',1)
+UPDATE GestaoAvaliacao_SGP..MTR_MatriculaTurma SET mtu_dataSaida=null Where alu_id=964243 and mtu_id=7
+UPDATE GestaoAvaliacao_SGP..MTR_MatriculaTurma SET mtu_dataSaida=null Where alu_id=699790 and mtu_id=8
+UPDATE GestaoAvaliacao_SGP..MTR_MatriculaTurma SET mtu_dataSaida=null Where alu_id=835881 and mtu_id=9
+UPDATE GestaoAvaliacao_SGP..MTR_MatriculaTurma SET mtu_dataSaida=null Where alu_id=2509253 and mtu_id=2
+UPDATE GestaoAvaliacao_SGP..MTR_MatriculaTurma SET mtu_dataSaida=null Where alu_id=2442218 and mtu_id=2
+UPDATE GestaoAvaliacao_SGP..MTR_MatriculaTurma SET mtu_dataSaida=null Where alu_id=2658046 and mtu_id=2
