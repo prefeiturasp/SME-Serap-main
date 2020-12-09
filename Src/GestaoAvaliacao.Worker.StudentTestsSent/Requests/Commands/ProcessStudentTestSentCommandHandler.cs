@@ -39,8 +39,8 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands
                     if (!dto.IsValid)
                     {
                         SentryLogger.LogErrors(dto.Errors);
-                        await ReturnStudentTestSentToBeProcessedAsync(studentTestSent, cancellationToken);
-                        return;
+                        await UpdateStudentTestSentSituationToWarningAsync(studentTestSent, cancellationToken);
+                        continue;
                     }
 
                     studentTestSent.SetDone();
@@ -49,7 +49,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands
                 catch (Exception ex)
                 {
                     SentryLogger.LogError(ex);
-                    await ReturnStudentTestSentToBeProcessedAsync(studentTestSent, cancellationToken);
+                    await UpdateStudentTestSentSituationToWarningAsync(studentTestSent, cancellationToken);
                 }
             } while (!cancellationToken.IsCancellationRequested);
         }
@@ -78,10 +78,10 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands
             }
         }
 
-        private async Task ReturnStudentTestSentToBeProcessedAsync(StudentTestSentEntityWorker studentTestSent, CancellationToken cancellationToken)
+        private async Task UpdateStudentTestSentSituationToWarningAsync(StudentTestSentEntityWorker studentTestSent, CancellationToken cancellationToken)
         {
             if (studentTestSent is null) return;
-            studentTestSent.SetPending();
+            studentTestSent.SetWarning();
             await _studentTestSentRepository.UpdateAsync(studentTestSent, cancellationToken);
         }
     }
