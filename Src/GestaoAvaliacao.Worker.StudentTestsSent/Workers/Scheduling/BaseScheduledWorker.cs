@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using NCrontab;
 using System;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +11,15 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling
     {
         private const string CronAlwaysRunning = "* * * * *";
 
+        private readonly string _cronWorkerParameterValue;
+
         protected abstract string WorkerDescription { get; }
+        protected abstract string CronWorkerParameter { get; }
+
+        public BaseScheduledWorker(IConfiguration configuration)
+        {
+            _cronWorkerParameterValue = string.IsNullOrWhiteSpace(CronWorkerParameter) ? null : configuration.GetValue<string>(CronWorkerParameter, default);
+        }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -36,10 +44,8 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling
 
         private CrontabSchedule GetCronParameter()
         {
-            var attribute = this.GetType().GetCustomAttribute<SchedulingConfigAttribute>();
-            if (attribute is null || string.IsNullOrWhiteSpace(attribute.Cron)) return CrontabSchedule.Parse(CronAlwaysRunning);
-
-            var cron = CrontabSchedule.Parse(attribute.Cron, new CrontabSchedule.ParseOptions { IncludingSeconds = false });
+            if (string.IsNullOrWhiteSpace(_cronWorkerParameterValue)) return CrontabSchedule.Parse(CronAlwaysRunning);
+            var cron = CrontabSchedule.Parse(_cronWorkerParameterValue, new CrontabSchedule.ParseOptions { IncludingSeconds = false });
             return cron ?? CrontabSchedule.Parse(CronAlwaysRunning);
         }
 
