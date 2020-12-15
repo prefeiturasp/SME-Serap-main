@@ -6,6 +6,9 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'GestaoAvaliacao.Worker.StudentTestSentWorker' ">
+    <ExternalConsole>true</ExternalConsole>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
@@ -16,6 +19,7 @@
     <PackageReference Include="ncrontab" Version="3.3.1" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.1" />
     <PackageReference Include="Sentry.Extensions.Logging" Version="2.1.8" />
+    <PackageReference Include="prometheus-net.DotNetRuntime" Version="3.4.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using GestaoAvaliacao.Worker.StudentTestsSent.Logging;
+using Prometheus;
 
 namespace GestaoAvaliacao.Worker.StudentTestsSent
 {
@@ -19,6 +20,8 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent
 
         public static void Main(string[] args)
         {
+            var metricServer = new MetricServer(port: 1234);
+            metricServer.Start();
             CreateHostBuilder(args).Build().Run();
         }
 

@@ -3,6 +3,8 @@ using GestaoAvaliacao.Worker.StudentTestsSent.Logging;
 using GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using Prometheus.DotNetRuntime;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,6 +13,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
     public class StudentTestSentWorker : BaseScheduledWorker
     {
         private readonly IStudentTestSentConsumer _studentTestSentConsummer;
+        private IDisposable _collector;
 
         public StudentTestSentWorker(IConfiguration configuration, ISentryLogger sentryLogger, IStudentTestSentConsumer studentTestSentConsummer)
             : base(configuration, sentryLogger)
@@ -22,6 +25,10 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
 
         protected override string CronWorkerParameter => $"{nameof(StudentTestSentWorker)}_CronParameter";
 
-        protected override Task ExecuteAsync(CancellationToken cancellationToken) => _studentTestSentConsummer.ConsumeAsync(cancellationToken);
+        protected override Task ExecuteAsync(CancellationToken cancellationToken)
+        {
+            _collector = DotNetRuntimeStatsBuilder.Default().StartCollecting();
+            _studentTestSentConsummer.ConsumeAsync(cancellationToken);
+        }
     }
 }
