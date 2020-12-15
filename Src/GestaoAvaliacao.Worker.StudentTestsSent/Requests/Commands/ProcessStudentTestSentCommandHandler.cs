@@ -14,67 +14,69 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands
     {
         private readonly IStudentTestSentRepository _studentTestSentRepository;
         private readonly IStudentTestSentProcessingChain _studentTestSentProcessingChain;
+        private readonly ISentryLogger _sentryLogger;
 
-        public ProcessStudentTestSentCommandHandler(IStudentTestSentRepository studentTestSentRepository, IStudentTestSentProcessingChain studentTestSentProcessingChain)
+        public ProcessStudentTestSentCommandHandler(IStudentTestSentRepository studentTestSentRepository, IStudentTestSentProcessingChain studentTestSentProcessingChain,
+            ISentryLogger sentryLogger)
         {
             _studentTestSentRepository = studentTestSentRepository;
             _studentTestSentProcessingChain = studentTestSentProcessingChain;
+            _sentryLogger = sentryLogger;
         }
 
         protected override async Task Handle(ProcessStudentTestSentCommand request, CancellationToken cancellationToken)
         {
-            do
-            {
-                var studentTestSent = await GetStudentTestSentToProcessAsync(cancellationToken);
-                if (studentTestSent is null) return;
-
-                try
-                {
-                    var dto = new StudentTestSentProcessingChainDto
-                    {
-                        StudentTestSent = studentTestSent
-                    };
-
-                    await _studentTestSentProcessingChain.ExecuteAsync(dto, cancellationToken);
-                    if (!dto.IsValid)
-                    {
-                        SentryLogger.LogErrors(dto.Errors);
-                        await UpdateStudentTestSentSituationToWarningAsync(studentTestSent, cancellationToken);
-                        continue;
-                    }
-
-                    studentTestSent.SetDone();
-                    await _studentTestSentRepository.UpdateAsync(studentTestSent, cancellationToken);
-                }
-                catch (Exception ex)
-                {
-                    SentryLogger.LogError(ex);
-                    await UpdateStudentTestSentSituationToWarningAsync(studentTestSent, cancellationToken);
-                }
-            } while (!cancellationToken.IsCancellationRequested);
-        }
-
-        private async Task<StudentTestSentEntityWorker> GetStudentTestSentToProcessAsync(CancellationToken cancellationToken)
-        {
             try
             {
-                var studentTestSent = await _studentTestSentRepository.GetFirstToProcessAsync(cancellationToken);
-                if (studentTestSent is null) return null;
+                var studentTestSent = await _studentTestSentRepository.GetAsync(request.TestId, request.TurId, request.AluId, cancellationToken);
+                if (studentTestSent is null)
+                {
+                    _sentryLogger.LogErrors(studentTestSent.Errors);
+                    return;
+                }
+
+                if (studentTestSent.IsDone()) return;
 
                 studentTestSent.SetInProgress();
                 if (!studentTestSent.IsValid)
                 {
-                    SentryLogger.LogErrors(studentTestSent.Errors);
-                    return null;
+                    _sentryLogger.LogErrors(studentTestSent.Errors);
+                    return;
                 }
 
                 await _studentTestSentRepository.UpdateAsync(studentTestSent, cancellationToken);
-                return studentTestSent;
+                await ProcessAsync(studentTestSent, cancellationToken);
             }
             catch (Exception ex)
             {
-                SentryLogger.LogError(ex);
-                return null;
+                _sentryLogger.LogError(ex);
+            }
+        }
+
+        private async Task ProcessAsync(StudentTestSentEntityWorker studentTestSent, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var dto = new StudentTestSentProcessingChainDto
+                {
+                    StudentTestSent = studentTestSent
+                };
+
+                await _studentTestSentProcessingChain.ExecuteAsync(dto, cancellationToken);
+                if (!dto.IsValid)
+                {
+                    _sentryLogger.LogErrors(dto.Errors);
+                    await UpdateStudentTestSentSituationToWarningAsync(studentTestSent, cancellationToken);
+                    return;
+                }
+
+                studentTestSent.SetDone();
+                await _studentTestSentRepository.UpdateAsync(studentTestSent, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _sentryLogger.LogError(ex);
+                await UpdateStudentTestSentSituationToWarningAsync(studentTestSent, cancellationToken);
             }
         }
 

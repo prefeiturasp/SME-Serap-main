@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using GestaoAvaliacao.Worker.StudentTestsSent.Logging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using NCrontab;
 using System;
@@ -12,13 +13,15 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling
         private const string CronAlwaysRunning = "* * * * *";
 
         private readonly string _cronWorkerParameterValue;
+        protected readonly ISentryLogger _sentryLogger;
 
         protected abstract string WorkerDescription { get; }
         protected abstract string CronWorkerParameter { get; }
 
-        public BaseScheduledWorker(IConfiguration configuration)
+        public BaseScheduledWorker(IConfiguration configuration, ISentryLogger sentryLogger)
         {
             _cronWorkerParameterValue = string.IsNullOrWhiteSpace(CronWorkerParameter) ? null : configuration.GetValue<string>(CronWorkerParameter, default);
+            _sentryLogger = sentryLogger;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -31,6 +34,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling
 
                 Console.WriteLine($"[{WorkerDescription}] Agendado => {nextOcurrence}");
                 await Task.Delay(tempoAteProximaExec, cancellationToken);
+                _sentryLogger.Init();
                 await ExecuteAsync(cancellationToken);
                 GC.Collect();
             }
@@ -39,7 +43,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling
         public virtual Task StopAsync(CancellationToken cancellationToken)
         {
             Console.WriteLine($"[{WorkerDescription}] Parado => {DateTime.Now}");
-            return Task.CompletedTask;
+            return OnStoppingAsync();
         }
 
         private CrontabSchedule GetCronParameter()
@@ -50,5 +54,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling
         }
 
         protected abstract Task ExecuteAsync(CancellationToken cancellationToken);
+
+        protected virtual Task OnStoppingAsync() => Task.CompletedTask;
     }
 }

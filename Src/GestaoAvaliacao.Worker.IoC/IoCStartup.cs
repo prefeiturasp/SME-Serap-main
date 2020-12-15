@@ -1,6 +1,7 @@
 ﻿using GestaoAvaliacao.Worker.Database.IoC;
 using GestaoAvaliacao.Worker.Database.MongoDB.IoC;
 using GestaoAvaliacao.Worker.IoC.Contracts;
+using GestaoAvaliacao.Worker.Rabbit.IoC;
 using GestaoAvaliacao.Worker.Repository.IoC;
 using GestaoAvaliacao.Worker.Repository.MongoDB.IoC;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +16,7 @@ namespace GestaoAvaliacao.Worker.IoC
         private ICollection<IIoCRegisterBootstrap> _ioCRegisterBootstraps = new List<IIoCRegisterBootstrap>();
 
         public IoCStartup()
-            : this(new RegisterDatabase(), new RegisterDatabaseMongoDB(), new RegisterRepository(), new RegisterMongoDBRepository())
+            : this(new RegisterDatabase(), new RegisterDatabaseMongoDB(), new RegisterRepository(), new RegisterMongoDBRepository(), new RegisterRabbit())
         {
         }
 

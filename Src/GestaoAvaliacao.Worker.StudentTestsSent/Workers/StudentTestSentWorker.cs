@@ -1,4 +1,5 @@
-﻿using GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands;
+﻿using GestaoAvaliacao.Worker.StudentTestsSent.Consumers;
+using GestaoAvaliacao.Worker.StudentTestsSent.Logging;
 using GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -9,18 +10,18 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
 {
     public class StudentTestSentWorker : BaseScheduledWorker
     {
-        private readonly IMediator _mediator;
+        private readonly IStudentTestSentConsumer _studentTestSentConsummer;
 
-        public StudentTestSentWorker(IMediator mediator, IConfiguration configuration)
-            :base(configuration)
+        public StudentTestSentWorker(IConfiguration configuration, ISentryLogger sentryLogger, IStudentTestSentConsumer studentTestSentConsummer)
+            : base(configuration, sentryLogger)
         {
-            _mediator = mediator;
+            _studentTestSentConsummer = studentTestSentConsummer;
         }
 
         protected override string WorkerDescription => nameof(StudentTestSentWorker);
 
         protected override string CronWorkerParameter => $"{nameof(StudentTestSentWorker)}_CronParameter";
 
-        protected override Task ExecuteAsync(CancellationToken cancellationToken) => _mediator.Send(new ProcessStudentTestSentCommand());
+        protected override Task ExecuteAsync(CancellationToken cancellationToken) => _studentTestSentConsummer.ConsumeAsync(cancellationToken);
     }
 }
