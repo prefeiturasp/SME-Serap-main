@@ -27,7 +27,7 @@ namespace GestaoAvaliacao.Worker.Rabbit.Consumers
             _model.Close();
         }
 
-        protected Task ConsumeFetchAsync(Func<TMessageData, CancellationToken, Task> onConsumingCallback, CancellationToken cancellationToken)
+        protected async Task ConsumeFetchAsync(Func<TMessageData, CancellationToken, Task> onConsumingCallback, CancellationToken cancellationToken)
         {
             var consumer = new EventingBasicConsumer(Model);
             consumer.Received += async (ch, ea) =>
@@ -39,9 +39,8 @@ namespace GestaoAvaliacao.Worker.Rabbit.Consumers
             while (!cancellationToken.IsCancellationRequested)
             {
                 _model.BasicConsume(_gestaoAvaliacaoRabbitSettings.QueueName, false, consumer);
+                await Task.Delay(100);
             }
-
-            return Task.CompletedTask;
         }
 
         protected IModel Model

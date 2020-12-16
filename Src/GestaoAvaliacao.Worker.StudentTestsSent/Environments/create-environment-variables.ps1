@@ -8,6 +8,6 @@
 [Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__UserName", "user", "Machine")
 [Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__Password", "sme@serap", "Machine")
 [Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__VirtualHost", "/", "Machine")
-[Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__QueueName", "StudentTestSent", "Machine")
-[Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__ExchangeGestaoAvaliacao", "GestaoAvaliacaoExchange", "Machine")
+[Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__QueueName", "sme.serap.workers.student.testsent", "Machine")
+[Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__ExchangeGestaoAvaliacao", "sme.serap.workers", "Machine")
 

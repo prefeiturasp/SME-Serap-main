@@ -102,6 +102,9 @@
     <Compile Include="ServiceAnswerSheetInfoBusiness.cs" />
     <Compile Include="ReportTestPerformanceBusiness.cs" />
     <Compile Include="StudentCorrectionBusiness.cs" />
+    <Compile Include="StudentsTestSent\Producers\Datas\StudentTestSentMessageData.cs" />
+    <Compile Include="StudentsTestSent\Producers\IStudentTestSentProducer.cs" />
+    <Compile Include="StudentsTestSent\Producers\StudentTestSentProducer.cs" />
     <Compile Include="StudentsTestSent\StudentTestSentBusiness.cs" />
     <Compile Include="StudentTestAbsenceReasonBusiness.cs" />
     <Compile Include="StudentTestAccoplishments\StudentTestAccoplishmentBusiness.cs" />
@@ -177,6 +180,10 @@
       <Project>{5ab49ee2-f4ea-428d-8ec1-257d1ee4ea37}</Project>
       <Name>GestaoAvaliacao.MongoEntities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Rabbit\GestaoAvaliacao.Rabbit.csproj">
+      <Project>{78DE0AEA-77FA-409D-8A69-24A7B301E05C}</Project>
+      <Name>GestaoAvaliacao.Rabbit</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
       <Project>{638b2bdc-aa34-4dcd-a041-ab4eb9c4d831}</Project>
       <Name>GestaoAvaliacao.Util</Name>
@@ -210,6 +217,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

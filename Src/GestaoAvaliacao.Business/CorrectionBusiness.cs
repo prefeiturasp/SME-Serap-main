@@ -29,7 +29,6 @@ namespace GestaoAvaliacao.Business
 		private readonly IStudentTestAbsenceReasonBusiness _studentTestAbsenceReasonBusiness;
 		private readonly ISectionTestStatsBusiness _sectionTestStatsBusiness;
 		private readonly ICorrectionResultsBusiness _correctionResultsBusiness;
-		private readonly ITUR_TurmaBusiness _turmaBusiness;
 		private readonly ITestSectionStatusCorrectionBusiness _testSectionStatusCorrectionBusiness;
 		private readonly IRequestRevokeBusiness _requestRevokeBusiness;
 		private readonly IResponseChangeLogBusiness _responseChangeLogBusiness;
@@ -50,7 +49,6 @@ namespace GestaoAvaliacao.Business
 			_studentTestAbsenceReasonBusiness = studentTestAbsenceReasonBusiness;
 			_sectionTestStatsBusiness = sectionTestStatsBusiness;
 			_correctionResultsBusiness = correctionResultsBusiness;
-			_turmaBusiness = turmaBusiness;
 			_testSectionStatusCorrectionBusiness = testSectionStatusCorrectionBusiness;
 			_requestRevokeBusiness = requestRevokeBusiness;
 			_responseChangeLogBusiness = responseChangeLogBusiness;
@@ -295,7 +293,7 @@ namespace GestaoAvaliacao.Business
 			}
 
 			var finalizeStudentCorrection = _studentCorrectionBusiness.FinalizeStudentCorrectionAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId);
-			var saveStudentTestSent = _studentTestSentBusiness.SaveAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId, dto.Visao, cancellationToken);
+			var saveStudentTestSent = _studentTestSentBusiness.SaveAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId, dto.Visao, dto.UsuId, cancellationToken);
 			await Task.WhenAll(finalizeStudentCorrection, saveStudentTestSent);
 
 			var studentTestSent = saveStudentTestSent.Result;

@@ -353,8 +353,9 @@ namespace GestaoAvaliacao.Controllers
                 EntId = usuarioLogado.Usuario.ent_id,
                 TestId = test_id,
                 TurId = tur_id,
-                Visao = (EnumSYS_Visao)usuarioLogado.Grupo.vis_id
-            };
+                Visao = (EnumSYS_Visao)usuarioLogado.Grupo.vis_id,
+                UsuId = SessionFacade.UsuarioLogado.Usuario.usu_id
+        };
 
             try
             {

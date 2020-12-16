@@ -5,6 +5,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Consumers
 {
     public interface IStudentTestSentConsumer
     {
+        void Close();
         Task ConsumeAsync(CancellationToken cancellationToken);
     }
 }

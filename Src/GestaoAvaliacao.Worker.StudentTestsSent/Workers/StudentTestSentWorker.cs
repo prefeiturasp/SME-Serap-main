@@ -1,7 +1,6 @@
 ﻿using GestaoAvaliacao.Worker.StudentTestsSent.Consumers;
 using GestaoAvaliacao.Worker.StudentTestsSent.Logging;
 using GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using Prometheus.DotNetRuntime;
 using System;
@@ -25,10 +24,16 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
 
         protected override string CronWorkerParameter => $"{nameof(StudentTestSentWorker)}_CronParameter";
 
-        protected override Task ExecuteAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             _collector = DotNetRuntimeStatsBuilder.Default().StartCollecting();
-            _studentTestSentConsummer.ConsumeAsync(cancellationToken);
+            await _studentTestSentConsummer.ConsumeAsync(cancellationToken);
+        }
+
+        protected override Task OnStoppingAsync()
+        {
+            _studentTestSentConsummer.Close();
+            return base.OnStoppingAsync();
         }
     }
 }

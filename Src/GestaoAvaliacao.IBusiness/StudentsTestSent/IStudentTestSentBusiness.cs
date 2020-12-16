@@ -8,6 +8,6 @@ namespace GestaoAvaliacao.IBusiness.StudentsTestSent
 {
     public interface IStudentTestSentBusiness
     {
-        Task<StudentTestSent> SaveAsync(long testId, long turId, long aluId, Guid entId, EnumSYS_Visao visao, CancellationToken cancellationToken);
+        Task<StudentTestSent> SaveAsync(long testId, long turId, long aluId, Guid entId, EnumSYS_Visao visao, Guid usuId, CancellationToken cancellationToken);
     }
 }
