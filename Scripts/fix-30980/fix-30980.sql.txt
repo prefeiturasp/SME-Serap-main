@@ -1,0 +1,26 @@
+Update CoreSSO..Sys_Usuario set usu_senha=(Select Hash from Manutencao..SenhaHash where senha='2634'), usu_criptografia=3 where usu_login='RA5052634'
+Update CoreSSO..Sys_Usuario set usu_senha=(Select Hash from Manutencao..SenhaHash where senha='4319'), usu_criptografia=3 where usu_login='RA3764319'
+
+Update mtr_matriculaTurma SET mtu_dataSaida=NULL where alu_id=2666942
+
+DECLARE @Pes_id  UNIQUEIDENTIFIER = '06CD4F15-DBF6-4A2A-8B06-4897F9F97B76'
+DECLARE @Alu_id INT = (SELECT MAX(alu_id) FROM ACA_ALUNO) + 1
+INSERT INTO ACA_ALUNO VALUES (@Alu_id,'THIAGO ANTEGUERA PROCOPIO','6CF424DC-8EC3-E011-9B36-00155D033206','5052634',GETDATE(),GETDATE(),1,NULL,NULL,@Pes_id)
+INSERT INTO Mtr_MatriculaTurma VALUES(@Alu_id,1,341,325756,117,1,7,1,GETDATE(),GETDATE(),3,'2020-02-05',NULL,7)
+
+
+Update mtr_matriculaTurma SET mtu_dataSaida=NULL where alu_id=2671041
+
+Update CoreSSO..Sys_Usuario set usu_senha=(Select Hash from Manutencao..SenhaHash where senha='7410'), usu_criptografia=3 where usu_login='RA4847410'
+Update CoreSSO..Sys_Usuario set usu_senha=(Select Hash from Manutencao..SenhaHash where senha='1699'), usu_criptografia=3 where usu_login='RA4561699'
+Update CoreSSO..Sys_Usuario set usu_senha=(Select Hash from Manutencao..SenhaHash where senha='2946'), usu_criptografia=3 where usu_login='RA5052946'
+
+Update mtr_matriculaTurma SET mtu_dataSaida=NULL where alu_id=2666017
+Update mtr_matriculaTurma SET mtu_dataSaida=NULL where alu_id=2671457
+
+Update CoreSSO..Sys_Usuario set usu_senha=(Select Hash from Manutencao..SenhaHash where senha='0365'), usu_criptografia=3 where usu_login='RA4940365'
+
+DECLARE @Pes_id  UNIQUEIDENTIFIER = '1B3CDAA1-A728-4141-8DB0-E9DD80997185'
+DECLARE @Alu_id INT = (SELECT MAX(alu_id) FROM ACA_ALUNO) + 1
+INSERT INTO ACA_ALUNO VALUES (@Alu_id,'THELOISA DE ANDRADE GUEDES','6CF424DC-8EC3-E011-9B36-00155D033206','4940365',GETDATE(),GETDATE(),1,NULL,NULL,@Pes_id)
+INSERT INTO Mtr_MatriculaTurma VALUES(@Alu_id,1,245,323341,117,1,6,1,GETDATE(),GETDATE(),34,'2020-02-05',NULL,6)
