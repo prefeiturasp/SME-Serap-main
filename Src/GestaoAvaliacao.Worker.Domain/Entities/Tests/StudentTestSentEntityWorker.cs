@@ -42,5 +42,7 @@ namespace GestaoAvaliacao.Worker.Domain.Entities.Tests
         public void SetDone() => Situation = StudentTestSentSituation.Done;
 
         public void SetWarning() => Situation = StudentTestSentSituation.Warning;
+
+        public bool IsDone() => Situation == StudentTestSentSituation.Done || Situation == StudentTestSentSituation.Warning;
     }
 }

@@ -9,7 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using GestaoAvaliacao.Worker.StudentTestsSent.Logging;
 using Prometheus;
+using GestaoAvaliacao.Worker.StudentTestsSent.Consumers;
 
 namespace GestaoAvaliacao.Worker.StudentTestsSent
 {
@@ -39,10 +41,13 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent
                 {
                     services.AddHostedService<StudentTestSentWorker>();
                     _ioCStartup.Register(services, hostContext.Configuration);
+                    services.AddSingleton<IStudentTestSentConsumer, StudentTestSentConsumer>();
+                    services.AddSingleton<ISentryLogger, SentryLogger>();
                     services.AddTransient<IGenerateCorrectionResultsServices, GenerateCorrectionResultsServices>();
                     services.AddTransient<IProcessGradesServices, ProcessGradesServices>();
                     services.AddTransient<IStudentTestSentProcessingChain, StudentTestSentProcessingChain>();
                     services.AddMediatR(Assembly.GetExecutingAssembly());
                 });
+
     }
 }

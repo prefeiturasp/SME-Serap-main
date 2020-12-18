@@ -18,7 +18,10 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
 
         protected override DbSet<StudentTestSentEntityWorker> DbSet => _gestaoAvaliacaoWorkerContext.StudentTestsSent;
 
-        public Task<StudentTestSentEntityWorker> GetFirstToProcessAsync(CancellationToken cancellationToken)
-            => GetFirstOrDefaultAsync(x => x.Situation == StudentTestSentSituation.Pending, cancellationToken);
+        public Task<StudentTestSentEntityWorker> GetAsync(long testId, long turId, long aluId, CancellationToken cancellationToken)
+            => GetFirstOrDefaultAsync(x => 
+                x.TestId == testId &&
+                x.TurId == turId &&
+                x.AluId == aluId, cancellationToken);
     }
 }

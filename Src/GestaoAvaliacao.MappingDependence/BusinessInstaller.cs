@@ -14,6 +14,7 @@ using Castle.Windsor;
 using FluentValidation;
 using GestaoAvaliacao.Business;
 using GestaoAvaliacao.Business.StudentsTestSent;
+using GestaoAvaliacao.Business.StudentsTestSent.Producers;
 using GestaoAvaliacao.Business.StudentTestAccoplishments;
 using GestaoAvaliacao.Business.StudentTestAccoplishments.Validators;
 using GestaoAvaliacao.Entities.DTO.StudentTestAccoplishments;
@@ -501,6 +502,7 @@ namespace GestaoAvaliacao.MappingDependence
             #endregion GestaoEscolar
 
             InstallValidators(container);
+            InstallProducers(container);
         }
 
         public static IStudentTestAccoplishmentBusiness GetIStudentTestAccoplishmentBusinessForHub()
@@ -527,6 +529,14 @@ namespace GestaoAvaliacao.MappingDependence
 
             container.Register(Classes.FromAssemblyContaining<EndStudentTestAccoplishmentValidator>()
                                 .BasedOn(typeof(IValidator<EndStudentTestAccoplishmentDto>))
+                                .WithService.AllInterfaces()
+                                .SetLifestyle(LifestylePerWebRequest));
+        }
+
+        private void InstallProducers(IWindsorContainer container)
+        {
+            container.Register(Classes.FromAssemblyContaining<StudentTestSentProducer>()
+                                .BasedOn(typeof(IStudentTestSentProducer))
                                 .WithService.AllInterfaces()
                                 .SetLifestyle(LifestylePerWebRequest));
         }

@@ -2,5 +2,12 @@
 [Environment]::SetEnvironmentVariable("ConnectionStrings__GestaoAvaliacaoWorkerContext", "Data Source={SET YOUR INSTANCE};Initial Catalog=GestaoAvaliacao;User Id=sa;Password=Ss123456; MultipleActiveResultSets=True;", "Machine")
 [Environment]::SetEnvironmentVariable("GestaoAvaliacaoWorkerMongoDBSettings__ConnectionString", "mongodb://localhost:27017/GestaoAvaliacao_OMR", "Machine")
 [Environment]::SetEnvironmentVariable("GestaoAvaliacaoWorkerMongoDBSettings__Database", "GestaoAvaliacao_OMR", "Machine")
+[Environment]::SetEnvironmentVariable("GestaoAvaliacaoWorkerMongoDBSettings__ConnectTimeoutInMinutes", "15", "Machine")
 [Environment]::SetEnvironmentVariable("StudentTestSentWorker_CronParameter", "0 22 * * *", "Machine")
+[Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__HostName", "localhost", "Machine")
+[Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__UserName", "user", "Machine")
+[Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__Password", "sme@serap", "Machine")
+[Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__VirtualHost", "/", "Machine")
+[Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__QueueName", "sme.serap.workers.student.testsent", "Machine")
+[Environment]::SetEnvironmentVariable("GestaoAvaliacaoRabbitSettings__ExchangeGestaoAvaliacao", "sme.serap.workers", "Machine")
 

@@ -13,6 +13,7 @@
     <ProjectReference Include="..\GestaoAvaliacao.Worker.Database.MongoDB\GestaoAvaliacao.Worker.Database.MongoDB.csproj" />
     <ProjectReference Include="..\GestaoAvaliacao.Worker.Database\GestaoAvaliacao.Worker.Database.csproj" />
     <ProjectReference Include="..\GestaoAvaliacao.Worker.IoC.Contracts\GestaoAvaliacao.Worker.IoC.Contracts.csproj" />
+    <ProjectReference Include="..\GestaoAvaliacao.Worker.Rabbit\GestaoAvaliacao.Worker.Rabbit.csproj" />
     <ProjectReference Include="..\GestaoAvaliacao.Worker.Repository.MongoDB\GestaoAvaliacao.Worker.Repository.MongoDB.csproj" />
     <ProjectReference Include="..\GestaoAvaliacao.Worker.Repository\GestaoAvaliacao.Worker.Repository.csproj" />
   </ItemGroup>
