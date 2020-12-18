@@ -34,11 +34,12 @@ namespace GestaoAvaliacao.Worker.Rabbit.Consumers
             {
                 var data = GetMessageData(ea);
                 await onConsumingCallback(data, cancellationToken);
+                Model.BasicAck(ea.DeliveryTag, false);
             };
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                _model.BasicConsume(_gestaoAvaliacaoRabbitSettings.QueueName, false, consumer);
+                Model.BasicConsume(_gestaoAvaliacaoRabbitSettings.QueueName, false, consumer);
                 await Task.Delay(100);
             }
         }
@@ -47,7 +48,7 @@ namespace GestaoAvaliacao.Worker.Rabbit.Consumers
         {
             get
             {
-                if (_model is null) CreateModel();
+                if (_model is null || _model.IsClosed) CreateModel();
                 return _model;
             }
         }

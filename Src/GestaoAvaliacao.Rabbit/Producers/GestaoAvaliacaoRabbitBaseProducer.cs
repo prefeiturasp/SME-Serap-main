@@ -25,7 +25,7 @@ namespace GestaoAvaliacao.Rabbit.Producers
             var messageJson = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(messageJson);
             var exchange = ConfigurationManager.AppSettings["GestaoAvaliacaoRabbitSettings_ExchangeGestaoAvaliacao"];
-            _model.BasicPublish(exchange, "*", null, body);
+            Model.BasicPublish(exchange, "*", null, body);
             return Task.FromResult(true);
         }
 

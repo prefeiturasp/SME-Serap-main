@@ -89,7 +89,7 @@ namespace GestaoAvaliacao.Business
 
 			var testTemplate = await GetTestTemplate(test_id, ent_id);
 			if(testTemplate is null)
-				return new StudentCorrection { Validate = new Validate { IsValid = true, Message = "Template adprova não encontrado.", Type = ValidateType.Save.ToString() } };
+				return new StudentCorrection { Validate = new Validate { IsValid = false, Message = "Template adprova não encontrado.", Type = ValidateType.Save.ToString() } };
 
 			var answers = chosenAlternatives
 				.Select(x => new Answer
@@ -292,15 +292,16 @@ namespace GestaoAvaliacao.Business
 				return dto;
 			}
 
-			var finalizeStudentCorrection = _studentCorrectionBusiness.FinalizeStudentCorrectionAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId);
-			var saveStudentTestSent = _studentTestSentBusiness.SaveAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId, dto.Visao, dto.UsuId, cancellationToken);
-			await Task.WhenAll(finalizeStudentCorrection, saveStudentTestSent);
-
-			var studentTestSent = saveStudentTestSent.Result;
-			var studentCorrection = finalizeStudentCorrection.Result;
-
-			if (studentTestSent is null || studentCorrection is null)
+			var studentTestSent = await _studentTestSentBusiness.SaveAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId, dto.Visao, dto.UsuId, cancellationToken);
+			if (studentTestSent is null)
 			{
+				dto.AddError("Não foi possível concluir a entrega da prova. Por favor tente novamente.");
+				return dto;
+			}
+
+			var studentCorrection = await _studentCorrectionBusiness.FinalizeStudentCorrectionAsync(dto.TestId, dto.TurId, dto.AluId, dto.EntId);
+			if(studentCorrection is null)
+            {
 				dto.AddError("Não foi possível concluir a entrega da prova. Por favor tente novamente.");
 				return dto;
 			}

@@ -333,7 +333,10 @@ namespace GestaoAvaliacao.Controllers
                 var pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id;
                 var vis_id = (EnumSYS_Visao)SessionFacade.UsuarioLogado.Grupo.vis_id;
 
-                await correctionBusiness.SaveCorrectionAsync(test_id, alu_id, tur_id, answers, ent_id, usu_id, pes_id, vis_id, ordemItem);
+                var result = await correctionBusiness.SaveCorrectionAsync(test_id, alu_id, tur_id, answers, ent_id, usu_id, pes_id, vis_id, ordemItem);
+                if(!result.Validate.IsValid)
+                    return Json(new { success = false, type = ValidateType.error.ToString(), message = result.Validate.Message }, JsonRequestBehavior.AllowGet);
+
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
