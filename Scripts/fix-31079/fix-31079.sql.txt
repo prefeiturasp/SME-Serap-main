@@ -1,0 +1,12 @@
+DECLARE @Pes_id  UNIQUEIDENTIFIER = '7262B851-DF92-4D32-9C43-5CA26329083B'
+DECLARE @Alu_id INT = (SELECT MAX(alu_id) FROM ACA_ALUNO) + 1
+INSERT INTO ACA_ALUNO VALUES (@Alu_id,'LUCAS SOUZA DOS SANTOS','6CF424DC-8EC3-E011-9B36-00155D033206','7617750',GETDATE(),GETDATE(),1,NULL,NULL,@Pes_id)
+INSERT INTO Mtr_MatriculaTurma VALUES(@Alu_id,1,317,325136,117,1,6,1,GETDATE(),GETDATE(),27,'2020-02-05',NULL,6)
+
+update aca_aluno set alu_situacao=1 where pes_id='F6843631-7874-4A15-BB10-A7FC5F0601AD'
+update MTR_MatriculaTurma set mtu_situacao=1 where alu_id=2882568
+
+Update mtr_matriculaTurma SET mtu_dataSaida=NULL where alu_id=2665892
+Update mtr_matriculaTurma SET mtu_dataSaida=NULL where alu_id in (2647166,2668368,2668535)
+
+Update MTR_MatriculaTurma set mtu_dataSaida=null where alu_id=2666601
