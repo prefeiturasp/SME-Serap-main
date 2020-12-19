@@ -23,5 +23,8 @@ namespace GestaoAvaliacao.Worker.Repository.Tests
                 x.TestId == testId &&
                 x.TurId == turId &&
                 x.AluId == aluId, cancellationToken);
+
+        public Task<StudentTestSentEntityWorker> GetFirstPendingAsync(CancellationToken cancellationToken)
+            => GetFirstOrDefaultAsync(x => x.Situation == StudentTestSentSituation.Pending, cancellationToken);
     }
 }
