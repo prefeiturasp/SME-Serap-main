@@ -2,6 +2,7 @@
 using GestaoAvaliacao.Util;
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace GestaoAvaliacao.Entities.StudentsTestSent
 {

@@ -51,11 +51,6 @@ namespace GestaoAvaliacao.Repository.StudentsTestSent
             }
         }
 
-        public Task<StudentTestSent> GetFirstBySituationAsync(StudentTestSentSituation situation, CancellationToken cancellationToken) 
-            => _gestaoAvaliacaoContext
-                .StudentTestsSent
-                .FirstOrDefaultAsync(x => x.Situation == situation);
-
         public async Task RemoveAsync(StudentTestSent entity, CancellationToken cancellationToken)
         {
             if (entity is null || !entity.Validate.IsValid) return;
