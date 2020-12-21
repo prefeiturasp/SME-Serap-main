@@ -16,7 +16,7 @@ namespace GestaoAvaliacao.Worker.IoC
         private ICollection<IIoCRegisterBootstrap> _ioCRegisterBootstraps = new List<IIoCRegisterBootstrap>();
 
         public IoCStartup()
-            : this(new RegisterDatabase(), new RegisterDatabaseMongoDB(), new RegisterRepository(), new RegisterMongoDBRepository(), new RegisterRabbit())
+            : this(new RegisterDatabase(), new RegisterDatabaseMongoDB(), new RegisterRepository(), new RegisterMongoDBRepository())
         {
         }
 
