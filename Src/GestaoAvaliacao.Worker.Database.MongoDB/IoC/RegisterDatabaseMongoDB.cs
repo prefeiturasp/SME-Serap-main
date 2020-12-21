@@ -4,7 +4,6 @@ using GestaoAvaliacao.Worker.IoC.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System;
 
 namespace GestaoAvaliacao.Worker.Database.MongoDB.IoC
 {
@@ -14,7 +13,7 @@ namespace GestaoAvaliacao.Worker.Database.MongoDB.IoC
         {
             services.Configure<GestaoAvaliacaoWorkerMongoDBSettings>(configuration.GetSection(nameof(GestaoAvaliacaoWorkerMongoDBSettings)));
             services.AddSingleton<IGestaoAvaliacaoWorkerMongoDBSettings>(sp => sp.GetRequiredService<IOptions<GestaoAvaliacaoWorkerMongoDBSettings>>().Value);
-            services.AddSingleton<IGestaoAvaliacaoWorkerMongoDBContext, GestaoAvaliacaoWorkerMongoDBContext>();
+            services.AddTransient<IGestaoAvaliacaoWorkerMongoDBContext, GestaoAvaliacaoWorkerMongoDBContext>();
         }
     }
 }
