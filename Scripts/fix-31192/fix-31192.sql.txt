@@ -1,0 +1,9 @@
+Update MTR_MatriculaTurma set mtu_situacao=1 where alu_id=2881323
+Update Aca_aluno set alu_situacao=1 where alu_id=2881323
+
+
+Update MTR_MatriculaTurma set mtu_numeroChamada=33, mtu_dataSaida=NULL where alu_id=2665350
+Update MTR_MatriculaTurma set mtu_numeroChamada=34, mtu_dataSaida=NULL where alu_id=1302508 and mtu_id=5
+
+
+UPDATE MTR_MatriculaTurma SET mtu_dataSaida=NULL where alu_id=2669951
