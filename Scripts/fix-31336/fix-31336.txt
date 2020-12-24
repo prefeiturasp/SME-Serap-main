@@ -1,0 +1,3 @@
+UPDATE Tur_turma Set cal_id=22, esc_id=17 where tur_id in (317142,317143, 317144, 317145, 317146, 317147, 317148, 317149,317150)
+UPDATE Mtr_matriculaTurma Set esc_id=17 where tur_id in (317142,317143, 317144, 317145, 317146, 317147, 317148, 317149,317150)
+
