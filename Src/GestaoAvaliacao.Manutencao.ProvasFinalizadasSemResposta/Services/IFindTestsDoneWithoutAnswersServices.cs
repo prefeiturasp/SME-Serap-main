@@ -8,6 +8,6 @@ namespace GestaoAvaliacao.Manutencao.ProvasFinalizadasSemResposta.Services
     internal interface IFindTestsDoneWithoutAnswersServices
     {
         Task<IEnumerable<StudentWithTestsDoneWithoutAnswersDto>> FindStudentsWithNoAnswersAsync(DateTime updateDateStart);
-        Task<IEnumerable<StudentWithTestsDoneWithoutAnswersDto>> FindStudentsMissingTheLastAnswerAsync(DateTime updateDateStart);
+        Task FindStudentsMissingTheLastAnswerAsync(DateTime updateDateStart);
     }
 }

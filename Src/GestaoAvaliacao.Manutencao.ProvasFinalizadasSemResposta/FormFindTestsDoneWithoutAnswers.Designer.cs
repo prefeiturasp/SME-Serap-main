@@ -164,7 +164,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormFindTestsDoneWithoutAnswers";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FormFindTestsDoneWithoutAnswers";
             ((System.ComponentModel.ISupportInitialize)(this.dtgResults)).EndInit();

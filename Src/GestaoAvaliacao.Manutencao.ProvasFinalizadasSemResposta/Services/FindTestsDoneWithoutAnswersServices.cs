@@ -56,7 +56,7 @@ namespace GestaoAvaliacao.Manutencao.ProvasFinalizadasSemResposta.Services
                 .ToList();
         }
 
-        public async Task<IEnumerable<StudentWithTestsDoneWithoutAnswersDto>> FindStudentsMissingTheLastAnswerAsync(DateTime updateDateStart)
+        public async Task FindStudentsMissingTheLastAnswerAsync(DateTime updateDateStart)
         {
             var studentTestsMissingTheLastAnswer = await GetTestsMissingTheLastAnswerAsync(updateDateStart);
             var testIds = studentTestsMissingTheLastAnswer.Select(x => x.Test_Id).Distinct();
