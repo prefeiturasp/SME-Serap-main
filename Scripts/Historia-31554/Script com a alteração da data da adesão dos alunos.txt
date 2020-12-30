@@ -1,0 +1,71 @@
+USE GestaoAvaliacao
+DECLARE @ativo INT = 1
+DECLARE @excluido INT = 3
+DECLARE @TypeEntity INT = 1
+DECLARE @TypeSelection INT = 3
+DECLARE @tne_id INT = 2
+DECLARE @TestId INT
+Declare @Data Date= '2020-12-23'
+
+DECLARE @provas AS TABLE(id INT NOT NULL)
+INSERT INTO @provas(id)
+VALUES (613), (615), (599), (608), (610), (612)
+
+;WITH ProcessamentoProva AS (
+	SELECT 
+	     tes.id AS ProvaId
+		,ua.uad_id AS DreId
+		,ua.uad_sigla + ' - ' + ua.uad_nome AS DreNome
+		,esc.esc_id AS EscolaId 
+		,esc.uad_id AS EscolaUad
+		,esc.esc_nome AS EscolaNome
+		,tur.tur_id AS TurmaId
+		,tur.tur_codigo + ' - ' + tn.ttn_nome AS TurmaNome 
+	FROM SGP_TUR_Turma tur WITH (NOLOCK) 
+		INNER JOIN SGP_ACA_TipoTurno tn WITH (NOLOCK) ON tn.ttn_id = tur.ttn_id AND tn.ttn_situacao = @ativo
+		INNER JOIN SGP_ESC_Escola esc WITH (NOLOCK) ON esc.esc_id = tur.esc_id AND esc.esc_situacao = @ativo
+		INNER JOIN SGP_SYS_UnidadeAdministrativa ua WITH (NOLOCK) ON ua.uad_id = esc.uad_idSuperiorGestao AND ua.uad_situacao = @ativo
+		INNER JOIN Test tes WITH (NOLOCK) ON tes.[State] = @ativo 
+		INNER JOIN @provas Pr ON tes.Id = Pr.id
+		INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp WITH (NOLOCK) ON tur.tur_id = ttcp.tur_id AND ttcp.ttcr_situacao = @ativo
+		INNER JOIN SGP_ACA_TipoCurriculoPeriodo tcg WITH (NOLOCK) ON tcg.tcp_ordem = ttcp.crp_ordem AND tcg.tme_id = ttcp.tme_id AND tcg.tne_id = ttcp.tne_id AND tcg.tcp_situacao = @ativo
+		INNER JOIN SGP_ACA_Curso cur WITH (NOLOCK) ON cur.cur_id = ttcp.cur_id AND cur.cur_situacao = @ativo
+		INNER JOIN SGP_ACA_CurriculoPeriodo crp WITH (NOLOCK) ON crp.cur_id = cur.cur_id AND crp.crp_ordem = ttcp.crp_ordem AND crp.tcp_id = tcg.tcp_id AND crp.crp_situacao = @ativo
+		INNER JOIN TestTypeCourse ttc WITH (NOLOCK) ON ttc.CourseId = ttcp.cur_id AND ttc.TestType_Id = tes.TestType_Id AND ttc.[State] = @ativo 
+		INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) ON tcc.TypeCurriculumGradeId = tcg.tcp_id AND tcc.[State] = @ativo AND tcc.Test_Id = tes.Id 
+		LEFT JOIN Adherence a WITH (NOLOCK) ON a.Test_Id = tes.Id AND a.EntityId = tur.tur_id AND a.TypeEntity = @TypeEntity AND a.TypeSelection = @TypeSelection AND a.[State] = @ativo 
+	WHERE tur.tur_situacao = @ativo AND a.Id IS NULL AND ttcp.tne_id = @tne_id) 
+
+SELECT 
+	tes.Id AS [Código da prova]
+	,tes.Description AS [Nome da prova]
+	,P.DreId AS [Id da DRE]
+	,P.EscolaId AS [Id da escola]
+	,P.DreNome AS [Nome da Dre]
+	,P.EscolaNome AS [Nome da escola]
+	,SUM(COUNT(DISTINCT alu.alu_id)) OVER(PARTITION BY tes.Id, P.DreId) AS [Quantidade de alunos por DRE]
+	,SUM(COUNT(DISTINCT alu.alu_id)) OVER(PARTITION BY tes.Id, P.EscolaId) AS [Quantidade de alunos por escola]
+FROM ProcessamentoProva P WITH (NOLOCK)  
+	INNER JOIN Test tes WITH (NOLOCK) ON P.ProvaId = tes.Id AND tes.[State] = @ativo 
+	INNER JOIN @provas Pr ON tes.Id = Pr.id 
+	INNER JOIN SGP_MTR_MatriculaTurma mtu WITH (NOLOCK) ON mtu.tur_id = P.TurmaId 
+	INNER JOIN SGP_ACA_Aluno alu WITH (NOLOCK) ON alu.alu_id = mtu.alu_id 
+WHERE
+	mtu.mtu_situacao <> @excluido
+	AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= tes.CorrectionEndDate 
+	AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= tes.CorrectionStartDate))) 
+	and (mtu_dataSaida is null OR CONVERT(Date,mtu_dataSaida)<= @Data)
+GROUP BY
+	tes.Id 
+	,tes.Description 
+	,P.DreId
+	,P.EscolaId 
+	,P.EscolaUad
+	,P.DreNome
+	,P.EscolaNome 
+ORDER BY
+	tes.Id
+	,P.DreNome
+	,P.EscolaNome 
+
+
