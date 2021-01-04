@@ -8,7 +8,7 @@ namespace GestaoAvaliacao.Worker.Repository.Contracts
     public interface IStudentTestSentRepository
     {
         Task<StudentTestSentEntityWorker> GetAsync(long testId, long turId, long aluId, CancellationToken cancellationToken);
-
         Task UpdateAsync(StudentTestSentEntityWorker entity, CancellationToken cancellationToken);
+        Task<StudentTestSentEntityWorker> GetFirstPendingAsync(CancellationToken cancellationToken);
     }
 }

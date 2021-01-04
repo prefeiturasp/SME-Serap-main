@@ -26,30 +26,27 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands
 
         protected override async Task Handle(ProcessStudentTestSentCommand request, CancellationToken cancellationToken)
         {
-            try
+            while (!cancellationToken.IsCancellationRequested)
             {
-                var studentTestSent = await _studentTestSentRepository.GetAsync(request.TestId, request.TurId, request.AluId, cancellationToken);
-                if (studentTestSent is null)
+                try
                 {
-                    _sentryLogger.LogErrors(studentTestSent.Errors);
-                    return;
+                    var studentTestSent = await _studentTestSentRepository.GetFirstPendingAsync(cancellationToken);
+                    if (studentTestSent is null) return;
+
+                    studentTestSent.SetInProgress();
+                    if (!studentTestSent.IsValid)
+                    {
+                        _sentryLogger.LogErrors(studentTestSent.Errors);
+                        return;
+                    }
+
+                    await _studentTestSentRepository.UpdateAsync(studentTestSent, cancellationToken);
+                    await ProcessAsync(studentTestSent, cancellationToken);
                 }
-
-                if (studentTestSent.IsDone()) return;
-
-                studentTestSent.SetInProgress();
-                if (!studentTestSent.IsValid)
+                catch (Exception ex)
                 {
-                    _sentryLogger.LogErrors(studentTestSent.Errors);
-                    return;
+                    _sentryLogger.LogError(ex);
                 }
-
-                await _studentTestSentRepository.UpdateAsync(studentTestSent, cancellationToken);
-                await ProcessAsync(studentTestSent, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _sentryLogger.LogError(ex);
             }
         }
 

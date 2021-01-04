@@ -41,7 +41,6 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent
                 {
                     services.AddHostedService<StudentTestSentWorker>();
                     _ioCStartup.Register(services, hostContext.Configuration);
-                    services.AddSingleton<IStudentTestSentConsumer, StudentTestSentConsumer>();
                     services.AddSingleton<ISentryLogger, SentryLogger>();
                     services.AddTransient<IGenerateCorrectionResultsServices, GenerateCorrectionResultsServices>();
                     services.AddTransient<IProcessGradesServices, ProcessGradesServices>();

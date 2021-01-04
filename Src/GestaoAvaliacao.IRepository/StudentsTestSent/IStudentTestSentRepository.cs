@@ -11,8 +11,6 @@ namespace GestaoAvaliacao.IRepository.StudentsTestSent
 
         Task<bool> AnyAsync(long testId, long turId, long aluId, CancellationToken cancellationToken);
 
-        Task<StudentTestSent> GetFirstBySituationAsync(StudentTestSentSituation situation, CancellationToken cancellationToken);
-
         Task<StudentTestSent> GetFirstOrDefaultAsync(long testId, long turId, long aluId, CancellationToken cancellationToken);
 
         Task RemoveAsync(StudentTestSent entity, CancellationToken cancellationToken);

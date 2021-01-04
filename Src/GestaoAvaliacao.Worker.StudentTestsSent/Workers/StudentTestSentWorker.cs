@@ -1,6 +1,8 @@
 ﻿using GestaoAvaliacao.Worker.StudentTestsSent.Consumers;
 using GestaoAvaliacao.Worker.StudentTestsSent.Logging;
+using GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands;
 using GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Prometheus.DotNetRuntime;
 using System;
@@ -11,13 +13,13 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
 {
     public class StudentTestSentWorker : BaseScheduledWorker
     {
-        private readonly IStudentTestSentConsumer _studentTestSentConsummer;
+        private readonly IMediator _mediator;
         private IDisposable _collector;
 
-        public StudentTestSentWorker(IConfiguration configuration, ISentryLogger sentryLogger, IStudentTestSentConsumer studentTestSentConsummer)
+        public StudentTestSentWorker(IConfiguration configuration, ISentryLogger sentryLogger, IMediator mediator)
             : base(configuration, sentryLogger)
         {
-            _studentTestSentConsummer = studentTestSentConsummer;
+            _mediator = mediator;
         }
 
         protected override string WorkerDescription => nameof(StudentTestSentWorker);
@@ -27,13 +29,7 @@ namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             _collector = DotNetRuntimeStatsBuilder.Default().StartCollecting();
-            await _studentTestSentConsummer.ConsumeAsync(cancellationToken);
-        }
-
-        protected override Task OnStoppingAsync()
-        {
-            _studentTestSentConsummer.Close();
-            return base.OnStoppingAsync();
+            await _mediator.Send(new ProcessStudentTestSentCommand());
         }
     }
 }
