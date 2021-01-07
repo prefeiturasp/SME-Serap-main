@@ -1,0 +1,4 @@
+
+db.CorrectionResults.remove({ Test_id: 595, tur_id: 316993, { Students: { alu_id:2668498 } } })
+db.CorrectionResults.remove({ Test_id: 595, tur_id: 316993, { Students: { alu_id:2041446 } } })
+db.CorrectionResults.remove({ Test_id: 595, tur_id: 316993, { Students: { alu_id:2668497 } } })
