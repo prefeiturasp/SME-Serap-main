@@ -225,9 +225,7 @@ namespace GestaoAvaliacao.Controllers
                         Audios = itemAudios.Where(p => p.Item_Id == entity.Id).ToList()
                     });
 
-                    var jsonResult = Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
-                    jsonResult.MaxJsonLength = int.MaxValue;
-                    return jsonResult;
+                    return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
                 }
 
                 return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Item não encontrado." }, JsonRequestBehavior.AllowGet);
