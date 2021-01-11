@@ -15,10 +15,10 @@
     <AssemblyName>GestaoAvaliacao</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />	    
-	<IISExpressAnonymousAuthentication />
-	<IISExpressWindowsAuthentication />
-	<IISExpressUseClassicPipelineMode />
+    <IISExpressSSLPort>54127</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -529,6 +529,7 @@
     <Content Include="Assets\js\angular\controllers\discipline\formDisciplineController.js" />
     <Content Include="Assets\js\angular\controllers\discipline\listDisciplineController.js" />
     <Content Include="Assets\js\angular\controllers\electronicTest\formElectronicTestController.js" />
+    <Content Include="Assets\js\angular\controllers\electronicTest\homeAlunoElectronicTestController.js" />
     <Content Include="Assets\js\angular\controllers\electronicTest\indexElectronicTestController.js" />
     <Content Include="Assets\js\angular\controllers\evaluationMatrix\evaluationMatrixController.js" />
     <Content Include="Assets\js\angular\controllers\evaluationMatrix\evaluationMatrixListController.js" />
@@ -1709,6 +1710,7 @@
     <Content Include="Views\AdministrativeUnitType\Index.cshtml" />
     <Content Include="Views\ProvaSP\IndexApp.cshtml" />
     <Content Include="Views\ProvaSP\IndexAppContainer.cshtml" />
+    <Content Include="Views\ElectronicTest\HomeAluno.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
