@@ -16,7 +16,7 @@ namespace GestaoAvaliacao.Controllers
             {
                 if ((EnumSYS_Visao)SessionFacade.UsuarioLogado.Grupo.vis_id == EnumSYS_Visao.Individual && SessionFacade.UsuarioLogado.alu_id > 0)
                 {
-                    return RedirectToAction("Index", "ElectronicTest");
+                    return RedirectToAction("HomeAluno", "ElectronicTest");
                 }
                 else
                 {

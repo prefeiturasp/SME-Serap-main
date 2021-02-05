@@ -40,6 +40,11 @@ namespace GestaoAvaliacao.Controllers
             return View();
         }
 
+        public ActionResult HomeAluno()
+        {
+            return View();
+        }
+
         public ActionResult Form(long? TestId, long? AluId, long? TurId)
         {
             if (TestId.HasValue && AluId.HasValue && TurId.HasValue)

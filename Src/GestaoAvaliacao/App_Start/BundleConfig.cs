@@ -1712,6 +1712,28 @@ namespace GestaoAvaliacao.App_Start
             );
             #endregion
 
+            #region HomeAluno
+
+            bundles.Add(
+               new ScriptBundle("~/bundles/ElectronicTest_HomeAluno_js")
+                .Include("~/Assets/js/angular/controllers/electronicTest/homeAlunoElectronicTestController.js")
+                .Include("~/Assets/js/angular/models/electronicTest/electronicTestModel.js")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.js")
+                .Include("~/Assets/js/angular/services/_bundle/pager/services.js")
+                .Include("~/Assets/js/angular/services/_bundle/util/util.js")
+                .Include("~/Assets/js/vendor/datepicker/datepicker.js")
+                .Include("~/Assets/js/angular/directives/_bundle/datepicker/datepicker-directive.js")
+            //.Include("~/Assets/js/angular/directives/_bundle/checkbox-group/ckeckbox-group.js")
+            );
+
+            bundles.Add(
+                new StyleBundle("~/bundles/ElectronicTest_HomeAluno_css")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.css")
+                .Include("~/Assets/js/vendor/datepicker/datepicker.css")
+            );
+
+            #endregion
+
             #endregion
 
             #region PageConfiguration
