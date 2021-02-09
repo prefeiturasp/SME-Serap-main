@@ -52,6 +52,24 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
+        public string GetByItemId(long itemId)
+        {
+            var sql = new StringBuilder($@"
+                SELECT 
+	                base.Description 
+                FROM BaseText base
+	                INNER JOIN Item item ON item.BaseText_Id = base.Id 
+                WHERE item.Id = @itemId AND base.State = @state
+            ");
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                return cn.Query<string>(sql.ToString(), new { itemId = itemId, state = (Byte)EnumState.ativo }).FirstOrDefault();
+            }
+        }
+
         public BaseText Get(long id)
         {
             var sql = new StringBuilder(@"SELECT Id, Description, Source, InitialOrientation, BaseTextOrientation,NarrationInitialStatement, ");
