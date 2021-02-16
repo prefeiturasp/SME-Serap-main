@@ -194,7 +194,7 @@ namespace GestaoAvaliacao.Business
             return new TestAverageItensViewModel { success = true, lista = query };
         }
 
-        public PerformanceItemViewModel GetPerformanceTree(long test_id, long subGroup_id, long tcp_id, SYS_Usuario usuario, SYS_Grupo grupo, Guid? dre_id, int? esc_id, Guid? uad_id, bool? export = false)
+        public PerformanceItemViewModel GetPerformanceTree(long test_id, long subGroup_id, long tcp_id, SYS_Usuario usuario, SYS_Grupo grupo, Guid? dre_id, int? esc_id, Guid? uad_id, bool? export = false, bool? showBaseText = true)
         {
             PerformanceItemViewModel result = new PerformanceItemViewModel();
             result.tests = new List<TestResult>();
@@ -287,7 +287,8 @@ namespace GestaoAvaliacao.Business
                     itemViewModel.statement = entity.Statement;
                     itemViewModel.order = entity.BlockItems.Where(i => i.State == (Byte)EnumState.ativo && i.Item_Id == item).FirstOrDefault().Order;
                     itemViewModel.revoked = entity.Revoked == null ? false : entity.Revoked.Value;
-                    itemViewModel.baseText = entity.BaseText == null ? "<p>O item não possui texto base.</p>" : entity.BaseText.Description;
+                    if(showBaseText ?? true)
+                        itemViewModel.baseText = entity.BaseText == null ? "<p>O item não possui texto base.</p>" : entity.BaseText.Description;
                     itemViewModel.habilidades = new List<SkillsViewModel>();
                     itemViewModel.discipline_id = entity.EvaluationMatrix.Discipline.Id;
                     itemViewModel.discipline_name = entity.EvaluationMatrix.Discipline.Description;

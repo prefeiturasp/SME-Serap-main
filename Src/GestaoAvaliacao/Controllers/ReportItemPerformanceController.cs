@@ -19,12 +19,15 @@ namespace GestaoAvaliacao.Controllers
         private readonly IReportItemPerformanceBusiness _reportItemPerformanceBusiness;
         private readonly ISkillBusiness _skillBusiness;
         private readonly IFileBusiness _fileBusiness;
+        private readonly IBaseTextBusiness _baseTextBusiness;
 
-        public ReportItemPerformanceController(IReportItemPerformanceBusiness reportItemPerformanceBusiness, ISkillBusiness skillBusiness, IFileBusiness fileBusiness)
+        public ReportItemPerformanceController(IReportItemPerformanceBusiness reportItemPerformanceBusiness, ISkillBusiness skillBusiness, 
+            IFileBusiness fileBusiness, IBaseTextBusiness baseTextBusiness)
         {
             _reportItemPerformanceBusiness = reportItemPerformanceBusiness;
             _skillBusiness = skillBusiness;
             _fileBusiness = fileBusiness;
+            _baseTextBusiness = baseTextBusiness;
         }
 
         public ActionResult IndexDRE()
@@ -55,8 +58,18 @@ namespace GestaoAvaliacao.Controllers
         [Paginate]
         public JsonResult GetDres(long test_id, long subGroup_id, long tcp_id, Guid? dre_id, int? esc_id, Guid? uad_id)
         {
-            var performanceTree = _reportItemPerformanceBusiness.GetPerformanceTree(test_id, subGroup_id, tcp_id, SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, dre_id, esc_id, uad_id);
+            var performanceTree = _reportItemPerformanceBusiness.GetPerformanceTree(test_id, subGroup_id, tcp_id, SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, dre_id, esc_id, uad_id, showBaseText: false);
             JsonResult jsonResult = Json(new { data = performanceTree, success = true }, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
+        }
+
+
+        [HttpGet]
+        public JsonResult GetBaseTextByItemId(long itemId)
+        {
+            var textoBase = _baseTextBusiness.GetBaxeTestByItemId(itemId);
+            JsonResult jsonResult = Json(new { data = textoBase, success = true }, JsonRequestBehavior.AllowGet);
             jsonResult.MaxJsonLength = int.MaxValue;
             return jsonResult;
         }
