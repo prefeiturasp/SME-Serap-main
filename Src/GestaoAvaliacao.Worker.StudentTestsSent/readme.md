@@ -40,8 +40,7 @@ Para os demais ambientes, a chave deverá ser obtida através das plataforams de
 	** O comando acima é para desabilitar scripts de serem executados;
 
 #### Criando o arquivo sme-serap-worker.env
-> Dentro da pasta Environments copiar o arquivo create-environment-variables.ps1 e colar no mesmo nível do docker-compose e renomeá-lo para sme-serap-worker.env 
-> As chaves dentro do arquivo sme-serap-worker.env devem ser `NomeDaVariavel=ValorDaVariavel` conforme o exemplo abaixo:
+> Dentro da pasta Environments copiar o arquivo create-environment-variables.ps1 e colar no mesmo nível do docker-compose e renomeá-lo para sme-serap-worker.env, as chaves dentro do arquivo sme-serap-worker.env devem ser `NomeDaVariavel=ValorDaVariavel` conforme o exemplo abaixo:
 
 ConnectionStrings__GestaoAvaliacaoWorkerContext=Data Source={SET YOUR INSTANCE};Initial Catalog={SET YOUR DATABASE};User Id={SET YOUR USER};Password={SET YOUR PASSWORD}; MultipleActiveResultSets=True;
 Sentry__DSN={SET YOUR SENTRY KEY}
