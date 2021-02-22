@@ -32,17 +32,6 @@ namespace GestaoAvaliacao.TestesDeMetodos
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var cripto = new SymmetricAlgorithm(SymmetricAlgorithm.Tipo.TripleDES);
-            var stringMongoDBHomolog = "wr4BvnRpGpFNbNGNWmwadg==";
-            var MongoDbDecryptHomolog = cripto.Decrypt(stringMongoDBHomolog);
-
-            var encrypt = cripto.Encrypt(MongoDbDecryptHomolog);
-
-
-            var stringMongoDBProd = "p6IsYP5FsvCSyTu71IXXZ1WE/agK+ItDHaOynjdkgXXF7KBm6WTTigMidM9mTDSxKUtT43VyqOPVYPd3KHPwHprwVULAJvBMhjr9NUs3J/S2FK1Ny57xDcghRmEvpe2VRr1+DVMRZBBvDQxRRINg9uTxAx94dbtS+u3IEMtdjpQrFzVlVkDPHnSwTWtgmtrLft+VhBP2SeK+bVPnuHs1ji/Z956sJkt+";
-            var MongoDbDecryptProd = cripto.Decrypt(stringMongoDBProd);
-
-
             var _reportItemPerformanceBusiness = container.Resolve<IReportItemPerformanceBusiness>();
             var _testCurriculumGradeBusiness = container.Resolve<ITestCurriculumGradeBusiness>();
             var _baseTextBusiness = container.Resolve<IBaseTextBusiness>();
