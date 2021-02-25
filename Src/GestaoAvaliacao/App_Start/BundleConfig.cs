@@ -1736,6 +1736,32 @@ namespace GestaoAvaliacao.App_Start
 
             #endregion
 
+            #region StudentsResult
+
+            #region StudentResults_Index
+
+            bundles.Add(
+                new ScriptBundle("~/bundles/StudentResults_js")
+                .Include("~/Assets/js/angular/controllers/StudentResults/studentResultsListController.js")
+                .Include("~/Assets/js/angular/models/StudentResults/studentResultsListModel.js")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.js")
+                .Include("~/Assets/js/angular/services/_bundle/pager/services.js")
+                .Include("~/Assets/js/angular/services/_bundle/util/util.js")
+                .Include("~/Assets/js/vendor/datepicker/datepicker.js")
+                .Include("~/Assets/js/angular/directives/_bundle/datepicker/datepicker-directive.js")
+            );
+
+            bundles.Add(
+                new StyleBundle("~/bundles/StudentResults_css")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.css")
+                .Include("~/Assets/js/vendor/datepicker/datepicker.css")
+
+            );
+
+            #endregion
+
+            #endregion
+
             #region PageConfiguration
 
             #region (Index)
