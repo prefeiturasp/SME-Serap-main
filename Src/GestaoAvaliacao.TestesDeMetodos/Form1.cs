@@ -4,8 +4,12 @@ using GestaoAvaliacao.MappingDependence;
 using GestaoAvaliacao.Services;
 using GestaoAvaliacao.Util;
 using MSTech.CoreSSO.Entities;
+using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Windows.Forms;
+using MSTech.Security.Cryptography;
+using GestaoAvaliacao.Entities;
 
 namespace GestaoAvaliacao.TestesDeMetodos
 {
@@ -30,6 +34,7 @@ namespace GestaoAvaliacao.TestesDeMetodos
         {
             var _reportItemPerformanceBusiness = container.Resolve<IReportItemPerformanceBusiness>();
             var _testCurriculumGradeBusiness = container.Resolve<ITestCurriculumGradeBusiness>();
+            var _baseTextBusiness = container.Resolve<IBaseTextBusiness>();
             var usuario = new SYS_Usuario
             {
                 usu_id = new Guid("770B9F29-C2A8-E911-87E1-782BCB3D2D76"),
@@ -43,10 +48,13 @@ namespace GestaoAvaliacao.TestesDeMetodos
                 vis_id = 1
             };
 
-            var retorno1 = _testCurriculumGradeBusiness.GetDistinctCurricumGradeByTestSubGroup_Id(37);
+            //subGroup_id = 39 & tcp_id = 4 & test_id = 0 & uad_id =
+            var textoBase = _baseTextBusiness.GetBaxeTestByItemId(11625);
 
-            var retorno = _reportItemPerformanceBusiness.GetPerformanceTree(0, 37, 82, usuario,
-                    grupo, null, null, null, false);
+            var retorno1 = _testCurriculumGradeBusiness.GetDistinctCurricumGradeByTestSubGroup_Id(39);
+
+            var retorno = _reportItemPerformanceBusiness.GetPerformanceTree(0, 39, 4, usuario,
+                    grupo, null, null, null, false, false);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -74,6 +82,15 @@ namespace GestaoAvaliacao.TestesDeMetodos
             };
 
             var lttt = _correctionBusiness.LoadOnlySelectedSectionPaginate(ref pager, filter);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var _itemBusiness = container.Resolve<IItemBusiness>();
+
+            var item = new Item { Id = 12434 };
+            _itemBusiness.SaveChangeItem(item, 601, 11532);
+            _itemBusiness.SaveChangeItem(item, 602, 11532);
         }
     }
 }
