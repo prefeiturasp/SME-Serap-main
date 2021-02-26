@@ -17,27 +17,31 @@ namespace GestaoAvaliacao.Controllers
 {
     public class StudentResultsController : Controller
     {
-        private readonly ITestBusiness testBusiness;
-        private readonly IAlternativeBusiness alternativeBusiness;
-        private readonly IStudentCorrectionBusiness _studentCorrectionBusiness;
-        private readonly ICorrectionBusiness correctionBusiness;
-        private readonly IItemFileBusiness itemFileBusiness;
-        private readonly IItemAudioBusiness itemAudioBusiness;
+        private readonly IStudentTestAccoplishmentBusiness _studentTestAccoplishmentBusiness;
 
-        public StudentResultsController(ITestBusiness testBusiness, IAlternativeBusiness alternativeBusiness, IStudentCorrectionBusiness _studentCorrectionBusiness, ICorrectionBusiness correctionBusiness,
-            IItemFileBusiness itemFileBusiness, IItemAudioBusiness itemAudioBusiness)
+        public StudentResultsController(IStudentTestAccoplishmentBusiness studentTestAccoplishmentBusiness)
         {
-            this.testBusiness = testBusiness;
-            this.alternativeBusiness = alternativeBusiness;
-            this._studentCorrectionBusiness = _studentCorrectionBusiness;
-            this.correctionBusiness = correctionBusiness;
-            this.itemFileBusiness = itemFileBusiness;
-            this.itemAudioBusiness = itemAudioBusiness;
+            _studentTestAccoplishmentBusiness = studentTestAccoplishmentBusiness;
         }
 
         public ActionResult Index()
         {
             return View();
-        }     
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetResultadosDosEstudantes()
+        {
+            try
+            {
+                var dados = await _studentTestAccoplishmentBusiness.GetStudenteResultAsync(SessionFacade.UsuarioLogado.Usuario.pes_id);
+                return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar as provas." }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

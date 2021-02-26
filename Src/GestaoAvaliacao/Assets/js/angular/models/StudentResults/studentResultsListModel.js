@@ -12,10 +12,6 @@
                 method: 'GET',
                 url: base_url('/studentResults/getResultadosDosEstudantes')
             },
-            'load': {
-                method: 'GET',
-                url: base_url('/ElectronicTest/Load')
-            }
         };
 
         // Retorna o serviço       

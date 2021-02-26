@@ -125,6 +125,10 @@
     <Compile Include="StudentsTestSent\IStudentTestSentRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.Dtos\GestaoAvaliacao.Dtos.csproj">
+      <Project>{bc0b4ece-7048-4e0e-a993-ab2f6089ecdd}</Project>
+      <Name>GestaoAvaliacao.Dtos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
       <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>
       <Name>GestaoAvaliacao.Entities</Name>

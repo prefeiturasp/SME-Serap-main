@@ -30,58 +30,25 @@
 
         ng.load = function __load() {
 
-            studentResultsListModel.load(function (result) {
+            studentResultsListModel.getResultadosDosEstudantes(function (result) {
                 if (result.success) {
-                    ng.ListaProvasDoAnoCorrente = [];
-                    ng.ListaProvasDoAnoCorrente[0] = {
-                        NomeDaProva: "EJA_Final2_Matemática_1º Semestre - Matemática",
-                        Periodo: "Semestral",
-                        DataDeFinalizacao: "25/02/2021",
-                        TempoDeProva: "02 horas e 3 minutos",
-                        QuantidadeDeItens: 32
-                    };
-                    ng.ProvasDoAnoCorrente = true;
-                    ng.DescricaoDoBotaoDaProvaDoAnoAtual = "Provas do ano 2021";
-                    //ng.ProvasDoAnoCorrente = false;
-                    //ng.DescricaoDoBotaoDaProvaDoAnoAtual = "Não existem provas respondidas no ano 2021";
-                    ng.ClassBotaoDaProvaDoAnoAtual = ng.ProvasDoAnoCorrente ? "nao-iniciadas" : "sem-registros";
+                    if (result.dados.ListaProvasDoAnoCorrente.length > 0) {
+                        ng.ListaProvasDoAnoCorrente = result.dados.ListaProvasDoAnoCorrente;
+                        ng.DescricaoDoBotaoDaProvaDoAnoAtual = "Provas do ano " + result.Ano;
+                        ng.ProvasDoAnoCorrente = true;
+                    }
+                    else {
+                        ng.ListaProvasDoAnoCorrente = null;
+                        ng.DescricaoDoBotaoDaProvaDoAnoAtual = "Não existem provas respondidas no ano " + result.Ano;
+                        ng.ProvasDoAnoCorrente = false;
+                    }
 
-                    ng.ListaProvasDosAnosAnteriores = [];
-                    ng.ListaProvasDosAnosAnteriores[0] = {
-                        NomeDaProva: "EJA_Final2_Matemática_1º Semestre - Matemática",
-                        Periodo: "Semestral",
-                        DataDeFinalizacao: "25/02/2021",
-                        TempoDeProva: "02 horas e 3 minutos",
-                        QuantidadeDeItens: 29
-                    };
-                    ng.ListaProvasDosAnosAnteriores[1] = {
-                        NomeDaProva: "EJA_Final2_Matemática_1º Semestre - Matemática",
-                        Periodo: "Semestral",
-                        DataDeFinalizacao: "25/02/2021",
-                        TempoDeProva: "02 horas e 3 minutos",
-                        QuantidadeDeItens: 28
-                    };
-                    ng.ListaProvasDosAnosAnteriores[2] = {
-                        NomeDaProva: "EJA_Final2_Matemática_1º Semestre - Matemática",
-                        Periodo: "Semestral",
-                        DataDeFinalizacao: "25/02/2021",
-                        TempoDeProva: "02 horas e 3 minutos",
-                        QuantidadeDeItens: 27
-                    };
-
-                    //if (result.ListaProvasDoAnoCorrente.length > 0) {
-                    //    ng.ListaProvasDoAnoCorrente = result.ProvasDoAnoCorrente;
-                    //}
-                    //else {
-                    //    ng.ListaProvasDoAnoCorrente = null;
-                    //}
-
-                    //if (result.ListaProvasDosAnosAnteriores.length > 0) {
-                    //    ng.ListaProvasDosAnosAnteriores = result.ProvasDosAnosAnteriores;
-                    //}
-                    //else {
-                    //    ng.ListaProvasDosAnosAnteriores = null;
-                    //}
+                    if (result.dados.ListaProvasDosAnosAnteriores.length > 0) {
+                        ng.ListaProvasDosAnosAnteriores = result.dados.ListaProvasDosAnosAnteriores;
+                    }
+                    else {
+                        ng.ListaProvasDosAnosAnteriores = null;
+                    }
                 }
                 else {
                     $notification[result.type ? result.type : 'error'](result.message);
