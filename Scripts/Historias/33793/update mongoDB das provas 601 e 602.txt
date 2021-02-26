@@ -1,0 +1,62 @@
+Atualizar StudentCorrection prova 601
+
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":601, "Answers.Item_Id":11532, "Answers.AnswerChoice":47255},
+	{"$set": { "Answers.$.Item_Id":12434, "Answers.$.AnswerChoice":50874, "Answers.$.Correct":false }}
+)
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":601, "Answers.Item_Id":11532, "Answers.AnswerChoice":47256},
+	{"$set": { "Answers.$.Item_Id":12434, "Answers.$.AnswerChoice":50875, "Answers.$.Correct":true }}
+)
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":601, "Answers.Item_Id":11532, "Answers.AnswerChoice":47257},
+	{"$set": { "Answers.$.Item_Id":12434, "Answers.$.AnswerChoice":50876 , "Answers.$.Correct":false }}
+)
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":601, "Answers.Item_Id":11532, "Answers.AnswerChoice":47258},
+	{"$set": { "Answers.$.Item_Id":12434, "Answers.$.AnswerChoice":50877, "Answers.$.Correct":false }}
+)
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":601, "Answers.Item_Id":11532, "Answers.AnswerChoice":47258},
+	{"$set": { "Answers.$.Item_Id":12434, "Answers.$.AnswerChoice":50877, "Answers.$.Correct":false }}
+)
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":601, "Answers.Item_Id":11532, "Answers.AnswerChoice":0},
+	{"$set": { "Answers.$.Item_Id":12434 }}
+)
+
+Atualizar StudentCorrection prova 602
+
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":602, "Answers.Item_Id":11532, "Answers.AnswerChoice":47255},
+	{"$set": { "Answers.$.Item_Id":12434, "Answers.$.AnswerChoice":50874, "Answers.$.Correct":false }}
+)
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":602, "Answers.Item_Id":11532, "Answers.AnswerChoice":47256},
+	{"$set": { "Answers.$.Item_Id":12434, "Answers.$.AnswerChoice":50875, "Answers.$.Correct":true }}
+)
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":602, "Answers.Item_Id":11532, "Answers.AnswerChoice":47257},
+	{"$set": { "Answers.$.Item_Id":12434, "Answers.$.AnswerChoice":50876 , "Answers.$.Correct":false }}
+)
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":602, "Answers.Item_Id":11532, "Answers.AnswerChoice":47258},
+	{"$set": { "Answers.$.Item_Id":12434, "Answers.$.AnswerChoice":50877, "Answers.$.Correct":false }}
+)
+
+db.StudentCorrection.updateMany(
+	{"Test_Id":602, "Answers.Item_Id":11532, "Answers.AnswerChoice":0},
+	{"$set": { "Answers.$.Item_Id":12434 }}
+)
+
+

@@ -173,7 +173,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoAvaliacao.Manutencao.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoAvaliacao.FGVIntegration", "GestaoAvaliacao.FGVIntegration\GestaoAvaliacao.FGVIntegration.csproj", "{D714F282-6B47-4860-9529-2DB8DB7D036A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoAvaliacao.TestesDeMetodos", "GestaoAvaliacao.TestesDeMetodos\GestaoAvaliacao.TestesDeMetodos.csproj", "{07C2E881-C92A-4A68-88FA-5F086D4D1D62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestaoAvaliacao.ExecutarRotinasNoSerapViaCodigo", "GestaoAvaliacao.TestesDeMetodos\GestaoAvaliacao.ExecutarRotinasNoSerapViaCodigo.csproj", "{07C2E881-C92A-4A68-88FA-5F086D4D1D62}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImportacaoDeQuestionariosSME", "ProvaSP.ImportacaoDeQuestionariosDeFatoresAssociados\ImportacaoDeQuestionariosSME.csproj", "{C0D55CEE-9F75-452C-B794-F469509AD28C}"
 EndProject
