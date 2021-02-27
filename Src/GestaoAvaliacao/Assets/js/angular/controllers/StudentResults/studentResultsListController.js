@@ -22,6 +22,7 @@
             ng.ListaProvasDoAnoCorrente = null;
             ng.ListaProvasDosAnosAnteriores = null;
             ng.ProvasDoAnoCorrente = true;
+            ng.ClassBotaoDaProvaDoAnoAtual = "nao-iniciadas";
             ng.DescricaoDoBotaoDaProvaDoAnoAtual = null;
             ng.admin = getCurrentVision() != EnumVisions.INDIVIDUAL;
             ng.load();
@@ -34,13 +35,15 @@
                 if (result.success) {
                     if (result.dados.ListaProvasDoAnoCorrente.length > 0) {
                         ng.ListaProvasDoAnoCorrente = result.dados.ListaProvasDoAnoCorrente;
-                        ng.DescricaoDoBotaoDaProvaDoAnoAtual = "Provas do ano " + result.Ano;
+                        ng.DescricaoDoBotaoDaProvaDoAnoAtual = "Provas do ano " + result.dados.Ano;
                         ng.ProvasDoAnoCorrente = true;
+                        ng.ClassBotaoDaProvaDoAnoAtual = "nao-iniciadas";
                     }
                     else {
                         ng.ListaProvasDoAnoCorrente = null;
-                        ng.DescricaoDoBotaoDaProvaDoAnoAtual = "Não existem provas respondidas no ano " + result.Ano;
+                        ng.DescricaoDoBotaoDaProvaDoAnoAtual = "Não existem provas respondidas no ano " + result.dados.Ano;
                         ng.ProvasDoAnoCorrente = false;
+                        ng.ClassBotaoDaProvaDoAnoAtual = "sem-registros";
                     }
 
                     if (result.dados.ListaProvasDosAnosAnteriores.length > 0) {

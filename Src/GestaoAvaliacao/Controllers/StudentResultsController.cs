@@ -1,4 +1,5 @@
-﻿using GestaoAvaliacao.Entities;
+﻿using GestaoAvaliacao.Dtos.StudentTestAccoplishments;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.DTO.StudentsTestSent;
 using GestaoAvaliacao.Entities.DTO.Tests;
@@ -6,6 +7,7 @@ using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +20,15 @@ namespace GestaoAvaliacao.Controllers
     public class StudentResultsController : Controller
     {
         private readonly IStudentTestAccoplishmentBusiness _studentTestAccoplishmentBusiness;
+        private readonly ITestBusiness _testBusiness;
+        private readonly IStudentCorrectionBusiness _studentCorrectionBusiness;
 
-        public StudentResultsController(IStudentTestAccoplishmentBusiness studentTestAccoplishmentBusiness)
+        public StudentResultsController(IStudentTestAccoplishmentBusiness studentTestAccoplishmentBusiness, ITestBusiness testBusiness,
+            IStudentCorrectionBusiness studentCorrectionBusiness)
         {
             _studentTestAccoplishmentBusiness = studentTestAccoplishmentBusiness;
+            _testBusiness = testBusiness;
+            _studentCorrectionBusiness = studentCorrectionBusiness;
         }
 
         public ActionResult Index()
@@ -34,7 +41,14 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                var dados = await _studentTestAccoplishmentBusiness.GetStudenteResultAsync(SessionFacade.UsuarioLogado.Usuario.pes_id);
+                var dados = new StudentTestTimeResultDto();
+                var electronicTests = await _testBusiness.SearchEletronicTestsByPesId(SessionFacade.UsuarioLogado.Usuario.pes_id);
+                if (electronicTests is null || electronicTests.Count() == 0)
+                {
+                    return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
+                }
+
+                dados = await _studentTestAccoplishmentBusiness.GetStudenteResultAsync(electronicTests);
                 return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

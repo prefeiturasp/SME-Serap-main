@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using GestaoAvaliacao.Dtos.StudentTestAccoplishments;
+using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.DTO.StudentTestAccoplishments;
 using GestaoAvaliacao.Entities.StudentTestAccoplishments;
 using GestaoAvaliacao.IBusiness;
@@ -15,20 +16,18 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
     {
         private readonly IStudentTestAccoplishmentRepository _studentTestAccoplishmentRepository;
         private readonly ITestRepository _testRepository;
-        private readonly ITestBusiness _testBusiness;
         private readonly IStudentCorrectionBusiness _studentCorrectionBusiness;
         private readonly IValidator<StartStudentTestSessionDto> _startStudentTestSessionValidator;
         private readonly IValidator<EndStudentTestSessionDto> _endStudentTestSessionValidator;
         private readonly IValidator<EndStudentTestAccoplishmentDto> _endStudentTestAccoplishmentValidator;
 
         public StudentTestAccoplishmentBusiness(IStudentTestAccoplishmentRepository studentTestAccoplishmentRepository,
-            ITestRepository testRepository, ITestBusiness testBusiness, IStudentCorrectionBusiness studentCorrectionBusiness,
+            ITestRepository testRepository, IStudentCorrectionBusiness studentCorrectionBusiness,
             IValidator<StartStudentTestSessionDto> startStudentTestSessionValidator, IValidator<EndStudentTestSessionDto> endtudentTestSessionValidator,
             IValidator<EndStudentTestAccoplishmentDto> endStudentTestAccoplishmentValidator)
         {
             _studentTestAccoplishmentRepository = studentTestAccoplishmentRepository;
             _testRepository = testRepository;
-            _testBusiness = testBusiness;
             _studentCorrectionBusiness = studentCorrectionBusiness;
             _startStudentTestSessionValidator = startStudentTestSessionValidator;
             _endStudentTestSessionValidator = endtudentTestSessionValidator;
@@ -169,50 +168,64 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
             return studentTestAccoplishment;
         }
 
-        public async Task<StudentTestTimeResultDto> GetStudenteResultAsync(Guid pesId)
+        public async Task<StudentTestTimeResultDto> GetStudenteResultAsync(List<ElectronicTestDTO> electronicTests)
         {
-            var resultado = new StudentTestTimeResultDto();
-            resultado.Ano = DateTime.Now.Year;
+            var resultado = new StudentTestTimeResultDto
+            {
+                Ano = DateTime.Now.Year
+            };
             var listaDeProvasDoAnoCorrente = new List<StudentTestTimeListaDto>();
             var listaDeProvasDosAnosAnteriores = new List<StudentTestTimeListaDto>();
-            var electronicTests = await _testBusiness.SearchEletronicTestsByPesId(pesId);
-            if (electronicTests is null || electronicTests.Count() == 0)
-                return resultado;
 
             var temposDeDuracao = await _studentTestAccoplishmentRepository.GetAsyncByAluId(electronicTests.FirstOrDefault().alu_id);
             foreach (var electronicTest in electronicTests)
             {
                 var tempoDeDuracaoDaProva = temposDeDuracao.FirstOrDefault(o => o.TestId == electronicTest.Id);
                 var studentCorrection = await _studentCorrectionBusiness.GetStudentCorrectionByTestAluId(electronicTest.Id, electronicTest.alu_id, electronicTest.tur_id);
-                var dataDeFinalizacaoDaProva = (studentCorrection?.provaFinalizada ?? false) ?
-                    (tempoDeDuracaoDaProva?.DataDeFinalizacaoDaProva ?? studentCorrection.UpdateDate.ToShortDateString()) :
-                    "Prova em andamento.";
-                if (electronicTest.ApplicationEndDate.Year >= DateTime.Now.Year)
-                {
+                var dataDeFinalizacaoDaProva = "";
+                if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
+                    studentCorrection.provaFinalizada = false;
 
+                if (electronicTest.ApplicationEndDate.Year >= resultado.Ano)
+                {
+                    if ((studentCorrection.provaFinalizada.Value) && studentCorrection.UpdateDate <= new DateTime(2000, 01, 01))
+                        dataDeFinalizacaoDaProva = electronicTest.ApplicationEndDate.ToShortDateString();
+                    else if ((studentCorrection.provaFinalizada.Value) && studentCorrection.UpdateDate > new DateTime(2000, 01, 01))
+                        dataDeFinalizacaoDaProva = studentCorrection.UpdateDate.ToShortTimeString();
+                    else
+                        dataDeFinalizacaoDaProva = "(sem informação).";
+
+                    resultado.ProvasDoANoCorrente = true;
                     listaDeProvasDoAnoCorrente.Add(new StudentTestTimeListaDto
                     {
                         DataDeFinalizacao = dataDeFinalizacaoDaProva,
                         NomeDaProva = electronicTest.Description,
                         Periodo = electronicTest.FrequencyApplicationText,
                         QuantidadeDeItens = electronicTest.NumberItem ?? 0,
-                        TempoDeProva = tempoDeDuracaoDaProva.TempoDeDuracao
+                        TempoDeProva = tempoDeDuracaoDaProva?.TempoDeDuracao ?? "(sem informação)"
                     });
                 }
                 else
                 {
+                    if (studentCorrection.UpdateDate <= new DateTime(2000, 01, 01))
+                        dataDeFinalizacaoDaProva = electronicTest.ApplicationEndDate.ToShortDateString();
+                    else if (studentCorrection.UpdateDate > new DateTime(2000, 01, 01))
+                        dataDeFinalizacaoDaProva = studentCorrection.UpdateDate.ToShortTimeString();
+                    else
+                        dataDeFinalizacaoDaProva = "(sem informação).";
+
                     listaDeProvasDosAnosAnteriores.Add(new StudentTestTimeListaDto
                     {
                         DataDeFinalizacao = dataDeFinalizacaoDaProva,
                         NomeDaProva = electronicTest.Description,
                         Periodo = electronicTest.FrequencyApplicationText,
                         QuantidadeDeItens = electronicTest.NumberItem ?? 0,
-                        TempoDeProva = tempoDeDuracaoDaProva.TempoDeDuracao
+                        TempoDeProva = tempoDeDuracaoDaProva?.TempoDeDuracao ?? "(sem informação) "
                     });
                 }
             }
             resultado.ListaProvasDoAnoCorrente = listaDeProvasDoAnoCorrente;
-            resultado.ListaProvasDoAnoCorrente = listaDeProvasDosAnosAnteriores;
+            resultado.ListaProvasDosAnosAnteriores = listaDeProvasDosAnosAnteriores;
 
             return resultado;
         }

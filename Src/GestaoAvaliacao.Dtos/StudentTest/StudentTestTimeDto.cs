@@ -8,7 +8,7 @@ namespace GestaoAvaliacao.Dtos.StudentTestAccoplishments
 {
     public class StudentTestTimeDto
     {
-        public int TurId { get; set; }
+        public long TurId { get; set; }
         public long TestId { get; set; }
         public string TempoDeDuracao { get; set; }
         public string DataDeFinalizacaoDaProva { get; set; }

@@ -14,7 +14,7 @@ namespace GestaoAvaliacao.Dtos.StudentTestAccoplishments
             ListaProvasDosAnosAnteriores = new List<StudentTestTimeListaDto>();
         }
         public int Ano { get; set; }
-        public bool ProvasDoANoCorrente { get; set; }
+        public bool ProvasDoAnoCorrente { get; set; }
         public List<StudentTestTimeListaDto> ListaProvasDoAnoCorrente { get; set; }
         public List<StudentTestTimeListaDto> ListaProvasDosAnosAnteriores { get; set; }
     }

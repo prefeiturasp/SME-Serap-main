@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Repository.StudentTestAccoplishments
@@ -80,7 +81,7 @@ namespace GestaoAvaliacao.Repository.StudentTestAccoplishments
 
         public Task<List<StudentTestTimeDto>> GetAsyncByAluId(long aluId)
         {
-            return _context.Database.SqlQuery<StudentTestTimeDto>(@"
+            return _context.Database.SqlQuery<StudentTestTimeDto>($@"
                 SELECT 
 	                sta.AluId,
 	                sta.TurId,
@@ -94,7 +95,7 @@ namespace GestaoAvaliacao.Repository.StudentTestAccoplishments
 	                sts.state=1 AND 
 	                sta.state=1 AND 
 	                sts.Situation IN (4,3) AND
-	                sta.AluId = @AluId
+	                sta.AluId = @aluId
 
                 SELECT 
 	                TurId, 
@@ -103,7 +104,7 @@ namespace GestaoAvaliacao.Repository.StudentTestAccoplishments
                     CONVERT(VARCHAR,MAX(EndDate),103) as DataDeFinalizacaoDaProva
                 FROM #TempSessaoDoEstudante
                 GROUP BY TurId, Test_Id
-            ", aluId).ToListAsync();
+            ",new SqlParameter("aluId", aluId)).ToListAsync();
         }
     }
 }

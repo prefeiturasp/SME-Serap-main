@@ -10,7 +10,7 @@
             // CHAMADA ETAPA 1
             'getResultadosDosEstudantes': {
                 method: 'GET',
-                url: base_url('/studentResults/getResultadosDosEstudantes')
+                url: base_url('studentResults/getResultadosDosEstudantes')
             },
         };
 

@@ -90,9 +90,9 @@ namespace GestaoAvaliacao.Controllers
             try
             {
                 var vis_id = (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString());
-                //return vis_id == EnumSYS_Visao.Individual
-                //    ? await LoadByIndividualVisionAsync()
-                //    : await LoadByAdminVisionAsync();
+                return vis_id == EnumSYS_Visao.Individual
+                    ? await LoadByIndividualVisionAsync()
+                    : await LoadByAdminVisionAsync();
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
