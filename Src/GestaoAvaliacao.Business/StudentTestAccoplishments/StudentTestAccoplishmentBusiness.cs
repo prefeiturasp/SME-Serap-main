@@ -195,7 +195,7 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
                     else
                         dataDeFinalizacaoDaProva = "(sem informação).";
 
-                    resultado.ProvasDoANoCorrente = true;
+                    resultado.ProvasDoAnoCorrente = true;
                     listaDeProvasDoAnoCorrente.Add(new StudentTestTimeListaDto
                     {
                         DataDeFinalizacao = dataDeFinalizacaoDaProva,
