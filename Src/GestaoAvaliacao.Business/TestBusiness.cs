@@ -439,7 +439,10 @@ namespace GestaoAvaliacao.Business
 			return tests;
 		}
 
-        private async Task<List<ElectronicTestDTO>> FilterTestsTargetToStudentsWithDeficiencies(Guid pes_id, List<ElectronicTestDTO> tests)
+		public async Task<ElectronicTestDTO> GetElectronicTestByPesIdAndTestId(Guid pes_id, long testId)
+			=> await testRepository.GetElectronicTestByPesIdAndTestId(pes_id, testId);
+
+		private async Task<List<ElectronicTestDTO>> FilterTestsTargetToStudentsWithDeficiencies(Guid pes_id, List<ElectronicTestDTO> tests)
         {
 			var testsTargetToStudentsWithDeficiencies = tests.Where(x => x.TargetToStudentsWithDeficiencies).ToList();
 			if (!testsTargetToStudentsWithDeficiencies.Any()) return tests;

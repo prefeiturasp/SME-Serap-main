@@ -521,6 +521,8 @@
     <Content Include="Assets\js\angular\controllers\answerSheet\batchDetailsController.js" />
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\formCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\listCognitiveCompetenceController.js" />
+    <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsController.js" />
+    <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsResultController.js" />
     <Content Include="Assets\js\angular\controllers\correction\correctionResultController.js" />
     <Content Include="Assets\js\angular\controllers\correction\correctionController.js" />
     <Content Include="Assets\js\angular\controllers\correlatedSkill\formCorrelatedSkillController.js" />
@@ -574,6 +576,8 @@
     <Content Include="Assets\js\angular\directives\_bundle\uploader\video-upload.js" />
     <Content Include="Assets\js\angular\filters\_bundle\capitalize\capitalize.js" />
     <Content Include="Assets\js\angular\models\administrativeUnitType\administrativeUnitTypeModel.js" />
+    <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsApiModel.js" />
+    <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsModel.js" />
     <Content Include="Assets\js\angular\models\electronicTest\electronicTestModel.js" />
     <Content Include="Assets\js\angular\models\knowledgeArea\knowledgeAreaModel.js" />
     <Content Include="Assets\js\angular\models\pageConfiguration\pageConfigurationModel.js" />
@@ -1712,6 +1716,7 @@
     <Content Include="Views\ProvaSP\IndexAppContainer.cshtml" />
     <Content Include="Views\ElectronicTest\HomeAluno.cshtml" />
     <Content Include="Views\StudentResults\Index.cshtml" />
+    <Content Include="Views\StudentResultsGraphics\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1720,6 +1725,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
     <Compile Include="Controllers\StudentResultsController.cs" />
     <Compile Include="Controllers\ProvaSPController.cs" />
     <Compile Include="Hubs\Tests\StudentTestSessionHub.cs" />

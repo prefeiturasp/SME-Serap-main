@@ -61,5 +61,6 @@ namespace GestaoAvaliacao.IBusiness
 		bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id);
 		void ChangeOrder(long idOrigem, long idDestino);
 		IEnumerable<TestResult> GetTestsBySubGroupTcpId(long id, long tcp_id);
+		Task<ElectronicTestDTO> GetElectronicTestByPesIdAndTestId(Guid pes_id, long testId);
 	}
 }
