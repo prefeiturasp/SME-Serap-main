@@ -41,20 +41,20 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                var textoJson = System.IO.File.ReadAllText(Server.MapPath("/") + "file.json");
-                var dados = JsonConvert.DeserializeObject<StudentTestTimeResultDto>(textoJson);
+                //var textoJson = System.IO.File.ReadAllText(Server.MapPath("/") + "file.json");
+                //var dados = JsonConvert.DeserializeObject<StudentTestTimeResultDto>(textoJson);
 
-                return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
-
-                //var dados = new StudentTestTimeResultDto();
-                //var electronicTests = await _testBusiness.SearchEletronicTestsByPesId(SessionFacade.UsuarioLogado.Usuario.pes_id);
-                //if (electronicTests is null || electronicTests.Count() == 0)
-                //{
-                //    return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
-                //}
-
-                //dados = await _studentTestAccoplishmentBusiness.GetStudenteResultAsync(electronicTests);
                 //return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
+
+                var dados = new StudentTestTimeResultDto();
+                var electronicTests = await _testBusiness.SearchEletronicTestsByPesId(SessionFacade.UsuarioLogado.Usuario.pes_id);
+                if (electronicTests is null || electronicTests.Count() == 0)
+                {
+                    return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
+                }
+
+                dados = await _studentTestAccoplishmentBusiness.GetStudenteResultAsync(electronicTests);
+                return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

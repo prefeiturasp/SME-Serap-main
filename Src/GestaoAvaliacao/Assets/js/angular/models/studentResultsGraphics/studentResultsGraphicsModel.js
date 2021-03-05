@@ -16,7 +16,11 @@
 	        'getDataTest': {
 	            method: 'GET',
 				url: base_url('StudentResultsGraphics/GetDataTest')
-	        },
+			},
+			'getTests':{
+				method: 'GET',
+				url: base_url('StudentResultsGraphics/GetTests')
+			}
 		};
     
 		return $resource('', {}, model);

@@ -62,5 +62,7 @@ namespace GestaoAvaliacao.IBusiness
 		void ChangeOrder(long idOrigem, long idDestino);
 		IEnumerable<TestResult> GetTestsBySubGroupTcpId(long id, long tcp_id);
 		Task<ElectronicTestDTO> GetElectronicTestByPesIdAndTestId(Guid pes_id, long testId);
+
+		Task<List<ElectronicTestDTO>> GetTestsByPesId(Guid pes_id);
 	}
 }

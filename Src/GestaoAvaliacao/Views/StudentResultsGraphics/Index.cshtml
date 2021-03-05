@@ -18,7 +18,7 @@
                     <div class="dadosResumo">
                         <div style="max-width: 260px;">
                             <i class="material-icons">group</i>
-                            <span>{{testInformation.Team.Name}}</span>
+                            <span>{{testInformation.Turma}}</span>
                         </div>
                         <div>
                             <i class="material-icons">school</i>
@@ -38,15 +38,17 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <form class="menu-lateral">
-                                <select>
-                                    <option value="684">2019</option>
-                                    <option value="684">2020</option>
-                                    <option value="684">2021</option>
+                                <select ng-model="testInformation.Ano" ng-change="loadByTests()"
+                                        ng-options="ano as ano for ano in testInformation.Anos"
+                                        >
                                 </select>
-                                <select>
-                                    <option value="684">Prova 684</option>
-                                    <option value="684">Prova 685</option>
-                                    <option value="684">Prova 686</option>
+                                <br />
+                                <select ng-model="testInformation.TestId" 
+                                        ng-options="test.Id as test.Description for test in testInformation.Tests"
+                                        ng-change="loadGraficoDeDesempenho()"
+                                        ng-title-propertie="Description"
+                                        ng-title-index="1">
+                                    <option value="">--Selecione uma prova--</option>
                                 </select>
                             </form>
                         </div>
@@ -58,7 +60,7 @@
             </div>
         </div>
 
-        <div class="cards maxWidth" ng-if="!list.Students">
+        <div class="cards maxWidth" ng-if="!percentualDeAcerto">
             <p class="nresultados">Nenhum resultado encontrado.</p>
         </div>
     </div>

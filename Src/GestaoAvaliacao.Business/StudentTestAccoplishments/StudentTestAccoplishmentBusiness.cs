@@ -198,6 +198,10 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
                     resultado.ProvasDoAnoCorrente = true;
                     listaDeProvasDoAnoCorrente.Add(new StudentTestTimeListaDto
                     {
+                        Id = electronicTest.Id,
+                        TurId = electronicTest.tur_id,
+                        EscId = electronicTest.esc_id,
+                        DreId = electronicTest.dre_id,
                         DataDeFinalizacao = dataDeFinalizacaoDaProva,
                         NomeDaProva = electronicTest.Description,
                         Periodo = electronicTest.FrequencyApplicationText,
@@ -207,20 +211,28 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
                 }
                 else
                 {
-                    if (studentCorrection.UpdateDate <= new DateTime(2000, 01, 01))
+                    if (studentCorrection == null || 
+                        (studentCorrection.UpdateDate <= new DateTime(2000, 01, 01) 
+                        && electronicTest.ApplicationEndDate > new DateTime(2000, 01, 01))
+                    )
                         dataDeFinalizacaoDaProva = electronicTest.ApplicationEndDate.ToShortDateString();
-                    else if (studentCorrection.UpdateDate > new DateTime(2000, 01, 01))
+                    else if (studentCorrection != null && studentCorrection.UpdateDate > new DateTime(2000, 01, 01))
                         dataDeFinalizacaoDaProva = studentCorrection.UpdateDate.ToShortTimeString();
                     else
                         dataDeFinalizacaoDaProva = "(sem informação).";
 
                     listaDeProvasDosAnosAnteriores.Add(new StudentTestTimeListaDto
                     {
+                        Id = electronicTest.Id,
+                        TurId = electronicTest.tur_id,
+                        EscId = electronicTest.esc_id,
+                        DreId = electronicTest.dre_id,
                         DataDeFinalizacao = dataDeFinalizacaoDaProva,
                         NomeDaProva = electronicTest.Description,
                         Periodo = electronicTest.FrequencyApplicationText,
                         QuantidadeDeItens = electronicTest.NumberItem ?? 0,
-                        TempoDeProva = tempoDeDuracaoDaProva?.TempoDeDuracao ?? "(sem informação) "
+                        TempoDeProva = tempoDeDuracaoDaProva?.TempoDeDuracao ?? "(sem informação) ",
+                        Ano = electronicTest.ApplicationEndDate.Year
                     });
                 }
             }

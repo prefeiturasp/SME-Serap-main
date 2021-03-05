@@ -13,5 +13,10 @@ namespace GestaoAvaliacao.Dtos.StudentTestAccoplishments
         public string DataDeFinalizacao { get; set; }
         public string TempoDeProva {get; set; }
         public int QuantidadeDeItens { get; set; }
+        public long Id { get; set; }
+        public Guid DreId { get; set; }
+        public int EscId { get; set; }
+        public long TurId { get; set; }
+        public int Ano { get; set; }
     }
 }

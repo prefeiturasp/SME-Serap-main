@@ -29,10 +29,12 @@ namespace GestaoAvaliacao.Controllers
         private readonly ICorrectionResultsBusiness correctionResultsBusiness;
         private readonly ITestSectionStatusCorrectionBusiness testSectionStatusCorrectionBusiness;
         private readonly ITestPermissionBusiness testPermissionBusiness;
+        private readonly IACA_AlunoBusiness acaAlunoBusiness;
 
         public StudentResultsGraphicsController(IESC_EscolaBusiness escolaBusiness, ITUR_TurmaBusiness turmaBusiness,
             ITestBusiness testBusiness, IItemTypeBusiness itemTypeBusiness, ICorrectionBusiness correctionBusiness,
-            ICorrectionResultsBusiness correctionResultsBusiness, ITestSectionStatusCorrectionBusiness testSectionStatusCorrectionBusiness, ITestPermissionBusiness testPermissionBusiness)
+            ICorrectionResultsBusiness correctionResultsBusiness, ITestSectionStatusCorrectionBusiness testSectionStatusCorrectionBusiness, 
+            ITestPermissionBusiness testPermissionBusiness, IACA_AlunoBusiness acaAlunoBusiness)
         {
             this.escolaBusiness = escolaBusiness;
             this.turmaBusiness = turmaBusiness;
@@ -42,20 +44,21 @@ namespace GestaoAvaliacao.Controllers
             this.correctionResultsBusiness = correctionResultsBusiness;
             this.testSectionStatusCorrectionBusiness = testSectionStatusCorrectionBusiness;
             this.testPermissionBusiness = testPermissionBusiness;
+            this.acaAlunoBusiness = acaAlunoBusiness;
         }
 
         // GET: Correction Result
-        public ActionResult Index(long test_id, long team_id)
+        public ActionResult Index(int Ano, long TestId)
         {
             return View();
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetDataTest(long test_id)
+        public async Task<JsonResult> GetDataTest(long TestId, int Ano)
         {
             try
             {
-                var permission = await testPermissionBusiness.GetPermissionByTest(test_id, SessionFacade.UsuarioLogado.Grupo.gru_id);
+                var permission = await testPermissionBusiness.GetPermissionByTest(TestId, SessionFacade.UsuarioLogado.Grupo.gru_id);
                 var permissao = permission.FirstOrDefault();
                 if (permissao != null)
                 {
@@ -65,20 +68,28 @@ namespace GestaoAvaliacao.Controllers
                     }
                 }
 
-                var electronicTests = await testBusiness.GetElectronicTestByPesIdAndTestId(SessionFacade.UsuarioLogado.Usuario.pes_id, test_id);
+                var electronicTests = await testBusiness.GetElectronicTestByPesIdAndTestId(SessionFacade.UsuarioLogado.Usuario.pes_id, TestId);
+                var tests = await testBusiness.GetTestsByPesId(SessionFacade.UsuarioLogado.Usuario.pes_id);
 
                 if (electronicTests != null)
                 {
                     var dados = new
                     {
+                        Ano = Ano,
+                        AnosDeAplicacaoDaProva = tests.Select(s => s.AnoDeAplicacaoDaProva).Distinct().ToList(),
+                        Tests = tests.Where(t => t.AnoDeAplicacaoDaProva == Ano).Select(s => new { s.Id, s.Description }).ToList(),
                         testName = electronicTests.Description,
                         frequencyApplication = electronicTests.FrequencyApplicationText,
                         testDiscipline = electronicTests.Disciplina,
                         testId = electronicTests.Id,
                         schoolName = electronicTests.esc_nome,
+                        Turma = electronicTests.Turma,
+                        TurId = electronicTests.tur_id,
+                        EscId = electronicTests.esc_id,
+                        DreId = electronicTests.dre_id
                     };
 
-                    return Json(new { success = true, dados}, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -93,34 +104,60 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetPercentualDeAcerto(long test_id)
+        public async Task<JsonResult> GetTests(int Ano)
+        {
+            var dados = await testBusiness.GetTestsByPesId(SessionFacade.UsuarioLogado.Usuario.pes_id);
+            dados = dados.Where(d => d.AnoDeAplicacaoDaProva == Ano).ToList();
+            return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetPercentualDeAcerto(long TestId, int EscId, Guid DreId, int TurId)
         {
             try
             {
+                //var percentualDeAcerto = new PercentualDeAcertoDTO
+                //{
+                //    PercentualDeAcertoAluno = 20,
+                //    PercentualDeAcertoTurma = 30,
+                //    PercentualDeAcertoDRE = 40,
+                //    PercentualDeAcertoSME = 50,
+                //};
+                var testAvgPercentages = correctionResultsBusiness.
+                    GetTestAveragesHitsAndPercentagesByTest(TestId, EscId, DreId, TurId, null);
+
+                var aluno = acaAlunoBusiness.GetStudentByPesId(SessionFacade.UsuarioLogado.Usuario.pes_id);
+
+                var peformanceAluno = await correctionResultsBusiness.GetStudentTestInformationByTestAndStudent(TestId, aluno.alu_id);
+
                 var percentualDeAcerto = new PercentualDeAcertoDTO
                 {
-                    PercentualDeAcertoAluno = 20,
-                    PercentualDeAcertoTurma = 30,
-                    PercentualDeAcertoDRE = 40,
-                    PercentualDeAcertoSME = 50,
+                    PercentualDeAcertoAluno = peformanceAluno?.Avg ?? 0,
+                    PercentualDeAcertoTurma = testAvgPercentages?.AvgTeam ?? 0,
+                    PercentualDeAcertoDRE = testAvgPercentages?.AvgDRE ?? 0,
+                    PercentualDeAcertoSME = testAvgPercentages?.AvgSME ?? 0,
                 };
 
-                return Json(new { success = true, percentualDeAcerto }, JsonRequestBehavior.AllowGet);
+                if (testAvgPercentages != null)
+                {
+                    return Json(new { success = true, percentualDeAcerto }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                    return Json(new { success = false, type = ValidateType.alert.ToString(), data = "Não foi possível buscar as médias dessa avaliação" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar os alunos da turma." }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar buscar as médias da avaliação." }, JsonRequestBehavior.AllowGet);
             }
-
         }
     }
 
-    public class PercentualDeAcertoDTO 
+    public class PercentualDeAcertoDTO
     {
-        public int PercentualDeAcertoAluno { get; set; }
-        public int PercentualDeAcertoTurma { get; set; }
-        public int PercentualDeAcertoDRE { get; set; }
-        public int PercentualDeAcertoSME { get; set; }
+        public double PercentualDeAcertoAluno { get; set; }
+        public double PercentualDeAcertoTurma { get; set; }
+        public double PercentualDeAcertoDRE { get; set; }
+        public double PercentualDeAcertoSME { get; set; }
     }
 }

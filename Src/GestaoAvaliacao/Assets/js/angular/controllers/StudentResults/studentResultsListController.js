@@ -25,6 +25,7 @@
             ng.ClassBotaoDaProvaDoAnoAtual = "nao-iniciadas";
             ng.DescricaoDoBotaoDaProvaDoAnoAtual = null;
             ng.admin = getCurrentVision() != EnumVisions.INDIVIDUAL;
+            ng.Ano = null;
             ng.load();
             configAccordion();
         };
@@ -33,6 +34,8 @@
 
             studentResultsListModel.getResultadosDosEstudantes(function (result) {
                 if (result.success) {
+                    ng.Ano = result.dados.Ano;
+
                     if (result.dados.ListaProvasDoAnoCorrente.length > 0) {
                         ng.ListaProvasDoAnoCorrente = result.dados.ListaProvasDoAnoCorrente;
                         ng.DescricaoDoBotaoDaProvaDoAnoAtual = "Provas do ano " + result.dados.Ano;
@@ -57,6 +60,16 @@
                     $notification[result.type ? result.type : 'error'](result.message);
                 }
             });
+        };
+
+        ng.abrirGraficoDaProva = function(ano, testeId) {
+            redirectToList("/StudentResultsGraphics/Index?Ano="+ano+"&TestId="+testeId);
+        }
+
+        function redirectToList(destiny) {
+            $timeout(function __invalidTestId() {
+                $window.location.href = destiny;
+            }, 1000);
         };
 
         ng.getListLength = function (list) {

@@ -27,5 +27,10 @@ namespace GestaoAvaliacao.Entities.DTO
         public string esc_nome { get; set; }
 
         public string Disciplina { get; set; }
+        public string Turma { get; set; }
+
+        public int AnoDeAplicacaoDaProva { get; set; }
+
+        public Guid dre_id { get; set; }
     }
 }

@@ -55,7 +55,7 @@
          * @return
          */
         $scope.arrivingStudentResponse = function __arrivingStudentResponse() {
-            $window.location.href = '/StudentsResult/Index';
+            $window.location.href = '/StudentResults/Index';
         };
 
         /**
@@ -74,30 +74,21 @@
                 FrequencyApplication: informations.frequencyApplication,
                 Discipline: informations.testDiscipline !== undefined && informations.testDiscipline !== null ? informations.testDiscipline : "Sem disciplina",
                 TestId: informations.testId,
-                Team: informations.team,
+                TurId: informations.TurId,
+                EscId: informations.EscId,
+                DreId: informations.DreId,
+                Turma: informations.Turma,
+                Ano: informations.Ano,
                 SchoolName: informations.schoolName,
-                Token: informations.token,
-                NumberAnswer: informations.numberAnswer === undefined || informations.numberAnswer === null ? 4 : informations.numberAnswer,
-                blockCorrection: informations.blockCorrection,
-                blockAccess: informations.blockAccess
+                Tests: informations.Tests,
+                Anos: informations.AnosDeAplicacaoDaProva
             };
         };
 
 
-        /**
-		 * @function Configuração das listas
-		 * @name config
-		 * @namespace StudentResultsGraphicsResultController
-		 * @memberOf Controller
-		 * @private
-		 * @param
-		 * @return
-		 */
         function config() {
 
             $scope.percentualDeAcerto = {};
-            $scope.listYear = [];
-            $scope.listTests = [];
             $scope.chart1 = {
                 visible: false,
                 chart: {}
@@ -115,11 +106,13 @@
 		 * @return
 		 */
         function getPercentualDeAcerto(_callback) {
-
             var params = {
-                'test_id': ($scope.testInformation.TestId !== undefined || $scope.testInformation.TestId !== null) ? $scope.testInformation.TestId : 0,
+                'TestId': ($scope.testInformation.TestId !== undefined || $scope.testInformation.TestId !== null) ? $scope.testInformation.TestId : 0,
+                'TurId': $scope.testInformation.TurId,
+                'EscId': $scope.testInformation.EscId,
+                'DreId': $scope.testInformation.DreId
             };
-
+            
             StudentResultsGraphicsModel.getPercentualDeAcerto(params, function (result) {
 
                 if (result.success) {
@@ -137,11 +130,42 @@
             });
         };
 
+        function loadByTests() {
+            var canvas = document.getElementById('gfcPerformance');
+            var ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            config();
+
+            var params = {
+                'Ano': $scope.testInformation ? $scope.testInformation.Ano : ($scope.params.Ano ? $scope.params.Ano : 0),
+            };
+            StudentResultsGraphicsModel.getTests(params, function (result) {
+
+                if (result.success) {
+                    if (result.dados === null || result.dados === undefined)
+                        return;
+
+                    $scope.testInformation.Tests = result.dados;
+                }
+                else {
+                    $notification[result.type ? result.type : 'error'](result.message);
+                }
+            });
+        }
+        $scope.loadByTests = loadByTests;
+
+        function loadGraficoDeDesempenho(test) {
+            debugger;
+            var testId = ($scope.testInformation.TestId !== undefined || $scope.testInformation.TestId !== null) ? $scope.testInformation.TestId : 0;
+            //if (testId && testId > 0)
+            //    getPercentualDeAcerto($scope.carregaGrafico_Desempenho);
+        }
+        $scope.loadGraficoDeDesempenho = loadGraficoDeDesempenho;
+
         /*
           @function Montar gráfico com percentual de acerto
         */
         $scope.carregaGrafico_Desempenho = function () {
-            
             if ($scope.percentualDeAcerto != null) {
 
                 var labelsPercentualDeAcerto = ["Aluno", "Turma", "DRE", "SME"];
@@ -155,9 +179,13 @@
                     datasets: [
                         {
                             type: 'horizontalBar',
-                            label: 'Percentual de acerto',
                             data: perncetualDeAcerto,
-                            backgroundColor: '#5c92d8',
+                            backgroundColor: [
+                                "#5c92d8",
+                                "orange",
+                                "green",
+                                "magenta"
+                            ],
                             xAxisID: 'x-axis-0'
                         },
                     ],
@@ -182,7 +210,7 @@
                             responsive: false,
                             maintainAspectRatio: false,
                             legend: {
-                                onClick: function (event, legendItem) { }
+                                display: false
                             },
                             scales: {
                                 xAxes: [{
@@ -226,9 +254,8 @@
             $scope.params = $util.getUrlParams();
 
             var params = {
-                'test_id': $scope.params.test_id ? $scope.params.test_id : 0,
-                'team_id': 324748,
-                'result': true
+                'TestId': $scope.params.TestId ? $scope.params.TestId : 0,
+                'Ano': $scope.testInformation ? $scope.testInformation.Ano : ($scope.params.Ano ? $scope.params.Ano : 0),
             };
 
             $scope.params = params;
@@ -254,7 +281,6 @@
 		 * @return
 		 */
         $scope.getDataTest = function __getDataTest(dadosDaProva) {
-
             if (dadosDaProva === undefined || dadosDaProva === null) {
                 $notification.alert("Não foi possível obter as permissões de acesso a página.");
                 return;
@@ -264,13 +290,12 @@
 
             if ($scope.params === undefined ||
                 $scope.testInformation.TestId === undefined || $scope.testInformation.TestId === null ||
-                $scope.params.test_id === undefined || $scope.params.team_id === undefined) {
+                $scope.params.TestId === undefined) {
                 $notification.alert("Id da prova inválido.");
                 return;
             }
 
             config();
-            
             getPercentualDeAcerto($scope.carregaGrafico_Desempenho);
         };
 

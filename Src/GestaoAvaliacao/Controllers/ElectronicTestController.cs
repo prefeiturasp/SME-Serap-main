@@ -93,7 +93,6 @@ namespace GestaoAvaliacao.Controllers
                 return vis_id == EnumSYS_Visao.Individual
                     ? await LoadByIndividualVisionAsync()
                     : await LoadByAdminVisionAsync();
-                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

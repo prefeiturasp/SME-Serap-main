@@ -438,6 +438,8 @@ namespace GestaoAvaliacao.Business
 			tests = await FilterTestsTargetToStudentsWithDeficiencies(pes_id, tests);
 			return tests;
 		}
+		public async Task<List<ElectronicTestDTO>> GetTestsByPesId(Guid pes_id)
+		=> await testRepository.GetTestsByPesId(pes_id);
 
 		public async Task<ElectronicTestDTO> GetElectronicTestByPesIdAndTestId(Guid pes_id, long testId)
 			=> await testRepository.GetElectronicTestByPesIdAndTestId(pes_id, testId);

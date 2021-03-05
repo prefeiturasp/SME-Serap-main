@@ -54,5 +54,7 @@ namespace GestaoAvaliacao.IRepository
         TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
 
 		Task<ElectronicTestDTO> GetElectronicTestByPesIdAndTestId(Guid pes_id, long testId);
+
+		Task<List<ElectronicTestDTO>> GetTestsByPesId(Guid pes_id);
 	}
 }
