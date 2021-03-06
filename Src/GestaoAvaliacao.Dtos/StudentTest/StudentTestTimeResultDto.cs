@@ -17,5 +17,7 @@ namespace GestaoAvaliacao.Dtos.StudentTestAccoplishments
         public bool ProvasDoAnoCorrente { get; set; }
         public List<StudentTestTimeListaDto> ListaProvasDoAnoCorrente { get; set; }
         public List<StudentTestTimeListaDto> ListaProvasDosAnosAnteriores { get; set; }
+
+        public List<int> ListaDeAnos { get; set; }
     }
 }
