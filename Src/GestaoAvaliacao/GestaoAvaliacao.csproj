@@ -1717,6 +1717,7 @@
     <Content Include="Views\ElectronicTest\HomeAluno.cshtml" />
     <Content Include="Views\StudentResults\Index.cshtml" />
     <Content Include="Views\StudentResultsGraphics\Index.cshtml" />
+    <Content Include="Views\StudentResults\Index_BKP.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1174,7 +1174,11 @@ namespace GestaoAvaliacao.Repository
                                                 ELSE D.[Description]
                                                 END 
                     AS Description,
-                    YEAR(T.ApplicationEndDate) AnoDeAplicacaoDaProva
+                    YEAR(T.ApplicationEndDate) AnoDeAplicacaoDaProva,
+                    mtu.tur_id,
+                    mtu.esc_id,
+                    esc.uad_idSuperiorGestao as dre_id,
+                    TT.TargetToStudentsWithDeficiencies
                 FROM Test AS T WITH(NOLOCK)
                 INNER JOIN TestType AS TT WITH(NOLOCK)
 	                ON TT.Id = T.TestType_Id

@@ -174,6 +174,7 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
             {
                 Ano = DateTime.Now.Year
             };
+            var listaDeAnos = new List<int>();
             var listaDeProvasDoAnoCorrente = new List<StudentTestTimeListaDto>();
             var listaDeProvasDosAnosAnteriores = new List<StudentTestTimeListaDto>();
 
@@ -182,6 +183,13 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
             {
                 var tempoDeDuracaoDaProva = temposDeDuracao.FirstOrDefault(o => o.TestId == electronicTest.Id);
                 var studentCorrection = await _studentCorrectionBusiness.GetStudentCorrectionByTestAluId(electronicTest.Id, electronicTest.alu_id, electronicTest.tur_id);
+                if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
+                    studentCorrection.provaFinalizada = false;
+
+                if ((studentCorrection == null && electronicTest.quantDiasRestantes > 0) ||
+                    (studentCorrection != null && !studentCorrection.provaFinalizada.Value && electronicTest.quantDiasRestantes > 0))
+                    continue;
+
                 var dataDeFinalizacaoDaProva = "";
                 if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
                     studentCorrection.provaFinalizada = false;
@@ -206,13 +214,17 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
                         NomeDaProva = electronicTest.Description,
                         Periodo = electronicTest.FrequencyApplicationText,
                         QuantidadeDeItens = electronicTest.NumberItem ?? 0,
-                        TempoDeProva = tempoDeDuracaoDaProva?.TempoDeDuracao ?? "(sem informação)"
+                        TempoDeProva = tempoDeDuracaoDaProva?.TempoDeDuracao ?? "(sem informação)",
+                        Ano = electronicTest.ApplicationEndDate.Year
                     });
+
+                    if (!listaDeAnos.Any(s => s == electronicTest.ApplicationEndDate.Year))
+                        listaDeAnos.Add(electronicTest.ApplicationEndDate.Year);
                 }
                 else
                 {
-                    if (studentCorrection == null || 
-                        (studentCorrection.UpdateDate <= new DateTime(2000, 01, 01) 
+                    if (studentCorrection == null ||
+                        (studentCorrection.UpdateDate <= new DateTime(2000, 01, 01)
                         && electronicTest.ApplicationEndDate > new DateTime(2000, 01, 01))
                     )
                         dataDeFinalizacaoDaProva = electronicTest.ApplicationEndDate.ToShortDateString();
@@ -234,8 +246,12 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
                         TempoDeProva = tempoDeDuracaoDaProva?.TempoDeDuracao ?? "(sem informação) ",
                         Ano = electronicTest.ApplicationEndDate.Year
                     });
+
+                    if (!listaDeAnos.Any(s => s == electronicTest.ApplicationEndDate.Year))
+                        listaDeAnos.Add(electronicTest.ApplicationEndDate.Year);
                 }
             }
+            resultado.ListaDeAnos = listaDeAnos.OrderByDescending(o => o).ToList();
             resultado.ListaProvasDoAnoCorrente = listaDeProvasDoAnoCorrente;
             resultado.ListaProvasDosAnosAnteriores = listaDeProvasDosAnosAnteriores;
 

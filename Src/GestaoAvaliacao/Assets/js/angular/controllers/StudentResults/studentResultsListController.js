@@ -12,9 +12,9 @@
         .controller("StudentResultsController", StudentResultsController);
 
 
-    StudentResultsController.$inject = ['$scope', '$notification', '$location', '$anchorScroll', '$util', '$timeout', '$window', 'studentResultsListModel'];
+    StudentResultsController.$inject = ['$scope', '$notification', '$timeout', '$window', 'studentResultsListModel'];
 
-    function StudentResultsController(ng, $notification, $location, $anchorScroll, $util, $timeout, $window, studentResultsListModel) {
+    function StudentResultsController(ng, $notification, $timeout, $window, studentResultsListModel) {
 
         function Init() {
             $notification.clear();
@@ -26,6 +26,7 @@
             ng.DescricaoDoBotaoDaProvaDoAnoAtual = null;
             ng.admin = getCurrentVision() != EnumVisions.INDIVIDUAL;
             ng.Ano = null;
+            ng.ListaDeAnos = null;
             ng.load();
             configAccordion();
         };
@@ -35,6 +36,7 @@
             studentResultsListModel.getResultadosDosEstudantes(function (result) {
                 if (result.success) {
                     ng.Ano = result.dados.Ano;
+                    ng.ListaDeAnos = result.dados.ListaDeAnos;
 
                     if (result.dados.ListaProvasDoAnoCorrente.length > 0) {
                         ng.ListaProvasDoAnoCorrente = result.dados.ListaProvasDoAnoCorrente;
@@ -76,6 +78,18 @@
             if (list == null) return 0;
             if (list === undefined) return 0;
             return list.length;
+        }
+
+        ng.clickAccordion = function clickAccordion(classe) {
+            var acc = document.getElementById("accordion " + classe);
+
+            acc.classList.toggle("active");
+            var panel = acc.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
         }
 
         function configAccordion() {

@@ -4,11 +4,11 @@
 
     //~SETTER
     angular
-		.module('appMain', ['services', 'filters', 'directives']);
+        .module('appMain', ['services', 'filters', 'directives']);
 
     //~GETTER
     angular
-		.module('appMain')
+        .module('appMain')
         .controller("StudentResultsGraphicsResultController", StudentResultsGraphicsResultController);
 
 
@@ -96,15 +96,6 @@
         };
 
 
-        /**
-		 * @function Carregar percentual de acerto
-		 * @name getPercentualDeAcerto
-		 * @namespace StudentResultsGraphicsResultController
-		 * @memberOf Controller
-		 * @private
-		 * @param
-		 * @return
-		 */
         function getPercentualDeAcerto(_callback) {
             var params = {
                 'TestId': ($scope.testInformation.TestId !== undefined || $scope.testInformation.TestId !== null) ? $scope.testInformation.TestId : 0,
@@ -112,7 +103,7 @@
                 'EscId': $scope.testInformation.EscId,
                 'DreId': $scope.testInformation.DreId
             };
-            
+
             StudentResultsGraphicsModel.getPercentualDeAcerto(params, function (result) {
 
                 if (result.success) {
@@ -130,12 +121,15 @@
             });
         };
 
-        function loadByTests() {
+        function clearGraphic() {
             var canvas = document.getElementById('gfcPerformance');
             var ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             config();
+        }
 
+        function loadByTests() {
+            clearGraphic();
             var params = {
                 'Ano': $scope.testInformation ? $scope.testInformation.Ano : ($scope.params.Ano ? $scope.params.Ano : 0),
             };
@@ -154,11 +148,27 @@
         }
         $scope.loadByTests = loadByTests;
 
-        function loadGraficoDeDesempenho(test) {
-            debugger;
-            var testId = ($scope.testInformation.TestId !== undefined || $scope.testInformation.TestId !== null) ? $scope.testInformation.TestId : 0;
-            //if (testId && testId > 0)
-            //    getPercentualDeAcerto($scope.carregaGrafico_Desempenho);
+        function loadGraficoDeDesempenho() {
+            clearGraphic();
+            var testId = $scope.testInformation.TestId;
+            if (testId && testId > 0) {
+                var resultado = $scope.testInformation.Tests.find(e => e.Id == testId);
+                if (resultado) {
+                    $scope.testInformation.TestId = resultado.Id;
+                    $scope.testInformation.TurId = resultado.tur_id;
+                    $scope.testInformation.EscId = resultado.esc_id;
+                    $scope.testInformation.DreId = resultado.dre_id;
+                    $scope.testInformation.Ano = resultado.AnoDeAplicacaoDaProva;
+                }
+
+                var params = {
+                    'TestId': $scope.testInformation.TestId,
+                    'Ano': $scope.testInformation.Ano
+                };
+                getDadosDoEstudante(params);
+
+                //getPercentualDeAcerto($scope.carregaGrafico_Desempenho);
+            }
         }
         $scope.loadGraficoDeDesempenho = loadGraficoDeDesempenho;
 
@@ -252,12 +262,14 @@
 
         $scope.init = function __init() {
             $scope.params = $util.getUrlParams();
-
             var params = {
                 'TestId': $scope.params.TestId ? $scope.params.TestId : 0,
                 'Ano': $scope.testInformation ? $scope.testInformation.Ano : ($scope.params.Ano ? $scope.params.Ano : 0),
             };
+            getDadosDoEstudante(params);
+        };
 
+        function getDadosDoEstudante(params) {
             $scope.params = params;
 
             StudentResultsGraphicsModel.getDataTest(params, function (result) {
@@ -269,17 +281,8 @@
                     $timeout(function __redirectError() { $window.history.back(); }, 1300);
                 }
             });
-        };
+        }
 
-        /**
-		 * @function Obter objeto inicial para configuração da page.
-		 * @name getDataTest
-		 * @namespace StudentResultsGraphicsResultController
-		 * @memberOf Controller
-		 * @public
-		 * @param
-		 * @return
-		 */
         $scope.getDataTest = function __getDataTest(dadosDaProva) {
             if (dadosDaProva === undefined || dadosDaProva === null) {
                 $notification.alert("Não foi possível obter as permissões de acesso a página.");
@@ -299,28 +302,10 @@
             getPercentualDeAcerto($scope.carregaGrafico_Desempenho);
         };
 
-        /**
-		 * @function Chamado após tags html serem lidas pelo browser. 
-		 * @name __postHtmlCompile
-		 * @namespace StudentResultsGraphicsResultController
-		 * @memberOf Controller
-		 * @private
-		 * @param
-		 * @return
-		 */
         angular.element(document).ready(function __postHtmlCompile() {
 
         });
 
-        /**
-		 * @function Chamado após angular ser 'digerido' (diggest). 
-		 * @name __cycleAngular
-		 * @namespace StudentResultsGraphicsResultController
-		 * @memberOf Controller
-		 * @private
-		 * @param
-		 * @return
-		 */
         var hasRegistered = false;
         $scope.$watch(function __cycleAngular() {
             if (hasRegistered) return;

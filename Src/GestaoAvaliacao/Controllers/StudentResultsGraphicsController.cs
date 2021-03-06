@@ -70,6 +70,7 @@ namespace GestaoAvaliacao.Controllers
 
                 var electronicTests = await testBusiness.GetElectronicTestByPesIdAndTestId(SessionFacade.UsuarioLogado.Usuario.pes_id, TestId);
                 var tests = await testBusiness.GetTestsByPesId(SessionFacade.UsuarioLogado.Usuario.pes_id);
+                var testsFiltereds = tests.Where(d => d.AnoDeAplicacaoDaProva == Ano).ToList();
 
                 if (electronicTests != null)
                 {
@@ -77,7 +78,7 @@ namespace GestaoAvaliacao.Controllers
                     {
                         Ano = Ano,
                         AnosDeAplicacaoDaProva = tests.Select(s => s.AnoDeAplicacaoDaProva).Distinct().ToList(),
-                        Tests = tests.Where(t => t.AnoDeAplicacaoDaProva == Ano).Select(s => new { s.Id, s.Description }).ToList(),
+                        Tests = testsFiltereds,
                         testName = electronicTests.Description,
                         frequencyApplication = electronicTests.FrequencyApplicationText,
                         testDiscipline = electronicTests.Disciplina,

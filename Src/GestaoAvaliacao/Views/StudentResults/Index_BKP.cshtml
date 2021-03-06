@@ -13,7 +13,7 @@
                     <button class="accordion-test {{ClassBotaoDaProvaDoAnoAtual}}">
                         <i ng-if="!ProvasDoAnoCorrente" class="fa fa-exclamation-triangle"></i> {{DescricaoDoBotaoDaProvaDoAnoAtual}}
                     </button>
-                    <div ng-if="ProvasDoAnoCorrente" class="accordion-test-panel-group">
+                    <div ng-if="ProvasDoAnoCorrente" class="accordion-test-panel-group" >
                         <div class="table-responsive">
                             <div class="well well-large teste">
                                 <table class="table table-hover">
@@ -30,23 +30,19 @@
                     </div>
 
                     @*Provas dos anos anteriores*@
-                    <div ng-repeat="ano1 in ListaDeAnos">
-                        <button id="accordion {{ano1}}" class="accordion-test {{ano1}} finalizadas" ng-click="clickAccordion(ano1)">Provas do ano {{ano1}}</button>
-                        <div class="accordion-test-panel-group">
-                            <div class="table-responsive">
-                                <div class="well well-large teste">
-                                    <table class="table table-hover">
-                                        <tbody>
-                                            <tr class="" ng-repeat="provaDoAnoAnterior in ListaProvasDosAnosAnteriores" 
-                                                ng-if="provaDoAnoAnterior.Ano == ano1" 
-                                                ng-click="abrirGraficoDaProva(provaDoAnoAnterior.Ano,provaDoAnoAnterior.Id)">
-                                                <td><strong class="">{{provaDoAnoAnterior.NomeDaProva}} </strong>| {{provaDoAnoAnterior.Periodo}}</td>
-                                                <td class=""><strong class="">Finalizado no dia:</strong> <br />{{provaDoAnoAnterior.DataDeFinalizacao}}</td>
-                                                <td class=""><strong class="">Tempo de duração:</strong> <br /> {{provaDoAnoAnterior.TempoDeProva}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                    <button class="accordion-test finalizadas">Provas dos anos anteriores</button>
+                    <div class="accordion-test-panel-group">
+                        <div class="table-responsive">
+                            <div class="well well-large teste">
+                                <table class="table table-hover">
+                                    <tbody>
+                                        <tr class="" ng-repeat="provaDoAnoAnterior in ListaProvasDosAnosAnteriores" ng-click="abrirGraficoDaProva(provaDoAnoAnterior.Ano,provaDoAnoAnterior.Id)">
+                                            <td><strong class="">{{provaDoAnoAnterior.NomeDaProva}} </strong>| {{provaDoAnoAnterior.Periodo}}</td>
+                                            <td class=""><strong class="">Finalizado no dia:</strong> <br />{{provaDoAnoAnterior.DataDeFinalizacao}}</td>
+                                            <td class=""><strong class="">Tempo de duração:</strong> <br /> {{provaDoAnoAnterior.TempoDeProva}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
