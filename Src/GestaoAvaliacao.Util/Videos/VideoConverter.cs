@@ -6,69 +6,75 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MediaToolkit;
+using MediaToolkit.Model;
 
 namespace GestaoAvaliacao.Util.Videos
 {
     public class VideoConverter : IVideoConverter
     {
-        public const string webm = "webm";
-        public const string mpeg = "mpeg";
-        public const string mp4 = "mp4";
-        public const string h265 = "h265";
-        public const string h264 = "h264";
-        public const string h263 = "h263";
-        public const string h261 = "h261";
-        public const string wmv = "asf";
-        public const string swf = "swf";
-        public const string avi = "avi";
-        public const string flv = "flv";
-        public const string gif = "gif";
-
-        private static IEnumerable<string> _formats = new List<string> { webm, mpeg, mp4, h265, h264, h263, h261, wmv, swf, avi, flv, gif };
-        private event EventHandler<ConvertProgressEventArgs> _reportProgress;
-
-        public Task<ConvertedVideoDto> Convert(Stream inputStream, string inputFormat, string fileName, string outputFormat, Action reportProgressAction = null,
-            bool appendSilentAudioStream = false)
+        public async Task<ConvertedVideoDto> Convert(Stream inputStream, string contentType, string filenameInput, Guid usu_id)
         {
-            if (inputStream is null) throw new ArgumentNullException("O Stream com o vídeo original deve ser informado.");
-            if (string.IsNullOrWhiteSpace(inputFormat)) throw new ArgumentException("O formato do vídeo original deve ser informado.");
-            if (!_formats.Contains(inputFormat)) throw new InvalidOperationException("O formato do vídeo original é inválido.");
-            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("O nome do arquivo do vídeo original deve ser informado.");
-            if (string.IsNullOrWhiteSpace(outputFormat)) throw new ArgumentException("O formato de conversão deve ser informado.");
-            if (!_formats.Contains(inputFormat)) throw new InvalidOperationException("O formato de conversão é inválido.");
+            var inputFormat = contentType.Substring(contentType.IndexOf("/") + 1, contentType.Length - contentType.IndexOf("/") - 1);
+            var pathTemporary = Path.Combine(Path.GetTempPath(), usu_id.ToString());
+            var fileNameOutPut = $"{filenameInput.Replace($".{inputFormat}", string.Empty)}.webm";
+            var pathTemporaryInputFile = Path.Combine(pathTemporary, filenameInput);
+            var pathTemporaryOutputFile = Path.Combine(pathTemporary, fileNameOutPut);
+            var outputStream = new MemoryStream();
 
-            if (reportProgressAction != null)
-                _reportProgress += delegate { reportProgressAction(); };
+            CreateDirectory(pathTemporary);
+            DeleteTemporaryTemp(pathTemporaryInputFile, pathTemporaryOutputFile, null);
+            await CreateFileInput(inputStream, pathTemporaryInputFile);
+            ConvertFile(pathTemporaryInputFile, pathTemporaryOutputFile);
+            await CreateFileOutPut(pathTemporaryOutputFile, outputStream);
+            DeleteTemporaryTemp(pathTemporaryInputFile, pathTemporaryOutputFile, pathTemporary);
 
-            var settings = new ConvertSettings
-            {
-                AppendSilentAudioStream = appendSilentAudioStream
-            };
-
-            return Convert(inputStream, inputFormat, fileName, outputFormat, settings);
+            return
+                new ConvertedVideoDto
+                {
+                    FileName = fileNameOutPut,
+                    Stream = outputStream
+                };
         }
 
-        private Task<ConvertedVideoDto> Convert(Stream inputStream, string inputFormat, string fileName, string outputFormat, ConvertSettings settings) 
-            => Task.Run(() =>
-                {
-                    var ffMpeg = new FFMpegConverter();
-                    if (_reportProgress != null)
-                        ffMpeg.ConvertProgress += _reportProgress;
+        private async Task CreateFileOutPut(string pathTemporaryOutputFile, MemoryStream outputStream)
+        {
+            using (Stream fileStream = File.Open(pathTemporaryOutputFile, FileMode.Open))
+            {
+                await fileStream.CopyToAsync(outputStream);
+            }
+        }
 
-                    settings = settings ?? new ConvertSettings();
-                    var outputStream = new MemoryStream();
-                    inputStream.Position = 0;
-                    var convertTask = ffMpeg.ConvertLiveMedia(inputStream, inputFormat, outputStream, outputFormat, settings);
+        private void ConvertFile(string pathTemporaryInputFile, string pathTemporaryOutputFile)
+        {
+            using (var engine = new Engine())
+            {
+                engine.Convert(new MediaFile(pathTemporaryInputFile), new MediaFile(pathTemporaryOutputFile));
+            }
+        }
 
-                    convertTask.Start();
-                    convertTask.Wait();
+        private async Task CreateFileInput(Stream inputStream, string pathTemporaryInputFile)
+        {
+            using (var fileStream = new FileStream(pathTemporaryInputFile, FileMode.Create, FileAccess.Write))
+            {
+                await inputStream.CopyToAsync(fileStream);
+            }
+        }
 
-                    var outputFileName = $"{fileName}.{outputFormat}";
-                    return new ConvertedVideoDto
-                    {
-                        FileName = outputFileName,
-                        Stream = outputStream
-                    };
-                });
+        private void CreateDirectory(string pathTemporary)
+        {
+            if (!Directory.Exists(pathTemporary))
+                Directory.CreateDirectory(pathTemporary);
+        }
+
+        private void DeleteTemporaryTemp(string pathTemporaryInputFile, string pathTemporaryOutputFile, string pathTemporary)
+        {
+            if (File.Exists(pathTemporaryInputFile))
+                File.Delete(pathTemporaryInputFile);
+            if (File.Exists(pathTemporaryOutputFile))
+                File.Delete(pathTemporaryOutputFile);
+            if (pathTemporary != null)
+                Directory.Delete(pathTemporary);
+        }
     }
 }

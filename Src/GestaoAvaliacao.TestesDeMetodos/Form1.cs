@@ -10,6 +10,9 @@ using System.IO;
 using System.Windows.Forms;
 using MSTech.Security.Cryptography;
 using GestaoAvaliacao.Entities;
+using MediaToolkit;
+using MediaToolkit.Model;
+using MediaToolkit.Options;
 
 namespace GestaoAvaliacao.TestesDeMetodos
 {
@@ -91,6 +94,18 @@ namespace GestaoAvaliacao.TestesDeMetodos
             var item = new Item { Id = 12434 };
             _itemBusiness.SaveChangeItem(item, 601, 11532);
             _itemBusiness.SaveChangeItem(item, 602, 11532);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var inputFile = new MediaFile { Filename = @"C:\Projetos\SME\SME-Serap-main\Src\GestaoAvaliacao.TestesDeMetodos\video4megas.mp4" };
+            var outputFileWebm = new MediaFile { Filename = @"C:\Projetos\SME\SME-Serap-main\Src\GestaoAvaliacao.TestesDeMetodos\video4megasOutput1.webm" };
+            var outputFileMp4 = new MediaFile { Filename = @"C:\Projetos\SME\SME-Serap-main\Src\GestaoAvaliacao.TestesDeMetodos\video4megasOutput2.mp4" };
+
+            using (var engine = new Engine())
+            { 
+                engine.CustomCommand($"-i {inputFile.Filename} {outputFileWebm.Filename}");
+            }
         }
     }
 }
