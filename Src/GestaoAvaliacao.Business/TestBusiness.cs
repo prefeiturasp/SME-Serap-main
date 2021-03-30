@@ -82,7 +82,8 @@ namespace GestaoAvaliacao.Business
 				|| entity.CorrectionEndDate == null || entity.CorrectionStartDate == null
 				|| entity.TestType == null || (entity.TestType != null && entity.TestType.Id <= 0)
 				|| (entity.Discipline == null && !entity.Multidiscipline) || (!entity.Multidiscipline && entity.Discipline != null && entity.Discipline.Id <= 0)
-				|| entity.TestCurriculumGrades == null || (entity.TestCurriculumGrades != null && entity.TestCurriculumGrades.Count <= 0))
+				|| entity.TestCurriculumGrades == null || (entity.TestCurriculumGrades != null && entity.TestCurriculumGrades.Count <= 0)
+                || entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
 					valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
 
 				int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
@@ -93,6 +94,9 @@ namespace GestaoAvaliacao.Business
 			if (action == ValidateAction.Update)
 			{
 				var cadastred = testRepository.GetObjectWithTestType(entity.Id);
+
+				if(entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
+                    valid.Message = "O tempo de prova deve ser informado.";
 
 				int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
 				if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)

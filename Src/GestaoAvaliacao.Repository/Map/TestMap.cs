@@ -29,6 +29,10 @@ namespace GestaoAvaliacao.Repository.Map
             HasOptional(t => t.TestSubGroup)
                 .WithMany()
                 .HasForeignKey(t => t.TestSubGroup_Id);
+
+            HasRequired(t => t.TestTime)
+                .WithMany()
+                .HasForeignKey(t => t.TestTime_Id);
         }
     }
 }

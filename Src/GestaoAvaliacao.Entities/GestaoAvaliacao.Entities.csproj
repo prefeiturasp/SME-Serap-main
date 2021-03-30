@@ -181,6 +181,7 @@
     <Compile Include="TestTypeCourse.cs" />
     <Compile Include="TestTypeCourseCurriculumGrade.cs" />
     <Compile Include="TestTypeDeficiency.cs" />
+    <Compile Include="TestTime.cs" />
     <Compile Include="TestTypeItemLevel.cs" />
     <Compile Include="FormatType.cs" />
     <Compile Include="Uploader.cs" />

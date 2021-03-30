@@ -119,6 +119,7 @@
     <Compile Include="ITestTypeCourseCurriculumGradeRepository.cs" />
     <Compile Include="ITestTypeDeficiencyRepository.cs" />
     <Compile Include="ITestTypeItemLevelRepository.cs" />
+    <Compile Include="ITestTimeRepository.cs" />
     <Compile Include="ITestTypeRepository.cs" />
     <Compile Include="IFormatTypeRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

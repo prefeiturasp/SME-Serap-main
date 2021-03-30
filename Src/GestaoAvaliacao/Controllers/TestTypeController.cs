@@ -19,17 +19,19 @@ namespace GestaoAvaliacao.Controllers
     public class TestTypeController : Controller
     {
         private readonly ITestTypeBusiness testTypeBusiness;
+        private readonly ITestTimeBusiness testTimeBusiness;
         private readonly ITestTypeCourseCurriculumGradeBusiness testTypeCourseCurriculumGradeBusiness;
         private readonly IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness;
         private readonly IACA_TipoNivelEnsinoBusiness levelEducationBusiness;
         private readonly IItemLevelBusiness itemLevelBusiness;
         private readonly ITestTypeDeficiencyBusiness testTypeDeficiencyBusiness;
 
-        public TestTypeController(ITestTypeBusiness testTypeBusiness, ITestTypeCourseCurriculumGradeBusiness testTypeCourseCurriculumGradeBusiness,
+        public TestTypeController(ITestTypeBusiness testTypeBusiness, ITestTimeBusiness testTimeBusiness,  ITestTypeCourseCurriculumGradeBusiness testTypeCourseCurriculumGradeBusiness,
             IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness, IACA_TipoNivelEnsinoBusiness levelEducationBusiness,
             IItemLevelBusiness itemLevelBusiness, ITestTypeDeficiencyBusiness testTypeDeficiencyBusiness)
         {
             this.testTypeBusiness = testTypeBusiness;
+            this.testTimeBusiness = testTimeBusiness;
             this.testTypeCourseCurriculumGradeBusiness = testTypeCourseCurriculumGradeBusiness;
             this.tipoCurriculoPeriodoBusiness = tipoCurriculoPeriodoBusiness;
             this.levelEducationBusiness = levelEducationBusiness;
@@ -236,7 +238,7 @@ namespace GestaoAvaliacao.Controllers
             try
             {
                 IEnumerable<TestType> lista = testTypeBusiness.LoadFiltered(SessionFacade.UsuarioLogado.Usuario.ent_id, SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Administracao);
-
+                var temposDeProva = testTimeBusiness.GetAll();
                 if (lista != null && lista.Count() > 0)
                 {
                     var list = new
@@ -247,7 +249,12 @@ namespace GestaoAvaliacao.Controllers
                             Description = x.Description,
                             FrequencyApplication = x.FrequencyApplication
                         }),
-                        Bib = lista.Any(p => p.Bib)
+                        Bib = lista.Any(p => p.Bib),
+                        temposDeProva = temposDeProva.Select(s=>new
+                        {
+                            s.Id,
+                            s.Description
+                        })
                     };
 
                     return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);

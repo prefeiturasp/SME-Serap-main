@@ -115,6 +115,7 @@
     <Compile Include="ITestPermissionBusiness.cs" />
     <Compile Include="ITestSectionStatusCorrectionBusiness.cs" />
     <Compile Include="ITestSubGroupBusiness.cs" />
+    <Compile Include="ITestTimeBusiness.cs" />
     <Compile Include="ITestTypeBusiness.cs" />
     <Compile Include="ITestTypeCourseCurriculumGradeBusiness.cs" />
     <Compile Include="ITestTypeDeficiencyBusiness.cs" />

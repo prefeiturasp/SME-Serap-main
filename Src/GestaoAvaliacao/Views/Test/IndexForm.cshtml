@@ -151,6 +151,22 @@
                                     </div>
                                 </div>
 
+                                @* Tempo de prova *@
+                                <div class="campoLabel col-md-12">
+                                    <label for="tempoDeProva">Tempo de prova: </label>
+                                    <div>
+                                        <select id="groupSubgroup" class="form-control" title="{{ e1_tempoDeProva.Description }}"
+                                                ng-change="e1_TempoDeProvaMudou();"
+                                                ng-model="e1_tempoDeProva"
+                                                ng-options="tempoDeProva as tempoDeProva.Description for tempoDeProva in tempoDeProvaList"
+                                                ng-title="tempoDeProvaList"
+                                                ng-title-propertie="Description"
+                                                ng-title-index="1">
+                                            <option value="">--Selecione um tempo de prova --</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="campoLabel">
                                     @* Header *@
                                     <label class="label-pos-inline">  {{labels.electronicTest}}: </label>
@@ -166,7 +182,6 @@
                                     <label class="label-pos-inline">  {{labels.showAudioFiles}}: </label>
                                     <div class="switch" ng-click="selectShowAudioFiles();" ng-class="{'off': !showAudioFiles}" style="position: absolute; margin: 4px 255px;"><input type="button" /></div>
                                 </div>
-
                             </div>
                         </div>
                     </div>

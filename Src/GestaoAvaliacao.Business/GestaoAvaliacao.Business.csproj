@@ -138,6 +138,7 @@
     <Compile Include="TestPermissionBusiness.cs" />
     <Compile Include="TestSectionStatusCorrectionBusiness.cs" />
     <Compile Include="TestSubGroupBusiness.cs" />
+    <Compile Include="TestTimeBusiness.cs" />
     <Compile Include="TestTypeBusiness.cs" />
     <Compile Include="TestTypeCourseBusiness.cs" />
     <Compile Include="TestTypeCourseCurriculumGradeBusiness.cs" />

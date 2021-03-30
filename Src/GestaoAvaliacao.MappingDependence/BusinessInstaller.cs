@@ -139,6 +139,11 @@ namespace GestaoAvaliacao.MappingDependence
                                 .WithService.AllInterfaces()
                                 .SetLifestyle(LifestylePerWebRequest));
 
+            container.Register(Classes.FromAssemblyContaining<TestTimeBusiness>()
+                                .BasedOn(typeof(ITestTimeBusiness))
+                                .WithService.AllInterfaces()
+                                .SetLifestyle(LifestylePerWebRequest));
+
             container.Register(Classes.FromAssemblyContaining<TestTypeCourseCurriculumGradeBusiness>()
                                 .BasedOn(typeof(ITestTypeCourseCurriculumGradeBusiness))
                                 .WithService.AllInterfaces()

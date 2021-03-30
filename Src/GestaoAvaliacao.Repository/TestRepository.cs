@@ -195,6 +195,7 @@ namespace GestaoAvaliacao.Repository
                         .Include("TestType")
                         .Include("FormatType")
                         .Include("TestSubGroup")
+                        .Include("TestTime")
                         .FirstOrDefault(i => i.Id == Id && i.State == (Byte)EnumState.ativo);
 
                     return query;
@@ -1295,6 +1296,7 @@ namespace GestaoAvaliacao.Repository
                     entity.Discipline = GestaoAvaliacaoContext.Discipline.FirstOrDefault(s => s.Id == entity.Discipline.Id);
 
                 entity.TestType = GestaoAvaliacaoContext.TestType.FirstOrDefault(s => s.Id == entity.TestType.Id);
+                entity.TestTime = GestaoAvaliacaoContext.TestTime.FirstOrDefault(s => s.Id == entity.TestTime.Id);
 
 
                 if (entity.FormatType != null)
@@ -1369,6 +1371,7 @@ namespace GestaoAvaliacao.Repository
                     test.FormatType = GestaoAvaliacaoContext.FormatType.FirstOrDefault(s => s.Id == entity.FormatType.Id);
 
                 test.TestType = GestaoAvaliacaoContext.TestType.FirstOrDefault(l => l.Id == entity.TestType.Id);
+                test.TestTime = GestaoAvaliacaoContext.TestTime.FirstOrDefault(l => l.Id == entity.TestTime.Id);
 
                 if (entity.TestSubGroup != null)
                 {
