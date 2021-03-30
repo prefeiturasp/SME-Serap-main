@@ -1,4 +1,8 @@
-﻿using GestaoAvaliacao.Entities.DTO.StudentTestAccoplishments;
+﻿using GestaoAvaliacao.Dtos.StudentTestAccoplishments;
+using GestaoAvaliacao.Entities.DTO;
+using GestaoAvaliacao.Entities.DTO.StudentTestAccoplishments;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.IBusiness
@@ -10,5 +14,7 @@ namespace GestaoAvaliacao.IBusiness
         Task EndSessionAsync(EndStudentTestSessionDto dto);
 
         Task EndStudentTestAccoplishmentAsync(EndStudentTestAccoplishmentDto dto);
+
+        Task<StudentTestTimeResultDto> GetStudenteResultAsync(List<ElectronicTestDTO> electronicTests);
     }
 }

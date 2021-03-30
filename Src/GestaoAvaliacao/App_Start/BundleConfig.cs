@@ -1736,6 +1736,59 @@ namespace GestaoAvaliacao.App_Start
 
             #endregion
 
+            #region StudentsResult
+
+            #region StudentResults_Index
+
+            bundles.Add(
+                new ScriptBundle("~/bundles/StudentResults_js")
+                .Include("~/Assets/js/angular/controllers/StudentResults/studentResultsListController.js")
+                .Include("~/Assets/js/angular/models/StudentResults/studentResultsListModel.js")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.js")
+                .Include("~/Assets/js/angular/services/_bundle/pager/services.js")
+                .Include("~/Assets/js/angular/services/_bundle/util/util.js")
+                .Include("~/Assets/js/vendor/datepicker/datepicker.js")
+                .Include("~/Assets/js/angular/directives/_bundle/datepicker/datepicker-directive.js")
+            );
+
+            bundles.Add(
+                new StyleBundle("~/bundles/StudentResults_css")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.css")
+                .Include("~/Assets/js/vendor/datepicker/datepicker.css")
+
+            );
+
+            #endregion
+
+            #endregion
+
+            #region StudentResultGRaphics
+
+            #region StudentResultsGraphics_Index
+            bundles.Add(
+                new ScriptBundle("~/bundles/StudentResultsGraphics_js")
+                    .Include("~/Assets/js/angular/directives/_bundle/modal/modal.js")
+                    .Include("~/Assets/js/angular/services/_bundle/util/util.js")
+                    .Include("~/Assets/js/angular/models/adherence/adherenceModel.js")
+                    .Include("~/Assets/js/angular/models/studentResultsGraphics/studentResultsGraphicsModel.js")
+                    .Include("~/Assets/js/angular/models/discipline/disciplineModel.js")
+                    .Include("~/Assets/js/angular/models/test/testModel.js")
+                    .Include("~/Assets/js/angular/models/item/itemModel.js")
+                    .Include("~/Assets/js/angular/models/test/testAdministrateModel.js")
+                    .Include("~/Assets/js/vendor/{version}/charts-2.0.js".Replace("{version}", chartsVersion))
+                    .Include("~/Assets/js/vendor/{version}/horizontalBarLineDrawer.js".Replace("{version}", chartsVersion))
+                    .Include("~/Assets/js/vendor/FileSaver.js")
+                    .Include("~/Assets/js/angular/controllers/studentResultsGraphics/studentResultsGraphicsResultController.js")
+                    .Include("~/Assets/js/angular/directives/_bundle/reportFilters/reportFilters.js")
+                );
+
+            bundles.Add(
+                new StyleBundle("~/bundles/StudentResultsGraphics_css")
+                );
+            #endregion
+
+            #endregion
+
             #region PageConfiguration
 
             #region (Index)

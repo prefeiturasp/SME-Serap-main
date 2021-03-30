@@ -22,5 +22,15 @@ namespace GestaoAvaliacao.Entities.DTO
             if (FrequencyApplication <= 0) return string.Empty;
             return EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)FrequencyApplication);
         }
+
+        public int esc_id { get; set; }
+        public string esc_nome { get; set; }
+
+        public string Disciplina { get; set; }
+        public string Turma { get; set; }
+
+        public int AnoDeAplicacaoDaProva { get; set; }
+
+        public Guid dre_id { get; set; }
     }
 }

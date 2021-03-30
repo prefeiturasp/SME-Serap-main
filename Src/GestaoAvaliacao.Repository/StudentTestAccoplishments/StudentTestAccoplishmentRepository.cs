@@ -1,10 +1,13 @@
-﻿using GestaoAvaliacao.Entities;
+﻿using GestaoAvaliacao.Dtos.StudentTestAccoplishments;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.StudentTestAccoplishments;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Repository.StudentTestAccoplishments
@@ -74,6 +77,34 @@ namespace GestaoAvaliacao.Repository.StudentTestAccoplishments
             _dbConnection = _dbConnection ?? Connection;
             if (_dbConnection.State != ConnectionState.Open) _dbConnection.Open();
             return _dbConnection;
+        }
+
+        public Task<List<StudentTestTimeDto>> GetAsyncByAluId(long aluId)
+        {
+            return _context.Database.SqlQuery<StudentTestTimeDto>($@"
+                SELECT 
+	                sta.AluId,
+	                sta.TurId,
+	                sta.Test_Id,
+	                sts.StartDate, 
+	                sts.EndDate
+	                INTO #TempSessaoDoEstudante
+                FROM StudentTestAccoplishment  sta
+                INNER JOIN StudentTestSession sts ON sts.StudentTestAccoplishment_Id = sta.Id
+                WHERE 
+	                sts.state=1 AND 
+	                sta.state=1 AND 
+	                sts.Situation IN (4,3) AND
+	                sta.AluId = @aluId
+
+                SELECT 
+	                TurId, 
+	                Test_Id as TestId,
+	                CONVERT(varchar, DATEADD(ms, SUM(DATEDIFF(SECOND, StartDate, EndDate)) * 1000, 0), 108) as TempoDeDuracao,
+                    CONVERT(VARCHAR,MAX(EndDate),103) as DataDeFinalizacaoDaProva
+                FROM #TempSessaoDoEstudante
+                GROUP BY TurId, Test_Id
+            ",new SqlParameter("aluId", aluId)).ToListAsync();
         }
     }
 }
