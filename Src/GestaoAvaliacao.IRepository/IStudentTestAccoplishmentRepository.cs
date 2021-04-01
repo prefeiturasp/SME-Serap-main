@@ -21,5 +21,7 @@ namespace GestaoAvaliacao.IRepository
         Task<StudentTestSession> GetSessionAsync(Guid connectionId);
 
         Task<List<StudentTestTimeDto>> GetAsyncByAluId(long aluId);
+
+        Task<StudentTestTimeDto> GetAsyncByAluIdTurIdTestId(long aluId, long turId, long testId);
     }
 }

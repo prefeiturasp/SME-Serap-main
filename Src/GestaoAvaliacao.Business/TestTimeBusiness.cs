@@ -20,5 +20,7 @@ namespace GestaoAvaliacao.Business
 
         public List<TestTime> GetAll() => testTimeRepository.GetAll();
 
+        public async Task<TestTime> GetByTestIdAsync(long testId) => await testTimeRepository.GetByTestIdAsync(testId);
+
     }
 }

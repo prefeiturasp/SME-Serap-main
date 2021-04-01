@@ -16,5 +16,7 @@ namespace GestaoAvaliacao.IBusiness
         Task EndStudentTestAccoplishmentAsync(EndStudentTestAccoplishmentDto dto);
 
         Task<StudentTestTimeResultDto> GetStudenteResultAsync(List<ElectronicTestDTO> electronicTests);
+
+        Task<StudentTestTimeDto> GetAsyncByAluIdTurIdTestId(long aluId, long turId, long testId);
     }
 }

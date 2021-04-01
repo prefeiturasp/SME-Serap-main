@@ -179,6 +179,7 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
             var listaDeProvasDosAnosAnteriores = new List<StudentTestTimeListaDto>();
 
             var temposDeDuracao = await _studentTestAccoplishmentRepository.GetAsyncByAluId(electronicTests.FirstOrDefault().alu_id);
+
             foreach (var electronicTest in electronicTests)
             {
                 var tempoDeDuracaoDaProva = temposDeDuracao.FirstOrDefault(o => o.TestId == electronicTest.Id);
@@ -257,5 +258,8 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
 
             return resultado;
         }
+
+        public async Task<StudentTestTimeDto> GetAsyncByAluIdTurIdTestId(long aluId, long turId, long testId)
+            => await _studentTestAccoplishmentRepository.GetAsyncByAluIdTurIdTestId(aluId, turId, testId);
     }
 }

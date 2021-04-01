@@ -42,7 +42,11 @@
             ng.enunciadoFontSize = 14;
             ng.alternativasFontSize = 14;
             ng.savingAnswers = false;
-
+            ng.TempoTotalDaProva = 0;
+            ng.TempoDeProvaConsumidoPeloAluno = 0;
+            ng.TempoDeProvaRestante = 0;
+            ng.TempoDeProvaTotalFormatado = null;
+            ng.MostrarCronometro = false;
             load();
         };
 
@@ -115,6 +119,24 @@
 
         function load() {
             loadPagePros();
+
+            ElectronicTestModel.getTestTime({ tur_id: ng.turId, test_id: ng.testId, alu_id: ng.aluId }, function(result) {
+                if (result.success) {
+                    ng.TempoTotalDaProva = result.dados.TempoTotalDaProva;
+                    ng.TempoDeProvaConsumidoPeloAluno = result.dados.TempoDeProvaConsumidoPeloAluno;
+                    ng.MostrarCronometro = !result.dados.ProvaSemLimiteDeTempo;
+                    if (ng.MostrarCronometro && !ng.provaFinalizada) {
+                        ng.TempoDeProvaTotalFormatado = moment("2015-01-01").startOf('day')
+                            .seconds(ng.TempoTotalDaProva)
+                            .format('H:mm:ss');
+                        IniciarCronometroDaProva();
+                    }
+                }
+                else {
+                    $notification[result.type ? result.type : 'error'](result.message);
+                }
+            });
+
 
             let testKeyStorage = getTestStorageKey(ng.testId);
             let testFromStorage = JSON.parse(localStorage.getItem(testKeyStorage));
@@ -474,8 +496,33 @@
                 });
         };
 
+
         ng.trustSrc = function (src) {
             return $sce.trustAsResourceUrl(src);
+        }
+
+        function IniciarCronometroDaProva() {
+            if (ng.TempoTotalDaProva <= ng.TempoDeProvaConsumidoPeloAluno) return;
+
+            var timer = new easytimer.Timer();
+            var tempoDeProvaRestante = ng.TempoTotalDaProva - ng.TempoDeProvaConsumidoPeloAluno;
+
+            timer.start({ countdown: true, startValues: { seconds: tempoDeProvaRestante } });
+
+            ng.TempoDeProvaRestante = timer.getTimeValues().toString();
+            $('#countdown-timer .tempo-total-de-prova').html(timer.getTimeValues().toString());
+
+            timer.addEventListener('secondsUpdated',
+                function (e) {
+                    var tempoRestante = timer.getTimeValues().toString();
+                    $('#countdown-timer .tempo-total-de-prova').html(tempoRestante);
+                    ng.TempoDeProvaRestante = tempoRestante;
+                });
+
+            timer.addEventListener('targetAchieved',
+                function (e) {
+                    ng.entregarProva();
+                });
         }
 
         Init();

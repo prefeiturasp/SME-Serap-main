@@ -13,6 +13,10 @@ namespace GestaoAvaliacao.Repository.Map
 				.IsRequired()
 				.HasMaxLength(100)
 				.HasColumnType("varchar");
+
+            Property(p => p.Segundos)
+                .IsRequired()
+                .HasColumnType("int");
 		}
 	}
 }

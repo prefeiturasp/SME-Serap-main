@@ -14,6 +14,7 @@ namespace GestaoAvaliacao.App_Start
             bundles.Add(
                 new ScriptBundle("~/bundles/vendor_js")
                 .Include("~/Assets/js/Vendor/jquery-2.1.1.js")
+                .Include("~/Assets/js/Vendor/easytimer.min.js")
                 .Include("~/Assets/js/Vendor/jquery-ui.js")
                 .Include("~/Assets/js/Vendor/plg-notify.min.js")
                 .Include("~/Assets/js/Vendor/bootstrap-3.2.0.js")

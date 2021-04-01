@@ -24,5 +24,13 @@ namespace GestaoAvaliacao.Repository
                 return gestaoAvaliacaoContext.TestTime.ToList();
             }
         }
+
+        public async Task<TestTime> GetByTestIdAsync(long testId)
+        {
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                return await gestaoAvaliacaoContext.Test.Where(f=>f.Id == testId).Select(s => s.TestTime).FirstOrDefaultAsync();
+            }
+        }
     }
 }

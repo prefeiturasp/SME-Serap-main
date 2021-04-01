@@ -9,5 +9,7 @@ namespace GestaoAvaliacao.IBusiness
     public interface ITestTimeBusiness
 	{
 		List<TestTime> GetAll();
+
+        Task<TestTime> GetByTestIdAsync(long testId);
     }
 }

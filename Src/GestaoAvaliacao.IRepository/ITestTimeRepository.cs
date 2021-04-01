@@ -9,5 +9,7 @@ namespace GestaoAvaliacao.IRepository
     public interface ITestTimeRepository
 	{
 		List<TestTime> GetAll();
-	}
+
+        Task<TestTime> GetByTestIdAsync(long testId);
+    }
 }

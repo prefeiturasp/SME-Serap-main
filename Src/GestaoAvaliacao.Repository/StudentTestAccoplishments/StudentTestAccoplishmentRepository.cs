@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.SqlClient;
+using System.Diagnostics.Eventing.Reader;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Repository.StudentTestAccoplishments
@@ -105,6 +106,29 @@ namespace GestaoAvaliacao.Repository.StudentTestAccoplishments
                 FROM #TempSessaoDoEstudante
                 GROUP BY TurId, Test_Id
             ",new SqlParameter("aluId", aluId)).ToListAsync();
+        }
+
+        public Task<StudentTestTimeDto> GetAsyncByAluIdTurIdTestId(long aluId, long turId, long testId)
+        {
+            return _context.Database.SqlQuery<StudentTestTimeDto>($@"
+                SELECT 
+	                sts.StartDate, 
+	                sts.EndDate
+	                INTO #TempSessaoDoEstudante
+                FROM StudentTestAccoplishment  sta
+                INNER JOIN StudentTestSession sts ON sts.StudentTestAccoplishment_Id = sta.Id
+                WHERE 
+	                sts.state=1 AND 
+	                sta.state=1 AND 
+	                sts.Situation IN (4,3) AND
+	                sta.AluId = @aluId AND
+                    sta.TurId = @turId AND
+                    sta.Test_Id = @testId
+
+                SELECT 
+	                ISNULL(SUM(DATEDIFF(SECOND, StartDate, EndDate)),0) as TempoDeDuracaoEmSegundos
+                FROM #TempSessaoDoEstudante
+            ", new SqlParameter("aluId", aluId), new SqlParameter("turId", turId), new SqlParameter("testId", testId)).FirstOrDefaultAsync();
         }
     }
 }

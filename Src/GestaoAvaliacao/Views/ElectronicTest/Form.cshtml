@@ -4,17 +4,22 @@
     <div class="well well-large questao">
         <div class="row">
             <div class="col-sm-12">
+                <div ng-if="MostrarCronometro" id="countdown-timer">
+                    <p>Tempo de Prova Total: {{TempoDeProvaTotalFormatado}}</p>
+                    <div>Tempo de Prova Restante: <p class="tempo-total-de-prova"></div>
+                </div>
+
                 <div class="electronicTestHeader">
                     <b>Questão {{ test.Itens[indiceItem].ItemOrder + 1 }}</b>
-                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;" />
-                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" />
+                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;"/>
+                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)"/>
 
                 </div>
 
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="position:absolute; right: 0px; top: 0px; color: #5a94d6;">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="position: absolute; right: 0px; top: 0px; color: #5a94d6;">
                     <div class="panel panel-default" style="margin-top: 10px;">
                         <div class="panel-heading" role="tab" id="headingOne">
-                            <div role="button" data-toggle="collapse" data-parent="" href="" aria-expanded="true" aria-controls="" ng-click="loadHeaderDetais();" style="cursor:pointer; color: #5a94d6;">
+                            <div role="button" data-toggle="collapse" data-parent="" href="" aria-expanded="true" aria-controls="" ng-click="loadHeaderDetais();" style="cursor: pointer; color: #5a94d6;">
                                 <b>{{ test.Description }}</b> | {{ test.FrequencyApplication }}
                             </div>
                         </div>
@@ -29,7 +34,7 @@
                         </div>
                     </div>
                 </div>
-                <hr />
+                <hr/>
             </div>
             <div id="divEnunciado" ng-class="(test.Itens[indiceItem].ShowVideoFiles || test.Itens[indiceItem].ShowAudioFiles) ? 'col-sm-6' : 'col-sm-12'">
                 <div class="baseTextElementClass" ng-if="possuiTextoBase" ng-bind-html="test.Itens[indiceItem].BaseTextDescription | trustedHtml"></div>
