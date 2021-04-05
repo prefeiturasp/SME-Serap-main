@@ -32,5 +32,9 @@ namespace GestaoAvaliacao.Entities.DTO
         public int AnoDeAplicacaoDaProva { get; set; }
 
         public Guid dre_id { get; set; }
+
+        public string TempoDeDuracaoDaProva { get; set; }
+
+        public string TempoRestanteDeProva { get; set; }
     }
 }

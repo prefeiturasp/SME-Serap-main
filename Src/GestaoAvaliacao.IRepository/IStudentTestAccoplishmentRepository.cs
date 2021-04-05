@@ -23,5 +23,7 @@ namespace GestaoAvaliacao.IRepository
         Task<List<StudentTestTimeDto>> GetAsyncByAluId(long aluId);
 
         Task<StudentTestTimeDto> GetAsyncByAluIdTurIdTestId(long aluId, long turId, long testId);
+
+        Task<List<StudentTestTimeDto>> GetAsyncByAluIdTestId(long aluId, List<long> test_Ids);
     }
 }

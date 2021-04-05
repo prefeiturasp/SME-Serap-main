@@ -261,5 +261,8 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
 
         public async Task<StudentTestTimeDto> GetAsyncByAluIdTurIdTestId(long aluId, long turId, long testId)
             => await _studentTestAccoplishmentRepository.GetAsyncByAluIdTurIdTestId(aluId, turId, testId);
+
+        public async Task<List<StudentTestTimeDto>> GetAsyncByAluIdTestId(long aluId, List<long> testIds)
+            => await _studentTestAccoplishmentRepository.GetAsyncByAluIdTestId(aluId, testIds);
     }
 }

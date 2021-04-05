@@ -13,5 +13,8 @@ namespace GestaoAvaliacao.Dtos.StudentTestAccoplishments
         public string TempoDeDuracao { get; set; }
         public int TempoDeDuracaoEmSegundos { get; set; }
         public string DataDeFinalizacaoDaProva { get; set; }
+        public int TempoEmSegundosDaProva { get; set; }
+        public int TempoEmSegundosUsadoPeloEstudanteNaProva { get; set; }
+        public string TempoDeDuracaoDaProva { get; set; }
     }
 }

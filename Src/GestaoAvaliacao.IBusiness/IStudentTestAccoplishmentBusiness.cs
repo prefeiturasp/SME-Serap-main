@@ -18,5 +18,7 @@ namespace GestaoAvaliacao.IBusiness
         Task<StudentTestTimeResultDto> GetStudenteResultAsync(List<ElectronicTestDTO> electronicTests);
 
         Task<StudentTestTimeDto> GetAsyncByAluIdTurIdTestId(long aluId, long turId, long testId);
+
+        Task<List<StudentTestTimeDto>> GetAsyncByAluIdTestId(long aluId, List<long> testId);
     }
 }

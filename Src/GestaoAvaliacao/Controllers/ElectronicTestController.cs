@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using GestaoAvaliacao.Dtos.StudentTestAccoplishments;
 
 namespace GestaoAvaliacao.Controllers
 {
@@ -127,6 +128,11 @@ namespace GestaoAvaliacao.Controllers
             var listaNaoIniciada = new List<ElectronicTestDTO>();
             var listaEmAndamento = new List<ElectronicTestDTO>();
             var listaFinalizadas = new List<ElectronicTestDTO>();
+            var listaDeTemposDeProva = new List<StudentTestTimeDto>();
+
+            if (electronicTests?.Any() ?? false)
+                listaDeTemposDeProva = await studentTestAccoplishmentBusiness.GetAsyncByAluIdTestId(electronicTests.FirstOrDefault().alu_id,
+                    electronicTests.Select(s => s.Id).ToList());
 
             foreach (var electronicTest in electronicTests)
             {
@@ -134,6 +140,19 @@ namespace GestaoAvaliacao.Controllers
                 if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
                 {
                     studentCorrection.provaFinalizada = false;
+                }
+
+                var tempoDeProva = listaDeTemposDeProva.FirstOrDefault(f => f.TestId == electronicTest.Id);
+                if (tempoDeProva != null)
+                {
+                    var time = TimeSpan.FromSeconds(tempoDeProva.TempoEmSegundosUsadoPeloEstudanteNaProva - tempoDeProva.TempoEmSegundosDaProva);
+                    electronicTest.TempoDeDuracaoDaProva = tempoDeProva.TempoEmSegundosDaProva == 0
+                        ? "Sem limite de tempo"
+                        : tempoDeProva.TempoDeDuracaoDaProva;
+                    electronicTest.TempoRestanteDeProva =
+                        tempoDeProva.TempoEmSegundosDaProva > 0 && tempoDeProva.TempoEmSegundosUsadoPeloEstudanteNaProva < tempoDeProva.TempoEmSegundosDaProva
+                            ? time.ToString(@"hh\:mm\:ss")
+                            : "00:00:00";
                 }
 
                 if (studentCorrection == null && electronicTest.quantDiasRestantes > 0)

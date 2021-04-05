@@ -46,7 +46,7 @@
             ng.TempoDeProvaConsumidoPeloAluno = 0;
             ng.TempoDeProvaRestante = 0;
             ng.TempoDeProvaTotalFormatado = null;
-            ng.MostrarCronometro = false;
+            ng.ShowCronometro = false;
             load();
         };
 
@@ -124,8 +124,8 @@
                 if (result.success) {
                     ng.TempoTotalDaProva = result.dados.TempoTotalDaProva;
                     ng.TempoDeProvaConsumidoPeloAluno = result.dados.TempoDeProvaConsumidoPeloAluno;
-                    ng.MostrarCronometro = !result.dados.ProvaSemLimiteDeTempo;
-                    if (ng.MostrarCronometro && !ng.provaFinalizada) {
+                    ng.ShowCronometro = !ng.provaFinalizada && !result.dados.ProvaSemLimiteDeTempo;
+                    if (ng.ShowCronometro) {
                         ng.TempoDeProvaTotalFormatado = moment("2015-01-01").startOf('day')
                             .seconds(ng.TempoTotalDaProva)
                             .format('H:mm:ss');
