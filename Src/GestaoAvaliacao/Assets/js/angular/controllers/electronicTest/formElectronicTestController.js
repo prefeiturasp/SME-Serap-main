@@ -517,11 +517,14 @@
                     var tempoRestante = timer.getTimeValues().toString();
                     $('#countdown-timer .tempo-total-de-prova').html(tempoRestante);
                     ng.TempoDeProvaRestante = tempoRestante;
+
+
                 });
 
             timer.addEventListener('targetAchieved',
                 function (e) {
-                    ng.entregarProva();
+                    angular.element("#modalProvaFinalizada").modal({ backdrop: 'static' });
+                    var time = setTimeout(function () { ng.entregarProva(); }, 5000);
                 });
         }
 
