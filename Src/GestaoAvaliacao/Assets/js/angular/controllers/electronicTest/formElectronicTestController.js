@@ -44,9 +44,10 @@
             ng.savingAnswers = false;
             ng.TempoTotalDaProva = 0;
             ng.TempoDeProvaConsumidoPeloAluno = 0;
-            ng.TempoDeProvaRestante = 0;
             ng.TempoDeProvaTotalFormatado = null;
             ng.ShowCronometro = false;
+            ng.ProvaSemLimiteDeTempo = false;
+            ng.LabelTempoDeProvaDoAluno = null;
             load();
         };
 
@@ -124,11 +125,16 @@
                 if (result.success) {
                     ng.TempoTotalDaProva = result.dados.TempoTotalDaProva;
                     ng.TempoDeProvaConsumidoPeloAluno = result.dados.TempoDeProvaConsumidoPeloAluno;
-                    ng.ShowCronometro = !ng.provaFinalizada && !result.dados.ProvaSemLimiteDeTempo;
+                    ng.ShowCronometro = !ng.provaFinalizada;
+                    ng.ProvaSemLimiteDeTempo = result.dados.ProvaSemLimiteDeTempo;
+                    ng.LabelTempoDeProvaDoAluno = ng.ProvaSemLimiteDeTempo ? "Tempo:" : "Tempo restante:"
                     if (ng.ShowCronometro) {
-                        ng.TempoDeProvaTotalFormatado = moment("2015-01-01").startOf('day')
+                        ng.TempoDeProvaTotalFormatado =
+                            ng.ProvaSemLimiteDeTempo ?
+                            "Sem limite de tempo" :
+                            moment("2015-01-01").startOf('day')
                             .seconds(ng.TempoTotalDaProva)
-                            .format('H:mm:ss');
+                            .format('HH:mm:ss');
                         IniciarCronometroDaProva();
                     }
                 }
@@ -502,23 +508,31 @@
         }
 
         function IniciarCronometroDaProva() {
-            if (ng.TempoTotalDaProva <= ng.TempoDeProvaConsumidoPeloAluno) return;
+            if (ng.TempoTotalDaProva <= ng.TempoDeProvaConsumidoPeloAluno && !ng.ProvaSemLimiteDeTempo) return;
 
             var timer = new easytimer.Timer();
-            var tempoDeProvaRestante = ng.TempoTotalDaProva - ng.TempoDeProvaConsumidoPeloAluno;
 
-            timer.start({ countdown: true, startValues: { seconds: tempoDeProvaRestante } });
-
-            ng.TempoDeProvaRestante = timer.getTimeValues().toString();
+            if (ng.ProvaSemLimiteDeTempo) {
+                timer.start({ countdown: false, startValues: { seconds: ng.TempoDeProvaConsumidoPeloAluno } });
+            } else {
+                var tempoDeProvaRestante = ng.TempoTotalDaProva - ng.TempoDeProvaConsumidoPeloAluno;
+                timer.start({ countdown: true, startValues: { seconds: tempoDeProvaRestante } });
+            }
+            
             $('#countdown-timer .tempo-total-de-prova').html(timer.getTimeValues().toString());
 
             timer.addEventListener('secondsUpdated',
                 function (e) {
                     var tempoRestante = timer.getTimeValues().toString();
                     $('#countdown-timer .tempo-total-de-prova').html(tempoRestante);
-                    ng.TempoDeProvaRestante = tempoRestante;
 
+                    if (timer.getTotalTimeValues().seconds <= 300 && !ng.ProvaSemLimiteDeTempo) {
+                        var classTempoTotalDeProva = document.getElementById("TempoTotalDeProva");
+                        var classTempoRestanteDeProva = document.getElementById("TempoRestanteDeProva");
 
+                        classTempoTotalDeProva.style.color = "#FF0000";
+                        classTempoRestanteDeProva.style.color = "#FF0000";
+                    }
                 });
 
             timer.addEventListener('targetAchieved',
