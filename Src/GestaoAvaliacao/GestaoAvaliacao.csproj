@@ -411,8 +411,6 @@
     <Content Include="AppProvaSP\questionario_9.html" />
     <Content Include="AppProvaSP\scripts\jquery-1.9.1.js" />
     <Content Include="AppProvaSP\scripts\jquery-1.9.1.min.js" />
-    <Content Include="AppProvaSP\scripts\jquery-3.5.1.js" />
-    <Content Include="AppProvaSP\scripts\jquery-3.5.1.min.js" />
     <Content Include="AppProvaSP\scripts\model\ExportarDreGraficosEmPdf.js" />
     <Content Include="AppProvaSP\scripts\model\ExportarDreGraficosEmImagem.js" />
     <Content Include="AppProvaSP\scripts\model\ExportarDreEmCsv.js" />
