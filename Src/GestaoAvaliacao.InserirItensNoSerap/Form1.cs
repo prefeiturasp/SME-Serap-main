@@ -13,7 +13,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using GestaoAvaliacao.WebProject.Facade;
 using EntityFile = GestaoAvaliacao.Entities.File;
+using File = System.IO.File;
 
 namespace InserirItensNoSerap
 {
@@ -103,111 +105,21 @@ namespace InserirItensNoSerap
                 SubSubject_Id = 10,
                 Tips = "Observação sobre o item da Prova.",
             };
-            var files = new List<EntityFile>();
-            var itemFiles = new List<ItemFile>();
-            var itemAudios = new List<ItemAudio>();
 
             Item entity = new Item();
-            object auxItem = null;
 
             try
             {
-                item.ItemFiles = itemFiles;
-                item.ItemAudios = itemAudios;
+                item.ItemFiles = new List<ItemFile>();
+                item.ItemAudios = new List<ItemAudio>();
 
                 if (item.Id > 0)
                 {
                     item.ItemSituation = item.ItemSituation_Id > 0 ? itemSituationBusiness.GetItemSituationById(item.ItemSituation_Id) : null;
-                    if ((files != null && files.Count > 0) || !item.ItemSituation.AllowVersion)
-                        entity = itemBusiness.Update(item.Id, item, files);
-                    else
-                        entity = itemBusiness.Update(item.Id, item);
-
-                    if (entity.Validate.IsValid)
-                    {
-                        auxItem = new
-                        {
-                            Id = entity.Id,
-                            IsRestrict = entity.IsRestrict,
-                            ItemCode = entity.ItemCode,
-                            ItemCodeVersion = entity.ItemCodeVersion,
-                            ItemVersion = entity.ItemVersion,
-                            Statement = entity.Statement,
-                            Alternatives = entity.Alternatives.Select(a => new
-                            {
-                                Id = a.Id,
-                                Description = a.Description,
-                                Order = a.Order,
-                                Correct = a.Correct,
-                                numeration = a.Numeration,
-                                Justificative = a.Justificative,
-                                TCTDiscrimination = a.TCTDiscrimination,
-                                TCTDificulty = a.TCTDificulty,
-                                TCTBiserialCoefficient = a.TCTBiserialCoefficient,
-                                State = a.State
-                            }).ToList(),
-                            Versions = itemBusiness._GetItemVersions(entity.ItemCodeVersion).Select(x => new
-                            {
-                                codigo = x.ItemCode,
-                                versao = x.ItemVersion,
-                                aplicado = string.Empty,
-                                criacao = x.CreateDate.ToString("dd/MM/yyyy"),
-                                provas = string.Empty
-                            }),
-                            BaseText_Id = entity.BaseText != null ? entity.BaseText.Id : 0,
-                            ItemNarrated = entity.ItemNarrated,
-                            StudentStatement = entity.StudentStatement,
-                            NarrationStudentStatement = entity.NarrationStudentStatement,
-                            NarrationAlternatives = entity.NarrationAlternatives
-                        };
-                    }
+                    entity = itemBusiness.Update(item.Id, item);
                 }
                 else
-                {
-                    if (files != null && files.Count > 0)
-                        entity = itemBusiness.Save(0, item, files);
-                    else
-                        entity = itemBusiness.Save(0, item);
-
-                    if (entity.Validate.IsValid)
-                    {
-                        auxItem = new
-                        {
-                            Id = entity.Id,
-                            IsRestrict = entity.IsRestrict,
-                            ItemCode = entity.ItemCode,
-                            ItemVersion = entity.ItemVersion,
-                            ItemCodeVersion = entity.ItemCodeVersion,
-                            Statement = entity.Statement,
-                            Alternatives = entity.Alternatives.Select(a => new
-                            {
-                                Id = a.Id,
-                                Description = a.Description,
-                                Order = a.Order,
-                                Correct = a.Correct,
-                                numeration = a.Numeration,
-                                Justificative = a.Justificative,
-                                TCTDiscrimination = a.TCTDiscrimination,
-                                TCTDificulty = a.TCTDificulty,
-                                TCTBiserialCoefficient = a.TCTBiserialCoefficient,
-                                State = a.State
-                            }).ToList(),
-                            Versions = new
-                            {
-                                codigo = entity.ItemCode,
-                                versao = entity.ItemVersion,
-                                aplicado = string.Empty,
-                                criacao = entity.CreateDate.ToString("dd/MM/yyyy"),
-                                provas = string.Empty
-                            },
-                            BaseText_Id = entity.BaseText_Id != null ? entity.BaseText_Id : 0,
-                            ItemNarrated = entity.ItemNarrated,
-                            StudentStatement = entity.StudentStatement,
-                            NarrationStudentStatement = entity.NarrationStudentStatement,
-                            NarrationAlternatives = entity.NarrationAlternatives
-                        };
-                    }
-                }
+                    entity = itemBusiness.Save(0, item);
             }
             catch (Exception ex)
             {
@@ -224,7 +136,8 @@ namespace InserirItensNoSerap
             var itemSituationBusiness = container.Resolve<IItemSituationBusiness>();
             XmlSerializer serializer = new XmlSerializer(typeof(ConteudoItem));
             ConteudoItem result = null;
-            using (var fileStream = new FileStream(@"C:\Projetos\SME\SME-Serap-main\Src\GestaoAvaliacao.InserirItensNoSerap\Arquivos\Xml1.xml", FileMode.Open))
+
+            using (var fileStream = new FileStream(@"C:\Projetos\SME\SME-Serap-main\Src\GestaoAvaliacao.InserirItensNoSerap\19808.xml", FileMode.Open))
             {
                 result = (ConteudoItem)serializer.Deserialize(fileStream);
             }
@@ -233,24 +146,48 @@ namespace InserirItensNoSerap
             var ordem = 0;
             foreach (var opcao in result.Opcoes)
             {
-                alternativas.Add(new Alternative
+                var alternativa = new Alternative
                 {
                     Id = 0,
-                    Description = opcao.Enunciado,
+                    Description = string.Empty,
                     Order = ordem,
                     Correct = opcao.Correto,
                     Justificative = opcao.Justificativa,
                     Numeration = opcao.IdOpcao,
                     State = 1,
-                });
+                };
+
+                alternativa.Description = string.IsNullOrEmpty(opcao.Enunciado)
+                    ? string.Empty
+                    : $"<p>{opcao.Enunciado}</p>";
+
+
+                if (!string.IsNullOrEmpty(opcao.ImagemAlternativa))
+                {
+                    var entityFile = UploadFile(EnumFileType.Alternative, result, alternativa);
+                    alternativa.Description = string.IsNullOrEmpty(entityFile.Path)
+                        ? alternativa.Description + string.Empty
+                        : alternativa.Description + $"<p><img src=\"{entityFile.Path}\" id=\"{ entityFile.Id}\"></p>";
+                }
+
+                alternativas.Add(alternativa);
                 ordem++;
             }
 
             var baseText = new BaseText();
-            if (!string.IsNullOrEmpty(result.TextoBase.Descricao))
+            if (!string.IsNullOrEmpty(result.TextoBase.Descricao) || !string.IsNullOrEmpty(result.TextoBase.ImagemItem))
             {
-                baseText.Description = result.TextoBase.Descricao;
+                baseText.Description = string.IsNullOrEmpty(result.TextoBase.Descricao)
+                    ? string.Empty
+                    : $"<p>{result.TextoBase.Descricao}</p>";
                 baseText.Source = result.TextoBase.Fonte;
+                if (!string.IsNullOrWhiteSpace((result.TextoBase.ImagemItem)))
+                {
+                    var entityFile = UploadFile(EnumFileType.BaseText, result);
+                    baseText.Description = string.IsNullOrEmpty(entityFile.Path)
+                        ? baseText.Description + string.Empty
+                        : baseText.Description + $"<p><img src=\"{entityFile.Path}\" id=\"{ entityFile.Id}\"></p>";
+                }
             }
             else
             {
@@ -266,7 +203,7 @@ namespace InserirItensNoSerap
                 Id = 0,
                 IsRestrict = false,
                 ItemAudios = new List<ItemAudio>(),
-                ItemCode = result.ItemCode.Code,
+                ItemCode = string.IsNullOrWhiteSpace(result.ItemCode.Code) ? result.ItemCode.Code :,
                 ItemCodeVersion = 0,
                 ItemFiles = new List<ItemFile>(),
                 ItemCurriculumGrades = new List<ItemCurriculumGrade> { new ItemCurriculumGrade { TypeCurriculumGradeId = result.Ano.Code } },
@@ -276,7 +213,7 @@ namespace InserirItensNoSerap
                 ItemSkills = new List<ItemSkill> { new ItemSkill { Skill_Id = result.Hab.Code, Id = 1, OriginalSkill = true }, new ItemSkill { Skill_Id = 2081, Id = 2, OriginalSkill = true } },
                 ItemType_Id = 1,
                 ItemVersion = 0,
-                Keywords = result.Keywords.Code,
+                Keywords = result.Keywords.Value,
                 KnowledgeArea_Id = result.AreaDeConhecimento.Code,
                 NarrationAlternatives = false,
                 NarrationStudentStatement = false,
@@ -286,108 +223,28 @@ namespace InserirItensNoSerap
                 Tips = result.Observacao,
             };
             var files = new List<EntityFile>();
-            var itemFiles = new List<ItemFile>();
-            var itemAudios = new List<ItemAudio>();
-
             Item entity = new Item();
-            object auxItem = null;
 
             try
             {
-                item.ItemFiles = itemFiles;
-                item.ItemAudios = itemAudios;
+                item.ItemFiles = new List<ItemFile>();
+                item.ItemAudios = new List<ItemAudio>();
 
                 if (item.Id > 0)
                 {
                     item.ItemSituation = item.ItemSituation_Id > 0 ? itemSituationBusiness.GetItemSituationById(item.ItemSituation_Id) : null;
-                    if ((files != null && files.Count > 0) || !item.ItemSituation.AllowVersion)
-                        entity = itemBusiness.Update(item.Id, item, files);
-                    else
-                        entity = itemBusiness.Update(item.Id, item);
+                    entity = itemBusiness.Update(item.Id, item);
 
                     if (entity.Validate.IsValid)
                     {
-                        auxItem = new
-                        {
-                            Id = entity.Id,
-                            IsRestrict = entity.IsRestrict,
-                            ItemCode = entity.ItemCode,
-                            ItemCodeVersion = entity.ItemCodeVersion,
-                            ItemVersion = entity.ItemVersion,
-                            Statement = entity.Statement,
-                            Alternatives = entity.Alternatives.Select(a => new
-                            {
-                                Id = a.Id,
-                                Description = a.Description,
-                                Order = a.Order,
-                                Correct = a.Correct,
-                                numeration = a.Numeration,
-                                Justificative = a.Justificative,
-                                TCTDiscrimination = a.TCTDiscrimination,
-                                TCTDificulty = a.TCTDificulty,
-                                TCTBiserialCoefficient = a.TCTBiserialCoefficient,
-                                State = a.State
-                            }).ToList(),
-                            Versions = itemBusiness._GetItemVersions(entity.ItemCodeVersion).Select(x => new
-                            {
-                                codigo = x.ItemCode,
-                                versao = x.ItemVersion,
-                                aplicado = string.Empty,
-                                criacao = x.CreateDate.ToString("dd/MM/yyyy"),
-                                provas = string.Empty
-                            }),
-                            BaseText_Id = entity.BaseText != null ? entity.BaseText.Id : 0,
-                            ItemNarrated = entity.ItemNarrated,
-                            StudentStatement = entity.StudentStatement,
-                            NarrationStudentStatement = entity.NarrationStudentStatement,
-                            NarrationAlternatives = entity.NarrationAlternatives
-                        };
                     }
                 }
                 else
                 {
-                    if (files != null && files.Count > 0)
-                        entity = itemBusiness.Save(0, item, files);
-                    else
-                        entity = itemBusiness.Save(0, item);
+                    entity = itemBusiness.Save(0, item);
 
                     if (entity.Validate.IsValid)
                     {
-                        auxItem = new
-                        {
-                            Id = entity.Id,
-                            IsRestrict = entity.IsRestrict,
-                            ItemCode = entity.ItemCode,
-                            ItemVersion = entity.ItemVersion,
-                            ItemCodeVersion = entity.ItemCodeVersion,
-                            Statement = entity.Statement,
-                            Alternatives = entity.Alternatives.Select(a => new
-                            {
-                                Id = a.Id,
-                                Description = a.Description,
-                                Order = a.Order,
-                                Correct = a.Correct,
-                                numeration = a.Numeration,
-                                Justificative = a.Justificative,
-                                TCTDiscrimination = a.TCTDiscrimination,
-                                TCTDificulty = a.TCTDificulty,
-                                TCTBiserialCoefficient = a.TCTBiserialCoefficient,
-                                State = a.State
-                            }).ToList(),
-                            Versions = new
-                            {
-                                codigo = entity.ItemCode,
-                                versao = entity.ItemVersion,
-                                aplicado = string.Empty,
-                                criacao = entity.CreateDate.ToString("dd/MM/yyyy"),
-                                provas = string.Empty
-                            },
-                            BaseText_Id = entity.BaseText_Id != null ? entity.BaseText_Id : 0,
-                            ItemNarrated = entity.ItemNarrated,
-                            StudentStatement = entity.StudentStatement,
-                            NarrationStudentStatement = entity.NarrationStudentStatement,
-                            NarrationAlternatives = entity.NarrationAlternatives
-                        };
                     }
                 }
             }
@@ -400,6 +257,48 @@ namespace InserirItensNoSerap
             }
         }
 
+        private EntityFile UploadFile(EnumFileType fileType, ConteudoItem result, Alternative alternative = null)
+        {
+            var fileBusiness = container.Resolve<IFileBusiness>();
+            var entity = new EntityFile();
 
+            try
+            {
+                var upload = new UploadModel();
+                var fileName = fileType == EnumFileType.BaseText ?
+                    $"{result.Sequence}.jpeg" :
+                    $"{result.Sequence}_{alternative.Numeration}.jpeg";
+                var path = $@"C:\Projetos\SME\SME-Serap-main\Src\GestaoAvaliacao.InserirItensNoSerap\{fileName}";
+                if (!File.Exists(path))
+                {
+                    return null;
+                }
+                using (FileStream itemFile = System.IO.File.Open(path, FileMode.Open))
+                {
+                    upload = new UploadModel
+                    {
+                        ContentLength = (int)itemFile.Length,
+                        ContentType = "image/jpeg",
+                        InputStream = null,
+                        Stream = itemFile,
+                        FileName = fileName,
+                        VirtualDirectory = "https://hom-serap.sme.prefeitura.sp.gov.br/Files", //VIRTUAL_PATH   
+                        PhysicalDirectory = $@"C:\Projects\SME\SME-Serap-main\Src\GestaoAvaliacao\Files",
+                        FileType = fileType,
+                        UsuId = Guid.Parse("B326764F-FFFE-E911-87E3-782BCB3D2D76")
+                    };
+                    entity = fileBusiness.Upload(upload);
+                    return entity;
+                }
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao realizar o upload da imagem.";
+                LogFacade.SaveError(ex);
+                return null;
+            }
+        }
     }
 }
