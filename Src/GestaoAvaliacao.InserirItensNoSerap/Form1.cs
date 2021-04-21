@@ -226,7 +226,7 @@ namespace InserirItensNoSerap
 
             foreach (var par in parameters)
             {
-                if (par.Key == "KEYWORDS")
+                if (par.Key == "KEYWORDS" && string.IsNullOrEmpty(result.Keywords.Value))
                 {
                     sqlQuery.AppendLine($@"INSERT INTO LogImprotacaoCebraspe 
                         VALUES('Keyword é de preenchimento obrigatório',
@@ -235,7 +235,7 @@ namespace InserirItensNoSerap
                         'Validação ao salvar',GETDATE());");
                     retorno = false;
                 }
-                else if (par.Key == "STATEMENT")
+                else if (par.Key == "STATEMENT" && string.IsNullOrEmpty(result.Comando))
                 {
                     sqlQuery.AppendLine($@"INSERT INTO LogImprotacaoCebraspe 
                         VALUES('Comando é de preenchimento obrigatório',
