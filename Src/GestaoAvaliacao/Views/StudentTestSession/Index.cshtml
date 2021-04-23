@@ -1,0 +1,107 @@
+﻿@using GestaoAvaliacao.Util;
+<alert></alert>
+<div class="wellCustom" ng-controller="StudentTestSessionController" ng-init='init()'>
+    @*Bloquear a tela quando não houver permissão*@
+    <div ng-if="!blockPage">
+        @* Header da Adesão *@
+        <div class="headerCustom">
+            <h4>Tempo de prova dos alunos<span>Listagem</span></h4>
+        </div>
+        @* Informações *@
+        <div class="resumoAdesao">
+            <div class="maxWidth">
+                <div class="dadosGerais">
+                    <h2>
+                        <strong>{{testInformation.Description}} </strong> {{testInformation.FrequencyApplication}} |  {{testInformation.Discipline}}
+                        <br />
+                        <label><strong>Cód:</strong>{{params.test_id}}</label>
+                    </h2>
+                    <div class="dadosResumo">
+                        <div style="max-width: 260px;" ng-if="false">
+                            <i class="material-icons">group</i>
+                            <span>1º Ano</span>
+                        </div>
+                        <div ng-if="currentSelectedMasterFilters.DRE_Description&&currentSelectedMasterFilters.School_Description">
+                            <i class="material-icons">school</i>
+                            <p>{{currentSelectedMasterFilters.DRE_Description}} <br />{{currentSelectedMasterFilters.School_Description}}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <button class="btnCancelar2" data-toggle="modal" ng-click="arrivingTest()">Voltar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cards maxWidth" ng-if="list !== null">
+            <div class="headerAdesao">
+                <h4>
+                    Alunos
+                </h4>
+            </div>
+            <table class="table tableAdesao">
+                <col width="130">
+                <col width="80">
+                <thead>
+                    <tr>
+                        <th style="width: 15%">Número da chamada</th>
+                        <th style="width: 35%">Nome do Aluno</th>
+                        <th style="width: 15%">Tempo total de cada sessão</th>
+                        <th style="width: 15%">Tempo de cada sessão</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="($indexTeam, studentSession) in list track by $indexTeam">
+                        <th>{{studentSession.NumeroDaChamada}}</th>
+                        <th>{{studentSession.NomeDoAluno}}</th>
+                        <th>{{studentSession.TempoTotalDaSessao}}</th>
+                        <th class="center">
+                            <a ng-click="openModalTempoDeCadaSessao()" data-trigger="hover" data-type="success" data-title="Resultados" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+                                <i class="material-icons">insert_chart</i>
+                            </a>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        @* Results not found *@
+        <div class="cards maxWidth" ng-if="list === null || (message)">
+            <p class="nresultados">Nenhum resultado encontrado.</p>
+        </div>
+
+        <modal id="tempoDeCadaSessao" modal-title="<p>Tempo de sessão da Prova</p>">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <table class="table tableAdesao">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%">Hora Inicial</th>
+                                    <th style="width: 40%">Hora Final</th>
+                                    <th style="width: 20%">Tempo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>13/12/2020 10:00</th>
+                                    <th>13/12/2020 10:05</th>
+                                    <th>00:05</th>
+                                </tr>
+                                <tr>
+                                    <th>13/12/2020 10:00</th>
+                                    <th>13/12/2020 10:05</th>
+                                    <th>00:05</th>
+                                </tr>
+                                <tr>
+                                    <th>13/12/2020 10:00</th>
+                                    <th>13/12/2020 10:05</th>
+                                    <th>00:05</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </modal>
+    </div>
+</div>

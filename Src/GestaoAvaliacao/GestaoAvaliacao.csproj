@@ -555,6 +555,7 @@
     <Content Include="Assets\js\angular\controllers\responseChangeLog\responseChangeLogController.js" />
     <Content Include="Assets\js\angular\controllers\subject\formSubjectController.js" />
     <Content Include="Assets\js\angular\controllers\subject\listSubjectController.js" />
+    <Content Include="Assets\js\angular\controllers\studentTestSession\studentTestSessionController.js" />
     <Content Include="Assets\js\angular\controllers\testGroup\formTestGroupController.js" />
     <Content Include="Assets\js\angular\controllers\testGroup\listTestGroupController.js" />
     <Content Include="Assets\js\angular\controllers\test\itemVersionListMenu.html" />
@@ -585,6 +586,7 @@
     <Content Include="Assets\js\angular\models\reportTestPerformance\reportTestPerformanceModel.js" />
     <Content Include="Assets\js\angular\models\responseChangeLog\responseChangeLogModel.js" />
     <Content Include="Assets\js\angular\models\subject\subjectModel.js" />
+    <Content Include="Assets\js\angular\models\studentTestSession\studentTestSessionModel.js" />
     <Content Include="Assets\js\angular\models\testGroup\testGroupModel.js" />
     <Content Include="Assets\js\angular\models\test\testPermissionModel.js" />
     <Content Include="Assets\js\angular\services\ApiSetting.js" />
@@ -1709,6 +1711,8 @@
     <Content Include="Views\ProvaSP\IndexApp.cshtml" />
     <Content Include="Views\ProvaSP\IndexAppContainer.cshtml" />
     <Content Include="Views\ElectronicTest\HomeAluno.cshtml" />
+    <Content Include="Views\StudentTestSession\Index.cshtml" />
+    <Content Include="Views\Test\IndexStudentResponses.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1718,6 +1722,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ProvaSPController.cs" />
+    <Compile Include="Controllers\StudentTestSessionController.cs" />
     <Compile Include="Hubs\Tests\StudentTestSessionHub.cs" />
     <Compile Include="Startup.cs" />
     <Content Include="App_Code\HelperPage.cs" />
@@ -1861,7 +1866,6 @@
     <Content Include="Views\ReportCorrection\IndexSchool.cshtml" />
     <Content Include="Views\ReportCorrection\IndexSection.cshtml" />
     <Content Include="Views\ReportCorrection\IndexStudent.cshtml" />
-    <Content Include="Views\Test\IndexStudentResponses.cshtml" />
     <Content Include="Views\AnswerSheet\IndexAnswerSheetStudent.cshtml" />
     <Content Include="Views\ReportAnswerSheet\FollowUpIdentificationSchool.cshtml" />
     <Content Include="Views\ReportAnswerSheet\FollowUpIdentificationFiles.cshtml" />

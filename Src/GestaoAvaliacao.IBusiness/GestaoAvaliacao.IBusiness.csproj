@@ -75,6 +75,7 @@
     <Compile Include="ISectionTestStatsBusiness.cs" />
     <Compile Include="IServiceAnswerSheetInfoBusiness.cs" />
     <Compile Include="IReportTestPerformanceBusiness.cs" />
+    <Compile Include="IStudentTestSessionBusiness.cs" />
     <Compile Include="IStudentCorrectionBusiness.cs" />
     <Compile Include="IStudentTestAbsenceReasonBusiness.cs" />
     <Compile Include="IStudentTestAccoplishmentBusiness.cs" />

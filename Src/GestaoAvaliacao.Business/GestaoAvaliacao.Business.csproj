@@ -101,6 +101,7 @@
     <Compile Include="SectionTestStatsBusiness.cs" />
     <Compile Include="ServiceAnswerSheetInfoBusiness.cs" />
     <Compile Include="ReportTestPerformanceBusiness.cs" />
+    <Compile Include="StudentTestSessionBusiness.cs" />
     <Compile Include="StudentCorrectionBusiness.cs" />
     <Compile Include="StudentsTestSent\Producers\Datas\StudentTestSentMessageData.cs" />
     <Compile Include="StudentsTestSent\Producers\IStudentTestSentProducer.cs" />

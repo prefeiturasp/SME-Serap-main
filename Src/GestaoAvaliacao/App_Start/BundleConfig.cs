@@ -1826,6 +1826,31 @@ namespace GestaoAvaliacao.App_Start
             );
 
             #endregion
+
+            #region StudentTestSession
+
+            #region StudentTestSession_Index
+
+            bundles.Add(
+                new ScriptBundle("~/bundles/StudentTestSession_js")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.js")
+                .Include("~/Assets/js/angular/services/_bundle/pager/services.js")
+                .Include("~/Assets/js/angular/directives/_bundle/modal/modal.js")
+                .Include("~/Assets/js/angular/services/_bundle/util/util.js")
+                .Include("~/Assets/js/angular/models/test/testAdministrateModel.js")
+                .Include("~/Assets/js/angular/models/adherence/adherenceModel.js")
+                .Include("~/Assets/js/angular/controllers/studentTestSession/studentTestSessionController.js")
+                .Include("~/Assets/js/angular/models/studentTestSession/studentTestSessionModel.js")
+            );
+
+            bundles.Add(
+                new StyleBundle("~/bundles/StudentTestSession_css")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.css")
+            );
+
+            #endregion
+
+            #endregion
         }
     }
 }
