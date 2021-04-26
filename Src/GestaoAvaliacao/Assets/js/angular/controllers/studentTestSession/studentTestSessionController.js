@@ -169,12 +169,13 @@
 			});
 		};
 
-		$scope.openModalTempoDeCadaSessao = function openModal() {
+		$scope.openModalTempoDeCadaSessao = function openModal(sessoes) {
+			$scope.sessoes = sessoes;
 			angular.element("#tempoDeCadaSessao").modal({ backdrop: 'static' });
 		}
 
 		$scope.arrivingTest = function __arrivingTest() {
-			$window.location.href = '/StudentTestSession?test_id=' + $scope.params.test_id;
+			$window.location.href = '/Test/IndexStudentResponses?test_id=' + $scope.params.test_id;
 		};
 	};
 

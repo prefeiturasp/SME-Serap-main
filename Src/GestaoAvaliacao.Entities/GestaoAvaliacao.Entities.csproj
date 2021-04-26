@@ -70,6 +70,8 @@
     <Compile Include="AnswerSheetBatchLog.cs" />
     <Compile Include="CorrectionStudentGrid.cs" />
     <Compile Include="DTO\StudentsTestSent\FinalizeCorrectionDto.cs" />
+    <Compile Include="DTO\StudentTestSession\StudentTestSessionDto.cs" />
+    <Compile Include="DTO\StudentTestSession\TestSessionDto.cs" />
     <Compile Include="StudentsTestSent\StudentTestSent.cs" />
     <Compile Include="DTO\Abstractions\NotificableDto.cs" />
     <Compile Include="DTO\AdherenceDTO.cs" />

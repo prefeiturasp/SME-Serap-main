@@ -1,5 +1,6 @@
 ﻿using GestaoAvaliacao.Entities.StudentTestAccoplishments;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.IRepository
@@ -17,5 +18,7 @@ namespace GestaoAvaliacao.IRepository
         Task<StudentTestAccoplishment> GetAsync(long aluId, long turId, long testId);
 
         Task<StudentTestSession> GetSessionAsync(Guid connectionId);
+
+        Task<List<StudentTestAccoplishment>> GetAsync(long turId, long testId);
     }
 }

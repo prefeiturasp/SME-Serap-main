@@ -3,8 +3,10 @@ using GestaoAvaliacao.Entities.StudentTestAccoplishments;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Repository.StudentTestAccoplishments
@@ -63,6 +65,11 @@ namespace GestaoAvaliacao.Repository.StudentTestAccoplishments
             => _context.StudentTestAccoplishments
             .Include(x => x.Sessions)
             .FirstOrDefaultAsync(x => x.AluId == aluId && x.TurId == turId && x.Test_Id == testId);
+
+        public Task<List<StudentTestAccoplishment>> GetAsync(long turId, long testId)
+            => _context.StudentTestAccoplishments
+            .Include(x => x.Sessions)
+            .Where(x => x.TurId == turId && x.Test_Id == testId).ToListAsync();
 
         public Task<StudentTestSession> GetSessionAsync(Guid connectionId) 
             => _context.StudentTestSessions
