@@ -158,7 +158,7 @@
                         <th style="width: 15%">Situação da correção</th>
                         <th class="center" ng-if="AllowAnswer" style="width: 5%">Respostas dos alunos</th>
                         <th class="center" ng-if="ShowResult" style="width: 10%">Resultados</th>
-                        <th class="center" ng-if="ShowResult" style="width: 5%">Tempo de Resposta</th>
+                        <th class="center" style="width: 5%">Tempo de Resposta</th>
                     </tr>
 				</thead>
 				<tbody>
@@ -188,7 +188,7 @@
                             </a>
                         </th>
                         @* Tempo de Respostas *@
-                        <th class="center" ng-if="ShowResult">
+                        <th class="center">
                             <a ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Success) || team.StatusCorrection == @((Byte)EnumStatusCorrection.PartialSuccess)" ng-click="setSessionStorage()" href="~/StudentTestSession?test_id={{testInformation.TestId}}&team_id={{team.tur_id}}&esc_id={{team.esc_id}}" data-trigger="hover" data-type="success" data-title="Resultados" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
                                 <i class="material-icons">insert_chart</i>
                             </a>
