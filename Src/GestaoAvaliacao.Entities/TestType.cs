@@ -9,7 +9,7 @@ namespace GestaoAvaliacao.Entities
 		public TestType(){
 			TestTypeItemLevel = new List<TestTypeItemLevel>();
 			TestTypeCourses = new List<TestTypeCourse>();
-		}
+        }
 
 		public string Description { get; set; }
 

@@ -139,6 +139,7 @@
     <Compile Include="TestPermissionBusiness.cs" />
     <Compile Include="TestSectionStatusCorrectionBusiness.cs" />
     <Compile Include="TestSubGroupBusiness.cs" />
+    <Compile Include="TestTimeBusiness.cs" />
     <Compile Include="TestTypeBusiness.cs" />
     <Compile Include="TestTypeCourseBusiness.cs" />
     <Compile Include="TestTypeCourseCurriculumGradeBusiness.cs" />
@@ -152,6 +153,10 @@
     <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Domain\AvaliaMais.FolhaRespostas.Domain.csproj">
       <Project>{390CA6C5-2A34-4F9E-A38E-7BBBB94E6EDD}</Project>
       <Name>AvaliaMais.FolhaRespostas.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Dtos\GestaoAvaliacao.Dtos.csproj">
+      <Project>{bc0b4ece-7048-4e0e-a993-ab2f6089ecdd}</Project>
+      <Name>GestaoAvaliacao.Dtos</Name>
     </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
       <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>

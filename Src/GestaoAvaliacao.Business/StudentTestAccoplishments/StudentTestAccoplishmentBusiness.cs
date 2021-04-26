@@ -1,9 +1,12 @@
 ﻿using FluentValidation;
+using GestaoAvaliacao.Dtos.StudentTestAccoplishments;
+using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.DTO.StudentTestAccoplishments;
 using GestaoAvaliacao.Entities.StudentTestAccoplishments;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,16 +16,19 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
     {
         private readonly IStudentTestAccoplishmentRepository _studentTestAccoplishmentRepository;
         private readonly ITestRepository _testRepository;
+        private readonly IStudentCorrectionBusiness _studentCorrectionBusiness;
         private readonly IValidator<StartStudentTestSessionDto> _startStudentTestSessionValidator;
         private readonly IValidator<EndStudentTestSessionDto> _endStudentTestSessionValidator;
         private readonly IValidator<EndStudentTestAccoplishmentDto> _endStudentTestAccoplishmentValidator;
 
-        public StudentTestAccoplishmentBusiness(IStudentTestAccoplishmentRepository studentTestAccoplishmentRepository, ITestRepository testRepository,
+        public StudentTestAccoplishmentBusiness(IStudentTestAccoplishmentRepository studentTestAccoplishmentRepository,
+            ITestRepository testRepository, IStudentCorrectionBusiness studentCorrectionBusiness,
             IValidator<StartStudentTestSessionDto> startStudentTestSessionValidator, IValidator<EndStudentTestSessionDto> endtudentTestSessionValidator,
             IValidator<EndStudentTestAccoplishmentDto> endStudentTestAccoplishmentValidator)
         {
             _studentTestAccoplishmentRepository = studentTestAccoplishmentRepository;
             _testRepository = testRepository;
+            _studentCorrectionBusiness = studentCorrectionBusiness;
             _startStudentTestSessionValidator = startStudentTestSessionValidator;
             _endStudentTestSessionValidator = endtudentTestSessionValidator;
             _endStudentTestAccoplishmentValidator = endStudentTestAccoplishmentValidator;
@@ -161,5 +167,102 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
             await _studentTestAccoplishmentRepository.AddAsync(studentTestAccoplishment);
             return studentTestAccoplishment;
         }
+
+        public async Task<StudentTestTimeResultDto> GetStudenteResultAsync(List<ElectronicTestDTO> electronicTests)
+        {
+            var resultado = new StudentTestTimeResultDto
+            {
+                Ano = DateTime.Now.Year
+            };
+            var listaDeAnos = new List<int>();
+            var listaDeProvasDoAnoCorrente = new List<StudentTestTimeListaDto>();
+            var listaDeProvasDosAnosAnteriores = new List<StudentTestTimeListaDto>();
+
+            var temposDeDuracao = await _studentTestAccoplishmentRepository.GetAsyncByAluId(electronicTests.FirstOrDefault().alu_id);
+
+            foreach (var electronicTest in electronicTests)
+            {
+                var tempoDeDuracaoDaProva = temposDeDuracao.FirstOrDefault(o => o.TestId == electronicTest.Id);
+                var studentCorrection = await _studentCorrectionBusiness.GetStudentCorrectionByTestAluId(electronicTest.Id, electronicTest.alu_id, electronicTest.tur_id);
+                if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
+                    studentCorrection.provaFinalizada = false;
+
+                if ((studentCorrection == null && electronicTest.quantDiasRestantes > 0) ||
+                    (studentCorrection != null && !studentCorrection.provaFinalizada.Value && electronicTest.quantDiasRestantes > 0))
+                    continue;
+
+                var dataDeFinalizacaoDaProva = "";
+                if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
+                    studentCorrection.provaFinalizada = false;
+
+                if (electronicTest.ApplicationEndDate.Year >= resultado.Ano)
+                {
+                    if ((studentCorrection.provaFinalizada.Value) && studentCorrection.UpdateDate <= new DateTime(2000, 01, 01))
+                        dataDeFinalizacaoDaProva = electronicTest.ApplicationEndDate.ToShortDateString();
+                    else if ((studentCorrection.provaFinalizada.Value) && studentCorrection.UpdateDate > new DateTime(2000, 01, 01))
+                        dataDeFinalizacaoDaProva = studentCorrection.UpdateDate.ToShortTimeString();
+                    else
+                        dataDeFinalizacaoDaProva = "(sem informação).";
+
+                    resultado.ProvasDoAnoCorrente = true;
+                    listaDeProvasDoAnoCorrente.Add(new StudentTestTimeListaDto
+                    {
+                        Id = electronicTest.Id,
+                        TurId = electronicTest.tur_id,
+                        EscId = electronicTest.esc_id,
+                        DreId = electronicTest.dre_id,
+                        DataDeFinalizacao = dataDeFinalizacaoDaProva,
+                        NomeDaProva = electronicTest.Description,
+                        Periodo = electronicTest.FrequencyApplicationText,
+                        QuantidadeDeItens = electronicTest.NumberItem ?? 0,
+                        TempoDeProva = tempoDeDuracaoDaProva?.TempoDeDuracao ?? "(sem informação)",
+                        Ano = electronicTest.ApplicationEndDate.Year
+                    });
+
+                    if (!listaDeAnos.Any(s => s == electronicTest.ApplicationEndDate.Year))
+                        listaDeAnos.Add(electronicTest.ApplicationEndDate.Year);
+                }
+                else
+                {
+                    if (studentCorrection == null ||
+                        (studentCorrection.UpdateDate <= new DateTime(2000, 01, 01)
+                        && electronicTest.ApplicationEndDate > new DateTime(2000, 01, 01))
+                    )
+                        dataDeFinalizacaoDaProva = electronicTest.ApplicationEndDate.ToShortDateString();
+                    else if (studentCorrection != null && studentCorrection.UpdateDate > new DateTime(2000, 01, 01))
+                        dataDeFinalizacaoDaProva = studentCorrection.UpdateDate.ToShortTimeString();
+                    else
+                        dataDeFinalizacaoDaProva = "(sem informação).";
+
+                    listaDeProvasDosAnosAnteriores.Add(new StudentTestTimeListaDto
+                    {
+                        Id = electronicTest.Id,
+                        TurId = electronicTest.tur_id,
+                        EscId = electronicTest.esc_id,
+                        DreId = electronicTest.dre_id,
+                        DataDeFinalizacao = dataDeFinalizacaoDaProva,
+                        NomeDaProva = electronicTest.Description,
+                        Periodo = electronicTest.FrequencyApplicationText,
+                        QuantidadeDeItens = electronicTest.NumberItem ?? 0,
+                        TempoDeProva = tempoDeDuracaoDaProva?.TempoDeDuracao ?? "(sem informação) ",
+                        Ano = electronicTest.ApplicationEndDate.Year
+                    });
+
+                    if (!listaDeAnos.Any(s => s == electronicTest.ApplicationEndDate.Year))
+                        listaDeAnos.Add(electronicTest.ApplicationEndDate.Year);
+                }
+            }
+            resultado.ListaDeAnos = listaDeAnos.OrderByDescending(o => o).ToList();
+            resultado.ListaProvasDoAnoCorrente = listaDeProvasDoAnoCorrente;
+            resultado.ListaProvasDosAnosAnteriores = listaDeProvasDosAnosAnteriores;
+
+            return resultado;
+        }
+
+        public async Task<StudentTestTimeDto> GetAsyncByAluIdTurIdTestId(long aluId, long turId, long testId)
+            => await _studentTestAccoplishmentRepository.GetAsyncByAluIdTurIdTestId(aluId, turId, testId);
+
+        public async Task<List<StudentTestTimeDto>> GetAsyncByAluIdTestId(long aluId, List<long> testIds)
+            => await _studentTestAccoplishmentRepository.GetAsyncByAluIdTestId(aluId, testIds);
     }
 }

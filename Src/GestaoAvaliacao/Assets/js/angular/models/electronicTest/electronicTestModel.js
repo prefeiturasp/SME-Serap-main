@@ -30,6 +30,10 @@
             'finalizeCorrection': {
                 method: 'POST',
                 url: base_url('ElectronicTest/FinalizeCorrection')
+            },
+            'getTestTime': {
+                method: 'GET',
+                url: base_url('ElectronicTest/GetTestTime')
             }
         };
 

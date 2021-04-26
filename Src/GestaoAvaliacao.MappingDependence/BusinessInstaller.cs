@@ -20,6 +20,8 @@ using GestaoAvaliacao.Business.StudentTestAccoplishments.Validators;
 using GestaoAvaliacao.Entities.DTO.StudentTestAccoplishments;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IBusiness.StudentsTestSent;
+using GestaoAvaliacao.IRepository;
+using GestaoAvaliacao.MongoRepository;
 using GestaoAvaliacao.Repository;
 using GestaoAvaliacao.Repository.StudentTestAccoplishments;
 using GestaoEscolar.Business;
@@ -136,6 +138,11 @@ namespace GestaoAvaliacao.MappingDependence
 
             container.Register(Classes.FromAssemblyContaining<TestTypeBusiness>()
                                 .BasedOn(typeof(ITestTypeBusiness))
+                                .WithService.AllInterfaces()
+                                .SetLifestyle(LifestylePerWebRequest));
+
+            container.Register(Classes.FromAssemblyContaining<TestTimeBusiness>()
+                                .BasedOn(typeof(ITestTimeBusiness))
                                 .WithService.AllInterfaces()
                                 .SetLifestyle(LifestylePerWebRequest));
 
@@ -513,12 +520,16 @@ namespace GestaoAvaliacao.MappingDependence
 
         public static IStudentTestAccoplishmentBusiness GetIStudentTestAccoplishmentBusinessForHub()
         {
+            var studentCorrectionRepository = new StudentCorrectionRepository();
+            var studentTestAbsenceReasonRepository = new StudentTestAbsenceReasonRepository();
+            var studentCorrectionBusiness = new StudentCorrectionBusiness(studentCorrectionRepository, studentTestAbsenceReasonRepository);
+
             var repository = new StudentTestAccoplishmentRepository();
             var testRepository = new TestRepository();
             var startSessionValidator = new StartStudentTestSessionValidator();
             var endSessionValidator = new EndStudentTestSessionValidator();
             var endTestValidator = new EndStudentTestAccoplishmentValidator();
-            return new StudentTestAccoplishmentBusiness(repository, testRepository, startSessionValidator, endSessionValidator, endTestValidator);
+            return new StudentTestAccoplishmentBusiness(repository, testRepository, studentCorrectionBusiness, startSessionValidator, endSessionValidator, endTestValidator);
         }
 
         private void InstallValidators(IWindsorContainer container)

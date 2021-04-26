@@ -5982,6 +5982,11 @@ h3.label-menu {
         margin-left: 10px;
     }
 
+    .sem-registros {
+        background-color: #E9967A;
+        color: red;
+    }
+
     .nao-iniciadas {
         background-color: #E9967A;
     }
