@@ -17,17 +17,23 @@ namespace GestaoAvaliacao.Business
     {
         private readonly IStudentTestAbsenceReasonBusiness _studentTestAbsenceReasonBusiness;
         private readonly IStudentTestAccoplishmentRepository _studentTestAccoplishmentRepository;
+        private readonly ITestBusiness _testBusiness;
 
-        public StudentTestSessionBusiness(IStudentTestAbsenceReasonBusiness studentTestAbsenceReasonBusiness, IStudentTestAccoplishmentRepository studentTestAccoplishmentRepository)
+        public StudentTestSessionBusiness(IStudentTestAbsenceReasonBusiness studentTestAbsenceReasonBusiness, 
+            IStudentTestAccoplishmentRepository studentTestAccoplishmentRepository, ITestBusiness testBusiness)
         {
             _studentTestAbsenceReasonBusiness = studentTestAbsenceReasonBusiness;
             _studentTestAccoplishmentRepository = studentTestAccoplishmentRepository;
+            _testBusiness = testBusiness;
         }
 
         public async Task<List<StudentTestSessionDto>> GetStudentTestSession(long test_id, long tur_id)
         {
             var alunos = _studentTestAbsenceReasonBusiness.GetByTestSection(test_id, tur_id, null, false).ToList();
             var studentsSession = await _studentTestAccoplishmentRepository.GetAsync(tur_id, test_id);
+            var teste = _testBusiness.GetTestById(test_id);
+            var tempoDeProvaEmSegundos = TimeSpan.FromSeconds(teste.TestTime.Segundos);
+            var tempoDeProvaEstimado = tempoDeProvaEmSegundos == TimeSpan.Zero ? "Prova sem limite de tempo" : tempoDeProvaEmSegundos.ToString(@"hh\:mm\:ss");
             var studentsTestSession = new List<StudentTestSessionDto>();
             foreach (var aluno in alunos)
             {
@@ -38,6 +44,7 @@ namespace GestaoAvaliacao.Business
                 {
                     NumeroDaChamada = aluno.mtu_numeroChamada.ToString(),
                     NomeDoAluno = aluno.alu_nome,
+                    TempoEstimadoDeProva = tempoDeProvaEstimado,
                     TempoTotalDaSessao = tempoTotal.ToString(@"hh\:mm\:ss"),
                     Session = sessions,
                 };

@@ -190,7 +190,7 @@
                         @* Tempo de Respostas *@
                         <th class="center">
                             <a ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Success) || team.StatusCorrection == @((Byte)EnumStatusCorrection.PartialSuccess)" ng-click="setSessionStorage()" href="~/StudentTestSession?test_id={{testInformation.TestId}}&team_id={{team.tur_id}}&esc_id={{team.esc_id}}" data-trigger="hover" data-type="success" data-title="Resultados" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
-                                <i class="material-icons">insert_chart</i>
+                                <i class="fa fa-hourglass-half" style="font-size: 15px;"></i>
                             </a>
                         </th>
                     </tr>

@@ -174,6 +174,12 @@
 			angular.element("#tempoDeCadaSessao").modal({ backdrop: 'static' });
 		}
 
+		$scope.openModalInfoSessao = function openModalInfoSessao() {
+			angular.element("#infoSessao").modal({ backdrop: 'static' });
+		}
+
+		
+
 		$scope.arrivingTest = function __arrivingTest() {
 			$window.location.href = '/Test/IndexStudentResponses?test_id=' + $scope.params.test_id;
 		};

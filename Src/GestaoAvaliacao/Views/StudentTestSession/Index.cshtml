@@ -2,7 +2,7 @@
 <alert></alert>
 <div class="wellCustom" ng-controller="StudentTestSessionController" ng-init='init()'>
     @*Bloquear a tela quando não houver permissão*@
-    <div ng-if="!blockPage">
+    <p ng-if="!blockPage">
         @* Header da Adesão *@
         <div class="headerCustom">
             <h4>Tempo de prova dos alunos<span>Listagem</span></h4>
@@ -44,20 +44,27 @@
                 <col width="80">
                 <thead>
                     <tr>
-                        <th style="text-align: right; width: 15%">Número da chamada</th>
-                        <th style="width: 35%">Nome do Aluno</th>
-                        <th style="text-align: right; width: 15%">Tempo total de cada sessão</th>
-                        <th style="text-align: center; width: 15%">Tempo de cada sessão</th>
+                        <th style="text-align: right; width: 10%">Número da chamada</th>
+                        <th style="width: 25%">Nome do Aluno</th>
+                        <th style="text-align: right; width: 15%">Tempo previsto de prova</th>
+                        <th style="text-align: right; width: 15%">Tempo total de prova</th>
+                        <th style="text-align: center; width: 15%">
+                            Tempo de cada sessão
+                            <a ng-click="openModalInfoSessao()" data-trigger="hover" data-type="success" data-title="Tempo de cada sessão" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+                                <i class="fa fa-info-circle" style="font-size:21px;"></i>
+                            </a>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="($indexTeam, studentSession) in list track by $indexTeam">
                         <th style="text-align:right;">{{studentSession.NumeroDaChamada}}</th>
                         <th>{{studentSession.NomeDoAluno}}</th>
+                        <th style="text-align:right;">{{studentSession.TempoEstimadoDeProva}}</th>
                         <th style="text-align:right;">{{studentSession.TempoTotalDaSessao}}</th>
                         <th class="center">
-                            <a ng-click="openModalTempoDeCadaSessao(studentSession.Session)" data-trigger="hover" data-type="success" data-title="Resultados" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
-                                <i class="material-icons">insert_chart</i>
+                            <a ng-click="openModalTempoDeCadaSessao(studentSession.Session)" data-trigger="hover" data-type="success" data-title="Tempo de cada sessão" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+                                <i class="fa fa-clock-o" style="font-size: 21px;"></i>
                             </a>
                         </th>
                     </tr>
@@ -70,15 +77,17 @@
             <p class="nresultados">Nenhum resultado encontrado.</p>
         </div>
 
-        <modal id="tempoDeCadaSessao" modal-title="<p>Tempo de sessão da Prova</p>">
+        <modal id="tempoDeCadaSessao" modal-title="<p>Tempo de sessão da prova</p>">
+            <p>Sessão é o tempo que o aluno permanece logado ao responder a prova.</p>
+            <br />
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-sm-12 text-right">
                         <table ng-if="sessoes.length > 0" class="table tableAdesao">
                             <thead>
                                 <tr>
-                                    <th style="width: 40%">Hora Inicial</th>
-                                    <th style="width: 40%">Hora Final</th>
+                                    <th style="width: 40%">Data e hora inicial</th>
+                                    <th style="width: 40%">Data e hora final</th>
                                     <th style="width: 20%">Tempo</th>
                                 </tr>
                             </thead>
@@ -97,6 +106,10 @@
                     </div>
                 </div>
             </div>
+        </modal>
+
+        <modal id="infoSessao" modal-title="<p>O que é sessão?</p>">
+            <p>Sessão é o tempo que o aluno permanece logado ao responder a prova.</p>
         </modal>
     </div>
 </div>

@@ -12,5 +12,6 @@ namespace GestaoAvaliacao.Entities.DTO
         public string NomeDoAluno { get; set; }
         public string TempoTotalDaSessao { get; set; }
         public List<TestSessionDto> Session { get; set; }
+        public string TempoEstimadoDeProva { get; set; }
     }
 }
