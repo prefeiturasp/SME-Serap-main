@@ -15,12 +15,11 @@ O [Ateliê do Software](http://forum.govit.prefeitura.sp.gov.br/uploads/default/
 
  1. [Sobre o Produto](#Sobre-o-Produto)
  2. [Sobre o Time](#Sobre-o-Time)
- 3. [Como surgiu](#Como-surgiu)
- 4. [Links Úteis](#Links-Úteis)
- 5. [Comunicação](#Comunicação)
- 6. [Como contribuir](#como-contribuir)
- 7. [Repositórios](#Repositórios)
- 8. [Instalação e Configuração](#Instalação-e-Configuração)
+ 3. [Links Úteis](#Links-Úteis)
+ 4. [Comunicação](#Comunicação)
+ 5. [Como contribuir](#como-contribuir)
+ 6. [Repositórios](#Repositórios)
+ 7. [Instalação e Configuração](#Instalação-e-Configuração)
 
 # Sobre o produto
 
@@ -37,14 +36,6 @@ O Serap **é um portal web que permite a criação, resposta e verificação de 
 ## Objetivos de Negócio
 
 É um sistema voltado para criação das avaliações, aplicação das avaliações e divulgação dos seus resultados. Por parte dos professores, permite a criação de avaliações, gestão das mesmas e visualização das respostas dos alunos. Já por parte dos estudantes, o sistema permite a realização das avaliações e visualização dos resultados.
-
-## Personas
-
-Administrador
-Diretor
-Assistente de Diretor
-Professor
-Aluno
 
 ## Funcionalidades
 
@@ -104,7 +95,7 @@ Aluno
 
 *Usuários do Telegram*
 
-## Links Úteis:
+# Links Úteis
 
 **Homologação:**
 
@@ -115,18 +106,18 @@ Aluno
 [https://serap.sme.prefeitura.sp.gov.br/](https://serap.sme.prefeitura.sp.gov.br/)
 
 
-## Comunicação:
+# Comunicação
 
 | Canal de comunicação | Objetivos |
 |----------------------|-----------|
-| [Issues do Github](https://github.com/prefeiturasp/SME-Serap-main) | - Sugestão de novas funcionalidades<br> - Reportar bugs<br> - Discussões técnicas |
+| [Issues do Github](https://github.com/prefeiturasp/SME-Serap-main/issues) | - Sugestão de novas funcionalidades<br> - Reportar bugs<br> - Discussões técnicas |
 
 
 # Como contribuir
 
 Contribuições são **super bem vindas**! Se você tem vontade de construir o PTRF conosco, veja o nosso [guia de contribuição](./CONTRIBUTING.md) onde explicamos detalhadamente como trabalhamos e de que formas você pode nos ajudar a alcançar nossos objetivos. Lembrando que todos devem seguir  nosso [código de conduta](./CODEOFCONDUCT.md).
 
-## Repositórios:
+# Repositórios
 Informar os repositórios de código que envolvem a solução:
 [SERAP](https://github.com/prefeiturasp/SME-Serap-main)
 [Integração EOL](https://github.com/prefeiturasp/SME-Integracao-EOL)
@@ -142,11 +133,11 @@ Informar os repositórios de código que envolvem a solução:
 [OMR Task Scheduler](https://github.com/prefeiturasp/SME-omr-task-scheduler )
 [OMR Configuration Manager](https://github.com/prefeiturasp/SME-omr-configuration-manager)
 
-## Documentações Auxiliares:
+# Documentações Auxiliares
 
 **Tutorial de Acesso aos Resultados:**
 [Tutorial de Acesso aos Resultados](https://educacao.sme.prefeitura.sp.gov.br/wp-content/uploads/Portals/1/Files/37706.pdf)
 
-## Instalação e Configuração:
+# Instalação e Configuração
 
 Em desenvolvimento.
