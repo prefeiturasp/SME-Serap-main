@@ -118,6 +118,10 @@
 			}
 		};
 
+		$(function () {
+			$('[data-toggle="popover"]').popover()
+		})
+
 	    /**
 		 * @function Obter objeto para configuração da page.
 		 * @param {object} authorize
@@ -173,12 +177,6 @@
 			$scope.sessoes = sessoes;
 			angular.element("#tempoDeCadaSessao").modal({ backdrop: 'static' });
 		}
-
-		$scope.openModalInfoSessao = function openModalInfoSessao() {
-			angular.element("#infoSessao").modal({ backdrop: 'static' });
-		}
-
-		
 
 		$scope.arrivingTest = function __arrivingTest() {
 			$window.location.href = '/Test/IndexStudentResponses?test_id=' + $scope.params.test_id;
