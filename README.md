@@ -19,7 +19,7 @@ O [Ateliê do Software](http://forum.govit.prefeitura.sp.gov.br/uploads/default/
  4. [Comunicação](#Comunicação)
  5. [Como contribuir](#como-contribuir)
  6. [Repositórios](#Repositórios)
- 7. [Instalação e Configuração](#Instalação-e-Configuração)
+ 7. [Documentos Auxiliares](#Documentos-Auxiliares)
 
 # Sobre o produto
 
@@ -138,6 +138,3 @@ Informar os repositórios de código que envolvem a solução:
 **Tutorial de Acesso aos Resultados:**
 [Tutorial de Acesso aos Resultados](https://educacao.sme.prefeitura.sp.gov.br/wp-content/uploads/Portals/1/Files/37706.pdf)
 
-# Instalação e Configuração
-
-Em desenvolvimento.
