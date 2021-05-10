@@ -559,6 +559,8 @@ namespace InserirItensNoSerap
 
         private string fonteField;
 
+        private string imagemField;
+
         /// <remarks/>
         public string Descricao
         {
@@ -584,6 +586,18 @@ namespace InserirItensNoSerap
                 this.fonteField = value;
             }
         }
+
+        public string ImagemItem
+        {
+            get
+            {
+                return this.imagemField;
+            }
+            set
+            {
+                this.imagemField = value;
+            }
+        }
     }
 
     /// <remarks/>
@@ -600,6 +614,8 @@ namespace InserirItensNoSerap
         private bool corretoField;
 
         private string idOpcaoField;
+
+        private string imagemAlternativaField;
 
         /// <remarks/>
         public string Enunciado
@@ -651,6 +667,18 @@ namespace InserirItensNoSerap
             set
             {
                 this.idOpcaoField = value;
+            }
+        }
+
+        public string ImagemAlternativa
+        {
+            get
+            {
+                return this.imagemAlternativaField;
+            }
+            set
+            {
+                this.imagemAlternativaField = value;
             }
         }
     }
