@@ -7,6 +7,7 @@ namespace GestaoAvaliacao.IRepository
 {
     public interface IItemRepository
 	{
+		Item GetItemByItemCode(string itemCode);
 		Item Save(Item entity);
 		Item Update(Item entity);
 		Item Get(long id);
