@@ -210,6 +210,8 @@
             ng.e1_listaTipoProva = [];
             ng.grupoSubgrupoList = [];
             ng.e1_grupoSubgrupo = null;
+            ng.e1_tempoDeProva = null;
+            ng.tempoDeProvaList = [];
             ng.provaId = 0;
             //ComboBox tipo prova
             ng.e1_cbTipoProva = null;
@@ -305,6 +307,7 @@
                     r = r.lista;
                     ng.e1_listaTipoProva = angular.copy(r.testTypeList);
                     ng.e1_tipoNivelEnsino = angular.copy(r.TypeLevelEducation);
+                    ng.tempoDeProvaList = angular.copy(r.temposDeProva);
                     //Exibe tela assim que terminar de carregar
                     if (!ng.editMode) {
                         ng.mostrarTela = true;
@@ -453,6 +456,15 @@
             if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa1.alterou = true;
 
             if (!ng.e1_grupoSubgrupo)
+                return;
+        };
+
+        ng.e1_TempoDeProvaMudou = e1_TempoDeProvaMudou;
+        function e1_TempoDeProvaMudou() {
+
+            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa1.alterou = true;
+
+            if (!ng.e1_tempoDeProva)
                 return;
         };
 
@@ -1035,7 +1047,8 @@
                 "ElectronicTest": ng.isElectronicTest,
                 "ShowVideoFiles": ng.showVideoFiles,
                 "ShowAudioFiles": ng.showAudioFiles,
-                "TestSubGroup": ng.e1_grupoSubgrupo
+                "TestSubGroup": ng.e1_grupoSubgrupo,
+                "TestTime": ng.e1_tempoDeProva
             };
 
             self.etapa1.save(model, etapa1Salvou);
@@ -1347,6 +1360,7 @@
                     ng.params = r.Id;
                     ng.e1_cbTipoProva = procurarElementoEm([r.TestType], ng.e1_listaTipoProva)[0];
                     ng.e1_grupoSubgrupo = procurarElementoEm([r.TestSubGroup], ng.grupoSubgrupoList)[0];
+                    ng.e1_tempoDeProva = procurarElementoEm([r.TempoDeProva], ng.tempoDeProvaList)[0];
                     ng.Global = r.TestType.Global;
                     tipoProvaMudou();
                     ng.e1_cbTipoProva.Block = r.BlockItem > 0;
@@ -1642,7 +1656,6 @@
             pageItens = 10;
             itensCache = [];
 
-            debugger;
             carregarItensPorPagina();
         };
 

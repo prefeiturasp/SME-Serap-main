@@ -521,6 +521,8 @@
     <Content Include="Assets\js\angular\controllers\answerSheet\batchDetailsController.js" />
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\formCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\listCognitiveCompetenceController.js" />
+    <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsController.js" />
+    <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsResultController.js" />
     <Content Include="Assets\js\angular\controllers\correction\correctionResultController.js" />
     <Content Include="Assets\js\angular\controllers\correction\correctionController.js" />
     <Content Include="Assets\js\angular\controllers\correlatedSkill\formCorrelatedSkillController.js" />
@@ -553,8 +555,10 @@
     <Content Include="Assets\js\angular\controllers\reportTestPerformance\reportTestPerformanceDREController.js" />
     <Content Include="Assets\js\angular\controllers\reportTestPerformance\reportTestPerformanceSchoolController.js" />
     <Content Include="Assets\js\angular\controllers\responseChangeLog\responseChangeLogController.js" />
+    <Content Include="Assets\js\angular\controllers\StudentResults\studentResultsListController.js" />
     <Content Include="Assets\js\angular\controllers\subject\formSubjectController.js" />
     <Content Include="Assets\js\angular\controllers\subject\listSubjectController.js" />
+    <Content Include="Assets\js\angular\controllers\studentTestSession\studentTestSessionController.js" />
     <Content Include="Assets\js\angular\controllers\testGroup\formTestGroupController.js" />
     <Content Include="Assets\js\angular\controllers\testGroup\listTestGroupController.js" />
     <Content Include="Assets\js\angular\controllers\test\itemVersionListMenu.html" />
@@ -573,6 +577,8 @@
     <Content Include="Assets\js\angular\directives\_bundle\uploader\video-upload.js" />
     <Content Include="Assets\js\angular\filters\_bundle\capitalize\capitalize.js" />
     <Content Include="Assets\js\angular\models\administrativeUnitType\administrativeUnitTypeModel.js" />
+    <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsApiModel.js" />
+    <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsModel.js" />
     <Content Include="Assets\js\angular\models\electronicTest\electronicTestModel.js" />
     <Content Include="Assets\js\angular\models\knowledgeArea\knowledgeAreaModel.js" />
     <Content Include="Assets\js\angular\models\pageConfiguration\pageConfigurationModel.js" />
@@ -584,7 +590,9 @@
     <Content Include="Assets\js\angular\models\reportStudentPerformance\reportStudentPerformanceModel.js" />
     <Content Include="Assets\js\angular\models\reportTestPerformance\reportTestPerformanceModel.js" />
     <Content Include="Assets\js\angular\models\responseChangeLog\responseChangeLogModel.js" />
+    <Content Include="Assets\js\angular\models\StudentResults\studentResultsListModel.js" />
     <Content Include="Assets\js\angular\models\subject\subjectModel.js" />
+    <Content Include="Assets\js\angular\models\studentTestSession\studentTestSessionModel.js" />
     <Content Include="Assets\js\angular\models\testGroup\testGroupModel.js" />
     <Content Include="Assets\js\angular\models\test\testPermissionModel.js" />
     <Content Include="Assets\js\angular\services\ApiSetting.js" />
@@ -1709,6 +1717,11 @@
     <Content Include="Views\ProvaSP\IndexApp.cshtml" />
     <Content Include="Views\ProvaSP\IndexAppContainer.cshtml" />
     <Content Include="Views\ElectronicTest\HomeAluno.cshtml" />
+    <Content Include="Views\StudentTestSession\Index.cshtml" />
+    <Content Include="Views\Test\IndexStudentResponses.cshtml" />
+    <Content Include="Views\StudentResults\Index.cshtml" />
+    <Content Include="Views\StudentResultsGraphics\Index.cshtml" />
+    <Content Include="Views\StudentResults\Index_BKP.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1717,7 +1730,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
+    <Compile Include="Controllers\StudentResultsController.cs" />
     <Compile Include="Controllers\ProvaSPController.cs" />
+    <Compile Include="Controllers\StudentTestSessionController.cs" />
     <Compile Include="Hubs\Tests\StudentTestSessionHub.cs" />
     <Compile Include="Startup.cs" />
     <Content Include="App_Code\HelperPage.cs" />
@@ -1861,7 +1877,6 @@
     <Content Include="Views\ReportCorrection\IndexSchool.cshtml" />
     <Content Include="Views\ReportCorrection\IndexSection.cshtml" />
     <Content Include="Views\ReportCorrection\IndexStudent.cshtml" />
-    <Content Include="Views\Test\IndexStudentResponses.cshtml" />
     <Content Include="Views\AnswerSheet\IndexAnswerSheetStudent.cshtml" />
     <Content Include="Views\ReportAnswerSheet\FollowUpIdentificationSchool.cshtml" />
     <Content Include="Views\ReportAnswerSheet\FollowUpIdentificationFiles.cshtml" />
@@ -1894,6 +1909,10 @@
     <ProjectReference Include="..\AvaliaMais.FolhaRespostas.Infra.IoC\AvaliaMais.FolhaRespostas.Infra.IoC.csproj">
       <Project>{57a426e2-35e8-4a58-8ee7-b66e21398931}</Project>
       <Name>AvaliaMais.FolhaRespostas.Infra.IoC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoAvaliacao.Dtos\GestaoAvaliacao.Dtos.csproj">
+      <Project>{bc0b4ece-7048-4e0e-a993-ab2f6089ecdd}</Project>
+      <Name>GestaoAvaliacao.Dtos</Name>
     </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
       <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>
