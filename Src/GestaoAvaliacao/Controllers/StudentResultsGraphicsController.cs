@@ -76,6 +76,7 @@ namespace GestaoAvaliacao.Controllers
                 {
                     var dados = new
                     {
+                        AluId = electronicTests.alu_id,
                         Ano = Ano,
                         AnosDeAplicacaoDaProva = tests.Select(s => s.AnoDeAplicacaoDaProva).Distinct().ToList(),
                         Tests = testsFiltereds,

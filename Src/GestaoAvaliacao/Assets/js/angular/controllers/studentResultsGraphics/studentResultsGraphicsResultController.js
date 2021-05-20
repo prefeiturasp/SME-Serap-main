@@ -59,6 +59,15 @@
         };
 
         /**
+         * @function showElectronicTestResult.
+         * @param
+         * @return
+         */
+        $scope.redirectElectronicTestResult = function __redirectElectronicTestResult(testInformation) {
+            $window.location.href = '/ElectronicTestResult/Index?TestId=' + testInformation.TestId + '&AluId=' + testInformation.AluId + '&TurId=' + testInformation.TurId;
+        };
+
+        /**
 		 * @function Inicialização das informações da prova
 		 * @name configTestInformation
 		 * @namespace StudentResultsGraphicsResultController
@@ -70,6 +79,7 @@
         function configTestInformation(informations) {
 
             $scope.testInformation = {
+                AluId: informations.AluId,
                 Description: informations.testName !== undefined && informations.testName !== null ? informations.testName : "Prova sem nome",
                 FrequencyApplication: informations.frequencyApplication,
                 Discipline: informations.testDiscipline !== undefined && informations.testDiscipline !== null ? informations.testDiscipline : "Sem disciplina",

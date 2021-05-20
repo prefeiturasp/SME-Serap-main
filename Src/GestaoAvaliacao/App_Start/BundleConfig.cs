@@ -1737,6 +1737,25 @@ namespace GestaoAvaliacao.App_Start
 
             #endregion
 
+            #region ElectronicTestResult
+
+             #region (Index)
+
+            bundles.Add(
+                new ScriptBundle("~/bundles/ElectronicTestResult_js")
+                    //Controller e model js
+                    .Include("~/Assets/js/angular/controllers/electronicTestResult/indexElectronicTestResultController.js")
+                    .Include("~/Assets/js/angular/models/electronicTestResult/electronicTestResultModel.js")
+                    //directiva util
+                    .Include("~/Assets/js/angular/services/_bundle/util/util.js")
+            );
+            bundles.Add(
+                new StyleBundle("~/bundles/ElectronicTestResult_css")
+            );
+            #endregion
+
+            #endregion
+
             #region StudentsResult
 
             #region StudentResults_Index
