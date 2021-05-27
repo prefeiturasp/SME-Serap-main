@@ -64,7 +64,7 @@
          * @return
          */
         $scope.redirectElectronicTestResult = function __redirectElectronicTestResult(testInformation) {
-            $window.location.href = '/ElectronicTestResult/Index?TestId=' + testInformation.TestId + '&AluId=' + testInformation.AluId + '&TurId=' + testInformation.TurId;
+            $window.location.href = '/ElectronicTestResult/Index?Ano=' + testInformation.Ano + '&TestId=' + testInformation.TestId + '&AluId=' + testInformation.AluId + '&TurId=' + testInformation.TurId;
         };
 
         /**

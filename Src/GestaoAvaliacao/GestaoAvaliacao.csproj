@@ -521,6 +521,7 @@
     <Content Include="Assets\js\angular\controllers\answerSheet\batchDetailsController.js" />
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\formCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\listCognitiveCompetenceController.js" />
+    <Content Include="Assets\js\angular\controllers\electronicTestResult\indexElectronicTestResultController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsResultController.js" />
     <Content Include="Assets\js\angular\controllers\correction\correctionResultController.js" />
@@ -577,6 +578,7 @@
     <Content Include="Assets\js\angular\directives\_bundle\uploader\video-upload.js" />
     <Content Include="Assets\js\angular\filters\_bundle\capitalize\capitalize.js" />
     <Content Include="Assets\js\angular\models\administrativeUnitType\administrativeUnitTypeModel.js" />
+    <Content Include="Assets\js\angular\models\electronicTestResult\electronicTestResultModel.js" />
     <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsApiModel.js" />
     <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsModel.js" />
     <Content Include="Assets\js\angular\models\electronicTest\electronicTestModel.js" />
@@ -599,6 +601,8 @@
     <Content Include="Assets\js\angular\services\authenticationinterceptor.service.js" />
     <Content Include="Assets\js\vendor\charts-2.0\charts-2.0.js" />
     <Content Include="Assets\js\vendor\charts-2.0\horizontalBarLineDrawer.js" />
+    <Content Include="Assets\js\vendor\easytimer.js" />
+    <Content Include="Assets\js\vendor\easytimer.min.js" />
     <Content Include="Assets\js\vendor\FileSaver.js" />
     <Content Include="Assets\js\vendor\plg-notify.min.js" />
     <Content Include="Assets\js\vendor\resumable-js\resumable.js" />
@@ -1722,6 +1726,7 @@
     <Content Include="Views\StudentResults\Index.cshtml" />
     <Content Include="Views\StudentResultsGraphics\Index.cshtml" />
     <Content Include="Views\StudentResults\Index_BKP.cshtml" />
+    <Content Include="Views\ElectronicTestResult\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1730,6 +1735,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ElectronicTestResultController.cs" />
     <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
     <Compile Include="Controllers\StudentResultsController.cs" />
     <Compile Include="Controllers\ProvaSPController.cs" />

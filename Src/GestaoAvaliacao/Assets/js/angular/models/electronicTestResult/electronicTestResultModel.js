@@ -9,19 +9,19 @@
 
             'load': {
                 method: 'GET',
-                url: base_url('ElectronicTest/Load')
+                url: base_url('ElectronicTestResult/Load')
             },
             'loadByTestId': {
                 method: 'GET',
-                url: base_url('ElectronicTest/LoadByTestId')
+                url: base_url('ElectronicTestResult/LoadByTestId')
             },
             'loadTestItensByTestId': {
                 method: 'GET',
-                url: base_url('ElectronicTest/LoadTestItensByTestId')
+                url: base_url('ElectronicTestResult/LoadTestItensByTestId')
             },
             'loadStudentCorrectionAsync': {
                 method: 'GET',
-                url: base_url('ElectronicTest/LoadStudentCorrectionAsync')
+                url: base_url('ElectronicTestResult/LoadStudentCorrectionAsync')
             },
         };
 

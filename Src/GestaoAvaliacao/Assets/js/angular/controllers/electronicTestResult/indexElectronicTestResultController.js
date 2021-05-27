@@ -39,6 +39,7 @@
             ng.showHeaderDetails = false;
             ng.enunciadoFontSize = 14;
             ng.alternativasFontSize = 14;
+            ng.ano = 0;
             load();
         };
 
@@ -108,34 +109,26 @@
             ng.testId = ng.params.TestId;
             ng.aluId = ng.params.AluId;
             ng.turId = ng.params.TurId;
+            ng.ano = ng.params.Ano;
         }
 
         function load() {
             loadPagePros();
 
-            let testKeyStorage = getTestStorageKey(ng.testId);
-            let testFromStorage = JSON.parse(localStorage.getItem(testKeyStorage));
-
-            if (testFromStorage != null) {
-                ng.test = testFromStorage;
-                loadStudentCorrection();
-            }
-            else {
-                ElectronicTestResultModel.loadByTestId({ test_id: ng.testId }, function (result) {
-                    if (result.success) {
-                        if (result.test.Id > 0) {
-                            loadItens(result.test);
-                        }
-                        else {
-                            ng.message = true;
-                            ng.test = null;
-                        }
+            ElectronicTestResultModel.loadByTestId({ test_id: ng.testId }, function (result) {
+                if (result.success) {
+                    if (result.test.Id > 0) {
+                        loadItens(result.test);
                     }
                     else {
-                        $notification[result.type ? result.type : 'error'](result.message);
+                        ng.message = true;
+                        ng.test = null;
                     }
-                });
-            }
+                }
+                else {
+                    $notification[result.type ? result.type : 'error'](result.message);
+                }
+            });
         };
 
         // Load Itens paginated
@@ -182,8 +175,6 @@
         function finalizeLoadItens(test) {
             ng.test = test;
 
-            let testKeyStorage = getTestStorageKey(ng.testId);
-            localStorage.setItem(testKeyStorage, JSON.stringify(ng.test));
             loadStudentCorrection();
         };
 
@@ -196,22 +187,10 @@
                 return;
             }
 
-            let keyStorage = getStudentCorrectionStorageKey(ng.testId, ng.aluId, ng.turId);
-            var studentCorrection = JSON.parse(localStorage.getItem(keyStorage));
-
-            if (studentCorrection != null) {
-                updateChosenAlternatives(studentCorrection);
-                return;
-            }
-
             ElectronicTestResultModel.loadStudentCorrectionAsync({ test_id: ng.testId, alu_id: ng.aluId, tur_id: ng.turId }, function (result) {
-                if (result.success) {
-
-                    if (result.studentCorrection == null) {
-                        
-                    }
-                    else {
-                        localStorage.setItem(keyStorage, JSON.stringify(result.studentCorrection));
+                if (result.success)
+                {
+                    if (result.studentCorrection != null) {
                         updateChosenAlternatives(result.studentCorrection);
                     }
                 }
@@ -245,14 +224,6 @@
             ng.inicioProva = false;
         };
 
-        function getTestStorageKey(testId) {
-            return "Test-" + testId;
-        }
-
-        function getStudentCorrectionStorageKey(testId, aluId, turId) {
-            return "answerTest-" + testId + "-" + aluId + "-" + turId;
-        }
-
         ng.zoomAlternativas = function (up) {
             if (up == true && ng.alternativasFontSize < 22)
                 ng.alternativasFontSize = ng.alternativasFontSize + 4;
@@ -277,7 +248,8 @@
         ng.sair = sair;
 
         function sair() {
-            location.href = document.referrer;
+            debugger;
+            $window.location.href = 'http://localhost:54127/StudentResultsGraphics/Index?Ano=' + ng.ano + '&TestId=' + ng.testId;
         }
 
         ng.trustSrc = function (src) {

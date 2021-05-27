@@ -40,7 +40,7 @@ namespace GestaoAvaliacao.Controllers
             this.studentTestAccoplishmentBusiness = studentTestAccoplishmentBusiness;
         }
 
-        public async Task<ActionResult> Index(long? TestId, long? AluId, long? TurId)
+        public async Task<ActionResult> Index(int? Ano, long? TestId, long? AluId, long? TurId)
         {
             if (TestId.HasValue && AluId.HasValue && TurId.HasValue)
             {
@@ -314,6 +314,7 @@ namespace GestaoAvaliacao.Controllers
                     Numeration = x.Numeration,
                     NumerationSem = x.NumerationSem,
                     Order = x.Order,
+                    Correct = x.Correct,
                     Selected = false
                 })
                 .ToList();

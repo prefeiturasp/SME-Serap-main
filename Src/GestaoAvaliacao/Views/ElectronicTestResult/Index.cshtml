@@ -4,7 +4,13 @@
     <div class="well well-large questao">
         <div class="row">
             <div class="col-sm-12" style="margin-bottom: 50px;">
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="position: absolute; top: 0px; color: #5a94d6;">
+                <div class="col-sm-4 electronicTestHeader">
+                    <b>Questão {{ test.Itens[indiceItem].ItemOrder + 1 }}</b>
+                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;" />
+                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" />
+
+                </div>
+                <div class="col-sm-8 panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="color: #5a94d6;">
                     <div class="panel panel-default" style="margin-top: 10px;">
                         <div class="panel-heading" role="tab" id="headingOne">
                             <div role="button" data-toggle="collapse" data-parent="" href="" aria-expanded="true" aria-controls="" ng-click="loadHeaderDetais();" style="cursor: pointer; color: #5a94d6;">
@@ -22,16 +28,7 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="col-sm-12">
-                    <div class="electronicTestHeader">
-                        <b>Questão {{ test.Itens[indiceItem].ItemOrder + 1 }}</b>
-                        <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;" />
-                        <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" />
-
-                    </div>
-                    <hr />
-                </div>
+                <hr />
                 <div id="divEnunciado" ng-class="(test.Itens[indiceItem].ShowVideoFiles || test.Itens[indiceItem].ShowAudioFiles) ? 'col-sm-6' : 'col-sm-12'">
                     <div class="baseTextElementClass" ng-if="possuiTextoBase" ng-bind-html="test.Itens[indiceItem].BaseTextDescription | trustedHtml"></div>
                     <div class="statementElementClass" ng-bind-html="test.Itens[indiceItem].Statement | trustedHtml"></div>
@@ -42,12 +39,21 @@
                         <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomAlternativas(true)" style="margin-left: 15px;" />
                         <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomAlternativas(false)" />
                     </div>
-                    <div class="alternativas" ng-repeat="alternativa in test.Itens[indiceItem].Alternatives">
-                        <input ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)"
+                    <div class="alternativas" ng-repeat="alternativa in test.Itens[indiceItem].Alternatives"
+                         ng-class="{'alternativas': true==true,'response-correct':  alternativa.Correct, 'response-error':  !alternativa.Correct && alternativa.Selected}">
+                        <input ng-if="!alternativa.Selected" ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)"
                                type="radio" name="alternative"
                                ng-checked="alternativa.Selected">
+                        <input ng-if="alternativa.Selected"
+                               type="radio" name="alternative"
+                               ng-checked="alternativa.Selected" style="cursor: not-allowed;">
                         {{ alternativa.Numeration }}
-                        <label class="alternativeElementClass" ng-bind-html="alternativa.Description | trustedHtml"></label>
+                        <label class="alternativeElementClass" ng-bind-html="alternativa.Description | trustedHtml">
+                        </label>
+                        <i style="color:forestgreen;font-size: 19px;" ng-if="alternativa.Correct" class="fa fa-check"></i>
+                        <i style="color:red;font-size: 19px;" ng-if="!alternativa.Correct && alternativa.Selected" class="fa fa-times"></i>
+                        <br />
+                        <label ng-if="alternativa.Correct || (!alternativa.Correct && alternativa.Selected)" class="alternativeElementClass" ng-bind-html="alternativa.Justificative | trustedHtml" />
                     </div>
                 </div>
                 <div id="divVideosEAudios" ng-if="test.Itens[indiceItem].ShowVideoFiles || test.Itens[indiceItem].ShowAudioFiles" class="col-sm-6">
