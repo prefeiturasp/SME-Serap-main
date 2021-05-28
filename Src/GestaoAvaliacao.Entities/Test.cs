@@ -98,6 +98,7 @@ namespace GestaoAvaliacao.Entities
 
         public bool ShowVideoFiles { get; set; }
         public bool ShowAudioFiles { get; set; }
+        public bool ShowJustificate { get; set; }
 
     }
 }

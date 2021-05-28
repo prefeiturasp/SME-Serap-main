@@ -166,7 +166,8 @@
                 knowledgeAreaBlock: 'Gabarito com blocos de área de conhecimento',
                 electronicTest: 'Prova eletrônica',
                 showVideoFiles: 'Exibir conteúdo de vídeo',
-                showAudioFiles: 'Exibir conteúdo de áudio'
+                showAudioFiles: 'Exibir conteúdo de áudio',
+                showJustificate: 'Exibir justificativa'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
             //Lista de escolha 
@@ -252,6 +253,7 @@
             ng.isElectronicTest = false;
             ng.showVideoFiles = false;
             ng.showAudioFiles = false;
+            ng.showJustificate = false;
             //Lista de dificuldades do tipo de prova
             ng.e1_listaDificuldades = [];
             ng.Global = false;
@@ -614,6 +616,11 @@
 
         ng.selectShowAudioFiles = function () {
             ng.showAudioFiles = !ng.showAudioFiles;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selectShowJustificate = function () {
+            ng.showJustificate = !ng.showJustificate;
             self.etapa1.alterou = true;
         };
 
@@ -1047,6 +1054,7 @@
                 "ElectronicTest": ng.isElectronicTest,
                 "ShowVideoFiles": ng.showVideoFiles,
                 "ShowAudioFiles": ng.showAudioFiles,
+                "ShowJustificate": ng.showJustificate,
                 "TestSubGroup": ng.e1_grupoSubgrupo,
                 "TestTime": ng.e1_tempoDeProva
             };
@@ -1372,6 +1380,7 @@
                     ng.isElectronicTest = r.ElectronicTest;
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
+                    ng.showJustificate = r.ShowJustificate;
 					e1_formato_findTest = true;
                     ng.e1_folhaResp = true;
                     ng.frequencyApplication = r.FrequencyApplication;

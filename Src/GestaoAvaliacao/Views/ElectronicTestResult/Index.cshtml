@@ -53,7 +53,7 @@
                         <i style="color:forestgreen;font-size: 19px;" ng-if="alternativa.Correct" class="fa fa-check"></i>
                         <i style="color:red;font-size: 19px;" ng-if="!alternativa.Correct && alternativa.Selected" class="fa fa-times"></i>
                         <br />
-                        <label ng-if="alternativa.Correct || (!alternativa.Correct && alternativa.Selected)" class="alternativeElementClass" ng-bind-html="alternativa.Justificative | trustedHtml" />
+                        <label ng-if="test.ShowJustificate && (alternativa.Correct || (!alternativa.Correct && alternativa.Selected))" class="alternativeElementClass" ng-bind-html="alternativa.Justificative | trustedHtml" />
                     </div>
                 </div>
                 <div id="divVideosEAudios" ng-if="test.Itens[indiceItem].ShowVideoFiles || test.Itens[indiceItem].ShowAudioFiles" class="col-sm-6">

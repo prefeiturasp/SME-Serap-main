@@ -1110,7 +1110,8 @@ namespace GestaoAvaliacao.Repository
                     esc.uad_idSuperiorGestao as dre_id,
 	                esc.esc_nome,
                     tur.tur_codigo  as Turma,
-	                d.Description as Disciplina
+	                d.Description as Disciplina,
+                    T.ShowJustificate
                 FROM Test AS T WITH(NOLOCK)
                 INNER JOIN TestType AS TT WITH(NOLOCK)
 	                ON TT.Id = T.TestType_Id
@@ -1407,7 +1408,8 @@ namespace GestaoAvaliacao.Repository
 	                    TT.FrequencyApplication,
 	                    T.ApplicationEndDate,
                         T.ShowVideoFiles,
-                        T.ShowAudioFiles
+                        T.ShowAudioFiles,
+                        T.ShowJustificate
                     FROM
 	                    Test AS T WITH(NOLOCK)
 	                    INNER JOIN TestType AS TT WITH(NOLOCK)
@@ -1637,6 +1639,7 @@ namespace GestaoAvaliacao.Repository
                 test.ElectronicTest = entity.ElectronicTest;
                 test.ShowVideoFiles = entity.ShowVideoFiles;
                 test.ShowAudioFiles = entity.ShowAudioFiles;
+                test.ShowJustificate = entity.ShowJustificate;
 
                 test.UpdateDate = DateTime.Now;
 

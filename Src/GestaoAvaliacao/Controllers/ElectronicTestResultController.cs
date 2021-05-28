@@ -187,6 +187,7 @@ namespace GestaoAvaliacao.Controllers
                     QuantDiasRestantes = test.quantDiasRestantes,
                     FrequencyApplication = EnumHelper.GetDescriptionFromEnumValue((EnumFrenquencyApplication)test.FrequencyApplication),
                     ApplicationEndDate = test.ApplicationEndDate.ToString("dd/MM/yyyy"),
+                    ShowJustificate = test.ShowJustificate
                 };
 
                 return Json(new { success = true, test = ret }, JsonRequestBehavior.AllowGet);

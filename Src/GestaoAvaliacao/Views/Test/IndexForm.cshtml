@@ -167,11 +167,18 @@
                                     </div>
                                 </div>
 
-                                <div class="campoLabel">
+                                <div class="campoLabel col-md-6">
                                     @* Header *@
                                     <label class="label-pos-inline">  {{labels.electronicTest}}: </label>
                                     <div class="switch" ng-click="selectProvaEletronica();"
                                          ng-class="{'off': !isElectronicTest}" style="position: absolute; margin: 4px 206px;"><input type="button" /></div>
+                                </div>
+
+                                <div class="campoLabel col-md-6">
+                                    @* Header *@
+                                    <label class="label-pos-inline">  {{labels.showJustificate}}: </label>
+                                    <div class="switch" ng-click="selectShowJustificate();"
+                                         ng-class="{'off': !showJustificate}" style="position: absolute; margin: 4px 206px;"><input type="button" /></div>
                                 </div>
 
                                 <div class="campoLabel col-md-6">
