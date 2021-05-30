@@ -252,7 +252,7 @@ namespace GestaoAvaliacao.Business.StudentTestAccoplishments
                         listaDeAnos.Add(electronicTest.ApplicationEndDate.Year);
                 }
             }
-            resultado.ListaDeAnos = listaDeAnos.OrderByDescending(o => o).ToList();
+            resultado.ListaDeAnos = listaDeAnos.Where(w => w != resultado.Ano).OrderByDescending(o => o).ToList();
             resultado.ListaProvasDoAnoCorrente = listaDeProvasDoAnoCorrente;
             resultado.ListaProvasDosAnosAnteriores = listaDeProvasDosAnosAnteriores;
 
