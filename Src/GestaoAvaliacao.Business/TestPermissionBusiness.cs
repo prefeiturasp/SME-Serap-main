@@ -4,6 +4,7 @@ using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Business
 {
@@ -20,6 +21,11 @@ namespace GestaoAvaliacao.Business
         public IEnumerable<TestPermission> GetByTest(long test_id, Guid? gru_id)
         {
             return testPermissionRepository.GetByTest(test_id, gru_id);
+        }
+
+        public async Task<List<TestPermission>> GetPermissionByTest(long test_id, Guid? gru_id)
+        {
+            return await testPermissionRepository.GetPermissionByTest(test_id, gru_id);
         }
 
         #endregion

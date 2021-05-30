@@ -52,5 +52,9 @@ namespace GestaoAvaliacao.IRepository
         IEnumerable<TestResult> GetTestsBySubGroupTcpId(long Id, long tcp_id);
         Task<IEnumerable<Guid>> GetStudentDeficiencies(Guid pes_id);
         TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
-    }
+
+		Task<ElectronicTestDTO> GetElectronicTestByPesIdAndTestId(Guid pes_id, long testId);
+
+		Task<List<ElectronicTestDTO>> GetTestsByPesId(Guid pes_id);
+	}
 }

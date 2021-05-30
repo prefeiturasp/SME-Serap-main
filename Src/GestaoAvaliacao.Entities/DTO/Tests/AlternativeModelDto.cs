@@ -14,6 +14,7 @@
         public long Item_Id { get; set; }
 
         public bool Selected { get; set; }
+        public bool Correct { get; set; }
 
         public string NumerationSem { get; set; }
     }

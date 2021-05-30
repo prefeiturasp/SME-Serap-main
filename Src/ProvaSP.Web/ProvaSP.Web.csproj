@@ -309,6 +309,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
+      <Project>{638b2bdc-aa34-4dcd-a041-ab4eb9c4d831}</Project>
+      <Name>GestaoAvaliacao.Util</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProvaSP.Data\ProvaSP.Data.csproj">
       <Project>{c4ba204b-393c-4020-9000-9eca1fcdfe22}</Project>
       <Name>ProvaSP.Data</Name>

@@ -5598,7 +5598,8 @@ h3.label-menu {
   margin: 35px auto; }
   .questao .alternativas {
     padding: 35px 15px;
-    border-top: 2px solid #e6e6e6; }
+    border-top: 2px solid #e6e6e6; 
+  }
     .questao .alternativas.correta {
       background: #e9f1fa; }
       .questao .alternativas.correta * {
@@ -5616,6 +5617,12 @@ h3.label-menu {
   .questao h3 {
     margin-top: 10px;
     font-size: 2rem; }
+    .questao .alternativas.response-correct {
+    border: solid;
+    border-color: forestgreen; }
+    .questao .alternativas.response-error {
+        border: solid;
+        border-color: red;}
 
 .gabarito-novo {
   background: #327acb;
@@ -5980,6 +5987,11 @@ h3.label-menu {
 }
     .accordion-test span {
         margin-left: 10px;
+    }
+
+    .sem-registros {
+        background-color: #E9967A;
+        color: red;
     }
 
     .nao-iniciadas {

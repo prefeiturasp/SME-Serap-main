@@ -3,18 +3,11 @@
 <div class="wellCustom" data-ng-controller="FormElectronicTestController">
     <div class="well well-large questao">
         <div class="row">
-            <div class="col-sm-12">
-                <div class="electronicTestHeader">
-                    <b>Questão {{ test.Itens[indiceItem].ItemOrder + 1 }}</b>
-                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;" />
-                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" />
-
-                </div>
-
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="position:absolute; right: 0px; top: 0px; color: #5a94d6;">
+            <div class="col-sm-12" style="margin-bottom: 50px;">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="position: absolute; top: 0px; color: #5a94d6;">
                     <div class="panel panel-default" style="margin-top: 10px;">
                         <div class="panel-heading" role="tab" id="headingOne">
-                            <div role="button" data-toggle="collapse" data-parent="" href="" aria-expanded="true" aria-controls="" ng-click="loadHeaderDetais();" style="cursor:pointer; color: #5a94d6;">
+                            <div role="button" data-toggle="collapse" data-parent="" href="" aria-expanded="true" aria-controls="" ng-click="loadHeaderDetais();" style="cursor: pointer; color: #5a94d6;">
                                 <b>{{ test.Description }}</b> | {{ test.FrequencyApplication }}
                             </div>
                         </div>
@@ -28,6 +21,28 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div ng-if="ShowCronometro" class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="position: absolute; right: 0px; top: 0px; color: #5a94d6;">
+                    <div class="panel panel-default" style="margin-top: 10px;">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <div id="countdown-timer">
+                                <div style="font-weight: 600; color: #5a94d6;">Tempo Total: <div id="TempoTotalDeProva" style="font-size: 16px; color: black; display: inline-block;">{{TempoDeProvaTotalFormatado}}</div></div>
+                                <div style="font-weight: 600; color: #5a94d6;">
+                                    {{LabelTempoDeProvaDoAluno}}
+                                    <div id="TempoRestanteDeProva" class="tempo-total-de-prova" style="display: inline-block; color: black;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="electronicTestHeader">
+                    <b>Questão {{ test.Itens[indiceItem].ItemOrder + 1 }}</b>
+                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;" />
+                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" />
+
                 </div>
                 <hr />
             </div>
@@ -95,6 +110,13 @@
             </div>
         </div>
     </div>
+    <modal id="modalProvaFinalizada" modal-title="<p>Seu tempo acabou...</p>" btnclose="true">
+        <div class="container-fluid">
+            <div class="campoLabel">
+                <span>A sua prova está sendo finalizada e você será redirecionado para a página de visualização de provas.</span>
+            </div>
+        </div>
+    </modal>
     <modal id="modalConfirmacaoEntregaProva" modal-title="<p>Confirmação de entrega de prova</p>">
         <div class="container-fluid">
             <div class="campoLabel">

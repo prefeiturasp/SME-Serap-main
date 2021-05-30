@@ -225,8 +225,10 @@ namespace GestaoAvaliacao.Controllers
                         ElectronicTest = entity.ElectronicTest,
 						entity.ShowVideoFiles,
 						entity.ShowAudioFiles,
+						entity.ShowJustificate,
                         TestSubGroup = entity.TestSubGroup != null ? new { Id = entity.TestSubGroup.Id, Description = entity.TestSubGroup.Description } : null,
-                    };
+                        TempoDeProva = new { entity.TestTime.Id, entity.TestTime.Description }
+					};
 
 					return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
 				}

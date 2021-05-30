@@ -1,0 +1,53 @@
+﻿@* Alertas *@
+<alert></alert>
+
+<div class="wellCustom" data-ng-controller="StudentResultsController">
+    <div class="headerCustom">
+        <h4>Resultados Prova Online<span></span></h4>
+    </div>
+    <section class="row">
+        <div class="col-md-12">
+            <div class="modelo-bloco grupo">
+                <div class="accordion-prova">
+                    @*Provas do ano Corrente*@
+                    <button class="accordion-test {{ClassBotaoDaProvaDoAnoAtual}}">
+                        <i ng-if="!ProvasDoAnoCorrente" class="fa fa-exclamation-triangle"></i> {{DescricaoDoBotaoDaProvaDoAnoAtual}}
+                    </button>
+                    <div ng-if="ProvasDoAnoCorrente" class="accordion-test-panel-group" >
+                        <div class="table-responsive">
+                            <div class="well well-large teste">
+                                <table class="table table-hover">
+                                    <tbody>
+                                        <tr class="" ng-repeat="provaDoAnoCorrente in ListaProvasDoAnoCorrente" ng-click="abrirGraficoDaProva(Ano,provaDoAnoCorrente.Id)">
+                                            <td><strong class="">{{provaDoAnoCorrente.NomeDaProva}} </strong>| {{provaDoAnoCorrente.Periodo}}</td>
+                                            <td class=""><strong class="">Finalizado no dia:</strong> <br />{{provaDoAnoCorrente.DataDeFinalizacao}}</td>
+                                            <td class=""><strong class="">Tempo de duração:</strong> <br /> {{provaDoAnoCorrente.TempoDeProva}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Provas dos anos anteriores*@
+                    <button class="accordion-test finalizadas">Provas dos anos anteriores</button>
+                    <div class="accordion-test-panel-group">
+                        <div class="table-responsive">
+                            <div class="well well-large teste">
+                                <table class="table table-hover">
+                                    <tbody>
+                                        <tr class="" ng-repeat="provaDoAnoAnterior in ListaProvasDosAnosAnteriores" ng-click="abrirGraficoDaProva(provaDoAnoAnterior.Ano,provaDoAnoAnterior.Id)">
+                                            <td><strong class="">{{provaDoAnoAnterior.NomeDaProva}} </strong>| {{provaDoAnoAnterior.Periodo}}</td>
+                                            <td class=""><strong class="">Finalizado no dia:</strong> <br />{{provaDoAnoAnterior.DataDeFinalizacao}}</td>
+                                            <td class=""><strong class="">Tempo de duração:</strong> <br /> {{provaDoAnoAnterior.TempoDeProva}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

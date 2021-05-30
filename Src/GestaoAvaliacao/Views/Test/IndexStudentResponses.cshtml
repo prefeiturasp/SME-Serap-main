@@ -152,41 +152,48 @@
 				<col width="130">
 				<col width="80">
 				<thead>
-					<tr>
-						<th style="width: 15%">Turma</th>
-						<th style="width: 35%">Escola</th>
-						<th style="width: 15%">Situação da correção</th>
-						<th class="center" ng-if="AllowAnswer" style="width: 5%">Respostas dos alunos</th>
-						<th class="center" ng-if="ShowResult" style="width: 10%">Resultados</th>
-					</tr>
+                    <tr>
+                        <th style="width: 15%">Turma</th>
+                        <th style="width: 35%">Escola</th>
+                        <th style="width: 15%">Situação da correção</th>
+                        <th class="center" ng-if="AllowAnswer" style="width: 5%">Respostas dos alunos</th>
+                        <th class="center" ng-if="ShowResult" style="width: 10%">Resultados</th>
+                        <th class="center" style="width: 5%">Tempo de Resposta</th>
+                    </tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="($indexTeam, team) in list.displayed track by $indexTeam">
-						@* Descrição Turma *@
-						<th>{{team.tur_codigo}} - {{team.ttn_nome}}</th>
-						@*Escolas*@
-						<th>{{team.esc_nome}}</th>
-						@* Status de uma turma *@
-						<th ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Pending)"><div class="status-@(EnumBatchProcessing.Pending.ToString())"><i class="material-icons">panorama_fish_eye</i> @(EnumStatusCorrection.Pending.GetDescription()) </div></th>
-						<th ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Success)"><div class="status-@(EnumBatchProcessing.Success.ToString())"><i class="material-icons">check_circle</i> @(EnumStatusCorrection.Success.GetDescription()) </div></th>
-						<th ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Processing)"><div class="status-@(EnumBatchProcessing.Processing.ToString())"><i class="material-icons">timelapse</i> @(EnumStatusCorrection.Processing.GetDescription()) </div></th>
-						<th ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.PartialSuccess)"><div class="status-@(EnumBatchProcessing.Success.ToString())"><i class="material-icons">check_circle</i> @(EnumStatusCorrection.PartialSuccess.GetDescription()) </div></th>
-						<th ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.ProcessingSection)"><div class="status-@(EnumBatchProcessing.Processing.ToString())"><i class="material-icons">timelapse</i> @(EnumStatusCorrection.ProcessingSection.GetDescription()) </div></th>
-					
-						
-						@* Correção manual *@
-						<th class="center" ng-if="AllowAnswer">
-							<a ng-if="team.StatusCorrection != @((Byte)EnumStatusCorrection.Success) && team.StatusCorrection != @((Byte)EnumStatusCorrection.ProcessingSection) && !team.InCorrection"  ng-click="setSessionStorage()"  href="~/Correction/IndexForm?test_id={{testInformation.TestId}}&team_id={{team.tur_id}}" data-trigger="hover" data-type="success" data-title="Correção" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
-								<i class="material-icons">keyboard</i>
-							</a>
-						</th>
-						@* Resultados *@
-						<th class="center" ng-if="ShowResult">
-							<a ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Success) || team.StatusCorrection == @((Byte)EnumStatusCorrection.PartialSuccess)" ng-click="setSessionStorage()" href="~/Correction?test_id={{testInformation.TestId}}&team_id={{team.tur_id}}&esc_id={{team.esc_id}}&dre_id={{team.dre_id}}" data-trigger="hover" data-type="success" data-title="Resultados" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
-								<i class="material-icons">insert_chart</i>
-							</a>
-						</th>
-					</tr>
+                    <tr ng-repeat="($indexTeam, team) in list.displayed track by $indexTeam">
+                        @* Descrição Turma *@
+                        <th>{{team.tur_codigo}} - {{team.ttn_nome}}</th>
+                        @*Escolas*@
+                        <th>{{team.esc_nome}}</th>
+                        @* Status de uma turma *@
+                        <th ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Pending)"><div class="status-@(EnumBatchProcessing.Pending.ToString())"><i class="material-icons">panorama_fish_eye</i> @(EnumStatusCorrection.Pending.GetDescription()) </div></th>
+                        <th ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Success)"><div class="status-@(EnumBatchProcessing.Success.ToString())"><i class="material-icons">check_circle</i> @(EnumStatusCorrection.Success.GetDescription()) </div></th>
+                        <th ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Processing)"><div class="status-@(EnumBatchProcessing.Processing.ToString())"><i class="material-icons">timelapse</i> @(EnumStatusCorrection.Processing.GetDescription()) </div></th>
+                        <th ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.PartialSuccess)"><div class="status-@(EnumBatchProcessing.Success.ToString())"><i class="material-icons">check_circle</i> @(EnumStatusCorrection.PartialSuccess.GetDescription()) </div></th>
+                        <th ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.ProcessingSection)"><div class="status-@(EnumBatchProcessing.Processing.ToString())"><i class="material-icons">timelapse</i> @(EnumStatusCorrection.ProcessingSection.GetDescription()) </div></th>
+
+
+                        @* Correção manual *@
+                        <th class="center" ng-if="AllowAnswer">
+                            <a ng-if="team.StatusCorrection != @((Byte)EnumStatusCorrection.Success) && team.StatusCorrection != @((Byte)EnumStatusCorrection.ProcessingSection) && !team.InCorrection" ng-click="setSessionStorage()" href="~/Correction/IndexForm?test_id={{testInformation.TestId}}&team_id={{team.tur_id}}" data-trigger="hover" data-type="success" data-title="Correção" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+                                <i class="material-icons">keyboard</i>
+                            </a>
+                        </th>
+                        @* Resultados *@
+                        <th class="center" ng-if="ShowResult">
+                            <a ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Success) || team.StatusCorrection == @((Byte)EnumStatusCorrection.PartialSuccess)" ng-click="setSessionStorage()" href="~/Correction?test_id={{testInformation.TestId}}&team_id={{team.tur_id}}&esc_id={{team.esc_id}}&dre_id={{team.dre_id}}" data-trigger="hover" data-type="success" data-title="Resultados" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+                                <i class="material-icons">insert_chart</i>
+                            </a>
+                        </th>
+                        @* Tempo de Respostas *@
+                        <th class="center">
+                            <a ng-if="team.StatusCorrection == @((Byte)EnumStatusCorrection.Success) || team.StatusCorrection == @((Byte)EnumStatusCorrection.PartialSuccess)" ng-click="setSessionStorage()" href="~/StudentTestSession?test_id={{testInformation.TestId}}&team_id={{team.tur_id}}&esc_id={{team.esc_id}}" data-trigger="hover" data-type="success" data-title="Resultados" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+                                <i class="fa fa-hourglass-half" style="font-size: 15px;"></i>
+                            </a>
+                        </th>
+                    </tr>
 				</tbody>
 			</table>
 			<div class="nresultados">

@@ -51,7 +51,8 @@ namespace GestaoAvaliacao.Repository.Context
 			modelBuilder.Configurations.Add(new TestTypeDeficiencyMap());
 			modelBuilder.Configurations.Add(new FormatTypeMap());
 			modelBuilder.Configurations.Add(new TestTypeMap());
-			modelBuilder.Configurations.Add(new ItemSituationMap());
+			modelBuilder.Configurations.Add(new TestTimeMap());
+            modelBuilder.Configurations.Add(new ItemSituationMap());
 			modelBuilder.Configurations.Add(new FileMap());
 			modelBuilder.Configurations.Add(new ItemCurriculumGradeMap());
 			modelBuilder.Configurations.Add(new PerformanceLevelMap());
@@ -145,7 +146,8 @@ namespace GestaoAvaliacao.Repository.Context
 		public DbSet<TestTypeItemLevel> TestTypeItemLevel { get; set; }
 		public DbSet<FormatType> FormatType { get; set; }
 		public DbSet<TestType> TestType { get; set; }
-		public DbSet<ItemSituation> ItemSituation { get; set; }
+		public DbSet<TestTime> TestTime { get; set; }
+        public DbSet<ItemSituation> ItemSituation { get; set; }
 		public DbSet<File> File { get; set; }
 		public DbSet<ItemCurriculumGrade> ItemCurriculumGrade { get; set; }
 		public DbSet<PerformanceLevel> PerformanceLevel { get; set; }
