@@ -25,4 +25,15 @@ RUN dotnet publish "GestaoAvaliacao.Worker.StudentTestsSent.csproj" -c Release -
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+
+ENV TZ=America/Sao_Paulo
+
+RUN apt-get update \
+    && apt-get install -yq tzdata locales -y \
+    && dpkg-reconfigure --frontend noninteractive tzdata \ 
+	&& locale-gen en_US.UTF-8 \    
+    && rm -rf /var/lib/apt/lists/* 
+
+
 ENTRYPOINT ["dotnet", "GestaoAvaliacao.Worker.StudentTestsSent.dll"]
