@@ -17,7 +17,7 @@ COPY ["Src/GestaoAvaliacao.Worker.Repository/GestaoAvaliacao.Worker.Repository.c
 COPY ["Src/GestaoAvaliacao.Worker.Rabbit/GestaoAvaliacao.Worker.Rabbit.csproj", "GestaoAvaliacao.Worker.Rabbit/"]
 
 RUN dotnet restore "GestaoAvaliacao.Worker.StudentTestsSent/GestaoAvaliacao.Worker.StudentTestsSent.csproj"
-COPY . .
+COPY Src/ .
 WORKDIR "/src/GestaoAvaliacao.Worker.StudentTestsSent"
 RUN dotnet build "GestaoAvaliacao.Worker.StudentTestsSent.csproj" -c Release -o /app/build
 
