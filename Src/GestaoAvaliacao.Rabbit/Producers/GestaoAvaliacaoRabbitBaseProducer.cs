@@ -9,37 +9,16 @@ using System.Threading.Tasks;
 namespace GestaoAvaliacao.Rabbit.Producers
 {
     public abstract class GestaoAvaliacaoRabbitBaseProducer<TMessageData>
-        where TMessageData : class
-    {
-        private IModel _model;
-
-        public void Close()
-        {
-            if (_model.IsClosed) return;
-            _model.Close();
-        }
-
+        where TMessageData : class    {
+    
         public Task<bool> PublishAsync(TMessageData data, Guid usuId)
         {
             var message = new GestaoAvaliacaoRabbitMessage(data, usuId);
             var messageJson = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(messageJson);
             var exchange = ConfigurationManager.AppSettings["GestaoAvaliacaoRabbitSettings_ExchangeGestaoAvaliacao"];
-            Model.BasicPublish(exchange, "*", null, body);
-            return Task.FromResult(true);
-        }
+            var queue = ConfigurationManager.AppSettings["GestaoAvaliacaoRabbitSettings_QueueName"];
 
-        protected IModel Model
-        {
-            get
-            {
-                if (_model is null) CreateModel();
-                return _model;
-            }
-        }
-
-        private void CreateModel()
-        {
             var factory = new ConnectionFactory
             {
                 HostName = ConfigurationManager.AppSettings["GestaoAvaliacaoRabbitSettings_HostName"],
@@ -48,15 +27,17 @@ namespace GestaoAvaliacao.Rabbit.Producers
                 VirtualHost = ConfigurationManager.AppSettings["GestaoAvaliacaoRabbitSettings_VirtualHost"],
             };
 
-            var rabbitConnection = factory.CreateConnection();
-            _model = rabbitConnection.CreateModel();
+            using (var conexaoRabbit = factory.CreateConnection())
+            {
+                using (IModel _channel = conexaoRabbit.CreateModel())
+                {
+                    _channel.ExchangeDeclare(exchange, ExchangeType.Topic);
+                    _channel.QueueDeclare(queue, false, false, false, null);
+                    _channel.BasicPublish(exchange, "*", null, body);
+                }
+            }
 
-            var exchange = ConfigurationManager.AppSettings["GestaoAvaliacaoRabbitSettings_ExchangeGestaoAvaliacao"];
-            var queue = ConfigurationManager.AppSettings["GestaoAvaliacaoRabbitSettings_QueueName"];
-
-            _model.ExchangeDeclare(exchange, ExchangeType.Topic);
-            _model.QueueDeclare(queue, false, false, false, null);
-            _model.QueueBind(queue, exchange, "*");
-        }
+            return Task.FromResult(true);
+        }    
     }
 }
