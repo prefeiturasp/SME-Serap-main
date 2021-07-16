@@ -217,6 +217,8 @@
 **/obj/
 .vs
 **/*.csprojAssemblyReference.cache
+*.obj
+*.bin
 
 
 
