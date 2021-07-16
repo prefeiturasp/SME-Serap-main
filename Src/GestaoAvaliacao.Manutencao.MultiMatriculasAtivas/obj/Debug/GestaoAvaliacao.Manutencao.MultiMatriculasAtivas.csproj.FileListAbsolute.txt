@@ -148,3 +148,9 @@ C:\Projetos\PrefeituraSP\SME-Serap-main\Src\GestaoAvaliacao.Manutencao.MultiMatr
 C:\Projetos\PrefeituraSP\SME-Serap-main\Src\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas\obj\Debug\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas.pdb
 C:\Projetos\PrefeituraSP\SME-Serap-main\Src\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas\bin\Debug\MongoDB.Driver.dll
 C:\Projetos\PrefeituraSP\SME-Serap-main\Src\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas\bin\Debug\MongoDB.Driver.xml
+C:\Repositorio_SME\SME-Serap-main\Src\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas\obj\Debug\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas.csprojAssemblyReference.cache
+C:\Repositorio_SME\SME-Serap-main\Src\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas\obj\Debug\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas.exe.config
+C:\Repositorio_SME\SME-Serap-main\Src\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas\obj\Debug\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas.ManutencaoDeMultiMatriculasAtivas.resources
+C:\Repositorio_SME\SME-Serap-main\Src\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas\obj\Debug\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas.Properties.Resources.resources
+C:\Repositorio_SME\SME-Serap-main\Src\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas\obj\Debug\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas.csproj.GenerateResource.cache
+C:\Repositorio_SME\SME-Serap-main\Src\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas\obj\Debug\GestaoAvaliacao.Manutencao.MultiMatriculasAtivas.csproj.CoreCompileInputs.cache
