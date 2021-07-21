@@ -154,6 +154,119 @@ namespace GestaoAvaliacao.Repository
 			}
 		}
 
+		public IEnumerable<AdherenceGrid> LoadSchoolGridFull(Guid ent_id, bool AllAdhered, long test_id, long testType_id, int ttn_id = 0, int crp_ordem = 0,
+			IEnumerable<string> uadGestor = null, Guid? pes_id = null, IEnumerable<string> uadCoordenador = null)
+		{
+			#region Query
+
+			#region Campos
+			var camposSelect = new StringBuilder(string.Format("SELECT e.esc_id, esc_nome, uad.uad_nome, ISNULL(a.TypeSelection, {0}) AS TypeSelection, ", AllAdhered ? (byte)EnumAdherenceSelection.Selected : (byte)EnumAdherenceSelection.NotSelected));
+			camposSelect.AppendLine("ROW_NUMBER() OVER (ORDER BY uad.uad_nome, esc_nome ASC) AS RowNumber ");
+			#endregion
+
+			#region Tables
+			var tabelas = new StringBuilder("FROM SGP_ESC_Escola e WITH (NOLOCK) ");
+			tabelas.AppendLine("INNER JOIN AdministrativeUnitType AS AUT WITH(NOLOCK) ON AUT.AdministrativeUnitTypeId = e.tua_id AND AUT.State = @state ");
+			tabelas.AppendLine("INNER JOIN SGP_SYS_UnidadeAdministrativa uad WITH (NOLOCK) ON e.uad_idSuperiorGestao = uad.uad_id  AND uad.uad_situacao = @state ");
+			tabelas.AppendLine("INNER JOIN (SELECT DISTINCT tur.esc_id ");
+			tabelas.AppendLine("FROM SGP_TUR_Turma tur WITH (NOLOCK) ");
+
+			if (pes_id.HasValue)
+			{
+				tabelas.AppendLine("INNER JOIN ( SELECT DISTINCT (tud.tur_id) FROM SGP_TUR_TurmaDisciplina tud WITH (NOLOCK) ");
+				tabelas.AppendLine("INNER JOIN SGP_TUR_TurmaDocente tdt WITH (NOLOCK) ON tdt.tud_id = tud.tud_id ");
+				tabelas.AppendLine("INNER JOIN SGP_ACA_Docente d WITH (NOLOCK) ON d.doc_id = tdt.doc_id  ");
+				tabelas.Append("WHERE tud.tud_situacao = @state AND tdt.tdt_situacao = @state AND d.doc_situacao = @state AND d.pes_id = @pes_id AND d.ent_id = @ent_id )  ");
+				tabelas.Append("AS tud ON tud.tur_id = tur.tur_id ");
+			}
+
+			tabelas.AppendLine("INNER JOIN SGP_TUR_TurmaTipoCurriculoPeriodo ttcp (nolock)");
+			tabelas.AppendLine("		       ON tur.tur_id = ttcp.tur_id AND");
+			tabelas.AppendLine("				  ttcp.ttcr_situacao = @state");
+			tabelas.AppendLine("	   INNER JOIN SGP_TUR_TurmaCurriculo tc (nolock)");
+			tabelas.AppendLine("			   ON ttcp.tur_id = tc.tur_id AND");
+			tabelas.AppendLine("				  ttcp.crp_ordem = tc.crp_id AND");
+			tabelas.AppendLine("				  tc.tcr_situacao = @state");
+			tabelas.AppendLine("       INNER JOIN sgp_aca_tipocurriculoperiodo tcg (nolock)");
+			tabelas.AppendLine("               ON tcg.tcp_id = tc.tcp_id AND tc.tcr_situacao = @state");
+			tabelas.AppendLine("       INNER JOIN testtypecourse ttc (nolock)");
+			tabelas.AppendLine("	           ON tc.cur_id = ttc.CourseId AND");
+			tabelas.AppendLine("				  testtype_id = @testType AND");
+			tabelas.AppendLine("				  ttc.state = @state");
+			tabelas.AppendLine("       INNER JOIN sgp_aca_curso cur (nolock)");
+			tabelas.AppendLine("               ON cur.cur_id = tc.cur_id AND");
+			tabelas.AppendLine("				  ttcp.tme_id = cur.tme_id");
+			tabelas.AppendLine("       INNER JOIN sgp_aca_curriculoperiodo crp (nolock)");
+			tabelas.AppendLine("               ON crp.cur_id = cur.cur_id AND");
+			tabelas.AppendLine("				  crp.crp_ordem = tcg.tcp_ordem AND");
+			tabelas.AppendLine("				  crp.tcp_id = tcg.tcp_id");
+			tabelas.AppendLine("       INNER JOIN testcurriculumgrade tcc (nolock)");
+			tabelas.AppendLine("               ON tcc.typecurriculumgradeid = tcg.tcp_id AND");
+			tabelas.AppendLine("				  tcc.state = @state AND");
+			tabelas.AppendLine("				  tcc.test_id = @test_id");
+			tabelas.AppendLine("	   INNER JOIN [Test] t (nolock)");
+			tabelas.AppendLine("			   ON tcc.Test_Id = t.Id AND");
+			tabelas.AppendLine("				  t.[State] = @state");
+			tabelas.AppendLine("	   INNER JOIN SGP_ACA_CalendarioAnual ca (nolock)");
+			tabelas.AppendLine("			   ON tur.cal_id = ca.cal_id AND");
+			tabelas.AppendLine("				  ca.cal_situacao = @state");
+
+			tabelas.AppendLine("WHERE tur.tur_situacao = @state AND");
+			tabelas.AppendLine("      YEAR(t.ApplicationStartDate) = ca.cal_ano AND");
+			tabelas.AppendLine("      CONVERT(DATE, t.ApplicationStartDate) < CONVERT(DATE, ca.cal_dataFim)");
+
+			if (crp_ordem > 0)
+				tabelas.AppendLine("AND ttcp.crp_ordem = @crp_ordem ");
+
+			if (ttn_id > 0)
+				tabelas.AppendLine("AND tur.ttn_id = @ttn_id ");
+
+			tabelas.AppendLine(") t ON e.esc_id = t.esc_id ");
+
+			tabelas.AppendLine("LEFT JOIN Adherence a WITH (NOLOCK) ON a.EntityId = e.esc_id AND a.TypeEntity = @typeEntity AND a.Test_Id = @test_id ");
+			tabelas.AppendLine("WHERE e.ent_id = @ent_id AND e.esc_situacao = @state ");
+
+			if (uadGestor != null)
+				tabelas.AppendLine(string.Format("AND e.uad_idSuperiorGestao IN ({0}) ", string.Join(",", uadGestor)));
+
+			if (uadCoordenador != null)
+				tabelas.AppendLine(string.Format("AND e.uad_id IN ({0}) ", string.Join(",", uadCoordenador)));
+
+			#endregion
+
+
+			var sql = new StringBuilder("WITH CounteredSchools AS ( ");
+			sql.Append(camposSelect.ToString());
+			sql.Append(tabelas.ToString());
+			sql.AppendLine(")");
+			sql.AppendLine("SELECT esc_id, esc_nome, uad_nome, TypeSelection ");
+			sql.AppendLine("FROM CounteredSchools ");			
+			#endregion
+
+			using (IDbConnection cn = Connection)
+			{
+				cn.Open();
+
+				var query = cn.QueryMultiple(sql.ToString(),
+					new
+					{
+						ent_id = ent_id,
+						ttn_id = ttn_id,
+						state = (byte)1,
+						crp_ordem = crp_ordem,
+						typeEntity = (byte)EnumAdherenceEntity.School,
+						test_id = test_id,
+						testType = testType_id,
+						pes_id = pes_id
+					});
+
+				var retorno = query.Read<AdherenceGrid>();
+
+				return retorno;
+
+			}
+		}
+
 		public IEnumerable<Adherence> GetByTest(long test_id, EnumAdherenceEntity typeEntity, IEnumerable<int> idsEntity = null, long ParentId = 0)
 		{
 			var sql = new StringBuilder("SELECT Id, EntityId, TypeSelection ");
