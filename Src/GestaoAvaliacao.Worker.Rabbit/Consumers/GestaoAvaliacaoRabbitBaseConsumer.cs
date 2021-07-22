@@ -68,7 +68,7 @@ namespace GestaoAvaliacao.Worker.Rabbit.Consumers
             _model.ExchangeDeclare(_gestaoAvaliacaoRabbitSettings.ExchangeGestaoAvaliacao, ExchangeType.Topic, false);
             _model.QueueDeclare(_gestaoAvaliacaoRabbitSettings.QueueName, false, false, false, null);
             _model.QueueBind(_gestaoAvaliacaoRabbitSettings.QueueName, _gestaoAvaliacaoRabbitSettings.ExchangeGestaoAvaliacao, "*");
-            _model.BasicQos(5, 5, true);
+            _model.BasicQos(0, 5, true);
         }
 
         private TMessageData GetMessageData(BasicDeliverEventArgs basicDeliverEventArgs)
