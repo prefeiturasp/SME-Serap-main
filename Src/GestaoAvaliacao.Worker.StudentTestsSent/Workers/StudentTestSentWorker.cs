@@ -1,7 +1,6 @@
 ﻿using GestaoAvaliacao.Worker.StudentTestsSent.Consumers;
 using GestaoAvaliacao.Worker.StudentTestsSent.Logging;
-using GestaoAvaliacao.Worker.StudentTestsSent.Requests.Commands;
-using GestaoAvaliacao.Worker.StudentTestsSent.Workers.Scheduling;
+using Microsoft.Extensions.Hosting;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Prometheus.DotNetRuntime;
@@ -11,25 +10,28 @@ using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Worker.StudentTestsSent.Workers
 {
-    public class StudentTestSentWorker : BaseScheduledWorker
+    public class StudentTestSentWorker : IHostedService
     {
         private readonly IMediator _mediator;
         private IDisposable _collector;
 
-        public StudentTestSentWorker(IConfiguration configuration, ISentryLogger sentryLogger, IMediator mediator)
-            : base(configuration, sentryLogger)
+        private IStudentTestSentConsumer _studentTestSentConsumer;
+
+        public StudentTestSentWorker(IConfiguration configuration, ISentryLogger sentryLogger, IMediator mediator, IStudentTestSentConsumer studentTestSentConsumer)
         {
             _mediator = mediator;
+            _studentTestSentConsumer = studentTestSentConsumer;
+            _collector = DotNetRuntimeStatsBuilder.Default().StartCollecting();
         }
 
-        protected override string WorkerDescription => nameof(StudentTestSentWorker);
-
-        protected override string CronWorkerParameter => $"{nameof(StudentTestSentWorker)}_CronParameter";
-
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            _collector = DotNetRuntimeStatsBuilder.Default().StartCollecting();
-            await _mediator.Send(new ProcessStudentTestSentCommand());
+            return _studentTestSentConsumer.ConsumeAsync(cancellationToken);
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.Run(() => _collector.Dispose());
         }
     }
 }

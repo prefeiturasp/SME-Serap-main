@@ -46,9 +46,9 @@ ConnectionStrings__GestaoAvaliacaoWorkerContext=Data Source={SET YOUR INSTANCE};
 
 Sentry__DSN={SET YOUR SENTRY KEY}
 
-GestaoAvaliacaoWorkerMongoDSettings__ConnectionString=mongodb://localhost:27017/GestaoAvaliacao_OMR
+GestaoAvaliacaoWorkerMongoDBSettings__ConnectionString=mongodb://localhost:27017/GestaoAvaliacao_OMR
 
-GestaoAvaliacaoWorkerMongoDSettings__Database={SET YOUR DATABASE}
+GestaoAvaliacaoWorkerMongoDBSettings__Database={SET YOUR DATABASE}
 
 StudentTestSentWorker_CronParameter=0 22 * * *
 

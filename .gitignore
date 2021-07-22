@@ -217,6 +217,12 @@
 **/obj/
 .vs
 **/*.csprojAssemblyReference.cache
-
+**/bin/
+**/Release/
+**/Debug/
+**/appsettings.json
+**/.vscode
+**/.env
+**/*.cache
 
 
