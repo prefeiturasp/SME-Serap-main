@@ -12,3 +12,11 @@ update SYS_Usuario set usu_senha = 'XM7U9hWB8Kc=', usu_criptografia = 1 where us
 update SYS_Usuario set usu_senha = 'RixmlKba5C4=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5971957')
 update SYS_Usuario set usu_senha = '/oYEolo2Bx0=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA6339920')
 update SYS_Usuario set usu_senha = '4JzqapzbX9Y=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5767058')
+
+update SYS_Usuario set usu_senha = 'D1A5mK9DUiU=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA7721751')
+update SYS_Usuario set usu_senha = '4k386P+FSB8=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5638474')
+update SYS_Usuario set usu_senha = 'Gk8cT+8cNJI=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA7737290')
+update SYS_Usuario set usu_senha = 'A/vK98Z4Voo=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA4669120')
+update SYS_Usuario set usu_senha = 'WZcuNg955Jo=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5067726')
+update SYS_Usuario set usu_senha = 'tbLoFYjppXg=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5839951')
+
