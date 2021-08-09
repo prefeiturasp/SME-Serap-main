@@ -52,6 +52,8 @@ BEGIN
 	
 	END
 
+	update ACA_Aluno set alu_situacao = 1 where pes_id = @pes_id
+
 	IF @alu_id != (select alu_id from GestaoPedagogica..ACA_Aluno where pes_id = @pes_id)
 	BEGIN
 
