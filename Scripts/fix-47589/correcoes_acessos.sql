@@ -9,3 +9,4 @@ update SYS_Usuario set usu_senha = 'YTm2BTh9ofg=', usu_criptografia = 1 where us
 update SYS_Usuario set usu_senha = 'YCg6r9UHPzM=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA4929198')
 update SYS_Usuario set usu_senha = 'EGkYBqLdi1A=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA6001291')
 update SYS_Usuario set usu_senha = 'I+oL/vsKDIE=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5544518')
+update SYS_Usuario set usu_senha = '8bwl44XHOPY=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5696559')
