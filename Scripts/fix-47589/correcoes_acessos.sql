@@ -1,0 +1,11 @@
+use CoreSSO
+update SYS_Usuario set usu_senha = 'nV0EQQ53HAg=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA7729458')
+update SYS_Usuario set usu_senha = '1RftOqscU7Y=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5515306')
+update SYS_Usuario set usu_senha = '1du1Eon3z8k=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA4833354')
+update SYS_Usuario set usu_senha = 'ZcNC9L3grUI=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5054405')
+update SYS_Usuario set usu_senha = 'mJry8SYEyao=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA7733681')
+update SYS_Usuario set usu_senha = 'Y0Jcdh0OZZU=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5158115')
+update SYS_Usuario set usu_senha = 'YTm2BTh9ofg=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA4704711')
+update SYS_Usuario set usu_senha = 'YCg6r9UHPzM=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA4929198')
+update SYS_Usuario set usu_senha = 'EGkYBqLdi1A=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA6001291')
+update SYS_Usuario set usu_senha = 'I+oL/vsKDIE=', usu_criptografia = 1 where usu_id = (select usu_id from SYS_Usuario where usu_login = 'RA5544518')
