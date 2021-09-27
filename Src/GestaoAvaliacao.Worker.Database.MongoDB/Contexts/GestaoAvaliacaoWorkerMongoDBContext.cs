@@ -10,11 +10,11 @@ namespace GestaoAvaliacao.Worker.Database.MongoDB.Contexts
     {
         private IMongoClient _client;
         private IMongoDatabase _dataBase;
-        private readonly IGestaoAvaliacaoWorkerMongoDBSettings _gestaoAvaliacaoWorkerMongoDSettings;
+        private readonly IGestaoAvaliacaoWorkerMongoDBSettings _gestaoAvaliacaoWorkerMongoDBSettings;
 
-        public GestaoAvaliacaoWorkerMongoDBContext(IGestaoAvaliacaoWorkerMongoDBSettings gestaoAvaliacaoWorkerMongoDSettings)
+        public GestaoAvaliacaoWorkerMongoDBContext(IGestaoAvaliacaoWorkerMongoDBSettings gestaoAvaliacaoWorkerMongoDBSettings)
         {
-            _gestaoAvaliacaoWorkerMongoDSettings = gestaoAvaliacaoWorkerMongoDSettings;
+            _gestaoAvaliacaoWorkerMongoDBSettings = gestaoAvaliacaoWorkerMongoDBSettings;
         }
 
         public IMongoCollection<T> GetCollection<T>()
@@ -27,10 +27,10 @@ namespace GestaoAvaliacao.Worker.Database.MongoDB.Contexts
             {
                 if(_client is null)
                 {
-                    var mongoClientSettings = MongoClientSettings.FromConnectionString(_gestaoAvaliacaoWorkerMongoDSettings.ConnectionString);
+                    var mongoClientSettings = MongoClientSettings.FromConnectionString(_gestaoAvaliacaoWorkerMongoDBSettings.ConnectionString);
                     mongoClientSettings.RetryReads = true;
                     mongoClientSettings.RetryWrites = true;
-                    mongoClientSettings.ConnectTimeout = TimeSpan.FromMinutes(_gestaoAvaliacaoWorkerMongoDSettings.ConnectTimeoutInMinutes);
+                    mongoClientSettings.ConnectTimeout = TimeSpan.FromMinutes(_gestaoAvaliacaoWorkerMongoDBSettings.ConnectTimeoutInMinutes);
                     _client = new MongoClient(mongoClientSettings);
                 }
 
@@ -44,7 +44,7 @@ namespace GestaoAvaliacao.Worker.Database.MongoDB.Contexts
             {
                 if(_dataBase is null)
                 {
-                    _dataBase = Client.GetDatabase(_gestaoAvaliacaoWorkerMongoDSettings.Database);
+                    _dataBase = Client.GetDatabase(_gestaoAvaliacaoWorkerMongoDBSettings.Database);
                 }
 
                 return _dataBase;

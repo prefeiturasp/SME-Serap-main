@@ -5,5 +5,9 @@ namespace GestaoAvaliacao.Business.StudentsTestSent.Producers
 {
     public class StudentTestSentProducer : GestaoAvaliacaoRabbitBaseProducer<StudentTestSentMessageData>, IStudentTestSentProducer
     {
+        public void Close()
+        {
+            
+        }
     }
 }

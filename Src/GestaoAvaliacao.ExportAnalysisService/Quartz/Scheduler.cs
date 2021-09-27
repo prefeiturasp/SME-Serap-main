@@ -14,15 +14,16 @@ namespace GestaoAvaliacao.ExportAnalysisService.Quartz
 			scheduler.Start();
 
 			#region [ Import SGP ]
-			IJobDetail job = JobBuilder.Create<ExportAnalysisJob>().Build();
-
+			IJobDetail job = JobBuilder
+				.Create<ExportAnalysisJob>()
+				.RequestRecovery(false)
+				.Build();
 
 			ITrigger trigger = TriggerBuilder.Create()
-			.WithIdentity("GestaoAvaliacaoExportAnalysis", "MSTech")
-			.WithCronSchedule(ConfigurationManager.AppSettings["CronTrigger"])
-			.StartNow()
-			.Build();
-
+				.WithIdentity("GestaoAvaliacaoExportAnalysis", "MSTech")
+				.WithCronSchedule(ConfigurationManager.AppSettings["CronTrigger"])
+				.StartNow()
+				.Build();
 
 			scheduler.ScheduleJob(job, trigger);
 			#endregion
