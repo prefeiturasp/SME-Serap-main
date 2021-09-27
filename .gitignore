@@ -217,6 +217,9 @@
 **/obj/
 .vs
 **/*.csprojAssemblyReference.cache
+*.obj
+*.bin
+
 **/bin/
 **/Release/
 **/Debug/

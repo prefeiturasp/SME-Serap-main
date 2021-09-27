@@ -158,14 +158,22 @@
                                          ng-class="{'off': !isElectronicTest}" style="position: absolute; margin: 4px 206px;"><input type="button" /></div>
                                 </div>
 
-                                <div class="campoLabel col-md-6">
+                                <div class="campoLabel">
+                                    @* Header *@
+                                    <label class="label-pos-inline" style="max-width:180px;">  {{labels.showOnSerapEstudantes}}: </label>
+                                    <div class="switch" ng-click="selectShowOnSerapEstudantes();"
+                                         ng-class="{'off': !showOnSerapEstudantes}" style="position: absolute; margin: 4px 260px;"><input type="button" /></div>
+                                </div>
+
+                                <div class="campoLabel">
                                     <label class="label-pos-inline">  {{labels.showVideoFiles}}: </label>
                                     <div class="switch" ng-click="selectShowVideoFiles();" ng-class="{'off': !showVideoFiles}" style="position: absolute; margin: 4px 250px;"><input type="button" /></div>
                                 </div>
-                                <div class="campoLabel col-md-6>
+                                <div class="campoLabel">
                                     <label class="label-pos-inline">  {{labels.showAudioFiles}}: </label>
                                     <div class="switch" ng-click="selectShowAudioFiles();" ng-class="{'off': !showAudioFiles}" style="position: absolute; margin: 4px 255px;"><input type="button" /></div>
                                 </div>
+
 
                             </div>
                         </div>
