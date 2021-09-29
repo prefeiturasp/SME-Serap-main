@@ -235,62 +235,157 @@
                         </div>
                     </div>
                     @* passo 3 *@
-                    <div class="step" ng-show="navigation == 3">
-                        <div class="boxConteudo">
-                            <div class="container-fluid semPadding">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="cards">
-                                            @* Sentença descritora do item *@
-                                            <div class="campoLabel" data-ng-show="parameters.DESCRIPTORSENTENCE.State == EnumState.ativo">
-                                                <label>{{parameters.DESCRIPTORSENTENCE.Value}}<span ng-if="parameters.DESCRIPTORSENTENCE.Obligatory">*</span>:</label>
-                                                <div>
-                                                    <input type="text" class="form-control" ng-model="sentenca" maxlength="170" placeholder="Digite aqui a(o) {{parameters.DESCRIPTORSENTENCE.Value|lowercase}}">
+                <div class="step" ng-show="navigation == 3">
+                    <div class="boxConteudo">
+                        <div class="container-fluid semPadding">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="cards">
+                                        @* Sentença descritora do item *@
+                                        <div class="campoLabel" data-ng-show="parameters.DESCRIPTORSENTENCE.State == EnumState.ativo">
+                                            <label>{{parameters.DESCRIPTORSENTENCE.Value}}<span ng-if="parameters.DESCRIPTORSENTENCE.Obligatory">*</span>:</label>
+                                            <div>
+                                                <input type="text" class="form-control" ng-model="sentenca" maxlength="170" placeholder="Digite aqui a(o) {{parameters.DESCRIPTORSENTENCE.Value|lowercase}}">
+                                            </div>
+                                        </div>
+                                        @* Código do item *@
+                                        <form name="codeForm" novalidate>
+                                            <div class="campoLabel" data-ng-show="parameters.CODE.State == EnumState.ativo">
+                                                <label>{{parameters.CODE.Value | capitalize}} do item<span ng-if="parameters.CODE.Obligatory">*</span>:</label>
+                                                <div data-ng-class="{'code-invalid':!codeForm.code.$pristine && invalidCode, 'code-valid':!codeForm.code.$pristine && invalidCode == false}">
+                                                    <input name="code"
+                                                           type="text"
+                                                           class="form-control"
+                                                           data-ng-model="code"
+                                                           maxlength="20"
+                                                           placeholder="Digite aqui a(o) {{parameters.CODE.Value|lowercase}}"
+                                                           data-ng-focus="focusCode()"
+                                                           data-ng-blur="blurCode(code)">
+                                                    <span data-ng-if="!codeForm.code.$pristine && invalidCode == true">{{parameters.CODE.Value | capitalize}} do item já existente.</span>
+                                                    <span data-ng-if="!codeForm.code.$pristine && code && invalidCode == false">{{parameters.CODE.Value | capitalize}} do item disponível.</span>
                                                 </div>
                                             </div>
-                                            @* Código do item *@
-                                            <form name="codeForm" novalidate>
-                                                <div class="campoLabel" data-ng-show="parameters.CODE.State == EnumState.ativo">
-                                                    <label>{{parameters.CODE.Value | capitalize}} do item<span ng-if="parameters.CODE.Obligatory">*</span>:</label>
-                                                    <div data-ng-class="{'code-invalid':!codeForm.code.$pristine && invalidCode, 'code-valid':!codeForm.code.$pristine && invalidCode == false}">
-                                                        <input name="code"
-                                                               type="text"
-                                                               class="form-control"
-                                                               data-ng-model="code"
-                                                               maxlength="20"
-                                                               placeholder="Digite aqui a(o) {{parameters.CODE.Value|lowercase}}"
-                                                               data-ng-focus="focusCode()"
-                                                               data-ng-blur="blurCode(code)">
-                                                        <span data-ng-if="!codeForm.code.$pristine && invalidCode == true">{{parameters.CODE.Value | capitalize}} do item já existente.</span>
-                                                        <span data-ng-if="!codeForm.code.$pristine && code && invalidCode == false">{{parameters.CODE.Value | capitalize}} do item disponível.</span>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="pinterest">
-                                        @* Skills *@
-                                        <div class="col-md-6">
-                                            <div class="cards">
+                            </div>
+                            <div class="row">
+                                <div class="pinterest">
+                                    @* Skills *@
+                                    <div class="col-md-6">
+                                        <div class="cards">
+                                            <table class="table semBorder padding">
+                                                <colgroup>
+                                                    <col width="15%" />
+                                                    <col width="85%" />
+                                                </colgroup>
+                                                <tbody>
+                                                    <tr ng-repeat="($indexSkill, s) in skills track by $indexSkill">
+                                                        <th>{{ s.Description }}*: </th>
+                                                        <th>
+                                                            <div style="display: -webkit-inline-box;">
+                                                                <select class="form-control" title="{{ s.objSkill.Description }}"
+                                                                        ng-options='s as (s.Description | minimize:70) for s in s.lista track by s.Id'
+                                                                        ng-change="carregarCascadeSkill($indexSkill, s)"
+                                                                        ng-model='s.objSkill'
+                                                                        ng-title="s.lista"
+                                                                        ng-title-propertie="Description"
+                                                                        ng-title-index="0"></select>
+                                                            </div>
+                                                        </th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    @* Assunto/subassunto *@
+                                    <div class="col-md-6">
+                                        <div class="cards">
+                                            <table class="table semBorder padding">
+                                                <colgroup>
+                                                    <col width="15%" />
+                                                    <col width="85%" />
+                                                </colgroup>
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Assunto*: </th>
+                                                        <th ng-show="((!editMode) && (!editInternal)) || (!existeAssunto)">
+                                                            <select class="comboAssunto"
+                                                                    id="comboAssunto"
+                                                                    style="width: 100%"
+                                                                    ng-model='assunto.Id'
+                                                                    ng-change="carregaSubassunto();">
+                                                                <option></option>
+                                                            </select>
+                                                        </th>
+                                                        <th ng-show="editMode || editInternal || existeAssunto">
+                                                            <input readonly class="labelAssunto form-control" id="labelAssunto" ng-model="assunto.Description" />
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Subassunto*: </th>
+                                                        <th ng-show="((!editMode) && (!editInternal)) || (!existeAssunto)">
+                                                            <select class="comboSubassunto"
+                                                                    id="comboSubassunto"
+                                                                    style="width: 100%"
+                                                                    ng-model='subassunto.Id'>
+                                                                <option></option>
+                                                            </select>
+                                                        </th>
+                                                        <th ng-show="editMode || editInternal || existeAssunto">
+                                                            <input readonly class="labelSubassunto form-control" id="labelSubassunto" ng-model="subassunto.Description" />
+                                                        </th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    @* Propriedades Item *@
+                                    <div class="col-md-6">
+                                        <div class="cards">
+                                            <div class="boxConteudo">
                                                 <table class="table semBorder padding">
                                                     <colgroup>
-                                                        <col width="15%" />
-                                                        <col width="85%" />
+                                                        <col width="35%" />
+                                                        <col width="65%" />
                                                     </colgroup>
                                                     <tbody>
-                                                        <tr ng-repeat="($indexSkill, s) in skills track by $indexSkill">
-                                                            <th>{{ s.Description }}*: </th>
+                                                        <tr>
+                                                            <th>{{parameters.ITEMSITUATION.Value}}*: </th>
                                                             <th>
-                                                                <div style="display: -webkit-inline-box;">
-                                                                    <select class="form-control" title="{{ s.objSkill.Description }}"
-                                                                            ng-options='s as (s.Description | minimize:70) for s in s.lista track by s.Id'
-                                                                            ng-change="carregarCascadeSkill($indexSkill, s)"
-                                                                            ng-model='s.objSkill'
-                                                                            ng-title="s.lista"
-                                                                            ng-title-propertie="Description"
-                                                                            ng-title-index="0"></select>
+                                                                @* Julio Silva 17/05/2016 *@
+                                                                <select class="form-control" title="{{ statusItem.objStatusItem.Description }}"
+                                                                        ng-options='status as (status.Description | minimize:70) for status in statusItem.lista track by status.Id'
+                                                                        ng-model='statusItem.objStatusItem'
+                                                                        ng-disabled="statusItem.lock"
+                                                                        ng-title="statusItem.lista"
+                                                                        ng-title-propertie="Description"
+                                                                        ng-title-index="1">
+                                                                    <option value="">--Selecione--</option>
+                                                                </select>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>{{parameters.ITEMTYPE.Value}}*:</th>
+                                                            <th>
+                                                                @* Julio Silva 17/05/2016 *@
+                                                                <select class="form-control" title="{{ tipoItem.objTipoItem.Description }}"
+                                                                        ng-options='tipoItem as tipoItem.Description for tipoItem in tipoItem.lista track by tipoItem.Id'
+                                                                        ng-model='tipoItem.objTipoItem'
+                                                                        ng-change="changeItemType(tipoItem.objTipoItem);"
+                                                                        ng-disabled="!tipoItem.lock"
+                                                                        ng-title="tipoItem.lista"
+                                                                        ng-title-propertie="Description"
+                                                                        ng-title-index="0"
+                                                                        required></select>
+                                                            </th>
+                                                        </tr>
+                                                        <tr ng-if="admin">
+                                                            <th>{{parameters.ISRESTRICT.Value}}<span ng-if="parameters.ISRESTRICT.Obligatory">*</span>: </th>
+                                                            <th>
+                                                                <div class="checkbox checkbox-primary check-item-revisao pull-left">
+                                                                    <input id="sigiloItem" ng-model="sigiloItem.value" type="checkbox" lock="sigiloItem.lock">
+                                                                    <label for="sigiloItem"></label>
                                                                 </div>
                                                             </th>
                                                         </tr>
@@ -298,215 +393,66 @@
                                                 </table>
                                             </div>
                                         </div>
-                                        @* Assunto/subassunto *@
-                                        <div class="col-md-6">
-                                            <div class="cards">
-                                                <table class="table semBorder padding">
-                                                    <colgroup>
-                                                        <col width="15%" />
-                                                        <col width="85%" />
-                                                    </colgroup>
-                                                    <tbody>
-                                                        <tr>
-                                                            <th>Assunto*: </th>
-                                                            <th ng-show="((!editMode) && (!editInternal)) || (!existeAssunto)">
-                                                                <select class="comboAssunto"
-                                                                        id="comboAssunto"
-                                                                        style="width: 100%"
-                                                                        ng-model='assunto.Id'
-                                                                        ng-change="carregaSubassunto();">
-                                                                    <option></option>
-                                                                </select>
-                                                            </th>
-                                                            <th ng-show="editMode || editInternal || existeAssunto">
-                                                                <input readonly class="labelAssunto form-control" id="labelAssunto" ng-model="assunto.Description" />
-                                                            </th>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Subassunto*: </th>
-                                                            <th ng-show="((!editMode) && (!editInternal)) || (!existeAssunto)">
-                                                                <select class="comboSubassunto"
-                                                                        id="comboSubassunto"
-                                                                        style="width: 100%"
-                                                                        ng-model='subassunto.Id'>
-                                                                    <option></option>
-                                                                </select>
-                                                            </th>
-                                                            <th ng-show="editMode || editInternal || existeAssunto">
-                                                                <input readonly class="labelSubassunto form-control" id="labelSubassunto" ng-model="subassunto.Description" />
-                                                            </th>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                    </div>
+                                    @* Palavras-chave *@
+                                    <div class="col-md-6">
+                                        <div class="cards">
+                                            <div class="campoLabel" data-ng-show="parameters.KEYWORDS.State == EnumState.ativo">
+                                                <label>{{parameters.KEYWORDS.Value}}<span ng-if="parameters.KEYWORDS.Obligatory">*</span>:</label>
+                                                <tags-input ng-model="palavrasChave"></tags-input>
                                             </div>
-                                        </div>
-                                        @* Propriedades Item *@
-                                        <div class="col-md-6">
-                                            <div class="cards">
-                                                <div class="boxConteudo">
-                                                    <table class="table semBorder padding">
-                                                        <colgroup>
-                                                            <col width="35%" />
-                                                            <col width="65%" />
-                                                        </colgroup>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th>{{parameters.ITEMSITUATION.Value}}*: </th>
-                                                                <th>
-                                                                    @* Julio Silva 17/05/2016 *@
-                                                                    <select class="form-control" title="{{ statusItem.objStatusItem.Description }}"
-                                                                            ng-options='status as (status.Description | minimize:70) for status in statusItem.lista track by status.Id'
-                                                                            ng-model='statusItem.objStatusItem'
-                                                                            ng-disabled="statusItem.lock"
-                                                                            ng-title="statusItem.lista"
-                                                                            ng-title-propertie="Description"
-                                                                            ng-title-index="1">
-                                                                        <option value="">--Selecione--</option>
-                                                                    </select>
-                                                                </th>
-                                                            </tr>
-                                                            <tr>
-                                                                <th>{{parameters.ITEMTYPE.Value}}*:</th>
-                                                                <th>
-                                                                    @* Julio Silva 17/05/2016 *@
-                                                                    <select class="form-control" title="{{ tipoItem.objTipoItem.Description }}"
-                                                                            ng-options='tipoItem as tipoItem.Description for tipoItem in tipoItem.lista track by tipoItem.Id'
-                                                                            ng-model='tipoItem.objTipoItem'
-                                                                            ng-change="changeItemType(tipoItem.objTipoItem);"
-                                                                            ng-disabled="!tipoItem.lock"
-                                                                            ng-title="tipoItem.lista"
-                                                                            ng-title-propertie="Description"
-                                                                            ng-title-index="0"
-                                                                            required></select>
-                                                                </th>
-                                                            </tr>
-                                                            <tr ng-if="admin">
-                                                                <th>{{parameters.ISRESTRICT.Value}}<span ng-if="parameters.ISRESTRICT.Obligatory">*</span>: </th>
-                                                                <th>
-                                                                    <div class="checkbox checkbox-primary check-item-revisao pull-left">
-                                                                        <input id="sigiloItem" ng-model="sigiloItem.value" type="checkbox" lock="sigiloItem.lock">
-                                                                        <label for="sigiloItem"></label>
-                                                                    </div>
-                                                                </th>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                            <div class="campoLabel" data-ng-show="parameters.PROFICIENCY.State == EnumState.ativo">
+                                                <label>{{parameters.PROFICIENCY.Value}}<span ng-if="parameters.PROFICIENCY.Obligatory">*</span>: </label>
+                                                <div>
+                                                    <input type="number" class="form-control proficiencia" ng-model="proficiencia" placeholder="Valor de 100 a 500">
                                                 </div>
-                                            </div>
-                                        </div>
-                                        @* Palavras-chave *@
-                                        <div class="col-md-6">
-                                            <div class="cards">
-                                                <div class="campoLabel" data-ng-show="parameters.KEYWORDS.State == EnumState.ativo">
-                                                    <label>{{parameters.KEYWORDS.Value}}<span ng-if="parameters.KEYWORDS.Obligatory">*</span>:</label>
-                                                    <tags-input ng-model="palavrasChave"></tags-input>
-                                                </div>
-                                                <div class="campoLabel" data-ng-show="parameters.PROFICIENCY.State == EnumState.ativo">
-                                                    <label>{{parameters.PROFICIENCY.Value}}<span ng-if="parameters.PROFICIENCY.Obligatory">*</span>: </label>
-                                                    <div>
-                                                        <input type="number" class="form-control proficiencia" ng-model="proficiencia" placeholder="Valor de 100 a 500">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @* Series *@
-                                        <div class="col-md-6">
-                                            <div class="cards">
-                                                <div class="campoLabel" data-ng-show="parameters.ITEMCURRICULUMGRADE.State == EnumState.ativo">
-                                                    <label><b>{{series.masterLabel}}*:</b></label>
-                                                    <div>
-                                                        <div radio-select radiolist="series.lista" radioselected="series.selected" custom-class="radio-inline"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="campoLabel" data-ng-show="parameters.ITEMLEVEL.State == EnumState.ativo">
-                                                    <div>
-                                                        <label><b>{{parameters.ITEMLEVEL.Value}}<span ng-if="parameters.ITEMLEVEL.Obligatory">*</span>:</b></label>
-                                                        <div id="dificuldade" rating-directive list="dificuldade.lista" difficulty="dificuldade.objDificuldade" lock="false"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @* Dicas *@
-                                        <div class="col-md-6" data-ng-show="parameters.TIPS.State == EnumState.ativo">
-                                            <div class="cards">
-                                                <div class="campoLabel">
-                                                    <label>{{parameters.TIPS.Value}}<span ng-if="parameters.TIPS.Obligatory">*</span>:</label>
-                                                    <textarea class="form-control" ng-model="dicas" data-ng-blur="blurTips(dicas)"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @* TRI *@
-                                        <div class="col-md-6" data-ng-show="parameters.TRI.State == EnumState.ativo">
-                                            <div class="cards">
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>
-                                                                <label class="subTitulo">TRI</label>
-                                                            </th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr ng-repeat="_tri in tri">
-                                                            <th>{{ _tri.preDescription }}<span ng-if="parameters.TRI.Obligatory">*</span>:</th>
-                                                            <th>
-                                                                <input ng-model="_tri.Value" type="text" class="table-input form-control numbers" size="3"
-                                                                       placeholder="{{ _tri.preDescription != 'Dificuldade' ? _tri.postDescription : undefined }}" ng-change="TRIValidation($index)">
-                                                            </th>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        @* Versão de itens *@
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-md-12 semPadding">
-                                    <div class="cards" ng-show="editMode == true || editInternal == true">
-                                        <div class="tct">
-                                            <button ng-show="version_visibility == true" ng-click="versionControll(false)" type="button" class="btnAccordion pull-right">
-                                                <i class="material-icons">expand_less</i>
-                                            </button>
-                                            <button ng-show="version_visibility == false" ng-click="versionControll(true)" type="button" class="btnAccordion pull-right">
-                                                <i class="material-icons">expand_more</i>
-                                            </button>
-                                            <h4>Versões do Item</h4>
+                                    @* Series *@
+                                    <div class="col-md-6">
+                                        <div class="cards">
+                                            <div class="campoLabel" data-ng-show="parameters.ITEMCURRICULUMGRADE.State == EnumState.ativo">
+                                                <label><b>{{series.masterLabel}}*:</b></label>
+                                                <div>
+                                                    <div radio-select radiolist="series.lista" radioselected="series.selected" custom-class="radio-inline"></div>
+                                                </div>
+                                            </div>
+                                            <div class="campoLabel" data-ng-show="parameters.ITEMLEVEL.State == EnumState.ativo">
+                                                <div>
+                                                    <label><b>{{parameters.ITEMLEVEL.Value}}<span ng-if="parameters.ITEMLEVEL.Obligatory">*</span>:</b></label>
+                                                    <div id="dificuldade" rating-directive list="dificuldade.lista" difficulty="dificuldade.objDificuldade" lock="false"></div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div ng-show="version_visibility == true">
-                                            <table class="table table-hover" style="margin-bottom: 0;">
+                                    </div>
+                                    @* Dicas *@
+                                    <div class="col-md-6" data-ng-show="parameters.TIPS.State == EnumState.ativo">
+                                        <div class="cards">
+                                            <div class="campoLabel">
+                                                <label>{{parameters.TIPS.Value}}<span ng-if="parameters.TIPS.Obligatory">*</span>:</label>
+                                                <textarea class="form-control" ng-model="dicas" data-ng-blur="blurTips(dicas)"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @* TRI *@
+                                    <div class="col-md-6" data-ng-show="parameters.TRI.State == EnumState.ativo">
+                                        <div class="cards">
+                                            <table class="table">
                                                 <thead>
                                                     <tr>
                                                         <th>
-                                                            <label>Código do item</label>
+                                                            <label class="subTitulo">TRI</label>
                                                         </th>
-                                                        <th>
-                                                            <label>Versão</label>
-                                                        </th>
-                                                        <th>
-                                                            <label>Aplicado</label>
-                                                        </th>
-                                                        <th>
-                                                            <label>Criação</label>
-                                                        </th>
-                                                        <th>
-                                                            <label>Provas</label>
-                                                        </th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr ng-repeat="_version in versions.lista">
-                                                        <th>{{ _version.codigo }} </th>
-                                                        <th>{{ _version.versao }} </th>
-                                                        <th>{{ _version.aplicado }} </th>
-                                                        <th>{{ _version.criacao }} </th>
+                                                    <tr ng-repeat="_tri in tri">
+                                                        <th>{{ _tri.preDescription }}<span ng-if="parameters.TRI.Obligatory">*</span>:</th>
                                                         <th>
-                                                            <i ng-show="_version.prova == false" class="material-icons">visibility</i>
-                                                            <i ng-show="_version.prova == true" class="material-icons">visibility_off</i>
+                                                            <input ng-model="_tri.Value" type="text" class="table-input form-control numbers" size="3"
+                                                                   placeholder="{{ _tri.preDescription != 'Dificuldade' ? _tri.postDescription : undefined }}" ng-change="TRIValidation($index)">
                                                         </th>
                                                     </tr>
                                                 </tbody>
@@ -516,312 +462,368 @@
                                 </div>
                             </div>
                         </div>
-                        @* Texto Base *@
-                        <div class="boxConteudo" data-ng-if="textobase.Description">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-12 cards">
-                                        <label style="margin-left:10px;">{{parameters.BASETEXT.Value}}:</label>
-                                        <div style="margin-left:10px;" data-ng-bind-html="textobase.Description | trustedHtml"></div>
+                    </div>
+                    @* Versão de itens *@
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12 semPadding">
+                                <div class="cards" ng-show="editMode == true || editInternal == true">
+                                    <div class="tct">
+                                        <button ng-show="version_visibility == true" ng-click="versionControll(false)" type="button" class="btnAccordion pull-right">
+                                            <i class="material-icons">expand_less</i>
+                                        </button>
+                                        <button ng-show="version_visibility == false" ng-click="versionControll(true)" type="button" class="btnAccordion pull-right">
+                                            <i class="material-icons">expand_more</i>
+                                        </button>
+                                        <h4>Versões do Item</h4>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        @* Vídeos *@
-                        <div class="boxConteudo">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-12 cards">
-                                        <label class="label-alert-video-conversion">**Vídeos com tamanho acima de 10mb serão convertidos para o formato WEBM. Este processo pode demorar alguns minutos.**</label>
-
-                                        <table class="table table-responsive" style="margin:0;">
+                                    <div ng-show="version_visibility == true">
+                                        <table class="table table-hover" style="margin-bottom: 0;">
                                             <thead>
                                                 <tr>
-                                                    <th>Vídeo</th>
-                                                    <th>Thumbnail</th>
-                                                    <th>Adicionar</th>
-                                                    <th>Excluir</th>
+                                                    <th>
+                                                        <label>Código do item</label>
+                                                    </th>
+                                                    <th>
+                                                        <label>Versão</label>
+                                                    </th>
+                                                    <th>
+                                                        <label>Aplicado</label>
+                                                    </th>
+                                                    <th>
+                                                        <label>Criação</label>
+                                                    </th>
+                                                    <th>
+                                                        <label>Provas</label>
+                                                    </th>
                                                 </tr>
                                             </thead>
-                                            @*Lista gerada*@
                                             <tbody>
-                                                <tr ng-repeat="v in videos track by $index">
-                                                    <td>
-                                                        <div class="uploadImage">
-                                                            <div ng-show="v.File.Id <= 0" video-upload="" component="v" data-listextensions="listextensionsVideo"></div>
-                                                            <label ng-show="v.File.Id > 0">{{(v.File.Name != undefined ? v.File.Name : v.File.Path) | minimize:50}}</label>
-                                                            <span ng-show="v.File.Id > 0 && v.ConvertedFile.Id > 0">
-                                                                <button class="view-converted-video-button" ng-click="callModalViewConvertedVideo(v.ConvertedFile.Path,v.Thumbnail.Path)" title="Veja aqui o seu vídeo convertido." id="view_converted_video_{{component.Guid}}"><i class="fa fa-play-circle view-converted-video"></i></button>
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="uploadImage">
-                                                            <div ng-show="v.Thumbnail.Id <= 0" upload="" type="@(EnumFileType.ThumbnailVideo)" component="v.Thumbnail" placeholder="uma imagem" data-listextensions="listextensionsImage"></div>
-                                                            <label ng-show="v.Thumbnail.Id > 0">{{(v.Thumbnail.Name != undefined ? v.Thumbnail.Name : v.Thumbnail.Path) | minimize:50}}</label>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <a role="button"
-                                                           ng-show="last($index)"
-                                                           ng-click="addModal()">
-                                                            <i class="material-icons">add</i>
-                                                        </a>
-                                                    </td>
-                                                    <td>
-                                                        <a ng-click="callModal($index)">
-                                                            <i class="material-icons">delete</i>
-                                                        </a>
-                                                    </td>
+                                                <tr ng-repeat="_version in versions.lista">
+                                                    <th>{{ _version.codigo }} </th>
+                                                    <th>{{ _version.versao }} </th>
+                                                    <th>{{ _version.aplicado }} </th>
+                                                    <th>{{ _version.criacao }} </th>
+                                                    <th>
+                                                        <i ng-show="_version.prova == false" class="material-icons">visibility</i>
+                                                        <i ng-show="_version.prova == true" class="material-icons">visibility_off</i>
+                                                    </th>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        @* Audios *@
-                        <div class="boxConteudo">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-12 cards">
-                                        <table class="table table-responsive" style="margin:0;">
-                                            <thead>
-                                                <tr>
-                                                    <th>Áudio</th>
-                                                    <th>Adicionar</th>
-                                                    <th>Excluir</th>
-                                                </tr>
-                                            </thead>
-                                            @*Lista gerada*@
-                                            <tbody>
-                                                <tr ng-repeat="a in audios track by $index">
-                                                    <td>
-                                                        <div class="uploadImage">
-                                                            <div ng-show="a.File.Id <= 0" upload="" type="@(EnumFileType.Audio)" component="a.File" placeholder="um áudio" data-listextensions="listextensionsAudio"></div>
-                                                            <label ng-show="a.File.Id > 0">{{(a.File.Name != undefined ? a.File.Name : a.File.Path) | minimize:50}}</label>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <a role="button"
-                                                           ng-show="lastAudio($index)"
-                                                           ng-click="addModalAudio()">
-                                                            <i class="material-icons">add</i>
-                                                        </a>
-                                                    </td>
-                                                    <td>
-                                                        <a ng-click="callModalAudio($index)">
-                                                            <i class="material-icons">delete</i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @* Enunciado *@
-                        <div class="boxConteudo">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-12 cards">
-                                        <div ng-if="item.ItemNarrated" class="campoLabel colunas">
-                                            <label>Incluir enunciado na prova do aluno:</label>
-                                            <div>
-                                                <div class="switch" ng-click="item.StudentStatement = !item.StudentStatement"
-                                                     ng-class="{'off': !item.StudentStatement }"><input type="button" ng-click="setNewValueEnunciationTest()" /></div>
-                                            </div>
-                                        </div>
-                                        <div ng-if="item.ItemNarrated" ng-show="item.StudentStatement" class="campoLabel colunas">
-                                            <label>Exibir ícone para narração do enunciado na prova do aluno:</label>
-                                            <div>
-                                                <div class="switch" ng-click="item.NarrationStudentStatement = !item.NarrationStudentStatement"
-                                                     ng-class="{'off': !item.NarrationStudentStatement }"><input type="button" /></div>
-                                            </div>
-                                        </div>
-                                        <div class="campoLabel colunas" data-ng-show="parameters.STATEMENT.State == EnumState.ativo">
-                                            <label>{{parameters.STATEMENT.Value}}<span ng-if="parameters.STATEMENT.Obligatory">*</span>: </label>
-                                            <div writemaths position="center top" previewposition="center bottom">
-                                                <textarea id="enunciado" name="enunciado" ng-model="enunciado.Description" images="enunciado.Files" tipo="@((Byte)EnumFileType.Statement)" redactor></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @* Alternativas *@
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-md-12 cards" style="padding: 0;">
-                                    <div class="tabPadrao">
-                                        <ul class="nav nav-tabs">
-                                            <li role="presentation" class="active">
-                                                <a href="#alternatives" aria-controls="alternatives" role="tab" data-toggle="tab">Alternativas</a>
-                                            </li>
-                                            <li role="presentation">
-                                                <a href="#tct" aria-controls="tct" role="tab" data-toggle="tab">TCT</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="tab-content">
-                                        <div class="row tab-pane active" role="tabpanel" id="alternatives">
-                                            <div class="col-md-12" ng-if="item.ItemNarrated">
-                                                <div class="campoLabel colunas">
-                                                    <label>Adicionar ícone de narração em todas as alternativas:</label>
-                                                    <div>
-                                                        <div class="switch" ng-click="item.NarrationAlternatives = !item.NarrationAlternatives"
-                                                             ng-class="{'off': !item.NarrationAlternatives}">
-                                                            <input type="button" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="text-destrator">
-                                                    <div class="row boxDistratores"
-                                                         ng-repeat="($indexDistrator, distrator) in distratores track by $indexDistrator"
-                                                         ng-if="distrator.State == 1">
-                                                        <div class="row">
-                                                            <div class="col-md-12 semPadding radio radio-primary">
-                                                                <a href="javascript:void(0)" class="pull-right" ng-show="controllUp('show', $index)" ng-click="controllUp('action', $index)">
-                                                                    <i class="material-icons">expand_less</i>
-                                                                </a>
-                                                                <a href="javascript:void(0)" class="pull-right" ng-show="controllDown('show', $index)" ng-click="controllDown('action', $index)">
-                                                                    <i class="material-icons">expand_more</i>
-                                                                </a>
-                                                                <p class="alternativa">
-                                                                    <span>{{distrator.Description}}</span><span ng-if="parameters.ALTERNATIVES.Obligatory">*</span>
-                                                                    <input type="radio" ng-click="distratorSelectionControll(distrator)" id="check-distratores_{{$index}}" name="check-distratores_{{$index}}" value="{{distrator}}" ng-checked="distrator.selecionado">
-                                                                    <label for="check-distratores_{{$index}}" class="radio-item-revisao"></label>
-                                                                    <span ng-show="distrator.selecionado"><i class="material-icons" style="color: #277107;">check</i></span>
-                                                                    <a href="javascript:void(0)" class="btn-sm" data-ng-click="setEditAlternative(distrator)">
-                                                                        <i class="material-icons">edit</i>
-                                                                    </a>
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-12  semPadding">
-                                                                <div data-ng-bind-html="distrator.texto | trustedHtml"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-12  semPadding">
-                                                                <h5 data-ng-if="distrator.justificativa.Description.length>0">Justificativa:</h5>
-                                                                <div style=" margin-top 10px;"
-                                                                     data-ng-bind-html="distrator.justificativa.Description | trustedHtml"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row tab-pane" role="tabpanel" id="tct">
-                                            <div class="col-xs-12">
-                                                <div class="text-destrator">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="tabTCT" ng-repeat="($indexDistrator, distrator) in distratores track by $indexDistrator" ng-if="distrator.State == 1">
-                                                                <table class="table" ng-class="{true:'table-selected', false:'table-default'}[distrator.selecionado]">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>
-                                                                                <label class="subTitulo">
-                                                                                    {{distrator.Description}}
-                                                                                    <span ng-show="distrator.selecionado"><i class="material-icons">check</i></span>
-                                                                                </label>
-                                                                            </th>
-                                                                            <th></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr ng-repeat="_tct in distrator.tct">
-                                                                            <th>{{ _tct.preDescription }}<span ng-if="parameters.TCT.Obligatory">*</span>: </th>
-                                                                            <th>
-                                                                                <input ng-model="_tct.Value" type="text" class="form-control" size="5" ng-change="TCTValidation($parent.$index, $index)" placeholder="{{_tct.postDescription}}">
-                                                                            </th>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @* Botões *@
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div ng-show="editInternal == false">
-                                    <button type="button"
-                                            data-ng-show="createMode !== true"
-                                            class="btnPadrao2 pull-right"
-                                            data-ng-click="finishEdit()">
-                                        Finalizar Edição
-                                    </button>
-                                    <button type="button"
-                                            class="btnPadrao2 pull-right"
-                                            data-ng-show="createMode == true"
-                                            data-ng-click="add()"
-                                            data-btn-checkbox=""
-                                            data-btn-checkbox-true="1"
-                                            data-btn-checkbox-false="0"
-                                            ng-if="!item.ItemNarrated">
-                                        Salvar/Adicionar novo item ao Texto Base
-                                    </button>
-                                    <button type="button"
-                                            class="btnPadrao2 pull-right"
-                                            data-ng-show="createMode == true"
-                                            data-ng-click="add()"
-                                            data-btn-checkbox=""
-                                            data-btn-checkbox-true="1"
-                                            data-btn-checkbox-false="0"
-                                            ng-if="item.ItemNarrated">
-                                        Salvar
-                                    </button>
-                                    <button type="button"
-                                            data-ng-show="createMode == true"
-                                            class="btnPadrao2 pull-right"
-                                            data-ng-click="next(4)"
-                                            data-ng-disabled="itens.length == 0"
-                                            data-ng-if="!item.ItemNarrated">
-                                        Visualizar Itens
-                                    </button>
-                                    <button type="button"
-                                            class="btnCancelar pull-left pull-right"
-                                            data-ng-click="previus(2)"
-                                            data-btn-checkbox=""
-                                            data-btn-checkbox-true="1"
-                                            data-btn-checkbox-false="0">
-                                        Voltar
-                                    </button>
-                                </div>
-                                <div ng-show="editInternal == true">
-                                    <button type="button"
-                                            class="btnCancelar pull-right"
-                                            data-ng-click="editCancel()"
-                                            data-btn-checkbox=""
-                                            data-btn-checkbox-true="1"
-                                            data-btn-checkbox-false="0">
-                                        Cancelar
-                                    </button>
-                                    <button type="button"
-                                            class="btnPadrao2 pull-right"
-                                            data-ng-click="finishEdit()"
-                                            data-btn-checkbox=""
-                                            data-btn-checkbox-true="1"
-                                            data-btn-checkbox-false="0">
-                                        Finalizar Edição
-                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @* Texto Base *@
+                    <div class="boxConteudo" data-ng-if="textobase.Description">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12 cards">
+                                    <label style="margin-left:10px;">{{parameters.BASETEXT.Value}}:</label>
+                                    <div style="margin-left:10px;" data-ng-bind-html="textobase.Description | trustedHtml"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* Vídeos *@
+                    <div class="boxConteudo">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12 cards">
+                                    <label class="label-alert-video-conversion">**Vídeos com tamanho acima de 10mb serão convertidos para o formato WEBM. Este processo pode demorar alguns minutos.**</label>
+
+                                    <table class="table table-responsive" style="margin:0;">
+                                        <thead>
+                                            <tr>
+                                                <th>Vídeo</th>
+                                                <th>Thumbnail</th>
+                                                <th>Adicionar</th>
+                                                <th>Excluir</th>
+                                            </tr>
+                                        </thead>
+                                        @*Lista gerada*@
+                                        <tbody>
+                                            <tr ng-repeat="v in videos track by $index">
+                                                <td>
+                                                    <div class="uploadImage">
+                                                        <div ng-show="v.File.Id <= 0" video-upload="" component="v" data-listextensions="listextensionsVideo"></div>
+                                                        <label ng-show="v.File.Id > 0">{{(v.File.Name != undefined ? v.File.Name : v.File.Path) | minimize:50}}</label>
+                                                        <span ng-show="v.File.Id > 0 && v.ConvertedFile.Id > 0">
+                                                            <button class="view-converted-video-button" ng-click="callModalViewConvertedVideo(v.ConvertedFile.Path,v.Thumbnail.Path)" title="Veja aqui o seu vídeo convertido." id="view_converted_video_{{component.Guid}}"><i class="fa fa-play-circle view-converted-video"></i></button>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="uploadImage">
+                                                        <div ng-show="v.Thumbnail.Id <= 0" upload="" type="@(EnumFileType.ThumbnailVideo)" component="v.Thumbnail" placeholder="uma imagem" data-listextensions="listextensionsImage"></div>
+                                                        <label ng-show="v.Thumbnail.Id > 0">{{(v.Thumbnail.Name != undefined ? v.Thumbnail.Name : v.Thumbnail.Path) | minimize:50}}</label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a role="button"
+                                                       ng-show="last($index)"
+                                                       ng-click="addModal()">
+                                                        <i class="material-icons">add</i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a ng-click="callModal($index)">
+                                                        <i class="material-icons">delete</i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* Audios *@
+                    <div class="boxConteudo">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12 cards">
+                                    <table class="table table-responsive" style="margin:0;">
+                                        <thead>
+                                            <tr>
+                                                <th>Áudio</th>
+                                                <th>Adicionar</th>
+                                                <th>Excluir</th>
+                                            </tr>
+                                        </thead>
+                                        @*Lista gerada*@
+                                        <tbody>
+                                            <tr ng-repeat="a in audios track by $index">
+                                                <td>
+                                                    <div class="uploadImage">
+                                                        <div ng-show="a.File.Id <= 0" upload="" type="@(EnumFileType.Audio)" component="a.File" placeholder="um áudio" data-listextensions="listextensionsAudio"></div>
+                                                        <label ng-show="a.File.Id > 0">{{(a.File.Name != undefined ? a.File.Name : a.File.Path) | minimize:50}}</label>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a role="button"
+                                                       ng-show="lastAudio($index)"
+                                                       ng-click="addModalAudio()">
+                                                        <i class="material-icons">add</i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a ng-click="callModalAudio($index)">
+                                                        <i class="material-icons">delete</i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* Enunciado *@
+                    <div class="boxConteudo">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12 cards">
+                                    <div ng-if="item.ItemNarrated" class="campoLabel colunas">
+                                        <label>Incluir enunciado na prova do aluno:</label>
+                                        <div>
+                                            <div class="switch" ng-click="item.StudentStatement = !item.StudentStatement"
+                                                 ng-class="{'off': !item.StudentStatement }"><input type="button" ng-click="setNewValueEnunciationTest()" /></div>
+                                        </div>
+                                    </div>
+                                    <div ng-if="item.ItemNarrated" ng-show="item.StudentStatement" class="campoLabel colunas">
+                                        <label>Exibir ícone para narração do enunciado na prova do aluno:</label>
+                                        <div>
+                                            <div class="switch" ng-click="item.NarrationStudentStatement = !item.NarrationStudentStatement"
+                                                 ng-class="{'off': !item.NarrationStudentStatement }"><input type="button" /></div>
+                                        </div>
+                                    </div>
+                                    <div class="campoLabel colunas" data-ng-show="parameters.STATEMENT.State == EnumState.ativo">
+                                        <label>{{parameters.STATEMENT.Value}}<span ng-if="parameters.STATEMENT.Obligatory">*</span>: </label>
+                                        <div writemaths position="center top" previewposition="center bottom">
+                                            <textarea id="enunciado" name="enunciado" ng-model="enunciado.Description" images="enunciado.Files" tipo="@((Byte)EnumFileType.Statement)" redactor></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* Alternativas *@
+                    <div ng-if="tipoItem.objTipoItem.Id != 3" class="container-fluid">
+                        <div class="row">
+                            
+                            {{tipoItem.objTipoItem}}
+                            <div class="col-md-12 cards" style="padding: 0;">
+                                <div class="tabPadrao">
+                                    <ul class="nav nav-tabs">
+                                        <li role="presentation" class="active">
+                                            <a href="#alternatives" aria-controls="alternatives" role="tab" data-toggle="tab">Alternativas</a>
+                                        </li>
+                                        <li role="presentation">
+                                            <a href="#tct" aria-controls="tct" role="tab" data-toggle="tab">TCT</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="tab-content">
+                                    <div class="row tab-pane active" role="tabpanel" id="alternatives">
+                                        <div class="col-md-12" ng-if="item.ItemNarrated">
+                                            <div class="campoLabel colunas">
+                                                <label>Adicionar ícone de narração em todas as alternativas:</label>
+                                                <div>
+                                                    <div class="switch" ng-click="item.NarrationAlternatives = !item.NarrationAlternatives"
+                                                         ng-class="{'off': !item.NarrationAlternatives}">
+                                                        <input type="button" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="text-destrator">
+                                                <div class="row boxDistratores"
+                                                     ng-repeat="($indexDistrator, distrator) in distratores track by $indexDistrator"
+                                                     ng-if="distrator.State == 1">
+                                                    <div class="row">
+                                                        <div class="col-md-12 semPadding radio radio-primary">
+                                                            <a href="javascript:void(0)" class="pull-right" ng-show="controllUp('show', $index)" ng-click="controllUp('action', $index)">
+                                                                <i class="material-icons">expand_less</i>
+                                                            </a>
+                                                            <a href="javascript:void(0)" class="pull-right" ng-show="controllDown('show', $index)" ng-click="controllDown('action', $index)">
+                                                                <i class="material-icons">expand_more</i>
+                                                            </a>
+                                                            <p class="alternativa">
+                                                                <span>{{distrator.Description}}</span><span ng-if="parameters.ALTERNATIVES.Obligatory">*</span>
+                                                                <input type="radio" ng-click="distratorSelectionControll(distrator)" id="check-distratores_{{$index}}" name="check-distratores_{{$index}}" value="{{distrator}}" ng-checked="distrator.selecionado">
+                                                                <label for="check-distratores_{{$index}}" class="radio-item-revisao"></label>
+                                                                <span ng-show="distrator.selecionado"><i class="material-icons" style="color: #277107;">check</i></span>
+                                                                <a href="javascript:void(0)" class="btn-sm" data-ng-click="setEditAlternative(distrator)">
+                                                                    <i class="material-icons">edit</i>
+                                                                </a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12  semPadding">
+                                                            <div data-ng-bind-html="distrator.texto | trustedHtml"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12  semPadding">
+                                                            <h5 data-ng-if="distrator.justificativa.Description.length>0">Justificativa:</h5>
+                                                            <div style=" margin-top 10px;"
+                                                                 data-ng-bind-html="distrator.justificativa.Description | trustedHtml"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row tab-pane" role="tabpanel" id="tct">
+                                        <div class="col-xs-12">
+                                            <div class="text-destrator">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="tabTCT" ng-repeat="($indexDistrator, distrator) in distratores track by $indexDistrator" ng-if="distrator.State == 1">
+                                                            <table class="table" ng-class="{true:'table-selected', false:'table-default'}[distrator.selecionado]">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>
+                                                                            <label class="subTitulo">
+                                                                                {{distrator.Description}}
+                                                                                <span ng-show="distrator.selecionado"><i class="material-icons">check</i></span>
+                                                                            </label>
+                                                                        </th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr ng-repeat="_tct in distrator.tct">
+                                                                        <th>{{ _tct.preDescription }}<span ng-if="parameters.TCT.Obligatory">*</span>: </th>
+                                                                        <th>
+                                                                            <input ng-model="_tct.Value" type="text" class="form-control" size="5" ng-change="TCTValidation($parent.$index, $index)" placeholder="{{_tct.postDescription}}">
+                                                                        </th>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* Botões *@
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div ng-show="editInternal == false">
+                                <button type="button"
+                                        data-ng-show="createMode !== true"
+                                        class="btnPadrao2 pull-right"
+                                        data-ng-click="finishEdit()">
+                                    Finalizar Edição
+                                </button>
+                                <button type="button"
+                                        class="btnPadrao2 pull-right"
+                                        data-ng-show="createMode == true"
+                                        data-ng-click="add()"
+                                        data-btn-checkbox=""
+                                        data-btn-checkbox-true="1"
+                                        data-btn-checkbox-false="0"
+                                        ng-if="!item.ItemNarrated">
+                                    Salvar/Adicionar novo item ao Texto Base
+                                </button>
+                                <button type="button"
+                                        class="btnPadrao2 pull-right"
+                                        data-ng-show="createMode == true"
+                                        data-ng-click="add()"
+                                        data-btn-checkbox=""
+                                        data-btn-checkbox-true="1"
+                                        data-btn-checkbox-false="0"
+                                        ng-if="item.ItemNarrated">
+                                    Salvar
+                                </button>
+                                <button type="button"
+                                        data-ng-show="createMode == true"
+                                        class="btnPadrao2 pull-right"
+                                        data-ng-click="next(4)"
+                                        data-ng-disabled="itens.length == 0"
+                                        data-ng-if="!item.ItemNarrated">
+                                    Visualizar Itens
+                                </button>
+                                <button type="button"
+                                        class="btnCancelar pull-left pull-right"
+                                        data-ng-click="previus(2)"
+                                        data-btn-checkbox=""
+                                        data-btn-checkbox-true="1"
+                                        data-btn-checkbox-false="0">
+                                    Voltar
+                                </button>
+                            </div>
+                            <div ng-show="editInternal == true">
+                                <button type="button"
+                                        class="btnCancelar pull-right"
+                                        data-ng-click="editCancel()"
+                                        data-btn-checkbox=""
+                                        data-btn-checkbox-true="1"
+                                        data-btn-checkbox-false="0">
+                                    Cancelar
+                                </button>
+                                <button type="button"
+                                        class="btnPadrao2 pull-right"
+                                        data-ng-click="finishEdit()"
+                                        data-btn-checkbox=""
+                                        data-btn-checkbox-true="1"
+                                        data-btn-checkbox-false="0">
+                                    Finalizar Edição
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                     @* Revisão de items cadastrados *@
                     <div class="step" ng-show="navigation == 4 && editInternal == false">
                         <div class="container-fluid">

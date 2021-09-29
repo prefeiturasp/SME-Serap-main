@@ -1510,15 +1510,22 @@
 
             if (opc != null) {
                 if (opc.QuantityAlternative == 5) {
+                    $scope.distratores.map(a => a.State = 1);
                     $scope.distratores[$scope.distratores.length - 1].State = 1;
                     $scope.valuePrev = $scope.tipoItem.objTipoItem;
                     $scope.typeItemQtd = 0;
                 }
+                else if (opc.QuantityAlternative == 0) {
+                    $scope.distratores.map(a => a.State = 3);
+                    
+                    $scope.typeItemQtd = 2;
+                }
                 else if (opc.QuantityAlternative == 4) {
+                    $scope.distratores.map(a => a.State = 1);
                     $scope.distratores[$scope.distratores.length - 1].State = 3;
                     $scope.typeItemQtd = 1;
 
-                    if (opc.QuantityAlternative != $scope.itemTypeQtd.QuantityAlternative) {
+                    if (opc.QuantityAlternative != $scope.itemTypeQtd.QuantityAlternative && $scope.tipoItem.objTipoItem.Id != 3) {
                         angular.element('#ConfirmModal').modal('show');
                     }
                 }
@@ -2350,13 +2357,17 @@
                         }
                     }
 
-                    if ($scope.parameters.ALTERNATIVES.State == $scope.EnumState.ativo && $scope.parameters.ALTERNATIVES.Obligatory) {
+                    if ($scope.tipoItem.objTipoItem.Id != 3) {
+                        if ($scope.parameters.ALTERNATIVES.State == $scope.EnumState.ativo && $scope.parameters.ALTERNATIVES.Obligatory) {
 
-                        if (selecionado == false) {
-                            $notification.alert("É necessário selecionar uma alternativa como correta.");
-                            return false;
+                            if (selecionado == false) {
+                                $notification.alert("É necessário selecionar uma alternativa como correta.");
+                                return false;
+                            }
                         }
                     }
+                                
+                    
 
                     if ($scope.parameters.TRI.State == $scope.EnumState.ativo && $scope.parameters.TRI.Obligatory) {
 

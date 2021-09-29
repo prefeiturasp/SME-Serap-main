@@ -477,9 +477,9 @@
                         ng.e1_folhaRespLock = true;
                         ng.gerarFolhaResposta = false;
                     }
-                    if (ng.TestTypeItemType == undefined && ng.TestTypeItemType == null) {
+                    /*if (ng.TestTypeItemType == undefined && ng.TestTypeItemType == null) {*/
                         ng.carregaItemType();
-                    }
+                    /*}*/
                     //Dados da prova
                     if (ng.editMode) {
                         if (ng.e1_radios === 2) {

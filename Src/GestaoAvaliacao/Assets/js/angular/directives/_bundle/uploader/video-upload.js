@@ -26,7 +26,6 @@
     };
 
     function UploadVideo($http, $notification, $util) {
-        debugger;
         var __template = '<div class="upload-group" ng-class="customclass">' +
                             '<div ng-if="labelName && field.name"><label>Último arquivo selecionado:</label><br><label>{{field.name}}</label><br><br></div>' +
 							'<input type="text" placeholder="Clique no ícone para adicionar um vídeo" class="form-control input-upload" ng-model="component.File.Path" disabled="true">' +

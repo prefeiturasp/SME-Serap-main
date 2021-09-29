@@ -803,8 +803,8 @@
                         <div class="campoLabel">
                             @* Tipo do item *@
                             <label><b>Tipo do item</b></label>
-                            <label ng-if="TestTypeItemType != null" style="max-width: 100%;">{{ItemType.Description}}</label>
-                            <div ng-show="TestTypeItemType == null">
+                            @*<label ng-if="TestTypeItemType != null" style="max-width: 100%;">{{ItemType.Description}}</label>*@
+                            <div>
                                 <select id="modality" class="form-control"
                                         ng-model="ItemType"
                                         ng-options="itemType as itemType.Description for itemType in ItemTypeList"
