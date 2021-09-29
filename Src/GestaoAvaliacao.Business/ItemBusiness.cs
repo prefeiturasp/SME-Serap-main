@@ -188,6 +188,9 @@ namespace GestaoAvaliacao.Business
 
 		private bool ValidateAlternatives(List<Alternative> Alternatives, ItemType itemType)
 		{
+			if (itemType.Description.Contains("Resposta construída"))
+				return true;
+
 			if (Alternatives == null || (Alternatives != null && Alternatives.Count == 0))
 				return false;
 
