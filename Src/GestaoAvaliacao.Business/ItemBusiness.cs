@@ -26,6 +26,10 @@ namespace GestaoAvaliacao.Business
 		private readonly IItemTypeRepository itemTypeRepository;
 		private readonly IGenerateHtmlBusiness generateHtmlBusiness;
 
+		const string RESPOSTA_CONSTRUIDA = "Resposta construída";
+		const string MULTIPLA_ESCOLHA_4_ALTERNATIVAS = "Múltipla escolha 4 alternativas";
+		const string MULTIPLA_ESCOLHA_5_ALTERNATIVAS = "Múltipla escolha 5 alternativas";
+
 		public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository, IStorage storage, IFileRepository fileRepository, IParameterBusiness parambusiness, IBaseTextRepository baseTextRepository, IHTMLToPDF htmltopdf, IItemTypeRepository itemTypeRepository, IGenerateHtmlBusiness generateHtmlBusiness)
 		{
 			this.itemRepository = itemRepository;
@@ -188,7 +192,7 @@ namespace GestaoAvaliacao.Business
 
 		private bool ValidateAlternatives(List<Alternative> Alternatives, ItemType itemType)
 		{
-			if (itemType.Description.Contains("Resposta construída"))
+			if (itemType.Description.Contains(RESPOSTA_CONSTRUIDA))
 				return true;
 
 			if (Alternatives == null || (Alternatives != null && Alternatives.Count == 0))
