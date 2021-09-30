@@ -409,6 +409,11 @@ namespace GestaoAvaliacao.Business
 			return itemRepository._GetItemById(Id);
 		}
 
+		public Item GetItemByItemCode(string itemCode)
+		{
+			return itemRepository.GetItemByItemCode(itemCode);
+		}
+
 		public Item _GetGradeByItem(long Id)
 		{
 			return itemRepository._GetGradeByItem(Id);

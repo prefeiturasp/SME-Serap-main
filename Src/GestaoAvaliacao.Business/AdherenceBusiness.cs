@@ -53,8 +53,10 @@ namespace GestaoAvaliacao.Business
 			switch (visao)
 			{
 				case EnumSYS_Visao.Administracao:
-					retorno = adherenceRepository.LoadSchoolGrid(user.ent_id, ref pager, uad_id, esc_id, test.AllAdhered, test.Id, test.TestType_Id, ttn_id, crp_ordem);
-					break;
+                    retorno = (esc_id == 0 && uad_id == Guid.Parse("00000000-0000-0000-0000-000000000000")) ?
+                        adherenceRepository.LoadSchoolGridFull(user.ent_id, test.AllAdhered, test.Id, test.TestType_Id, ttn_id, crp_ordem) :
+                        adherenceRepository.LoadSchoolGrid(user.ent_id, ref pager, uad_id, esc_id, test.AllAdhered, test.Id, test.TestType_Id, ttn_id, crp_ordem);
+                    break;
 				case EnumSYS_Visao.Gestao:
 					dt = MSTech.CoreSSO.BLL.SYS_UsuarioGrupoUABO.GetSelect(user.usu_id, grupo.gru_id);
 					uads = dt.AsEnumerable().Select(x => string.Concat("'", x.Field<Guid>("uad_id"), "'"));
@@ -75,7 +77,10 @@ namespace GestaoAvaliacao.Business
 			}
 
 			retorno = FilterAdherenceSchoolsWithStudentsWithDeficiency(test.Id, test.TestType_Id, retorno);
-			return retorno;
+            int count = retorno.Count();
+            pager.SetTotalPages((int)Math.Ceiling(count / (double)pager.PageSize));
+            pager.SetTotalItens(count);
+            return retorno;
 		}
 
 		private IEnumerable<AdherenceGrid> FilterAdherenceSchoolsWithStudentsWithDeficiency(long testId, long testTypeId, IEnumerable<AdherenceGrid> adherenceSchools)
@@ -91,7 +96,7 @@ namespace GestaoAvaliacao.Business
 			if (!studentsOfSchoolsAdherence?.Any() ?? true) return adherenceSchools;
 
 			var studentsToDoTestWithDeficiency = GetAdherenceStudentsWithDeficiency(studentsOfSchoolsAdherence.Select(x => x.pes_id), deficienciesToFilter);
-			if (!studentsToDoTestWithDeficiency?.Any() ?? true) return adherenceSchools;
+			if (!studentsToDoTestWithDeficiency?.Any() ?? true) return new List<AdherenceGrid>();
 
 			var schoolIdsWithStudentsWithDeficiency = studentsOfSchoolsAdherence
 				.Where(x => studentsToDoTestWithDeficiency.Contains(x.pes_id))
@@ -143,7 +148,7 @@ namespace GestaoAvaliacao.Business
 			if (!studentsOfSectionsAdherence?.Any() ?? true) return adherenceSections;
 
 			var studentsToDoTestWithDeficiency = GetAdherenceStudentsWithDeficiency(studentsOfSectionsAdherence.Select(x => x.pes_id), deficienciesToFilter);
-			if (!studentsToDoTestWithDeficiency?.Any() ?? true) return adherenceSections;
+			if (!studentsToDoTestWithDeficiency?.Any() ?? true) return new List<AdherenceGrid>();
 
 			var sectionIdsWithStudentsWithDeficiency = studentsOfSectionsAdherence
 				.Where(x => studentsToDoTestWithDeficiency.Contains(x.pes_id))
@@ -167,7 +172,7 @@ namespace GestaoAvaliacao.Business
 			if((!studentsToDoTest?.Any() ?? true) || (!deficienciesToFilter?.Any() ?? true)) return studentsToDoTest;
 
 			var studentsToDoTestWithDeficiency = GetAdherenceStudentsWithDeficiency(studentsToDoTest.Select(x => x.pes_id), deficienciesToFilter);
-			if(!studentsToDoTestWithDeficiency?.Any() ?? true) return studentsToDoTest;
+			if(!studentsToDoTestWithDeficiency?.Any() ?? true) return new List<AdherenceGrid>();
 
 			var studentsToDoTestWithDeficiencyFiltered = studentsToDoTest
 				.Where(x => studentsToDoTestWithDeficiency.Contains(x.pes_id))

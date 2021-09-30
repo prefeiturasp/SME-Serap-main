@@ -11,5 +11,7 @@ namespace GestaoAvaliacao.IRepository
         BaseText Get(long id);
         IEnumerable<BaseText> Load(ref Pager pager);
         void Delete(long id);
+
+        string GetByItemId(long itemId);
     }
 }

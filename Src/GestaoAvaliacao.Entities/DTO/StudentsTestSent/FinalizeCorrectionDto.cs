@@ -11,5 +11,6 @@ namespace GestaoAvaliacao.Entities.DTO.StudentsTestSent
         public long AluId { get; set; }
         public Guid EntId { get; set; }
         public EnumSYS_Visao Visao { get; set; }
+        public Guid UsuId { get; set; }
     }
 }

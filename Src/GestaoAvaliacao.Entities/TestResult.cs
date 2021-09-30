@@ -66,5 +66,6 @@ namespace GestaoAvaliacao.Entities
         public DateTime? TestGroupCreateDate { get; set; }
 
         public bool AllAdhered { get; set; }
+        public bool ShowOnSerapEstudantes { get; set; }
     }
 }

@@ -7,7 +7,8 @@ namespace GestaoAvaliacao.IBusiness
 {
     public interface IItemBusiness
 	{
-        bool VerifyItemCodeAlreadyExists(string itemCode, long? itemId = null);
+		Item GetItemByItemCode(string itemCode);
+		bool VerifyItemCodeAlreadyExists(string itemCode, long? itemId = null);
         Item Save(long Id, Item entity, List<File> files = null);
 		Item Update(long Id, Item entity, List<File> files = null);
 		Item Delete(long Id);

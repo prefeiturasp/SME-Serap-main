@@ -1,0 +1,1 @@
+update TestPermission set TestHide = 0 where test_Id = 832 and gru_id in ('104f0759-87e8-e611-9541-782bcb3d218e','D4026F2C-1A1E-E811-B259-782BCB3D2D76');

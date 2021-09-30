@@ -7,7 +7,6 @@ namespace GestaoAvaliacao.Util.Videos
 {
     public interface IVideoConverter
     {
-        Task<ConvertedVideoDto> Convert(Stream inputStream, string inputFormat, string fileName, string outputFormat, Action reportProgressAction = null,
-            bool appendSilentAudioStream = false);
+        Task<ConvertedVideoDto> Convert(Stream inputStream, string contentType, string filenameInput, Guid usu_id);
     }
 }

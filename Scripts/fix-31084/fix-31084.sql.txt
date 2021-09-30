@@ -1,0 +1,6 @@
+UPDATE TUR_Turma SET  tur_codigo='EF-4C' where tur_id=323958
+INSERT INTO TUR_TurmaCurriculo VALUES(323958,117,1,4,1,'2020-02-19 08:02:14.423','2020-02-19 08:02:14.423',4)
+
+INSERT INTO Mtr_MatriculaTurma
+Select alu_id,(Select MAX(mtu_id) + 1 from MTR_MatriculaTurma mtr WHERE mtr.alu_id = al.alu_id),268,323958,117,1,4,1,GETDATE(),GETDATE(),dePara.nr_chamada_aluno,dePara.dt_inicio_turma,NULL,4 from aca_aluno al
+INNER JOIN (select CONVERT(VARCHAR,cd_aluno) alu_matricula, * from AlunosETurmasDePara where tur_id=323958) dePara ON  al.alu_matricula=dePara.alu_matricula

@@ -74,7 +74,7 @@ namespace GestaoAvaliacao.Repository
             {
                 using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
                 {
-                    return gestaoAvaliacaoContext.Skill.Include("Parent").Include("CognitiveCompetence").AsNoTracking().FirstOrDefault(bt => bt.Id == id);
+                    return gestaoAvaliacaoContext.Skill.Include("Parent").Include("EvaluationMatrix").Include("CognitiveCompetence").AsNoTracking().FirstOrDefault(bt => bt.Id == id);
                 }
             }
         }

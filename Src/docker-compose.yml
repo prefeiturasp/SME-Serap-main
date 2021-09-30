@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  gestaoavaliacao.worker.studenttestssent:
+    image: ${DOCKER_REGISTRY-}gestaoavaliacaoworkerstudenttestssent
+    build:
+      context: .
+      dockerfile: GestaoAvaliacao.Worker.StudentTestsSent/Dockerfile
+    networks:
+      - default
+    depends_on:
+      - 'gestaoavaliacao.rabbitmq'
+    env_file:
+      - sme-serap-worker.env
+  gestaoavaliacao.rabbitmq:
+    image: rabbitmq:3.7-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=sme@serap
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge

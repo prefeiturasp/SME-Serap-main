@@ -16,7 +16,9 @@ namespace GestaoAvaliacao.Controllers
             {
                 if ((EnumSYS_Visao)SessionFacade.UsuarioLogado.Grupo.vis_id == EnumSYS_Visao.Individual && SessionFacade.UsuarioLogado.alu_id > 0)
                 {
+                    //Quando subir a feature da Home de alunos do Serap remover a linha abaixo e descomentar a segunda linha comentada.
                     return RedirectToAction("Index", "ElectronicTest");
+                    //return RedirectToAction("HomeAluno", "ElectronicTest");
                 }
                 else
                 {

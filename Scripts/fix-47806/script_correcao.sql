@@ -1,0 +1,1 @@
+update CoreSSO..SYS_Usuario set usu_senha = 'bV/10IJeZeE=', usu_criptografia = 1 where usu_id = '960AFCD6-4A78-E111-B754-00155D033206'

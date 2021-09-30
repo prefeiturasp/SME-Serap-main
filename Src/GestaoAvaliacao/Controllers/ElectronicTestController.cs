@@ -40,6 +40,11 @@ namespace GestaoAvaliacao.Controllers
             return View();
         }
 
+        public ActionResult HomeAluno()
+        {
+            return View();
+        }
+
         public ActionResult Form(long? TestId, long? AluId, long? TurId)
         {
             if (TestId.HasValue && AluId.HasValue && TurId.HasValue)
@@ -333,7 +338,10 @@ namespace GestaoAvaliacao.Controllers
                 var pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id;
                 var vis_id = (EnumSYS_Visao)SessionFacade.UsuarioLogado.Grupo.vis_id;
 
-                await correctionBusiness.SaveCorrectionAsync(test_id, alu_id, tur_id, answers, ent_id, usu_id, pes_id, vis_id, ordemItem);
+                var result = await correctionBusiness.SaveCorrectionAsync(test_id, alu_id, tur_id, answers, ent_id, usu_id, pes_id, vis_id, ordemItem);
+                if(!result.Validate.IsValid)
+                    return Json(new { success = false, type = ValidateType.error.ToString(), message = result.Validate.Message }, JsonRequestBehavior.AllowGet);
+
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -353,8 +361,9 @@ namespace GestaoAvaliacao.Controllers
                 EntId = usuarioLogado.Usuario.ent_id,
                 TestId = test_id,
                 TurId = tur_id,
-                Visao = (EnumSYS_Visao)usuarioLogado.Grupo.vis_id
-            };
+                Visao = (EnumSYS_Visao)usuarioLogado.Grupo.vis_id,
+                UsuId = SessionFacade.UsuarioLogado.Usuario.usu_id
+        };
 
             try
             {

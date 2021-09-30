@@ -1,11 +1,11 @@
 ﻿(function (angular, $) {
 
     angular
-		.module('appMain', ['services', 'filters', 'directives', 'tooltip']);
+        .module('appMain', ['services', 'filters', 'directives', 'tooltip']);
 
     angular
-		.module('appMain')
-		.controller("ReportItemPerformanceDREController", ReportItemPerformanceDREController);
+        .module('appMain')
+        .controller("ReportItemPerformanceDREController", ReportItemPerformanceDREController);
 
     ReportItemPerformanceDREController.$inject = ['$rootScope', '$scope', 'ReportItemPerformanceModel', 'ReportPerformanceModel', 'AdherenceModel', 'TestModel', 'DisciplineModel', 'EvaluationMatrixModel', 'SkillModel', '$notification', '$timeout', '$pager', '$window', '$util', '$sce'];
 
@@ -137,7 +137,7 @@
                     arrItems = arrItems.concat($scope.tree.disciplinas[x].itens);
                 }
             }
-         
+
             configSliderDRE(arrItems);
         }
         $scope.filterByDiscipline = filterByDiscipline;
@@ -222,7 +222,7 @@
          */
         function getDres(_callback) {
             var params = {
-                test_id: $scope.filters.test_id ? $scope.filters.test_id : 0 ,  //,
+                test_id: $scope.filters.test_id ? $scope.filters.test_id : 0,  //,
                 subGroup_id: $scope.group === true ? $scope.filters.SubGroup.Id : 0,
                 tcp_id: ($scope.filters.CurriculumGrade && $scope.filters.CurriculumGrade.tcp_id > 0) ? $scope.filters.CurriculumGrade.tcp_id : 0,
                 dre_id: $scope.useFilter ? ($scope.filters.uad_id ? $scope.filters.uad_id : null) : ($scope.filters.dre ? $scope.filters.dre.id : null),
@@ -724,6 +724,7 @@
             $scope.alternativeGraph = undefined;
             $scope.carregaGrafico_DesempenhoPorItem();
             $scope.carregaGrafico_EscolhaItens();
+            getBaseText(itemId);
         }
 
         $scope.proximaQuestao = function (selectedItemModal) {
@@ -758,6 +759,20 @@
             $scope.alternativeGraph = undefined;
             $scope.carregaGrafico_DesempenhoPorItem();
             $scope.carregaGrafico_EscolhaItens();
+            getBaseText(selectedItemModal.id);
+        }
+
+        function getBaseText (id) {
+            var params = {
+                itemId: id
+            }
+            if (!$scope.selectedItemModal.item.baseText) {
+                ReportItemPerformanceModel.getBaseTextByItemId(params, function (result) {
+                    if (result.success && !result.data.erro) {
+                        $scope.selectedItemModal.item.baseText = result.data;
+                    }
+                });
+            }
         }
 
         $scope.voltaQuestao = function (selectedItemModal) {
@@ -792,6 +807,7 @@
             $scope.alternativeGraph = undefined;
             $scope.carregaGrafico_DesempenhoPorItem();
             $scope.carregaGrafico_EscolhaItens();
+            getBaseText(selectedItemModal.id);
         }
 
         function changeTest(_callback) {
@@ -946,7 +962,7 @@
             if (result != null) {
 
                 var serieNames = [], seriePerformances = [], serieIds = [],
-                DREAverage = 0.00, SMEAverage = 0.00, teamAverage = 0.00, schoolAverage = 0.00;
+                    DREAverage = 0.00, SMEAverage = 0.00, teamAverage = 0.00, schoolAverage = 0.00;
 
                 for (var z = 0; z < result.length; z++) {
                     if ($scope.selectedItem.discipline_id == 0 && $scope.selectedItem.item_id == 0) {

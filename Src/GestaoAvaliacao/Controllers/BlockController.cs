@@ -226,7 +226,9 @@ namespace GestaoAvaliacao.Controllers
                         KnowledgeArea_Id = x.KnowledgeArea_Id
                     }).ToList();
 
-                    return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+                    var jsonResult = Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+                    jsonResult.MaxJsonLength = int.MaxValue;
+                    return jsonResult;
                 }
                 else
                     return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Itens não encontrados." }, JsonRequestBehavior.AllowGet);
