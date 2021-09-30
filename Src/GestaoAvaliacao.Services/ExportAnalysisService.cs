@@ -156,10 +156,10 @@ namespace GestaoAvaliacao.Services
                 var sections = testSectionStatusCorrectionBusiness.GetByTest(test.Id).OrderBy(a => a.tur_id);
                 var items = blockBusiness.GetTestQuestions(test.Id);
 
-                foreach (var section in sections)
-                {
-                    report.Append(await this.AnalysisExportStudents(items, test, section, separator));
-                }
+                sections
+                    .AsParallel()
+                    .WithDegreeOfParallelism(5)
+                    .ForAll(async (section) => report.Append(await this.AnalysisExportStudents(items, test, section, separator)));
 
                 return report.ToString();
             }

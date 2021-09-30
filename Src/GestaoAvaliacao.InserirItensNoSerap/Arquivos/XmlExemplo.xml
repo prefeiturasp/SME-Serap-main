@@ -1,0 +1,66 @@
+<ConteudoItem Versao="1.1.0">
+	<!-- Código do item-->
+	<Sequence>99999</Sequence>
+	
+	<!-- Área de conhecimento-->
+	<AreaDeConhecimento Code="2">1 - Linguagens/Códigos</AreaDeConhecimento>
+	
+	<!-- Disciplina/Componente Curricular-->
+	<Disciplina Code="10">Língua Portuguesa</Disciplina>
+	
+	<!-- Matriz-->
+	<Matriz Code="73">Matriz de Referência da Prova São Paulo - 4º Ano</Matriz>
+	
+	<!-- Palavras Chaves Obrigatório-->
+	<Keywords Code="lpp_4ano_10">lpp_4ano_10</Keywords>
+	
+	<!-- Código do item-->
+	<ItemCode Code="EE0002/1100066"></ItemCode>
+	
+	<!-- Enunciado-->
+	<Comando><![CDATA[<p>Nessa\nmanchete, a expressão “deu as caras” significa que o Sol</p>]]></Comando>
+
+	<!-- Dificuldade da Prova -->
+	<Dif>1</Dif>
+	
+	<!-- Habilidade -->
+	<Hab Code="2074">Prática de leitura de textos e análise linguística</Hab>
+	
+	<!-- SubAssunto -->
+	<SubAssunto Code="10">capacidades de compreensão de texto.</SubAssunto>
+	
+	<!-- Ano -->
+	<Ano Code="4">4º Ano.</Ano>
+	
+	<!-- Observacao -->
+	<Observacao>Observação sobre o item da Prova.</Observacao>
+	
+	<!-- Situacao Estimulo -->
+	<TextoBase>
+		<Descricao><![CDATA[<p><strong>PARA\nALEGRIA GERAL, O SOL FINALMENTE “DEU AS CARAS” NA REGIÃO DE\nBRUSQUE</strong></p><p>\nBoas-vindas\nao Sol. É o que todos esperaram. A trégua da chuva anunciada pelos\nmeteorologistas já começou a ser percebida hoje aqui pela região\nde Brusque, com um clarão azul flagrado já nas primeiras horas\ndesta manhã, no horizonte.</p>]]></Descricao>
+		<Fonte>Disponível em: https://omunicipio.com.br/para-alegria-geral-o-sol-finalmente-deu-as-caras-na-regiao-de-brusque/. Acesso em: 12 abr. 2019 (adaptado).</Fonte>
+	</TextoBase>
+	
+	<Opcoes>
+		<Opcao IdOpcao="A)">
+			<Enunciado><![CDATA[<p>desapareceu.</p>]]></Enunciado>
+			<Justificativa><![CDATA[<p>INCORRETA.\n\tO estudante provavelmente não reconhece\n\to sentido de uma palavra ou expressão em textos escritos e\n\tmultimodais, considerando o contexto e/ou possivelmente acredita que\n\ta expressão “deu as caras” é o mesmo que desaparecer.</p>]]></Justificativa>
+			<Correto>0</Correto>
+		</Opcao>
+		<Opcao IdOpcao="B)">
+			<Enunciado><![CDATA[<p>reapareceu.</p>]]></Enunciado>
+			<Justificativa><![CDATA[<p>CORRETA.\n\tO estudante provavelmente reconhece\n\to sentido de uma palavra ou expressão em textos escritos e\n\tmultimodais, considerando o contexto.</p>]]></Justificativa>
+			<Correto>1</Correto>
+		</Opcao>
+		<Opcao IdOpcao="C)">
+			<Enunciado><![CDATA[<p>escondeu.</p>]]></Enunciado>
+			<Justificativa><![CDATA[<p>INCORRETA.\n\tO estudante provavelmente não reconhece\n\to sentido de uma palavra ou expressão em textos escritos e\n\tmultimodais, considerando o contexto e/ou possivelmente acredita que\n\ta expressão “deu as caras” é o mesmo que esconder.</p>]]></Justificativa>
+			<Correto>0</Correto>
+		</Opcao>
+		<Opcao IdOpcao="D)">
+			<Enunciado><![CDATA[<p>sumiu.</p>]]></Enunciado>
+			<Justificativa><![CDATA[<p>INCORRETA.\nO estudante provavelmente não reconhece\no sentido de uma palavra ou expressão em textos escritos e\nmultimodais, considerando o contexto e/ou possivelmente acredita que\na expressão “deu as caras” é o mesmo que sumir.</p>]]></Justificativa>
+			<Correto>0</Correto>
+		</Opcao>
+	</Opcoes>
+</ConteudoItem>

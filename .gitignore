@@ -1,7 +1,10 @@
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
-
+**/*.pdb
+**/*.cache
+**/bin/
+**/*.dll
 /Src/.vs/GestaoAvaliacao/config/applicationhost.config
 /Src/.vs/GestaoAvaliacao/v16/.suo
 /Src/.vs/GestaoAvaliacao/v16/Server/sqlite3
@@ -214,6 +217,15 @@
 **/obj/
 .vs
 **/*.csprojAssemblyReference.cache
+*.obj
+*.bin
 
+**/bin/
+**/Release/
+**/Debug/
+**/appsettings.json
+**/.vscode
+**/.env
+**/*.cache
 
 

@@ -31,7 +31,7 @@ namespace GestaoEscolar.Repository
 						return a;
 					},
 					new { tur_id = tur_id, state = (byte)1 }, splitOn: "mtu_id");
-
+                cn.Close();
 				return result;
 			}
 		}
@@ -54,8 +54,9 @@ namespace GestaoEscolar.Repository
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
-
-                return cn.Query<ACA_Aluno>(sql.ToString(), new { alu_id = alu_id }).FirstOrDefault();
+                var result = cn.Query<ACA_Aluno>(sql.ToString(), new { alu_id = alu_id }).FirstOrDefault();
+                cn.Close();
+                return result;
             }
         }
 
@@ -68,8 +69,9 @@ namespace GestaoEscolar.Repository
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
-
-                return cn.Query<ACA_Aluno>(sql.ToString(), new { pes_id = pes_id }).FirstOrDefault();
+                var result = cn.Query<ACA_Aluno>(sql.ToString(), new { pes_id = pes_id }).FirstOrDefault();
+                cn.Close();
+                return result;
             }
         }
 
@@ -87,8 +89,9 @@ namespace GestaoEscolar.Repository
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
-
-                return cn.Query<ACA_Aluno>(sql.ToString());
+                var result = cn.Query<ACA_Aluno>(sql.ToString());
+                cn.Close();
+                return result;
             }
         }
     }

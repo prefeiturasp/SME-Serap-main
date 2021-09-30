@@ -2,6 +2,7 @@
 using GestaoAvaliacao.Util;
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace GestaoAvaliacao.Entities.StudentsTestSent
 {
@@ -72,17 +73,29 @@ namespace GestaoAvaliacao.Entities.StudentsTestSent
 
             EntId = entId;
         }
-    }
 
-    public enum StudentTestSentSituation : short
-    {
-        [Description("Pendente")]
-        Pending = 1,
+        public void SetPending()
+        {
+            if (Situation == StudentTestSentSituation.Done)
+            {
+                Validate.SetErrorMessage("O teste já foi processado e não pode ser colocado na fila de processamento novamente.");
+                return;
+            }
 
-        [Description("Em processamento")]
-        InProcess = 2,
+            Situation = StudentTestSentSituation.InProcess;
+        }
 
-        [Description("Finalizada")]
-        Done = 3
+        public void SetInProgress()
+        {
+            if (Situation == StudentTestSentSituation.Done)
+            {
+                Validate.SetErrorMessage("O teste já foi processado e não pode ser colocado na fila de processamento novamente.");
+                return;
+            }
+
+            Situation = StudentTestSentSituation.InProcess;
+        }
+
+        public void SetDone() => Situation = StudentTestSentSituation.Done;
     }
 }

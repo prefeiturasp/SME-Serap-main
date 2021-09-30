@@ -1,0 +1,14 @@
+UPDATE CoreSSO..Sys_Usuario SET usu_criptografia=1, usu_situacao=1 where usu_login='RA4197448'
+
+INSERT INTO CoreSSO..Pes_PessoaDeficiencia
+select
+    DISTINCT
+sgp_aluno.pes_id,
+    def.tde_id
+from BD_PRODAM..v_alunos_da_turma_MSTECH  aluno
+INNER JOIN Manutencao..DEPARA_DEFICIENCIA def ON def.id_nee = aluno.id_nee
+INNER JOIN CoreSSO..PES_TipoDeficiencia tipo ON tipo.tde_id = def.tde_id
+INNER JOIN GestaoAvaliacao_SGP..ACA_Aluno sgp_aluno ON sgp_aluno.alu_matricula = aluno.CL_ALU_CODIGO
+LEFT JOIN CoreSSO..Pes_PessoaDeficiencia pesDef ON pesDef.pes_id = sgp_aluno.pes_id
+where CL_DATST>='2020-01-01' AND sgp_aluno.alu_matricula IN ('7247942','4768793')
+AND pesDef.pes_id IS NULL

@@ -166,7 +166,8 @@
                 knowledgeAreaBlock: 'Gabarito com blocos de área de conhecimento',
                 electronicTest: 'Prova eletrônica',
                 showVideoFiles: 'Exibir conteúdo de vídeo',
-                showAudioFiles: 'Exibir conteúdo de áudio'
+                showAudioFiles: 'Exibir conteúdo de áudio',
+                showOnSerapEstudantes: 'Exibir no Serap Estudantes'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
             //Lista de escolha 
@@ -248,6 +249,7 @@
             ng.e1_radios = 3;
             ng.isKnowledgeAreaBlock = false;
             ng.isElectronicTest = false;
+            ng.showOnSerapEstudantes = false;
             ng.showVideoFiles = false;
             ng.showAudioFiles = false;
             //Lista de dificuldades do tipo de prova
@@ -592,6 +594,10 @@
 
         ng.selectProvaEletronica = function () {
             ng.isElectronicTest = !ng.isElectronicTest;
+            self.etapa1.alterou = true;
+        };
+        ng.selectShowOnSerapEstudantes = function () {
+            ng.showOnSerapEstudantes = !ng.showOnSerapEstudantes;
             self.etapa1.alterou = true;
         };
 
@@ -1033,6 +1039,7 @@
                 "Multidiscipline": ng.isMultidiscipline,
                 "KnowledgeAreaBlock": ng.isKnowledgeAreaBlock,
                 "ElectronicTest": ng.isElectronicTest,
+                "ShowOnSerapEstudantes": ng.showOnSerapEstudantes,
                 "ShowVideoFiles": ng.showVideoFiles,
                 "ShowAudioFiles": ng.showAudioFiles,
                 "TestSubGroup": ng.e1_grupoSubgrupo
@@ -1356,6 +1363,7 @@
                     ng.isMultidiscipline = r.Multidiscipline;
                     ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock;
                     ng.isElectronicTest = r.ElectronicTest;
+                    ng.showOnSerapEstudantes = r.ShowOnSerapEstudantes
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
 					e1_formato_findTest = true;

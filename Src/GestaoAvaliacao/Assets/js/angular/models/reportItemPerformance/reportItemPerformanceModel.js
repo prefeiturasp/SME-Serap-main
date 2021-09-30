@@ -22,6 +22,10 @@
                 method: 'GET',
                 url: base_url('ReportItemPerformance/GetDres')
             },
+            'getBaseTextByItemId': {
+                method: 'GET',
+                url: base_url('ReportItemPerformance/GetBaseTextByItemId')
+            },
             'getSchools': {
                 method: 'GET',
                 url: base_url('ReportItemPerformance/GetSchools')

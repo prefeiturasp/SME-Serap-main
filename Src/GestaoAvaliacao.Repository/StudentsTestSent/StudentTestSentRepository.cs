@@ -1,14 +1,17 @@
-﻿using GestaoAvaliacao.Entities.StudentsTestSent;
+﻿using Dapper;
+using GestaoAvaliacao.Entities.StudentsTestSent;
 using GestaoAvaliacao.IRepository.StudentsTestSent;
 using GestaoAvaliacao.Repository.Context;
+using GestaoAvaliacao.Util;
 using System;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Repository.StudentsTestSent
 {
-    public class StudentTestSentRepository : IStudentTestSentRepository
+    public class StudentTestSentRepository : ConnectionReadOnly, IStudentTestSentRepository
     {
         private readonly GestaoAvaliacaoContext _gestaoAvaliacaoContext;
 
@@ -29,15 +32,24 @@ namespace GestaoAvaliacao.Repository.StudentsTestSent
                 .StudentTestsSent
                 .AnyAsync(x => x.TestId == testId && x.TurId == turId && x.AluId == aluId, cancellationToken);
 
-        public Task<StudentTestSent> GetFirstOrDefaultAsync(long testId, long turId, long aluId, CancellationToken cancellationToken)
-            => _gestaoAvaliacaoContext
-                .StudentTestsSent
-                .FirstOrDefaultAsync(x => x.TestId == testId && x.TurId == turId && x.AluId == aluId, cancellationToken);
+        public async Task<StudentTestSent> GetFirstOrDefaultAsync(long testId, long turId, long aluId, CancellationToken cancellationToken)
+        {
+            var query = @"SELECT
+                            *
+                        FROM
+                            StudentTestSent (NOLOCK)
+                        WHERE
+                            TestId = @testId
+                            AND TurId = @turId
+                            AND AluId = @aluId";
 
-        public Task<StudentTestSent> GetFirstBySituationAsync(StudentTestSentSituation situation, CancellationToken cancellationToken) 
-            => _gestaoAvaliacaoContext
-                .StudentTestsSent
-                .FirstOrDefaultAsync(x => x.Situation == situation);
+            using (var cn = Connection)
+            {
+                cn.Open();
+                var results = await cn.QueryAsync<StudentTestSent>(query, new { testId, turId, aluId });
+                return results.FirstOrDefault();
+            }
+        }
 
         public async Task RemoveAsync(StudentTestSent entity, CancellationToken cancellationToken)
         {

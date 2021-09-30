@@ -223,6 +223,7 @@ namespace GestaoAvaliacao.Controllers
                         Multidiscipline = entity.Multidiscipline,
                         KnowledgeAreaBlock = entity.KnowledgeAreaBlock,
                         ElectronicTest = entity.ElectronicTest,
+						ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes,
 						entity.ShowVideoFiles,
 						entity.ShowAudioFiles,
                         TestSubGroup = entity.TestSubGroup != null ? new { Id = entity.TestSubGroup.Id, Description = entity.TestSubGroup.Description } : null,
