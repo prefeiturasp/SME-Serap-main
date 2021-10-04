@@ -1,0 +1,12 @@
+db.StudentCorrection.update(
+	{ "Test_Id": 875, "alu_id": 1589391 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 796, "alu_id": 1589391 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 857, "alu_id": 1589391 },
+	{ $set: { "provaFinalizada" : false } }
+);

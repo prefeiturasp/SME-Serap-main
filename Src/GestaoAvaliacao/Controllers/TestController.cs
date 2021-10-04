@@ -223,6 +223,7 @@ namespace GestaoAvaliacao.Controllers
                         Multidiscipline = entity.Multidiscipline,
                         KnowledgeAreaBlock = entity.KnowledgeAreaBlock,
                         ElectronicTest = entity.ElectronicTest,
+						ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes,
 						entity.ShowVideoFiles,
 						entity.ShowAudioFiles,
 						entity.ShowJustificate,

@@ -43,6 +43,7 @@ namespace GestaoAvaliacao.Entities
 		public DateTime ApplicationStartDate { get; set; }
 
 		public DateTime ApplicationEndDate { get; set; }
+        
 
         [NotMapped]
         public bool ApplicationActiveOrDone => TestSituation != EnumTestSituation.Pending && DateTime.Today >= ApplicationStartDate;
@@ -99,6 +100,7 @@ namespace GestaoAvaliacao.Entities
         public bool ShowVideoFiles { get; set; }
         public bool ShowAudioFiles { get; set; }
         public bool ShowJustificate { get; set; }
+        public bool ShowOnSerapEstudantes { get; set; }
 
     }
 }

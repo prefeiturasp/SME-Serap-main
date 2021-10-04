@@ -14,11 +14,13 @@ namespace GestaoAvaliacao.Worker.Rabbit.Consumers
         where TMessageData : class
     {
         private IModel _model;
+
         protected readonly IGestaoAvaliacaoRabbitSettings _gestaoAvaliacaoRabbitSettings;
 
         public GestaoAvaliacaoRabbitBaseConsumer(IGestaoAvaliacaoRabbitSettings gestaoAvaliacaoRabbitSettings)
         {
             _gestaoAvaliacaoRabbitSettings = gestaoAvaliacaoRabbitSettings;
+            CreateModel();
         }
 
         public void Close()
@@ -33,15 +35,12 @@ namespace GestaoAvaliacao.Worker.Rabbit.Consumers
             consumer.Received += async (ch, ea) =>
             {
                 var data = GetMessageData(ea);
+                Console.WriteLine("[ INFO ] Message received: {0}", ea.Body.ToString());
                 await onConsumingCallback(data, cancellationToken);
                 Model.BasicAck(ea.DeliveryTag, false);
             };
 
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                Model.BasicConsume(_gestaoAvaliacaoRabbitSettings.QueueName, false, consumer);
-                await Task.Delay(100);
-            }
+            Model.BasicConsume(_gestaoAvaliacaoRabbitSettings.QueueName, false, consumer);
         }
 
         protected IModel Model
@@ -66,9 +65,10 @@ namespace GestaoAvaliacao.Worker.Rabbit.Consumers
             var rabbitConnection = factory.CreateConnection();
             _model = rabbitConnection.CreateModel();
 
-            _model.ExchangeDeclare(_gestaoAvaliacaoRabbitSettings.ExchangeGestaoAvaliacao, ExchangeType.Topic);
+            _model.ExchangeDeclare(_gestaoAvaliacaoRabbitSettings.ExchangeGestaoAvaliacao, ExchangeType.Topic, false);
             _model.QueueDeclare(_gestaoAvaliacaoRabbitSettings.QueueName, false, false, false, null);
             _model.QueueBind(_gestaoAvaliacaoRabbitSettings.QueueName, _gestaoAvaliacaoRabbitSettings.ExchangeGestaoAvaliacao, "*");
+            _model.BasicQos(0, 5, true);
         }
 
         private TMessageData GetMessageData(BasicDeliverEventArgs basicDeliverEventArgs)
