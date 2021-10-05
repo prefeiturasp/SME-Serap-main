@@ -7,26 +7,26 @@
 (function (angular, $) {
 
     angular
-		.module('appMain', ['services', 'filters', 'directives', 'tooltip', 'ngTagsInput']);
+        .module('appMain', ['services', 'filters', 'directives', 'tooltip', 'ngTagsInput']);
 
     angular
-		.module('appMain')
-		.controller("TestController", TestController);
+        .module('appMain')
+        .controller("TestController", TestController);
 
-	TestController.$inject = ['$scope', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', '$window'];
+    TestController.$inject = ['$scope', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', '$window'];
 
     /**
-	 * @function Controller para criação de prova
-	 * @param {Object} ng
-	 * @param {Object} $notification
-	 * @param {Object} $pager
-	 * @param {Object} TestModel
-	 * @param {Object} ItemTypeModel
-	 * @param {Object} ModalityModel
-	 * @param {Object} TestTypeModel
-	 * @returns
-	 */
-	function TestController(ng, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, $window) {
+     * @function Controller para criação de prova
+     * @param {Object} ng
+     * @param {Object} $notification
+     * @param {Object} $pager
+     * @param {Object} TestModel
+     * @param {Object} ItemTypeModel
+     * @param {Object} ModalityModel
+     * @param {Object} TestTypeModel
+     * @returns
+     */
+    function TestController(ng, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, $window) {
 
         var self = this;
 
@@ -36,10 +36,10 @@
         };
 
         /**
-		 * @function Configura wizard( breadcomb interno da prova )
-		 * @param {?} q
-		 * @returns
-		 */
+         * @function Configura wizard( breadcomb interno da prova )
+         * @param {?} q
+         * @returns
+         */
         function configuraWizard(q) {
             if (q) ng.temBIB = q;
             var arr = [];
@@ -59,10 +59,10 @@
         };
 
         /**
-		 * @function Configura variaveis do escopo, globais e locais
-		 * @param {string} filter
-		 * @return
-		 */
+         * @function Configura variaveis do escopo, globais e locais
+         * @param {string} filter
+         * @return
+         */
         ng.editar = function __editar(id) {
             ng.editMode = false;
             if (id > -1) {
@@ -73,10 +73,10 @@
         };
 
         /**
-		 * @function Configura variaveis do escopo, globais e locais
-		 * @param {string} filter
-		 * @return
-		 */
+         * @function Configura variaveis do escopo, globais e locais
+         * @param {string} filter
+         * @return
+         */
         function configVariaveis() {
             ng.EnumFrequencyApplication = {
                 Yearly: 1,
@@ -97,10 +97,10 @@
                 uintWatchProva: null,
             };
             self.situacaoList = [
-				   { Id: 1, Description: "Pendente", Style: "icone-pendente material-icons situacao", Icon: 'remove_circle_outline' },
-				   { Id: 2, Description: "Cadastrada", Style: "icone-cadastrar material-icons situacao", Icon: 'radio_button_unchecked' },
-				   { Id: 3, Description: "Em andamento", Style: "icone-andamento material-icons situacao", Icon: 'timelapse' },
-				   { Id: 4, Description: "Aplicada", Style: "icone-aplicar material-icons situacao", Icon: 'check_circle' }
+                { Id: 1, Description: "Pendente", Style: "icone-pendente material-icons situacao", Icon: 'remove_circle_outline' },
+                { Id: 2, Description: "Cadastrada", Style: "icone-cadastrar material-icons situacao", Icon: 'radio_button_unchecked' },
+                { Id: 3, Description: "Em andamento", Style: "icone-andamento material-icons situacao", Icon: 'timelapse' },
+                { Id: 4, Description: "Aplicada", Style: "icone-aplicar material-icons situacao", Icon: 'check_circle' }
             ];
             //Chamadas utilizada na Etapa 2
             self.etapa2 = {
@@ -134,11 +134,11 @@
             };
             // Dados do wizards
             self.wizards = [
-				{ Number: 1, Description: 'Cadastro Prova' },
-				{ Number: 2, Description: 'Selecionar itens' },
-				{ Number: 3, Description: 'Organizar blocos' },
-				{ Number: 3, Description: 'Gerar provas' },
-				{ Number: 4, Description: 'Gerar provas' },
+                { Number: 1, Description: 'Cadastro Prova' },
+                { Number: 2, Description: 'Selecionar itens' },
+                { Number: 3, Description: 'Organizar blocos' },
+                { Number: 3, Description: 'Gerar provas' },
+                { Number: 4, Description: 'Gerar provas' },
             ];
             ng.labels = {
                 tipo: 'Tipo de prova',
@@ -166,15 +166,15 @@
                 knowledgeAreaBlock: 'Gabarito com blocos de área de conhecimento',
                 electronicTest: 'Prova eletrônica',
                 showVideoFiles: 'Exibir conteúdo de vídeo',
-                showJustificate: 'Exibir justificativa'
+                showJustificate: 'Exibir justificativa',
                 showAudioFiles: 'Exibir conteúdo de áudio',
                 showOnSerapEstudantes: 'Exibir no Serap Estudantes'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
             //Lista de escolha 
             ng.listasSimNao = [
-				{ Description: 'Sim', Value: true },
-				{ Description: 'Não', Value: false }
+                { Description: 'Sim', Value: true },
+                { Description: 'Não', Value: false }
             ];
             //Lista de wizards atuais
             ng.listaWizards = [];
@@ -201,10 +201,10 @@
         };
 
         /**
-		* @function Configura variaveis do escopo, globais e locais da ETAPA 1
-		* @private
-		* @param
-		*/
+        * @function Configura variaveis do escopo, globais e locais da ETAPA 1
+        * @private
+        * @param
+        */
         function initEtapa1() {
             if (ng.editMode) ng.etapaAtual = 2;
             self.etapa1.alterou = false;
@@ -281,11 +281,11 @@
         };
 
         /**
-		 * @function - Salvar
-		 * @param {Object} list - lista de valores que preencherá o combo
-		 * @param {Object} opcao - opcao a ser procurada dentro da lista
-		 * @public
-		 */
+         * @function - Salvar
+         * @param {Object} list - lista de valores que preencherá o combo
+         * @param {Object} opcao - opcao a ser procurada dentro da lista
+         * @public
+         */
         function setValuesComb(list, opcao) {
             for (var k = 0; k < list.length; k++) {
                 if (list[k].Description == opcao.Description) {
@@ -295,10 +295,10 @@
         };
 
         /**
-		* @function Carrega tipo de prova
-		* @private
-		* @param
-		*/
+        * @function Carrega tipo de prova
+        * @private
+        * @param
+        */
         function tipoProvaCarregar() {
             self.etapa1.tipoProva(function (r) {
                 ng.bTipoProva = true;
@@ -332,10 +332,10 @@
         };
 
         /**
-		* @function Tratamento para alterações de tipo de prova
-		* @private
-		* @param
-		*/
+        * @function Tratamento para alterações de tipo de prova
+        * @private
+        * @param
+        */
         ng.tipoProvaMudou = tipoProvaMudou;
         function tipoProvaMudou() {
             if (!ng.e1_cbTipoProva) return;
@@ -361,10 +361,10 @@
         };
 
         /**
-		 * @function carregar frequências de aplicação
-		 * @param {object} _callback
-		 * @returns
-		 */
+         * @function carregar frequências de aplicação
+         * @param {object} _callback
+         * @returns
+         */
         function loadFrequencyApplication(_callback) {
             if (!ng.e1_cbTipoProva || !ng.e1_cbTipoProva.FrequencyApplication) return;
             if (ng.e1_cbTipoProva.FrequencyApplication == ng.EnumFrequencyApplication.Yearly) {
@@ -383,10 +383,10 @@
         };
 
         /**
-		* @function Carrega dados de componente curricular
-		* @private
-		* @param
-		*/
+        * @function Carrega dados de componente curricular
+        * @private
+        * @param
+        */
         ng.validarDescription = validarDescription;
         function validarDescription() {
             if (ng.mostrarTela)
@@ -396,10 +396,10 @@
         };
 
         /**
-		* @function Carrega dados de componente curricular
-		* @private
-		* @param
-		*/
+        * @function Carrega dados de componente curricular
+        * @private
+        * @param
+        */
         function ComponenteCurricularCarregar(tipoNivelEnsino) {
             if (tipoNivelEnsino || tipoNivelEnsino == 0) {
                 self.etapa1.componenteCurricular({ typeLevelEducation: tipoNivelEnsino.Id }, ComponenteCurricularCarregado);
@@ -410,10 +410,10 @@
         };
 
         /**
-		* @function Tratamento após ter recebido dados componente curricular
-		* @private
-		* @param r = resposta do servidor 
-		*/
+        * @function Tratamento após ter recebido dados componente curricular
+        * @private
+        * @param r = resposta do servidor 
+        */
         function ComponenteCurricularCarregado(r) {
 
             if (r.success) {
@@ -434,10 +434,10 @@
         };
 
         /**
-		* @function Tratamento para alterações de componente curricular
-		* @private
-		* @param
-		*/
+        * @function Tratamento para alterações de componente curricular
+        * @private
+        * @param
+        */
         ng.e1_ComponenteCurricularMudou = e1_ComponenteCurricularMudou;
         function e1_ComponenteCurricularMudou() {
 
@@ -449,10 +449,10 @@
         };
 
         /**
-		* @function Tratamento para alterações de prova eletronica
-		* @private
-		* @param
-		*/
+        * @function Tratamento para alterações de prova eletronica
+        * @private
+        * @param
+        */
 
         ng.e1_GrupoSubgrupoMudou = e1_GrupoSubgrupoMudou;
         function e1_GrupoSubgrupoMudou() {
@@ -473,10 +473,10 @@
         };
 
         /**
-		* @function Tratamento para alterações de componente curricular
-		* @private
-		* @param
-		*/
+        * @function Tratamento para alterações de componente curricular
+        * @private
+        * @param
+        */
         function periodoCarregar(id) {
             self.etapa1.dadosProva({ Id: id }, function (r) {
                 if (r.success) {
@@ -541,10 +541,10 @@
         };
 
         /**
-		 * @function Carrega Item Type
-		 * @param {Object} result
-		 * @public
-		 */
+         * @function Carrega Item Type
+         * @param {Object} result
+         * @public
+         */
         ng.carregaItemType = carregaItemType;
         function carregaItemType(result) {
             ItemTypeModel.loadTestType({}, function (result) {
@@ -558,19 +558,19 @@
         };
 
         /**
-		* @function Tratamento para alterações de componente curricular
-		* @private
-		* @param
-		*/
+        * @function Tratamento para alterações de componente curricular
+        * @private
+        * @param
+        */
         function nivelDesempenhoCarregar() {
             self.etapa1.niveis(nivelDesempenhoCarregado);
         };
 
         /**
-		* @function Tratamento para alterações de componente curricular
-		* @private
-		* @param
-		*/
+        * @function Tratamento para alterações de componente curricular
+        * @private
+        * @param
+        */
         function nivelDesempenhoCarregado(r) {
             if (r.success) {
                 if (r.lista != undefined)
@@ -584,10 +584,10 @@
         };
 
         /**
-		* @function Tratamento para alterações de componente curricular
-		* @private
-		* @param
-		*/
+        * @function Tratamento para alterações de componente curricular
+        * @private
+        * @param
+        */
         ng.e1_nivelDesempenhoMudou = e1_nivelDesempenhoMudou;
         function e1_nivelDesempenhoMudou() {
             if (ng.mostrarTela)
@@ -656,20 +656,20 @@
         };
 
         /**
-		 * @function Tratamento para alterações de componente frequência de aplicação
-		* @private
-		* @param
-		*/
+         * @function Tratamento para alterações de componente frequência de aplicação
+        * @private
+        * @param
+        */
         ng.changeFrequencyApplication = function __changeFrequencyApplication() {
             if (ng.mostrarTela)
                 ng.alterouEtapaAtual = self.etapa1.alterou = true;
         };
 
         /**
-		* @function Tratamento para alterações de componente curricular
-		* @private
-		* @param
-		*/
+        * @function Tratamento para alterações de componente curricular
+        * @private
+        * @param
+        */
         ng.radioSelect = radioSelect;
         function radioSelect() {
 
@@ -691,10 +691,10 @@
         };
 
         /**
-		* @function Tratamento para lista de dificuldades, modela objeto para funcionar com porcentagem e quantidade
-		* @private
-		* @param
-		*/
+        * @function Tratamento para lista de dificuldades, modela objeto para funcionar com porcentagem e quantidade
+        * @private
+        * @param
+        */
         function processarDificuldades(lista, porcent) {
 
             var i = 0, m = lista.length, l = 0;
@@ -724,10 +724,10 @@
         };
 
         /**
-		* @function Trata qualquer alteração nos itens de dificuldade ( Quantidade itens sugeridos )
-		* @private
-		* @param
-		*/
+        * @function Trata qualquer alteração nos itens de dificuldade ( Quantidade itens sugeridos )
+        * @private
+        * @param
+        */
         ng.dificuldadeMudou = dificuldadeMudou;
         function dificuldadeMudou(item, campo) {
 
@@ -748,15 +748,15 @@
         };
 
         /**
-		* @function Conta a quantidade de itens por dificuldade
-		* @private
-		* @param
-		*/
+        * @function Conta a quantidade de itens por dificuldade
+        * @private
+        * @param
+        */
         ng.contarItens = contarItens;
         function contarItens(edit) {
 
             var i = 0, w = 0;
-            for (i ; i < ng.e1_listaDificuldades.length; i++) {
+            for (i; i < ng.e1_listaDificuldades.length; i++) {
                 if (ng.e1_listaDificuldades[i].Value) {
 
                     if (ng.e1_listaDificuldades[i].Value === 0) {
@@ -778,10 +778,10 @@
         };
 
         /**
-		* @function Valida entrada de números
-		* @private
-		* @param
-		*/
+        * @function Valida entrada de números
+        * @private
+        * @param
+        */
         ng.validarTotalItens = validarTotalItens;
         function validarTotalItens(elm, prop) {
             if (elm && prop) {
@@ -793,10 +793,10 @@
         };
 
         /**
-		* @function Distribui porcentagem do total de itens desejado
-		* @private
-		* @Lexx@param
-		*/
+        * @function Distribui porcentagem do total de itens desejado
+        * @private
+        * @Lexx@param
+        */
         ng.porcentagemDistribuir = porcentagemDistribuir;
         function porcentagemDistribuir(total) {
             total = ng.itensTotais = parseInt(ng.e1_qtdItens);
@@ -829,10 +829,10 @@
         };
 
         /**
-		* @function Remove valores 0 da lista de dificuldade
-		* @private
-		* @param
-		*/
+        * @function Remove valores 0 da lista de dificuldade
+        * @private
+        * @param
+        */
         function dificuldadeRemoverZeros() {
 
             var i = 0, m = ng.e1_listaDificuldades.length, l = ng.e1_listaDificuldades;
@@ -845,10 +845,10 @@
         };
 
         /**
-		* @function Executa conjunto de funções quando alterar 'e1_qtdItens'
-		* @private
-		* @param
-		*/
+        * @function Executa conjunto de funções quando alterar 'e1_qtdItens'
+        * @private
+        * @param
+        */
         ng.radio1Validar = radio1Validar;
         function radio1Validar() {
             validarTotalItens('e1_qtdItens');
@@ -857,60 +857,60 @@
         };
 
         /**
-		* @function Aplica valor do datapick no input
-		* @private
-		* @param
-		*/
+        * @function Aplica valor do datapick no input
+        * @private
+        * @param
+        */
         ng.aplicaAplicacaoInicio = aplicaAplicacaoInicio;
         function aplicaAplicacaoInicio() {
             $("#e1_aplicacaoInicio").datepicker('show');
         };
 
         /**
-		* @function Aplica valor do datapick no input
-		* @private
-		* @param
-		*/
+        * @function Aplica valor do datapick no input
+        * @private
+        * @param
+        */
         ng.aplicaAplicacaoFinal = aplicaAplicacaoFinal;
         function aplicaAplicacaoFinal() {
             $("#e1_aplicacaoFinal").datepicker('show');
         };
 
         /**
-		* @function Aplica valor do datapick no input
-		* @private
-		* @param
-		*/
+        * @function Aplica valor do datapick no input
+        * @private
+        * @param
+        */
         ng.aplicaCorrecaoInicio = aplicaCorrecaoInicio;
         function aplicaCorrecaoInicio() {
             $("#e1_correcaoInicio").datepicker('show');
         };
 
         /**
-		* @function Aplica valor do datapick no input
-		* @private
-		* @param
-		*/
+        * @function Aplica valor do datapick no input
+        * @private
+        * @param
+        */
         ng.aplicaCorrecaoFinal = aplicaCorrecaoFinal;
         function aplicaCorrecaoFinal() {
             $("#e1_correcaoFinal").datepicker('show');
         };
 
         /**
-		* @function Valida se os intervalos das datas estão corretos
-		* @private
-		* @param
-		*/
+        * @function Valida se os intervalos das datas estão corretos
+        * @private
+        * @param
+        */
         ng.validarData = validarData;
         function validarData() {
 
             var
-				a1 = new Date(ng.e1_aplicacao.Inicio),
-				a2 = new Date(ng.e1_aplicacao.Final),
-				c1 = new Date(ng.e1_correcao.Inicio),
-				c2 = new Date(ng.e1_correcao.Final),
-				q = (a1 && a2),
-				w = (c1 && ng.e1_correcao.Final);
+                a1 = new Date(ng.e1_aplicacao.Inicio),
+                a2 = new Date(ng.e1_aplicacao.Final),
+                c1 = new Date(ng.e1_correcao.Inicio),
+                c2 = new Date(ng.e1_correcao.Final),
+                q = (a1 && a2),
+                w = (c1 && ng.e1_correcao.Final);
 
             if (ng.e1_aplicacao.Inicio === "Invalid Date") {
                 $notification.alert("O campo '" + ng.labels.inicioAplicaco + "' contém uma data inválida.");
@@ -973,11 +973,11 @@
 
             if (q && w)
                 if (
-					new Date(ng.e1_aplicacao.Final) > new Date(ng.e1_correcao.Final) ||
-					new Date(ng.e1_aplicacao.Inicio) > new Date(ng.e1_correcao.Inicio) ||
-					new Date(ng.e1_aplicacao.Final) > new Date(ng.e1_correcao.Inicio) ||
-					new Date(ng.e1_aplicacao.Inicio) > new Date(ng.e1_correcao.Final)
-					) {
+                    new Date(ng.e1_aplicacao.Final) > new Date(ng.e1_correcao.Final) ||
+                    new Date(ng.e1_aplicacao.Inicio) > new Date(ng.e1_correcao.Inicio) ||
+                    new Date(ng.e1_aplicacao.Final) > new Date(ng.e1_correcao.Inicio) ||
+                    new Date(ng.e1_aplicacao.Inicio) > new Date(ng.e1_correcao.Final)
+                ) {
                     $notification.alert("A correção não pode começar antes do final da aplicação."); return false;
                 }
 
@@ -985,10 +985,10 @@
         };
 
         /**
-		* @function Valida se os intervalos dos níveis estão corretos
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Valida se os intervalos dos níveis estão corretos
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         function validarCampoDesempenho(item, valida) {
 
             if (typeof ng.e1_listaNiveis[item].Value1 === 'string') {
@@ -1006,10 +1006,10 @@
         };
 
         /**
-		* @function Valida se os intervalos dos níveis estão corretos
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Valida se os intervalos dos níveis estão corretos
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.e1_callModal = e1_callModal;
         function e1_callModal(id) {
             if (ng.e1_cbTipoProva.Block && !id) {
@@ -1026,10 +1026,10 @@
         };
 
         /**
-		* @function Salva dados da Etapa 1
-		* @private
-		* @param 
-		*/
+        * @function Salva dados da Etapa 1
+        * @private
+        * @param 
+        */
         function etapa1Salvar() {
             if (!self.etapa1.alterou)
                 return $notification.alert('Não houve alteração na prova.');
@@ -1070,10 +1070,10 @@
         };
 
         /**
-		* @function Tratamento para depous que Salvou dados da Etapa 1
-		* @private
-		* @param 
-		*/
+        * @function Tratamento para depous que Salvou dados da Etapa 1
+        * @private
+        * @param 
+        */
         function etapa1Salvou(r) {
 
             if (r.success) {
@@ -1102,10 +1102,10 @@
         };
 
         /**
-		* @function Valida as periodos escolhidos( TestCurriculumGrades )
-		* @private
-		* @param 
-		*/
+        * @function Valida as periodos escolhidos( TestCurriculumGrades )
+        * @private
+        * @param 
+        */
         function validarPeriodos() {
 
             var arr = [];
@@ -1122,10 +1122,10 @@
         };
 
         /**
-		* @function Valida as dificuldades( TestItemLevels )
-		* @private
-		* @param 
-		*/
+        * @function Valida as dificuldades( TestItemLevels )
+        * @private
+        * @param 
+        */
         function validarDificuldade() {
             var arr = [];
             for (var i = 0; i < ng.e1_listaDificuldades.length; i++) {
@@ -1149,10 +1149,10 @@
         };
 
         /**
-		* @function Valida as porcentagem de itens
-		* @private
-		* @param 
-		*/
+        * @function Valida as porcentagem de itens
+        * @private
+        * @param 
+        */
         function validarPorcentagemItens() {
 
             for (var i = 0; i < ng.e1_listaDificuldades.length; i++) {
@@ -1167,10 +1167,10 @@
         };
 
         /**
-		* @function Verifica as níveis de desempenho( TestPerformanceLevels )
-		* @private
-		* @param 
-		*/
+        * @function Verifica as níveis de desempenho( TestPerformanceLevels )
+        * @private
+        * @param 
+        */
         function validarNivelDesempenho() {
             var arr = [], a, c = 0, m = ng.e1_listaNiveis.length;
 
@@ -1196,10 +1196,10 @@
         };
 
         /**
-		* @function Valida as níveis de desempenho( TestPerformanceLevels )
-		* @private
-		* @param 
-		*/
+        * @function Valida as níveis de desempenho( TestPerformanceLevels )
+        * @private
+        * @param 
+        */
         function popularNiveis() {
 
             var arr = [];
@@ -1229,10 +1229,10 @@
         };
 
         /**
-		* @function valida dados da etapa 1
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function valida dados da etapa 1
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         function validarEtapa1() {
 
             if (!ng.e1_cbTipoProva) {
@@ -1327,11 +1327,11 @@
         };
 
         /**
-		* @function valida dados da etapa 1
-		* @private
-		* @param elm = objeto a ser procurado 
-		* @param arr = lista de objetos 
-		*/
+        * @function valida dados da etapa 1
+        * @private
+        * @param elm = objeto a ser procurado 
+        * @param arr = lista de objetos 
+        */
         function procurarElementoEm(elm, arr) {
 
             var i;
@@ -1389,7 +1389,7 @@
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
                     ng.showJustificate = r.ShowJustificate;
-					e1_formato_findTest = true;
+                    e1_formato_findTest = true;
                     ng.e1_folhaResp = true;
                     ng.frequencyApplication = r.FrequencyApplication;
                     ng.e1_listaPeriodosChecked = r.TestCurriculumGrades;
@@ -1454,10 +1454,10 @@
         };
 
         /**
-		* @function Configura variaveis do escopo, globais e locais da ETAPA 2
-		* @private
-		* @param
-		*/
+        * @function Configura variaveis do escopo, globais e locais da ETAPA 2
+        * @private
+        * @param
+        */
         function initEtapa2() {
 
 
@@ -1550,19 +1550,19 @@
         };
 
         /**
-		* @function Carrega caderno com blocos
-		* @private
-		* @param
-		*/
+        * @function Carrega caderno com blocos
+        * @private
+        * @param
+        */
         function blocosCarregar() {
             self.etapa2.blocos({ Id: ng.provaId }, blocosCarregado);
         };
 
         /**
-		* @function Tratamento para dados do caderno
-		* @private
-		* @param r = resposta do servidor
-		*/
+        * @function Tratamento para dados do caderno
+        * @private
+        * @param r = resposta do servidor
+        */
         function blocosCarregado(r) {
 
             if (r.success === false) {
@@ -1611,10 +1611,10 @@
         };
 
         /**
-		* @function Carregar dados do nivel de ensino
-		* @private
-		* @param
-		*/
+        * @function Carregar dados do nivel de ensino
+        * @private
+        * @param
+        */
         function nivelEnsinoCarregar() {
             TestModel.loadLevelEducation({}, nivelEnsinoCarregado);
         };
@@ -1632,10 +1632,10 @@
         };
 
         /**
-		* @function Tratamentos resultado do nivel de ensino
-		* @private
-		* @param r = resposta do servidor
-		*/
+        * @function Tratamentos resultado do nivel de ensino
+        * @private
+        * @param r = resposta do servidor
+        */
         function nivelEnsinoCarregado(r) {
 
             if (r.success) {
@@ -1651,10 +1651,10 @@
         };
 
         /**
-		* @function Carrega todos os itens selecionados
-		* @private
-		* @param
-		*/
+        * @function Carrega todos os itens selecionados
+        * @private
+        * @param
+        */
 
         var itensCache = [];
         var page = 0;
@@ -1673,6 +1673,7 @@
             pageItens = 10;
             itensCache = [];
 
+            debugger;
             carregarItensPorPagina();
         };
 
@@ -1702,10 +1703,10 @@
         };
 
         /**
-		* @function Carrega todos as áreas de conhecimento do bloco.
-		* @private
-		* @param
-		*/
+        * @function Carrega todos as áreas de conhecimento do bloco.
+        * @private
+        * @param
+        */
         function e2_knowledgeAreasCarregar() {
             addEventkeyUp();
             if (ng.e2_blockAtual.Id)
@@ -1715,10 +1716,10 @@
 
 
         /**
-		* @function Tratamento para todos itens selecionados
-		* @private
-		* @param r = resposta do servidor
-		*/
+        * @function Tratamento para todos itens selecionados
+        * @private
+        * @param r = resposta do servidor
+        */
         function e2_itensCarregado(lista) {
 
             if (lista instanceof Array && lista.length > 0) {
@@ -1736,10 +1737,10 @@
         };
 
         /**
-		* @function Tratamento para todas as áreas de conhecimento selecionadas
-		* @private
-		* @param r = resposta do servidor
-		*/
+        * @function Tratamento para todas as áreas de conhecimento selecionadas
+        * @private
+        * @param r = resposta do servidor
+        */
         function e2_knowledgeAreasCarregado(r) {
 
             if (!r || !r.success) {
@@ -1771,10 +1772,10 @@
         };
 
         /**
-		* @function Carrega todos os itens selecionados
-		* @private
-		* @param id = Id do item a ser deletado
-		*/
+        * @function Carrega todos os itens selecionados
+        * @private
+        * @param id = Id do item a ser deletado
+        */
         ng.e2_itemDeletar = e2_itemDeletar;
         function e2_itemDeletar(item) {
 
@@ -1788,10 +1789,10 @@
         };
 
         /**
-		* @function Carrega todos os itens selecionados
-		* @private
-		* @param r = resposta do servidor
-		*/
+        * @function Carrega todos os itens selecionados
+        * @private
+        * @param r = resposta do servidor
+        */
         function e2_itemDeletado(r) {
 
             if (r.success) {
@@ -1806,10 +1807,10 @@
         ng.filtrosCarregar = filtrosCarregar;
 
         /**
-		* @function Carrega dados dos filtros
-		* @private
-		* @param r = resposta do servidor
-		*/
+        * @function Carrega dados dos filtros
+        * @private
+        * @param r = resposta do servidor
+        */
         function filtrosCarregar() {
 
             if (!ng.e2_showFiltrosDificuldade)
@@ -1828,10 +1829,10 @@
         };
 
         /**
-		* @function Carrega dados dos filtros de dificuldade
-		* @private
-		* @param r = resposta do servidor
-		*/
+        * @function Carrega dados dos filtros de dificuldade
+        * @private
+        * @param r = resposta do servidor
+        */
         function filtrosDificuldadeCarregado(r) {
 
             ng.e2_ListaDificuldade = r.lista;
@@ -1842,10 +1843,10 @@
         };
 
         /**
-		* @function Carrega dados dos filtros de periodo
-		* @private
-		* @param r = resposta do servidor
-		*/
+        * @function Carrega dados dos filtros de periodo
+        * @private
+        * @param r = resposta do servidor
+        */
         function filtroPeriodosCarregado(r) {
 
             if (r.success) {
@@ -1860,10 +1861,10 @@
         };
 
         /**
-		* @function Tratamento para quando qualquer filtro se alterar
-		* @private
-		* @param r = resposta do servidor
-		*/
+        * @function Tratamento para quando qualquer filtro se alterar
+        * @private
+        * @param r = resposta do servidor
+        */
         ng.filtrosMudou = filtrosMudou;
         function filtrosMudou(filtro) {
 
@@ -1909,19 +1910,19 @@
         };
 
         /**
-		* @function Carrega matriz
-		* @private
-		* @param 
-		*/
+        * @function Carrega matriz
+        * @private
+        * @param 
+        */
         function matrizCarregar(id) {
             TestModel.getComboByDiscipline({ Id: id }, matrizCarregada);
         };
 
         /**
-		* @function Tratamento de dados para matriz 
-		* @private
-		* @param 
-		*/
+        * @function Tratamento de dados para matriz 
+        * @private
+        * @param 
+        */
         function matrizCarregada(r) {
 
             if (r.success) {
@@ -1943,10 +1944,10 @@
         };
 
         /**
-		* @function Carrega e popula a habilidades segundo modelo
-		* @private
-		* @param 
-		*/
+        * @function Carrega e popula a habilidades segundo modelo
+        * @private
+        * @param 
+        */
         function matrizDisciplinaCarregar(f, index) {
             TestModel.getByMatriz({ Id: f.model.Id }, function (r) {
                 if (r.success) {
@@ -1964,10 +1965,10 @@
         };
 
         /**
-		* @function Carrega e popula as habilidade
-		* @private
-		* @param 
-		*/
+        * @function Carrega e popula as habilidade
+        * @private
+        * @param 
+        */
         function habilidadesCarregar(f, index) {
             if (f.model.LastLevel) return;
             TestModel.getByParent({ Id: f.model.Id }, function habilidadesCarregada(r) {
@@ -1985,10 +1986,10 @@
         };
 
         /**
-		* @function Faz uma limpeza dos combo altera uma combo
-		* @private
-		* @param 
-		*/
+        * @function Faz uma limpeza dos combo altera uma combo
+        * @private
+        * @param 
+        */
         function e2_limpaCombos(i) {
             var w = ng.e2_ListaComboBox;
             for (var q = i; q < w.length; q++) {
@@ -2000,10 +2001,10 @@
         };
 
         /**
-		* @function Reduz uma camada do objeto
-		* @private
-		* @param 
-		*/
+        * @function Reduz uma camada do objeto
+        * @private
+        * @param 
+        */
         function reduzLista(elmt, idx, ary) {
             for (var str in elmt) {
                 ary[idx] = ary[idx][str];
@@ -2011,10 +2012,10 @@
         };
 
         /**
-		* @function Pesquisa um conjunto de filtros
-		* @private
-		* @param 
-		*/
+        * @function Pesquisa um conjunto de filtros
+        * @private
+        * @param 
+        */
         ng.e2_pesquisarFiltros = pesquisarFiltros;
         function pesquisarFiltros() {
 
@@ -2113,10 +2114,10 @@
         };
 
         /**
-	   * @function Concatena palavras pára filtro
-	   * @private
-	   * @param 
-	   */
+       * @function Concatena palavras pára filtro
+       * @private
+       * @param 
+       */
         function joinKeywords(_tags) {
 
             var q = 0, e = _tags.length, arr = "";
@@ -2131,10 +2132,10 @@
         };
 
         /**
-		* @function Retira todos os ID utilizados da lista
-		* @private
-		* @param 
-		*/
+        * @function Retira todos os ID utilizados da lista
+        * @private
+        * @param 
+        */
         function validarFiltrosChecked(checkedList, list) {
             var q = 0, e = checkedList.length, arr = "";
 
@@ -2149,10 +2150,10 @@
         };
 
         /**
-		* @function Carrega resultado dos filtros de busca
-		* @private
-		* @param i = pagina a ser carregada
-		*/
+        * @function Carrega resultado dos filtros de busca
+        * @private
+        * @param i = pagina a ser carregada
+        */
         ng.e2_resultadoFiltrosCarregar = e2_resultadoFiltrosCarregar;
         function e2_resultadoFiltrosCarregar(i) {
             //configurar filtros de busca aqui
@@ -2160,10 +2161,10 @@
         };
 
         /**
-		* @function Tratamento para dados do caderno
-		* @private
-		* @param r = resposta do servidor
-		*/
+        * @function Tratamento para dados do caderno
+        * @private
+        * @param r = resposta do servidor
+        */
         function e2_resultadoFiltrosCarregado(r) {
 
             if (!r || !r.success) {
@@ -2189,10 +2190,10 @@
         };
 
         /**
-		* @function Validar elementos que já foram selecionados pelo usuário
-		* @private
-		* @param 
-		*/
+        * @function Validar elementos que já foram selecionados pelo usuário
+        * @private
+        * @param 
+        */
         function e2_ResultadoSelecionados() {
 
             var a = ng.e2_ListaItemSelecionados, s = ng.e2_ResultadoBusca, q = 0, w = a.length, e, r = s.length, total = 10;
@@ -2220,10 +2221,10 @@
         };
 
         /**
-		 * @function Callback para visualizar
-		 * @private
-		 * @param {String} _id ID do item a ter seu texto base referênciado.
-		 */
+         * @function Callback para visualizar
+         * @private
+         * @param {String} _id ID do item a ter seu texto base referênciado.
+         */
         ng.e2_itemVisualizar = e2_itemVisualizar;
         function e2_itemVisualizar(item) {
 
@@ -2236,10 +2237,10 @@
         };
 
         /**
-		 * @function Callback para visualizar
-		 * @private
-		 * @param {String} _id ID do item a ter seu texto base referênciado.
-		 */
+         * @function Callback para visualizar
+         * @private
+         * @param {String} _id ID do item a ter seu texto base referênciado.
+         */
         ng.openModelVersions = openModelVersions;
         function openModelVersions(item) {
 
@@ -2249,10 +2250,10 @@
         };
 
         /**
-		 * @function Callback para visualizar
-		 * @private
-		 * @param {String} _id ID do item a ter seu texto base referênciado.
-		 */
+         * @function Callback para visualizar
+         * @private
+         * @param {String} _id ID do item a ter seu texto base referênciado.
+         */
         function e2_itemVisualizarModal(_id) {
 
             createView();
@@ -2266,10 +2267,10 @@
         };
 
         /**
-		 * @function Criar um view para exibição do item completo
-		 * @public
-		 * @param
-		 */
+         * @function Criar um view para exibição do item completo
+         * @public
+         * @param
+         */
         ng.createView = createView;
         function createView() {
             // armazena o item formatado para exibição
@@ -2309,10 +2310,10 @@
         };
 
         /**
-		 * @function Carregar texto base e IDs de itens que o possuem
-		 * @public
-		 * @param
-		 */
+         * @function Carregar texto base e IDs de itens que o possuem
+         * @public
+         * @param
+         */
         function textoBaseCarregar(_id) {
             TestModel.getBaseTextItems({ itemId: _id }, function (r) {
                 if (r.success) {
@@ -2331,10 +2332,10 @@
         };
 
         /**
-		 * @function Carregar item exibido na modal de visualização do texto base
-		 * @private
-		 * @param
-		 */
+         * @function Carregar item exibido na modal de visualização do texto base
+         * @private
+         * @param
+         */
         function itemByTextoBaseCarregar(_id) {
             TestModel.getItemSummaryById({ itemId: _id }, function (r) {
                 if (r.success) {
@@ -2350,10 +2351,10 @@
         };
 
         /**
-		 * @function 
-		 * @public
-		 * @param {string} _html
-		 */
+         * @function 
+         * @public
+         * @param {string} _html
+         */
         ng.minimize = minimize;
         function minimize(_text, _length) {
 
@@ -2367,21 +2368,21 @@
         };
 
         /**
-		 * @function Valida se já é possivel exibir modal
-		 * @public
-		 */
+         * @function Valida se já é possivel exibir modal
+         * @public
+         */
         function exibirModal() {
             var b = true;
 
             if (!ng.e2_showFiltrosDificuldade) {
                 b = false;
             }
-                //else if (!ng.e2_showFiltrosPeriodos) {
-                //b = false;
-                //}
-                //else if (!ng.e2_showFiltrosSituacao) {
-                //    b = false;
-                //}
+            //else if (!ng.e2_showFiltrosPeriodos) {
+            //b = false;
+            //}
+            //else if (!ng.e2_showFiltrosSituacao) {
+            //    b = false;
+            //}
             else if (!ng.e2_showFiltrosMatriz) {
                 b = false;
             }
@@ -2390,10 +2391,10 @@
         };
 
         /**
-		* @function Tratamento para dados do caderno
-		* @private
-		* @param id = qual id deve ser chamado
-		*/
+        * @function Tratamento para dados do caderno
+        * @private
+        * @param id = qual id deve ser chamado
+        */
         ng.e2_callModal = e2_callModal;
         function e2_callModal(id, block) {
 
@@ -2437,10 +2438,10 @@
 
 
         /**
-		* @function Avançar para lista
-		* @private
-		* @param
-		*/
+        * @function Avançar para lista
+        * @private
+        * @param
+        */
         ng.e2_AvancarModal = e2_avancarModal
         function e2_avancarModal(index) {
 
@@ -2454,10 +2455,10 @@
         };
 
         /**
-		* @function Volta para tela anterior do modal
-		* @private
-		* @param
-		*/
+        * @function Volta para tela anterior do modal
+        * @private
+        * @param
+        */
         ng.e2_VoltarModal = e2_voltarModal
         function e2_voltarModal(index) {
 
@@ -2482,10 +2483,10 @@
         };
 
         /**
-		* @function Limpa dados do modal
-		* @private
-		* @param
-		*/
+        * @function Limpa dados do modal
+        * @private
+        * @param
+        */
         ng.e2_Limpar = e2_limparModal
         function e2_limparModal() {
 
@@ -2503,11 +2504,11 @@
 
         };
 
-	    /**
-		* @function Limpa dados do modal
-		* @private
-		* @param
-		*/
+        /**
+        * @function Limpa dados do modal
+        * @private
+        * @param
+        */
         ng.e2_LimparKnowLedgeArea = e2_LimparKnowLedgeArea
         function e2_LimparKnowLedgeArea() {
 
@@ -2520,10 +2521,10 @@
         };
 
         /**
-		* @function Salva dados do modal
-		* @private
-		* @param
-		*/
+        * @function Salva dados do modal
+        * @private
+        * @param
+        */
         ng.e2_Salvar = e2_Salvar
         function e2_Salvar() {
 
@@ -2535,15 +2536,15 @@
         };
 
         /**
-		 * @function Retorna o objeto necessário para chamada de save dos itens selecionados
-		 * @name e2_CheckedItem
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param {object} item - elemento selecionado
-		 * @param {object} remove
-		 * @author Julio Cesar da Silva - 28/10/2015
-		 * @author Alexandre Calil B. Paravani - 14/05/2015
-		 */
+         * @function Retorna o objeto necessário para chamada de save dos itens selecionados
+         * @name e2_CheckedItem
+         * @namespace TestController
+         * @memberOf Controller
+         * @param {object} item - elemento selecionado
+         * @param {object} remove
+         * @author Julio Cesar da Silva - 28/10/2015
+         * @author Alexandre Calil B. Paravani - 14/05/2015
+         */
         function validarEtapa2() {
 
             var obj = {
@@ -2619,10 +2620,10 @@
         }
 
         /**
-		* @function Salva dados do modal
-		* @private
-		* @param
-		*/
+        * @function Salva dados do modal
+        * @private
+        * @param
+        */
         ng.e2_SalvarKnowLedgeAreaOrder = e2_SalvarKnowLedgeAreaOrder
         function e2_SalvarKnowLedgeAreaOrder() {
             if (!ng.alterouEtapaAtual)
@@ -2632,11 +2633,11 @@
         }
 
         /**
-		 * @function Retorna o objeto necessário para chamada de save da ordenação das áreas de conhecimento
-		 * @name validarEtapa2KnowLedgeAreaOrder
-		 * @namespace TestController
-		 * @memberOf Controller
-		 */
+         * @function Retorna o objeto necessário para chamada de save da ordenação das áreas de conhecimento
+         * @name validarEtapa2KnowLedgeAreaOrder
+         * @namespace TestController
+         * @memberOf Controller
+         */
         function validarEtapa2KnowLedgeAreaOrder() {
 
             var obj = {
@@ -2689,15 +2690,15 @@
         };
 
         /**
-		 * @function Seleciona elemento da lista e armazena
-		 * @name e2_CheckedItem
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param {object} item - elemento selecionado
-		 * @param {object} remove
-		 * @author Julio Cesar da Silva - 28/10/2015
-		 * @author Alexandre Calil B. Paravani - 14/05/2015
-		 */
+         * @function Seleciona elemento da lista e armazena
+         * @name e2_CheckedItem
+         * @namespace TestController
+         * @memberOf Controller
+         * @param {object} item - elemento selecionado
+         * @param {object} remove
+         * @author Julio Cesar da Silva - 28/10/2015
+         * @author Alexandre Calil B. Paravani - 14/05/2015
+         */
         ng.e2_CheckedItem = e2_CheckedItem;
         function e2_CheckedItem(item, remove) {
 
@@ -2762,14 +2763,14 @@
         };
 
         /**
-		 * @function Adicão dos itens na lista de selecionados (agrupar itens com mesmo texto base)
-		 * @name e2_addItemSelecionado
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param {object} item - elemento selecionado
-		 * @return
-		 * @author Julio Cesar da Silva - 28/10/2015
-		 */
+         * @function Adicão dos itens na lista de selecionados (agrupar itens com mesmo texto base)
+         * @name e2_addItemSelecionado
+         * @namespace TestController
+         * @memberOf Controller
+         * @param {object} item - elemento selecionado
+         * @return
+         * @author Julio Cesar da Silva - 28/10/2015
+         */
         ng.e2_addItemSelecionado = function __e2_addItemSelecionado(item) {
 
             var arr = ng.e2_ListaItemSelecionados;
@@ -2797,7 +2798,7 @@
                 return;
             }
 
-            for (var b = (arr.length - 1) ; b > index ; b--) {
+            for (var b = (arr.length - 1); b > index; b--) {
                 rest.push(angular.copy(arr[b]));
                 arr.splice(b, 1);
                 arrCache.splice(b, 1);
@@ -2806,21 +2807,21 @@
             ng.e2_ListaItemSelecionados.push(angular.copy(item));
             ng.e2_ListaItemCheckedCache.push(angular.copy(item));
 
-            for (var c = (rest.length - 1) ; c >= 0 ; c--) {
+            for (var c = (rest.length - 1); c >= 0; c--) {
                 ng.e2_ListaItemSelecionados.push(angular.copy(rest[c]));
                 ng.e2_ListaItemCheckedCache.push(angular.copy(rest[c]));
             }
         };
 
         /**
-		 * @function buscar ref. de 
-		 * @name buscarItem
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param {object} item - elemento selecionado
-		 * @param {object} lista
-		 * @author Alexandre Calil B. Paravani - 14/05/2015
-		 */
+         * @function buscar ref. de 
+         * @name buscarItem
+         * @namespace TestController
+         * @memberOf Controller
+         * @param {object} item - elemento selecionado
+         * @param {object} lista
+         * @author Alexandre Calil B. Paravani - 14/05/2015
+         */
         function buscarItem(item, lista) {
 
             if (!lista)
@@ -2837,15 +2838,15 @@
         };
 
         /**
-		 * @function Realizar os calculos para agrupamento de elementos para ordenação
-		 * @name e2_ListaItemSelecionadosHover
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param {object} item - elemento que está sofrendo hover
-		 * @param {string} direction - sentido da ordenação
-		 * @return
-		 * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
-		 */
+         * @function Realizar os calculos para agrupamento de elementos para ordenação
+         * @name e2_ListaItemSelecionadosHover
+         * @namespace TestController
+         * @memberOf Controller
+         * @param {object} item - elemento que está sofrendo hover
+         * @param {string} direction - sentido da ordenação
+         * @return
+         * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
+         */
         ng.e2_ListaItemSelecionadosHover = function __e2_ListaItemSelecionadosHover(item, direction) {
 
             if (ng.ordering)
@@ -2980,14 +2981,14 @@
         };
 
         /**
-		 * @function Realizar os calculos para agrupamento de elementos para ordenação
-		 * @name e2_ListaKnowledgeAreaSelecionadasHover
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param {object} item - elemento que está sofrendo hover
-		 * @param {string} direction - sentido da ordenação
-		 * @return
-		 */
+         * @function Realizar os calculos para agrupamento de elementos para ordenação
+         * @name e2_ListaKnowledgeAreaSelecionadasHover
+         * @namespace TestController
+         * @memberOf Controller
+         * @param {object} item - elemento que está sofrendo hover
+         * @param {string} direction - sentido da ordenação
+         * @return
+         */
         ng.e2_ListaKnowledgeAreaSelecionadasHover = function e2_ListaKnowledgeAreaSelecionadasHover(item, direction) {
 
             if (ng.ordering)
@@ -3092,15 +3093,15 @@
         };
 
         /**
-		 * @function Verificar se uma lista tem mais de um item com o mesmo texto base
-		 * @name hasGroupItem
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param {object} item
-		 * @param {array} lista
-		 * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
-		 * @return {boolean}
-		 */
+         * @function Verificar se uma lista tem mais de um item com o mesmo texto base
+         * @name hasGroupItem
+         * @namespace TestController
+         * @memberOf Controller
+         * @param {object} item
+         * @param {array} lista
+         * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
+         * @return {boolean}
+         */
         function hasGroupItem(item, lista) {
 
             var count = 0;
@@ -3120,14 +3121,14 @@
         };
 
         /**
-		 * @function Limpar seleção por hover
-		 * @name e2_ListaItemSelecionadosHover
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param
-		 * @return
-		 * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
-		 */
+         * @function Limpar seleção por hover
+         * @name e2_ListaItemSelecionadosHover
+         * @namespace TestController
+         * @memberOf Controller
+         * @param
+         * @return
+         * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
+         */
         ng.e2_ListaItemSelecionadosLeave = function __e2_ListaItemSelecionadosLeave() {
             if (ng.ordering)
                 return;
@@ -3139,14 +3140,14 @@
         };
 
         /**
-		 * @function Limpar seleção por hover
-		 * @name e2_ListaItemSelecionadosHover
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param
-		 * @return
-		 * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
-		 */
+         * @function Limpar seleção por hover
+         * @name e2_ListaItemSelecionadosHover
+         * @namespace TestController
+         * @memberOf Controller
+         * @param
+         * @return
+         * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
+         */
         ng.e2_ListaKnowledgeAreaSelecionadasLeave = function __e2_ListaKnowledgeAreaSelecionadasLeave() {
             if (ng.ordering)
                 return;
@@ -3158,14 +3159,14 @@
         };
 
         /**
-		 * @function Ordenar array
-		 * @name e2_ListaItemSelecionadosOrder
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param
-		 * @return
-		 * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
-		 */
+         * @function Ordenar array
+         * @name e2_ListaItemSelecionadosOrder
+         * @namespace TestController
+         * @memberOf Controller
+         * @param
+         * @return
+         * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
+         */
         ng.ordering = false;
         ng.e2_ListaItemSelecionadosOrder = function __e2_ListaItemSelecionadosOrder(direction, last) {
             if (last)
@@ -3181,14 +3182,14 @@
         };
 
         /**
-		 * @function Ordenar para acima
-		 * @name orderToUp
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param
-		 * @return
-		 * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
-		 */
+         * @function Ordenar para acima
+         * @name orderToUp
+         * @namespace TestController
+         * @memberOf Controller
+         * @param
+         * @return
+         * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
+         */
         function orderToUp() {
 
             var arr = ng.e2_ListaItemSelecionados;
@@ -3201,8 +3202,8 @@
             if (ng.currentItems.length === 1 && ng.targetItems.length === 1) {
                 if ((ng.e2_Navegacao === 7 && ng.currentItems[0].KnowledgeArea_Id !== undefined && ng.currentItems[0].KnowledgeArea_Id !== null && ng.currentItems[0].KnowledgeArea_Id === ng.targetItems[0].KnowledgeArea_Id)
                     || (ng.currentItems[0].BaseTextId !== undefined &&
-					    ng.currentItems[0].BaseTextId !== null &&
-					    ng.currentItems[0].BaseTextId === ng.targetItems[0].BaseTextId)) {
+                        ng.currentItems[0].BaseTextId !== null &&
+                        ng.currentItems[0].BaseTextId === ng.targetItems[0].BaseTextId)) {
                     var _selected = buscarItem(ng.currentItems[0], arr);
                     var _target = buscarItem(ng.targetItems[0], arr);
                     var aux = angular.copy(_target.ref);
@@ -3222,7 +3223,7 @@
 
 
             //ordenação de pilhas
-            for (var i = len; i >= 0 ; i--) {
+            for (var i = len; i >= 0; i--) {
 
                 for (var y = 0; y < ng.currentItems.length; y++)
                     if (arr[i] != undefined)
@@ -3239,16 +3240,16 @@
                             arr.splice(i, 1);
             }
 
-            for (var a = ng.targetItems.length - 1; a >= 0 ; a--) {
+            for (var a = ng.targetItems.length - 1; a >= 0; a--) {
                 arr.unshift(angular.copy(ng.targetItems[a]));
             }
 
-            for (var b = ng.currentItems.length - 1; b >= 0 ; b--) {
+            for (var b = ng.currentItems.length - 1; b >= 0; b--) {
                 ng.currentItems[b]['Animation'] = true;
                 arr.unshift(angular.copy(ng.currentItems[b]));
             }
 
-            for (var c = ng.arrRest.length - 1; c >= 0 ; c--) {
+            for (var c = ng.arrRest.length - 1; c >= 0; c--) {
                 arr.unshift(angular.copy(ng.arrRest[c]));
             }
 
@@ -3261,14 +3262,14 @@
         };
 
         /**
-		 * @function Ordenar para acima
-		 * @name orderToUp
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param
-		 * @return
-		 * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
-		 */
+         * @function Ordenar para acima
+         * @name orderToUp
+         * @namespace TestController
+         * @memberOf Controller
+         * @param
+         * @return
+         * @author Julio Cesar da Silva - 23/10/2015 - 27/10/2015
+         */
         function orderToDown() {
 
             var arr = ng.e2_ListaItemSelecionados;
@@ -3281,8 +3282,8 @@
             if (ng.currentItems.length === 1 && ng.targetItems.length === 1) {
                 if ((ng.e2_Navegacao === 7 && ng.currentItems[0].KnowledgeArea_Id !== undefined && ng.currentItems[0].KnowledgeArea_Id !== null && ng.currentItems[0].KnowledgeArea_Id === ng.targetItems[0].KnowledgeArea_Id)
                     || (ng.currentItems[0].BaseTextId !== undefined &&
-					    ng.currentItems[0].BaseTextId !== null &&
-					    ng.currentItems[0].BaseTextId === ng.targetItems[0].BaseTextId)) {
+                        ng.currentItems[0].BaseTextId !== null &&
+                        ng.currentItems[0].BaseTextId === ng.targetItems[0].BaseTextId)) {
 
                     var _selected = buscarItem(ng.currentItems[0], arr);
                     var _target = buscarItem(ng.targetItems[0], arr);
@@ -3301,7 +3302,7 @@
             }
 
             //ordenação de pilhas
-            for (var i = len; i >= 0 ; i--) {
+            for (var i = len; i >= 0; i--) {
 
                 for (var y = 0; y < ng.currentItems.length; y++)
                     if (arr[i] != undefined)
@@ -3342,14 +3343,14 @@
         };
 
         /**
-		 * @function Finalizar a ordenação
-		 * @name finallyOrder
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param
-		 * @return
-		 * @author Julio Cesar da Silva - 05/11/2015 - 05/11/2015
-		 */
+         * @function Finalizar a ordenação
+         * @name finallyOrder
+         * @namespace TestController
+         * @memberOf Controller
+         * @param
+         * @return
+         * @author Julio Cesar da Silva - 05/11/2015 - 05/11/2015
+         */
         function finallyOrder() {
             ng.ordering = false;
             ng.e2_ListaItemSelecionadosLeave();
@@ -3357,14 +3358,14 @@
         };
 
         /**
-		 * @function Finalizar a ordenação
-		 * @name finallyOrder
-		 * @namespace TestController
-		 * @memberOf Controller
-		 * @param
-		 * @return
-		 * @author Julio Cesar da Silva - 05/11/2015 - 05/11/2015
-		 */
+         * @function Finalizar a ordenação
+         * @name finallyOrder
+         * @namespace TestController
+         * @memberOf Controller
+         * @param
+         * @return
+         * @author Julio Cesar da Silva - 05/11/2015 - 05/11/2015
+         */
         function finallyOrderKnowledgeArea() {
             ng.ordering = false;
             ng.e2_ListaKnowledgeAreaSelecionadasLeave();
@@ -3385,19 +3386,19 @@
         };
 
         /**
-		* @function Caderno Carregar
-		* @private
-		 * @param item: elemento que esta sendo validado
-	   */
+        * @function Caderno Carregar
+        * @private
+         * @param item: elemento que esta sendo validado
+       */
         function e4_cadernoCarregar() {
             self.etapa4.cadernos({ Id: ng.provaId }, e4_cadernoCarregados);
         };
 
         /**
-		* @function Caderno Carregados
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Caderno Carregados
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         function e4_cadernoCarregados(r) {
 
             if (r.success) {
@@ -3430,20 +3431,20 @@
         };
 
         /**
-		* @function selecionaItem
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function selecionaItem
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.selecionaItem = selecionaItem;
         function selecionaItem(index) {
             ng.Provas[index].gerar = !ng.Provas[index].gerar;
         };
 
         /**
-		* @function Gerar Selecionadas
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Gerar Selecionadas
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.gerarSelecionadas = gerarSelecionadas;
         function gerarSelecionadas() {
 
@@ -3457,10 +3458,10 @@
         };
 
         /**
-		* @function Baixar Selecionadas
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Baixar Selecionadas
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.baixarSelecioandas = baixarSelecioandas;
         function baixarSelecioandas() {
             var selecionadas = [];
@@ -3473,10 +3474,10 @@
         };
 
         /**
-		* @function Visualizar Prova
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Visualizar Prova
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.visualizarProva = visualizarProva;
         function visualizarProva(index) {
 
@@ -3501,10 +3502,10 @@
         };
 
         /**
-		* @function Geração de modelo HTML da prova
-		* @private
-		* @param item: booklet a ser gerado
-		*/
+        * @function Geração de modelo HTML da prova
+        * @private
+        * @param item: booklet a ser gerado
+        */
         function htmlGerar(itemBooklet) {
 
             if (ng.bookletAtual != null) {
@@ -3521,10 +3522,10 @@
         };
 
         /**
-		* @function Tratamento de modelo HTML da prova
-		* @private
-		* @param item: booklet a ser gerado
-		*/
+        * @function Tratamento de modelo HTML da prova
+        * @private
+        * @param item: booklet a ser gerado
+        */
         function htmlGerado(r) {
 
             if (r.success) {
@@ -3540,10 +3541,10 @@
         };
 
         /**
-		* @function Inicia geração de prova
-		* @private
-		* @param item: booklet a ser gerado
-		*/
+        * @function Inicia geração de prova
+        * @private
+        * @param item: booklet a ser gerado
+        */
         ng.provaGerar = provaGerar;
         function provaGerar(itemBooklet) {
 
@@ -3557,10 +3558,10 @@
         };
 
         /**
-		* @function Tratamento para prova gerada
-		* @private
-		* @param r: resposta do servidor
-		*/
+        * @function Tratamento para prova gerada
+        * @private
+        * @param r: resposta do servidor
+        */
         function provaGerada(r) {
 
             if (r.success) {
@@ -3577,39 +3578,38 @@
                 ng.provaCaminho[i] = r.generateTest.File.Path;
                 ng.filesTest = r.generateTest;
 
-				ng.bookletAtual.currentDate = r.generateTest.File.GenerationData;
-			} else {
-				if (r.type && r.message)
-					$notification[r.type ? r.type : 'error'](r.message);
-				return false;
-			}
-		};
-		ng.provaExportDoc = provaExportDoc;
-		function provaExportDoc() {
-			$window.open('/Booklet/ExportTestDoc/'+ng.bookletAtual.Id, "_self");
-		};
-		ng.provaExportDocIndex = provaExportDocIndex;
-		function provaExportDocIndex(index)
-		{
-			ng.bookletAtual = ng.Provas[index];
-			$window.open('/Booklet/ExportTestDoc/' + ng.bookletAtual.Id, "_self");
-		}
-		
-		function setGenerateTest() {
-			TestModel.generateTest({ Id: ng.provaId, sheet: ng.gerarFolhaResposta, publicFeedback: ng.publicFeedback }, function (result) {
-				if (result.success) {
-					ng.filesTest = result.generateTest;
-				} else {
-					$notification.alert("Não foi possível baixar todos os arquivos!");
-				}
-			});
-		};
+                ng.bookletAtual.currentDate = r.generateTest.File.GenerationData;
+            } else {
+                if (r.type && r.message)
+                    $notification[r.type ? r.type : 'error'](r.message);
+                return false;
+            }
+        };
+        ng.provaExportDoc = provaExportDoc;
+        function provaExportDoc() {
+            $window.open('/Booklet/ExportTestDoc/' + ng.bookletAtual.Id, "_self");
+        };
+        ng.provaExportDocIndex = provaExportDocIndex;
+        function provaExportDocIndex(index) {
+            ng.bookletAtual = ng.Provas[index];
+            $window.open('/Booklet/ExportTestDoc/' + ng.bookletAtual.Id, "_self");
+        }
+
+        function setGenerateTest() {
+            TestModel.generateTest({ Id: ng.provaId, sheet: ng.gerarFolhaResposta, publicFeedback: ng.publicFeedback }, function (result) {
+                if (result.success) {
+                    ng.filesTest = result.generateTest;
+                } else {
+                    $notification.alert("Não foi possível baixar todos os arquivos!");
+                }
+            });
+        };
 
         /**
-		* @function Baixar Prova
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Baixar Prova
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.baixarProva = baixarProva;
         function baixarProva(index) {
 
@@ -3652,10 +3652,10 @@
         };
 
         /**
-		* @function Chama modais da etapa 4
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Chama modais da etapa 4
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.e4_callModal = e4_callModal;
         function e4_callModal(index) {
 
@@ -3666,10 +3666,10 @@
         };
 
         /**
-		* @function ETAPA 4 - Salvar
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function ETAPA 4 - Salvar
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.e4_Salvar = e4_Salvar;
         function e4_Salvar() {
 
@@ -3711,10 +3711,10 @@
         };
 
         /**
-		* @function Volta para passo anterior
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Volta para passo anterior
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.voltar = voltar;
         function voltar() {
             if (ng.navigation > 0)
@@ -3722,10 +3722,10 @@
         };
 
         /**
-		* @function Cancelar passo para provas
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Cancelar passo para provas
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.cancelar = cancelar;
         function cancelar() {
 
@@ -3735,10 +3735,10 @@
         };
 
         /**
-		* @function Avancar para proximo passo
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Avancar para proximo passo
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.avancar = avancar;
         function avancar() {
 
@@ -3772,10 +3772,10 @@
         };
 
         /**
-		* @function Dispara salvar para a Etapa atual
-		* @private
-		* @param item: elemento que esta sendo validado
-		*/
+        * @function Dispara salvar para a Etapa atual
+        * @private
+        * @param item: elemento que esta sendo validado
+        */
         ng.salvar = salvar;
         function salvar() {
 
@@ -3798,10 +3798,10 @@
         };
 
         /**
-		* @function Valida se a prova esta correta
-		* @private
-		* @param 
-		*/
+        * @function Valida se a prova esta correta
+        * @private
+        * @param 
+        */
         ng.finalizar = finalizar;
         function finalizar() {
             window.location.href = base_url("Test");
@@ -3830,10 +3830,10 @@
         ng.e1_correcao = null;
 
         /**
-		 * @function - Carrega o combo Tipo Nivel de Ensino
-		 * @param
-		 * @public
-		 */
+         * @function - Carrega o combo Tipo Nivel de Ensino
+         * @param
+         * @public
+         */
         function carregaGrupoSubgrupo() {
             TestGroupModel.loadGroupsSubGroups(function (result) {
                 if (result.success) {
