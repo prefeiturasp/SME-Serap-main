@@ -113,6 +113,11 @@ namespace GestaoAvaliacao.MappingDependence
 								.BasedOn(typeof(ITestTypeRepository))
 								.WithService.AllInterfaces()
 								.SetLifestyle(LifestylePerWebRequest));
+            
+            container.Register(Classes.FromAssemblyContaining<TestTimeRepository>()
+                                .BasedOn(typeof(ITestTimeRepository))
+                                .WithService.AllInterfaces()
+                                .SetLifestyle(LifestylePerWebRequest));
 
 			container.Register(Classes.FromAssemblyContaining<TestTypeDeficiencyRepository>()
 								.BasedOn(typeof(ITestTypeDeficiencyRepository))

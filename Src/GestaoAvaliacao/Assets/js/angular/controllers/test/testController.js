@@ -166,6 +166,7 @@
                 knowledgeAreaBlock: 'Gabarito com blocos de área de conhecimento',
                 electronicTest: 'Prova eletrônica',
                 showVideoFiles: 'Exibir conteúdo de vídeo',
+                showJustificate: 'Exibir justificativa'
                 showAudioFiles: 'Exibir conteúdo de áudio',
                 showOnSerapEstudantes: 'Exibir no Serap Estudantes'
             };
@@ -211,6 +212,8 @@
             ng.e1_listaTipoProva = [];
             ng.grupoSubgrupoList = [];
             ng.e1_grupoSubgrupo = null;
+            ng.e1_tempoDeProva = null;
+            ng.tempoDeProvaList = [];
             ng.provaId = 0;
             //ComboBox tipo prova
             ng.e1_cbTipoProva = null;
@@ -252,6 +255,7 @@
             ng.showOnSerapEstudantes = false;
             ng.showVideoFiles = false;
             ng.showAudioFiles = false;
+            ng.showJustificate = false;
             //Lista de dificuldades do tipo de prova
             ng.e1_listaDificuldades = [];
             ng.Global = false;
@@ -307,6 +311,7 @@
                     r = r.lista;
                     ng.e1_listaTipoProva = angular.copy(r.testTypeList);
                     ng.e1_tipoNivelEnsino = angular.copy(r.TypeLevelEducation);
+                    ng.tempoDeProvaList = angular.copy(r.temposDeProva);
                     //Exibe tela assim que terminar de carregar
                     if (!ng.editMode) {
                         ng.mostrarTela = true;
@@ -455,6 +460,15 @@
             if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa1.alterou = true;
 
             if (!ng.e1_grupoSubgrupo)
+                return;
+        };
+
+        ng.e1_TempoDeProvaMudou = e1_TempoDeProvaMudou;
+        function e1_TempoDeProvaMudou() {
+
+            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa1.alterou = true;
+
+            if (!ng.e1_tempoDeProva)
                 return;
         };
 
@@ -608,6 +622,11 @@
 
         ng.selectShowAudioFiles = function () {
             ng.showAudioFiles = !ng.showAudioFiles;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selectShowJustificate = function () {
+            ng.showJustificate = !ng.showJustificate;
             self.etapa1.alterou = true;
         };
 
@@ -1042,7 +1061,9 @@
                 "ShowOnSerapEstudantes": ng.showOnSerapEstudantes,
                 "ShowVideoFiles": ng.showVideoFiles,
                 "ShowAudioFiles": ng.showAudioFiles,
-                "TestSubGroup": ng.e1_grupoSubgrupo
+                "ShowJustificate": ng.showJustificate,
+                "TestSubGroup": ng.e1_grupoSubgrupo,
+                "TestTime": ng.e1_tempoDeProva
             };
 
             self.etapa1.save(model, etapa1Salvou);
@@ -1354,6 +1375,7 @@
                     ng.params = r.Id;
                     ng.e1_cbTipoProva = procurarElementoEm([r.TestType], ng.e1_listaTipoProva)[0];
                     ng.e1_grupoSubgrupo = procurarElementoEm([r.TestSubGroup], ng.grupoSubgrupoList)[0];
+                    ng.e1_tempoDeProva = procurarElementoEm([r.TempoDeProva], ng.tempoDeProvaList)[0];
                     ng.Global = r.TestType.Global;
                     tipoProvaMudou();
                     ng.e1_cbTipoProva.Block = r.BlockItem > 0;
@@ -1366,6 +1388,7 @@
                     ng.showOnSerapEstudantes = r.ShowOnSerapEstudantes
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
+                    ng.showJustificate = r.ShowJustificate;
 					e1_formato_findTest = true;
                     ng.e1_folhaResp = true;
                     ng.frequencyApplication = r.FrequencyApplication;
@@ -1650,7 +1673,6 @@
             pageItens = 10;
             itensCache = [];
 
-            debugger;
             carregarItensPorPagina();
         };
 

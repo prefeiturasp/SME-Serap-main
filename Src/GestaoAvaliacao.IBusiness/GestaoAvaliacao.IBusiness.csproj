@@ -76,6 +76,7 @@
     <Compile Include="ISectionTestStatsBusiness.cs" />
     <Compile Include="IServiceAnswerSheetInfoBusiness.cs" />
     <Compile Include="IReportTestPerformanceBusiness.cs" />
+    <Compile Include="IStudentTestSessionBusiness.cs" />
     <Compile Include="IStudentCorrectionBusiness.cs" />
     <Compile Include="IStudentTestAbsenceReasonBusiness.cs" />
     <Compile Include="IStudentTestAccoplishmentBusiness.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="ITestPermissionBusiness.cs" />
     <Compile Include="ITestSectionStatusCorrectionBusiness.cs" />
     <Compile Include="ITestSubGroupBusiness.cs" />
+    <Compile Include="ITestTimeBusiness.cs" />
     <Compile Include="ITestTypeBusiness.cs" />
     <Compile Include="ITestTypeCourseCurriculumGradeBusiness.cs" />
     <Compile Include="ITestTypeDeficiencyBusiness.cs" />
@@ -125,6 +127,10 @@
     <Compile Include="StudentsTestSent\IStudentTestSentBusiness.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.Dtos\GestaoAvaliacao.Dtos.csproj">
+      <Project>{bc0b4ece-7048-4e0e-a993-ab2f6089ecdd}</Project>
+      <Name>GestaoAvaliacao.Dtos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
       <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>
       <Name>GestaoAvaliacao.Entities</Name>
