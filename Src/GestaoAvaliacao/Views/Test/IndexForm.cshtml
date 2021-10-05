@@ -181,13 +181,28 @@
                                          ng-class="{'off': !showJustificate}" style="position: absolute; margin: 4px 206px;"><input type="button" /></div>
                                 </div>
 
-                                <div class="campoLabel col-md-6">
+
                                 <div class="campoLabel">
-                                    @* Header *@
                                     <label class="label-pos-inline" style="max-width:180px;">  {{labels.showOnSerapEstudantes}}: </label>
                                     <div class="switch" ng-click="selectShowOnSerapEstudantes();"
                                          ng-class="{'off': !showOnSerapEstudantes}" style="position: absolute; margin: 4px 260px;"><input type="button" /></div>
                                 </div>
+
+                                <div class="campoLabel">
+                                    <label class="label-pos-inline" style="max-width:180px;">  {{labels.isSerapEstudantesBIB}}: </label>
+                                    <div class="switch" ng-click="selectIsSerapEstudantesBIB();"
+                                         ng-class="{'off': !temBIB}" style="position: absolute; margin: 4px 260px;"><input type="button" /></div>
+                                </div>
+
+                                @*<div ng-if="isSerapEstudantesBIB" class="campoLabel">
+                                    <label style="max-width:180px;"> Quantidade de cadernos *:</label>
+                                    <div>
+                                        <input type="number" style="max-width:100px;"
+                                               ng-model="serapEstudantesBIBQuantity"
+                                               ng-change="validarSerapEstudantesBIBQuantity()"
+                                               class="form-control" />
+                                    </div>
+                                </div>*@
 
                                 <div class="campoLabel">
                                     <label class="label-pos-inline">  {{labels.showVideoFiles}}: </label>

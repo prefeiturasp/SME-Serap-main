@@ -224,6 +224,8 @@ namespace GestaoAvaliacao.Controllers
                         KnowledgeAreaBlock = entity.KnowledgeAreaBlock,
                         ElectronicTest = entity.ElectronicTest,
 						ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes,
+						IsSerapEstudantesBIB = entity.IsSerapEstudantesBIB,
+						SerapEstudantesBIBQuantity = entity.SerapEstudantesBIBQuantity,
 						entity.ShowVideoFiles,
 						entity.ShowAudioFiles,
 						entity.ShowJustificate,

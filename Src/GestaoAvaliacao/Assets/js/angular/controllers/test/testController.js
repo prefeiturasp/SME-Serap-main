@@ -166,9 +166,11 @@
                 knowledgeAreaBlock: 'Gabarito com blocos de área de conhecimento',
                 electronicTest: 'Prova eletrônica',
                 showVideoFiles: 'Exibir conteúdo de vídeo',
-                showJustificate: 'Exibir justificativa'
+                showJustificate: 'Exibir justificativa',
                 showAudioFiles: 'Exibir conteúdo de áudio',
-                showOnSerapEstudantes: 'Exibir no Serap Estudantes'
+                showOnSerapEstudantes: 'Exibir no Serap Estudantes',
+                isSerapEstudantesBIB: 'Prova com BIB',
+                serapEstudantesBIBQuantity: 'Quantidade de cadernos'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
             //Lista de escolha 
@@ -253,6 +255,8 @@
             ng.isKnowledgeAreaBlock = false;
             ng.isElectronicTest = false;
             ng.showOnSerapEstudantes = false;
+            ng.isSerapEstudantesBIB = false;
+            ng.serapEstudantesBIBQuantity = 0;
             ng.showVideoFiles = false;
             ng.showAudioFiles = false;
             ng.showJustificate = false;
@@ -382,6 +386,13 @@
             });
         };
 
+        ng.validarDescription = validarDescription;
+        function validarDescription() {
+            if (ng.mostrarTela)
+                ng.alterouEtapaAtual = self.etapa1.alterou = true;
+
+            ng.e1_testDescription = ng.e1_testDescription.replace(/[¨´`~!@#$%^&*()|+\=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+        };
         /**
 		* @function Carrega dados de componente curricular
 		* @private
@@ -612,6 +623,12 @@
         };
         ng.selectShowOnSerapEstudantes = function () {
             ng.showOnSerapEstudantes = !ng.showOnSerapEstudantes;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selectIsSerapEstudantesBIB = function () {
+            ng.isSerapEstudantesBIB = !ng.isSerapEstudantesBIB;
+            ng.temBIB = !ng.temBIB;
             self.etapa1.alterou = true;
         };
 
@@ -1059,6 +1076,8 @@
                 "KnowledgeAreaBlock": ng.isKnowledgeAreaBlock,
                 "ElectronicTest": ng.isElectronicTest,
                 "ShowOnSerapEstudantes": ng.showOnSerapEstudantes,
+                "IsSerapEstudantesBIB": ng.isSerapEstudantesBIB,
+                "SerapEstudantesBIBQuantity": ng.serapEstudantesBIBQuantity,
                 "ShowVideoFiles": ng.showVideoFiles,
                 "ShowAudioFiles": ng.showAudioFiles,
                 "ShowJustificate": ng.showJustificate,
@@ -1245,6 +1264,16 @@
                 return false;
             }
 
+            //if (ng.serapEstudantesBIBQuantity <= 0 && ng.isSerapEstudantesBIB) {
+            //    $notification.alert('O campo "' + ng.labels.serapEstudantesBIBQuantity + '" é obrigatório.');
+            //    return false;
+            //}
+
+            //if (ng.isSerapEstudantesBIB && (ng.serapEstudantesBIBQuantity <= 0 || ng.serapEstudantesBIBQuantity > 26)  ) {
+            //    $notification.alert('O campo "' + ng.labels.serapEstudantesBIBQuantity + '" deve ter no mínimo 1 e no máximo 26 cadernos');
+            //    return false;
+            //}
+
             if (!ng.e1_cbComponenteCurricular && !ng.isMultidiscipline) {
                 $notification.alert('O campo "' + ng.labels.componente + '" é obrigatório.');
                 return false;
@@ -1385,7 +1414,9 @@
                     ng.isMultidiscipline = r.Multidiscipline;
                     ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock;
                     ng.isElectronicTest = r.ElectronicTest;
-                    ng.showOnSerapEstudantes = r.ShowOnSerapEstudantes
+                    ng.showOnSerapEstudantes = r.ShowOnSerapEstudantes;
+                    ng.isSerapEstudantesBIB = r.IsSerapEstudantesBIB;
+                    ng.serapEstudantesBIBQuantity = r.SerapEstudantesBIBQuantity;
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
                     ng.showJustificate = r.ShowJustificate;

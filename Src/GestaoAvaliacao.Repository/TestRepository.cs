@@ -1638,6 +1638,8 @@ namespace GestaoAvaliacao.Repository
                 test.KnowledgeAreaBlock = entity.KnowledgeAreaBlock;
                 test.ElectronicTest = entity.ElectronicTest;
                 test.ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes;
+                test.IsSerapEstudantesBIB = entity.IsSerapEstudantesBIB;
+                test.SerapEstudantesBIBQuantity = entity.SerapEstudantesBIBQuantity;
                 test.ShowVideoFiles = entity.ShowVideoFiles;
                 test.ShowAudioFiles = entity.ShowAudioFiles;
                 test.ShowJustificate = entity.ShowJustificate;
