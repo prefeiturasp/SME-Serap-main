@@ -46,15 +46,16 @@
             arr.push(self.wizards[0]);
             arr.push(self.wizards[1]);
             if (ng.temBIB === null) return;
-            if (!ng.temBIB) {
-                ng.ultimo = 3;
-                arr.push(self.wizards[3]);
-            }
-            else {
-                ng.ultimo = 4;
-                arr.push(self.wizards[2]);
-                arr.push(self.wizards[4]);
-            }
+            arr.push(self.wizards[2]);
+            //if (!ng.temBIB) {
+            //    ng.ultimo = 3;
+            //    arr.push(self.wizards[3]);
+            //}
+            //else {
+            //    ng.ultimo = 4;
+            //    arr.push(self.wizards[2]);
+            //    arr.push(self.wizards[4]);
+            //}
             ng.listaWizards = arr;
         };
 
@@ -136,9 +137,7 @@
             self.wizards = [
                 { Number: 1, Description: 'Cadastro Prova' },
                 { Number: 2, Description: 'Selecionar itens' },
-                { Number: 3, Description: 'Organizar blocos' },
                 { Number: 3, Description: 'Gerar provas' },
-                { Number: 4, Description: 'Gerar provas' },
             ];
             ng.labels = {
                 tipo: 'Tipo de prova',
@@ -168,7 +167,8 @@
                 showVideoFiles: 'Exibir conteúdo de vídeo',
                 showJustificate: 'Exibir justificativa',
                 showAudioFiles: 'Exibir conteúdo de áudio',
-                showOnSerapEstudantes: 'Exibir no Serap Estudantes'
+                showOnSerapEstudantes: 'Exibir no Serap Estudantes',
+                temBIB: 'Prova com BIB'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
             //Lista de escolha 
@@ -340,9 +340,14 @@
         function tipoProvaMudou() {
             if (!ng.e1_cbTipoProva) return;
             if (!ng.editMode) {
+                ng.temBIB = ng.e1_cbTipoProva.Bib;
+
+                configuraWizard(ng.temBIB);
+
+
                 ng.e1_cbComponenteCurricular = null;
                 ng.frequencyApplication = null;
-                ng.e1_cbBIB = null;
+                /*ng.e1_cbBIB = null;*/
                 ng.e1_radios = 3
                 if (ng.testId != ng.e1_cbTipoProva.Id) {
                     ng.e1_folhaRespLock = false;
@@ -491,9 +496,9 @@
                         ng.e1_folhaRespLock = true;
                         ng.gerarFolhaResposta = false;
                     }
-                    
-                        ng.carregaItemType();
-                    
+
+                    ng.carregaItemType();
+
                     //Dados da prova
                     if (ng.editMode) {
                         if (ng.e1_radios === 2) {
@@ -612,6 +617,11 @@
         };
         ng.selectShowOnSerapEstudantes = function () {
             ng.showOnSerapEstudantes = !ng.showOnSerapEstudantes;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selectTemBIB = function () {
+            ng.temBIB = !ng.temBIB;
             self.etapa1.alterou = true;
         };
 
@@ -792,6 +802,14 @@
             }
         };
 
+        ng.validarItensBlocos = function (value) {
+            self.etapa1.alterou = true;
+        };
+
+        ng.validarBlocos = function (value) {
+            self.etapa1.alterou = true;
+        };
+
         /**
         * @function Distribui porcentagem do total de itens desejado
         * @private
@@ -933,6 +951,11 @@
             if (ng.e1_correcao.Final === "Invalid Date") {
                 $notification.alert("O campo '" + ng.labels.finalCorrecao + "' contém uma data inválida.");
                 return false
+            }
+
+            if (!ng.e1_tempoDeProva) {
+                $notification.alert("O campo '" + ng.labels.e1_tempoDeProva + "' é obrigatório.");
+                return false;
             }
 
             if (!ng.e1_aplicacao.Inicio) {
@@ -1270,17 +1293,17 @@
                 return false;
 
             if (ng.e1_cbTipoProva.Block)
-                if (ng.e1_cbTipoProva.BlockItem > ng.itensTotais) {
+                if (ng.e1_cbTipoProva.BlockItem > ng.e1_itensBlocos) {
                     $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é menor que o total de itens já selecionados ( ' + ng.e1_cbTipoProva.BlockItem + ' ).');
                     return false;
                 }
 
-            if (ng.e1_radios == 3 || !ng.itensTotais) {
+            if (!ng.temBIB && (ng.e1_radios == 3 || !ng.itensTotais)) {
                 $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é obrigatório.');
                 return false;
             }
 
-            if (ng.e1_radios == 1 && !validarPorcentagemItens()) {
+            if (!ng.temBIB && (ng.e1_radios == 1 && !validarPorcentagemItens())) {
                 $notification.alert('No campo dificuldade do item não é permitido valor fracionado.');
                 return false;
             }
@@ -1373,13 +1396,16 @@
                 if (r.success) {
                     r = r.lista;
                     ng.params = r.Id;
+                    ng.temBIB = r.Bib;
                     ng.e1_cbTipoProva = procurarElementoEm([r.TestType], ng.e1_listaTipoProva)[0];
                     ng.e1_grupoSubgrupo = procurarElementoEm([r.TestSubGroup], ng.grupoSubgrupoList)[0];
                     ng.e1_tempoDeProva = procurarElementoEm([r.TempoDeProva], ng.tempoDeProvaList)[0];
                     ng.Global = r.TestType.Global;
                     tipoProvaMudou();
-                    ng.e1_cbTipoProva.Block = r.BlockItem > 0;
-                    ng.e1_cbTipoProva.BlockItem = r.BlockItem;
+                    ng.e1_cbTipoProva.Block = r.BlockItem > 0 || r.NumberBlock;
+                    ng.e1_cbTipoProva.BlockItem = r.BlockItem || r.NumberItemsBlock;
+                    ng.e1_itensBlocos = r.NumberItemsBlock;
+                    ng.e1_qtdBlocos = r.NumberBlock;
                     ng.e1_testDescription = r.Description;
                     ng.e1_cbComponenteCurricular = procurarElementoEm([r.Discipline], ng.e1_listaComponenteCurricular)[0];
                     ng.isMultidiscipline = r.Multidiscipline;
@@ -1420,6 +1446,10 @@
                         ng.e1_inpQntItens = r.NumberItem;
                     }
                     ng.itensTotais = parseInt(ng.e1_qtdItens || ng.e1_inpQntItens || 0);
+
+                    if (ng.temBIB) {
+                        ng.itensTotais = parseInt(ng.e1_itensBlocos) * parseInt(ng.e1_qtdBlocos);
+                    }
                     //BIB - Níveis de desempenho
                     if (r.TestPerformanceLevels.length > 0) {
                         ng.e1_cbNiveisDesempenho = true;
@@ -1568,15 +1598,32 @@
             if (r.success === false) {
 
                 // Bloco contem ID - Description - ItensCount
-                ng.cadernos = [{
-                    Description: 'A',
-                    ItensCount: 0,
-                    Id: 0,
-                    Total: ng.itensTotais,
-                    Resto: ng.itensTotais,
-                    SelectedItens: [],
-                    QtdeKnowledgeArea: 0
-                }];
+
+                ng.cadernos = [];
+                if (ng.temBIB) {
+                    for (var b = 1; b <= ng.e1_qtdBlocos; b++) {
+                        ng.cadernos.push({
+                            Description: b,
+                            ItensCount: 0,
+                            Id: 0,
+                            Total: ng.e1_itensBlocos,
+                            Resto: ng.e1_itensBlocos,
+                            SelectedItens: [],
+                            QtdeKnowledgeArea: 0
+                        });
+                    }
+                } else {
+                    ng.cadernos = [{
+                        Description: 'A',
+                        ItensCount: 0,
+                        Id: 0,
+                        Total: ng.itensTotais,
+                        Resto: ng.itensTotais,
+                        SelectedItens: [],
+                        QtdeKnowledgeArea: 0
+                    }];
+                }
+
 
                 ng.e2_blockAtual = ng.cadernos[0];
             }
@@ -1588,7 +1635,7 @@
                 for (var q = 0; q < ng.cadernos.length; q++) {
                     bloco = ng.cadernos[q];
 
-                    if (!ng.e1_temBib)
+                    if (!ng.temBIB)
                         bloco.Total = ng.itensTotais;
                     else
                         bloco.Total = ng.e1_itensBlocos;
@@ -1597,10 +1644,57 @@
                 }
 
                 //Como nesta fase não teremos BIB havera somente 1 carderno
-                if (!ng.e1_temBib) {
+                if (!ng.temBIB) {
                     ng.e2_blockAtual = ng.cadernos[0];
+                } else {
+                    if (ng.cadernos.length < ng.e1_qtdBlocos) {
+                        const cadernos = [];
+                        for (var b = 1; b <= ng.e1_qtdBlocos; b++) {
+                            cadernos.push({
+                                Description: String(b),
+                                ItensCount: 0,
+                                Id: 0,
+                                Total: ng.e1_itensBlocos,
+                                Resto: ng.e1_itensBlocos,
+                                SelectedItens: [],
+                                QtdeKnowledgeArea: 0
+                            });
+                        }
+                        const cadernosSemIds = cadernos.filter(caderno => {
+                            const temCadernoIdIgual = ng.cadernos.find(cad => cad.Description === caderno.Description);
+                            if (temCadernoIdIgual ) {
+                                return false;
+                            }
+                            return true;
+                        });
+                        ng.cadernos = cadernosSemIds.concat(ng.cadernos);
+                        ng.cadernos.sort(ordenarLista());
+                    }
                 }
             }
+
+            function ordenarLista () {
+                return function innerSort(a, b) {
+                    // eslint-disable-next-line no-prototype-builtins
+                    const indice = 'Description';                    
+
+                    const itemA =
+                        typeof a[indice] === 'string' ? a[indice].toUpperCase() : a[indice];
+
+                    const itemB =
+                        typeof b[indice] === 'string' ? b[indice].toUpperCase() : b[indice];
+
+                    let ordem = 0;
+                    if (itemA > itemB) {
+                        ordem = 1;
+
+                    } else if (itemA < itemB) {
+                        ordem = -1;
+                    }
+
+                    return ordem;
+                };
+            };
 
             contarItensSelecionados();
 
@@ -2431,6 +2525,9 @@
                 e2_knowledgeAreasCarregar();
                 ng.e2_ListaModal = true;
             }
+            else if (id === 8) {
+
+            }
 
 
             angular.element("#modal").modal({ backdrop: 'static' });
@@ -2481,6 +2578,11 @@
         function removeEventkeyUp() {
             $("body").unbind("keyup");
         };
+
+        ng.e2_AvancarModal = e2_AvancarModal;
+        function e2_AvancarModal() {
+
+        }
 
         /**
         * @function Limpa dados do modal
@@ -2583,7 +2685,12 @@
                 if (!ng.e2_blockAtual.Id) {
                     ng.e2_blockAtual.Id = r.TestID || r.blockid;
                 }
-                self.etapa2.selecionados = ng.e2_ListaItemSelecionados
+                if (ng.temBIB) {
+                    self.etapa2.selecionados = [];
+                } else {
+                    self.etapa2.selecionados = ng.e2_ListaItemSelecionados;
+                }
+                
                 ng.situacao = procurarElementoEm([{ Id: r.TestSituation }], self.situacaoList)[0];
                 ng.alterouEtapaAtual = (false);
                 atualizarBloco();
@@ -2630,6 +2737,17 @@
                 return;
 
             self.etapa2.salvarKnowLedgeAreaOrder(validarEtapa2KnowLedgeAreaOrder(), e2_salvoKnowLedgeAreaOrder);
+        }
+
+        /**
+        * @function Remove cadernos
+        * @private
+        * @param
+        */
+        ng.e2_RemoverCaderno = e2_RemoverCaderno
+        function e2_RemoverCaderno() {
+            var index = ng.cadernos.indexOf(ng.e2_blockAtual);
+            ng.cadernos.splice(index, 1);
         }
 
         /**
