@@ -184,6 +184,8 @@
             ng.temBIB = false;
             ng.modalAnterior = null;
             ng.provaPDF = null;
+            ng.selecItensProxCaderno = false;
+            ng.proximoBloco = null;
             //Controla breadcumb dos passos
             ng.navigation = 1;
             ng.itensTotais = 0;
@@ -1483,25 +1485,7 @@
             ng.Global = r.lista.TestType.Global;
         };
 
-        /**
-        * @function Configura variaveis do escopo, globais e locais da ETAPA 2
-        * @private
-        * @param
-        */
-        function initEtapa2() {
-
-
-            ng.escondeModal = false;
-
-            // ETAPA 2
-            blocosCarregar();
-
-            ng.e2_ItensAtuais = 0;
-            ng.e2_Navegacao = 1;
-            /////////// FIM ETAPA 2
-
-
-            // MODAL DE ADIÇÃO
+        function initModalAdicao() {
             ng.e2_blockAtual;
 
             // Filtro
@@ -1563,6 +1547,28 @@
             ng.e2_TotalPaginas = 0;
             ng.e2_PageSize = 10;
             ng.paginate.indexPage(0);
+        }
+
+        /**
+        * @function Configura variaveis do escopo, globais e locais da ETAPA 2
+        * @private
+        * @param
+        */
+        function initEtapa2() {
+
+
+            ng.escondeModal = false;
+
+            // ETAPA 2
+            blocosCarregar();
+
+            ng.e2_ItensAtuais = 0;
+            ng.e2_Navegacao = 1;
+            /////////// FIM ETAPA 2
+
+
+            // MODAL DE ADIÇÃO
+            initModalAdicao();
             /////////////////// FIM  MODAL DE ADIÇÃO
 
 
@@ -1767,7 +1773,7 @@
             pageItens = 10;
             itensCache = [];
 
-            debugger;
+            // debugger;
             carregarItensPorPagina();
         };
 
@@ -2492,6 +2498,8 @@
         ng.e2_callModal = e2_callModal;
         function e2_callModal(id, block) {
 
+            initModalAdicao();
+
             ng.e2_Navegacao = id;
 
             if (block) {
@@ -2579,10 +2587,10 @@
             $("body").unbind("keyup");
         };
 
-        ng.e2_AvancarModal = e2_AvancarModal;
-        function e2_AvancarModal() {
+        //ng.e2_AvancarModal = e2_AvancarModal;
+        //function e2_AvancarModal() {
 
-        }
+        //}
 
         /**
         * @function Limpa dados do modal
@@ -2595,7 +2603,7 @@
             removeEventkeyUp();
             ng.alterouEtapaAtual = (false);
             ng.modalAnterior = null;
-            ng.e2_ListaItemSelecionados = self.etapa2.selecionados;
+            // ng.e2_ListaItemSelecionados = self.etapa2.selecionados;
             atualizarBloco();
             ng.e2_ResultadoBusca = [];
             self.etapa2.selecionados = [];
@@ -2603,7 +2611,7 @@
             ng.e2_ListaItemCheckedCache = [];
             ng.e2_ListaKnowledgeAreaSelecionadas = [];
             self.etapa2.knowledgeAreasSelecionadas = [];
-
+            initModalAdicao();
         };
 
         /**
@@ -2628,7 +2636,9 @@
         * @param
         */
         ng.e2_Salvar = e2_Salvar
-        function e2_Salvar() {
+        function e2_Salvar(salvouPeloModal = false) {
+
+            ng.selecItensProxCaderno = salvouPeloModal;
 
             if (!ng.alterouEtapaAtual)
                 return;
@@ -2678,6 +2688,48 @@
             return obj;
         };
 
+        ng.e2_callModalAposSalvar = e2_callModalAposSalvar;
+        function e2_callModalAposSalvar() {
+            angular.element("#modalSelecItensProxCaderno").modal({ backdrop: 'static' });
+            // ng.e2_callModal(9, ng.proximoBloco);
+        };
+
+        ng.e2_exibirModalProximoBloco = e2_exibirModalProximoBloco;
+        function e2_exibirModalProximoBloco() {
+            e2_limparModal(); 
+            const proximoBlockCache = angular.copy(ng.proximoBloco);
+            setTimeout(function () {
+                ng.e2_callModal(1, proximoBlockCache);
+                ng.proximoBloco = null;
+            }, 500);
+        }
+
+        ng.e2_limparModalProximoBloco = e2_limparModalProximoBloco;
+        function e2_limparModalProximoBloco() {
+            ng.proximoBloco = null;
+            ng.selecItensProxCaderno = false;
+            e2_limparModal();
+        }
+
+        function e2_tratarExibirProximoBlocoAposSalvar() {
+            if (ng.selecItensProxCaderno) {
+                const blocoAtual = ng.cadernos.find(cad => cad.Description === ng.e2_blockAtual.Description);
+                const indexBlocoAtual = ng.cadernos.indexOf(blocoAtual);
+                if (indexBlocoAtual) {
+                    const indexProximoBloco = indexBlocoAtual + 1;
+                    if (indexProximoBloco <= ng.cadernos.length - 1) {
+                        const proximoBloco = ng.cadernos[indexProximoBloco];
+                        if (proximoBloco) {
+                            ng.proximoBloco = proximoBloco;
+                            e2_callModalAposSalvar();
+                        }
+                    }
+
+                }
+                ng.selecItensProxCaderno = false;
+            }
+        }
+
         function e2_salvo(r) {
 
             if (r.success) {
@@ -2695,6 +2747,7 @@
                 ng.alterouEtapaAtual = (false);
                 atualizarBloco();
                 ng.etapaAtual = 3;
+                e2_tratarExibirProximoBlocoAposSalvar();               
             }
             else {
                 e2_limparModal();
@@ -2879,6 +2932,22 @@
 
             ng.alterouEtapaAtual = (true);
         };
+
+        ng.e2_LimparItensSelecionados = e2_LimparItensSelecionados;
+        function e2_LimparItensSelecionados() {
+            if (ng.e2_ResultadoBusca && ng.e2_ResultadoBusca.length) {
+                ng.e2_ResultadoBusca.forEach(item => {
+                    item.check = false;
+                });
+            }
+            self.etapa2.selecionados = [];
+            ng.e2_ListaItemSelecionados = [];
+            ng.e2_ListaItemCheckedCache = [];
+            ng.e2_ListaKnowledgeAreaSelecionadas = [];
+            self.etapa2.knowledgeAreasSelecionadas = [];
+
+            ng.alterouEtapaAtual = (true);
+        }
 
         /**
          * @function Adicão dos itens na lista de selecionados (agrupar itens com mesmo texto base)
@@ -3781,8 +3850,7 @@
 
             angular.element("#modalProva").modal({ backdrop: 'static' });
 
-        };
-
+        };       
         /**
         * @function ETAPA 4 - Salvar
         * @private
