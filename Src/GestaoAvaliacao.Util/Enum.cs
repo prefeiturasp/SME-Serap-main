@@ -430,7 +430,9 @@ namespace GestaoAvaliacao.Util
         [Description("HTML_PAGINA_INICIAL")]
         HTML_PAGINA_INICIAL,
         [Description("SIZE_TO_CONVERT_VIDEO_FILE")]
-        SIZE_TO_CONVERT_VIDEO_FILE
+        SIZE_TO_CONVERT_VIDEO_FILE,
+        [Description("TESTMAXBLOCK")]
+        TEST_MAX_BLOCK
     }
 
     public enum MimeType

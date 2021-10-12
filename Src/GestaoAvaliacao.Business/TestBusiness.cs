@@ -22,6 +22,7 @@ namespace GestaoAvaliacao.Business
     {
         private readonly ITestRepository testRepository;
         private readonly IFileBusiness fileBusiness;
+        private readonly IParameterBusiness parameterBusiness;
         private readonly IBookletBusiness bookletBusiness;
         private readonly IFileRepository fileRepository;
         private readonly ITestPerformanceLevelRepository testPerformanceLevelRepository;
@@ -36,12 +37,13 @@ namespace GestaoAvaliacao.Business
 
         public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
             ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
-            IBlockRepository blockRepository, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
+            IBlockRepository blockRepository, IParameterBusiness parameterBusiness, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
             IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository)
         {
             this.testRepository = testRepository;
             this.fileRepository = fileRepository;
             this.fileBusiness = fileBusiness;
+            this.parameterBusiness = parameterBusiness;
             this.bookletBusiness = bookletBusiness;
             this.testPerformanceLevelRepository = testPerformanceLevelRepository;
             this.itemLevelRepository = itemLevelRepository;
@@ -89,6 +91,19 @@ namespace GestaoAvaliacao.Business
                 int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
                 if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)
                     valid.Message = string.Format("A quantidade de itens deve ser menor ou igual a {0}.", qtdeMaxItems);
+            }
+
+            if(entity.Bib)
+            {
+                if(entity.NumberBlock <= 0)
+                    valid.Message = string.Format("A quantidade de cadernos deve ser maior ou igual a 1.");
+
+                var maxBlock = parameterBusiness.GetByKey(EnumParameterKey.TEST_MAX_BLOCK.GetDescription());
+                if(maxBlock != null)
+                {
+                    if(entity.NumberBlock > int.Parse(maxBlock.Value))
+                        valid.Message = string.Format("A quantidade de cadernos deve ser menor ou igual a {0}.", int.Parse(maxBlock.Value));
+                }
             }
 
             if (action == ValidateAction.Update)

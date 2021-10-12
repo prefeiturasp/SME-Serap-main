@@ -24,8 +24,11 @@ namespace GestaoAvaliacao.IBusiness
         Block Save(Block block, Guid UsuId, EnumSYS_Visao vision);
         Block Update(Block block, Guid UsuId, EnumSYS_Visao vision);
         Block SaveKnowLedgeAreaOrder(Block block);
+        Block Delete(long Id);
+        Block DeleteBlockItems(long Id);
         IEnumerable<Block> GetBookletItems(Int64 BookletId);
         int CountItemTest(long Id);
+        int CountItemTestBIB(long Id);        
         IEnumerable<StudentCorrectionAnswerGrid> GetTestQuestions(long Id);
     }
 }
