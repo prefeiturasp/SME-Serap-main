@@ -1294,13 +1294,13 @@
             if (validarData() === false)
                 return false;
 
-            if (ng.e1_cbTipoProva.Block) {
+            /*if (ng.e1_cbTipoProva.Block) {*/
                 if (ng.e1_cbTipoProva.BlockItem > ng.e1_itensBlocos) {
                     $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é menor que o total de itens já selecionados ( ' + ng.e1_cbTipoProva.BlockItem + ' ).');
                     return false;
                 }
 
-            }
+            /*}*/
 
 
             if (!ng.temBIB && (ng.e1_radios == 3 || !ng.itensTotais)) {
@@ -1853,17 +1853,16 @@
                 }
 
             if (ng.temBIB) {
-                const indice = 'ItensCount';
-                const ordenarPorItensCount = (a, b) => {
-                    return b[indice] - a[indice];
-                };
-                const cacheCadernos = angular.copy(ng.cadernos);
-                const cadernosOrdenadosPorItensCount = cacheCadernos.sort(ordenarPorItensCount);
-                if (cadernosOrdenadosPorItensCount.length) {
-                    // Caderno com maior número de itens selecionados!
-                    const cadMaiorItens = cadernosOrdenadosPorItensCount[0];
-                    ng.e1_cbTipoProva.BlockItem = cadMaiorItens.ItensCount;
+
+                let cadMaiorItens = 0;
+                if (ng.cadernos.length) {
+                    ng.cadernos.forEach(cad => {
+                        if (cad.ItensCount > cadMaiorItens) {
+                            cadMaiorItens = cad.ItensCount;
+                        }
+                    })
                 }
+                ng.e1_cbTipoProva.BlockItem = cadMaiorItens;
             } else {
                 ng.e2_ItensAtuais = i;
                 ng.e1_cbTipoProva.BlockItem = i;
@@ -2778,6 +2777,7 @@
                 atualizarBloco();
                 ng.etapaAtual = 3;
                 e2_tratarExibirProximoBlocoAposSalvar();
+                ng.cadernos = [...ng.cadernos];
             }
             else {
                 e2_limparModal();
