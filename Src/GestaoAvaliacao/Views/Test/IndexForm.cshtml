@@ -153,7 +153,7 @@
 
                                 @* Tempo de prova *@
                                 <div class="campoLabel col-md-12">
-                                    <label for="tempoDeProva">Tempo de prova: </label>
+                                    <label for="tempoDeProva">Tempo de prova*: </label>
                                     <div>
                                         <select id="groupSubgroup" class="form-control" title="{{ e1_tempoDeProva.Description }}"
                                                 ng-change="e1_TempoDeProvaMudou();"
@@ -494,7 +494,7 @@
                                             <th class="table-parameter-centralize">Editar</th>
                                             <th>Adicionar</th>
                                             <th class="table-parameter-centralize">Ordenar área de conhecimento</th>
-                                            <th class="table-parameter-centralize">Remover</th>
+                                            <th class="table-parameter-centralize">Limpar itens selecionados</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -517,7 +517,7 @@
                                                 <a ng-click="e2_callModal(7, bloco)"><i type="button" class="material-icons">swap_vert</i></a>
                                             </th>
                                             <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModal(8, bloco)"><i type="button" class="material-icons">delete</i></a>
+                                                <a ng-click="e2_callModalRemoverItensSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
                                             </th>
                                         </tr>
                                     </tbody>
@@ -1317,26 +1317,16 @@
                     </div>
                 </div>
 
-                @*MODAL REMOVER CADERNO*@
-                <div class="modal-body" ng-show="e2_Navegacao===8">
-                    <div>
-                        <h4 class="padding"><strong>Excluir o caderno {{e2_blockAtual.Description}} </strong></h4>
-                        <span ng-if="e2_blockAtual.SelectedItems.length > 0">Este caderno possui {{e2_blockAtual.SelectedItems.length}} itens vinculados, deseja realmente excluir?</span>
-                        <span ng-if="e2_blockAtual.SelectedItems.length == 0">Deseja realmente excluir?</span>
-                    </div>
-                </div>
-
                 @* Footer Modal *@
-            <div class="modal-footer footerCustom ">
-                <button type="button" class="btnPadrao pull-right" ng-click="(e2_Navegacao===5)?e2_VoltarModal(modalAnterior):e2_VoltarModal()" ng-show="(e2_Navegacao===2 && !e2_ListaModal) || e2_Navegacao===5">Voltar</button>
-                <button type="button" class="btnPadrao" ng-click="e2_Salvar(true)" data-dismiss="modal" ng-show="e2_Navegacao===1 || alterouEtapaAtual && e2_Navegacao!==5 && e2_Navegacao!==7">Salvar</button>
-                <button type="button" class="btnPadrao" ng-click="e2_SalvarKnowLedgeAreaOrder()" data-dismiss="modal" ng-show="e2_Navegacao===7 && alterouEtapaAtual">Salvar</button>
-                <button type="button" class="btnPadrao" ng-click="e2_RemoverCaderno()" data-dismiss="modal" ng-show="e2_Navegacao===8">Excluir</button>
-                <button type="button" class="btnCancelar2" ng-click="e2_Limpar()" data-dismiss="modal" ng-hide="e2_Navegacao===5 || e2_Navegacao===7">Cancelar</button>
-                <button type="button" class="btnCancelar2" ng-click="e2_LimparKnowLedgeArea()" data-dismiss="modal" ng-show="e2_Navegacao===7">Cancelar</button>
-                <button type="button" class="btnPadrao" ng-click="e2_LimparItensSelecionados()" ng-show="e2_Navegacao===1">Limpar Itens Selecionados</button>
-                <button type="button" class="btnPadrao" ng-click="e2_AvancarModal()" ng-show="e2_Navegacao===1">Itens Selecionados</button>
-            </div>
+                <div class="modal-footer footerCustom ">
+                    <button type="button" class="btnPadrao pull-right" ng-click="(e2_Navegacao===5)?e2_VoltarModal(modalAnterior):e2_VoltarModal()" ng-show="(e2_Navegacao===2 && !e2_ListaModal) || e2_Navegacao===5">Voltar</button>
+                    <button type="button" class="btnPadrao" ng-click="e2_Salvar(true)" data-dismiss="modal" ng-show="e2_Navegacao===1 || alterouEtapaAtual && e2_Navegacao!==5 && e2_Navegacao!==7">Salvar</button>
+                    <button type="button" class="btnPadrao" ng-click="e2_SalvarKnowLedgeAreaOrder()" data-dismiss="modal" ng-show="e2_Navegacao===7 && alterouEtapaAtual">Salvar</button>
+                    <button type="button" class="btnCancelar2" ng-click="e2_Limpar()" data-dismiss="modal" ng-hide="e2_Navegacao===5 || e2_Navegacao===7">Cancelar</button>
+                    <button type="button" class="btnCancelar2" ng-click="e2_LimparKnowLedgeArea()" data-dismiss="modal" ng-show="e2_Navegacao===7">Cancelar</button>
+                    @*<button type="button" class="btnPadrao" ng-click="e2_LimparItensSelecionados()" ng-show="e2_Navegacao===1">Limpar Itens Selecionados</button>*@
+                    <button type="button" class="btnPadrao" ng-click="e2_AvancarModal()" ng-show="e2_Navegacao===1">Itens Selecionados</button>
+                </div>
 
             </div>
         </div>
@@ -1440,12 +1430,14 @@
             </div>
         </div>
     </modal>
+
+
     @* Modal questionar o usuário se ele deseja selecionar os itens do próximo caderno ou voltar para a lista de cadernos' *@
-    <div  class="modal fade" id="modalSelecItensProxCaderno" tabindex="-1" role="dialog" aria-labelledby="modalSelecItensProxCaderno" aria-hidden="true">
+    <div class="modal fade" id="modalSelecItensProxCaderno" tabindex="-1" role="dialog" aria-labelledby="modalSelecItensProxCaderno" aria-hidden="true">
         <div class="modal-dialog ">
             <div class="modal-content ">
 
-                 @*HEADER*@ 
+                @*HEADER*@
                 <div class="modal-header">
                     <a ng-click="e1_callModal()" class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
                     <h4 class="modal-title" id="modalSelecItensProxCadernoLabel">
@@ -1453,12 +1445,12 @@
                     </h4>
                 </div>
 
-                  @*BODY*@ 
+                @*BODY*@
                 <div class="modal-body">
                     <h5>Deseja selecionar os itens do próximo caderno?</h5>
                 </div>
 
-                 @*FOOTER*@ 
+                @*FOOTER*@
                 <div class="modal-footer footerCustom ">
                     <div class="container-fluid row-fluid">
                         <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e2_limparModalProximoBloco()" aria-hidden="true">Não</button>
@@ -1466,6 +1458,39 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+
+
+    @* Modal questionar o usuário se ele deseja Remover itens selecionados' *@
+    <div class="modal fade" id="modalRemoverItensSelecionados" tabindex="-1" role="dialog" aria-labelledby="modalRemoverItensSelecionados" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content ">
+
+                @*HEADER*@
+                <div class="modal-header">
+                    <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                    <h4 class="modal-title" id="modalRemoverItensSelecionadosLabel">
+                        <strong>Atenção</strong>
+                    </h4>
+                </div>
+
+                @*BODY*@
+                <div class="modal-body">
+                    <div>                        
+                        <span>Remover itens selecionados?</span>
+                    </div>
+                </div>
+
+                @*FOOTER*@
+                <div class="modal-footer footerCustom ">
+                    <div class="container-fluid row-fluid">
+                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true">Não</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e2_LimparItensSelecionados()">Sim</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

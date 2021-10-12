@@ -106,6 +106,7 @@
             //Chamadas utilizada na Etapa 2
             self.etapa2 = {
                 salvar: TestModel.saveBlock,
+                remover: TestModel.deleteBlock,
                 salvarKnowLedgeAreaOrder: TestModel.saveKnowLedgeAreaOrder,
                 paginacao: TestModel.searchBlock,
                 nivelEnsino: TestModel.loadLevelEducation,
@@ -119,7 +120,6 @@
                 blocos: TestModel.loadBlock,
                 itensBloco: TestModel.visualizar,
                 blockKnowledgeAreas: TestModel.getBlockKnowledgeAreas,
-                remover: TestModel.removerBlock,
                 itensVersoes: TestModel.GetItemVersions
 
             };
@@ -156,8 +156,8 @@
                 personalizado: 'Personalizado',
                 total: 'Total',
                 bib: 'BIB',
-                quantidadeBlocos: 'Quantidade de blocos',
-                e1_itensBlocos: 'Itens por blocos',
+                quantidadeBlocos: 'Quantidade de cadernos',
+                e1_itensBlocos: 'Itens por caderno',
                 niveis: 'Níveis de desempenho',
                 matriz: 'Matriz',
                 keywords: 'Palavra-chave',
@@ -1294,11 +1294,14 @@
             if (validarData() === false)
                 return false;
 
-            if (ng.e1_cbTipoProva.Block)
+            if (ng.e1_cbTipoProva.Block) {
                 if (ng.e1_cbTipoProva.BlockItem > ng.e1_itensBlocos) {
                     $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é menor que o total de itens já selecionados ( ' + ng.e1_cbTipoProva.BlockItem + ' ).');
                     return false;
                 }
+
+            }
+
 
             if (!ng.temBIB && (ng.e1_radios == 3 || !ng.itensTotais)) {
                 $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é obrigatório.');
@@ -1668,39 +1671,21 @@
                         }
                         const cadernosSemIds = cadernos.filter(caderno => {
                             const temCadernoIdIgual = ng.cadernos.find(cad => cad.Description === caderno.Description);
-                            if (temCadernoIdIgual ) {
+                            if (temCadernoIdIgual) {
                                 return false;
                             }
                             return true;
                         });
                         ng.cadernos = cadernosSemIds.concat(ng.cadernos);
-                        ng.cadernos.sort(ordenarLista());
+                        // ORDENAR CADERNOS!
+                        const indice = 'Description';
+                        const ordenar = (a, b) => {
+                            return a[indice] - b[indice];
+                        };
+                        ng.cadernos.sort(ordenar);
                     }
                 }
             }
-
-            function ordenarLista () {
-                return function innerSort(a, b) {
-                    // eslint-disable-next-line no-prototype-builtins
-                    const indice = 'Description';                    
-
-                    const itemA =
-                        typeof a[indice] === 'string' ? a[indice].toUpperCase() : a[indice];
-
-                    const itemB =
-                        typeof b[indice] === 'string' ? b[indice].toUpperCase() : b[indice];
-
-                    let ordem = 0;
-                    if (itemA > itemB) {
-                        ordem = 1;
-
-                    } else if (itemA < itemB) {
-                        ordem = -1;
-                    }
-
-                    return ordem;
-                };
-            };
 
             contarItensSelecionados();
 
@@ -1867,8 +1852,22 @@
                     i += (bloco.ItensCount);
                 }
 
-            ng.e2_ItensAtuais = i;
-            ng.e1_cbTipoProva.BlockItem = i;
+            if (ng.temBIB) {
+                const indice = 'ItensCount';
+                const ordenarPorItensCount = (a, b) => {
+                    return b[indice] - a[indice];
+                };
+                const cacheCadernos = angular.copy(ng.cadernos);
+                const cadernosOrdenadosPorItensCount = cacheCadernos.sort(ordenarPorItensCount);
+                if (cadernosOrdenadosPorItensCount.length) {
+                    // Caderno com maior número de itens selecionados!
+                    const cadMaiorItens = cadernosOrdenadosPorItensCount[0];
+                    ng.e1_cbTipoProva.BlockItem = cadMaiorItens.ItensCount;
+                }
+            } else {
+                ng.e2_ItensAtuais = i;
+                ng.e1_cbTipoProva.BlockItem = i;
+            }
         };
 
         /**
@@ -2533,13 +2532,46 @@
                 e2_knowledgeAreasCarregar();
                 ng.e2_ListaModal = true;
             }
-            else if (id === 8) {
-
-            }
-
 
             angular.element("#modal").modal({ backdrop: 'static' });
         };
+
+        ng.e2_cadernoExcluido = e2_cadernoExcluido;
+        function e2_cadernoExcluido(r) {
+            if (r.success) {
+                var index = ng.cadernos.indexOf(ng.e2_blockAtual);
+
+                $notification.success('Caderno excluído com sucesso');
+                ng.cadernos.splice(index, 1);
+            }
+            else {
+                if (r.type && r.message)
+                    $notification[r.type ? r.type : 'error'](r.message);
+            }
+
+        }
+
+        ng.e2_callModalRemoverItensSelecionados = e2_callModalRemoverItensSelecionados;
+        function e2_callModalRemoverItensSelecionados(block) {
+
+            if (block) {
+                ng.e2_blockAtual = block;
+            }
+
+            angular.element("#modalRemoverItensSelecionados").modal({ backdrop: 'static' });
+        };
+
+
+        ng.e2_excluirCaderno = e2_excluirCaderno;
+        function e2_excluirCaderno() {
+            if (ng.e2_blockAtual.Id > 0) {
+                self.etapa2.remover({ Id: ng.e2_blockAtual.Id }, e2_cadernoExcluido);
+            } else {
+                var index = ng.cadernos.indexOf(ng.e2_blockAtual);
+                ng.cadernos.splice(index, 1);
+                $notification.success('A prova foi salva com sucesso!');
+            }
+        }
 
 
         /**
@@ -2691,16 +2723,14 @@
         ng.e2_callModalAposSalvar = e2_callModalAposSalvar;
         function e2_callModalAposSalvar() {
             angular.element("#modalSelecItensProxCaderno").modal({ backdrop: 'static' });
-            // ng.e2_callModal(9, ng.proximoBloco);
         };
 
         ng.e2_exibirModalProximoBloco = e2_exibirModalProximoBloco;
         function e2_exibirModalProximoBloco() {
-            e2_limparModal(); 
-            const proximoBlockCache = angular.copy(ng.proximoBloco);
+            e2_limparModal();
             setTimeout(function () {
-                ng.e2_callModal(1, proximoBlockCache);
-                ng.proximoBloco = null;
+                ng.e2_callModal(1, ng.proximoBloco);
+                ng.selecItensProxCaderno = false;
             }, 500);
         }
 
@@ -2715,7 +2745,7 @@
             if (ng.selecItensProxCaderno) {
                 const blocoAtual = ng.cadernos.find(cad => cad.Description === ng.e2_blockAtual.Description);
                 const indexBlocoAtual = ng.cadernos.indexOf(blocoAtual);
-                if (indexBlocoAtual) {
+                if (indexBlocoAtual || indexBlocoAtual === 0) {
                     const indexProximoBloco = indexBlocoAtual + 1;
                     if (indexProximoBloco <= ng.cadernos.length - 1) {
                         const proximoBloco = ng.cadernos[indexProximoBloco];
@@ -2742,12 +2772,12 @@
                 } else {
                     self.etapa2.selecionados = ng.e2_ListaItemSelecionados;
                 }
-                
+
                 ng.situacao = procurarElementoEm([{ Id: r.TestSituation }], self.situacaoList)[0];
                 ng.alterouEtapaAtual = (false);
                 atualizarBloco();
                 ng.etapaAtual = 3;
-                e2_tratarExibirProximoBlocoAposSalvar();               
+                e2_tratarExibirProximoBlocoAposSalvar();
             }
             else {
                 e2_limparModal();
@@ -2790,17 +2820,6 @@
                 return;
 
             self.etapa2.salvarKnowLedgeAreaOrder(validarEtapa2KnowLedgeAreaOrder(), e2_salvoKnowLedgeAreaOrder);
-        }
-
-        /**
-        * @function Remove cadernos
-        * @private
-        * @param
-        */
-        ng.e2_RemoverCaderno = e2_RemoverCaderno
-        function e2_RemoverCaderno() {
-            var index = ng.cadernos.indexOf(ng.e2_blockAtual);
-            ng.cadernos.splice(index, 1);
         }
 
         /**
@@ -2947,6 +2966,7 @@
             self.etapa2.knowledgeAreasSelecionadas = [];
 
             ng.alterouEtapaAtual = (true);
+            e2_Salvar();
         }
 
         /**
@@ -3850,7 +3870,7 @@
 
             angular.element("#modalProva").modal({ backdrop: 'static' });
 
-        };       
+        };
         /**
         * @function ETAPA 4 - Salvar
         * @private

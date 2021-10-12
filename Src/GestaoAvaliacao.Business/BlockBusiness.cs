@@ -104,6 +104,11 @@ namespace GestaoAvaliacao.Business
             return blockRepository.CountItemTest(Id);
         }
 
+        public int CountItemTestBIB(long Id)
+        {
+            return blockRepository.CountItemTestBIB(Id);
+        }
+
         #endregion
 
         #region Write
@@ -160,6 +165,32 @@ namespace GestaoAvaliacao.Business
         {
             return blockRepository.GetTestQuestions(Id);
         }
+
+        public Block Delete(long Id)
+        {
+            Block entity = new Block { Id = Id };
+
+            blockRepository.Delete(Id);
+
+            entity.Validate.Type = ValidateType.Delete.ToString();
+            entity.Validate.Message = "Caderno excluído com sucesso.";
+
+            return entity;
+        }
+
+        public Block DeleteBlockItems(long Id)
+        {
+            Block entity = new Block { Id = Id };
+
+            blockRepository.DeleteItems(Id);
+
+            entity.Validate.Type = ValidateType.Delete.ToString();
+            entity.Validate.Message = "Items removidos com sucesso.";
+
+            return entity;
+        }
+
+       
 
         #endregion
     }
