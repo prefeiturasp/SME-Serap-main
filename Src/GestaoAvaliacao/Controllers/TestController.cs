@@ -194,6 +194,7 @@ namespace GestaoAvaliacao.Controllers
 						ApplicationActiveOrDone = entity.ApplicationActiveOrDone,
 						CorrectionStartDate = entity.CorrectionStartDate.ToString("yyyy/MM/dd"),
                         CorrectionEndDate = entity.CorrectionEndDate.ToString("yyyy/MM/dd"),
+						Password = entity.Password,
                         BlockItem = entity.Bib ? blockBusiness.CountItemTestBIB(Id) : blockBusiness.CountItemTest(Id),
                         FrequencyApplication = entity.FrequencyApplication,
                         FormatType = entity.FormatType != null ? new { Id = entity.FormatType.Id, Description = entity.FormatType.Description } : null,
