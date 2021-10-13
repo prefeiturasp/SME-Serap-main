@@ -440,6 +440,26 @@ namespace GestaoAvaliacao.Controllers
 
         }
 
+        [HttpPost]
+        public JsonResult DeleteBlockItems(long Id)
+        {
+            Block entity = new Block();
+
+            try
+            {
+                entity = blockBusiness.DeleteBlockItems(Id);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao tentar excluir os itens.";
+                LogFacade.SaveError(ex);
+            }
+
+            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
     }
 }

@@ -247,7 +247,8 @@ namespace GestaoAvaliacao.Controllers
                         {
                             Id = x.Id,
                             Description = x.Description,
-                            FrequencyApplication = x.FrequencyApplication
+                            FrequencyApplication = x.FrequencyApplication,
+                            Bib = x.Bib
                         }),
                         Bib = lista.Any(p => p.Bib),
                         temposDeProva = temposDeProva.Select(s=>new

@@ -101,6 +101,8 @@ namespace GestaoAvaliacao.Entities
         public bool ShowAudioFiles { get; set; }
         public bool ShowJustificate { get; set; }
         public bool ShowOnSerapEstudantes { get; set; }
+        public bool IsSerapEstudantesBIB { get; set; }
+        public int SerapEstudantesBIBQuantity { get; set; }
 
     }
 }

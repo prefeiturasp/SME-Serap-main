@@ -62,7 +62,7 @@ namespace GestaoAvaliacao.Repository
                             LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = 1 
                             WHERE BI.State = 1 AND B.State = 1 ");
                 sql.AppendFormat("AND T.Id IN ({0})", string.Join(",", tests));
-                
+
                 var lookup = new Dictionary<long, Block>();
                 cn.Query<Block, BlockItem, Block>(sql.ToString(),
                      (B, BI) =>
@@ -308,6 +308,26 @@ namespace GestaoAvaliacao.Repository
                             "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
                             "WHERE B.Test_Id = @id " +
                             "AND B.State = @state AND BI.State = @state AND I.State = @state";
+
+                var count = (int)cn.ExecuteScalar(sql, new { id = Id, state = (Byte)EnumState.ativo });
+
+                return count;
+            }
+        }
+
+        public int CountItemTestBIB(long Id)
+        {
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                var sql = @"SELECT COUNT(I.Id) " +
+                            "FROM Item I WITH (NOLOCK) " +
+                            "INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id " +
+                            "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
+                            "WHERE B.Test_Id = @id " +
+                            "AND B.State = @state AND BI.State = @state AND " +
+                            "I.State = @state group by BI.block_id order by 1 desc";
 
                 var count = (int)cn.ExecuteScalar(sql, new { id = Id, state = (Byte)EnumState.ativo });
 
@@ -924,6 +944,73 @@ namespace GestaoAvaliacao.Repository
                 GestaoAvaliacaoContext.Entry(_entity).State = System.Data.Entity.EntityState.Modified;
                 GestaoAvaliacaoContext.SaveChanges();
             }
+        }
+
+        public void RemoveBlockItemByBlockId(long blockId)
+        {
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                var sql = @"UPDATE BlockItem set State = @state WHERE Block_Id = @blockId;";
+
+                cn.ExecuteScalar(sql, new { blockId, state = (Byte)EnumState.excluido });
+            }
+        }
+
+        public void Delete(long id)
+        {
+
+            using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                Block block = GestaoAvaliacaoContext.Block.FirstOrDefault(a => a.Id == id);
+
+                if (block != null)
+                {
+                    List<BlockItem> blockItems = GestaoAvaliacaoContext.BlockItem.Include("Block").Where(i => i.Block_Id == id).ToList();
+                    if (blockItems != null)
+                    {
+                        blockItems.ForEach(i =>
+                        {
+                            i.State = Convert.ToByte(EnumState.excluido);
+                            i.UpdateDate = DateTime.Now;
+                            GestaoAvaliacaoContext.Entry(i).State = System.Data.Entity.EntityState.Modified;
+                        });
+                    }
+
+                    block.State = Convert.ToByte(EnumState.excluido);
+                    block.UpdateDate = DateTime.Now;
+                    GestaoAvaliacaoContext.Entry(block).State = System.Data.Entity.EntityState.Modified;
+                }
+            }
+
+        }
+
+        public void DeleteItems(long id)
+        {
+
+            using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                Block block = GestaoAvaliacaoContext.Block.FirstOrDefault(a => a.Id == id);
+
+                if (block != null)
+                {
+                    List<BlockItem> blockItems = GestaoAvaliacaoContext.BlockItem.Include("Block").Where(i => i.Block_Id == id).ToList();
+                    if (blockItems != null)
+                    {
+                        blockItems.ForEach(i =>
+                        {
+                            i.State = Convert.ToByte(EnumState.excluido);
+                            i.UpdateDate = DateTime.Now;
+                            GestaoAvaliacaoContext.Entry(i).State = System.Data.Entity.EntityState.Modified;
+                        });
+                    }
+
+                    block.UpdateDate = DateTime.Now;
+                    GestaoAvaliacaoContext.Entry(block).State = System.Data.Entity.EntityState.Modified;
+                }
+            }
+
         }
 
         #endregion

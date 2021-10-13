@@ -23,11 +23,15 @@ namespace GestaoAvaliacao.IRepository
         IEnumerable<Item> GetBlockItens(Int64 Id, int page, int pageItens);
         IEnumerable<BlockKnowledgeArea> GetBlockKnowledgeAreas(long Id);
         void RemoveBlockItem(Int64 Id, Int64 ItemId);
+        void RemoveBlockItemByBlockId(Int64 blockId);
+        void Delete(long id);
+        void DeleteItems(long id);
         Block Save(Block block);
         void Update(Block block);
         Block SaveKnowLedgeAreaOrder(Block block);
         IEnumerable<Block> GetBookletItems(Int64 BookletId);
         int CountItemTest(long Id);
+        int CountItemTestBIB(long Id);
         IEnumerable<StudentCorrectionAnswerGrid> GetTestQuestions(long Id);
         IEnumerable<BlockItem> GetItemsByTestId(long test_id, Guid UsuId, ref Pager pager);
         Task<IEnumerable<BlockItem>> GetItemsByTestIdAsync(long test_id, Guid UsuId, int page, int pageItens);
