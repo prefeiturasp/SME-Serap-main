@@ -19,8 +19,9 @@ namespace GestaoAvaliacao.Entities
         }
 
 		public string Description { get; set; }
+        public string Password { get; set; }
 
-		public TestType TestType { get; set; }
+        public TestType TestType { get; set; }
 
 		public long TestType_Id { get; set; }
 

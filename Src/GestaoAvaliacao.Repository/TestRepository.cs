@@ -1513,6 +1513,7 @@ namespace GestaoAvaliacao.Repository
 
                 test.Bib = entity.Bib;
                 test.FrequencyApplication = entity.FrequencyApplication;
+                test.Password = entity.Password;
 
                 if (entity.Discipline != null)
                     test.Discipline = GestaoAvaliacaoContext.Discipline.FirstOrDefault(s => s.Id == entity.Discipline.Id);
