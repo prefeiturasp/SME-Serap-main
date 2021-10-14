@@ -47,6 +47,7 @@
             arr.push(self.wizards[1]);
             if (ng.temBIB === null) return;
             arr.push(self.wizards[2]);
+            ng.ultimo = 3;
             //if (!ng.temBIB) {
             //    ng.ultimo = 3;
             //    arr.push(self.wizards[3]);
@@ -3985,7 +3986,7 @@
 
 
             if (ng.navigation === 2) {
-                if (ng.e2_ItensAtuais + ng.e2_blockAtual.QtdeKnowledgeArea > 100) {
+                if (!ng.temBIB && (ng.e2_ItensAtuais + ng.e2_blockAtual.QtdeKnowledgeArea > 100)) {
                     return $notification.alert('A quantidade total não pode ser maior que 100 (itens + áreas de conhecimento distintas).');
                 }
                 else if (ng.temBIB) {
@@ -3995,8 +3996,11 @@
                             itemsCadernos += cad.ItensCount;
                         });
                     }
+
                     if (itemsCadernos === (parseInt(ng.e1_itensBlocos) * parseInt(ng.e1_qtdBlocos))) {
                         initEtapa4();
+                    } else {
+                        return $notification.alert('A quantidade total de itens ainda não foi atingida.');
                     }
                 }
                 else if (ng.e2_ItensAtuais === ng.itensTotais)

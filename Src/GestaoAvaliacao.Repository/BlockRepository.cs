@@ -329,9 +329,12 @@ namespace GestaoAvaliacao.Repository
                             "AND B.State = @state AND BI.State = @state AND " +
                             "I.State = @state group by BI.block_id order by 1 desc";
 
-                var count = (int)cn.ExecuteScalar(sql, new { id = Id, state = (Byte)EnumState.ativo });
+                var resposta = cn.ExecuteScalar(sql, new { id = Id, state = (Byte)EnumState.ativo });
 
-                return count;
+                if (resposta == null)
+                    return 0;
+
+                return (int)resposta;
             }
         }
 
