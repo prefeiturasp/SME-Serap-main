@@ -1,0 +1,152 @@
+IASMIN CARLA DA SILVA - 6026482
+
+db.StudentCorrection.update(
+	{ "Test_Id": 701, "alu_id": 1156916 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 754, "alu_id": 1156916 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 798, "alu_id": 1156916 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 861, "alu_id": 1156916 },
+	{ $set: { "provaFinalizada" : false } }
+);
+------------------------------------------------------------
+Maria Eduarda Simon - 4679487
+
+db.StudentCorrection.update(
+	{ "Test_Id": 757, "alu_id": 687484 },
+	{ $set: { "provaFinalizada" : false } }
+);
+------------------------------------------------------------
+Murilo Guedes Martins - 5292249
+
+db.StudentCorrection.update(
+	{ "Test_Id": 875, "alu_id": 1589391 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 796, "alu_id": 1589391 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 857, "alu_id": 1589391 },
+	{ $set: { "provaFinalizada" : false } }
+);
+------------------------------------------------------------
+SHANDLER VINICIUS LIPPI IMPÉRIO - 6577782
+
+db.StudentCorrection.update(
+	{ "Test_Id": 695, "alu_id": 1337804 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 813, "alu_id": 1337804 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 797, "alu_id": 1337804 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 860, "alu_id": 1337804 },
+	{ $set: { "provaFinalizada" : false } }
+);
+------------------------------------------------------------
+LUCAS DA SILVA - 5180486
+
+db.StudentCorrection.update(
+	{ "Test_Id": 701, "alu_id": 1271941 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 754, "alu_id": 1271941 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 798, "alu_id": 1271941 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 861, "alu_id": 1271941 },
+	{ $set: { "provaFinalizada" : false } }
+);
+------------------------------------------------------------
+Gabriel Barbosa dos Santos - 4997014
+
+db.StudentCorrection.update(
+	{ "Test_Id": 861, "alu_id": 958722 },
+	{ $set: { "provaFinalizada" : false } }
+);
+------------------------------------------------------------
+Gabriel Lima Moreira Duarte - 4997014
+
+db.StudentCorrection.update(
+	{ "Test_Id": 861, "alu_id": 958722 },
+	{ $set: { "provaFinalizada" : false } }
+);
+------------------------------------------------------------
+Maria Eduarda Brayner do Nascimento - 5023020
+
+db.StudentCorrection.update(
+	{ "Test_Id": 703, "alu_id": 1150212 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 757, "alu_id": 1150212 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 800, "alu_id": 1150212 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 863, "alu_id": 1150212 },
+	{ $set: { "provaFinalizada" : false } }
+);
+------------------------------------------------------------
+Angelina Souza da Silva - 4702105
+
+db.StudentCorrection.update(
+	{ "Test_Id": 701, "alu_id": 1189758 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 754, "alu_id": 1189758 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 798, "alu_id": 1189758 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 861, "alu_id": 1189758 },
+	{ $set: { "provaFinalizada" : false } }
+);
+------------------------------------------------------------
+Luiz Henrique de Souza Sales - 4033602
+
+db.StudentCorrection.update(
+	{ "Test_Id": 703, "alu_id": 1013930 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 757, "alu_id": 1013930 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 800, "alu_id": 1013930 },
+	{ $set: { "provaFinalizada" : false } }
+);
+db.StudentCorrection.update(
+	{ "Test_Id": 863, "alu_id": 1013930 },
+	{ $set: { "provaFinalizada" : false } }
+);
+
+
+

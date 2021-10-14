@@ -1481,6 +1481,7 @@ namespace GestaoAvaliacao.Repository
                 test.Multidiscipline = entity.Multidiscipline;
                 test.KnowledgeAreaBlock = entity.KnowledgeAreaBlock;
                 test.ElectronicTest = entity.ElectronicTest;
+                test.ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes;
                 test.ShowVideoFiles = entity.ShowVideoFiles;
                 test.ShowAudioFiles = entity.ShowAudioFiles;
 
