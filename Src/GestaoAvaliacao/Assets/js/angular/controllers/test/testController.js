@@ -168,6 +168,7 @@
                 showJustificate: 'Exibir justificativa',
                 showAudioFiles: 'Exibir conteúdo de áudio',
                 showOnSerapEstudantes: 'Exibir no Serap Estudantes',
+                tempoDeProva: 'Tempo de Prova',
                 temBIB: 'Prova com BIB'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
@@ -812,7 +813,11 @@
         };
 
         ng.validarItensBlocos = function (value) {
-            self.etapa1.alterou = true;
+            
+                self.etapa1.alterou = true;
+            //} else {
+            //    $notification.alert("A quantidade de itens deve ser maior que 0.");
+            //}
         };
 
         ng.validarBlocos = function (value) {
@@ -963,7 +968,7 @@
             }
 
             if (!ng.e1_tempoDeProva) {
-                $notification.alert("O campo '" + ng.labels.e1_tempoDeProva + "' é obrigatório.");
+                $notification.alert("O campo '" + ng.labels.tempoDeProva + "' é obrigatório.");
                 return false;
             }
 
@@ -1302,14 +1307,14 @@
             if (validarData() === false)
                 return false;
 
+            if (ng.temBIB && parseInt(ng.e1_itensBlocos) < 1) {
+                $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" não pode ser menor ou igual a 0.');
+                return false;
+            }
+
             if (ng.e1_cbTipoProva.Block) {
                 if (ng.temBIB && (ng.e1_cbTipoProva.BlockItem > ng.e1_itensBlocos)) {
                     $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" é menor que o total de itens já selecionados ( ' + ng.e1_cbTipoProva.BlockItem + ' ).');
-                    return false;
-                }
-
-                if (ng.temBIB && ng.e1_itensBlocos < 1) {
-                    $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" não pode ser menor ou igual a 0.');
                     return false;
                 }
 
@@ -3982,6 +3987,17 @@
             if (ng.navigation === 2) {
                 if (ng.e2_ItensAtuais + ng.e2_blockAtual.QtdeKnowledgeArea > 100) {
                     return $notification.alert('A quantidade total não pode ser maior que 100 (itens + áreas de conhecimento distintas).');
+                }
+                else if (ng.temBIB) {
+                    let itemsCadernos = 0;
+                    if (ng.cadernos.length) {
+                        ng.cadernos.forEach(cad => {
+                            itemsCadernos += cad.ItensCount;
+                        });
+                    }
+                    if (itemsCadernos === (parseInt(ng.e1_itensBlocos) * parseInt(ng.e1_qtdBlocos))) {
+                        initEtapa4();
+                    }
                 }
                 else if (ng.e2_ItensAtuais === ng.itensTotais)
                     initEtapa4();
