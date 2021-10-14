@@ -1304,7 +1304,12 @@
 
             if (ng.e1_cbTipoProva.Block) {
                 if (ng.temBIB && (ng.e1_cbTipoProva.BlockItem > ng.e1_itensBlocos)) {
-                    $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é menor que o total de itens já selecionados ( ' + ng.e1_cbTipoProva.BlockItem + ' ).');
+                    $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" é menor que o total de itens já selecionados ( ' + ng.e1_cbTipoProva.BlockItem + ' ).');
+                    return false;
+                }
+
+                if (ng.temBIB && ng.e1_itensBlocos < 1) {
+                    $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" não pode ser menor ou igual a 0.');
                     return false;
                 }
 
