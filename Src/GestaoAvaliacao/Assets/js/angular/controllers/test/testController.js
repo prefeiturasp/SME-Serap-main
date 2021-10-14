@@ -221,6 +221,8 @@
             ng.e1_cbTipoProva = null;
             //Descrição da prova
             ng.e1_testDescription = null;
+            //Senha da prova
+            ng.e1_testPassword = null;
             //Descrição da prova
             ng.e1_NivelEnsino = null;
             //Padrao para preload
@@ -401,6 +403,11 @@
 
             ng.e1_testDescription = ng.e1_testDescription.replace(/[¨´`~!@#$%^&*()|+\=?;:'",.<>\{\}\[\]\\\/]/gi, '');
         };
+
+        ng.validarPassword = validarPassword;
+        function validarPassword() {
+            ng.alterouEtapaAtual = self.etapa1.alterou = true;
+        }
 
         /**
         * @function Carrega dados de componente curricular
@@ -1063,6 +1070,7 @@
             var model = {
                 "Id": ng.provaId,
                 "Description": ng.e1_testDescription,
+                "Password": ng.e1_testPassword,                
                 "TestType": ng.e1_cbTipoProva,
                 "Discipline": ng.e1_cbComponenteCurricular,
                 "Bib": ng.temBIB && ng.e1_cbBIB.Value,
@@ -1294,13 +1302,18 @@
             if (validarData() === false)
                 return false;
 
-            /*if (ng.e1_cbTipoProva.Block) {*/
-                if (ng.e1_cbTipoProva.BlockItem > ng.e1_itensBlocos) {
+            if (ng.e1_cbTipoProva.Block) {
+                if (ng.temBIB && (ng.e1_cbTipoProva.BlockItem > ng.e1_itensBlocos)) {
                     $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é menor que o total de itens já selecionados ( ' + ng.e1_cbTipoProva.BlockItem + ' ).');
                     return false;
                 }
 
-            /*}*/
+                if (!ng.temBIB && (ng.e1_cbTipoProva.BlockItem > ng.itensTotais)) {
+                    $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é menor que o total de itens já selecionados ( ' + ng.e1_cbTipoProva.BlockItem + ' ).');
+                    return false;
+                }
+
+            }
 
 
             if (!ng.temBIB && (ng.e1_radios == 3 || !ng.itensTotais)) {
@@ -1412,6 +1425,7 @@
                     ng.e1_itensBlocos = r.NumberItemsBlock;
                     ng.e1_qtdBlocos = r.NumberBlock;
                     ng.e1_testDescription = r.Description;
+                    ng.e1_testPassword = r.Password;
                     ng.e1_cbComponenteCurricular = procurarElementoEm([r.Discipline], ng.e1_listaComponenteCurricular)[0];
                     ng.isMultidiscipline = r.Multidiscipline;
                     ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock;
