@@ -153,7 +153,7 @@
 
                                 @* Tempo de prova *@
                                 <div class="campoLabel col-md-12">
-                                    <label for="tempoDeProva">Tempo de prova*: </label>
+                                    <label for="tempoDeProva">{{labels.tempoDeProva}}*: </label>
                                     <div>
                                         <select id="groupSubgroup" class="form-control" title="{{ e1_tempoDeProva.Description }}"
                                                 ng-change="e1_TempoDeProvaMudou();"
@@ -168,7 +168,7 @@
                                 </div>
                                 @* Descrição da prova *@
                                 <div class="campoLabel">
-                                    <label> Senha:</label>
+                                    <label> Código de Liberação:</label>
                                     <div>
                                         <input type="text"
                                                ng-model="e1_testPassword"
@@ -199,7 +199,7 @@
                                          ng-class="{'off': !showOnSerapEstudantes}" style="position: absolute; margin: 4px 260px;"><input type="button" /></div>
                                 </div>
 
-                                <div class="campoLabel">
+                                <div class="campoLabel" ng-show="showFlagBIB">
                                     @* Header *@
                                     <label class="label-pos-inline" style="max-width:180px;">  {{labels.temBIB}}: </label>
                                     <div class="switch" ng-click="selectTemBIB();"
@@ -454,7 +454,7 @@
                                     <label> {{labels.quantidadeBlocos}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_qtdBlocos');validarBlocos('value')"
-                                           ng-disabled="temBIB&&!e1_cbBIB.Value"
+                                           @*ng-disabled="temBIB&&!e1_cbBIB.Value"*@
                                            ng-model="e1_qtdBlocos"
                                            class="col-md-5 form-control2"
                                            maxlength="3"
@@ -466,7 +466,7 @@
                                     <label> {{labels.e1_itensBlocos}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_itensBlocos');validarItensBlocos('value')"
-                                           ng-disabled="temBIB&&!e1_cbBIB.Value"
+                                           @*ng-disabled="temBIB&&!e1_cbBIB.Value"*@
                                            ng-model="e1_itensBlocos"
                                            class="col-md-5 form-control2"
                                            maxlength="3"
@@ -737,256 +737,257 @@
                     </h4>
                 </div>
                 @* MODAL ADIÇÃO DE ITENS *@
-                <div class="modal-body" ng-show="e2_Navegacao==1 && escondeModal">
-                    @* Código do Item *@
-                    <div class="campoLabel hr">
-                        <label><strong>Código do item:</strong></label>
+            <div class="modal-body" ng-show="e2_Navegacao==1 && escondeModal">
+                @* Código do Item *@
+                <div class="campoLabel hr">
+                    <label><strong>Código do item:</strong></label>
+                    <div>
+                        <input type="text"
+                               class="form-control numbers"
+                               style="width: 180px; float: left;"
+                               size="5"
+                               maxlength="20"
+                               placeholder="Digite aqui o código do item"
+                               ng-model="e2_codigoItem" />
+                        <button class="btn-pesquisar" ng-click="e2_pesquisarFiltros()" title="Pesquisar"><i class="material-icons">search</i></button>
+                    </div>
+                </div>
+                <div class="campoCodigo hr">
+
+                    @* Filtros *@
+                    <div class="campoLabel" ng-if="!isMultidiscipline">
+                        <label><strong>{{labels.componente}}: </strong></label>
+                        <label>{{e1_cbComponenteCurricular.Description}} </label>
+                    </div>
+
+                    @* Componente Curricuar *@
+                    <div class="campoLabel" ng-show="isMultidiscipline">
+                        <label><strong> {{labels.componente}} </strong></label>
                         <div>
-                            <input type="text"
-                                   class="form-control numbers"
-                                   style="width: 180px; float: left;"
-                                   size="5"
-                                   maxlength="20"
-                                   placeholder="Digite aqui o código do item"
-                                   ng-model="e2_codigoItem" />
-                            <button class="btn-pesquisar" ng-click="e2_pesquisarFiltros()" title="Pesquisar"><i class="material-icons">search</i></button>
+                            <select id="testType" class="form-control"
+                                    ng-change="filtrosCarregar();"
+                                    ng-model="e1_cbComponenteCurricular"
+                                    ng-options="componenteCurricular as componenteCurricular.Description for componenteCurricular in e1_listaComponenteCurricular"
+                                    ng-title="e1_listaComponenteCurricular"
+                                    ng-title-propertie="Description"
+                                    ng-title-selected
+                                    ng-title-index="1">
+                                <option value="">--Selecione--</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="campoCodigo hr">
-
-                        @* Filtros *@
-                        <div class="campoLabel" ng-if="!isMultidiscipline">
-                            <label><strong>{{labels.componente}}: </strong></label>
-                            <label>{{e1_cbComponenteCurricular.Description}} </label>
-                        </div>
-
-                        @* Componente Curricuar *@
-                        <div class="campoLabel" ng-show="isMultidiscipline">
-                            <label><strong> {{labels.componente}} </strong></label>
-                            <div>
-                                <select id="testType" class="form-control"
-                                        ng-change="filtrosCarregar();"
-                                        ng-model="e1_cbComponenteCurricular"
-                                        ng-options="componenteCurricular as componenteCurricular.Description for componenteCurricular in e1_listaComponenteCurricular"
-                                        ng-title="e1_listaComponenteCurricular"
-                                        ng-title-propertie="Description"
-                                        ng-title-selected
-                                        ng-title-index="1">
-                                    <option value="">--Selecione--</option>
-                                </select>
-                            </div>
-                        </div>
 
 
-                        <div class="campoLabel" ng-repeat="(cbIndex, cb)  in e2_ListaComboBox">
-                            @* Lista de ComboBox's *@
-                            <label><strong>{{cb.Description}}</strong></label>
-                            <div>
-                                <select id="testType" class="form-control"
-                                        ng-change="filtrosMudou(cb);"
-                                        ng-model="e2_ListaComboBox[$index].model"
-                                        ng-options="combos as combos.Description for combos in e2_ListaComboBox[$index].lista"
-                                        ng-disabled="!e2_ListaComboBox[$index].lista||(e2_ListaComboBox[$index].lista&&!e2_ListaComboBox[$index].lista.length)"
-                                        ng-title="e2_ListaComboBox[$index].lista"
-                                        ng-title-propertie="Description"
-                                        ng-title-index="1"
-                                        ng-title-selected>
-                                    <option value="">--Selecione--</option>
-                                </select>
-                            </div>
+                    <div class="campoLabel" ng-repeat="(cbIndex, cb)  in e2_ListaComboBox">
+                        @* Lista de ComboBox's *@
+                        <label><strong>{{cb.Description}}</strong></label>
+                        <div>
+                            <select id="testType" class="form-control"
+                                    ng-change="filtrosMudou(cb);"
+                                    ng-model="e2_ListaComboBox[$index].model"
+                                    ng-options="combos as combos.Description for combos in e2_ListaComboBox[$index].lista"
+                                    ng-disabled="!e2_ListaComboBox[$index].lista||(e2_ListaComboBox[$index].lista&&!e2_ListaComboBox[$index].lista.length)"
+                                    ng-title="e2_ListaComboBox[$index].lista"
+                                    ng-title-propertie="Description"
+                                    ng-title-index="1"
+                                    ng-title-selected>
+                                <option value="">--Selecione--</option>
+                            </select>
                         </div>
-                        <div class="campoCodigo">
-                            @* Proficiência *@
-                            <div class="campoLabel">
-                                <label><b>Proficiência</b></label>
-                                <label style="max-width: 40px;"><b>De:</b></label>
-                                <input style="max-width: 70px;" class="form-control numbers"
-                                       type="text"
-                                       placeholder="100"
-                                       ng-model="e2_Proficiencia.Inicio"
-                                       ng-change="validarTotalItens(e2_Proficiencia,'Inicio');"
-                                       maxlength="3"
-                                       size="3" />
-                                <label style="max-width: 40px;"><b>até:</b></label>
-                                <input style="max-width: 70px;" class="form-control numbers"
-                                       type="text"
-                                       placeholder="500"
-                                       ng-model="e2_Proficiencia.Final"
-                                       ng-change="validarTotalItens(e2_Proficiencia,'Final');"
-                                       maxlength="3"
-                                       size="3" />
-                            </div>
-                        </div>
+                    </div>
+                    <div class="campoCodigo">
+                        @* Proficiência *@
                         <div class="campoLabel">
-                            @* Modalidade *@
-                            <label class="" for="modality"><b>Modalidade</b></label>
-                            <div>
-                                <select id="modality" class="form-control"
-                                        ng-change="carregaPeriodos();"
-                                        ng-model="e2_Modalidade"
-                                        ng-options="modality as modality.Description for modality in e2_ListaModalidade"
-                                        ng-title="e2_ListaModalidade"
-                                        ng-title-propertie="Description"
-                                        ng-title-index="1"
-                                        ng-title-selected>
-                                    <option value="">--Selecione--</option>
-                                </select>
-                            </div>
+                            <label><b>Proficiência</b></label>
+                            <label style="max-width: 40px;"><b>De:</b></label>
+                            <input style="max-width: 70px;" class="form-control numbers"
+                                   type="text"
+                                   placeholder="100"
+                                   ng-model="e2_Proficiencia.Inicio"
+                                   ng-change="validarTotalItens(e2_Proficiencia,'Inicio');"
+                                   maxlength="3"
+                                   size="3" />
+                            <label style="max-width: 40px;"><b>até:</b></label>
+                            <input style="max-width: 70px;" class="form-control numbers"
+                                   type="text"
+                                   placeholder="500"
+                                   ng-model="e2_Proficiencia.Final"
+                                   ng-change="validarTotalItens(e2_Proficiencia,'Final');"
+                                   maxlength="3"
+                                   size="3" />
                         </div>
-                        <div ng-show="e2_Modalidade.Id > 0 && e2_ListaPeriodo.length > 0">
-                            <div class="campoLabel">
-                                @* Períodos *@
-                                <label><b>Periodos</b> {{labels.periodos}}</label>
-                                <div class="checkbox-colunas">
-                                    <div class="checkbox checkbox-primary lista-item" ng-repeat="periodo in e2_ListaPeriodo">
-                                        <input id="p{{periodo.Description}}" class="col-xs-1" type="checkbox" ng-model="e2_ListaPeriodoChecked[$index]" value="" />
-                                        <label for="p{{periodo.Description}}" class="col-xs-8 lista-item margin-left">{{ periodo.Description }}</label>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="campoLabel">
+                        @* Modalidade *@
+                        <label class="" for="modality"><b>Modalidade</b></label>
+                        <div>
+                            <select id="modality" class="form-control"
+                                    ng-change="carregaPeriodos();"
+                                    ng-model="e2_Modalidade"
+                                    ng-options="modality as modality.Description for modality in e2_ListaModalidade"
+                                    ng-title="e2_ListaModalidade"
+                                    ng-title-propertie="Description"
+                                    ng-title-index="1"
+                                    ng-title-selected>
+                                <option value="">--Selecione--</option>
+                            </select>
                         </div>
+                    </div>
+                    <div ng-show="e2_Modalidade.Id > 0 && e2_ListaPeriodo.length > 0">
                         <div class="campoLabel">
-                            @* Tipo do item *@
-                            <label><b>Tipo do item</b></label>
-                            @*<label ng-if="TestTypeItemType != null" style="max-width: 100%;">{{ItemType.Description}}</label>*@
-                            <div>
-                                <select id="modality" class="form-control"
-                                        ng-model="ItemType"
-                                        ng-options="itemType as itemType.Description for itemType in ItemTypeList"
-                                        ng-title="ItemTypeList"
-                                        ng-title-propertie="Description"
-                                        ng-title-index="1"
-                                        ng-title-selected>
-                                    <option value="">--Selecione--</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="campoLabel">
-                            @* KeyWord *@
-                            <!-- pesquisar por palavras-chave -->
-                            <label><b>{{labels.keywords}}</b></label>
-                            <tags-input ng-model="keyWords"></tags-input>
-                        </div>
-                        <div class="campoLabel">
-                            @* Dificuldade *@
-                            <label>Dificuldade</label>
+                            @* Períodos *@
+                            <label><b>Periodos</b> {{labels.periodos}}</label>
                             <div class="checkbox-colunas">
-                                <div class="checkbox checkbox-primary lista-item" ng-repeat="dificuldade in e2_ListaDificuldade">
-                                    <input id="d{{dificuldade.Description}}" type="checkbox" ng-model="e2_ListaDificuldadeChecked[$index]" />
-                                    <label for="d{{dificuldade.Description}}" lista-item margin-left" ">{{ dificuldade.Description }}</label>
+                                <div class="checkbox checkbox-primary lista-item" ng-repeat="periodo in e2_ListaPeriodo">
+                                    <input id="p{{periodo.Description}}" class="col-xs-1" type="checkbox" ng-model="e2_ListaPeriodoChecked[$index]" value="" />
+                                    <label for="p{{periodo.Description}}" class="col-xs-8 lista-item margin-left">{{ periodo.Description }}</label>
                                 </div>
                             </div>
                         </div>
-                        <div class="campoCodigo" style="text-align: right;">
-                            @* BOTÃO PESQUISAR *@
-                            <button type="button" class="btnCancelar2" style="margin: 0 20px 20px;" ng-click="e2_pesquisarFiltros()"><i class="material-icons">search</i> Pesquisar</button>
+                    </div>
+                    <div class="campoLabel">
+                        @* Tipo do item *@
+                        <label><b>Tipo do item</b></label>
+                        @*<label ng-if="TestTypeItemType != null" style="max-width: 100%;">{{ItemType.Description}}</label>*@
+                        <div>
+                            <select id="modality" class="form-control"
+                                    ng-model="ItemType"
+                                    ng-options="itemType as itemType.Description for itemType in ItemTypeList"
+                                    ng-title="ItemTypeList"
+                                    ng-title-propertie="Description"
+                                    ng-title-index="1"
+                                    ng-title-selected>
+                                <option value="">--Selecione--</option>
+                            </select>
                         </div>
                     </div>
-                    <!-- <h6 class="row centralizar"><strong>ATENÇÃO: Sugerimos que salve antes de mudar de página.</strong> </h6> -->
-                    <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{ itensTotais }} </strong></h5>
-                    @* Resultado das busca *@
-                    <div class="campoCodigo hr">
-                        <div class="campoLabel">
-                            @* Tabela das busca *@
-                            <table class="table table-hover" ng-hide="!e2_ResultadoBusca || !e2_ResultadoBusca.length">
-                                <colgroup>
-                                    <col width="5%" />
-                                    <col width="5%" />
-                                    <col width="5%" />
-                                    <col width="25%" />
-                                    <col width="25%" />
-                                    <col width="10%" />
-                                    <col width="10%" />
-                                    <col width="10%" />
-                                    <col width="5%" />
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th class="table-parameter-centralize"> Selecionar  </th>
-                                        <th class="table-parameter-centralize"> Cód.      </th>
-                                        <th class="table-parameter-centralize"> Versão      </th>
-                                        <th class="table-parameter-centralize"> Enunciado   </th>
-                                        <th class="table-parameter-centralize"> Texto Base  </th>
-                                        <th class="table-parameter-centralize"> Habilidade  </th>
-                                        <th class="table-parameter-centralize"> Dificuldade </th>
-                                        <th class="table-parameter-centralize"> {{(curriculumGradeLabel | capitalize)}} </th>
-                                        <th class="table-parameter-centralize"> Visualizar  </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="($indexResultadoBusca, itens) in e2_ResultadoBusca track by $indexResultadoBusca" ng-class="{'revoked': itens.Revoked}">
-                                        @* CKECK *@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
-                                            <div class="checkbox checkbox-primary check-parameter">
-                                                <div class="blockCheckClick" style="margin: 0 -9px;"></div>
-                                                <input id="i_ch_{{itens.Code}}" type="checkbox" ng-model="itens.check">
-                                                <label for="i_ch_{{itens.Code}}" class="gerar-prova label-top">
-                                                    <div style="margin-top: -3px; position:absolute;" ng-if="itens.Revoked">
-                                                        <i class="material-icons" ng-if="!item.ItemLastVersion" data-trigger="hover" data-type="success" data-title="Item anulado" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>error</i>
-                                                    </div>
-                                                </label>
+                    <div class="campoLabel">
+                        @* KeyWord *@
+                        <!-- pesquisar por palavras-chave -->
+                        <label><b>{{labels.keywords}}</b></label>
+                        <tags-input ng-model="keyWords"></tags-input>
+                    </div>
+                    <div class="campoLabel">
+                        @* Dificuldade *@
+                        <label>Dificuldade</label>
+                        <div class="checkbox-colunas">
+                            <div class="checkbox checkbox-primary lista-item" ng-repeat="dificuldade in e2_ListaDificuldade">
+                                <input id="d{{dificuldade.Description}}" type="checkbox" ng-model="e2_ListaDificuldadeChecked[$index]" />
+                                <label for="d{{dificuldade.Description}}" lista-item margin-left" ">{{ dificuldade.Description }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="campoCodigo" style="text-align: right;">
+                        @* BOTÃO PESQUISAR *@
+                        <button type="button" class="btnCancelar2" style="margin: 0 20px 20px;" ng-click="e2_pesquisarFiltros()"><i class="material-icons">search</i> Pesquisar</button>
+                    </div>
+                </div>
+                <!-- <h6 class="row centralizar"><strong>ATENÇÃO: Sugerimos que salve antes de mudar de página.</strong> </h6> -->
+                <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && !temBIB"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{ itensTotais }} </strong></h5>
+                <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && temBIB"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{e1_itensBlocos}} </strong></h5>
+                @* Resultado das busca *@
+                <div class="campoCodigo hr">
+                    <div class="campoLabel">
+                        @* Tabela das busca *@
+                        <table class="table table-hover" ng-hide="!e2_ResultadoBusca || !e2_ResultadoBusca.length">
+                            <colgroup>
+                                <col width="5%" />
+                                <col width="5%" />
+                                <col width="5%" />
+                                <col width="25%" />
+                                <col width="25%" />
+                                <col width="10%" />
+                                <col width="10%" />
+                                <col width="10%" />
+                                <col width="5%" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class="table-parameter-centralize"> Selecionar  </th>
+                                    <th class="table-parameter-centralize"> Cód.      </th>
+                                    <th class="table-parameter-centralize"> Versão      </th>
+                                    <th class="table-parameter-centralize"> Enunciado   </th>
+                                    <th class="table-parameter-centralize"> Texto Base  </th>
+                                    <th class="table-parameter-centralize"> Habilidade  </th>
+                                    <th class="table-parameter-centralize"> Dificuldade </th>
+                                    <th class="table-parameter-centralize"> {{(curriculumGradeLabel | capitalize)}} </th>
+                                    <th class="table-parameter-centralize"> Visualizar  </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="($indexResultadoBusca, itens) in e2_ResultadoBusca track by $indexResultadoBusca" ng-class="{'revoked': itens.Revoked}">
+                                    @* CKECK *@
+                                    <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
+                                        <div class="checkbox checkbox-primary check-parameter">
+                                            <div class="blockCheckClick" style="margin: 0 -9px;"></div>
+                                            <input id="i_ch_{{itens.Code}}" type="checkbox" ng-model="itens.check">
+                                            <label for="i_ch_{{itens.Code}}" class="gerar-prova label-top">
+                                                <div style="margin-top: -3px; position:absolute;" ng-if="itens.Revoked">
+                                                    <i class="material-icons" ng-if="!item.ItemLastVersion" data-trigger="hover" data-type="success" data-title="Item anulado" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>error</i>
+                                                </div>
+                                            </label>
 
-                                            </div>
+                                        </div>
 
-                                        </th>
-                                        @*Código do Item*@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.Code}}</div></th>
-                                        @* Versão *@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.ItemVersion}}</div></th>
-                                        @* Enunciado *@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
-                                            <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.Statement}}"
-                                               data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
-                                                {{(itens.Statement | tagToString) | minimize: 22}}
-                                            </a>
-                                        </th>
-                                        @* Texto Base *@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
-                                            <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.BaseTextDescription}}"
-                                               data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
-                                                {{(itens.BaseTextDescription | tagToString:true) | minimize: 22}}
-                                            </a>
-                                        </th>
-                                        @* Habilidade *@
-                                        <th class="table-parameter-centralize">
-                                            <div ng-click="e2_CheckedItem(itens)">
-                                                <span ng-repeat="s in itens.Skills" data-trigger="hover" data-type="success" data-title="{{s.Description}}"
-                                                      data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
-                                                    {{ s.Code }}
+                                    </th>
+                                    @*Código do Item*@
+                                    <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.Code}}</div></th>
+                                    @* Versão *@
+                                    <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.ItemVersion}}</div></th>
+                                    @* Enunciado *@
+                                    <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
+                                        <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.Statement}}"
+                                           data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                            {{(itens.Statement | tagToString) | minimize: 22}}
+                                        </a>
+                                    </th>
+                                    @* Texto Base *@
+                                    <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
+                                        <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.BaseTextDescription}}"
+                                           data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                            {{(itens.BaseTextDescription | tagToString:true) | minimize: 22}}
+                                        </a>
+                                    </th>
+                                    @* Habilidade *@
+                                    <th class="table-parameter-centralize">
+                                        <div ng-click="e2_CheckedItem(itens)">
+                                            <span ng-repeat="s in itens.Skills" data-trigger="hover" data-type="success" data-title="{{s.Description}}"
+                                                  data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
+                                                {{ s.Code }}
+                                            </span>
+                                        </div>
+                                    </th>
+                                    @* Dificuldade *@
+                                    <th class="table-parameter-centralize">
+                                        <div data-ng-click="e2_CheckedItem(itens)">
+                                            <div ng-show="itens.ItemLevel.Value" data-trigger="hover" data-type="success"
+                                                 data-title="{{itens.ItemLevel.Value}}"
+                                                 data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
+                                                <span type="button" class="btn btn-sm btn-primary btn-tiny" disabled>
+                                                    {{itens.ItemLevel.Value}}
                                                 </span>
                                             </div>
-                                        </th>
-                                        @* Dificuldade *@
-                                        <th class="table-parameter-centralize">
-                                            <div data-ng-click="e2_CheckedItem(itens)">
-                                                <div ng-show="itens.ItemLevel.Value" data-trigger="hover" data-type="success"
-                                                     data-title="{{itens.ItemLevel.Value}}"
-                                                     data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
-                                                    <span type="button" class="btn btn-sm btn-primary btn-tiny" disabled>
-                                                        {{itens.ItemLevel.Value}}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </th>
-                                        @* Periodo *@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.Periodo}}</div></th>
-                                        @* Botões *@
-                                        <th class="table-parameter-centralize">
-                                            <div>
-                                                <a ng-click="e2_itemVisualizar(itens);"><i type="button" class="material-icons">visibility</i></a>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <!--Paginação-->
-                            <div style="padding: 0 30px;">
-                                <page method="e2_resultadoFiltrosCarregar()" total-pages="{{e2_Pagina}}" total-itens="{{e2_TotalPaginas}}" page-size="e2_PageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
-                                <p class="nresultados" ng-hide="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0">Nenhum resultado encontrado.</p>
-                            </div>
+                                        </div>
+                                    </th>
+                                    @* Periodo *@
+                                    <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.Periodo}}</div></th>
+                                    @* Botões *@
+                                    <th class="table-parameter-centralize">
+                                        <div>
+                                            <a ng-click="e2_itemVisualizar(itens);"><i type="button" class="material-icons">visibility</i></a>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!--Paginação-->
+                        <div style="padding: 0 30px;">
+                            <page method="e2_resultadoFiltrosCarregar()" total-pages="{{e2_Pagina}}" total-itens="{{e2_TotalPaginas}}" page-size="e2_PageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                            <p class="nresultados" ng-hide="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0">Nenhum resultado encontrado.</p>
                         </div>
                     </div>
                 </div>
+            </div>
 
 
                 @*MODAL DETALHES DO ITEM*@

@@ -47,6 +47,7 @@
             arr.push(self.wizards[1]);
             if (ng.temBIB === null) return;
             arr.push(self.wizards[2]);
+            ng.ultimo = 3;
             //if (!ng.temBIB) {
             //    ng.ultimo = 3;
             //    arr.push(self.wizards[3]);
@@ -168,6 +169,7 @@
                 showJustificate: 'Exibir justificativa',
                 showAudioFiles: 'Exibir conteúdo de áudio',
                 showOnSerapEstudantes: 'Exibir no Serap Estudantes',
+                tempoDeProva: 'Tempo de Prova',
                 temBIB: 'Prova com BIB'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
@@ -182,6 +184,7 @@
             ng.alterouEtapaAtual = false;
             ng.mostrarTela = false;
             ng.temBIB = false;
+            ng.showFlagBIB = false;
             ng.modalAnterior = null;
             ng.provaPDF = null;
             ng.selecItensProxCaderno = false;
@@ -309,9 +312,9 @@
                 carregaGrupoSubgrupo();
                 if (r.success) {
                     //Detecta se prova selecionada permite BIB
-                    ng.temBIB = angular.copy(r.Bib);
+                    ng.showFlagBIB = angular.copy(r.Bib);
                     //Configura breadcomb da prova
-                    configuraWizard(ng.temBIB);
+                    configuraWizard(ng.showFlagBIB);
                     r = r.lista;
                     ng.e1_listaTipoProva = angular.copy(r.testTypeList);
                     ng.e1_tipoNivelEnsino = angular.copy(r.TypeLevelEducation);
@@ -344,7 +347,14 @@
         function tipoProvaMudou() {
             if (!ng.e1_cbTipoProva) return;
             if (!ng.editMode) {
-                ng.temBIB = ng.e1_cbTipoProva.Bib;
+                if (ng.e1_cbTipoProva.Bib) {
+                    ng.showFlagBIB = true;
+                    ng.temBIB = false;
+                } else {
+                    ng.showFlagBIB = false;
+                    ng.temBIB = false;
+                }
+                //ng.temBIB = ng.e1_cbTipoProva.Bib;
 
                 configuraWizard(ng.temBIB);
 
@@ -812,7 +822,11 @@
         };
 
         ng.validarItensBlocos = function (value) {
-            self.etapa1.alterou = true;
+            
+                self.etapa1.alterou = true;
+            //} else {
+            //    $notification.alert("A quantidade de itens deve ser maior que 0.");
+            //}
         };
 
         ng.validarBlocos = function (value) {
@@ -963,7 +977,7 @@
             }
 
             if (!ng.e1_tempoDeProva) {
-                $notification.alert("O campo '" + ng.labels.e1_tempoDeProva + "' é obrigatório.");
+                $notification.alert("O campo '" + ng.labels.tempoDeProva + "' é obrigatório.");
                 return false;
             }
 
@@ -1073,9 +1087,9 @@
                 "Password": ng.e1_testPassword,                
                 "TestType": ng.e1_cbTipoProva,
                 "Discipline": ng.e1_cbComponenteCurricular,
-                "Bib": ng.temBIB && ng.e1_cbBIB.Value,
-                "NumberItemsBlock": ng.temBIB && ng.e1_cbBIB.Value ? parseInt(ng.e1_itensBlocos) : 0,
-                "NumberBlock": ng.temBIB && ng.e1_cbBIB.Value ? parseInt(ng.e1_qtdBlocos) : 0,
+                "Bib": ng.temBIB,
+                "NumberItemsBlock": ng.temBIB ? parseInt(ng.e1_itensBlocos) : 0,
+                "NumberBlock": ng.temBIB ? parseInt(ng.e1_qtdBlocos) : 0,
                 "NumberItem": ng.e1_radios == 2 ? ng.itensTotais : 0,
                 "FormatType": ng.e1_radios !== 2 ? ng.e1_formato : null,
                 "ApplicationStartDate": ng.e1_aplicacao.Inicio,
@@ -1302,9 +1316,14 @@
             if (validarData() === false)
                 return false;
 
+            if (ng.temBIB && parseInt(ng.e1_itensBlocos) < 1) {
+                $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" não pode ser menor ou igual a 0.');
+                return false;
+            }
+
             if (ng.e1_cbTipoProva.Block) {
                 if (ng.temBIB && (ng.e1_cbTipoProva.BlockItem > ng.e1_itensBlocos)) {
-                    $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é menor que o total de itens já selecionados ( ' + ng.e1_cbTipoProva.BlockItem + ' ).');
+                    $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" é menor que o total de itens já selecionados ( ' + ng.e1_cbTipoProva.BlockItem + ' ).');
                     return false;
                 }
 
@@ -1415,6 +1434,7 @@
                     r = r.lista;
                     ng.params = r.Id;
                     ng.temBIB = r.Bib;
+                    ng.showFlagBIB = r.Bib;
                     ng.e1_cbTipoProva = procurarElementoEm([r.TestType], ng.e1_listaTipoProva)[0];
                     ng.e1_grupoSubgrupo = procurarElementoEm([r.TestSubGroup], ng.grupoSubgrupoList)[0];
                     ng.e1_tempoDeProva = procurarElementoEm([r.TempoDeProva], ng.tempoDeProvaList)[0];
@@ -3975,8 +3995,22 @@
 
 
             if (ng.navigation === 2) {
-                if (ng.e2_ItensAtuais + ng.e2_blockAtual.QtdeKnowledgeArea > 100) {
+                if (!ng.temBIB && (ng.e2_ItensAtuais + ng.e2_blockAtual.QtdeKnowledgeArea > 100)) {
                     return $notification.alert('A quantidade total não pode ser maior que 100 (itens + áreas de conhecimento distintas).');
+                }
+                else if (ng.temBIB) {
+                    let itemsCadernos = 0;
+                    if (ng.cadernos.length) {
+                        ng.cadernos.forEach(cad => {
+                            itemsCadernos += cad.ItensCount;
+                        });
+                    }
+
+                    if (itemsCadernos === (parseInt(ng.e1_itensBlocos) * parseInt(ng.e1_qtdBlocos))) {
+                        initEtapa4();
+                    } else {
+                        return $notification.alert('A quantidade total de itens ainda não foi atingida.');
+                    }
                 }
                 else if (ng.e2_ItensAtuais === ng.itensTotais)
                     initEtapa4();
