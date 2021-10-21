@@ -196,7 +196,11 @@ namespace GestaoAvaliacao.Services
                         report.AppendFormat("{0}{1}{2}{1}", turma.idDRE, separator, turma.DRE);
                         report.AppendFormat("{0}{1}{2}{1}", turma.esc_id, separator, turma.esc_nome);
                         report.AppendFormat("{0}{1}{2}{1}", turma.tur_id, separator, turma.tur_codigo);
-                        report.AppendFormat("{0}{1}{2}{1}{3}{1}", aluno.alu_id, separator, dadoAluno.alu_matricula, dadoAluno.alu_nome);
+                        report.AppendFormat("{0}{1}{2}{1}{3}{1}", 
+                            aluno.alu_id, 
+                            separator, 
+                            dadoAluno == null ? "SEM_MATRICULA" : dadoAluno.alu_matricula,
+                            dadoAluno == null ? "SEM_NOME" : dadoAluno.alu_nome);
 
                         foreach (var item in items)
                         {
