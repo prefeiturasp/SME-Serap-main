@@ -1,0 +1,83 @@
+﻿@using GestaoAvaliacao.WebProject.Facade
+
+@* Diretiva para alertas padrões do sistema *@
+<alert></alert>
+<div class="wellCustom" ng-controller="StudentResultsGraphicsResultController" ng-init='init()'>
+    <div ng-if="!blockPage">
+        @* Header da Adesão *@
+        <div class="headerCustom">
+            <h4>Resultados Prova Online<span>Percentual de acerto</span></h4>
+        </div>
+        @* Informações *@
+        <div class="resumoAdesao">
+            <div class="maxWidth">
+                <div class="dadosGerais">
+                    <h2>
+                        <strong>{{testInformation.Description}} </strong> {{testInformation.FrequencyApplication}} |  {{testInformation.Discipline}}
+                    </h2>
+                    <div class="dadosResumo">
+                        <div style="max-width: 260px;">
+                            <i class="material-icons">group</i>
+                            <span>{{testInformation.Turma}}</span>
+                        </div>
+                        <div>
+                            <i class="material-icons">school</i>
+                            <p style="max-width: 500px;min-width: 500px;">{{testInformation.SchoolName}}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <button class="btnCancelar2" data-toggle="modal" ng-click="arrivingStudentResponse()">Voltar</button>
+                            <button class="btnCancelar2" data-toggle="modal" ng-click="redirectElectronicTestResult(testInformation)">Visualizar Resultados</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-painel-tabela maxWidth">
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="painel">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <form class="menu-lateral">
+                                <select ng-model="testInformation.Ano" ng-change="loadByTests()"
+                                        ng-options="ano as ano for ano in testInformation.Anos"
+                                        >
+                                </select>
+                                <br />
+                                <select ng-model="testInformation.TestId" 
+                                        ng-options="test.Id as test.Description for test in testInformation.Tests"
+                                        ng-change="loadGraficoDeDesempenho()"
+                                        ng-title-propertie="Description"
+                                        ng-title-index="1">
+                                    <option value="">--Selecione uma prova--</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="col-sm-8">
+                            <canvas id="gfcPerformance" style="max-width: 700px; width:700px; overflow-x: auto; overflow-y: hidden;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cards maxWidth" ng-if="!percentualDeAcerto">
+            <p class="nresultados">Nenhum resultado encontrado.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(window).scroll(function () {
+        var scroll = $(window).scrollTop();
+        var objectSelect = $(".headerAdesao");
+        if (objectSelect.offset() != null) {
+            var objectPosition = objectSelect.offset().top;
+            if (scroll > objectPosition) {
+                $(".fixa").addClass("mudaClasse");
+            } else {
+                $(".fixa").removeClass("mudaClasse");
+            }
+        }
+    });
+</script>

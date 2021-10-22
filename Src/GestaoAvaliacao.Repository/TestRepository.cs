@@ -195,6 +195,7 @@ namespace GestaoAvaliacao.Repository
                         .Include("TestType")
                         .Include("FormatType")
                         .Include("TestSubGroup")
+                        .Include("TestTime")
                         .FirstOrDefault(i => i.Id == Id && i.State == (Byte)EnumState.ativo);
 
                     return query;
@@ -1073,22 +1074,168 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public async Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id)
-        {
-            var sql = new StringBuilder(@"
-                SELECT 
+        private readonly string MatriculaTemp = @"
+                            SELECT 
 	                mtu.mtu_dataMatricula, 
 	                mtu.mtu_dataSaida, 
 	                mtu.cur_id, 
 	                mtu.crr_id, 
 	                mtu.crp_id,
 	                mtu.alu_id,
-	                mtu.tur_id
+	                mtu.tur_id,
+	                mtu.esc_id
 	                INTO #Matricula
                 FROM SGP_MTR_MatriculaTurma mtu WITH(NOLOCK) 
                 INNER JOIN SGP_ACA_Aluno AS alu WITH(NOLOCK) ON alu.alu_id = mtu.alu_id
                 WHERE  
-	                alu.pes_id = @PesId
+	                alu.pes_id = @PesId ";
+
+        public async Task<ElectronicTestDTO> GetElectronicTestByPesIdAndTestId(Guid pes_id, long testId)
+        {
+            var sql = new StringBuilder($@"
+                {MatriculaTemp}
+
+                SELECT 
+                    T.Id,
+                    T.[Description] + ' - ' + CASE 
+                                                WHEN Discipline_Id IS NULL THEN 'Multidisciplinar'
+                                                ELSE D.[Description]
+                                                END 
+                    AS Description,
+                    TT.FrequencyApplication,
+                    YEAR(T.ApplicationEndDate) AnoDeAplicacaoDaProva,
+	                mtu.alu_id,
+	                mtu.tur_id,
+	                mtu.esc_id,
+                    esc.uad_idSuperiorGestao as dre_id,
+	                esc.esc_nome,
+                    tur.tur_codigo  as Turma,
+	                d.Description as Disciplina,
+                    T.ShowJustificate
+                FROM Test AS T WITH(NOLOCK)
+                INNER JOIN TestType AS TT WITH(NOLOCK)
+	                ON TT.Id = T.TestType_Id
+                INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) 
+	                ON T.Id = tcc.Test_Id AND tcc.[State] = 1
+                INNER JOIN SGP_ACA_CurriculoPeriodo AS Crp WITH(NOLOCK)
+		                ON tcc.TypeCurriculumGradeId = Crp.tcp_id
+		                AND Crp.crp_situacao <> 3	
+                INNER JOIN #Matricula mtu ON
+	                mtu.cur_id = Crp.cur_id
+	                AND mtu.crr_id = Crp.crr_id
+	                AND mtu.crp_id = Crp.crp_id
+                    AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= CAST(T.CorrectionEndDate AS DATE) 
+	                AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= CAST(T.ApplicationStartDate AS DATE)))) 
+                LEFT JOIN Discipline AS D WITH(NOLOCK)
+                    ON D.Id = T.Discipline_Id
+                LEFT JOIN Adherence AS A WITH(NOLOCK)
+	                ON T.Id = A.Test_Id
+	                AND A.EntityId = mtu.alu_id 	
+                    AND A.TypeEntity = @TypeEntityStudent
+                    AND A.[State] = 1
+                INNER JOIN SGP_ESC_ESCOLA AS Esc WITH(NOLOCK)
+	                ON esc.esc_id =mtu.esc_id
+                INNER JOIN SGP_TUR_TURMA AS tur WITH(NOLOCK)
+	                ON tur.tur_id = mtu.tur_id
+                WHERE 
+	                t.Id = @TestId
+                    AND ElectronicTest = 1
+                    AND T.[State] <> 3
+	                AND (T.AllAdhered = 1 AND ISNULL(A.TypeSelection, 0) NOT IN (@TypeSelectionNaoSelecionado,@TypeSelectionBloqueado)
+		                OR (T.AllAdhered = 0 AND TypeSelection = @TypeSelectionSelecionado))
+                ");
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                var result = await cn.QueryAsync<ElectronicTestDTO>(sql.ToString(), new
+                {
+                    TestId = testId,
+                    State = (Byte)EnumState.excluido,
+                    PesId = pes_id,
+                    TypeEntityStudent = (byte)EnumAdherenceEntity.Student,
+                    TypeSelectionSelecionado = (byte)EnumAdherenceSelection.Selected,
+                    TypeSelectionNaoSelecionado = (byte)EnumAdherenceSelection.NotSelected,
+                    TypeSelectionBloqueado = (byte)EnumAdherenceSelection.Blocked
+                });
+
+                return result.FirstOrDefault();
+            }
+        }
+
+        public async Task<List<ElectronicTestDTO>> GetTestsByPesId(Guid pes_id)
+        {
+            var sql = new StringBuilder($@"
+                {MatriculaTemp}
+
+               SELECT 
+                    T.Id,
+                    T.[Description] + ' - ' + CASE 
+                                                WHEN Discipline_Id IS NULL THEN 'Multidisciplinar'
+                                                ELSE D.[Description]
+                                                END 
+                    AS Description,
+                    YEAR(T.ApplicationEndDate) AnoDeAplicacaoDaProva,
+                    mtu.tur_id,
+                    mtu.esc_id,
+                    esc.uad_idSuperiorGestao as dre_id,
+                    TT.TargetToStudentsWithDeficiencies
+                FROM Test AS T WITH(NOLOCK)
+                INNER JOIN TestType AS TT WITH(NOLOCK)
+	                ON TT.Id = T.TestType_Id
+                INNER JOIN TestCurriculumGrade tcc WITH (NOLOCK) 
+	                ON T.Id = tcc.Test_Id AND tcc.[State] = 1
+                INNER JOIN SGP_ACA_CurriculoPeriodo AS Crp WITH(NOLOCK)
+		                ON tcc.TypeCurriculumGradeId = Crp.tcp_id
+		                AND Crp.crp_situacao <> 3	
+                INNER JOIN #Matricula mtu ON
+	                mtu.cur_id = Crp.cur_id
+	                AND mtu.crr_id = Crp.crr_id
+	                AND mtu.crp_id = Crp.crp_id
+                    AND (mtu.mtu_dataMatricula IS NULL OR (mtu.mtu_dataMatricula <= CAST(T.CorrectionEndDate AS DATE) 
+	                AND (mtu.mtu_dataSaida IS NULL OR mtu.mtu_dataSaida >= CAST(T.ApplicationStartDate AS DATE)))) 
+                LEFT JOIN Discipline AS D WITH(NOLOCK)
+                    ON D.Id = T.Discipline_Id
+                LEFT JOIN Adherence AS A WITH(NOLOCK)
+	                ON T.Id = A.Test_Id
+	                AND A.EntityId = mtu.alu_id 	
+                    AND A.TypeEntity = @TypeEntityStudent
+                    AND A.[State] = 1
+                INNER JOIN SGP_ESC_ESCOLA AS Esc WITH(NOLOCK)
+	                ON esc.esc_id =mtu.esc_id
+                INNER JOIN SGP_TUR_TURMA AS tur WITH(NOLOCK)
+	                ON tur.tur_id = mtu.tur_id
+                WHERE 
+		                ElectronicTest = 1
+                    AND T.[State] <> 3
+	                AND (T.AllAdhered = 1 AND ISNULL(A.TypeSelection, 0) NOT IN (@TypeSelectionNaoSelecionado,@TypeSelectionBloqueado)
+		                OR (T.AllAdhered = 0 AND TypeSelection = @TypeSelectionSelecionado))
+                ");
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                var result = await cn.QueryAsync<ElectronicTestDTO>(sql.ToString(), new
+                {
+                    State = (Byte)EnumState.excluido,
+                    PesId = pes_id,
+                    TypeEntityStudent = (byte)EnumAdherenceEntity.Student,
+                    TypeSelectionSelecionado = (byte)EnumAdherenceSelection.Selected,
+                    TypeSelectionNaoSelecionado = (byte)EnumAdherenceSelection.NotSelected,
+                    TypeSelectionBloqueado = (byte)EnumAdherenceSelection.Blocked
+                });
+
+                return result.ToList();
+            }
+        }
+
+
+        public async Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id)
+        {
+            var sql = new StringBuilder($@"
+                {MatriculaTemp}
 
                 SELECT 
                     T.Id,
@@ -1106,6 +1253,8 @@ namespace GestaoAvaliacao.Repository
 	                t.AllAdhered,
 	                mtu.alu_id,
 	                mtu.tur_id,
+                    mtu.esc_id,
+                    esc.uad_idSuperiorGestao as dre_id,
                     TT.Id AS TestTypeId,
                     TT.TargetToStudentsWithDeficiencies
                 FROM Test AS T WITH(NOLOCK)
@@ -1129,6 +1278,8 @@ namespace GestaoAvaliacao.Repository
 	                AND A.EntityId = mtu.alu_id 	
                     AND A.TypeEntity = @TypeEntityStudent
                     AND A.[State] = 1
+                INNER JOIN SGP_ESC_ESCOLA AS Esc WITH(NOLOCK)
+	                ON esc.esc_id = mtu.esc_id
                 WHERE 
                     ElectronicTest = 1
                     AND T.[State] <> 3
@@ -1145,6 +1296,8 @@ namespace GestaoAvaliacao.Repository
 	                t.AllAdhered,
 	                mtu.alu_id,
 	                mtu.tur_id,
+                    mtu.esc_id,
+					esc.uad_idSuperiorGestao,
                     TT.Id,
                     TT.TargetToStudentsWithDeficiencies
                 ");
@@ -1255,7 +1408,8 @@ namespace GestaoAvaliacao.Repository
 	                    TT.FrequencyApplication,
 	                    T.ApplicationEndDate,
                         T.ShowVideoFiles,
-                        T.ShowAudioFiles
+                        T.ShowAudioFiles,
+                        T.ShowJustificate
                     FROM
 	                    Test AS T WITH(NOLOCK)
 	                    INNER JOIN TestType AS TT WITH(NOLOCK)
@@ -1295,6 +1449,7 @@ namespace GestaoAvaliacao.Repository
                     entity.Discipline = GestaoAvaliacaoContext.Discipline.FirstOrDefault(s => s.Id == entity.Discipline.Id);
 
                 entity.TestType = GestaoAvaliacaoContext.TestType.FirstOrDefault(s => s.Id == entity.TestType.Id);
+                entity.TestTime = GestaoAvaliacaoContext.TestTime.FirstOrDefault(s => s.Id == entity.TestTime.Id);
 
 
                 if (entity.FormatType != null)
@@ -1358,6 +1513,7 @@ namespace GestaoAvaliacao.Repository
 
                 test.Bib = entity.Bib;
                 test.FrequencyApplication = entity.FrequencyApplication;
+                test.Password = entity.Password;
 
                 if (entity.Discipline != null)
                     test.Discipline = GestaoAvaliacaoContext.Discipline.FirstOrDefault(s => s.Id == entity.Discipline.Id);
@@ -1369,6 +1525,7 @@ namespace GestaoAvaliacao.Repository
                     test.FormatType = GestaoAvaliacaoContext.FormatType.FirstOrDefault(s => s.Id == entity.FormatType.Id);
 
                 test.TestType = GestaoAvaliacaoContext.TestType.FirstOrDefault(l => l.Id == entity.TestType.Id);
+                test.TestTime = GestaoAvaliacaoContext.TestTime.FirstOrDefault(l => l.Id == entity.TestTime.Id);
 
                 if (entity.TestSubGroup != null)
                 {
@@ -1484,6 +1641,7 @@ namespace GestaoAvaliacao.Repository
                 test.ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes;
                 test.ShowVideoFiles = entity.ShowVideoFiles;
                 test.ShowAudioFiles = entity.ShowAudioFiles;
+                test.ShowJustificate = entity.ShowJustificate;
 
                 test.UpdateDate = DateTime.Now;
 

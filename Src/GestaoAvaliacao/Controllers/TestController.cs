@@ -194,7 +194,8 @@ namespace GestaoAvaliacao.Controllers
 						ApplicationActiveOrDone = entity.ApplicationActiveOrDone,
 						CorrectionStartDate = entity.CorrectionStartDate.ToString("yyyy/MM/dd"),
                         CorrectionEndDate = entity.CorrectionEndDate.ToString("yyyy/MM/dd"),
-                        BlockItem = blockBusiness.CountItemTest(Id),
+						Password = entity.Password,
+                        BlockItem = entity.Bib ? blockBusiness.CountItemTestBIB(Id) : blockBusiness.CountItemTest(Id),
                         FrequencyApplication = entity.FrequencyApplication,
                         FormatType = entity.FormatType != null ? new { Id = entity.FormatType.Id, Description = entity.FormatType.Description } : null,
                         TestCurriculumGrades = entity.TestCurriculumGrades.Where(i => i.State == (Byte)EnumState.ativo).Select(icg => new
@@ -226,8 +227,10 @@ namespace GestaoAvaliacao.Controllers
 						ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes,
 						entity.ShowVideoFiles,
 						entity.ShowAudioFiles,
+						entity.ShowJustificate,
                         TestSubGroup = entity.TestSubGroup != null ? new { Id = entity.TestSubGroup.Id, Description = entity.TestSubGroup.Description } : null,
-                    };
+                        TempoDeProva = new { entity.TestTime.Id, entity.TestTime.Description }
+					};
 
 					return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
 				}

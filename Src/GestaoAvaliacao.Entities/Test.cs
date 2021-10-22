@@ -19,8 +19,9 @@ namespace GestaoAvaliacao.Entities
         }
 
 		public string Description { get; set; }
+        public string Password { get; set; }
 
-		public TestType TestType { get; set; }
+        public TestType TestType { get; set; }
 
 		public long TestType_Id { get; set; }
 
@@ -80,7 +81,11 @@ namespace GestaoAvaliacao.Entities
         public TestSubGroup TestSubGroup { get; set; }
 
         public long? TestSubGroup_Id { get; set; }
-         
+
+        public TestTime TestTime { get; set; }
+
+        public long? TestTime_Id { get; set; }
+
         [DefaultValue(0)]
         public long Order { get; set; }
 
@@ -95,7 +100,10 @@ namespace GestaoAvaliacao.Entities
 
         public bool ShowVideoFiles { get; set; }
         public bool ShowAudioFiles { get; set; }
+        public bool ShowJustificate { get; set; }
         public bool ShowOnSerapEstudantes { get; set; }
+        public bool IsSerapEstudantesBIB { get; set; }
+        public int SerapEstudantesBIBQuantity { get; set; }
 
     }
 }

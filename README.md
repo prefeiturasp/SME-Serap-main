@@ -67,8 +67,8 @@ O Serap **é um portal web que permite a criação, resposta e verificação de 
 </tr>
 <tr>
 <td>Agente de Governança</td>
-<td>@Gabi_Rowlands</td>
 <td>@vitorferragini</td>
+<td>Juliana Demay</td>
 </tr>
 <tr>
 <td>Gerente de Projeto</td>

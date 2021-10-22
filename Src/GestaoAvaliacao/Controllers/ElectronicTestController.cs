@@ -12,27 +12,32 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using GestaoAvaliacao.Dtos.StudentTestAccoplishments;
 
 namespace GestaoAvaliacao.Controllers
 {
     public class ElectronicTestController : Controller
     {
         private readonly ITestBusiness testBusiness;
+        private readonly ITestTimeBusiness testTimeBusiness;
         private readonly IAlternativeBusiness alternativeBusiness;
         private readonly IStudentCorrectionBusiness _studentCorrectionBusiness;
         private readonly ICorrectionBusiness correctionBusiness;
         private readonly IItemFileBusiness itemFileBusiness;
         private readonly IItemAudioBusiness itemAudioBusiness;
+        private readonly IStudentTestAccoplishmentBusiness studentTestAccoplishmentBusiness;
 
-        public ElectronicTestController(ITestBusiness testBusiness, IAlternativeBusiness alternativeBusiness, IStudentCorrectionBusiness _studentCorrectionBusiness, ICorrectionBusiness correctionBusiness,
-            IItemFileBusiness itemFileBusiness, IItemAudioBusiness itemAudioBusiness)
+        public ElectronicTestController(ITestBusiness testBusiness, ITestTimeBusiness testTimeBusiness, IAlternativeBusiness alternativeBusiness, IStudentCorrectionBusiness _studentCorrectionBusiness, ICorrectionBusiness correctionBusiness,
+            IItemFileBusiness itemFileBusiness, IItemAudioBusiness itemAudioBusiness, IStudentTestAccoplishmentBusiness studentTestAccoplishmentBusiness)
         {
             this.testBusiness = testBusiness;
+            this.testTimeBusiness = testTimeBusiness;
             this.alternativeBusiness = alternativeBusiness;
             this._studentCorrectionBusiness = _studentCorrectionBusiness;
             this.correctionBusiness = correctionBusiness;
             this.itemFileBusiness = itemFileBusiness;
             this.itemAudioBusiness = itemAudioBusiness;
+            this.studentTestAccoplishmentBusiness = studentTestAccoplishmentBusiness;
         }
 
         public ActionResult Index()
@@ -123,6 +128,11 @@ namespace GestaoAvaliacao.Controllers
             var listaNaoIniciada = new List<ElectronicTestDTO>();
             var listaEmAndamento = new List<ElectronicTestDTO>();
             var listaFinalizadas = new List<ElectronicTestDTO>();
+            var listaDeTemposDeProva = new List<StudentTestTimeDto>();
+
+            if (electronicTests?.Any() ?? false)
+                listaDeTemposDeProva = await studentTestAccoplishmentBusiness.GetAsyncByAluIdTestId(electronicTests.FirstOrDefault().alu_id,
+                    electronicTests.Select(s => s.Id).ToList());
 
             foreach (var electronicTest in electronicTests)
             {
@@ -130,6 +140,19 @@ namespace GestaoAvaliacao.Controllers
                 if (studentCorrection != null && !studentCorrection.provaFinalizada.HasValue)
                 {
                     studentCorrection.provaFinalizada = false;
+                }
+
+                var tempoDeProva = listaDeTemposDeProva.FirstOrDefault(f => f.TestId == electronicTest.Id);
+                if (tempoDeProva != null)
+                {
+                    var time = TimeSpan.FromSeconds(tempoDeProva.TempoEmSegundosUsadoPeloEstudanteNaProva - tempoDeProva.TempoEmSegundosDaProva);
+                    electronicTest.TempoDeDuracaoDaProva = tempoDeProva.TempoEmSegundosDaProva == 0
+                        ? "Sem limite de tempo"
+                        : tempoDeProva.TempoDeDuracaoDaProva;
+                    electronicTest.TempoRestanteDeProva =
+                        tempoDeProva.TempoEmSegundosDaProva > 0 && tempoDeProva.TempoEmSegundosUsadoPeloEstudanteNaProva < tempoDeProva.TempoEmSegundosDaProva
+                            ? time.ToString(@"hh\:mm\:ss")
+                            : "00:00:00";
                 }
 
                 if (studentCorrection == null && electronicTest.quantDiasRestantes > 0)
@@ -339,7 +362,7 @@ namespace GestaoAvaliacao.Controllers
                 var vis_id = (EnumSYS_Visao)SessionFacade.UsuarioLogado.Grupo.vis_id;
 
                 var result = await correctionBusiness.SaveCorrectionAsync(test_id, alu_id, tur_id, answers, ent_id, usu_id, pes_id, vis_id, ordemItem);
-                if(!result.Validate.IsValid)
+                if (!result.Validate.IsValid)
                     return Json(new { success = false, type = ValidateType.error.ToString(), message = result.Validate.Message }, JsonRequestBehavior.AllowGet);
 
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
@@ -363,7 +386,7 @@ namespace GestaoAvaliacao.Controllers
                 TurId = tur_id,
                 Visao = (EnumSYS_Visao)usuarioLogado.Grupo.vis_id,
                 UsuId = SessionFacade.UsuarioLogado.Usuario.usu_id
-        };
+            };
 
             try
             {
@@ -375,10 +398,34 @@ namespace GestaoAvaliacao.Controllers
                 LogFacade.SaveBasicError(erroFormatado);
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = erroFormatado }, JsonRequestBehavior.AllowGet);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao entregar prova." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetTestTime(long tur_id, long test_id, long alu_id)
+        {
+            try
+            {
+                var tempoDeProva = await testTimeBusiness.GetByTestIdAsync(test_id);
+                var tempoConsumidoDaProva = await studentTestAccoplishmentBusiness.GetAsyncByAluIdTurIdTestId(alu_id, tur_id, test_id);
+
+                var dados = new
+                {
+                    TempoTotalDaProva = tempoDeProva.Segundos,
+                    TempoDeProvaConsumidoPeloAluno = tempoConsumidoDaProva.TempoDeDuracaoEmSegundos,
+                    ProvaSemLimiteDeTempo = tempoDeProva.Segundos == 0
+                };
+
+                return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar os dados da prova." }, JsonRequestBehavior.AllowGet);
             }
         }
     }

@@ -129,6 +129,18 @@
                 method: 'POST',
                 url: base_url('Block/Save')
             },
+
+            'deleteBlock': {
+                method: 'POST',
+                url: base_url('Block/Delete')
+            },
+
+            'deleteBlockItems': {
+                method: 'POST',
+                url: base_url('Block/DeleteBlockItems')
+            },
+            
+
             'saveKnowLedgeAreaOrder': {
                 method: 'POST',
                 url: base_url('Block/SaveKnowLedgeAreaOrder')

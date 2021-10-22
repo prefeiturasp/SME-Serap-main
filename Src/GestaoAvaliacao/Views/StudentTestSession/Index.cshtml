@@ -1,0 +1,116 @@
+﻿@using GestaoAvaliacao.Util;
+<alert></alert>
+<div class="wellCustom" ng-controller="StudentTestSessionController" ng-init='init()'>
+    @*Bloquear a tela quando não houver permissão*@
+    <p ng-if="!blockPage">
+        @* Header da Adesão *@
+        <div class="headerCustom">
+            <h4>Tempo de prova dos alunos<span>Listagem</span></h4>
+        </div>
+        @* Informações *@
+        <div class="resumoAdesao">
+            <div class="maxWidth">
+                <div class="dadosGerais">
+                    <h2>
+                        <strong>{{testInformation.Description}} </strong> {{testInformation.FrequencyApplication}} |  {{testInformation.Discipline}}
+                        <br />
+                        <label><strong>Cód:</strong>{{params.test_id}}</label>
+                    </h2>
+                    <div class="dadosResumo">
+                        <div style="max-width: 260px;" ng-if="false">
+                            <i class="material-icons">group</i>
+                            <span>1º Ano</span>
+                        </div>
+                        <div ng-if="currentSelectedMasterFilters.DRE_Description&&currentSelectedMasterFilters.School_Description">
+                            <i class="material-icons">school</i>
+                            <p>{{currentSelectedMasterFilters.DRE_Description}} <br />{{currentSelectedMasterFilters.School_Description}}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <button class="btnCancelar2" data-toggle="modal" ng-click="arrivingTest()">Voltar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cards maxWidth" ng-if="list !== null">
+            <div class="headerAdesao">
+                <h4>
+                    Alunos
+                </h4>
+            </div>
+            <table class="table tableAdesao">
+                <col width="130">
+                <col width="80">
+                <thead>
+                    <tr>
+                        <th style="text-align: right; width: 10%">Número da chamada</th>
+                        <th style="width: 25%">Nome do Aluno</th>
+                        <th style="text-align: right; width: 15%">Tempo previsto de prova</th>
+                        <th style="text-align: right; width: 15%">Tempo total de prova</th>
+                        <th style="text-align: center; width: 15%">
+                            Tempo de cada sessão
+                            <a data-type="success"  data-toggle="popover" data-placement="bottom" data-original-title="" data-content="Sessão é o tempo que o aluno permanece logado ao responder a prova." aria-describedby="tooltip">
+                                <i class="fa fa-info-circle" style="font-size:21px;"></i>
+                                <!-- Alert -->
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="($indexTeam, studentSession) in list track by $indexTeam">
+                        <th style="text-align:right;">{{studentSession.NumeroDaChamada}}</th>
+                        <th>{{studentSession.NomeDoAluno}}</th>
+                        <th style="text-align:right;">{{studentSession.TempoEstimadoDeProva}}</th>
+                        <th style="text-align:right;">{{studentSession.TempoTotalDaSessao}}</th>
+                        <th class="center">
+                            <a ng-click="openModalTempoDeCadaSessao(studentSession.Session)" data-trigger="hover" data-type="success" data-title="Tempo de cada sessão" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip="">
+                                <i class="fa fa-clock-o" style="font-size: 21px;"></i>
+                            </a>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        @* Results not found *@
+        <div class="cards maxWidth" ng-if="list === null || (message)">
+            <p class="nresultados">Nenhum resultado encontrado.</p>
+        </div>
+
+        <modal id="tempoDeCadaSessao" modal-title="<p>Tempo de sessão da prova</p>">
+            <p>Sessão é o tempo que o aluno permanece logado ao responder a prova.</p>
+            <br />
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <table ng-if="sessoes.length > 0" class="table tableAdesao">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%">Data e hora inicial</th>
+                                    <th style="width: 40%">Data e hora final</th>
+                                    <th style="width: 20%">Tempo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="($indexTeam, sessao) in sessoes track by $indexTeam">
+                                    <th>{{sessao.DataEHoraInicial}}</th>
+                                    <th>{{sessao.DataEHoraFinal}}</th>
+                                    <th>{{sessao.TempoTotalFormatado}}</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    @* Results not found *@
+                    <div class="cards maxWidth" ng-if="sessoes.length <= 0">
+                        <p class="nresultados">Aluno sem sessão disponível.</p>
+                    </div>
+                </div>
+            </div>
+        </modal>
+
+        <modal id="infoSessao" modal-title="<p>O que é sessão?</p>">
+            <p>Sessão é o tempo que o aluno permanece logado ao responder a prova.</p>
+        </modal>
+    </div>
+</div>
