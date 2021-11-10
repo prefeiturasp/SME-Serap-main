@@ -1437,11 +1437,6 @@ namespace GestaoAvaliacao.Repository
 
             using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                DateTime dateNow = DateTime.Now;
-
-                entity.CreateDate = dateNow;
-                entity.UpdateDate = dateNow;
-
                 long maxOrder = GetMaxOrderTests();
                 entity.Order = maxOrder + 1;
 
@@ -1510,6 +1505,7 @@ namespace GestaoAvaliacao.Repository
                 test.ApplicationStartDate = entity.ApplicationStartDate;
                 test.CorrectionEndDate = entity.CorrectionEndDate;
                 test.CorrectionStartDate = entity.CorrectionStartDate;
+                test.DownloadStartDate = entity.DownloadStartDate;
 
                 test.Bib = entity.Bib;
                 test.FrequencyApplication = entity.FrequencyApplication;
@@ -1639,6 +1635,7 @@ namespace GestaoAvaliacao.Repository
                 test.KnowledgeAreaBlock = entity.KnowledgeAreaBlock;
                 test.ElectronicTest = entity.ElectronicTest;
                 test.ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes;
+                test.ShowTestContext = entity.ShowTestContext;
                 test.ShowVideoFiles = entity.ShowVideoFiles;
                 test.ShowAudioFiles = entity.ShowAudioFiles;
                 test.ShowJustificate = entity.ShowJustificate;

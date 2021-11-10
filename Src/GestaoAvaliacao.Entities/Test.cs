@@ -105,5 +105,7 @@ namespace GestaoAvaliacao.Entities
         public bool IsSerapEstudantesBIB { get; set; }
         public int SerapEstudantesBIBQuantity { get; set; }
 
+        public bool ShowTestContext { get; set; }
+        public DateTime? DownloadStartDate { get; set; }
     }
 }

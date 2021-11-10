@@ -225,6 +225,7 @@ namespace GestaoAvaliacao.Controllers
                         KnowledgeAreaBlock = entity.KnowledgeAreaBlock,
                         ElectronicTest = entity.ElectronicTest,
 						ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes,
+						ShowTestContext = entity.ShowTestContext,
 						entity.ShowVideoFiles,
 						entity.ShowAudioFiles,
 						entity.ShowJustificate,
@@ -783,7 +784,8 @@ namespace GestaoAvaliacao.Controllers
 			{
 				if (entity.Id > 0)
 				{
-					entity = testBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.usu_id, (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+					entity = testBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.usu_id, 
+						(EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
 							SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
 				}
 				else

@@ -106,6 +106,14 @@ namespace GestaoAvaliacao.Business
                 }
             }
 
+            if(entity.ShowOnSerapEstudantes)
+            {
+                if(entity.CreateDate.Date > entity.DownloadStartDate.GetValueOrDefault().Date)
+                {
+                    valid.Message = string.Format("A data de início do download da prova não pode ser menor que a data de criação.");
+                }
+            }
+
             if (action == ValidateAction.Update)
             {
                 var cadastred = testRepository.GetObjectWithTestType(entity.Id);
@@ -496,6 +504,11 @@ namespace GestaoAvaliacao.Business
 
         public Test Save(Test entity, Guid usu_id, bool isAdmin)
         {
+            DateTime dateNow = DateTime.Now;
+
+            entity.CreateDate = dateNow;
+            entity.UpdateDate = dateNow;
+
             entity.Validate = Validate(entity, ValidateAction.Save, entity.Validate, isAdmin);
             if (entity.Validate.IsValid)
             {
