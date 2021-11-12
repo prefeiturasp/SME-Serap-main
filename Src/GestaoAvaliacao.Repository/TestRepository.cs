@@ -196,6 +196,7 @@ namespace GestaoAvaliacao.Repository
                         .Include("FormatType")
                         .Include("TestSubGroup")
                         .Include("TestTime")
+                        .Include("TestContexts")
                         .FirstOrDefault(i => i.Id == Id && i.State == (Byte)EnumState.ativo);
 
                     return query;
@@ -1660,9 +1661,21 @@ namespace GestaoAvaliacao.Repository
                 {
                     #region Dependencies
 
+
+                    List<TestContext> testContexts = GestaoAvaliacaoContext.TestContext.Where(i => i.Test_Id == Id).ToList();
                     List<BlockItem> blockItems = GestaoAvaliacaoContext.BlockItem.Include("Block").Where(i => i.Block.Test_Id == Id).ToList();
                     List<Block> blocks = GestaoAvaliacaoContext.Block.Where(i => i.Test_Id == Id).ToList();
                     List<Booklet> booklets = GestaoAvaliacaoContext.Booklet.Where(i => i.Test_Id == Id).ToList();
+
+                    if(testContexts != null)
+                    {
+                        testContexts.ForEach(i =>
+                        {
+                            i.State = Convert.ToByte(EnumState.excluido);
+                            i.UpdateDate = DateTime.Now;
+                            GestaoAvaliacaoContext.Entry(i).State = System.Data.Entity.EntityState.Modified;
+                        });
+                    }
 
                     if (blockItems != null)
                     {

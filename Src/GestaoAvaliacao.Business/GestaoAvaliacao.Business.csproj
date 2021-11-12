@@ -112,6 +112,7 @@
     <Compile Include="StudentTestAccoplishments\Validators\EndStudentTestAccoplishmentValidator.cs" />
     <Compile Include="SubjectBusiness.cs" />
     <Compile Include="SubSubjectBusiness.cs" />
+    <Compile Include="TestContextBusiness.cs" />
     <Compile Include="TestFilesBusiness.cs" />
     <Compile Include="ItemCurriculumGradeBusiness.cs" />
     <Compile Include="EvaluationMatrixCourseBusiness.cs" />

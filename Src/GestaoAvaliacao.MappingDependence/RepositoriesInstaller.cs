@@ -174,6 +174,11 @@ namespace GestaoAvaliacao.MappingDependence
 								.WithService.AllInterfaces()
 								.SetLifestyle(LifestylePerWebRequest));
 
+			container.Register(Classes.FromAssemblyContaining<TestContextRepository>()
+								.BasedOn(typeof(ITestContextRepository))
+								.WithService.AllInterfaces()
+								.SetLifestyle(LifestylePerWebRequest));
+
 			container.Register(Classes.FromAssemblyContaining<BlockRepository>()
 								.BasedOn(typeof(IBlockRepository))
 								.WithService.AllInterfaces()

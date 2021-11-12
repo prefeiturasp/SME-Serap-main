@@ -16,6 +16,7 @@ namespace GestaoAvaliacao.Entities
             TestPerformanceLevels = new List<TestPerformanceLevel>();
             TestItemLevels = new List<TestItemLevel>();
             Visible = true;
+            TestContexts = new List<TestContext>();
         }
 
 		public string Description { get; set; }
@@ -65,7 +66,10 @@ namespace GestaoAvaliacao.Entities
 
 		public virtual List<TestItemLevel> TestItemLevels { get; set; }
 
-		public bool AllAdhered { get; set; }
+        public virtual List<TestContext> TestContexts { get; set; }
+        
+
+        public bool AllAdhered { get; set; }
 
         public bool PublicFeedback { get; set; }
 

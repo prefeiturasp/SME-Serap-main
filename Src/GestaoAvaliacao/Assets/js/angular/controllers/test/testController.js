@@ -13,7 +13,7 @@
         .module('appMain')
         .controller("TestController", TestController);
 
-    TestController.$inject = ['$scope', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', '$window'];
+    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', '$window'];
 
     /**
      * @function Controller para criação de prova
@@ -26,7 +26,7 @@
      * @param {Object} TestTypeModel
      * @returns
      */
-    function TestController(ng, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, $window) {
+    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, $window) {
 
         var self = this;
 
@@ -150,7 +150,7 @@
                 periodo: Parameters.Item.ITEMCURRICULUMGRADE.Value + '(s) de aplicação',
                 cronograma: 'Cronograma',
                 inicioAplicaco: 'Início da aplicação',
-                inicioDownload: 'Início do Download',
+                inicioDownload: 'Início do download',
                 finalAplicacao: 'Final da aplicação',
                 inicioCorrecao: 'Início da correção',
                 finalCorrecao: 'Final da correção',
@@ -292,6 +292,9 @@
             };
             ng.provaId = ng.params.Id || 0;
             tipoProvaCarregar();
+            // Modal contexto
+            e1_criarObjetoDadosModalContexto();
+            ng.e1_itemParaDeletarDaListaTestContex = '';
         };
 
         /**
@@ -1147,7 +1150,8 @@
                 "ShowAudioFiles": ng.showAudioFiles,
                 "ShowJustificate": ng.showJustificate,
                 "TestSubGroup": ng.e1_grupoSubgrupo,
-                "TestTime": ng.e1_tempoDeProva
+                "TestTime": ng.e1_tempoDeProva,
+                "TestContexts": ng.testContexts,
             };
 
             self.etapa1.save(model, etapa1Salvou);
@@ -1161,7 +1165,7 @@
         function etapa1Salvou(r) {
 
             if (r.success) {
-
+                
                 var param = {
                     Id: r.TestID
                 };
@@ -1487,7 +1491,7 @@
                     ng.isMultidiscipline = r.Multidiscipline;
                     ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock;
                     ng.isElectronicTest = r.ElectronicTest;
-                    ng.showOnSerapEstudantes = r.ShowOnSerapEstudantes;
+                    
                     ng.showTestContext = r.ShowTestContext;
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
@@ -1497,6 +1501,11 @@
                     ng.frequencyApplication = r.FrequencyApplication;
                     ng.e1_listaPeriodosChecked = r.TestCurriculumGrades;
                     ng.e1_inicioDownload = r.DownloadStartDate;
+
+                    if (r.TestContexts.length > 0) {
+                        ng.testContexts = r.TestContexts;
+                    }
+
                     //Cronograma
                     ng.e1_aplicacao = {
                         Inicio: r.ApplicationStartDate,
@@ -1559,6 +1568,7 @@
 
         function infoProvaGlobal(r) {
             ng.Global = r.lista.TestType.Global;
+            ng.testContexts = r.lista.TestContexts;
         };
 
         function initModalAdicao() {
@@ -2799,6 +2809,7 @@
 
         ng.callModalAdicionarContextoProva = callModalAdicionarContextoProva;
         function callModalAdicionarContextoProva() {
+            e1_criarObjetoDadosModalContexto();
             angular.element("#modalNovoContextoProva").modal({ backdrop: 'static' });
         };
 
@@ -4186,6 +4197,71 @@
                 }
             });
         };
+
+        ng.e1_criarObjetoDadosModalContexto = e1_criarObjetoDadosModalContexto;
+        function e1_criarObjetoDadosModalContexto() {
+            ng.e1_dadosModalContexto = {
+                id: 0,
+                imagePositionDescription: '',
+                title: '',
+                text: '',
+                imagePath: '',
+                image: {  Id: '', Guid: '', Path: '' }
+            };
+        };
+
+        ng.e1_addDadosModalContexto = e1_addDadosModalContexto;
+        function e1_addDadosModalContexto() {
+            if (ng.e1_dadosModalContexto.id) {
+                const itemAlterar = ng.testContexts.find(t => t.id === ng.e1_dadosModalContexto.id);
+                if (itemAlterar) {
+                    const indexItemAlterar = ng.testContexts.indexOf(itemAlterar);
+                    const itemAlterado = {
+                        ...ng.e1_dadosModalContexto,
+                        imagePath: ng.e1_dadosModalContexto.image.Path,
+                    };
+                    ng.testContexts[indexItemAlterar] = itemAlterado;
+                }
+                
+            } else {
+                const itemNovo = {
+                    ...ng.e1_dadosModalContexto,
+                    imagePath: ng.e1_dadosModalContexto.image.Path
+                };
+                ng.testContexts.push(itemNovo);
+            }
+            ng.e1_criarObjetoDadosModalContexto();
+            self.etapa1.alterou = true
+            angular.element('#modalNovoContextoProva').modal('hide');
+        };
+
+        ng.e1_confirmarDeletarItemTestContext = e1_confirmarDeletarItemTestContext;
+        function e1_confirmarDeletarItemTestContext(item) {
+            ng.e1_itemParaDeletarDaListaTestContex = item;
+            angular.element('#modalDeleteItemTestContex').modal({ backdrop: 'static' });
+        };
+
+        ng.e1_deleteItemTestContext = e1_deleteItemTestContext;
+        function e1_deleteItemTestContext() {
+            if (ng.e1_itemParaDeletarDaListaTestContex) {
+                const indexItemDelete = ng.testContexts.indexOf(ng.e1_itemParaDeletarDaListaTestContex);
+                ng.testContexts.splice(indexItemDelete, 1);
+                ng.e1_itemParaDeletarDaListaTestContex = '';
+                self.etapa1.alterou = true
+            }
+            angular.element('#modalDeleteItemTestContex').modal('hide');
+        };
+
+        ng.e1_editarModalContexto = e1_editarModalContexto;
+        function e1_editarModalContexto(item) {
+            e1_criarObjetoDadosModalContexto();
+            ng.e1_dadosModalContexto = {
+                ...item,
+                image: { Id: '', Guid: '', Path: item.imagePath }
+            };
+            angular.element('#modalNovoContextoProva').modal({ backdrop: 'static' });
+        };        
+       
 
     };
 

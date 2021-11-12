@@ -1,4 +1,7 @@
-﻿@model GestaoAvaliacao.Entities.Test
+﻿@using GestaoAvaliacao.Util;
+@using GestaoAvaliacao.WebProject.Facade;
+@using GestaoAvaliacao.Entities.Enumerator
+@model GestaoAvaliacao.Entities.Test
 <alert></alert>
 <div ng-controller="TestController" ng-init="editar(@Model.Id);">
     @* Prova *@
@@ -235,8 +238,8 @@
                                 @* Header *@
                                 <h4 class="tituloCard">{{labels.cronograma}}: </h4>
                                 <div class="campoLabel">
-                                    <div class="row calendario-pagina">
-                                        <div ng-show="showOnSerapEstudantes" ng-class="{'col-md-3':!showOnSerapEstudantes, 'col-md-2':showOnSerapEstudantes}">
+                                    <div class="row calendario-pagina" style="display: flex; justify-content: space-between; margin: 3px;">
+                                        <div ng-show="showOnSerapEstudantes" style="min-width: 215px;">
                                             @* Data 1 *@
                                             <label> {{labels.inicioDownload}}*: </label>
                                             <div>
@@ -252,9 +255,9 @@
                                                        datepicker />
                                             </div>
                                         </div>
-                                        
 
-                                        <div ng-class="{'col-md-3':!showOnSerapEstudantes, 'col-md-2':showOnSerapEstudantes}">
+
+                                        <div style="min-width: 215px;">
                                             @* Data 1 *@
                                             <label> {{labels.inicioAplicaco}}*: </label>
                                             <div>
@@ -270,7 +273,7 @@
                                                        datepicker />
                                             </div>
                                         </div>
-                                        <div ng-class="{'col-md-3':!showOnSerapEstudantes, 'col-md-2':showOnSerapEstudantes}">
+                                        <div style="min-width: 215px;">
                                             @* Data 2 *@
                                             <label> {{labels.finalAplicacao}}*: </label>
                                             <div>
@@ -286,7 +289,7 @@
                                                        datepicker />
                                             </div>
                                         </div>
-                                        <div ng-class="{'col-md-3':!showOnSerapEstudantes, 'col-md-2':showOnSerapEstudantes}">
+                                        <div style="min-width: 215px;">
                                             <label> {{labels.inicioCorrecao}}*: </label>
                                             <div>
                                                 <button type="button" class="" ng-click="aplicaCorrecaoInicio()">
@@ -301,7 +304,7 @@
                                                        datepicker />
                                             </div>
                                         </div>
-                                        <div ng-class="{'col-md-3':!showOnSerapEstudantes, 'col-md-2':showOnSerapEstudantes}">
+                                        <div style="min-width: 215px;">
                                             <label> {{labels.finalCorrecao}}*: </label>
                                             <div>
                                                 <button type="button" class="" ng-click="aplicaCorrecaoFinal()">
@@ -321,16 +324,12 @@
                             </div>
                         </div>
                     </div>
+                    @* Contexto *@
                     <div class="row" ng-show="showTestContext">
                         <div class="col-md-12">
                             <div class="cards">
-                                @* Header *@
-                                <h4 class="tituloCard">  {{labels.contextoProva}}*: </h4>
-                                <button type="button"
-                                        class="btn btn-primary"
-                                        ng-click="callModalAdicionarContextoProva()" style="background-color:#5a94d6">
-                                    Adicionar Novo Contexto
-                                </button>
+                                <button type="button" class="btnPadrao pull-right" style="margin-right: 15px;" ng-click="callModalAdicionarContextoProva()">Adicionar Novo Contexto</button>
+                                <h4 class="tituloCard ng-binding">Contexto da prova: </h4>                                
                                 <table class="table table-hover">
                                     <colgroup>
                                         <col width="15%" />
@@ -345,21 +344,25 @@
                                             <th class="table-parameter-centralize">Posicionamento da Imagem</th>
                                             <th class="table-parameter-centralize">Título</th>
                                             <th class="table-parameter-centralize">Texto</th>
+                                            <th class="table-parameter-centralize">Editar</th>
                                             <th class="table-parameter-centralize">Excluir</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="testContext in testContexts">
-                                            <th class="table-parameter-centralize">{{ testContext.image}}</th>
-                                            <th class="table-parameter-centralize">{{ testContext.imagePosition }}</th>
+                                            <th class="table-parameter-centralize">{{ testContext.imagePath }}</th>
+                                            <th class="table-parameter-centralize">{{ testContext.imagePositionDescription }}</th>
                                             <th class="table-parameter-centralize">{{ testContext.title }}</th>
-                                            <th class="table-parameter-centralize">{{ testContext.text }}</th>
+                                            <th class="table-parameter-centralize" ng-bind-html="testContext.text" />
                                             <th class="table-parameter-centralize">
-                                                <a ng-click=""><i type="button" class="material-icons">delete</i></a>
+                                                <a ng-click="e1_editarModalContexto(testContext)"><i type="button" class="material-icons">format_list_bulleted</i></a>
+                                            </th>
+                                            <th class="table-parameter-centralize">
+                                                <a ng-click=""><i type="button" class="material-icons" ng-click="e1_confirmarDeletarItemTestContext(testContext)">delete</i></a>
                                             </th>
                                         </tr>
                                     </tbody>
-                                </table>
+                                </table>                                
                             </div>
                         </div>
                     </div>
@@ -1556,48 +1559,63 @@
                         <strong>Nova página de Contexto da Prova</strong>
                     </h4>
                 </div>
-
                 @*BODY*@
-            <div class="modal-body">
-                <div class="uploadImage">
-                    <div upload="" placeholder="uma imagem" data-listextensions="listextensionsImage"></div>
-                    <label>Imagem</label>
-                </div>
-                <select id="testType" class="form-control"
-                        @*ng-change="tipoProvaMudou()"
-                        ng-model="e1_cbTipoProva"*@
-                        ng-options="['direita','esquerda','centro']"
-                        ng-title-propertie="Description"
-                        ng-title-index="1"
-                        ng-title-selected>
-                    <option value="">--Selecione a posição da imagem--</option>
-                </select>
-                <div class="campoLabel">
-                    <label> Título*:</label>
-                    <div>
-                        <input type="text"
-                               class="form-control"
-                               maxlength="60"
-                               placeholder="Digite o título" />
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="campoLabel">
+                            <label>Imagem*:</label>
+                            <div class="uploadImage">
+                                <div upload="" data-trash="true" type="@(EnumFileType.BaseText)" component="e1_dadosModalContexto.image" placeholder="uma imagem" data-listextensions="listextensionsImage"></div>
+                            </div>
+                        </div>
+                        <div class="campoLabel">
+                            <label>Posição*:</label>
+                            <select id="e1_dadosModalContexto.imagePositionDescription"
+                                    class="form-control"
+                                    ng-model="e1_dadosModalContexto.imagePositionDescription">
+                                <option value="">--Selecione a posição da imagem--</option>
+                                <option value="@(EnumPosition.Left.GetDescription())">@(EnumPosition.Left.GetDescription())</option>
+                                <option value="@(EnumPosition.Center.GetDescription())">@(EnumPosition.Center.GetDescription())</option>
+                                <option value="@(EnumPosition.Right.GetDescription())">@(EnumPosition.Right.GetDescription())</option>
+                            </select>
+                        </div>
+                            <div class="campoLabel">
+                                <label>Título*:</label>
+                                <div>
+                                    <input type="text"
+                                           class="form-control"
+                                           maxlength="100"
+                                           ng-model="e1_dadosModalContexto.title"
+                                           placeholder="Digite o título" />
+                                </div>
+                            </div>
+                            @* Texto Base *@
+                            <div class="campoLabel colunas">
+                                <div writemaths position="center top" previewposition="center bottom">
+                                    <label>Texto*:</label><br />
+                                    <textarea id="textoBase" name="textoBase"
+                                              class="form-control" images=""
+                                              ng-model="e1_dadosModalContexto.text"
+                                              tipo="@((Byte)EnumFileType.BaseText)"
+                                              redactor="{buttons: ['formatting', '|', 'bold', 'italic']}"> </textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="campoLabel">
-                    <label> Texto*:</label>
-                    <div>
-                        <input type="text"
-                               class="form-control"
-                               maxlength="60"
-                               placeholder="Digite o texto que vai no corpo da mensagem" />
-                    </div>
-                </div>
-                <h5>Deseja selecionar os itens do próximo caderno?</h5>
-            </div>
 
                 @*FOOTER*@
                 <div class="modal-footer footerCustom ">
                     <div class="container-fluid row-fluid">
-                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e2_limparModalProximoBloco()" aria-hidden="true">Cancelar</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e2_exibirModalProximoBloco()">Adicionar</button>
+                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e1_limparDadosModalContexto()" aria-hidden="true">Cancelar</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                ng-click="e1_addDadosModalContexto()"
+                                ng-disabled="!e1_dadosModalContexto.imagePositionDescription || 
+                                             !e1_dadosModalContexto.title ||
+                                             !e1_dadosModalContexto.text ||
+                                             !e1_dadosModalContexto.image.Path
+                                ">
+                            Adicionar
+                        </button>
                     </div>
                 </div>
 
@@ -1632,6 +1650,24 @@
                         <button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true">Não</button>
                         <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e2_LimparItensSelecionados()">Sim</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*modalDeleteItemTestContex*@
+    <div class="modal fade" id="modalDeleteItemTestContex" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir este item?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btnPadrao" data-ng-click="e1_deleteItemTestContext()">Excluir</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
