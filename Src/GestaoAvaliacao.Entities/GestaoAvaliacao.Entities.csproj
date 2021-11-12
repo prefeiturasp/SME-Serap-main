@@ -132,6 +132,7 @@
     <Compile Include="StudentTestAccoplishments\StudentTestSession.cs" />
     <Compile Include="Subject.cs" />
     <Compile Include="SubSubject.cs" />
+    <Compile Include="TestContext.cs" />
     <Compile Include="TestGroup.cs" />
     <Compile Include="TestPermission.cs" />
     <Compile Include="TestSectionStatusCorrection.cs" />

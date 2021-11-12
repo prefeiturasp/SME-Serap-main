@@ -64,7 +64,8 @@ namespace GestaoAvaliacao.Repository.Context
 			modelBuilder.Configurations.Add(new TestCurriculumGradeMap());
 			modelBuilder.Configurations.Add(new TestItemLevelMap());
             modelBuilder.Configurations.Add(new TestPermissionMap());
-            modelBuilder.Configurations.Add(new BookletMap());
+			modelBuilder.Configurations.Add(new TestContextMap());
+			modelBuilder.Configurations.Add(new BookletMap());
 			modelBuilder.Configurations.Add(new BlockMap());
 			modelBuilder.Configurations.Add(new CognitiveCompetenceMap());
 			modelBuilder.Configurations.Add(new ModelTestMap());
@@ -152,6 +153,7 @@ namespace GestaoAvaliacao.Repository.Context
 		public DbSet<ItemCurriculumGrade> ItemCurriculumGrade { get; set; }
 		public DbSet<PerformanceLevel> PerformanceLevel { get; set; }
 		public DbSet<Test> Test { get; set; }
+		public DbSet<TestContext> TestContext { get; set; }
 		public DbSet<TestPerformanceLevel> TestPerformanceLevel { get; set; }
 		public DbSet<TestCurriculumGrade> TestCurriculumGrade { get; set; }
 		public DbSet<TestItemLevel> TestItemLevel { get; set; }

@@ -13,7 +13,7 @@
         .module('appMain')
         .controller("TestController", TestController);
 
-    TestController.$inject = ['$scope', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', '$window'];
+    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', '$window'];
 
     /**
      * @function Controller para criação de prova
@@ -26,13 +26,14 @@
      * @param {Object} TestTypeModel
      * @returns
      */
-    function TestController(ng, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, $window) {
+    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, $window) {
 
         var self = this;
 
         function load() {
             $notification.clear();
             configVariaveis();
+            ng.listextensionsImage = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'];
         };
 
         /**
@@ -149,10 +150,12 @@
                 periodo: Parameters.Item.ITEMCURRICULUMGRADE.Value + '(s) de aplicação',
                 cronograma: 'Cronograma',
                 inicioAplicaco: 'Início da aplicação',
+                inicioDownload: 'Início do download',
                 finalAplicacao: 'Final da aplicação',
                 inicioCorrecao: 'Início da correção',
                 finalCorrecao: 'Final da correção',
                 quantidadeItens: 'Quantidade de itens',
+                contextoProva: 'Contexto da prova',
                 sugeridoTipoProva: 'Sugeridos pelo tipo de prova',
                 personalizado: 'Personalizado',
                 total: 'Total',
@@ -169,6 +172,7 @@
                 showJustificate: 'Exibir justificativa',
                 showAudioFiles: 'Exibir conteúdo de áudio',
                 showOnSerapEstudantes: 'Exibir no Serap Estudantes',
+                showTestContext: 'Apresentar contexto da prova',
                 tempoDeProva: 'Tempo de Prova',
                 temBIB: 'Prova com BIB'
             };
@@ -200,6 +204,8 @@
             ng.gerarFolhaResposta = true;
             ng.gerarFolhaTooltip = null;
             ng.publicFeedback = false;
+            ng.showTestContext = false;
+            ng.testContexts = [];
             //Funções para configurar Etapas
             nivelDesempenhoCarregar();
             initEtapa1();
@@ -242,6 +248,7 @@
             ng.periodoEditMode;
             //Lista de periodos escolhidos
             ng.e1_listaPeriodosChecked = [];
+            ng.e1_inicioDownload = null;
             // Data  da aplicação
             ng.e1_aplicacao = {
                 Inicio: null,
@@ -285,6 +292,9 @@
             };
             ng.provaId = ng.params.Id || 0;
             tipoProvaCarregar();
+            // Modal contexto
+            e1_criarObjetoDadosModalContexto();
+            ng.e1_itemParaDeletarDaListaTestContex = '';
         };
 
         /**
@@ -607,6 +617,12 @@
             }
         };
 
+        ng.e1_inicioDownloadMudou = e1_inicioDownloadMudou;
+        function e1_inicioDownloadMudou() {
+            if (ng.mostrarTela)
+                ng.alterouEtapaAtual = self.etapa1.alterou = true;
+        };
+
         /**
         * @function Tratamento para alterações de componente curricular
         * @private
@@ -636,6 +652,11 @@
         };
         ng.selectShowOnSerapEstudantes = function () {
             ng.showOnSerapEstudantes = !ng.showOnSerapEstudantes;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selectShowTestContext = function () {
+            ng.showTestContext = !ng.showTestContext;
             self.etapa1.alterou = true;
         };
 
@@ -897,6 +918,11 @@
             radioSelect();
         };
 
+        ng.aplicaDownloadInicio = aplicaDownloadInicio;
+        function aplicaDownloadInicio() {
+            $("#e1_inicioDownload").datepicker('show');
+        };
+
         /**
         * @function Aplica valor do datapick no input
         * @private
@@ -976,8 +1002,14 @@
                 return false
             }
 
+
             if (!ng.e1_tempoDeProva) {
                 $notification.alert("O campo '" + ng.labels.tempoDeProva + "' é obrigatório.");
+                return false;
+            }
+
+            if (ng.showOnSerapEstudantes && !ng.e1_inicioDownload) {
+                $notification.alert("O campo '" + ng.labels.inicioDownload + "' é obrigatório.");
                 return false;
             }
 
@@ -1008,6 +1040,12 @@
             if (q) {
                 if (a1 > a2) {
                     $notification.alert("O final da aplicação não pode começar antes do início da aplicação."); return false;
+                }
+
+                if (ng.e1_inicioDownload) {
+                    if (new Date(ng.e1_aplicacao.Inicio) < new Date(ng.e1_inicioDownload)) {
+                        $notification.alert("O iníco da aplicação não pode começar antes da data de início do download."); return false;
+                    }
                 }
             }
 
@@ -1094,6 +1132,7 @@
                 "FormatType": ng.e1_radios !== 2 ? ng.e1_formato : null,
                 "ApplicationStartDate": ng.e1_aplicacao.Inicio,
                 "ApplicationEndDate": ng.e1_aplicacao.Final,
+                "DownloadStartDate": ng.e1_inicioDownload,
                 "CorrectionStartDate": ng.e1_correcao.Inicio,
                 "CorrectionEndDate": ng.e1_correcao.Final,
                 "TestPerformanceLevels": ng.e1_cbNiveisDesempenho ? popularNiveis() : null,
@@ -1107,10 +1146,12 @@
                 "ElectronicTest": ng.isElectronicTest,
                 "ShowOnSerapEstudantes": ng.showOnSerapEstudantes,
                 "ShowVideoFiles": ng.showVideoFiles,
+                "ShowTestContext": ng.showTestContext,
                 "ShowAudioFiles": ng.showAudioFiles,
                 "ShowJustificate": ng.showJustificate,
                 "TestSubGroup": ng.e1_grupoSubgrupo,
-                "TestTime": ng.e1_tempoDeProva
+                "TestTime": ng.e1_tempoDeProva,
+                "TestContexts": ng.testContexts,
             };
 
             self.etapa1.save(model, etapa1Salvou);
@@ -1124,7 +1165,7 @@
         function etapa1Salvou(r) {
 
             if (r.success) {
-
+                
                 var param = {
                     Id: r.TestID
                 };
@@ -1450,7 +1491,8 @@
                     ng.isMultidiscipline = r.Multidiscipline;
                     ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock;
                     ng.isElectronicTest = r.ElectronicTest;
-                    ng.showOnSerapEstudantes = r.ShowOnSerapEstudantes
+                    
+                    ng.showTestContext = r.ShowTestContext;
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
                     ng.showJustificate = r.ShowJustificate;
@@ -1458,6 +1500,12 @@
                     ng.e1_folhaResp = true;
                     ng.frequencyApplication = r.FrequencyApplication;
                     ng.e1_listaPeriodosChecked = r.TestCurriculumGrades;
+                    ng.e1_inicioDownload = r.DownloadStartDate;
+
+                    if (r.TestContexts.length > 0) {
+                        ng.testContexts = r.TestContexts;
+                    }
+
                     //Cronograma
                     ng.e1_aplicacao = {
                         Inicio: r.ApplicationStartDate,
@@ -1520,6 +1568,7 @@
 
         function infoProvaGlobal(r) {
             ng.Global = r.lista.TestType.Global;
+            ng.testContexts = r.lista.TestContexts;
         };
 
         function initModalAdicao() {
@@ -2758,6 +2807,12 @@
             angular.element("#modalSelecItensProxCaderno").modal({ backdrop: 'static' });
         };
 
+        ng.callModalAdicionarContextoProva = callModalAdicionarContextoProva;
+        function callModalAdicionarContextoProva() {
+            e1_criarObjetoDadosModalContexto();
+            angular.element("#modalNovoContextoProva").modal({ backdrop: 'static' });
+        };
+
         ng.e2_exibirModalProximoBloco = e2_exibirModalProximoBloco;
         function e2_exibirModalProximoBloco() {
             e2_limparModal();
@@ -3742,6 +3797,8 @@
             }
         };
 
+        
+
         /**
         * @function Geração de modelo HTML da prova
         * @private
@@ -4140,6 +4197,71 @@
                 }
             });
         };
+
+        ng.e1_criarObjetoDadosModalContexto = e1_criarObjetoDadosModalContexto;
+        function e1_criarObjetoDadosModalContexto() {
+            ng.e1_dadosModalContexto = {
+                id: 0,
+                imagePositionDescription: '',
+                title: '',
+                text: '',
+                imagePath: '',
+                image: {  Id: '', Guid: '', Path: '' }
+            };
+        };
+
+        ng.e1_addDadosModalContexto = e1_addDadosModalContexto;
+        function e1_addDadosModalContexto() {
+            if (ng.e1_dadosModalContexto.id) {
+                const itemAlterar = ng.testContexts.find(t => t.id === ng.e1_dadosModalContexto.id);
+                if (itemAlterar) {
+                    const indexItemAlterar = ng.testContexts.indexOf(itemAlterar);
+                    const itemAlterado = {
+                        ...ng.e1_dadosModalContexto,
+                        imagePath: ng.e1_dadosModalContexto.image.Path,
+                    };
+                    ng.testContexts[indexItemAlterar] = itemAlterado;
+                }
+                
+            } else {
+                const itemNovo = {
+                    ...ng.e1_dadosModalContexto,
+                    imagePath: ng.e1_dadosModalContexto.image.Path
+                };
+                ng.testContexts.push(itemNovo);
+            }
+            ng.e1_criarObjetoDadosModalContexto();
+            self.etapa1.alterou = true
+            angular.element('#modalNovoContextoProva').modal('hide');
+        };
+
+        ng.e1_confirmarDeletarItemTestContext = e1_confirmarDeletarItemTestContext;
+        function e1_confirmarDeletarItemTestContext(item) {
+            ng.e1_itemParaDeletarDaListaTestContex = item;
+            angular.element('#modalDeleteItemTestContex').modal({ backdrop: 'static' });
+        };
+
+        ng.e1_deleteItemTestContext = e1_deleteItemTestContext;
+        function e1_deleteItemTestContext() {
+            if (ng.e1_itemParaDeletarDaListaTestContex) {
+                const indexItemDelete = ng.testContexts.indexOf(ng.e1_itemParaDeletarDaListaTestContex);
+                ng.testContexts.splice(indexItemDelete, 1);
+                ng.e1_itemParaDeletarDaListaTestContex = '';
+                self.etapa1.alterou = true
+            }
+            angular.element('#modalDeleteItemTestContex').modal('hide');
+        };
+
+        ng.e1_editarModalContexto = e1_editarModalContexto;
+        function e1_editarModalContexto(item) {
+            e1_criarObjetoDadosModalContexto();
+            ng.e1_dadosModalContexto = {
+                ...item,
+                image: { Id: '', Guid: '', Path: item.imagePath }
+            };
+            angular.element('#modalNovoContextoProva').modal({ backdrop: 'static' });
+        };        
+       
 
     };
 

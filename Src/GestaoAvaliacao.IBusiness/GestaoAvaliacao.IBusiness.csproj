@@ -82,6 +82,7 @@
     <Compile Include="IStudentTestAccoplishmentBusiness.cs" />
     <Compile Include="ISubjectBusiness.cs" />
     <Compile Include="ISubSubjectBusiness.cs" />
+    <Compile Include="ITestContextBusiness.cs" />
     <Compile Include="ITestFilesBusiness.cs" />
     <Compile Include="IAdherenceBusiness.cs" />
     <Compile Include="IBlockBusiness.cs" />
