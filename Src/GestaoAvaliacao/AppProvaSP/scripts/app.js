@@ -58,7 +58,7 @@ var corteCache = [];
  Questionário 8: Funcionalidades de acompanhamento da ProvaSP no dia da mesma;
  Fichas de registro: Perguntas aos diretores e responsáveis sobre andamento técnico da ProvaSP
 */
-var edicoesComTurmasAmostrais = ["2017", "2018", "2019"];
+var edicoesComTurmasAmostrais = ["2017", "2018", "2019", "2021"];
 var edicoesRevistasPedagogicas = []; // ["2017"] é Boletim
 var questionarios = [
     "1",/*Questionário Supervisor*/
@@ -80,7 +80,7 @@ var questionarios = [
     "21",/*NOVO Questionário dos Alunos do 3º ao 6º ano 2019*/
     "22",/*NOVO Questionário dos Alunos do 7º ao 9º ano 2019*/
     "23",/*NOVO Questionário Professor 2019*/
-    "24",/*NOVO Questionário Diretor 2019*/
+    "26",/*NOVO Questionário Diretor 2019*/
     "25",/*NOVO Questionário Assistente de Diretoria 2019*/
 ];
 /**
@@ -530,7 +530,7 @@ function onDeviceReady() {
          *Questionário do Supervisor foi descontinuado em 2018
         */
         if (Usuario.Diretor) {
-            $("#divAbrirQuestionarioID_24").show();
+            $("#divAbrirQuestionarioID_26").show();
             // Desabilitar temporariamente a ficha de registro dos professores 22/10/19
             //$("#divAbrirQuestionarioID_10").show();
         }
@@ -6149,7 +6149,7 @@ function definirEventHandlers() {
      para iniciar o questionário de fato.
      *Reparar que esconde a introdução e mostra as questões
     */
-    $("#btnQuestionario1_Iniciar,#btnQuestionario24_Iniciar,#btnQuestionario3_Iniciar," +
+    $("#btnQuestionario1_Iniciar,#btnQuestionario26_Iniciar,#btnQuestionario3_Iniciar," +
         "#btnQuestionario23_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
         "#btnQuestionario15_Iniciar,#btnQuestionario16_Iniciar,#btnQuestionario17_Iniciar," +
         "#btnQuestionario18_Iniciar,#btnQuestionario21_Iniciar,#btnQuestionario22_Iniciar")

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProvaSP.Data.Funcionalidades
+﻿namespace ProvaSP.Data.Funcionalidades
 {
     public static class Prova
     {
@@ -12,7 +6,7 @@ namespace ProvaSP.Data.Funcionalidades
         {
             get
             {
-                return "2019";
+                return "2021";
             }
         }
     }
