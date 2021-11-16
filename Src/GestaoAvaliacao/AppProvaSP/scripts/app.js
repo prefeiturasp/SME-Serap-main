@@ -80,7 +80,7 @@ var questionarios = [
     "21",/*NOVO Questionário dos Alunos do 3º ao 6º ano 2019*/
     "22",/*NOVO Questionário dos Alunos do 7º ao 9º ano 2019*/
     "23",/*NOVO Questionário Professor 2019*/
-    "26",/*NOVO Questionário Diretor 2019*/
+    "26",/*NOVO Questionário Diretor 2021*/
     "25",/*NOVO Questionário Assistente de Diretoria 2019*/
 ];
 /**
