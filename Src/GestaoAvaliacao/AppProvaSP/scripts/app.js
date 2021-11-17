@@ -63,7 +63,7 @@ var edicoesRevistasPedagogicas = []; // ["2017"] é Boletim
 var questionarios = [
     "1",/*Questionário Supervisor*/
     //"2",/*Questionário Diretor 2018*/
-    "3",/*Questionário Coordenador*/
+    //"3",/*Questionário Coordenador*/
     "8",/*Controle da Prova a ser aplicada*/
     "9",/*Ficha de registro Supervisor*/
     "10",/*Ficha de registro Diretor*/
@@ -81,6 +81,7 @@ var questionarios = [
     "22",/*NOVO Questionário dos Alunos do 7º ao 9º ano 2019*/
     "23",/*NOVO Questionário Professor 2019*/
     "26",/*NOVO Questionário Diretor 2021*/
+    "27",/*NOVO Questionário CP 2021*/
     "25",/*NOVO Questionário Assistente de Diretoria 2019*/
 ];
 /**
@@ -555,15 +556,15 @@ function onDeviceReady() {
         /*if (Usuario.Supervisor) {
             //$("#divAbrirQuestionarioID_1").show();
             $("#divAbrirQuestionarioID_9").show();
-        }
+        }*/
         if (Usuario.Coordenador) {
-            $("#divAbrirQuestionarioID_3").show();
-            $("#divAbrirQuestionarioID_11").show();
+            $("#divAbrirQuestionarioID_27").show();
+            //$("#divAbrirQuestionarioID_11").show();
         }
-        if (Usuario.AuxiliarTecnicoEducacao) {
+        /*if (Usuario.AuxiliarTecnicoEducacao) {
             $("#divAbrirQuestionarioID_14").show();
         }
-        if (Usuario.AgenteEscolar) {
+        /*if (Usuario.AgenteEscolar) {
             $("#divAbrirQuestionarioID_15").show();
             $("#divAbrirQuestionarioID_16").show();
             $("#divAbrirQuestionarioID_17").show();
@@ -6149,7 +6150,7 @@ function definirEventHandlers() {
      para iniciar o questionário de fato.
      *Reparar que esconde a introdução e mostra as questões
     */
-    $("#btnQuestionario1_Iniciar,#btnQuestionario26_Iniciar,#btnQuestionario3_Iniciar," +
+    $("#btnQuestionario1_Iniciar,#btnQuestionario26_Iniciar,#btnQuestionario27_Iniciar," +
         "#btnQuestionario23_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
         "#btnQuestionario15_Iniciar,#btnQuestionario16_Iniciar,#btnQuestionario17_Iniciar," +
         "#btnQuestionario18_Iniciar,#btnQuestionario21_Iniciar,#btnQuestionario22_Iniciar")
