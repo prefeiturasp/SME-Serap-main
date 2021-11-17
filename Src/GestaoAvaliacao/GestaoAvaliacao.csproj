@@ -394,6 +394,8 @@
     <Content Include="AppProvaSP\questionario_10.html" />
     <Content Include="AppProvaSP\questionario_11.html" />
     <Content Include="AppProvaSP\questionario_12.html" />
+    <Content Include="AppProvaSP\questionario_28.html" />
+    <Content Include="AppProvaSP\questionario_26.html" />
     <Content Include="AppProvaSP\questionario_25.html" />
     <Content Include="AppProvaSP\questionario_13.html" />
     <Content Include="AppProvaSP\questionario_14.html" />
@@ -408,6 +410,7 @@
     <Content Include="AppProvaSP\questionario_21.html" />
     <Content Include="AppProvaSP\questionario_22.html" />
     <Content Include="AppProvaSP\questionario_23.html" />
+    <Content Include="AppProvaSP\questionario_27.html" />
     <Content Include="AppProvaSP\questionario_3.html" />
     <Content Include="AppProvaSP\questionario_9.html" />
     <Content Include="AppProvaSP\scripts\jquery-1.9.1.js" />
