@@ -30,10 +30,11 @@
 
         var self = this;
 
+        /*$scope.listextensionsImage = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'];*/
+
         function load() {
             $notification.clear();
             configVariaveis();
-            ng.listextensionsImage = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'];
         };
 
         /**
@@ -81,6 +82,7 @@
          * @return
          */
         function configVariaveis() {
+            ng.listextensionsImage = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'];
             ng.EnumFrequencyApplication = {
                 Yearly: 1,
                 Semiannual: 2,

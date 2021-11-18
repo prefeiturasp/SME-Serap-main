@@ -1565,7 +1565,7 @@
                         <div class="campoLabel">
                             <label>Imagem*:</label>
                             <div class="uploadImage">
-                                <div upload="" data-trash="true" type="@(EnumFileType.BaseText)" component="e1_dadosModalContexto.image" placeholder="uma imagem" data-listextensions="listextensionsImage"></div>
+                                <div upload="" data-trash="true" type="@(EnumFileType.BaseText)" component="e1_dadosModalContexto.image" placeholder="uma imagem" data-filesizemb="10" data-listextensions="listextensionsImage"></div>
                             </div>
                         </div>
                         <div class="campoLabel">
@@ -1597,7 +1597,7 @@
                                               class="form-control" images=""
                                               ng-model="e1_dadosModalContexto.text"
                                               tipo="@((Byte)EnumFileType.BaseText)"
-                                              redactor="{buttons: ['formatting', '|', 'bold', 'italic']}"> </textarea>
+                                              redactor="{limiter: 20, plugins:['limiter'], buttons: ['formatting', '|', 'bold', 'italic', 'underline', 'orderedlist']}"> </textarea>
                                 </div>
                             </div>
                         </div>

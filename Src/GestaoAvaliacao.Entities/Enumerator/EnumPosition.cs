@@ -6,7 +6,7 @@ namespace GestaoAvaliacao.Entities.Enumerator
 	{
 		[Description("Esquerda")]
 		Left = 1,
-		[Description("Centro")]
+		[Description("Centralizada")]
 		Center = 2,
 		[Description("Direita")]
 		Right = 3

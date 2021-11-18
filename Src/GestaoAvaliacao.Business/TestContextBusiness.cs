@@ -35,7 +35,15 @@ namespace GestaoAvaliacao.Business
             entity.Validate = Validate(entity, ValidateAction.Save, entity.Validate);
             if (entity.Validate.IsValid)
             {
-                entity = testContextRepository.Save(entity);
+                try
+                {
+                    entity = testContextRepository.Save(entity);
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+                
                 entity.Validate.Type = ValidateType.Save.ToString();
                 entity.Validate.Message = "Contexto da Prova salvo com sucesso.";
             }
