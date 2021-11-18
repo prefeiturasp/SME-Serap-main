@@ -44,7 +44,8 @@
             restrict: 'A',
             template: __template,
             scope: {
-            	component: '=',
+                component: '=',
+                filesizemb: '=',
             	type: '@',
             	callback: '=',
             	uploadingStatusCallback: '=',
@@ -199,7 +200,29 @@
             	if ($scope.field.type == "application/x-msdownload") {
             		$notification['alert']("Não é permitido enviar esse tipo de arquivo.");
             		return false;
-            	}
+                }
+
+
+                var parameterSize = kmgtbytes(parseInt(allowExtension.FILE_MAX_SIZE) * 1024);
+
+                if ($scope.filesizemb != undefined) {
+                    parameterSize = kmgtbytes(parseInt($scope.filesizemb) * 1024 * 1024);
+                }
+
+                var tamanhoArquivo = parseInt($scope.field.size);
+                var fileSize = kmgtbytes(tamanhoArquivo);
+                if (fileSize[1] == parameterSize[1]) {
+                    if (fileSize[0] > parameterSize[0]) {
+                        $notification['alert']("Tamanho do arquivo excede o permitido (" + parameterSize[0] + parameterSize[1] + ")!");
+                        return false;
+                    }
+                } else if (fileSize[1] != parameterSize[1]) {
+                    if (fileSize[1] == 'GB' || fileSize[1] == 'TR') {
+                        $notification['error']("Tamanho do arquivo excede o permitido (" + parameterSize[0] + parameterSize[1] + ")!");
+                        return false;
+                    }
+                }
+
             	//verifica a listas de extensoões vinda do html,
             	//para saber quais tipos de extensões é permitido salvar
             	if ($scope.listextensions != undefined) {
@@ -220,20 +243,7 @@
             		$notification['alert']("Não é permitido salvar esse tipo de extensão de imagem!");
             		return false;
             	}
-            	var parameterSize = kmgtbytes(parseInt(allowExtension.FILE_MAX_SIZE) * 1024);
-            	var tamanhoArquivo = parseInt($scope.field.size);
-            	var fileSize = kmgtbytes(tamanhoArquivo);
-            	if (fileSize[1] == parameterSize[1]) {
-            		if (fileSize[0] > parameterSize[0]) {
-            			$notification['alert']("Tamanho do arquivo excede o permitido (" + parameterSize[0] + parameterSize[1] + ")!");
-            			return false;
-            		}
-            	} else if (fileSize[1] != parameterSize[1]) {
-            		if (fileSize[1] == 'GB' || fileSize[1] == 'TR') {
-            			$notification['error']("Tamanho do arquivo excede o permitido (" + parameterSize[0] + parameterSize[1]+")!");
-            			return false;
-            		}
-            	}      	
+            	  	
             	if ($scope.field.type != "image/jpeg" && $scope.field.type != "image/png" && $scope.field.type != "image/gif" && $scope.field.type != "image/bmp" ) {
             		return true;
             	} else {

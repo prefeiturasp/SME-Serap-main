@@ -795,25 +795,23 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                if (entity.Id > 0)
+                foreach (var testContext in entity.TestContexts)
                 {
-                    entity = testBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.usu_id,
-                        (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
-                            SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
-                }
-                else
-                {
-                    entity = testBusiness.Save(entity, SessionFacade.UsuarioLogado.Usuario.usu_id, (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
-                            SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
+                    EnumPosition position = ObterPosicionamento(testContext.ImagePositionDescription);
+
+                    testContext.ImagePosition = position;
                 }
 
-                if (entity.Validate.IsValid)
+                if (entity.Id > 0)
                 {
-                    entity.TestSituation = testBusiness.TestSituation(entity);
-                    testContextBusiness.DeleteByTestId(entity.Id);
+                    
+                    entity = testBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                            (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                                SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
+
                     if (entity.TestContexts.Any())
                     {
-                        
+                        testContextBusiness.DeleteByTestId(entity.Id);
                         foreach (var testContext in entity.TestContexts)
                         {
                             EnumPosition position = ObterPosicionamento(testContext.ImagePositionDescription);
@@ -823,6 +821,16 @@ namespace GestaoAvaliacao.Controllers
                             testContextBusiness.Save(testContext);
                         }
                     }
+                }
+                else
+                {
+                    entity = testBusiness.Save(entity, SessionFacade.UsuarioLogado.Usuario.usu_id, (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                            SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
+                }
+
+                if (entity.Validate.IsValid)
+                {
+                    entity.TestSituation = testBusiness.TestSituation(entity);                    
                 }
 
 
@@ -847,7 +855,7 @@ namespace GestaoAvaliacao.Controllers
 
             if (EnumPosition.Right.GetDescription() == imagePositionDescription)
                 return EnumPosition.Right;
-            
+
 
             return EnumPosition.Left;
         }
