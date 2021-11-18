@@ -2,7 +2,6 @@
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
-using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Models;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.Util.Extensions;
@@ -20,160 +19,162 @@ using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.Controllers
 {
-	[Authorize]
-	[AuthorizeModule]
-	public class TestController : Controller
-	{
-		private readonly ITestBusiness testBusiness;
-		private readonly ITestFilesBusiness testFilesBusiness;
-		private readonly IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness;
-		private readonly IBlockBusiness blockBusiness;
-		private readonly IFileBusiness fileBusiness;
-		private readonly ICorrectionBusiness correctionBusiness;
-		private readonly IRequestRevokeBusiness requestRevokeBusiness;
-		private readonly IExportAnalysisBusiness exportAnalysisBusiness;
-		private readonly IESC_EscolaBusiness escolaBusiness;
-		private readonly ITestCurriculumGradeBusiness testCurriculumGradeBusiness;
-		private readonly ITestPermissionBusiness testPermissionBusiness;
+    [Authorize]
+    [AuthorizeModule]
+    public class TestController : Controller
+    {
+        private readonly ITestBusiness testBusiness;
+        private readonly ITestFilesBusiness testFilesBusiness;
+        private readonly IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness;
+        private readonly IBlockBusiness blockBusiness;
+        private readonly IFileBusiness fileBusiness;
+        private readonly ICorrectionBusiness correctionBusiness;
+        private readonly IRequestRevokeBusiness requestRevokeBusiness;
+        private readonly IExportAnalysisBusiness exportAnalysisBusiness;
+        private readonly IESC_EscolaBusiness escolaBusiness;
+        private readonly ITestCurriculumGradeBusiness testCurriculumGradeBusiness;
+        private readonly ITestPermissionBusiness testPermissionBusiness;
+        private readonly ITestContextBusiness testContextBusiness;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
-			IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness, 
-			IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness, 
-			ITestPermissionBusiness testPermissionBusiness)
-		{
-			this.testBusiness = testBusiness;
-			this.testFilesBusiness = testFilesBusiness;
-			this.tipoCurriculoPeriodoBusiness = tipoCurriculoPeriodoBusiness;
-			this.blockBusiness = blockBusiness;
-			this.fileBusiness = fileBusiness;
-			this.correctionBusiness = correctionBusiness;
-			this.requestRevokeBusiness = requestRevokeBusiness;
-			this.exportAnalysisBusiness = exportAnalysisBusiness;
-			this.escolaBusiness = escolaBusiness;
-			this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
-			this.testPermissionBusiness = testPermissionBusiness;
+            IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
+            IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness,
+            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness)
+        {
+            this.testBusiness = testBusiness;
+            this.testFilesBusiness = testFilesBusiness;
+            this.tipoCurriculoPeriodoBusiness = tipoCurriculoPeriodoBusiness;
+            this.blockBusiness = blockBusiness;
+            this.fileBusiness = fileBusiness;
+            this.correctionBusiness = correctionBusiness;
+            this.requestRevokeBusiness = requestRevokeBusiness;
+            this.exportAnalysisBusiness = exportAnalysisBusiness;
+            this.escolaBusiness = escolaBusiness;
+            this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
+            this.testPermissionBusiness = testPermissionBusiness;
+            this.testContextBusiness = testContextBusiness;
 
-		}
+        }
 
-		public ActionResult Index() => View();
+        public ActionResult Index() => View();
 
         [ActionAuthorizeAttribute(Permission.CreateOrUpdate)]
-		public ActionResult IndexForm(long Id = -1)
-		{
-			return View(new Test { Id = Id });
-		}
+        public ActionResult IndexForm(long Id = -1)
+        {
+            return View(new Test { Id = Id });
+        }
 
-		public ActionResult IndexImport()
-		{
-			return View();
-		}
+        public ActionResult IndexImport()
+        {
+            return View();
+        }
 
-		public ActionResult IndexReport()
-		{
-			return View();
-		}
+        public ActionResult IndexReport()
+        {
+            return View();
+        }
 
-		public ActionResult IndexRevoke()
-		{
-			return View();
-		}
+        public ActionResult IndexRevoke()
+        {
+            return View();
+        }
 
-		public ActionResult IndexRequestRevoke()
-		{
-			return View();
-		}
+        public ActionResult IndexRequestRevoke()
+        {
+            return View();
+        }
 
-		public ActionResult IndexAdministrate()
-		{
-			return View();
-		}
+        public ActionResult IndexAdministrate()
+        {
+            return View();
+        }
 
-		public ActionResult IndexStudentResponses()
-		{
-			return View();
-		}
+        public ActionResult IndexStudentResponses()
+        {
+            return View();
+        }
 
-		public ActionResult IndexPermission()
-		{
-			return View();
-		}
+        public ActionResult IndexPermission()
+        {
+            return View();
+        }
 
-		#region Read
+        #region Read
 
-		[HttpGet]
-		public JsonResult GetAuthorize(long test_id, int esc_id = 0)
-		{
-			try
-			{
-				var test = testBusiness.GetObjectToAdherence(test_id);
-				if (test != null)
-				{
-					ESC_Escola escola = null;
-					if (esc_id > 0)
-					{
-						escola = escolaBusiness.Get(esc_id);
-					}
+        [HttpGet]
+        public JsonResult GetAuthorize(long test_id, int esc_id = 0)
+        {
+            try
+            {
+                var test = testBusiness.GetObjectToAdherence(test_id);
+                if (test != null)
+                {
+                    ESC_Escola escola = null;
+                    if (esc_id > 0)
+                    {
+                        escola = escolaBusiness.Get(esc_id);
+                    }
 
-					var dados = new
-					{
-						testOwner = test.UsuId.Equals(SessionFacade.UsuarioLogado.Usuario.usu_id),
-						testName = test.TestDescription,
-						frequencyApplication = test.FrequencyApplicationDescription,
-						testDiscipline = test.DisciplineDescription,
-						testId = test.Id,
-						global = test.Global,
-						answerSheetBlocked = test.AnswerSheetBlocked,
-						esc_id = esc_id,
-						dre_id = escola != null ? escola.uad_idSuperiorGestao : null
-					};
+                    var dados = new
+                    {
+                        testOwner = test.UsuId.Equals(SessionFacade.UsuarioLogado.Usuario.usu_id),
+                        testName = test.TestDescription,
+                        frequencyApplication = test.FrequencyApplicationDescription,
+                        testDiscipline = test.DisciplineDescription,
+                        testId = test.Id,
+                        global = test.Global,
+                        answerSheetBlocked = test.AnswerSheetBlocked,
+                        esc_id = esc_id,
+                        dre_id = escola != null ? escola.uad_idSuperiorGestao : null
+                    };
 
-					return Json(new { success = true, dados = dados }, JsonRequestBehavior.AllowGet);
-				}
+                    return Json(new { success = true, dados = dados }, JsonRequestBehavior.AllowGet);
+                }
 
-				return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Não foi possível carregar os dados." }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao carregar dados." }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Não foi possível carregar os dados." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao carregar dados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		[HttpGet]
-		public JsonResult GetTestInfo(long test_id)
-		{
-			try
-			{
-				var test = testBusiness.GetObjectToAdherence(test_id);
-				if (test != null)
-				{
-					var dados = new
-					{
-						testDescription = test.TestDescription,
-						testDiscipline = test.DisciplineDescription
-					};
+        [HttpGet]
+        public JsonResult GetTestInfo(long test_id)
+        {
+            try
+            {
+                var test = testBusiness.GetObjectToAdherence(test_id);
+                if (test != null)
+                {
+                    var dados = new
+                    {
+                        testDescription = test.TestDescription,
+                        testDiscipline = test.DisciplineDescription
+                    };
 
-					return Json(new { success = true, dados = dados }, JsonRequestBehavior.AllowGet);
-				}
+                    return Json(new { success = true, dados = dados }, JsonRequestBehavior.AllowGet);
+                }
 
-				return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Não foi possível carregar os dados." }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao carregar dados." }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Não foi possível carregar os dados." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao carregar dados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		[HttpGet]
-		public JsonResult GetTestById(long Id)
-		{
-			try
-			{
-				var entity = testBusiness.GetTestById(Id);
+        [HttpGet]
+        public JsonResult GetTestById(long Id)
+        {
+            try
+            {
+                var entity = testBusiness.GetTestById(Id);
 
-				if (entity != null)
-				{
+                if (entity != null)
+                {
                     var ret = new
                     {
                         Id = entity.Id,
@@ -189,12 +190,13 @@ namespace GestaoAvaliacao.Controllers
                         NumberItemsBlock = entity.NumberItemsBlock,
                         NumberBlock = entity.NumberBlock,
                         NumberItem = entity.NumberItem,
+                        DownloadStartDate = entity.DownloadStartDate.HasValue ? entity.DownloadStartDate.GetValueOrDefault().ToString("yyyy/MM/dd") : "",
                         ApplicationStartDate = entity.ApplicationStartDate.ToString("yyyy/MM/dd"),
                         ApplicationEndDate = entity.ApplicationEndDate.ToString("yyyy/MM/dd"),
-						ApplicationActiveOrDone = entity.ApplicationActiveOrDone,
-						CorrectionStartDate = entity.CorrectionStartDate.ToString("yyyy/MM/dd"),
+                        ApplicationActiveOrDone = entity.ApplicationActiveOrDone,
+                        CorrectionStartDate = entity.CorrectionStartDate.ToString("yyyy/MM/dd"),
                         CorrectionEndDate = entity.CorrectionEndDate.ToString("yyyy/MM/dd"),
-						Password = entity.Password,
+                        Password = entity.Password,
                         BlockItem = entity.Bib ? blockBusiness.CountItemTestBIB(Id) : blockBusiness.CountItemTest(Id),
                         FrequencyApplication = entity.FrequencyApplication,
                         FormatType = entity.FormatType != null ? new { Id = entity.FormatType.Id, Description = entity.FormatType.Description } : null,
@@ -219,197 +221,209 @@ namespace GestaoAvaliacao.Controllers
                             Description = icg.ItemLevel.Description,
                             IdItem = icg.ItemLevel.Id
                         }).ToList(),
+                        TestContexts = entity.TestContexts.Where(i => i.State == (Byte)EnumState.ativo).Select(tc => new
+                        {
+                            id = tc.Id,
+                            imagePosition = tc.ImagePosition,
+                            imagePositionDescription = tc.ImagePosition.GetDescription(),
+                            imagePath = tc.ImagePath,
+                            text = tc.Text,
+                            title = tc.Title
+                        }).ToList(),
                         TestSituation = entity.TestSituation,
                         PublicFeedback = entity.PublicFeedback,
                         Multidiscipline = entity.Multidiscipline,
                         KnowledgeAreaBlock = entity.KnowledgeAreaBlock,
                         ElectronicTest = entity.ElectronicTest,
-						ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes,
-						entity.ShowVideoFiles,
-						entity.ShowAudioFiles,
-						entity.ShowJustificate,
+                        ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes,
+                        ShowTestContext = entity.ShowTestContext,
+                        entity.ShowVideoFiles,
+                        entity.ShowAudioFiles,
+                        entity.ShowJustificate,
                         TestSubGroup = entity.TestSubGroup != null ? new { Id = entity.TestSubGroup.Id, Description = entity.TestSubGroup.Description } : null,
                         TempoDeProva = new { entity.TestTime.Id, entity.TestTime.Description }
-					};
 
-					return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
-				}
+                    };
 
-				return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Prova não encontrada." }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                    return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
+                }
 
-		[HttpGet]
-		public JsonResult GetStatusCorrectionList()
-		{
-			try
-			{
-				var ret = Enum.GetValues(typeof(EnumStatusCorrection)).Cast<EnumStatusCorrection>().Select(v => new
-				{
-					Id = (int)v,
-					Description = EnumHelper.GetDescriptionFromEnumValue(v)
-				}).ToList();
+                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Prova não encontrada." }, JsonRequestBehavior.AllowGet);
+            }
 
-				if (ret != null)
-				{
-					return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
-				}
-				else
-					return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Opções de situação da correção não encontradas." }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar opções de situação da correção." }, JsonRequestBehavior.AllowGet);
-			}
-		}
-		[HttpGet]
-		public JsonResult GetInfoTestReport(long Test_id)
-		{
-			try
-			{
-				var lista = testBusiness.GetInfoReportCorrection(Test_id);
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-				if (lista.Validate.IsValid)
-				{
-					return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
-				}
-				else
-					return Json(new { success = false, type = ValidateType.alert.ToString(), message = lista.Validate.Message }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
-			}
-		}
+        [HttpGet]
+        public JsonResult GetStatusCorrectionList()
+        {
+            try
+            {
+                var ret = Enum.GetValues(typeof(EnumStatusCorrection)).Cast<EnumStatusCorrection>().Select(v => new
+                {
+                    Id = (int)v,
+                    Description = EnumHelper.GetDescriptionFromEnumValue(v)
+                }).ToList();
 
-		[HttpGet]
-		public JsonResult GetInfoTestCurriculumGrade(long Test_id)
-		{
-			try
-			{
-				var curriculoPeriodo = testCurriculumGradeBusiness.GetTestCurriculumGradeCrpDescricao(Test_id);
+                if (ret != null)
+                {
+                    return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                    return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Opções de situação da correção não encontradas." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar opções de situação da correção." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public JsonResult GetInfoTestReport(long Test_id)
+        {
+            try
+            {
+                var lista = testBusiness.GetInfoReportCorrection(Test_id);
 
-				return Json(new { success = true, curriculoPeriodo = curriculoPeriodo }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                if (lista.Validate.IsValid)
+                {
+                    return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                    return Json(new { success = false, type = ValidateType.alert.ToString(), message = lista.Validate.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		[HttpGet]
-		public JsonResult GetCurriculumGradeByTestId(long Test_Id)
-		{
-			try
-			{
-				var curriculumGrade = testCurriculumGradeBusiness.GetCurricumGradeByTest_Id(Test_Id);
+        [HttpGet]
+        public JsonResult GetInfoTestCurriculumGrade(long Test_id)
+        {
+            try
+            {
+                var curriculoPeriodo = testCurriculumGradeBusiness.GetTestCurriculumGradeCrpDescricao(Test_id);
 
-				return Json(new { success = true, lista = curriculumGrade }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter ano(s) de aplicação da prova" }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                return Json(new { success = true, curriculoPeriodo = curriculoPeriodo }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetCurriculumGradeByTestId(long Test_Id)
+        {
+            try
+            {
+                var curriculumGrade = testCurriculumGradeBusiness.GetCurricumGradeByTest_Id(Test_Id);
+
+                return Json(new { success = true, lista = curriculumGrade }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter ano(s) de aplicação da prova" }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
 
-		[HttpGet]
-		public JsonResult GetInfoUadReport(long Test_id, Guid uad_id)
-		{
-			try
-			{
-				var lista = testBusiness.GetInfoReportCorrection(Test_id, SessionFacade.UsuarioLogado.Usuario.ent_id, uad_id);
+        [HttpGet]
+        public JsonResult GetInfoUadReport(long Test_id, Guid uad_id)
+        {
+            try
+            {
+                var lista = testBusiness.GetInfoReportCorrection(Test_id, SessionFacade.UsuarioLogado.Usuario.ent_id, uad_id);
 
-				if (lista.Validate.IsValid)
-				{
-					return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
-				}
-				else
-					return Json(new { success = false, type = ValidateType.alert.ToString(), message = lista.Validate.Message }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
-			}
-		}
-		[HttpGet]
-		public JsonResult GetInfoEscReport(long Test_id, Guid uad_id, long esc_id)
-		{
-			try
-			{
-				var lista = testBusiness.GetInfoReportCorrection(Test_id, SessionFacade.UsuarioLogado.Usuario.ent_id, uad_id, esc_id);
+                if (lista.Validate.IsValid)
+                {
+                    return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                    return Json(new { success = false, type = ValidateType.alert.ToString(), message = lista.Validate.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public JsonResult GetInfoEscReport(long Test_id, Guid uad_id, long esc_id)
+        {
+            try
+            {
+                var lista = testBusiness.GetInfoReportCorrection(Test_id, SessionFacade.UsuarioLogado.Usuario.ent_id, uad_id, esc_id);
 
-				if (lista.Validate.IsValid)
-				{
-					return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
-				}
-				else
-					return Json(new { success = false, type = ValidateType.alert.ToString(), message = lista.Validate.Message }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
-			}
-		}
-		[HttpGet]
-		public JsonResult GetInfoTurReport(long Test_id, Guid uad_id, long esc_id, long tur_id)
-		{
-			try
-			{
-				var lista = testBusiness.GetInfoReportCorrection(Test_id, SessionFacade.UsuarioLogado.Usuario.ent_id, uad_id, esc_id, tur_id);
+                if (lista.Validate.IsValid)
+                {
+                    return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                    return Json(new { success = false, type = ValidateType.alert.ToString(), message = lista.Validate.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public JsonResult GetInfoTurReport(long Test_id, Guid uad_id, long esc_id, long tur_id)
+        {
+            try
+            {
+                var lista = testBusiness.GetInfoReportCorrection(Test_id, SessionFacade.UsuarioLogado.Usuario.ent_id, uad_id, esc_id, tur_id);
 
-				if (lista.Validate.IsValid)
-				{
-					return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
-				}
-				else
-					return Json(new { success = false, type = ValidateType.alert.ToString(), message = lista.Validate.Message }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                if (lista.Validate.IsValid)
+                {
+                    return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                    return Json(new { success = false, type = ValidateType.alert.ToString(), message = lista.Validate.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		[HttpGet]
-		[Paginate]
-		public JsonResult SearchTests(TestFilter filter)
-		{
-			try
-			{
-				var visao = (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString());
+        [HttpGet]
+        [Paginate]
+        public JsonResult SearchTests(TestFilter filter)
+        {
+            try
+            {
+                var visao = (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString());
 
-				if (filter == null)
-				{
-					filter = new TestFilter();
-					if (visao == EnumSYS_Visao.Administracao)
-						filter.global = true;
-					else if (visao != EnumSYS_Visao.Individual)
-						filter.global = false;
-				}
+                if (filter == null)
+                {
+                    filter = new TestFilter();
+                    if (visao == EnumSYS_Visao.Administracao)
+                        filter.global = true;
+                    else if (visao != EnumSYS_Visao.Individual)
+                        filter.global = false;
+                }
 
-				filter.ent_id = SessionFacade.UsuarioLogado.Usuario.ent_id;
-				filter.gru_id = SessionFacade.UsuarioLogado.Grupo.gru_id;
-				filter.pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id;
-				filter.usuId = SessionFacade.UsuarioLogado.Usuario.usu_id;
-				filter.vis_id = visao;
-				Pager pager = this.GetPager();
-				var lista = testBusiness._SearchTests(filter, ref pager);
+                filter.ent_id = SessionFacade.UsuarioLogado.Usuario.ent_id;
+                filter.gru_id = SessionFacade.UsuarioLogado.Grupo.gru_id;
+                filter.pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id;
+                filter.usuId = SessionFacade.UsuarioLogado.Usuario.usu_id;
+                filter.vis_id = visao;
+                Pager pager = this.GetPager();
+                var lista = testBusiness._SearchTests(filter, ref pager);
 
-				if (lista != null)
-				{
+                if (lista != null)
+                {
                     if (filter.getGroup)
                     {
                         var ret = lista.GroupBy(p => new
@@ -456,283 +470,283 @@ namespace GestaoAvaliacao.Controllers
                         }).ToList();
 
                         return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
-                    }					
-				}
+                    }
+                }
 
-				return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Provas não encontradas." }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar itens pesquisados." }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Provas não encontradas." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar itens pesquisados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		[HttpGet]
-		public JsonResult GetTestByDate(DateTime DateStart, DateTime DateEnd)
-		{
-			try
-			{
-				TestFilter filter = new TestFilter();
-				var visao = (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString());
+        [HttpGet]
+        public JsonResult GetTestByDate(DateTime DateStart, DateTime DateEnd)
+        {
+            try
+            {
+                TestFilter filter = new TestFilter();
+                var visao = (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString());
 
-				if (filter == null)
-				{
-					filter = new TestFilter();
-					if (visao == EnumSYS_Visao.Administracao)
-						filter.global = true;
-					else if (visao != EnumSYS_Visao.Individual)
-						filter.global = false;
-				}
-				filter.ApplicationStartDate = DateStart;
-				filter.CorrectionEndDate = DateEnd;
-				filter.ent_id = SessionFacade.UsuarioLogado.Usuario.ent_id;
-				filter.gru_id = SessionFacade.UsuarioLogado.Grupo.gru_id;
-				filter.pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id;
-				filter.usuId = SessionFacade.UsuarioLogado.Usuario.usu_id;
-				filter.vis_id = visao;
+                if (filter == null)
+                {
+                    filter = new TestFilter();
+                    if (visao == EnumSYS_Visao.Administracao)
+                        filter.global = true;
+                    else if (visao != EnumSYS_Visao.Individual)
+                        filter.global = false;
+                }
+                filter.ApplicationStartDate = DateStart;
+                filter.CorrectionEndDate = DateEnd;
+                filter.ent_id = SessionFacade.UsuarioLogado.Usuario.ent_id;
+                filter.gru_id = SessionFacade.UsuarioLogado.Grupo.gru_id;
+                filter.pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id;
+                filter.usuId = SessionFacade.UsuarioLogado.Usuario.usu_id;
+                filter.vis_id = visao;
 
-				var lista = testBusiness.GetTestByDate(filter);
+                var lista = testBusiness.GetTestByDate(filter);
 
-				if (lista != null)
-				{
-					return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
-				}
+                if (lista != null)
+                {
+                    return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
+                }
 
-				return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Provas não encontradas." }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar itens pesquisados." }, JsonRequestBehavior.AllowGet);
-			}
-		}
-		[HttpGet]
-		[Paginate]
-		public JsonResult GetSectionAdministrate(long test_id, int esc_id, int ttn_id, string dre_id, int crp_ordem, string statusCorrection)
-		{
-			try
-			{
-				Pager pager = this.GetPager();
+                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Provas não encontradas." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar itens pesquisados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        [Paginate]
+        public JsonResult GetSectionAdministrate(long test_id, int esc_id, int ttn_id, string dre_id, int crp_ordem, string statusCorrection)
+        {
+            try
+            {
+                Pager pager = this.GetPager();
 
-				StudentResponseFilter filter = new StudentResponseFilter
-				{
-					Test_Id = test_id,
-					School_Id = esc_id,
-					ttn_id = ttn_id,
-					uad_id = string.IsNullOrEmpty(dre_id) ? Guid.Empty : new Guid(dre_id),
-					crp_ordem = crp_ordem,
-					pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id,
-					usu_id = SessionFacade.UsuarioLogado.Usuario.usu_id,
-					vis_id = SessionFacade.UsuarioLogado.Grupo.vis_id,
-					sis_id = SessionFacade.UsuarioLogado.Grupo.sis_id,
-					StatusCorrection = statusCorrection
-				};
+                StudentResponseFilter filter = new StudentResponseFilter
+                {
+                    Test_Id = test_id,
+                    School_Id = esc_id,
+                    ttn_id = ttn_id,
+                    uad_id = string.IsNullOrEmpty(dre_id) ? Guid.Empty : new Guid(dre_id),
+                    crp_ordem = crp_ordem,
+                    pes_id = SessionFacade.UsuarioLogado.Usuario.pes_id,
+                    usu_id = SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    vis_id = SessionFacade.UsuarioLogado.Grupo.vis_id,
+                    sis_id = SessionFacade.UsuarioLogado.Grupo.sis_id,
+                    StatusCorrection = statusCorrection
+                };
 
-				var lista = correctionBusiness.LoadOnlySelectedSectionPaginate(ref pager, filter);
+                var lista = correctionBusiness.LoadOnlySelectedSectionPaginate(ref pager, filter);
 
-				if (lista != null && lista.Count() > 0)
-				{
-					IEnumerable<AnswerSheetBatch> batchInfo = testBusiness.GetTestAutomaticCorrectionSituation(test_id, esc_id);
+                if (lista != null && lista.Count() > 0)
+                {
+                    IEnumerable<AnswerSheetBatch> batchInfo = testBusiness.GetTestAutomaticCorrectionSituation(test_id, esc_id);
 
-					ESC_Escola escola = null;
-					if (esc_id > 0)
-					{
-						escola = escolaBusiness.Get(esc_id);
-					}
+                    ESC_Escola escola = null;
+                    if (esc_id > 0)
+                    {
+                        escola = escolaBusiness.Get(esc_id);
+                    }
 
-					var permission = testPermissionBusiness.GetByTest(test_id, SessionFacade.UsuarioLogado.Grupo.gru_id).FirstOrDefault();
+                    var permission = testPermissionBusiness.GetByTest(test_id, SessionFacade.UsuarioLogado.Grupo.gru_id).FirstOrDefault();
 
-					var ret = lista.Select(i => new
-					{
-						tur_id = i.tur_id,
-						tur_codigo = i.tur_codigo,
-						ttn_nome = i.ttn_nome,
-						esc_id = i.esc_id,
-						esc_nome = i.esc_nome,
-						dre_id = i.dre_id,
-						dre_nome = i.uad_nome,
-						StatusCorrection = i.StatusCorrection,
-						FileAnswerSheet = new
-						{
-							Id = i.FileId,
-							Name = !string.IsNullOrEmpty(i.FileOriginalName) ? i.FileOriginalName : i.FileName,
-							Path = i.FilePath
-						}
-					});
+                    var ret = lista.Select(i => new
+                    {
+                        tur_id = i.tur_id,
+                        tur_codigo = i.tur_codigo,
+                        ttn_nome = i.ttn_nome,
+                        esc_id = i.esc_id,
+                        esc_nome = i.esc_nome,
+                        dre_id = i.dre_id,
+                        dre_nome = i.uad_nome,
+                        StatusCorrection = i.StatusCorrection,
+                        FileAnswerSheet = new
+                        {
+                            Id = i.FileId,
+                            Name = !string.IsNullOrEmpty(i.FileOriginalName) ? i.FileOriginalName : i.FileName,
+                            Path = i.FilePath
+                        }
+                    });
 
-					var result = new
-					{
-						success = true,
-						lista = ret,
-						AllowAnswer = permission != null ? permission.AllowAnswer : true,
-						ShowResult = permission != null ? permission.ShowResult : true,
-						batchWarning = new
-						{
-							status = batchInfo != null && batchInfo.Any(i => i.Processing.Equals(EnumBatchProcessing.Failure)),
-							message = (batchInfo == null ? string.Empty : batchInfo != null && !batchInfo.Any(i => i.Processing.Equals(EnumBatchProcessing.Failure)) ? string.Empty : esc_id > 0 ? string.Format("Atenção: Há falha no lote da escola {0}.", escola.esc_nome) : "Atenção: Há falha no lote da prova.")
-						}
-					};
+                    var result = new
+                    {
+                        success = true,
+                        lista = ret,
+                        AllowAnswer = permission != null ? permission.AllowAnswer : true,
+                        ShowResult = permission != null ? permission.ShowResult : true,
+                        batchWarning = new
+                        {
+                            status = batchInfo != null && batchInfo.Any(i => i.Processing.Equals(EnumBatchProcessing.Failure)),
+                            message = (batchInfo == null ? string.Empty : batchInfo != null && !batchInfo.Any(i => i.Processing.Equals(EnumBatchProcessing.Failure)) ? string.Empty : esc_id > 0 ? string.Format("Atenção: Há falha no lote da escola {0}.", escola.esc_nome) : "Atenção: Há falha no lote da prova.")
+                        }
+                    };
 
-					return Json(result, JsonRequestBehavior.AllowGet);
-				}
-				else
-					return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Nenhuma turma foi encontrada" }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                    return Json(result, JsonRequestBehavior.AllowGet);
+                }
+                else
+                    return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Nenhuma turma foi encontrada" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		[HttpGet]
-		public JsonResult GetCurriculumGradeSimple(int esc_id)
-		{
-			try
-			{
-				var curriculoPeriodo = this.tipoCurriculoPeriodoBusiness.GetSimple(esc_id);
+        [HttpGet]
+        public JsonResult GetCurriculumGradeSimple(int esc_id)
+        {
+            try
+            {
+                var curriculoPeriodo = this.tipoCurriculoPeriodoBusiness.GetSimple(esc_id);
 
-				var retorno = curriculoPeriodo.Select(e => new DropDownReturnModel
-				{
-					Id = string.Format("{0}_{1}", e.tne_id, e.tcp_ordem),
-					Description = string.Format("{0} - {1}", e.tcp_descricao, e.ACA_TipoNivelEnsino.tne_nome),
-					CurriculumTypeId = e.tcp_id
-				});
+                var retorno = curriculoPeriodo.Select(e => new DropDownReturnModel
+                {
+                    Id = string.Format("{0}_{1}", e.tne_id, e.tcp_ordem),
+                    Description = string.Format("{0} - {1}", e.tcp_descricao, e.ACA_TipoNivelEnsino.tne_nome),
+                    CurriculumTypeId = e.tcp_id
+                });
 
-				return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar os anos do curso" }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar os anos do curso" }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		[HttpGet]
-		[Paginate]
-		public JsonResult GetItems(string ItemCode, int? ItemOrder, long TestId)
-		{
-			try
-			{
-				Pager pager1 = this.GetPager();
+        [HttpGet]
+        [Paginate]
+        public JsonResult GetItems(string ItemCode, int? ItemOrder, long TestId)
+        {
+            try
+            {
+                Pager pager1 = this.GetPager();
 
-				var blockItems = testBusiness.GetItemsByTest(TestId, SessionFacade.UsuarioLogado.Usuario.usu_id, ref pager1);
+                var blockItems = testBusiness.GetItemsByTest(TestId, SessionFacade.UsuarioLogado.Usuario.usu_id, ref pager1);
 
-				if (!string.IsNullOrEmpty(ItemCode))
-				{
-					blockItems = blockItems.Where(i => i.Item.ItemCode.CompareWithTrim(ItemCode));
-					pager1.SetTotalPages(1);
-				}
-				if (ItemOrder != null)
-				{
-					blockItems = blockItems.Where(i => i.Order == ItemOrder);
-					pager1.SetTotalPages(1);
-				}
+                if (!string.IsNullOrEmpty(ItemCode))
+                {
+                    blockItems = blockItems.Where(i => i.Item.ItemCode.CompareWithTrim(ItemCode));
+                    pager1.SetTotalPages(1);
+                }
+                if (ItemOrder != null)
+                {
+                    blockItems = blockItems.Where(i => i.Order == ItemOrder);
+                    pager1.SetTotalPages(1);
+                }
 
-				var retorno = blockItems.Select(bi => new
-				{
-					Item_Id = bi.Item.Id,
-					ItemCode = bi.Item.ItemCode,
-					ItemVersion = bi.Item.ItemVersion,
-					ItemOrder = bi.Order,
-					BaseTextDescription = bi.Item.BaseText != null ? bi.Item.BaseText.Description : "",
-					Statement = bi.Item.Statement != null ? bi.Item.Statement : "",
-					Revoked = bi.RequestRevokes != null ? bi.RequestRevokes.First().Situation : EnumSituation.NotRevoked,
-					ItemSituation = bi.RequestRevokes != null ? bi.RequestRevokes.First().Situation : EnumSituation.NotRevoked,
-					RequestRevoke_Id = bi.RequestRevokes != null ? bi.RequestRevokes.First().Id : 0,
-					BlockItem_Id = bi.Id,
-					Justification = bi.RequestRevokes != null ? bi.RequestRevokes.First().Justification : ""
-				}).ToList();
+                var retorno = blockItems.Select(bi => new
+                {
+                    Item_Id = bi.Item.Id,
+                    ItemCode = bi.Item.ItemCode,
+                    ItemVersion = bi.Item.ItemVersion,
+                    ItemOrder = bi.Order,
+                    BaseTextDescription = bi.Item.BaseText != null ? bi.Item.BaseText.Description : "",
+                    Statement = bi.Item.Statement != null ? bi.Item.Statement : "",
+                    Revoked = bi.RequestRevokes != null ? bi.RequestRevokes.First().Situation : EnumSituation.NotRevoked,
+                    ItemSituation = bi.RequestRevokes != null ? bi.RequestRevokes.First().Situation : EnumSituation.NotRevoked,
+                    RequestRevoke_Id = bi.RequestRevokes != null ? bi.RequestRevokes.First().Id : 0,
+                    BlockItem_Id = bi.Id,
+                    Justification = bi.RequestRevokes != null ? bi.RequestRevokes.First().Justification : ""
+                }).ToList();
 
-				return Json(new { sucess = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+                return Json(new { sucess = true, lista = retorno }, JsonRequestBehavior.AllowGet);
 
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar items da prova" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar items da prova" }, JsonRequestBehavior.AllowGet);
 
-			}
-		}
+            }
+        }
 
-		[HttpGet]
-		[Paginate]
-		public JsonResult GetPendingRevokeItems(string ItemCode, DateTime? StartDate, DateTime? EndDate, EnumSituation? Situation)
-		{
-			Pager pager1 = this.GetPager();
+        [HttpGet]
+        [Paginate]
+        public JsonResult GetPendingRevokeItems(string ItemCode, DateTime? StartDate, DateTime? EndDate, EnumSituation? Situation)
+        {
+            Pager pager1 = this.GetPager();
 
-			var blockItems = testBusiness.GetPendingRevokeItems(ref pager1, ItemCode, StartDate, EndDate, Situation);
+            var blockItems = testBusiness.GetPendingRevokeItems(ref pager1, ItemCode, StartDate, EndDate, Situation);
 
-			var retorno = blockItems.Select(bi => new
-			{
-				BlockItem_Id = bi.Id,
-				Item_Id = bi.Item.Id,
-				ItemCode = bi.Item.ItemCode,
-				ItemVersion = bi.Item.ItemVersion,
-				ItemOrder = bi.Order,
-				ItemRevoked = bi.Item.Revoked,
-				ItemLastVersion = bi.Item.LastVersion,
-				BaseTextDescription = bi.Item.BaseText != null ? bi.Item.BaseText.Description : "",
-				Statement = bi.Item.Statement != null ? bi.Item.Statement : "",
-				Date = bi.RequestRevokes.First().CreateDate,
-				Test_Id = bi.RequestRevokes.First().Test.Id,
-				Test_Description = bi.RequestRevokes.First().Test.Description,
-				RequestRevokes = bi.RequestRevokes.Count(),
-				Situation = bi.RequestRevokes.First().Situation,
-				LabelSituation = EnumExtensions.GetDescription(bi.RequestRevokes.First().Situation)
-			}).OrderBy(x => x.Date).ToList();
+            var retorno = blockItems.Select(bi => new
+            {
+                BlockItem_Id = bi.Id,
+                Item_Id = bi.Item.Id,
+                ItemCode = bi.Item.ItemCode,
+                ItemVersion = bi.Item.ItemVersion,
+                ItemOrder = bi.Order,
+                ItemRevoked = bi.Item.Revoked,
+                ItemLastVersion = bi.Item.LastVersion,
+                BaseTextDescription = bi.Item.BaseText != null ? bi.Item.BaseText.Description : "",
+                Statement = bi.Item.Statement != null ? bi.Item.Statement : "",
+                Date = bi.RequestRevokes.First().CreateDate,
+                Test_Id = bi.RequestRevokes.First().Test.Id,
+                Test_Description = bi.RequestRevokes.First().Test.Description,
+                RequestRevokes = bi.RequestRevokes.Count(),
+                Situation = bi.RequestRevokes.First().Situation,
+                LabelSituation = EnumExtensions.GetDescription(bi.RequestRevokes.First().Situation)
+            }).OrderBy(x => x.Date).ToList();
 
-			return Json(new { sucess = true, lista = retorno }, JsonRequestBehavior.AllowGet);
-		}
+            return Json(new { sucess = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+        }
 
-		[HttpGet]
-		[Paginate]
-		public JsonResult GetRequestRevokes(int blockItem_Id)
-		{
-			var requestRevokes = requestRevokeBusiness.GetRequestRevoke(blockItem_Id);
+        [HttpGet]
+        [Paginate]
+        public JsonResult GetRequestRevokes(int blockItem_Id)
+        {
+            var requestRevokes = requestRevokeBusiness.GetRequestRevoke(blockItem_Id);
 
-			var retorno = requestRevokes.Select(rr => new
-			{
-				Date = rr.UpdateDate.ToShortDateString(),
-				Requester_Name = rr.pes_nome != null ? rr.pes_nome : "Este usuário não possui uma pessoa associada",
-				Requester_Email = rr.usu_email,
-				Requester_Id = rr.UsuId,
-				Justification = rr.Justification
+            var retorno = requestRevokes.Select(rr => new
+            {
+                Date = rr.UpdateDate.ToShortDateString(),
+                Requester_Name = rr.pes_nome != null ? rr.pes_nome : "Este usuário não possui uma pessoa associada",
+                Requester_Email = rr.usu_email,
+                Requester_Id = rr.UsuId,
+                Justification = rr.Justification
 
-			}).ToList();
+            }).ToList();
 
-			return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
-		}
+            return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+        }
 
-		[HttpGet]
-		[Paginate]
-		public JsonResult GetTestsPermissions(long test_id, Guid? gru_id)
-		{
-			var retorno = new List<TestPermission>();
-			if (SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Administracao)
-			{
-				retorno = testPermissionBusiness.GetByTest(test_id, gru_id).ToList();
-			}
+        [HttpGet]
+        [Paginate]
+        public JsonResult GetTestsPermissions(long test_id, Guid? gru_id)
+        {
+            var retorno = new List<TestPermission>();
+            if (SessionFacade.UsuarioLogado.Grupo.vis_id == (int)EnumSYS_Visao.Administracao)
+            {
+                retorno = testPermissionBusiness.GetByTest(test_id, gru_id).ToList();
+            }
 
-			return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
-		}
+            return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+        }
 
 
-		[HttpGet]
-		public JsonResult GetTestsBySubGroup(long Id)
-		{
-			try
-			{
-				IEnumerable<TestResult> tests = testBusiness.GetTestsBySubGroup(Id);
-				return Json(new { success = true, lista = tests }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar o grupo de prova pesquisado." }, JsonRequestBehavior.AllowGet);
-			}
-		}
+        [HttpGet]
+        public JsonResult GetTestsBySubGroup(long Id)
+        {
+            try
+            {
+                IEnumerable<TestResult> tests = testBusiness.GetTestsBySubGroup(Id);
+                return Json(new { success = true, lista = tests }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar o grupo de prova pesquisado." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         [HttpGet]
         public void DownloadFile(long Id)
@@ -777,160 +791,199 @@ namespace GestaoAvaliacao.Controllers
         #region Write
 
         [HttpPost]
-		public JsonResult Save(Test entity)
-		{
-			try
-			{
-				if (entity.Id > 0)
-				{
-					entity = testBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.usu_id, (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
-							SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
-				}
-				else
-				{
-					entity = testBusiness.Save(entity, SessionFacade.UsuarioLogado.Usuario.usu_id, (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
-							SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
-				}
+        public JsonResult Save(Test entity)
+        {
+            try
+            {
+                foreach (var testContext in entity.TestContexts)
+                {
+                    EnumPosition position = ObterPosicionamento(testContext.ImagePositionDescription);
 
-				if (entity.Validate.IsValid) 
-					entity.TestSituation = testBusiness.TestSituation(entity);
-			}
-			catch (Exception ex)
-			{
-				entity.Validate.IsValid = false;
-				entity.Validate.Type = ValidateType.error.ToString();
-				entity.Validate.Message = string.Format("Erro ao {0} a prova.", entity.Id > 0 ? "alterar" : "salvar");
+                    testContext.ImagePosition = position;
+                }
 
-				LogFacade.SaveError(ex);
-			}
+                if (entity.Id > 0)
+                {
+                    
+                    entity = testBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                            (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                                SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
 
-			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id, TestSituation = entity.TestSituation, entity.ApplicationActiveOrDone }, JsonRequestBehavior.AllowGet);
-		}
+                    if (entity.TestContexts.Any())
+                    {
+                        testContextBusiness.DeleteByTestId(entity.Id);
+                        foreach (var testContext in entity.TestContexts)
+                        {
+                            EnumPosition position = ObterPosicionamento(testContext.ImagePositionDescription);
 
-		[HttpPost]
-		public JsonResult FinallyTest(long Id)
-		{
-			Test entity = new Test();
+                            testContext.ImagePosition = position;
+                            testContext.Test_Id = entity.Id;
+                            testContextBusiness.Save(testContext);
+                        }
+                    }
+                }
+                else
+                {
+                    entity = testBusiness.Save(entity, SessionFacade.UsuarioLogado.Usuario.usu_id, (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                            SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
+                }
 
-			try
-			{
-				entity = testBusiness.FinallyTest(Id, SessionFacade.UsuarioLogado.Usuario.usu_id,
-					(EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()) == EnumSYS_Visao.Administracao);
-			}
-			catch (Exception ex)
-			{
-				entity.Validate.IsValid = false;
-				entity.Validate.Type = ValidateType.error.ToString();
-				entity.Validate.Message = "Erro ao tentar alterar a situação da prova.";
+                if (entity.Validate.IsValid)
+                {
+                    entity.TestSituation = testBusiness.TestSituation(entity);                    
+                }
 
-				LogFacade.SaveError(ex);
-			}
 
-			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestSituation = entity.TestSituation }, JsonRequestBehavior.AllowGet);
-		}
 
-		[HttpPost]
-		public JsonResult Delete(long Id)
-		{
-			Test entity = new Test();
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = string.Format("Erro ao {0} a prova.", entity.Id > 0 ? "alterar" : "salvar");
 
-			try
-			{
-				entity = testBusiness.Delete(Id);
-			}
-			catch (Exception ex)
-			{
-				entity.Validate.IsValid = false;
-				entity.Validate.Type = ValidateType.error.ToString();
-				entity.Validate.Message = "Erro ao tentar excluir a prova.";
-				LogFacade.SaveError(ex);
-			}
+                LogFacade.SaveError(ex);
+            }
 
-			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet);
-		}
+            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id, TestSituation = entity.TestSituation, entity.ApplicationActiveOrDone }, JsonRequestBehavior.AllowGet);
+        }
 
-		[HttpGet]
-		public JsonResult ChangeTestVisible(long Id, bool Visible)
-		{
-			Test entity = new Test();
+        private EnumPosition ObterPosicionamento(string imagePositionDescription)
+        {
+            if (EnumPosition.Center.GetDescription() == imagePositionDescription)
+                return EnumPosition.Center;
 
-			try
-			{
-				testBusiness.UpdateTestVisible(Id, Visible);
-				entity.Validate.IsValid = true;
-				entity.Validate.Message = string.Format("Prova {0} com sucesso.", Visible ? "reexibida" : "ocultada");
-			}
-			catch (Exception ex)
-			{
-				entity.Validate.IsValid = false;
-				entity.Validate.Type = ValidateType.error.ToString();
-				entity.Validate.Message = string.Format("Erro ao tentar {0} a prova.", Visible ? "reexibir" : "ocultar");
-				LogFacade.SaveError(ex);
-			}
+            if (EnumPosition.Right.GetDescription() == imagePositionDescription)
+                return EnumPosition.Right;
 
-			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet);
-		}
 
-		[HttpPost]
-		public JsonResult SavePermission(long test_id, List<TestPermission> permissions)
-		{
-			TestPermission entity = new TestPermission();
-			try
-			{
-				entity.Test_Id = test_id;
-				testPermissionBusiness.Save(entity, permissions);
-			}
-			catch (Exception ex)
-			{
-				entity.Validate.IsValid = false;
-				entity.Validate.Type = ValidateType.error.ToString();
-				entity.Validate.Message = "Erro ao salvar as permissões";
+            return EnumPosition.Left;
+        }
 
-				LogFacade.SaveError(ex);
-			}
+        [HttpPost]
+        public JsonResult FinallyTest(long Id)
+        {
+            Test entity = new Test();
 
-			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id }, JsonRequestBehavior.AllowGet);
-		}
+            try
+            {
+                entity = testBusiness.FinallyTest(Id, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()) == EnumSYS_Visao.Administracao);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao tentar alterar a situação da prova.";
 
-		[HttpPost]
-		public JsonResult ChangeOrderTestUp(long Id, long order)
-		{
-			Test entity = new Test();
-			try
-			{
-				testBusiness.ChangeOrderTestUp(Id, order);
-			}
-			catch (Exception ex)
-			{
-				entity.Validate.IsValid = false;
-				entity.Validate.Type = ValidateType.error.ToString();
-				entity.Validate.Message = "Erro ao alterar a ordem da prova.";
+                LogFacade.SaveError(ex);
+            }
 
-				LogFacade.SaveError(ex);
-			}
+            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestSituation = entity.TestSituation }, JsonRequestBehavior.AllowGet);
+        }
 
-			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id }, JsonRequestBehavior.AllowGet);
-		}
+        [HttpPost]
+        public JsonResult Delete(long Id)
+        {
+            Test entity = new Test();
 
-		[HttpPost]
-		public JsonResult ChangeOrderTestDown(long Id, long order)
-		{
-			Test entity = new Test();
-			try
-			{
-				testBusiness.ChangeOrderTestDown(Id, order);
-			}
-			catch (Exception ex)
-			{
-				entity.Validate.IsValid = false;
-				entity.Validate.Type = ValidateType.error.ToString();
-				entity.Validate.Message = "Erro ao alterar a ordem da prova.";
+            try
+            {
+                entity = testBusiness.Delete(Id);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao tentar excluir a prova.";
+                LogFacade.SaveError(ex);
+            }
 
-				LogFacade.SaveError(ex);
-			}
+            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet);
+        }
 
-			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id }, JsonRequestBehavior.AllowGet);
-		}
+        [HttpGet]
+        public JsonResult ChangeTestVisible(long Id, bool Visible)
+        {
+            Test entity = new Test();
+
+            try
+            {
+                testBusiness.UpdateTestVisible(Id, Visible);
+                entity.Validate.IsValid = true;
+                entity.Validate.Message = string.Format("Prova {0} com sucesso.", Visible ? "reexibida" : "ocultada");
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = string.Format("Erro ao tentar {0} a prova.", Visible ? "reexibir" : "ocultar");
+                LogFacade.SaveError(ex);
+            }
+
+            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult SavePermission(long test_id, List<TestPermission> permissions)
+        {
+            TestPermission entity = new TestPermission();
+            try
+            {
+                entity.Test_Id = test_id;
+                testPermissionBusiness.Save(entity, permissions);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao salvar as permissões";
+
+                LogFacade.SaveError(ex);
+            }
+
+            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult ChangeOrderTestUp(long Id, long order)
+        {
+            Test entity = new Test();
+            try
+            {
+                testBusiness.ChangeOrderTestUp(Id, order);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao alterar a ordem da prova.";
+
+                LogFacade.SaveError(ex);
+            }
+
+            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult ChangeOrderTestDown(long Id, long order)
+        {
+            Test entity = new Test();
+            try
+            {
+                testBusiness.ChangeOrderTestDown(Id, order);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao alterar a ordem da prova.";
+
+                LogFacade.SaveError(ex);
+            }
+
+            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id }, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         public JsonResult ChangeOrder(long idOrigem, long idDestino)
@@ -959,273 +1012,273 @@ namespace GestaoAvaliacao.Controllers
         #region Read
 
         [HttpGet]
-		[Paginate]
-		public JsonResult SearchTestFiles(FileFilter filter)
-		{
-			try
-			{
-				#region Filters
+        [Paginate]
+        public JsonResult SearchTestFiles(FileFilter filter)
+        {
+            try
+            {
+                #region Filters
 
-				if (filter == null)
-					filter = new FileFilter();
+                if (filter == null)
+                    filter = new FileFilter();
 
-				Pager pager = this.GetPager();
-				filter.UserId = SessionFacade.UsuarioLogado.Usuario.usu_id;
-				filter.CoreVisionId = SessionFacade.UsuarioLogado.Grupo.vis_id;
-				filter.CoreSystemId = Constants.IdSistema;
+                Pager pager = this.GetPager();
+                filter.UserId = SessionFacade.UsuarioLogado.Usuario.usu_id;
+                filter.CoreVisionId = SessionFacade.UsuarioLogado.Grupo.vis_id;
+                filter.CoreSystemId = Constants.IdSistema;
 
-				#endregion
+                #endregion
 
-				IEnumerable<EntityFile> files = null;
-				Test test = null;
-				if (filter.OwnerId > 0)
-				{
-					test = testBusiness.GetTestById(filter.OwnerId);
-					files = fileBusiness.SearchUploadedFiles(ref pager, filter);
-				}
+                IEnumerable<EntityFile> files = null;
+                Test test = null;
+                if (filter.OwnerId > 0)
+                {
+                    test = testBusiness.GetTestById(filter.OwnerId);
+                    files = fileBusiness.SearchUploadedFiles(ref pager, filter);
+                }
 
-				if (files != null && test != null)
-				{
-					var ret = files.Select(entity => new
-					{
-						Id = entity.Id,
-						Path = entity.Path,
-						OriginalName = entity.OriginalName,
-						CreateDate = entity.CreateDate.ToShortDateString(),
-						TestLinks = entity.TestFiles,
-						OwnerId = test.Id,
-						OwnerName = test.Description,
-						Checked = testFilesBusiness.GetChecked(entity.Id, test.Id),
-						AllLinks = fileBusiness.GetTestNames(entity.Id),
-						AllFiles = fileBusiness.GetAllFiles(filter)
-					}).ToList();
+                if (files != null && test != null)
+                {
+                    var ret = files.Select(entity => new
+                    {
+                        Id = entity.Id,
+                        Path = entity.Path,
+                        OriginalName = entity.OriginalName,
+                        CreateDate = entity.CreateDate.ToShortDateString(),
+                        TestLinks = entity.TestFiles,
+                        OwnerId = test.Id,
+                        OwnerName = test.Description,
+                        Checked = testFilesBusiness.GetChecked(entity.Id, test.Id),
+                        AllLinks = fileBusiness.GetTestNames(entity.Id),
+                        AllFiles = fileBusiness.GetAllFiles(filter)
+                    }).ToList();
 
-					return Json(new { success = true, lista = ret, pageSize = pager.PageSize }, JsonRequestBehavior.AllowGet);
-				}
-				else
-				{
-					return Json(new { success = false, lista = "" }, JsonRequestBehavior.AllowGet);
-				}
+                    return Json(new { success = true, lista = ret, pageSize = pager.PageSize }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { success = false, lista = "" }, JsonRequestBehavior.AllowGet);
+                }
 
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar arquivos pesquisados." }, JsonRequestBehavior.AllowGet);
-			}
-		}
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar arquivos pesquisados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		[HttpGet]
-		public JsonResult CheckFilesExists(long Id)
-		{
-			bool success = false;
+        [HttpGet]
+        public JsonResult CheckFilesExists(long Id)
+        {
+            bool success = false;
 
-			try
-			{
-				IEnumerable<EntityFile> files = testFilesBusiness.GetFiles(Id, EnumFileType.AnswerSheetStudentNumber);
-				success = fileBusiness.CheckFilesExists(files.Select(f => f.Id), ApplicationFacade.PhysicalDirectory);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-			}
+            try
+            {
+                IEnumerable<EntityFile> files = testFilesBusiness.GetFiles(Id, EnumFileType.AnswerSheetStudentNumber);
+                success = fileBusiness.CheckFilesExists(files.Select(f => f.Id), ApplicationFacade.PhysicalDirectory);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+            }
 
-			return Json(new { success = success }, JsonRequestBehavior.AllowGet);
-		}
+            return Json(new { success = success }, JsonRequestBehavior.AllowGet);
+        }
 
-		[HttpGet]
-		public void DownloadZipFiles(long Id)
-		{
-			string completePath = string.Empty;
-			bool redirect = false;
+        [HttpGet]
+        public void DownloadZipFiles(long Id)
+        {
+            string completePath = string.Empty;
+            bool redirect = false;
 
-			try
-			{
-				IEnumerable<EntityFile> files = testFilesBusiness.GetFiles(Id, EnumFileType.AnswerSheetStudentNumber);
-				if (files != null)
-				{
-					IEnumerable<ZipFileInfo> fileNames = files.Select(f => new ZipFileInfo
-					{
-						Path = string.Concat(ApplicationFacade.PhysicalDirectory, new Uri(f.Path).AbsolutePath.Replace("Files/", string.Empty).Replace("/", "\\")),
-						Name = !string.IsNullOrEmpty(f.OriginalName) ? f.OriginalName : f.Name
-					});
+            try
+            {
+                IEnumerable<EntityFile> files = testFilesBusiness.GetFiles(Id, EnumFileType.AnswerSheetStudentNumber);
+                if (files != null)
+                {
+                    IEnumerable<ZipFileInfo> fileNames = files.Select(f => new ZipFileInfo
+                    {
+                        Path = string.Concat(ApplicationFacade.PhysicalDirectory, new Uri(f.Path).AbsolutePath.Replace("Files/", string.Empty).Replace("/", "\\")),
+                        Name = !string.IsNullOrEmpty(f.OriginalName) ? f.OriginalName : f.Name
+                    });
 
-					var filenNotExists = fileNames.Where(i => !System.IO.File.Exists(HttpUtility.UrlDecode(i.Path)));
-					if (filenNotExists != null && filenNotExists.Any())
-					{
-						redirect = true;
-					}
-					else
-					{
-						Test test = testBusiness.GetTestById(Id);
+                    var filenNotExists = fileNames.Where(i => !System.IO.File.Exists(HttpUtility.UrlDecode(i.Path)));
+                    if (filenNotExists != null && filenNotExists.Any())
+                    {
+                        redirect = true;
+                    }
+                    else
+                    {
+                        Test test = testBusiness.GetTestById(Id);
 
-						string displayName = String.Format("ArquivosProva{0}_{1}_{2}_{3}.zip", test != null ? "_" + test.Description : string.Empty, Id, DateTime.Now.ToString("ddMMyyyy"), DateTime.Now.ToString("HHmmss"));
-						displayName = Regex.Replace(displayName, @"[^\w\.@-]", "_");
+                        string displayName = String.Format("ArquivosProva{0}_{1}_{2}_{3}.zip", test != null ? "_" + test.Description : string.Empty, Id, DateTime.Now.ToString("ddMMyyyy"), DateTime.Now.ToString("HHmmss"));
+                        displayName = Regex.Replace(displayName, @"[^\w\.@-]", "_");
 
-						string zipName = Guid.NewGuid() + ".zip";
+                        string zipName = Guid.NewGuid() + ".zip";
 
-						EntityFile file = fileBusiness.SaveZip(zipName, "Zip", fileNames, ApplicationFacade.PhysicalDirectory);
-						if (file.Validate.IsValid)
-						{
-							completePath = Path.Combine(file.Path, zipName);
+                        EntityFile file = fileBusiness.SaveZip(zipName, "Zip", fileNames, ApplicationFacade.PhysicalDirectory);
+                        if (file.Validate.IsValid)
+                        {
+                            completePath = Path.Combine(file.Path, zipName);
 
-							System.IO.FileStream fs = System.IO.File.Open(completePath, System.IO.FileMode.Open);
-							byte[] btFile = new byte[fs.Length];
-							fs.Read(btFile, 0, Convert.ToInt32(fs.Length));
-							fs.Close();
+                            System.IO.FileStream fs = System.IO.File.Open(completePath, System.IO.FileMode.Open);
+                            byte[] btFile = new byte[fs.Length];
+                            fs.Read(btFile, 0, Convert.ToInt32(fs.Length));
+                            fs.Close();
 
-							Response.Clear();
-							Response.AddHeader("Content-disposition", "attachment; filename=" + displayName);
-							Response.ContentType = "application/octet-stream";
-							Response.BinaryWrite(btFile);
-							Response.End();
-						}
-						else
-							redirect = true;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				redirect = true;
-				LogFacade.SaveError(ex);
-			}
+                            Response.Clear();
+                            Response.AddHeader("Content-disposition", "attachment; filename=" + displayName);
+                            Response.ContentType = "application/octet-stream";
+                            Response.BinaryWrite(btFile);
+                            Response.End();
+                        }
+                        else
+                            redirect = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                redirect = true;
+                LogFacade.SaveError(ex);
+            }
 
-			if (!string.IsNullOrEmpty(completePath) && System.IO.File.Exists(completePath))
-				System.IO.File.Delete(completePath);
+            if (!string.IsNullOrEmpty(completePath) && System.IO.File.Exists(completePath))
+                System.IO.File.Delete(completePath);
 
-			if (redirect)
-				Response.Redirect("/Test", false);
-		}
+            if (redirect)
+                Response.Redirect("/Test", false);
+        }
 
-		[HttpGet]
-		public JsonResult GetTestFiles(long Id)
-		{
-			try
-			{
-				IEnumerable<EntityFile> files = testFilesBusiness.GetFiles(Id, EnumFileType.AnswerSheetStudentNumber);
+        [HttpGet]
+        public JsonResult GetTestFiles(long Id)
+        {
+            try
+            {
+                IEnumerable<EntityFile> files = testFilesBusiness.GetFiles(Id, EnumFileType.AnswerSheetStudentNumber);
 
-				if (files != null)
-				{
-					var ret = files.Select(entity => new
-					{
-						Id = entity.Id,
-						Name = !string.IsNullOrEmpty(entity.OriginalName) ? entity.OriginalName : entity.Name,
-						Path = entity.Path,
-						AllowLink = !entity.ContentType.Equals(MimeType.CSV.GetDescription())
-					}).OrderBy(entity => entity.Name);
+                if (files != null)
+                {
+                    var ret = files.Select(entity => new
+                    {
+                        Id = entity.Id,
+                        Name = !string.IsNullOrEmpty(entity.OriginalName) ? entity.OriginalName : entity.Name,
+                        Path = entity.Path,
+                        AllowLink = !entity.ContentType.Equals(MimeType.CSV.GetDescription())
+                    }).OrderBy(entity => entity.Name);
 
-					return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
-				}
-				else
-				{
-					return Json(new { success = false, lista = "" }, JsonRequestBehavior.AllowGet);
-				}
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar arquivos da prova." }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                    return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { success = false, lista = "" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar arquivos da prova." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Write
+        #region Write
 
-		[HttpPost]
-		public JsonResult SaveTestFiles(long Id, List<TestFiles> files)
-		{
-			TestFiles entity = new TestFiles();
-			IEnumerable<TestFiles> entities = null;
-			try
-			{
-				if (files == null)
-					files = new List<TestFiles>();
+        [HttpPost]
+        public JsonResult SaveTestFiles(long Id, List<TestFiles> files)
+        {
+            TestFiles entity = new TestFiles();
+            IEnumerable<TestFiles> entities = null;
+            try
+            {
+                if (files == null)
+                    files = new List<TestFiles>();
 
-				entity.Test_Id = Id;
-				entity.UserId = SessionFacade.UsuarioLogado.Usuario.usu_id;
+                entity.Test_Id = Id;
+                entity.UserId = SessionFacade.UsuarioLogado.Usuario.usu_id;
 
-				entities = testFilesBusiness.Update(entity, files, SessionFacade.UsuarioLogado.Usuario.usu_id,
-					(EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()));
+                entities = testFilesBusiness.Update(entity, files, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()));
 
-				if (entities != null && entities.Count() > 0)
-				{
-					var saved = entities.ElementAt(0);
-					if (saved.Validate.IsValid)
-					{
-						entity.Validate.IsValid = true;
-						entity.Validate.Message = "Vinculo(s) alterado com sucesso.";
-					}
-					else
-					{
-						entity.Validate.IsValid = false;
-						entity.Validate.Message = saved.Validate.Message;
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				entity.Validate.IsValid = false;
-				entity.Validate.Type = ValidateType.error.ToString();
-				entity.Validate.Message = "Erro ao vincular arquivo(s) à prova.";
+                if (entities != null && entities.Count() > 0)
+                {
+                    var saved = entities.ElementAt(0);
+                    if (saved.Validate.IsValid)
+                    {
+                        entity.Validate.IsValid = true;
+                        entity.Validate.Message = "Vinculo(s) alterado com sucesso.";
+                    }
+                    else
+                    {
+                        entity.Validate.IsValid = false;
+                        entity.Validate.Message = saved.Validate.Message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao vincular arquivo(s) à prova.";
 
-				LogFacade.SaveError(ex);
-			}
+                LogFacade.SaveError(ex);
+            }
 
-			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestLinks = entities }, JsonRequestBehavior.AllowGet);
-		}
+            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestLinks = entities }, JsonRequestBehavior.AllowGet);
+        }
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Export Analysis
+        #region Export Analysis
 
-		[Paginate]
-		[HttpGet]
-		public JsonResult ExportAnalysisSearch(ExportAnalysisFilter filter)
-		{
-			try
-			{
-				Pager pager = this.GetPager();
-				var lista = exportAnalysisBusiness.Search(ref pager, filter);
-				return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
-			}
-		}
+        [Paginate]
+        [HttpGet]
+        public JsonResult ExportAnalysisSearch(ExportAnalysisFilter filter)
+        {
+            try
+            {
+                Pager pager = this.GetPager();
+                var lista = exportAnalysisBusiness.Search(ref pager, filter);
+                return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		[HttpPost]
-		public JsonResult SolicitExport(long TestId)
-		{
-			var entity = new ExportAnalysis() { StateExecution = EnumServiceState.Pending, Test_Id = TestId };
+        [HttpPost]
+        public JsonResult SolicitExport(long TestId)
+        {
+            var entity = new ExportAnalysis() { StateExecution = EnumServiceState.Pending, Test_Id = TestId };
 
-			try
-			{
-				entity = exportAnalysisBusiness.Save(entity);
+            try
+            {
+                entity = exportAnalysisBusiness.Save(entity);
 
-				return Json(new
-				{
-					success = true,
-					type = entity.Validate.Type,
-					message = entity.Validate.Message != null ? entity.Validate.Message : "Solicitação realizada com sucesso."
-				}, JsonRequestBehavior.AllowGet);
-			}
-			catch (Exception ex)
-			{
-				entity.Validate.IsValid = false;
-				entity.Validate.Type = ValidateType.error.ToString();
-				entity.Validate.Message = string.Format("Erro ao {0} a prova.", entity.Id > 0 ? "alterar" : "salvar");
+                return Json(new
+                {
+                    success = true,
+                    type = entity.Validate.Type,
+                    message = entity.Validate.Message != null ? entity.Validate.Message : "Solicitação realizada com sucesso."
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = string.Format("Erro ao {0} a prova.", entity.Id > 0 ? "alterar" : "salvar");
 
-				LogFacade.SaveError(ex);
-				return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
-			}
-		}
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

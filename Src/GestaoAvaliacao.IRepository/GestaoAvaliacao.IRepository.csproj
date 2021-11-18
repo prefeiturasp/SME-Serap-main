@@ -112,6 +112,7 @@
     <Compile Include="ITestGroupRepository.cs" />
     <Compile Include="ITestPerformanceLevelRepository.cs" />
     <Compile Include="ITestPermissionRepository.cs" />
+    <Compile Include="ITestContextRepository.cs" />
     <Compile Include="ITestRepository.cs" />
     <Compile Include="ITestSectionStatusCorrectionRepository.cs" />
     <Compile Include="ITestSubGroupRepository.cs" />

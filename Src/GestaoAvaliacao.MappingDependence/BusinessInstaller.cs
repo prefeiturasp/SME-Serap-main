@@ -66,6 +66,11 @@ namespace GestaoAvaliacao.MappingDependence
                                 .WithService.AllInterfaces()
                                 .SetLifestyle(LifestylePerWebRequest));
 
+            container.Register(Classes.FromAssemblyContaining<TestContextBusiness>()
+                                .BasedOn(typeof(ITestContextBusiness))
+                                .WithService.AllInterfaces()
+                                .SetLifestyle(LifestylePerWebRequest));
+
             container.Register(Classes.FromAssemblyContaining<EvaluationMatrixCourseBusiness>()
                                 .BasedOn(typeof(IEvaluationMatrixCourseBusiness))
                                 .WithService.AllInterfaces()
