@@ -1493,7 +1493,7 @@
                     ng.isMultidiscipline = r.Multidiscipline;
                     ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock;
                     ng.isElectronicTest = r.ElectronicTest;
-                    
+                    ng.showOnSerapEstudantes = r.ShowOnSerapEstudantes;
                     ng.showTestContext = r.ShowTestContext;
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
