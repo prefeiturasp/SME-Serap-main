@@ -23,6 +23,22 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="campoLabel">
+                                    <label for="itemType.QuantityAlternative">Quantidade de Alternativas:</label>
+                                    <div>
+                                        <input type="text"
+                                               ng-change="validarQuantidadeAlternativas('itemType.QuantityAlternative')"
+                                               ng-model="itemType.QuantityAlternative"
+                                               class="col-md-5 form-control2"
+                                               maxlength="3"
+                                               size="2"
+                                               placeholder="Quantidade de itens" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="campoLabel">
                                     <div class="checkbox checkbox-colunas checkbox-primary">
                                         <input id="itemPadrao" type="checkbox" ng-click="setNewDefault()" ng-model="itemType.IsDefault" />
                                         <label for="itemPadrao">

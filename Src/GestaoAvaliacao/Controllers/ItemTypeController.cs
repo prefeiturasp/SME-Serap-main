@@ -175,7 +175,15 @@ namespace GestaoAvaliacao.Controllers
 			{
 				entity.EntityId = SessionFacade.UsuarioLogado.Usuario.ent_id;
 				entity.State = Convert.ToByte(State ? EnumState.ativo : EnumState.inativo);
-				entity = itemTypeBusiness.Update(entity);
+
+				if (entity.Id > 0)
+				{
+					entity = itemTypeBusiness.Update(entity);
+				}
+				else
+                {
+					entity = itemTypeBusiness.Save(entity);
+				}
 
                 if (entity.Validate.IsValid)
                 {
@@ -196,5 +204,25 @@ namespace GestaoAvaliacao.Controllers
 		}
 
 		#endregion
+
+		[HttpPost]
+		public JsonResult Delete(long Id)
+		{
+			ItemType entity = new ItemType();
+
+			try
+			{
+				entity = itemTypeBusiness.Delete(Id);
+			}
+			catch (Exception ex)
+			{
+				entity.Validate.IsValid = false;
+				entity.Validate.Type = ValidateType.error.ToString();
+				entity.Validate.Message = "Erro ao tentar o tipo de item.";
+				LogFacade.SaveError(ex);
+			}
+
+			return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet);
+		}
 	}
 }

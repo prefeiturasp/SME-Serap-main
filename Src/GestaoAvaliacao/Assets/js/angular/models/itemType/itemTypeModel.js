@@ -26,6 +26,10 @@
             'save': {
             	method: 'POST',
             	url: base_url('ItemType/Save')
+            },
+            'delete': {
+                method: 'POST',
+                url: base_url('ItemType/Delete')
             }
         };
 
