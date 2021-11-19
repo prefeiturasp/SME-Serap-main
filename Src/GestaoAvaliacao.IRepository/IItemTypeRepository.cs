@@ -16,5 +16,6 @@ namespace GestaoAvaliacao.IRepository
 		void Delete(long id);
 		bool ExistsDescriptionNamed(string description, long Id, Guid ent_id);
 		void VerifyDefault(Guid EntityId);
+		bool ExistsItems(long id);
 	}
 }

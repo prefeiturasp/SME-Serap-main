@@ -11,6 +11,8 @@ namespace GestaoAvaliacao.IBusiness
         IEnumerable<ItemType> FindForTestType(Guid EntityId);
 		IEnumerable<ItemType> Search(ref Pager pager, Guid EntityId, String search);
 		ItemType Update(ItemType entity);
+		ItemType Save(ItemType entity);
 		ItemType Get(long id);
-	}
+        ItemType Delete(long id);
+    }
 }

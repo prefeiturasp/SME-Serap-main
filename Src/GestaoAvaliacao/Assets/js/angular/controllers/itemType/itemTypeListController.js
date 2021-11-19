@@ -24,10 +24,41 @@
 			ng.message = false;
 			ng.itemTypeList = null;
 			ng.testType = null;
+			ng.tipoItemDeletar = null;
 			ng.pages = 0;
 			ng.totalItens = 0;
 			ng.pageSize = 10;
 			ng.load();
+		};
+
+		ng.confirmarDeletarTipoItem = confirmarDeletarTipoItem;
+		function confirmarDeletarTipoItem(item) {
+			ng.tipoItemDeletar = item;
+			angular.element('#modalDeleteTipoItem').modal({ backdrop: 'static' });
+		};
+
+		ng.deleteTipoItem = deleteTipoItem;
+		function deleteTipoItem() {
+			//if (ng.tipoItemDeletar) {
+			//	const indexItemDelete = ng.testContexts.indexOf(ng.e1_itemParaDeletarDaListaTestContex);
+			//	ng.testContexts.splice(indexItemDelete, 1);
+			//	ng.e1_itemParaDeletarDaListaTestContex = '';
+			//}
+
+
+			if (ng.tipoItemDeletar) {
+				ItemTypeModel.delete(ng.tipoItemDeletar, function (result) {
+					if (result.success) {
+						$notification.success(result.message);
+						ng.tipoItemDeletar = null;
+						angular.element('#modalDeleteTipoItem').modal('hide');
+						window.location.href = base_url("ItemType");
+					} else {
+						$notification[result.type ? result.type : 'error'](result.message);
+						angular.element('#modalDeleteTipoItem').modal('hide');
+					}//else
+				});
+			}
 		};
 
 		/**
