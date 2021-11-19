@@ -16,10 +16,6 @@ namespace GestaoAvaliacao.Repository.Map
             Property(p => p.Text)
                 .HasMaxLength(500)
                 .HasColumnType("varchar");
-
-            //HasRequired(p => p.Test)
-            //   .WithMany()
-            //   .HasForeignKey(p => p.Test_Id);
         }
     }
 }
