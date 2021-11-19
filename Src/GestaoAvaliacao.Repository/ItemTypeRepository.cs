@@ -18,7 +18,7 @@ namespace GestaoAvaliacao.Repository
 
         public ItemType Get(long id)
         {
-            var sql = new StringBuilder("SELECT Id,Description,UniqueAnswer,CreateDate,UpdateDate,State,EntityId,IsDefault,QuantityAlternative ");
+            var sql = new StringBuilder("SELECT Id,Description,UniqueAnswer,CreateDate,UpdateDate,State,EntityId,IsDefault,QuantityAlternative,IsVisibleTestType ");
             sql.Append("FROM dbo.ItemType WITH (NOLOCK) ");
             sql.Append("WHERE Id = @id");
 
@@ -145,6 +145,7 @@ namespace GestaoAvaliacao.Repository
 
                 _entity.UniqueAnswer = entity.UniqueAnswer;
                 _entity.IsDefault = entity.IsDefault;
+                _entity.IsVisibleTestType = entity.IsVisibleTestType;
                 _entity.State = entity.State;
                 _entity.QuantityAlternative = entity.QuantityAlternative;
 

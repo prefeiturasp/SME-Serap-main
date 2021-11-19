@@ -49,6 +49,7 @@ namespace GestaoAvaliacao.Controllers
 						Id = entity.Id,
 						Description = entity.Description,
 						IsDefault = entity.IsDefault,
+						IsVisibleTestType= entity.IsVisibleTestType,
                         QuantityAlternative = entity.QuantityAlternative != null ? entity.QuantityAlternative : 0,
 						State = (entity.State == Convert.ToByte(EnumState.ativo))
 					};
@@ -100,7 +101,6 @@ namespace GestaoAvaliacao.Controllers
 
         [HttpGet]
         [Paginate]
-        [OutputCache(CacheProfile = "Cache1Day")]
         public JsonResult LoadForTestType()
         {
             try
