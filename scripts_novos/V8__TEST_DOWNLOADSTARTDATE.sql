@@ -1,0 +1,1 @@
+ALTER TABLE TEST ADD DownloadStartDate datetime null;

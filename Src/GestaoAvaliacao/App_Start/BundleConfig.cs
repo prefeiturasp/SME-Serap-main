@@ -373,6 +373,19 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/models/testType/testTypeModel.js")
                 .Include("~/Assets/js/vendor/datepicker/datepicker.js")
                 .Include("~/Assets/js/angular/directives/_bundle/datepicker/datepicker-directive.js")
+
+                .Include("~/Assets/js/angular/services/_bundle/util/util.js")
+                .Include("~/Assets/js/vendor/compressor/compressor.js")
+                .Include("~/Assets/js/angular/directives/_bundle/uploader/uploader.js")
+                .Include("~/Assets/js/angular/directives/_bundle/uploader/upload.js")
+
+                .Include("~/Assets/js/vendor/redactor/redactor.js")
+                .Include("~/Assets/js/vendor/redactor/fontfamily.js")
+                .Include("~/Assets/js/vendor/redactor/fontcolor.js")
+                .Include("~/Assets/js/vendor/redactor/fontsize.js")
+                .Include("~/Assets/js/vendor/redactor/table.js")
+                .Include("~/Assets/js/vendor/redactor/clips.js")
+                .Include("~/Assets/js/angular/directives/_bundle/redactor-directive/redactor-directive.js")
                 .Include("~/Assets/js/angular/directives/_bundle/checkbox-group/ckeckbox-group.js")
                 .Include("~/Assets/js/angular/directives/_bundle/page/page.js")
                 .Include("~/Assets/js/angular/directives/_bundle/modal/modal.js")
@@ -388,6 +401,8 @@ namespace GestaoAvaliacao.App_Start
                 new StyleBundle("~/bundles/Test_IndexForm_css")
                 .Include("~/Assets/js/angular/directives/_bundle/tags-input/ng-tags-input.css")
                 .Include("~/Assets/js/vendor/datepicker/datepicker.css")
+                .Include("~/Assets/js/vendor/redactor/redactor.css")
+                .Include("~/Assets/js/vendor/redactor/mathLatex.css")
                 .Include("~/Assets/js/angular/directives/_bundle/page/page.css")
 
             );
