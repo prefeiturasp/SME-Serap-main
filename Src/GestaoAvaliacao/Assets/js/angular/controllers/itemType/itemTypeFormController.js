@@ -44,7 +44,10 @@
 		 */
 		ng.Salvar = Salvar;
 		function Salvar() {
-			
+			if (ng.itemTypeForEdit == undefined) {
+				ng.itemType = { ...ng.itemType, State: true}
+			}
+
 			ItemTypeModel.save(ng.itemType, function (result) {
 				if (result.success) {
 					$notification.success(result.message);
@@ -66,6 +69,21 @@
 			ng.itemType.IsDefault = false;
 			angular.element('#modal').modal('hide');
 		}//Cancel
+
+		/**
+		* @function Valida entrada de números
+		* @private
+		* @param
+		*/
+		ng.validarQuantidadeAlternativas = validarQuantidadeAlternativas;
+		function validarQuantidadeAlternativas(elm, prop) {
+			if (elm && prop) {
+				elm[prop] = elm[prop].replace(/[^0-9]/g, "");
+			}
+			else if (this[elm]) {
+				this[elm] = this[elm].replace(/[^0-9]/g, "");
+			}
+		};
 
 		/**
 		 * @function Cancelar

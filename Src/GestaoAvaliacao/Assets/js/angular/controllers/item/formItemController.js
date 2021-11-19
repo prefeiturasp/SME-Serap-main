@@ -10,12 +10,12 @@
 
     //~SETTER
     angular
-		.module('appMain', ['services', 'filters', 'directives', 'ngTagsInput']);
+        .module('appMain', ['services', 'filters', 'directives', 'ngTagsInput']);
 
     //~GETTER
     angular
-		.module('appMain')
-		.controller("FormItemController", FormItemController);
+        .module('appMain')
+        .controller("FormItemController", FormItemController);
 
     FormItemController.$inject = ['$window', '$util', 'ItemModel', 'DisciplineModel', 'EvaluationMatrixModel', 'ItemLevelModel', 'ItemTypeModel', 'ItemSituationModel', 'SkillModel', 'EvaluationMatrixCourseCurriculumGradeModel', 'ParameterModel', 'SubjectModel', '$scope', '$rootScope', '$notification', '$timeout'];
 
@@ -46,23 +46,23 @@
             }
 
             $(".comboAreaConhecimento").select2(
-            {
-                multiple: false,
-                placeholder: "Selecione uma área de conhecimento",
-                width: '100%',
-                ajax: {
-                    url: "loadallknowledgeareaactive",
-                    dataType: 'json',
-                    data: function (params, page) {
-                        return {
-                            description: params.term
-                        };
-                    },
-                    processResults: function (data, page) {
-                        return { results: data };
+                {
+                    multiple: false,
+                    placeholder: "Selecione uma área de conhecimento",
+                    width: '100%',
+                    ajax: {
+                        url: "loadallknowledgeareaactive",
+                        dataType: 'json',
+                        data: function (params, page) {
+                            return {
+                                description: params.term
+                            };
+                        },
+                        processResults: function (data, page) {
+                            return { results: data };
+                        }
                     }
-                }
-            })
+                })
 
             $(".comboComponenteCurricular").select2({
                 placeholder: "Selecione um componente curricular"
@@ -227,16 +227,32 @@
                 Files: []
             };
             var tct = [{ Id: 0, preDescription: "Discriminação", Value: undefined, postDescription: "-1 até 1" },
-					  { Id: 1, preDescription: "Proporção de acertos", Value: undefined, postDescription: "0 até 1" },
-					  { Id: 2, preDescription: "Coeficiente bisserial", Value: undefined, postDescription: "-1 até 1" }];
+            { Id: 1, preDescription: "Proporção de acertos", Value: undefined, postDescription: "0 até 1" },
+            { Id: 2, preDescription: "Coeficiente bisserial", Value: undefined, postDescription: "-1 até 1" }];
             $scope.tri = [{ Id: 0, preDescription: "Discriminação", Value: undefined, postDescription: "0 até 10" },
-					 { Id: 1, preDescription: "Dificuldade", Value: undefined, postDescription: " -99999.999 até 99999.999" },
-					 { Id: 2, preDescription: "Acerto casual", Value: undefined, postDescription: "0 até 1" }];
-            $scope.distratores = [{ Id: 0, Description: "A)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 0, Files: [], State: 1 },
-				{ Id: 0, Description: "B)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 1, Files: [], State: 1 },
-				{ Id: 0, Description: "C)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 2, Files: [], State: 1 },
-				{ Id: 0, Description: "D)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 3, Files: [], State: 1 },
-				{ Id: 0, Description: "E)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 4, Files: [], State: 1 }
+            { Id: 1, preDescription: "Dificuldade", Value: undefined, postDescription: " -99999.999 até 99999.999" },
+            { Id: 2, preDescription: "Acerto casual", Value: undefined, postDescription: "0 até 1" }];
+            $scope.distratores = [
+                { Id: 0, Description: "A)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 0, Files: [], State: 1 },
+                { Id: 0, Description: "B)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 1, Files: [], State: 1 },
+                { Id: 0, Description: "C)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 2, Files: [], State: 1 },
+                { Id: 0, Description: "D)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 3, Files: [], State: 1 },
+                { Id: 0, Description: "E)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 4, Files: [], State: 1 },
+                { Id: 0, Description: "F)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 5, Files: [], State: 1 },
+                { Id: 0, Description: "G)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 6, Files: [], State: 1 },
+                { Id: 0, Description: "H)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 7, Files: [], State: 1 },
+                { Id: 0, Description: "I)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 8, Files: [], State: 1 },
+                { Id: 0, Description: "K)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "L)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "M)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "N)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "O)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "P)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "Q)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "R)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "S)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "T)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "U)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 }
             ];
             $scope.code = undefined;
             $scope.version = 0;
@@ -354,7 +370,7 @@
 
             if ($scope.videos.length < 1) {
                 $scope.videos.push(new Segmento());
-            }         
+            }
 
             $scope.ultimo = $scope.videos.length - 1;
         };
@@ -745,13 +761,15 @@
                                 $scope.valuePrev = $scope.tipoItem.objTipoItem;
                                 $scope.itemTypeQtd = $scope.tipoItem.objTipoItem;
 
-                                if ($scope.tipoItem.objTipoItem.QuantityAlternative == 4) {
-                                    $scope.distratores[$scope.distratores.length - 1].State = 3;
-                                    $scope.typeItemQtd = 1;
-                                } else if ($scope.tipoItem.objTipoItem.QuantityAlternative == 5) {
-                                    $scope.distratores[$scope.distratores.length - 1].State = 1;
-                                    $scope.typeItemQtd = 0;
+
+                                for (var d = 0; d < $scope.distratores.length; d++) {
+                                    if (d < $scope.tipoItem.objTipoItem.QuantityAlternative) {
+                                        $scope.distratores[d].State = 1;
+                                    } else {
+                                        $scope.distratores[d].State = 3;
+                                    }
                                 }
+
                                 break;
                             }
                         }
@@ -1012,16 +1030,16 @@
                         $scope.palavrasChave = _result.Keywords != null ? $scope.transformTags(_result.Keywords) : undefined;
                         $scope.dicas = _result.Tips != null ? _result.Tips : undefined;
                         $scope.videos = _result.Videos;
-                        
+
                         if ($scope.videos.length <= 0) {
                             newModal();
-                        }                      
+                        }
 
                         $scope.audios = _result.Audios;
 
                         if ($scope.audios.length <= 0) {
                             newModalAudio();
-                        }                      
+                        }
 
                         if (_result.ItemType != null) {
                             var arr = jQuery.grep($scope.tipoItem.lista, function (n, i) {
@@ -1068,8 +1086,8 @@
                                 $scope.distratores[key].ordem = key;
                                 $scope.distratores[key].State = _result.Alternatives[key].State;
                                 $scope.distratores[key].tct = [{ Id: 0, preDescription: "Discriminação", Value: _result.Alternatives[key].TCTDiscrimination, postDescription: "-1 até 1" },
-                                                            { Id: 1, preDescription: "Proporção de acertos", Value: _result.Alternatives[key].TCTDificulty, postDescription: "0 até 1" },
-                                                            { Id: 2, preDescription: "Coeficiente bisserial", Value: _result.Alternatives[key].TCTBiserialCoefficient, postDescription: "-1 até 1" }];
+                                { Id: 1, preDescription: "Proporção de acertos", Value: _result.Alternatives[key].TCTDificulty, postDescription: "0 até 1" },
+                                { Id: 2, preDescription: "Coeficiente bisserial", Value: _result.Alternatives[key].TCTBiserialCoefficient, postDescription: "-1 até 1" }];
 
                             } else if ($scope.tipoItem.objTipoItem.QuantityAlternative == 4) {
                                 $scope.distratores[key].State = 3;
@@ -1151,8 +1169,8 @@
                         $scope.distratores[key].ordem = key;
                         $scope.distratores[key].State = _result.Alternatives[key].State;
                         $scope.distratores[key].tct = [{ Id: 0, preDescription: "Discriminação", Value: _result.Alternatives[key].TCTDiscrimination, postDescription: "-1 até 1" },
-                                                    { Id: 1, preDescription: "Proporção de acertos", Value: _result.Alternatives[key].TCTDificulty, postDescription: "0 até 1" },
-                                                    { Id: 2, preDescription: "Coeficiente bisserial", Value: _result.Alternatives[key].TCTBiserialCoefficient, postDescription: "-1 até 1" }];
+                        { Id: 1, preDescription: "Proporção de acertos", Value: _result.Alternatives[key].TCTDificulty, postDescription: "0 até 1" },
+                        { Id: 2, preDescription: "Coeficiente bisserial", Value: _result.Alternatives[key].TCTBiserialCoefficient, postDescription: "-1 até 1" }];
 
                     } else if ($scope.tipoItem.objTipoItem.QuantityAlternative == 4) {
                         $scope.distratores[key].State = 3;
@@ -1164,25 +1182,25 @@
 
         function loadSubject() {
             $(".comboAssunto").select2(
-            {
-                placeholder: "Selecione um assunto",
-                width: '100%',
-                overflow: scroll,
-                ajax: {
-                    url: "loadallsubjects",
-                    dataType: 'json',
-                    data: function (params, page) {
-                        return {
-                            description: params.term
-                        };
-                    },
-                    processResults: function (data, page) {
-                        return {
-                            results: data
-                        };
+                {
+                    placeholder: "Selecione um assunto",
+                    width: '100%',
+                    overflow: scroll,
+                    ajax: {
+                        url: "loadallsubjects",
+                        dataType: 'json',
+                        data: function (params, page) {
+                            return {
+                                description: params.term
+                            };
+                        },
+                        processResults: function (data, page) {
+                            return {
+                                results: data
+                            };
+                        }
                     }
-                }
-            });
+                });
 
             $(".comboSubassunto").select2({
                 placeholder: "Selecione um subassunto"
@@ -1291,25 +1309,25 @@
             if ($scope.createMode) {
 
                 $(".comboMatriz").select2(
-                {
-                    placeholder: "Selecione uma matriz",
-                    width: '100%',
-                    ajax: {
-                        url: "loadmatrizbydiscipline",
-                        dataType: 'json',
-                        data: function (params, page) {
-                            return {
-                                description: params.term,
-                                discipline: ($scope.materia.Id).toString()
-                            };
-                        },
-                        processResults: function (data, page) {
-                            return {
-                                results: data
-                            };
+                    {
+                        placeholder: "Selecione uma matriz",
+                        width: '100%',
+                        ajax: {
+                            url: "loadmatrizbydiscipline",
+                            dataType: 'json',
+                            data: function (params, page) {
+                                return {
+                                    description: params.term,
+                                    discipline: ($scope.materia.Id).toString()
+                                };
+                            },
+                            processResults: function (data, page) {
+                                return {
+                                    results: data
+                                };
+                            }
                         }
-                    }
-                });
+                    });
 
                 //EvaluationMatrixModel.load({ Id: $scope.materia.objMateria.Id }, function (result) {
                 //    if (result.success) {
@@ -1437,18 +1455,18 @@
                 SkillModel.getByParent({
                     Id: node.objSkill.Id
                 },
-                function (result) {
-                    if (result.success) {
+                    function (result) {
+                        if (result.success) {
 
-                        var _skills = [];
-                        for (var key in result.lista)
-                            _skills.push(result.lista[key].Skills);
-                        $scope.skills[_nextIndex].lista = $scope.getSubstractSkill(_skills);
-                    }
-                    else {
-                        $notification[result.type ? result.type : 'error'](result.message);
-                    }
-                });
+                            var _skills = [];
+                            for (var key in result.lista)
+                                _skills.push(result.lista[key].Skills);
+                            $scope.skills[_nextIndex].lista = $scope.getSubstractSkill(_skills);
+                        }
+                        else {
+                            $notification[result.type ? result.type : 'error'](result.message);
+                        }
+                    });
             }
         };
 
@@ -1509,47 +1527,60 @@
         $scope.changeItemType = function __changeItemType(opc) {
 
             if (opc != null) {
-                if (opc.QuantityAlternative == 5) {
-                    $scope.distratores.map(a => a.State = 1);
-                    $scope.distratores[$scope.distratores.length - 1].State = 1;
-                    $scope.valuePrev = $scope.tipoItem.objTipoItem;
-                    $scope.typeItemQtd = 0;
-                }
-                else if (opc.QuantityAlternative == 0) {
-                    $scope.distratores.map(a => a.State = 3);
-                    
-                    $scope.typeItemQtd = 2;
-                }
-                else if (opc.QuantityAlternative == 4) {
-                    $scope.distratores.map(a => a.State = 1);
-                    $scope.distratores[$scope.distratores.length - 1].State = 3;
-                    $scope.typeItemQtd = 1;
-
-                    if (opc.QuantityAlternative != $scope.itemTypeQtd.QuantityAlternative && $scope.tipoItem.objTipoItem.Id != 3) {
-                        angular.element('#ConfirmModal').modal('show');
+                for (var d = 0; d < $scope.distratores.length; d++) {
+                    if (d < opc.QuantityAlternative) {
+                        $scope.distratores[d].State = 1;
+                    } else {
+                        $scope.distratores[d].State = 3;
                     }
                 }
-                $scope.itemTypeQtd = opc
+
+                if (opc.QuantityAlternative != $scope.itemTypeQtd.QuantityAlternative) {
+                    angular.element('#ConfirmModal').modal('show');
+                }
+
+
+                //if (opc.QuantityAlternative == 5) {
+                //    $scope.distratores.map(a => a.State = 1);
+                //    $scope.distratores[$scope.distratores.length - 1].State = 1;
+                //    $scope.valuePrev = $scope.tipoItem.objTipoItem;
+                //    $scope.typeItemQtd = 0;
+                //}
+                //else if (opc.QuantityAlternative == 0) {
+                //    $scope.distratores.map(a => a.State = 3);
+
+                //    $scope.typeItemQtd = 2;
+                //}
+                //else if (opc.QuantityAlternative == 4) {
+                //    $scope.distratores.map(a => a.State = 1);
+                //    $scope.distratores[$scope.distratores.length - 1].State = 3;
+                //    $scope.typeItemQtd = 1;
+
+                //    if (opc.QuantityAlternative != $scope.itemTypeQtd.QuantityAlternative && $scope.tipoItem.objTipoItem.Id != 3) {
+                //        angular.element('#ConfirmModal').modal('show');
+                //    }
+                //}
+
+                //$scope.itemTypeQtd = opc
             }
         };
 
         $scope.newValueItemType = function __newValueItemType() {
-            $scope.valuePrev = $scope.tipoItem.objTipoItem;
+            $scope.valuePrev = $scope.itemTypeQtd;
             $scope.itemTypeQtd = $scope.tipoItem.objTipoItem;
         };
 
         $scope.setValueItemTypeDefault = function __setValueItemTypeDefault() {
 
-            $scope.tipoItem.objTipoItem = $scope.valuePrev;
-            if ($scope.tipoItem.objTipoItem.QuantityAlternative == 4) {
-                $scope.distratores[$scope.distratores.length - 1].State = 3;
-                $scope.typeItemQtd = 1;
+            $scope.tipoItem.objTipoItem = $scope.itemTypeQtd;
+
+            for (var d = 0; d < $scope.distratores.length; d++) {
+                if (d < $scope.tipoItem.objTipoItem.QuantityAlternative) {
+                    $scope.distratores[d].State = 1;
+                } else {
+                    $scope.distratores[d].State = 3;
+                }
             }
-            else if ($scope.tipoItem.objTipoItem.QuantityAlternative == 5) {
-                $scope.distratores[$scope.distratores.length - 1].State = 1;
-                $scope.typeItemQtd = 0;
-            }
-            $scope.itemTypeQtd = $scope.tipoItem.objTipoItem;
         };
 
         $scope.activeModalText = function __activeModalText(label, text) {
@@ -1598,56 +1629,56 @@
                 item: wrapper.item, files: wrapper.files, itemFiles: $scope.videos, itemAudios: $scope.audios
             },
 
-            function (result) {
+                function (result) {
 
-                if (result.success) {
+                    if (result.success) {
 
-                    item.id = result.Item.Id;
-                    item.code = result.Item.ItemCode;
-                    item.itemCodeVersion = result.Item.ItemCodeVersion;
-                    item.version = result.Item.ItemVersion;
-                    item.versions.lista = [];
-                    item.versions.lista.push(result.Item.Versions);
-                    item.textobase.Id = result.Item.BaseText_Id;
-                    $scope.textobase.Id = result.Item.BaseText_Id;
+                        item.id = result.Item.Id;
+                        item.code = result.Item.ItemCode;
+                        item.itemCodeVersion = result.Item.ItemCodeVersion;
+                        item.version = result.Item.ItemVersion;
+                        item.versions.lista = [];
+                        item.versions.lista.push(result.Item.Versions);
+                        item.textobase.Id = result.Item.BaseText_Id;
+                        $scope.textobase.Id = result.Item.BaseText_Id;
 
-                    for (var t in item.textobase.Files) {
-                        item.textobase.Files[t].ParentOwnerId = result.Item.Id;
-                    }
-                    for (var e in item.enunciado.Files) {
-                        item.enunciado.Files[e].ParentOwnerId = result.Item.Id;
-                    }
+                        for (var t in item.textobase.Files) {
+                            item.textobase.Files[t].ParentOwnerId = result.Item.Id;
+                        }
+                        for (var e in item.enunciado.Files) {
+                            item.enunciado.Files[e].ParentOwnerId = result.Item.Id;
+                        }
 
-                    for (var i = 0; i < result.Item.Alternatives.length; i++) {
-                        if (result.Item.Alternatives[i].Order == item.distratores[i].ordem) {
-                            item.distratores[i].Id = result.Item.Alternatives[i].Id;
+                        for (var i = 0; i < result.Item.Alternatives.length; i++) {
+                            if (result.Item.Alternatives[i].Order == item.distratores[i].ordem) {
+                                item.distratores[i].Id = result.Item.Alternatives[i].Id;
 
-                            for (var a in item.distratores[i].Files) {
-                                item.distratores[i].Files[a].ParentOwnerId = result.Item.Id;
-                            }
+                                for (var a in item.distratores[i].Files) {
+                                    item.distratores[i].Files[a].ParentOwnerId = result.Item.Id;
+                                }
 
-                            for (var j in item.distratores[i].justificativa.Files) {
-                                item.distratores[i].justificativa.Files[j].ParentOwnerId = result.Item.Id;
+                                for (var j in item.distratores[i].justificativa.Files) {
+                                    item.distratores[i].justificativa.Files[j].ParentOwnerId = result.Item.Id;
+                                }
                             }
                         }
+
+                        $scope.itens.push(item);
+                        $notification.success("", "Item adicionado com sucesso!");
+                        if (!$scope.item.ItemNarrated)
+                            $scope.reset();
+
+                        if ($scope.item.ItemNarrated)
+                            $timeout(function () {
+                                $scope.next(4);
+                            }, 500);
+
+                        return;
                     }
-
-                    $scope.itens.push(item);
-                    $notification.success("", "Item adicionado com sucesso!");
-                    if (!$scope.item.ItemNarrated)
-                        $scope.reset();
-
-                    if ($scope.item.ItemNarrated)
-                        $timeout(function () {
-                            $scope.next(4);
-                        }, 500);
-
-                    return;
-                }
-                else {
-                    $notification[result.type ? result.type : 'error'](result.message);
-                }
-            });
+                    else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
         };
 
         $scope.cancel = function __cancel() {
@@ -1733,56 +1764,56 @@
                 item: wrapper.item, files: wrapper.files, itemFiles: $scope.videos, itemAudios: $scope.audios
             },
 
-          function (result) {
+                function (result) {
 
-              if (result.success) {
+                    if (result.success) {
 
-                  if ($scope.editInternal) {
-                      $scope.editInternal = false;
-                      item.id = result.Item.Id;
-                      item.code = result.Item.ItemCode;
-                      item.itemCodeVersion = result.Item.ItemCodeVersion;
-                      item.version = result.Item.ItemVersion;
-                      item.versions.lista = [];
-                      item.versions.lista = result.Item.Versions;
-                      item.index = $scope.currentEditItem.index;
+                        if ($scope.editInternal) {
+                            $scope.editInternal = false;
+                            item.id = result.Item.Id;
+                            item.code = result.Item.ItemCode;
+                            item.itemCodeVersion = result.Item.ItemCodeVersion;
+                            item.version = result.Item.ItemVersion;
+                            item.versions.lista = [];
+                            item.versions.lista = result.Item.Versions;
+                            item.index = $scope.currentEditItem.index;
 
-                      for (var t in item.textobase.Files) {
-                          item.textobase.Files[t].ParentOwnerId = result.Item.Id;
-                      }
-                      for (var e in item.enunciado.Files) {
-                          item.enunciado.Files[e].ParentOwnerId = result.Item.Id;
-                      }
+                            for (var t in item.textobase.Files) {
+                                item.textobase.Files[t].ParentOwnerId = result.Item.Id;
+                            }
+                            for (var e in item.enunciado.Files) {
+                                item.enunciado.Files[e].ParentOwnerId = result.Item.Id;
+                            }
 
-                      for (var i = 0; i < result.Item.Alternatives.length; i++) {
-                          if (result.Item.Alternatives[i].Order == item.distratores[i].ordem) {
-                              item.distratores[i].Id = result.Item.Alternatives[i].Id;
+                            for (var i = 0; i < result.Item.Alternatives.length; i++) {
+                                if (result.Item.Alternatives[i].Order == item.distratores[i].ordem) {
+                                    item.distratores[i].Id = result.Item.Alternatives[i].Id;
 
-                              for (var a in item.distratores[i].Files) {
-                                  item.distratores[i].Files[a].ParentOwnerId = result.Item.Id;
-                              }
+                                    for (var a in item.distratores[i].Files) {
+                                        item.distratores[i].Files[a].ParentOwnerId = result.Item.Id;
+                                    }
 
-                              for (var j in item.distratores[i].justificativa.Files) {
-                                  item.distratores[i].justificativa.Files[j].ParentOwnerId = result.Item.Id;
-                              }
-                          }
-                      }
-                      $scope.itens[$scope.currentEditItem.index] = $scope.copy(item);
-                      $scope.currentEditItem = null;
-                      $scope.navigation = 4;
-                      $scope.reset();
-                  }
-                  else {
-                      $window.location.href = '/Item/List';
-                      $notification.success("Item atualizado com sucesso!");
-                  }
+                                    for (var j in item.distratores[i].justificativa.Files) {
+                                        item.distratores[i].justificativa.Files[j].ParentOwnerId = result.Item.Id;
+                                    }
+                                }
+                            }
+                            $scope.itens[$scope.currentEditItem.index] = $scope.copy(item);
+                            $scope.currentEditItem = null;
+                            $scope.navigation = 4;
+                            $scope.reset();
+                        }
+                        else {
+                            $window.location.href = '/Item/List';
+                            $notification.success("Item atualizado com sucesso!");
+                        }
 
-                  return;
-              }
-              else {
-                  $notification[result.type ? result.type : 'error'](result.message);
-              }
-          });
+                        return;
+                    }
+                    else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
         };
 
         $scope.setNewValueTextBase = function __setNewValue() {
@@ -2102,8 +2133,8 @@
                     if ($scope.parameters.BASETEXT.State == $scope.EnumState.ativo && $scope.parameters.BASETEXT.Obligatory) {
 
                         if (($scope.textobase.Description == "" ||
-                              $scope.textobase.Description == "<p><br></p>" ||
-                              $scope.textobase.Description == null)) {
+                            $scope.textobase.Description == "<p><br></p>" ||
+                            $scope.textobase.Description == null)) {
 
                             $notification.alert("Atenção", $scope.parameters.BASETEXT.Value + " é um campo obrigatório!");
                             return false;
@@ -2158,8 +2189,8 @@
                     }
 
                     if (($scope.textobase.Description == "" ||
-                              $scope.textobase.Description == "<p><br></p>" ||
-                              $scope.textobase.Description == null)) {
+                        $scope.textobase.Description == "<p><br></p>" ||
+                        $scope.textobase.Description == null)) {
 
                         if (($scope.textobase.Source != undefined || $scope.textobase.Source != null || $scope.textobase.Source != "") && ($scope.textobase.Source != null && $scope.textobase.Source.length != 0)
                             ||
@@ -2366,8 +2397,8 @@
                             }
                         }
                     }
-                                
-                    
+
+
 
                     if ($scope.parameters.TRI.State == $scope.EnumState.ativo && $scope.parameters.TRI.Obligatory) {
 
@@ -2413,8 +2444,7 @@
                     }
 
                     for (var v = 0; v < $scope.videos.length; v++) {
-                        if ($scope.videos[v].File.Path === undefined && $scope.videos[v].Thumbnail.Path !== undefined)
-                        {
+                        if ($scope.videos[v].File.Path === undefined && $scope.videos[v].Thumbnail.Path !== undefined) {
                             $notification.alert("É necessário selecionar um vídeo.");
                             return false;
                         }
