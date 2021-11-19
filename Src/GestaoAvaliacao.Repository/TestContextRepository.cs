@@ -97,9 +97,6 @@ namespace GestaoAvaliacao.Repository
                     testContexts.ForEach(i =>
                     {
                         GestaoAvaliacaoContext.TestContext.Remove(i);
-                        //i.State = Convert.ToByte(EnumState.excluido);
-                        //i.UpdateDate = DateTime.Now;
-                        //GestaoAvaliacaoContext.Entry(i).State = System.Data.Entity.EntityState.Modified;
                     });
                 }
                 GestaoAvaliacaoContext.SaveChanges();

@@ -653,8 +653,6 @@
                     @* Alternativas *@
                     <div ng-if="tipoItem.objTipoItem.Id != 3" class="container-fluid">
                         <div class="row">
-                            
-                            {{tipoItem.objTipoItem}}
                             <div class="col-md-12 cards" style="padding: 0;">
                                 <div class="tabPadrao">
                                     <ul class="nav nav-tabs">
@@ -1101,7 +1099,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="modal-body">
-                    <span>Se você alterar tipo do item para <b>{{tipoItem.objTipoItem.Description}} </b> a última alternativa será removida! <br><b>Confirmar alteração</b>?</span>
+                    <span>Se você alterar tipo do item para <b>{{tipoItem.objTipoItem.Description}} </b>, poderá sofrer alterações nas alternativas! <br><b>Confirmar alteração</b>?</span>
                 </div>
                 <div class="col-sm-12 text-right">
                     <button type="button" class="btnPadrao" ng-click="newValueItemType()" data-dismiss="modal">Sim</button>

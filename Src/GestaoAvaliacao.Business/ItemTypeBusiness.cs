@@ -21,6 +21,19 @@ namespace GestaoAvaliacao.Business
 
         private Validate Validate(ItemType entity, ValidateAction action, Guid ent_id, Validate valid)
         {
+
+            if (action == ValidateAction.Delete)
+            {
+                if(itemTypeRepository.ExistsItems(entity.Id))
+                    valid.Message = "Este tipo de item possui itens atrelados.";
+            }
+
+            if (action == ValidateAction.Save)
+            {
+                if (itemTypeRepository.ExistsDescriptionNamed(entity.Description, entity.Id, ent_id))
+                    valid.Message += "<br/>Esse tipo de item já existe.";
+            }
+
             if (action == ValidateAction.Update)
             {
                 ItemType ent = itemTypeRepository.Get(entity.Id);
@@ -112,11 +125,45 @@ namespace GestaoAvaliacao.Business
 			return entity;
 		}
 
+        public ItemType Save(ItemType entity)
+        {
+            entity.Validate = Validate(entity, ValidateAction.Save, entity.EntityId, entity.Validate);
+
+            if (entity.Validate.IsValid)
+            {
+                if (entity.IsDefault)
+                    VerifyDefault(entity.EntityId);
+
+                itemTypeRepository.Save(entity);
+
+                entity.Validate.Type = ValidateType.Save.ToString();
+                entity.Validate.Message = "Tipo de item salvo com sucesso.";
+            }
+
+            return entity;
+        }
+
         private void VerifyDefault(Guid guid)
         {
             itemTypeRepository.VerifyDefault(guid);
         }
 
-		#endregion
-	}
+        public ItemType Delete(long id)
+        {
+            ItemType entity = new ItemType { Id = id };
+
+            entity.Validate = Validate(entity, ValidateAction.Delete, entity.EntityId, entity.Validate);
+
+            if (entity.Validate.IsValid)
+            {
+                itemTypeRepository.Delete(id);
+                entity.Validate.Type = ValidateType.Delete.ToString();
+                entity.Validate.Message = "Tipo de item excluído com sucesso!";
+            }
+            
+            return entity;
+        }
+
+        #endregion
+    }
 }
