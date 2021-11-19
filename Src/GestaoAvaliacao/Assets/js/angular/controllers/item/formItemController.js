@@ -232,16 +232,27 @@
             $scope.tri = [{ Id: 0, preDescription: "Discriminação", Value: undefined, postDescription: "0 até 10" },
             { Id: 1, preDescription: "Dificuldade", Value: undefined, postDescription: " -99999.999 até 99999.999" },
             { Id: 2, preDescription: "Acerto casual", Value: undefined, postDescription: "0 até 1" }];
-            $scope.distratores = [{ Id: 0, Description: "A)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 0, Files: [], State: 1 },
-            { Id: 0, Description: "B)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 1, Files: [], State: 1 },
-            { Id: 0, Description: "C)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 2, Files: [], State: 1 },
-            { Id: 0, Description: "D)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 3, Files: [], State: 1 },
-            { Id: 0, Description: "E)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 4, Files: [], State: 1 },
-            { Id: 0, Description: "F)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 5, Files: [], State: 1 },
-            { Id: 0, Description: "G)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 6, Files: [], State: 1 },
-            { Id: 0, Description: "H)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 7, Files: [], State: 1 },
-            { Id: 0, Description: "I)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 8, Files: [], State: 1 },
-            { Id: 0, Description: "J)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 }
+            $scope.distratores = [
+                { Id: 0, Description: "A)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 0, Files: [], State: 1 },
+                { Id: 0, Description: "B)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 1, Files: [], State: 1 },
+                { Id: 0, Description: "C)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 2, Files: [], State: 1 },
+                { Id: 0, Description: "D)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 3, Files: [], State: 1 },
+                { Id: 0, Description: "E)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 4, Files: [], State: 1 },
+                { Id: 0, Description: "F)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 5, Files: [], State: 1 },
+                { Id: 0, Description: "G)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 6, Files: [], State: 1 },
+                { Id: 0, Description: "H)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 7, Files: [], State: 1 },
+                { Id: 0, Description: "I)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 8, Files: [], State: 1 },
+                { Id: 0, Description: "K)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "L)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "M)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "N)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "O)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "P)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "Q)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "R)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "S)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "T)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 },
+                { Id: 0, Description: "U)", selecionado: false, texto: "", tct: JSON.parse(JSON.stringify(tct)), justificativa: { Id: 0, Description: "", Files: [] }, ordem: 9, Files: [], State: 1 }
             ];
             $scope.code = undefined;
             $scope.version = 0;
@@ -1554,7 +1565,7 @@
             }
         };
 
-        $scope.newValueItemType = function __newValueItemType() {   
+        $scope.newValueItemType = function __newValueItemType() {
             $scope.valuePrev = $scope.itemTypeQtd;
             $scope.itemTypeQtd = $scope.tipoItem.objTipoItem;
         };
@@ -1569,7 +1580,7 @@
                 } else {
                     $scope.distratores[d].State = 3;
                 }
-            }          
+            }
         };
 
         $scope.activeModalText = function __activeModalText(label, text) {
