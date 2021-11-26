@@ -7,7 +7,7 @@
 (function (angular, $) {
 
     angular
-        .module('appMain', ['services', 'filters', 'directives', 'tooltip', 'ngTagsInput']);
+        .module('appMain', ['services', 'filters', 'directives', 'tooltip', 'ngTagsInput', 'summernote']);
 
     angular
         .module('appMain')

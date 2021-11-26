@@ -2,6 +2,13 @@
 @using GestaoAvaliacao.WebProject.Facade;
 @using GestaoAvaliacao.Entities.Enumerator
 @model GestaoAvaliacao.Entities.Test
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+
 <alert></alert>
 <div ng-controller="TestController" ng-init="editar(@Model.Id);">
     @* Prova *@
@@ -329,7 +336,7 @@
                         <div class="col-md-12">
                             <div class="cards">
                                 <button type="button" class="btnPadrao pull-right" style="margin-right: 15px;" ng-click="callModalAdicionarContextoProva()">Adicionar Novo Contexto</button>
-                                <h4 class="tituloCard ng-binding">Contexto da prova: </h4>                                
+                                <h4 class="tituloCard ng-binding">Contexto da prova: </h4>
                                 <table class="table table-hover">
                                     <colgroup>
                                         <col width="15%" />
@@ -362,7 +369,7 @@
                                             </th>
                                         </tr>
                                     </tbody>
-                                </table>                                
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -1579,29 +1586,54 @@
                                 <option value="@(EnumPosition.Right.GetDescription())">@(EnumPosition.Right.GetDescription())</option>
                             </select>
                         </div>
-                            <div class="campoLabel">
-                                <label>Título*:</label>
-                                <div>
-                                    <input type="text"
-                                           class="form-control"
-                                           maxlength="100"
-                                           ng-model="e1_dadosModalContexto.title"
-                                           placeholder="Digite o título" />
-                                </div>
+                        <div class="campoLabel">
+                            <label>Título*:</label>
+                            <div>
+                                <input type="text"
+                                       class="form-control"
+                                       maxlength="100"
+                                       ng-model="e1_dadosModalContexto.title"
+                                       placeholder="Digite o título" />
                             </div>
-                            @* Texto Base *@
-                            <div class="campoLabel colunas">
-                                <div writemaths position="center top" previewposition="center bottom">
-                                    <label>Texto*:</label><br />
-                                    <textarea id="textoBase" name="textoBase"
-                                              class="form-control" images=""
-                                              ng-model="e1_dadosModalContexto.text"
-                                              tipo="@((Byte)EnumFileType.BaseText)"
-                                              redactor="{limiter: 20, plugins:['limiter'], buttons: ['formatting', '|', 'bold', 'italic', 'underline', 'orderedlist']}"> </textarea>
-                                </div>
+                        </div>
+                        @* Texto Base *@
+                        <div class="campoLabel colunas">
+                            <div writemaths position="center top" previewposition="center bottom">
+                                <label>Texto*:</label><br />
+
+                                @*<textarea id="textoBase" name="textoBase"
+                                    class="form-control" images=""
+                                    ng-model="e1_dadosModalContexto.text"
+                                    tipo="@((Byte)EnumFileType.BaseText)"
+                                    redactor="{limiter: 20, plugins:['limiter'], buttons: ['formatting', '|', 'bold', 'italic', 'underline', 'orderedlist']}"> </textarea>*@
+
+                                <textarea id="txtModalContexto" ng-model="e1_dadosModalContexto.text" ng-hide="true" tipo="@((Byte)EnumFileType.BaseText)"></textarea>
+                                <textarea id="summernote" ng-model="e1_dadosModalContexto.text" tipo="@((Byte)EnumFileType.BaseText)"></textarea>
+                                <script>
+                                    $('#summernote').summernote({
+                                        placeholder: '',
+                                        tabsize: 2,
+                                        height: 120,
+                                        toolbar: [
+                                            ['style', ['style']],
+                                            ['font', ['bold', 'underline', 'italic', 'clear']],
+                                            ['color', ['color']],
+                                            ['para', ['ul', 'ol', 'paragraph']]
+                                        ]
+                                    });                                   
+
+                                    $('div .note-editable').bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function () {
+                                        var htmlModalContexto = $("div .note-editable").html();
+                                        var scope = angular.element($('#txtModalContexto').get(0)).scope();
+                                        scope.e1_dadosModalContexto.text = htmlModalContexto;
+                                        scope.$apply();                                        
+                                    });
+                                    
+                                </script>
                             </div>
                         </div>
                     </div>
+                </div>
 
                 @*FOOTER*@
                 <div class="modal-footer footerCustom ">
@@ -1609,7 +1641,7 @@
                         <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e1_limparDadosModalContexto()" aria-hidden="true">Cancelar</button>
                         <button type="button" class="btn btn-primary" data-dismiss="modal"
                                 ng-click="e1_addDadosModalContexto()"
-                                ng-disabled="!e1_dadosModalContexto.imagePositionDescription || 
+                                ng-disabled="!e1_dadosModalContexto.imagePositionDescription ||
                                              !e1_dadosModalContexto.title ||
                                              !e1_dadosModalContexto.text ||
                                              !e1_dadosModalContexto.image.Path
