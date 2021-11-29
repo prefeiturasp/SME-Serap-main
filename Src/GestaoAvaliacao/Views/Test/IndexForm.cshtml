@@ -3,10 +3,8 @@
 @using GestaoAvaliacao.Entities.Enumerator
 @model GestaoAvaliacao.Entities.Test
 
-
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<link href="~/Assets/js/vendor/summernote/summernote-lite.min.css" rel="stylesheet">
+<script src="~/Assets/js/vendor/summernote/summernote-lite.min.js"></script>
 
 
 <alert></alert>
@@ -1600,36 +1598,8 @@
                         <div class="campoLabel colunas">
                             <div writemaths position="center top" previewposition="center bottom">
                                 <label>Texto*:</label><br />
-
-                                @*<textarea id="textoBase" name="textoBase"
-                                    class="form-control" images=""
-                                    ng-model="e1_dadosModalContexto.text"
-                                    tipo="@((Byte)EnumFileType.BaseText)"
-                                    redactor="{limiter: 20, plugins:['limiter'], buttons: ['formatting', '|', 'bold', 'italic', 'underline', 'orderedlist']}"> </textarea>*@
-
                                 <textarea id="txtModalContexto" ng-model="e1_dadosModalContexto.text" ng-hide="true" tipo="@((Byte)EnumFileType.BaseText)"></textarea>
                                 <textarea id="summernote" ng-model="e1_dadosModalContexto.text" tipo="@((Byte)EnumFileType.BaseText)"></textarea>
-                                <script>
-                                    $('#summernote').summernote({
-                                        placeholder: '',
-                                        tabsize: 2,
-                                        height: 120,
-                                        toolbar: [
-                                            ['style', ['style']],
-                                            ['font', ['bold', 'underline', 'italic', 'clear']],
-                                            ['color', ['color']],
-                                            ['para', ['ul', 'ol', 'paragraph']]
-                                        ]
-                                    });                                   
-
-                                    $('div .note-editable').bind('DOMNodeInserted DOMSubtreeModified DOMNodeRemoved', function () {
-                                        var htmlModalContexto = $("div .note-editable").html();
-                                        var scope = angular.element($('#txtModalContexto').get(0)).scope();
-                                        scope.e1_dadosModalContexto.text = htmlModalContexto;
-                                        scope.$apply();                                        
-                                    });
-                                    
-                                </script>
                             </div>
                         </div>
                     </div>
@@ -1705,3 +1675,4 @@
         </div>
     </div>
 </div>
+<script src="~/Assets/js/vendor/contextoProva/scriptContexoProva.js"></script>

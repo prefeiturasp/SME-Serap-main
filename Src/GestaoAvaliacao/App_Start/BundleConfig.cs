@@ -394,7 +394,6 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/directives/_bundle/tags-input/ng-tags-input.js")
                 .Include("~/Assets/js/angular/models/testGroup/testGroupModel.js")
                 .Include("~/Assets/js/angular/directives/_bundle/collapse/collapse.js")
-                .Include("~/Assets/js/vendor/plugin/summernote/angular-summernote.js")
 
             );
 
@@ -1755,7 +1754,7 @@ namespace GestaoAvaliacao.App_Start
 
             #region ElectronicTestResult
 
-             #region (Index)
+            #region (Index)
 
             bundles.Add(
                 new ScriptBundle("~/bundles/ElectronicTestResult_js")
@@ -1901,8 +1900,8 @@ namespace GestaoAvaliacao.App_Start
             #endregion
 
             #endregion
-			
-			#region ProvaSP
+
+            #region ProvaSP
 
             bundles.Add(
                 new ScriptBundle("~/bundles/ProvaSP_js")
