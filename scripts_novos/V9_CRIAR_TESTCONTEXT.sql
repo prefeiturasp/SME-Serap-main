@@ -11,3 +11,5 @@ Test_Id BIGINT NOT NULL,
 State TINYINT NOT NULL,
  CONSTRAINT [PK_dbo.TestContext] PRIMARY KEY CLUSTERED ([Id] ASC)
 )
+
+ALTER TABLE TestContext ALTER COLUMN [text] varchar(max);

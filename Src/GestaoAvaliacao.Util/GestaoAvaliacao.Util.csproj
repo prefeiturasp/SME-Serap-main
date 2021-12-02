@@ -78,6 +78,7 @@
     <Compile Include="QRCode\QRCodeGenerator.cs" />
     <Compile Include="QRCode\UnityQRCode.cs" />
     <Compile Include="Results.cs" />
+    <Compile Include="UtilRegex.cs" />
     <Compile Include="StringHelper.cs" />
     <Compile Include="Structs\RoundedDouble.cs" />
     <Compile Include="UtilGZip.cs" />
