@@ -15,8 +15,7 @@
     <AssemblyName>GestaoAvaliacao</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
+    <IISExpressSSLPort>54127</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
@@ -605,6 +604,7 @@
     <Content Include="Assets\js\angular\services\authenticationinterceptor.service.js" />
     <Content Include="Assets\js\vendor\charts-2.0\charts-2.0.js" />
     <Content Include="Assets\js\vendor\charts-2.0\horizontalBarLineDrawer.js" />
+    <Content Include="Assets\js\vendor\contextoProva\scriptContexoProva.js" />
     <Content Include="Assets\js\vendor\easytimer.js" />
     <Content Include="Assets\js\vendor\easytimer.min.js" />
     <Content Include="Assets\js\vendor\FileSaver.js" />
@@ -1580,6 +1580,24 @@
     <Content Include="Assets\js\vendor\select2\select2.full.min.js" />
     <Content Include="Assets\js\vendor\select2\select2.js" />
     <Content Include="Assets\js\vendor\select2\select2.min.js" />
+    <Content Include="Assets\js\vendor\summernote\lang\summernote-az-AZ.js" />
+    <Content Include="Assets\js\vendor\summernote\lang\summernote-az-AZ.min.js" />
+    <Content Include="Assets\js\vendor\summernote\lang\summernote-az-AZ.min.js.LICENSE.txt" />
+    <Content Include="Assets\js\vendor\summernote\lang\summernote-pt-BR.js" />
+    <Content Include="Assets\js\vendor\summernote\lang\summernote-pt-BR.min.js" />
+    <Content Include="Assets\js\vendor\summernote\lang\summernote-pt-BR.min.js.LICENSE.txt" />
+    <Content Include="Assets\js\vendor\summernote\lang\summernote-pt-PT.js" />
+    <Content Include="Assets\js\vendor\summernote\lang\summernote-pt-PT.min.js" />
+    <Content Include="Assets\js\vendor\summernote\lang\summernote-pt-PT.min.js.LICENSE.txt" />
+    <Content Include="Assets\js\vendor\summernote\plugin\databasic\summernote-ext-databasic.css" />
+    <Content Include="Assets\js\vendor\summernote\plugin\databasic\summernote-ext-databasic.js" />
+    <Content Include="Assets\js\vendor\summernote\plugin\hello\summernote-ext-hello.js" />
+    <Content Include="Assets\js\vendor\summernote\plugin\specialchars\summernote-ext-specialchars.js" />
+    <Content Include="Assets\js\vendor\summernote\summernote-lite.css" />
+    <Content Include="Assets\js\vendor\summernote\summernote-lite.js" />
+    <Content Include="Assets\js\vendor\summernote\summernote-lite.min.css" />
+    <Content Include="Assets\js\vendor\summernote\summernote-lite.min.js" />
+    <Content Include="Assets\js\vendor\summernote\summernote-lite.min.js.LICENSE.txt" />
     <Content Include="Assets\tests\conf.js" />
     <Content Include="Assets\tests\e2e\controllers\OMRController.e2e.js" />
     <Content Include="Assets\tests\jasmine-runner.html" />
@@ -1678,6 +1696,12 @@
     <Content Include="AppProvaSP\turmas\7.csv" />
     <Content Include="AppProvaSP\turmas\8.csv" />
     <Content Include="AppProvaSP\turmas\9.csv" />
+    <Content Include="Assets\js\vendor\summernote\font\summernote.eot" />
+    <Content Include="Assets\js\vendor\summernote\font\summernote.ttf" />
+    <Content Include="Assets\js\vendor\summernote\font\summernote.woff" />
+    <Content Include="Assets\js\vendor\summernote\font\summernote.woff2" />
+    <Content Include="Assets\js\vendor\summernote\summernote-lite.js.map" />
+    <Content Include="Assets\js\vendor\summernote\summernote-lite.min.js.map" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>

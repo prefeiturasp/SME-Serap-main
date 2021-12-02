@@ -4198,7 +4198,7 @@
                     $notification[result.type ? result.type : 'error'](result.message);
                 }
             });
-        };
+        };              
 
         ng.e1_criarObjetoDadosModalContexto = e1_criarObjetoDadosModalContexto;
         function e1_criarObjetoDadosModalContexto() {
@@ -4210,6 +4210,7 @@
                 imagePath: '',
                 image: {  Id: '', Guid: '', Path: '' }
             };
+            limparContextoSummernote();
         };
 
         ng.e1_addDadosModalContexto = e1_addDadosModalContexto;
@@ -4261,8 +4262,24 @@
                 ...item,
                 image: { Id: '', Guid: '', Path: item.imagePath }
             };
+            console.log(ng.e1_dadosModalContexto);
+            editarContextoSummernote();
             angular.element('#modalNovoContextoProva').modal({ backdrop: 'static' });
-        };        
+        };
+
+        function obterCampoContextoSummernote() {
+            return angular.element('div .note-editable');
+        }
+
+        function editarContextoSummernote() {
+            var campoContexto = obterCampoContextoSummernote();
+            campoContexto.html(ng.e1_dadosModalContexto.text);
+        }
+
+        function limparContextoSummernote() {
+            var campoContexto = obterCampoContextoSummernote();
+            campoContexto.html('');
+        }        
        
 
     };
