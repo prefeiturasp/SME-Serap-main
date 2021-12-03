@@ -14,8 +14,7 @@ namespace GestaoAvaliacao.Repository.Map
                 .HasColumnType("varchar");
 
             Property(p => p.Text)
-                .HasMaxLength(500)
-                .HasColumnType("varchar");
+                .HasColumnType("varchar(max)");
         }
     }
 }
