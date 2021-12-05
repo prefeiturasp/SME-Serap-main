@@ -80,14 +80,6 @@ namespace GestaoAvaliacao.Business
 
 			if (action == ValidateAction.Save)
 			{
-                if (entity.ShowOnSerapEstudantes)
-                {
-                    if (entity.CreateDate.Date > entity.DownloadStartDate.GetValueOrDefault().Date)
-                    {
-                        valid.Message = string.Format("A data de início do download da prova não pode ser menor que a data de criação.");
-                    }
-                }
-
                 if (string.IsNullOrEmpty(entity.Description) || entity.ApplicationEndDate == null || entity.ApplicationStartDate == null
 				|| entity.CorrectionEndDate == null || entity.CorrectionStartDate == null
 				|| entity.TestType == null || (entity.TestType != null && entity.TestType.Id <= 0)
