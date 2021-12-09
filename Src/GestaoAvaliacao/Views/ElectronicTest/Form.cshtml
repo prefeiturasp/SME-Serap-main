@@ -40,8 +40,8 @@
             <div class="col-sm-12">
                 <div class="electronicTestHeader">
                     <b>Questão {{ test.Itens[indiceItem].ItemOrder + 1 }}</b>
-                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;" />
-                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" />
+                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomEnunciado(true)" style="margin-left: 15px;height: 28px;width: 28px;margin-top: 20px;border: solid 1px;" />
+                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomEnunciado(false)" style="height: 28px;width: 28px;margin-top: 20px;border: solid 1px;"/>
 
                 </div>
                 <hr />
@@ -53,8 +53,8 @@
                 <br />
                 <div class="electronicTestHeader" style="margin-bottom: 18px;">
                     <b>Alternativas</b>
-                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomAlternativas(true)" style="margin-left: 15px;" />
-                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomAlternativas(false)" />
+                    <input type="image" src="~/Assets/images/font-size-icon-plus.jpg" ng-click="zoomAlternativas(true)" style="margin-left: 15px;height: 28px;width: 28px;margin-top: 20px;border: solid 1px;" />
+                    <input type="image" src="~/Assets/images/font-size-icon-minus.jpg" ng-click="zoomAlternativas(false)" style="height: 28px;width: 28px;margin-top: 20px;border: solid 1px;"/>
                 </div>
                 <div class="alternativas" ng-repeat="alternativa in test.Itens[indiceItem].Alternatives">
                     <input ng-disabled="admin || provaFinalizada || (test.quantDiasRestantes <= 0)"
