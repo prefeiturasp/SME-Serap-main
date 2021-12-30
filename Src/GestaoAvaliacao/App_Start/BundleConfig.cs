@@ -1754,7 +1754,7 @@ namespace GestaoAvaliacao.App_Start
 
             #region ElectronicTestResult
 
-             #region (Index)
+            #region (Index)
 
             bundles.Add(
                 new ScriptBundle("~/bundles/ElectronicTestResult_js")
@@ -1900,8 +1900,8 @@ namespace GestaoAvaliacao.App_Start
             #endregion
 
             #endregion
-			
-			#region ProvaSP
+
+            #region ProvaSP
 
             bundles.Add(
                 new ScriptBundle("~/bundles/ProvaSP_js")

@@ -34,6 +34,10 @@
 			'checkFilePathExists': {
 			    method: 'GET',
 			    url: base_url('File/CheckFilePathExists')
+			},
+			'checkFileExistsResultadoProva': {
+				method: 'GET',
+				url: base_url('File/CheckFileExistsResultadoProva')
 			}
 		};
 

@@ -80,7 +80,7 @@ namespace GestaoAvaliacao.Business
 
 			if (action == ValidateAction.Save)
 			{
-				if (string.IsNullOrEmpty(entity.Description) || entity.ApplicationEndDate == null || entity.ApplicationStartDate == null
+                if (string.IsNullOrEmpty(entity.Description) || entity.ApplicationEndDate == null || entity.ApplicationStartDate == null
 				|| entity.CorrectionEndDate == null || entity.CorrectionStartDate == null
 				|| entity.TestType == null || (entity.TestType != null && entity.TestType.Id <= 0)
 				|| (entity.Discipline == null && !entity.Multidiscipline) || (!entity.Multidiscipline && entity.Discipline != null && entity.Discipline.Id <= 0)
@@ -106,13 +106,7 @@ namespace GestaoAvaliacao.Business
                 }
             }
 
-            if(entity.ShowOnSerapEstudantes)
-            {
-                if(entity.CreateDate.Date > entity.DownloadStartDate.GetValueOrDefault().Date)
-                {
-                    valid.Message = string.Format("A data de início do download da prova não pode ser menor que a data de criação.");
-                }
-            }
+            
 
             if (action == ValidateAction.Update)
             {
@@ -127,6 +121,19 @@ namespace GestaoAvaliacao.Business
 				if (!((cadastred.UsuId == UsuId) || (isAdmin && cadastred.TestType.Global)))
 					valid.Message = "Apenas o proprietário da prova pode alterá-la";
 			}
+
+            if (entity.TestContexts.Any())
+            {
+                foreach (var testContext in entity.TestContexts)
+                {
+                    var textoSemHtml = UtilRegex.RemoverTagsHtml(testContext.Text);
+                    if (textoSemHtml.Length > 500)
+                    {
+                        valid.Message = $"O Contexto '{testContext.Title}' está com o texto maior que 500 caracteres.";
+                    }
+                }
+            }
+
 
             if (!string.IsNullOrEmpty(valid.Message))
             {
@@ -176,6 +183,11 @@ namespace GestaoAvaliacao.Business
         public Test GetObject(long Id)
         {
             return testRepository.GetObject(Id);
+        }
+
+        public Test GetTestBy_Id(long Id)
+        {
+            return testRepository.GetTestBy_Id(Id);
         }
 
         public Test GetObjectWithTestType(long Id)

@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Export\FiltroExportacaoResultadoDto.cs" />
     <Compile Include="StudentTest\StudentTestTimeListaDto.cs" />
     <Compile Include="StudentTest\StudentTestTimeResultDto.cs" />
     <Compile Include="StudentTest\StudentTestTimeDto.cs" />

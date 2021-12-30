@@ -165,6 +165,22 @@
 		};
 
 		/**
+		 * @function Realizar download
+		 * @param {Object} element
+		 * @returns
+		 */
+		$scope.downloadFileResultadoProva = function __downloadFileResultadoProva(testId, fileId) {
+			FileModel.checkFileExistsResultadoProva({ TestId: testId, Id: fileId }, function (result) {
+				if (result.success) {
+					window.open("/File/DownloadFileResultadoProva?TestId=" + testId + "&Id=" + fileId, "_self");
+				}
+				else {
+					$notification.alert("Arquivo não encontrado");
+				}
+			});
+		};
+
+		/**
 		 * @function Limpar filtros de pesquisa para exportação (consulta de provas)
 		 * @param {Object} element
 		 * @returns

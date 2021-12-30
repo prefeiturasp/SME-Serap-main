@@ -11,5 +11,7 @@ namespace GestaoAvaliacao.IBusiness
 		IEnumerable<ExportAnalysisDTO> Search(ref Pager pager,ExportAnalysisFilter filter);
 		ExportAnalysis Save(ExportAnalysis entity);
 		ExportAnalysis Update(ExportAnalysis entity);
+		ExportAnalysis SolicitExport(long TestId);
+		byte[] SolicitarDownloadArquivoSerapEstudantes(long ProcessoId);
 	}
 }
