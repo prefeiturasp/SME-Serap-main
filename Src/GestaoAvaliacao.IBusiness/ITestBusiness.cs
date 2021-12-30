@@ -20,6 +20,8 @@ namespace GestaoAvaliacao.IBusiness
 		IEnumerable<TestResult> _SearchTests(TestFilter filter, ref Pager pager);
 		Test Delete(long Id);
 		Test GetObject(long Id);
+
+		Test GetTestBy_Id(long Id);
 		AdherenceTest GetObjectToAdherence(long Id);
 		void SwitchAllAdhrered(Test test);
 		List<AnswerSheetBatchItems> GetTestAnswers(long Id);

@@ -185,6 +185,11 @@ namespace GestaoAvaliacao.Business
             return testRepository.GetObject(Id);
         }
 
+        public Test GetTestBy_Id(long Id)
+        {
+            return testRepository.GetTestBy_Id(Id);
+        }
+
         public Test GetObjectWithTestType(long Id)
         {
             return testRepository.GetObjectWithTestType(Id);

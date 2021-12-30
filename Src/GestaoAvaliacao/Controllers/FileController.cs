@@ -23,14 +23,16 @@ namespace GestaoAvaliacao.Controllers
         private readonly ITestBusiness testBusiness;
         private readonly IParameterBusiness parameterBusiness;
         private readonly IVideoConverter videoConverter;
+        private readonly IExportAnalysisBusiness exportAnalysisBusiness;
         private const string VideoConvertedContentType = "video/webm";
 
-        public FileController(IFileBusiness fileBusiness, ITestBusiness testBusiness, IParameterBusiness parameterBusiness, IVideoConverter videoConverter)
+        public FileController(IFileBusiness fileBusiness, ITestBusiness testBusiness, IParameterBusiness parameterBusiness, IVideoConverter videoConverter, IExportAnalysisBusiness exportAnalysisBusiness)
         {
             this.fileBusiness = fileBusiness;
             this.testBusiness = testBusiness;
             this.parameterBusiness = parameterBusiness;
             this.videoConverter = videoConverter;
+            this.exportAnalysisBusiness = exportAnalysisBusiness;
         }
 
         public ActionResult Index(long? Id)
@@ -98,7 +100,6 @@ namespace GestaoAvaliacao.Controllers
         public JsonResult CheckFileExists(long Id)
         {
             Validate valid = new Validate();
-
             try
             {
                 valid.IsValid = fileBusiness.CheckFileExists(Id, ApplicationFacade.PhysicalDirectory);
@@ -120,21 +121,33 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
-        public JsonResult CheckFilePathExists(string path)
+        public JsonResult CheckFileExistsResultadoProva(long TestId, long Id)
         {
             Validate valid = new Validate();
-
             try
             {
-                string filePath = new Uri(path).AbsolutePath.Replace("Files/", string.Empty);
-                string physicalPath = path.StartsWith("http") ? System.Web.HttpContext.Current.Server.MapPath(filePath) : path;
-                string decodedUrl = HttpUtility.UrlDecode(physicalPath);
-
-                valid.IsValid = System.IO.File.Exists(decodedUrl);
-                if (!valid.IsValid)
+                var test = testBusiness.GetTestBy_Id(TestId);
+                if (test != null)
                 {
+                    if (test.ShowOnSerapEstudantes)
+                    {
+                        valid.IsValid = true;
+                    }
+                    else
+                    {
+                        valid.IsValid = fileBusiness.CheckFileExists(Id, ApplicationFacade.PhysicalDirectory);
+                        if (!valid.IsValid)
+                        {
+                            valid.Type = ValidateType.alert.ToString();
+                            valid.Message = "Arquivo não existe.";
+                        }
+                    }
+                }
+                else
+                {
+                    valid.IsValid = false;
                     valid.Type = ValidateType.alert.ToString();
-                    valid.Message = "Arquivo não existe.";
+                    valid.Message = "Prova não existe.";
                 }
             }
             catch (Exception ex)
@@ -146,6 +159,61 @@ namespace GestaoAvaliacao.Controllers
             }
 
             return Json(new { success = valid.IsValid, type = valid.Type, message = valid.Message }, JsonRequestBehavior.AllowGet);
+        }        
+
+        [HttpGet]
+        public void DownloadFileResultadoProva(long TestId, long Id)
+        {
+            bool redirect = false;
+            try
+            {
+                var test = testBusiness.GetTestBy_Id(TestId);
+                if (test != null)
+                {
+                    if (test.ShowOnSerapEstudantes)
+                    {
+                        var arquivo = exportAnalysisBusiness.SolicitarDownloadArquivoSerapEstudantes(Id);
+                        Response.Clear();
+                        Response.AddHeader("Content-disposition", $"attachment; filename=Prova{TestId}_{Id}.csv");
+                        Response.ContentType = "text/csv";
+                        Response.BinaryWrite(arquivo);
+                        Response.End();
+                        redirect = true;
+                    }
+                    else
+                    {
+                        EntityFile file = fileBusiness.Get(Id);
+                        if (file != null)
+                        {
+                            string filePath = new Uri(file.Path).AbsolutePath.Replace("Files/", string.Empty);
+                            string physicalPath = string.Concat(ApplicationFacade.PhysicalDirectory, filePath.Replace("/", "\\"));
+                            string decodedUrl = HttpUtility.UrlDecode(physicalPath);
+
+                            if (System.IO.File.Exists(decodedUrl))
+                            {
+                                FileStream fs = System.IO.File.Open(decodedUrl, FileMode.Open);
+                                byte[] btFile = new byte[fs.Length];
+                                fs.Read(btFile, 0, Convert.ToInt32(fs.Length));
+                                fs.Close();
+
+                                Response.Clear();
+                                Response.AddHeader("Content-disposition", "attachment; filename=" + file.OriginalName);
+                                Response.ContentType = file.ContentType;
+                                Response.BinaryWrite(btFile);
+                                Response.End();
+                                redirect = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+            }
+
+            if (!redirect && Request.UrlReferrer != null && !string.IsNullOrEmpty(Request.UrlReferrer.PathAndQuery))
+                Response.Redirect(Request.UrlReferrer.PathAndQuery, false);
         }
 
         [HttpGet]
@@ -220,6 +288,35 @@ namespace GestaoAvaliacao.Controllers
                 Response.Redirect(Request.UrlReferrer.PathAndQuery, false);
         }
 
+        [HttpGet]
+        public JsonResult CheckFilePathExists(string path)
+        {
+            Validate valid = new Validate();
+
+            try
+            {
+                string filePath = new Uri(path).AbsolutePath.Replace("Files/", string.Empty);
+                string physicalPath = path.StartsWith("http") ? System.Web.HttpContext.Current.Server.MapPath(filePath) : path;
+                string decodedUrl = HttpUtility.UrlDecode(physicalPath);
+
+                valid.IsValid = System.IO.File.Exists(decodedUrl);
+                if (!valid.IsValid)
+                {
+                    valid.Type = ValidateType.alert.ToString();
+                    valid.Message = "Arquivo não existe.";
+                }
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                valid.IsValid = false;
+                valid.Type = ValidateType.error.ToString();
+                valid.Message = "Erro ao tentar encontrar arquivo.";
+            }
+
+            return Json(new { success = valid.IsValid, type = valid.Type, message = valid.Message }, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region Write
@@ -266,7 +363,7 @@ namespace GestaoAvaliacao.Controllers
             try
             {
                 var sizeToConvertVideo = parameterBusiness.GetByKey(EnumParameterKey.SIZE_TO_CONVERT_VIDEO_FILE.GetDescription());
-                if(file.ContentLength >= int.Parse(sizeToConvertVideo.Value))
+                if (file.ContentLength >= int.Parse(sizeToConvertVideo.Value))
                     entityFileConvert = await ConvertVideoAsync(file.InputStream, file.ContentType, file.FileName);
 
                 var upload = new UploadModel
