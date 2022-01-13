@@ -1,7 +1,9 @@
 ﻿using GestaoAvaliacao.Util;
+using System;
 
 namespace GestaoAvaliacao.Entities.DTO
 {
+	[Serializable]
     public class ExportAnalysisDTO
 	{
 		public long Test_Id { get; set; }

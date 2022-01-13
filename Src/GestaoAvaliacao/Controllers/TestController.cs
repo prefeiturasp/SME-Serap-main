@@ -1256,11 +1256,9 @@ namespace GestaoAvaliacao.Controllers
         public JsonResult SolicitExport(long TestId)
         {
             var entity = new ExportAnalysis() { StateExecution = EnumServiceState.Pending, Test_Id = TestId };
-
             try
-            {
-                entity = exportAnalysisBusiness.Save(entity);
-
+            {                
+                entity = exportAnalysisBusiness.SolicitExport(entity.Test_Id);
                 return Json(new
                 {
                     success = true,

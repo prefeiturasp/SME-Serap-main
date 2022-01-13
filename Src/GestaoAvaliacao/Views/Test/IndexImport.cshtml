@@ -129,7 +129,7 @@
 									<span class="icone-cadastrar material-icons" aria-hidden="true">error_outline</span>@(EnumServiceState.Error.GetDescription())
 								</span>
 
-								<a ng-if="file.StateExecution == @((Byte)EnumServiceState.Success)" data-trigger="hover" class="status-@(EnumServiceState.Success.ToString())" ng-click="downloadFile(file.FileId)">
+								<a ng-if="file.StateExecution == @((Byte)EnumServiceState.Success)" data-trigger="hover" class="status-@(EnumServiceState.Success.ToString())" ng-click="downloadFileResultadoProva(file.Test_Id, file.FileId)">
 									<span class="icone-cadastrar material-icons" aria-hidden="true">file_download</span>@(EnumServiceState.Success.GetDescription())
 								</a>
 							</td>
