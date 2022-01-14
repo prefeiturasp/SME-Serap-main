@@ -69,6 +69,7 @@
     <Compile Include="AnswerSheetBatchFiles.cs" />
     <Compile Include="AnswerSheetBatchLog.cs" />
     <Compile Include="CorrectionStudentGrid.cs" />
+    <Compile Include="DTO\AdminSerapEstudantesDTO.cs" />
     <Compile Include="DTO\StudentsTestSent\FinalizeCorrectionDto.cs" />
     <Compile Include="DTO\StudentTestSession\StudentTestSessionDto.cs" />
     <Compile Include="DTO\StudentTestSession\TestSessionDto.cs" />

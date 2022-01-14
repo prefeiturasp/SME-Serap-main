@@ -1,0 +1,38 @@
+﻿@*@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+
+@using GestaoAvaliacao.Entities.DTO
+
+@model AdminSerapEstudantesDTO
+
+<script src="~/Assets/js/vendor/jquery-2.1.1.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {        
+        const _urlAdminEstudantes = document.getElementById('urlAdminEstudantes');
+        window.open(_urlAdminEstudantes.value.trim(), '_blank');
+    });
+
+</script>
+
+<div class="selecao">
+
+    <h3>Admin Serap Estudantes</h3>
+    <div>
+        <ul>
+            <li>
+                @*<a href="@Html.Action("Index", "Home")" class="btn">Voltar para a Home</a>*@
+                <a href="~/Home/Index" class="btn">Voltar para a Home</a>
+            </li>
+        </ul>
+    </div>
+
+    @if (Model != null)
+    {
+        <form id="form1" method="post" enctype="application/x-www-form-urlencoded" hidden="hidden">
+            <input name="urlAdminEstudantes" id="urlAdminEstudantes" type="text" value="@Model.UrlApiSerapEstudantes" />
+        </form>
+    }
+
+</div>

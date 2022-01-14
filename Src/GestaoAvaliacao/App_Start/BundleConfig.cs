@@ -1938,6 +1938,24 @@ namespace GestaoAvaliacao.App_Start
 
             #endregion
 
+            #region AdminSerapEstudantes
+
+            bundles.Add(
+                new ScriptBundle("~/bundles/AdminSerapEstudantes_js")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.js")
+                .Include("~/Assets/js/angular/services/_bundle/pager/services.js")
+                .Include("~/Assets/js/angular/directives/_bundle/modal/modal.js")
+                .Include("~/Assets/js/angular/services/_bundle/util/util.js")
+                .Include("~/Assets/js/angular/controllers/adminSerapEstudantes/adminSerapEstudantesController.js")
+            );
+
+            bundles.Add(
+                new StyleBundle("~/bundles/AdminSerapEstudantes_css")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.css")
+            );
+
+            #endregion
+
             #endregion
         }
     }

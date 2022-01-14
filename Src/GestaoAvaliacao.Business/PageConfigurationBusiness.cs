@@ -1,9 +1,12 @@
 ﻿using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Web.Configuration;
 
 namespace GestaoAvaliacao.Business
 {
@@ -90,6 +93,33 @@ namespace GestaoAvaliacao.Business
         public bool ExistsFeaturedVideo(long id)
         {
             return pageConfigurationRepository.ExistsFeaturedVideo(id);
+        }
+
+        public PageConfiguration ObterLinkAdminSeraEstudantes(string rf, string nome, string grupo)
+        {            
+            PageConfiguration pageConfiguration = new PageConfiguration();
+            string urlApiSerapEstudantes = WebConfigurationManager.AppSettings["URL_ADMIN_SERAP_ESTUDANTES"];
+            string chaveApi = WebConfigurationManager.AppSettings["ChaveSerapProvaApi"];
+            string urlAdminEstudantes = $"{urlApiSerapEstudantes}{rf}/{nome}/{grupo}/{chaveApi}";
+            pageConfiguration.Title = "Serap Estudantes";
+            pageConfiguration.Description = "Serap Estudantes";
+            pageConfiguration.ButtonDescription = "Serap Estudantes";
+            pageConfiguration.Link = urlAdminEstudantes;
+            pageConfiguration.Category = (short)PageConfigurationCategory.ExternalAccess;
+            pageConfiguration.Featured = true;
+            return pageConfiguration;
+        }
+
+        public bool VerificaPerfilAcessoAdminSerapEstudantes(Guid grupo)
+        {
+            List<Guid> gruposPermissaoAcesso = new List<Guid>();
+            gruposPermissaoAcesso.Add(new Guid("AAD9D772-41A3-E411-922D-782BCB3D218E"));
+            gruposPermissaoAcesso.Add(new Guid("22366A3E-9E4C-E711-9541-782BCB3D218E"));
+            gruposPermissaoAcesso.Add(new Guid("E77E81B1-191E-E811-B259-782BCB3D2D76"));
+            gruposPermissaoAcesso.Add(new Guid("D4026F2C-1A1E-E811-B259-782BCB3D2D76"));
+            gruposPermissaoAcesso.Add(new Guid("104F0759-87E8-E611-9541-782BCB3D218E"));
+            gruposPermissaoAcesso.Add(new Guid("4318D329-17DC-4C48-8E59-7D80557F7E77"));
+            return gruposPermissaoAcesso.Any(g => g == grupo);
         }
 
         #endregion

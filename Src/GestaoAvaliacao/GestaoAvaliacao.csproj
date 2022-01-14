@@ -512,6 +512,7 @@
     <Content Include="Assets\js\angular\controllers\absenceReason\listAbsenceReasonController.js" />
     <Content Include="Assets\js\angular\controllers\adherence\adherenceController.js" />
     <Content Include="Assets\js\angular\controllers\administrativeUnitType\administrativeUnitTypeController.js" />
+    <Content Include="Assets\js\angular\controllers\adminSerapEstudantes\adminSerapEstudantesController.js" />
     <Content Include="Assets\js\angular\controllers\answerSheet\answerSheetLotController.js" />
     <Content Include="Assets\js\angular\controllers\answerSheet\answerSheetStudentController.js" />
     <Content Include="Assets\js\angular\controllers\answerSheet\batchDetailsLotController.js" />
@@ -1755,6 +1756,7 @@
     <Content Include="Views\StudentResultsGraphics\Index.cshtml" />
     <Content Include="Views\StudentResults\Index_BKP.cshtml" />
     <Content Include="Views\ElectronicTestResult\Index.cshtml" />
+    <Content Include="Views\AdminSerapEstudantes\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1763,6 +1765,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AdminSerapEstudantesController.cs" />
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
     <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
     <Compile Include="Controllers\StudentResultsController.cs" />
