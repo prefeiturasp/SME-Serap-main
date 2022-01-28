@@ -91,12 +91,10 @@ BEGIN TRAN
 
 INSERT INTO ProvaSP.dbo.ProvaEdicao values ('2021', '2021-01-01');
 
--- OK
 INSERT INTO ProvaSP.dbo.ResultadoAluno
 (Edicao, AreaConhecimentoID, uad_sigla, esc_codigo, AnoEscolar, tur_codigo, tur_id, alu_matricula, alu_nome, NivelProficienciaID, Valor, REDQ1, REDQ2, REDQ3, REDQ4, REDQ5)
 SELECT * FROM ResultadoAluno
 
--- OK
 INSERT INTO ProvaSP.dbo.ResultadoDre
 ([Edicao],[AreaConhecimentoID],[uad_sigla],[AnoEscolar],[Valor],[NivelProficienciaID],[TotalAlunos]
 ,[PercentualAbaixoDoBasico],[PercentualBasico],[PercentualAdequado],[PercentualAvancado]
@@ -107,7 +105,6 @@ SELECT
 ,0 [PercentualAlfabetizado]
 FROM ResultadoDre
 
--- OK
 INSERT INTO ProvaSP.dbo.ResultadoEscola
 ([Edicao],[AreaConhecimentoID],[uad_sigla],[esc_codigo],[AnoEscolar],[Valor],[NivelProficienciaID]
 ,[TotalAlunos],[PercentualAbaixoDoBasico],[PercentualBasico],[PercentualAdequado],[PercentualAvancado]
@@ -118,7 +115,6 @@ SELECT
 ,0 [PercentualAlfabetizado]
 FROM ResultadoEscola
 
--- OK
 INSERT INTO ProvaSP.dbo.ResultadoSme
 ([Edicao],[AreaConhecimentoID],[AnoEscolar],[Valor],[TotalAlunos],[NivelProficienciaID],[PercentualAbaixoDoBasico]
 ,[PercentualBasico],[PercentualAdequado],[PercentualAvancado],[PercentualAlfabetizado])
@@ -127,7 +123,6 @@ SELECT
 ,[PercentualBasico],[PercentualAdequado],[PercentualAvancado],[PercentualAlfabetizado]
 FROM ResultadoSme
 
--- OK
 INSERT INTO ProvaSP.dbo.ResultadoTurma
 ([Edicao],[AreaConhecimentoID],[uad_sigla],[esc_codigo],[AnoEscolar],[tur_codigo],[tur_id],[Valor]
 ,[NivelProficienciaID],[TotalAlunos],[PercentualAbaixoDoBasico],[PercentualBasico],[PercentualAdequado],[PercentualAvancado]
