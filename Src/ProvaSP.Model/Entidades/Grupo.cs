@@ -33,6 +33,7 @@ namespace ProvaSP.Model.Entidades
             public static string Diretor = "75DCAB30-2C1E-E811-B259-782BCB3D2D76";
             public static string Coordenador = "D4026F2C-1A1E-E811-B259-782BCB3D2D76";
             public static string Professor = "E77E81B1-191E-E811-B259-782BCB3D2D76";
+            public static string ProfessorOld = "067D9B21-A1FF-E611-9541-782BCB3D218E";
             public static string AssistenteDeDiretoria = "ECF7A20D-1A1E-E811-B259-782BCB3D2D76";
             public static string AuxiliarTecnicoEducacao = "E4BD1012-5881-4F26-A365-7CED735C74F5";
             public static string AgenteEscolar = "459C7911-C700-4592-9339-3839B46A0CB7";
@@ -48,7 +49,7 @@ namespace ProvaSP.Model.Entidades
             {
                 string[] perfis = { Grupo.Perfil.Administrador, Grupo.Perfil.AdministradorNTA, Grupo.Perfil.AdmSerapCOPEDLeitura, Grupo.Perfil.GestaoSERApLeitura };
                 return perfis.Contains(gru_id);
-            }   
+            }
         }
 
         public bool AcessoNivelDRE
@@ -64,9 +65,9 @@ namespace ProvaSP.Model.Entidades
         {
             get
             {
-                string[] perfis = { Grupo.Perfil.Diretor, Grupo.Perfil.AssistenteDeDiretoria, Grupo.Perfil.AgenteEscolar, Grupo.Perfil.AuxiliarTecnicoEducacao, Grupo.Perfil.Coordenador, Grupo.Perfil.Professor };
+                string[] perfis = { Grupo.Perfil.Diretor, Grupo.Perfil.AssistenteDeDiretoria, Grupo.Perfil.AgenteEscolar, Grupo.Perfil.AuxiliarTecnicoEducacao, Grupo.Perfil.Coordenador, Grupo.Perfil.Professor, Grupo.Perfil.ProfessorOld };
                 return perfis.Contains(gru_id);
-        }
+            }
         }
 
         public enum TipoQuestionario : int
