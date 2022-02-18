@@ -3,6 +3,7 @@ using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
+using GestaoAvaliacao.LogFacade;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -160,11 +161,18 @@ namespace GestaoAvaliacao.Business
                     var optionsJson = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, WriteIndented = true };
                     provasSerapEstudantes = JsonSerializer.Deserialize<List<ExportAnalysisDTO>>(result, optionsJson);
                 }
+                else
+                {
+                    string statusCode = response.StatusCode.ToString();
+                    var responseMessage = response.EnsureSuccessStatusCode();
+                    var headers = responseMessage.Headers;
+                    throw new Exception($"erro ao obter provas para exportar - StatusCode:{statusCode}, Content:{responseMessage.Content}");
+                }
                 return provasSerapEstudantes;
             }
             catch (Exception e)
             {
-                return provasSerapEstudantes;
+                throw new Exception($"erro ao obter provas para exportar - {e.Message}");
             }
         }
 
