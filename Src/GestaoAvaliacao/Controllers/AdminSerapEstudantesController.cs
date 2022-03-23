@@ -1,11 +1,7 @@
-﻿using GestaoAvaliacao.Entities.DTO;
+﻿using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.WebProject.Entities;
 using GestaoAvaliacao.WebProject.Facade;
-using MSTech.CoreSSO.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
 
@@ -13,21 +9,39 @@ namespace GestaoAvaliacao.Controllers
 {
     public class AdminSerapEstudantesController : Controller
     {
+        private readonly ISerapEstudantesBusiness serapEstudantesBusiness;
+
+        public AdminSerapEstudantesController(ISerapEstudantesBusiness serapEstudantesBusiness)
+        {
+            this.serapEstudantesBusiness = serapEstudantesBusiness;
+        }
+
         [Authorize]
         public ActionResult Index()
         {
-            if (!SessionFacade.UsuarioLogadoIsValid)
+            try
             {
-                throw new NotImplementedException();
-            };
+                if (!SessionFacade.UsuarioLogadoIsValid)
+                {
+                    throw new NotImplementedException();
+                };
 
-            string urlApiSerapEstudantes = WebConfigurationManager.AppSettings["URL_ADMIN_SERAP_ESTUDANTES"];
-            string chaveApi = WebConfigurationManager.AppSettings["ChaveSerapProvaApi"];
-            UsuarioLogado user = SessionFacade.UsuarioLogado;
-            string urlAdminEstudantes = $"{urlApiSerapEstudantes}{user.Usuario?.usu_login}/{user.Nome}/{user.Grupo?.gru_id}/{chaveApi}";
-            AdminSerapEstudantesDTO adminSerapEstudantesDTO = new AdminSerapEstudantesDTO();
-            adminSerapEstudantesDTO.UrlApiSerapEstudantes = urlAdminEstudantes;
-            return View(adminSerapEstudantesDTO);
+                UsuarioLogado user = SessionFacade.UsuarioLogado;
+                var resposta = serapEstudantesBusiness.AdminAutenticacao(new Entities.DTO.SerapEstudantes.AdminAutenticacaoDTO(user.Usuario.usu_login, user.Grupo.gru_id));
+
+                string urlApiSerapEstudantes = WebConfigurationManager.AppSettings["URL_ADMIN_SERAP_ESTUDANTES"];
+                if (string.IsNullOrWhiteSpace(urlApiSerapEstudantes))
+                    throw new ApplicationException($"Necessário configurar a chave 'URL_ADMIN_SERAP_ESTUDANTES' no Web.config");
+
+                string urlAdminEstudantes = $"{urlApiSerapEstudantes}{resposta.Codigo}";
+
+                return Redirect(urlAdminEstudantes);
+            }
+            catch(Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return RedirectToAction("Index", "Error");
+            }
         }
     }
 }

@@ -17,7 +17,7 @@ namespace GestaoAvaliacao.IBusiness
         PageConfiguration Delete(long id);
         bool ExistsModelDescription(long id, string description);
         bool ExistsFeaturedVideo(long id);
-        PageConfiguration ObterLinkAdminSeraEstudantes(string rf, string nome, string grupo);
+        PageConfiguration ObterLinkAdminSeraEstudantes();
         bool VerificaPerfilAcessoAdminSerapEstudantes(Guid grupo);
     }
 }
