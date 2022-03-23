@@ -1,12 +1,10 @@
 ﻿using GestaoAvaliacao.Entities;
-using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Configuration;
 
 namespace GestaoAvaliacao.Business
 {
@@ -95,19 +93,19 @@ namespace GestaoAvaliacao.Business
             return pageConfigurationRepository.ExistsFeaturedVideo(id);
         }
 
-        public PageConfiguration ObterLinkAdminSeraEstudantes(string rf, string nome, string grupo)
-        {            
-            PageConfiguration pageConfiguration = new PageConfiguration();
-            string urlApiSerapEstudantes = WebConfigurationManager.AppSettings["URL_ADMIN_SERAP_ESTUDANTES"];
-            string chaveApi = WebConfigurationManager.AppSettings["ChaveSerapProvaApi"];
-            string urlAdminEstudantes = $"{urlApiSerapEstudantes}{rf}/{nome}/{grupo}/{chaveApi}";
-            pageConfiguration.Title = "Serap Estudantes";
-            pageConfiguration.Description = "Serap Estudantes";
-            pageConfiguration.ButtonDescription = "Serap Estudantes";
-            pageConfiguration.Link = urlAdminEstudantes;
-            pageConfiguration.Category = (short)PageConfigurationCategory.ExternalAccess;
-            pageConfiguration.Featured = true;
-            return pageConfiguration;
+        public PageConfiguration ObterLinkAdminSeraEstudantes()
+        {
+            PageConfiguration pageAdminSerapEstudantes = new PageConfiguration()
+            {
+                Title = "Serap Estudantes",
+                Description = "Serap Estudantes",
+                ButtonDescription = "Serap Estudantes",
+                Link = "/AdminSerapEstudantes",
+                Category = (short)PageConfigurationCategory.ExternalAccess,
+                Featured = true
+            };
+
+            return pageAdminSerapEstudantes;
         }
 
         public bool VerificaPerfilAcessoAdminSerapEstudantes(Guid grupo)

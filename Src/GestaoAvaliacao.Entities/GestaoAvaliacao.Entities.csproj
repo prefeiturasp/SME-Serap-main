@@ -70,6 +70,8 @@
     <Compile Include="AnswerSheetBatchLog.cs" />
     <Compile Include="CorrectionStudentGrid.cs" />
     <Compile Include="DTO\AdminSerapEstudantesDTO.cs" />
+    <Compile Include="DTO\SerapEstudantes\AdminAutenticacaoDTO.cs" />
+    <Compile Include="DTO\SerapEstudantes\AdminAutenticacaoRespostaDTO.cs" />
     <Compile Include="DTO\StudentsTestSent\FinalizeCorrectionDto.cs" />
     <Compile Include="DTO\StudentTestSession\StudentTestSessionDto.cs" />
     <Compile Include="DTO\StudentTestSession\TestSessionDto.cs" />
