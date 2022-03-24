@@ -583,6 +583,7 @@
     <Content Include="Assets\js\angular\filters\_bundle\capitalize\capitalize.js" />
     <Content Include="Assets\js\angular\models\administrativeUnitType\administrativeUnitTypeModel.js" />
     <Content Include="Assets\js\angular\models\electronicTestResult\electronicTestResultModel.js" />
+    <Content Include="Assets\js\angular\models\NumberItemsAplicationTai\numberItemsAplicationTaiModel.js" />
     <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsApiModel.js" />
     <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsModel.js" />
     <Content Include="Assets\js\angular\models\electronicTest\electronicTestModel.js" />

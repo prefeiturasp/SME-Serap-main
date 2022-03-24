@@ -216,7 +216,7 @@
 
 
 
-                                <div class="campoLabel" ng-show="showFlagBIB">
+                                <div class="campoLabel" ng-show="showFlagBIB && !showTestTAI">
                                     @* Header *@
                                     <label class="label-pos-inline" style="max-width:180px;">  {{labels.temBIB}}: </label>
                                     <div class="switch" ng-click="selectTemBIB();"
@@ -232,10 +232,38 @@
                                     <div class="switch" ng-click="selectShowAudioFiles();" ng-class="{'off': !showAudioFiles}" style="position: absolute; margin: 4px 255px;"><input type="button" /></div>
                                 </div>
 
+                                <div class="campoLabel">
+                                    <label class="label-pos-inline">  {{labels.showTestTAI}}: </label>
+                                    <div class="switch" ng-click="selectShowTestTAI();" ng-class="{'off': !showTestTAI}" style="position: absolute; margin: 4px 255px;"><input type="button" /></div>
+                                </div>
+
 
                             </div>
                         </div>
                     </div>
+
+                    <div class="row" ng-show="showTestTAI">
+                        <div class="col-md-12">
+                            @*Prova com TAI*@
+                            <div class="cards">
+                                @* Header *@
+                                <h4 class="tituloCard">Nº itens na amostra*: </h4>
+                                <div class="campoLabel">
+                                    <div>
+                                        <select id="nItensTestTAI" class="form-control" title="{{ e1_nItensTestTAI.Name }}" ng-title-index="1"
+                                                ng-change="e1_nItensTestTAIMudou();"
+                                                ng-model="e1_nItensTestTAI"
+                                                ng-options="ItensTestTAI as ItensTestTAI.Name for ItensTestTAI in e1_nItensTestTAIList"
+                                                ng-title="e1_nItensTestTAIList"
+                                                ng-title-propertie="Name">
+                                            <option value="">--Selecione uma opção--</option>                                           
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-12">
                             @* Cronograma *@
@@ -373,7 +401,7 @@
                     </div>
 
                     @* Quantidade de itens *@
-                    <div class="row" ng-show="e1_cbTipoProva && !temBIB">
+                    <div class="row" ng-show="e1_cbTipoProva && !temBIB && !showTestTAI">
                         <div class="col-md-12">
                             <div class="cards">
                                 @* Header *@
@@ -757,15 +785,15 @@
                         @* Avançar *@
                         <button type="button"
                                 class="btnPadrao2 pull-right"
-                                ng-hide="navigation===3"
-                                ng-disabled="provaId===0 "
+                                ng-hide="navigation===3 || showTestTAI"
+                                ng-disabled="provaId===0"
                                 ng-click="avancar()">
                             Avançar
                         </button>
                         @* Finalizar *@
                         <button type="button"
                                 class="btnPadrao2 pull-right"
-                                ng-hide="navigation!==ultimo"
+                                ng-hide="navigation!==ultimo && !showTestTAI"
                                 ng-click="finalizar()">
                             Finalizar
                         </button>
