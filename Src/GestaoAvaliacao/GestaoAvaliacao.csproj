@@ -1768,6 +1768,7 @@
   <ItemGroup>
     <Compile Include="Controllers\AdminSerapEstudantesController.cs" />
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
+    <Compile Include="Controllers\NumberItemsAplicationTaiController.cs" />
     <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
     <Compile Include="Controllers\StudentResultsController.cs" />
     <Compile Include="Controllers\ProvaSPController.cs" />
@@ -1933,6 +1934,7 @@
     <Folder Include="Assets\tests\unit\filters\" />
     <Folder Include="Assets\tests\unit\models\" />
     <Folder Include="Assets\tests\unit\services\" />
+    <Folder Include="Views\NumberItemsAplicationTai\" />
     <Folder Include="Views\TesteCI\" />
   </ItemGroup>
   <ItemGroup>

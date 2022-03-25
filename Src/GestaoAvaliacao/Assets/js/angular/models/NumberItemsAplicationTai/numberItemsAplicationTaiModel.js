@@ -6,9 +6,9 @@
 
         // Model
         var model = {
-            'load': {
+            'loadAll': {
                 method: 'GET',
-                url: base_url('NumberItemsAplicationTai/Load')
+                url: base_url('NumberItemsAplicationTai/LoadAll')
             }
         };
 

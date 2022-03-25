@@ -95,6 +95,8 @@ namespace GestaoAvaliacao.Repository.Context
 			modelBuilder.Configurations.Add(new StudentTestAccoplishmentMap());
 			modelBuilder.Configurations.Add(new StudentTestSessionMap());
 			modelBuilder.Configurations.Add(new StudentTestSentMap());
+			modelBuilder.Configurations.Add(new NumberItemsAplicationTaiMap());
+			modelBuilder.Configurations.Add(new NumberItemTestTaiMap());
 
 			modelBuilder.Entity<Subject>()
                 .HasMany<Discipline>(s => s.Disciplines)
@@ -184,5 +186,7 @@ namespace GestaoAvaliacao.Repository.Context
         public DbSet<AdministrativeUnitType> AdministrativeUnitType { get; set; }
         public DbSet<ItemFile> ItemFile { get; set; }
         public DbSet<ItemAudio> ItemAudio { get; set; }
-    }
+		public DbSet<NumberItemsAplicationTai> NumberItemsAplicationTai { get; set; }
+		public DbSet<NumberItemTestTai> NumberItemTestTai { get; set; }
+	}
 }

@@ -65,6 +65,8 @@
     <Compile Include="IItemFileRepository.cs" />
     <Compile Include="IKnowledgeAreaDisciplineRepository.cs" />
     <Compile Include="IKnowledgeAreaRepository.cs" />
+    <Compile Include="INumberItemsAplicationTaiRepository.cs" />
+    <Compile Include="INumberItemTestTaiRepository.cs" />
     <Compile Include="IPageConfigurationRepository.cs" />
     <Compile Include="IPerformanceItemRepository.cs" />
     <Compile Include="IReportItemPerformanceRepository.cs" />

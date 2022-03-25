@@ -34,11 +34,12 @@ namespace GestaoAvaliacao.Business
         private readonly ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness;
         private readonly IESC_EscolaBusiness escolaBusiness;
         private readonly ITestTypeDeficiencyRepository testTypeDeficiencyRepository;
+        private readonly INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository;
 
         public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
             ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
             IBlockRepository blockRepository, IParameterBusiness parameterBusiness, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
-            IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository)
+            IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository, INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository)
         {
             this.testRepository = testRepository;
             this.fileRepository = fileRepository;
@@ -54,6 +55,7 @@ namespace GestaoAvaliacao.Business
             this.unidadeAdministrativaBusiness = unidadeAdministrativaBusiness;
             this.escolaBusiness = escolaBusiness;
             this.testTypeDeficiencyRepository = testTypeDeficiencyRepository;
+            this.numberItemsAplicationTaiRepository = numberItemsAplicationTaiRepository;
         }
 
         #region Custom
@@ -369,6 +371,8 @@ namespace GestaoAvaliacao.Business
             }
             if (test != null)
                 test.TestSituation = TestSituation(test);
+            if (test != null && test.TestTai)
+                test.NumberItemsAplicationTai = numberItemsAplicationTaiRepository.GetByTestId(test.Id);
             return test;
         }
 

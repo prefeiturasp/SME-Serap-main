@@ -125,6 +125,7 @@
     <Compile Include="ItemFileBusiness.cs" />
     <Compile Include="KnowledgeAreaBusiness.cs" />
     <Compile Include="KnowledgeAreaDisciplineBusiness.cs" />
+    <Compile Include="NumberItemsAplicationTaiBusiness.cs" />
     <Compile Include="PageConfigurationBusiness.cs" />
     <Compile Include="PerformanceItemBusiness.cs" />
     <Compile Include="ReportItemChoiceBusiness.cs" />

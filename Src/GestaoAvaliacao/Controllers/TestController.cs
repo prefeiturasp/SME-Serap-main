@@ -241,8 +241,9 @@ namespace GestaoAvaliacao.Controllers
                         entity.ShowAudioFiles,
                         entity.ShowJustificate,
                         TestSubGroup = entity.TestSubGroup != null ? new { Id = entity.TestSubGroup.Id, Description = entity.TestSubGroup.Description } : null,
-                        TempoDeProva = new { entity.TestTime.Id, entity.TestTime.Description }
-
+                        TempoDeProva = new { entity.TestTime.Id, entity.TestTime.Description },
+                        ShowTestTAI = entity.TestTai,
+                        NumberItemsAplicationTai = entity.NumberItemsAplicationTai,
                     };
 
                     return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);

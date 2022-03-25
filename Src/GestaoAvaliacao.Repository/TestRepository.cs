@@ -1640,6 +1640,7 @@ namespace GestaoAvaliacao.Repository
                 test.ShowVideoFiles = entity.ShowVideoFiles;
                 test.ShowAudioFiles = entity.ShowAudioFiles;
                 test.ShowJustificate = entity.ShowJustificate;
+                test.TestTai = entity.TestTai;
 
                 test.UpdateDate = DateTime.Now;
 

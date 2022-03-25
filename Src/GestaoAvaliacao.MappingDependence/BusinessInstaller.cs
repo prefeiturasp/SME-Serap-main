@@ -460,6 +460,22 @@ namespace GestaoAvaliacao.MappingDependence
                     .WithService.AllInterfaces()
                     .SetLifestyle(LifestylePerWebRequest));
 
+            container.Register(Classes.FromAssemblyContaining<NumberItemsAplicationTaiBusiness>()
+                    .BasedOn(typeof(INumberItemsAplicationTaiBusiness))
+                    .WithService.AllInterfaces()
+                    .SetLifestyle(LifestylePerWebRequest));
+
+            container.Register(Classes.FromAssemblyContaining<NumberItemsAplicationTaiRepository>()
+                    .BasedOn(typeof(INumberItemsAplicationTaiRepository))
+                    .WithService.AllInterfaces()
+                    .SetLifestyle(LifestylePerWebRequest));
+
+            container.Register(Classes.FromAssemblyContaining<NumberItemTestTaiRepository>()
+                    .BasedOn(typeof(INumberItemTestTaiRepository))
+                    .WithService.AllInterfaces()
+                    .SetLifestyle(LifestylePerWebRequest));
+
+
             #region GestaoEscolar
 
             container.Register(Classes.FromAssemblyContaining<ACA_CursoBusiness>()

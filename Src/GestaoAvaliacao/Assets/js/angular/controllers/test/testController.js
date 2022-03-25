@@ -26,7 +26,7 @@
      * @param {Object} TestTypeModel
      * @returns
      */
-    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, $window) {
+    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, NumberItemsAplicationTaiModel, $window) {
 
         var self = this;
 
@@ -174,6 +174,7 @@
                 showJustificate: 'Exibir justificativa',
                 showAudioFiles: 'Exibir conteúdo de áudio',
                 showTestTAI: 'Aplicação em TAI',
+                numberItemsTestTAI: 'Nº itens na amostra',
                 showOnSerapEstudantes: 'Exibir no Serap Estudantes',
                 showTestContext: 'Apresentar contexto da prova',
                 tempoDeProva: 'Tempo de Prova',
@@ -243,6 +244,7 @@
             ng.e1_cbComponenteCurricular = null;
             ng.e1_nItensTestTAI = null;
             ng.e1_nItensTestTAIList = [];
+            ng.showTestTAI = false;
             // switch gerar folha de resposta
             ng.e1_folhaResp = false;
             ng.e1_folhaRespLock = false;
@@ -273,8 +275,7 @@
             ng.isElectronicTest = false;
             ng.showOnSerapEstudantes = false;
             ng.showVideoFiles = false;
-            ng.showAudioFiles = false;
-            ng.showTestTAI = false;
+            ng.showAudioFiles = false;            
             ng.showJustificate = false;
             //Lista de dificuldades do tipo de prova
             ng.e1_listaDificuldades = [];
@@ -324,13 +325,14 @@
         * @param
         */
         function loadNumberItemsAplicationTai() {
-            ng.e1_nItensTestTAIList = [
-                { Name: 'Todos os itens', Value: '' },
-                { Name: '20', Value: '20' },
-                { Name: '30', Value: '30' },
-                { Name: '40', Value: '40' },
-                { Name: '50', Value: '50' }
-            ];
+            NumberItemsAplicationTaiModel.loadAll({}, function (result) {
+                if (result.success) {
+                    ng.e1_nItensTestTAIList = result.lista;
+                }
+                else {
+                    $notification[result.type ? result.type : 'error'](result.message);
+                }
+            });            
         };
 
         /**
@@ -1191,13 +1193,13 @@
                 "ShowOnSerapEstudantes": ng.showOnSerapEstudantes,
                 "ShowVideoFiles": ng.showVideoFiles,
                 "ShowTestContext": ng.showTestContext,
-                "ShowAudioFiles": ng.showAudioFiles,
-                "ShowTestTAI": ng.showTestTAI,
-                "ItensTestTAI": ng.e1_nItensTestTAI,
+                "ShowAudioFiles": ng.showAudioFiles,                
                 "ShowJustificate": ng.showJustificate,
                 "TestSubGroup": ng.e1_grupoSubgrupo,
                 "TestTime": ng.e1_tempoDeProva,
                 "TestContexts": ng.testContexts,
+                "TestTAI": ng.showTestTAI,
+                "NumberItemsAplicationTai": ng.e1_nItensTestTAI,
             };
 
             self.etapa1.save(model, etapa1Salvou);
@@ -1385,6 +1387,7 @@
             }
 
             if (!ng.e1_nItensTestTAI) {
+                $notification.alert('O campo "' + ng.labels.numberItemsTestTAI + '" é obrigatório.');
                 return false;
             }
 
@@ -1546,6 +1549,9 @@
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
                     ng.showTestTAI = r.ShowTestTAI;
+                    if (ng.showTestTAI) {
+                        ng.e1_nItensTestTAI = r.NumberItemsAplicationTai;
+                    }                    
                     ng.showJustificate = r.ShowJustificate;
                     e1_formato_findTest = true;
                     ng.e1_folhaResp = true;
