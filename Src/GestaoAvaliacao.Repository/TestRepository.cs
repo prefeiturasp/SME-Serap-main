@@ -197,6 +197,7 @@ namespace GestaoAvaliacao.Repository
                         .Include("TestSubGroup")
                         .Include("TestTime")
                         .Include("TestContexts")
+                        //.Include("NumberItemTestTai")
                         .FirstOrDefault(i => i.Id == Id && i.State == (Byte)EnumState.ativo);
 
                     return query;

@@ -7,5 +7,6 @@ namespace GestaoAvaliacao.IRepository
     {
         NumberItemTestTai Save(NumberItemTestTai entity);
         void DeleteByTestId(long testId);
+        void DeleteSaveByTestId(NumberItemTestTai newItem);
     }
 }

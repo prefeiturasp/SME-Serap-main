@@ -243,7 +243,7 @@ namespace GestaoAvaliacao.Controllers
                         TestSubGroup = entity.TestSubGroup != null ? new { Id = entity.TestSubGroup.Id, Description = entity.TestSubGroup.Description } : null,
                         TempoDeProva = new { entity.TestTime.Id, entity.TestTime.Description },
                         ShowTestTAI = entity.TestTai,
-                        NumberItemsAplicationTai = entity.NumberItemsAplicationTai,
+                        NumberItemsAplicationTai = new { entity.NumberItemsAplicationTai.Id, entity.NumberItemsAplicationTai.Name, entity.NumberItemsAplicationTai.Value }
                     };
 
                     return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);

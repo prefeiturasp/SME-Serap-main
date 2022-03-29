@@ -1,11 +1,8 @@
-﻿using Dapper;
-using GestaoAvaliacao.Entities;
+﻿using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 
 namespace GestaoAvaliacao.Repository
@@ -29,12 +26,21 @@ namespace GestaoAvaliacao.Repository
             {
                 NumberItemTestTai numberItemTestTai = GestaoAvaliacaoContext.NumberItemTestTai.FirstOrDefault(a => a.TestId == testId);
 
-                numberItemTestTai.State = Convert.ToByte(EnumState.excluido);
-                numberItemTestTai.UpdateDate = DateTime.Now;
+                if (numberItemTestTai != null)
+                {
+                    numberItemTestTai.State = Convert.ToByte(EnumState.excluido);
+                    numberItemTestTai.UpdateDate = DateTime.Now;
 
-                GestaoAvaliacaoContext.Entry(numberItemTestTai).State = System.Data.Entity.EntityState.Modified;
-                GestaoAvaliacaoContext.SaveChanges();
+                    GestaoAvaliacaoContext.Entry(numberItemTestTai).State = System.Data.Entity.EntityState.Modified;
+                    GestaoAvaliacaoContext.SaveChanges();
+                }
             }
+        }
+
+        public void DeleteSaveByTestId(NumberItemTestTai newItem)
+        {
+            DeleteByTestId(newItem.TestId);
+            Save(newItem);
         }
     }
 }

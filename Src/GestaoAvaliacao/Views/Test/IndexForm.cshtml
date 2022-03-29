@@ -18,8 +18,11 @@
         @* BreadComb das etapas *@
         <div ng-show="mostrarTela" class="wizard">
             <div class="maxWidth">
-                <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]">
+                <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="!showTestTAI">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
+                </a>
+                <a ng-class="{'current'}" ng-show="showTestTAI">
+                    <i class="material-icons">chevron_right</i><span ng-class="{'badge'}">1</span>Cadastro Prova
                 </a>
             </div>
         </div>
@@ -213,8 +216,6 @@
                                     <div class="switch" ng-click="selectShowTestContext();"
                                          ng-class="{'off': !showTestContext}" style="position: absolute; margin: 4px 260px;"><input type="button" /></div>
                                 </div>
-
-
 
                                 <div class="campoLabel" ng-show="showFlagBIB && !showTestTAI">
                                     @* Header *@
@@ -793,7 +794,7 @@
                         @* Finalizar *@
                         <button type="button"
                                 class="btnPadrao2 pull-right"
-                                ng-hide="navigation!==ultimo && !showTestTAI"
+                                ng-hide="(navigation!==ultimo && !showTestTAI) || (showTestTAI && provaId===0)"
                                 ng-click="finalizar()">
                             Finalizar
                         </button>

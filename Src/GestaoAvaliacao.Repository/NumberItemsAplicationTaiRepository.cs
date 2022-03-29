@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 using System;
@@ -12,16 +13,19 @@ namespace GestaoAvaliacao.Repository
     public class NumberItemsAplicationTaiRepository : ConnectionReadOnly, INumberItemsAplicationTaiRepository
     {
 
+        private int state = (int)EnumState.ativo;
+
         public NumberItemsAplicationTai GetByTestId(long testId)
         {
             using (IDbConnection cn = Connection)
-            {
+            {                
                 cn.Open();
                 var sql = @"select a.Id,a.[Name],a.[Value],a.[CreateDate],a.[UpdateDate],a.[State] 
                                 from NumberItemsAplicationTai a
                                 inner join NumberItemTestTai b on a.id = b.ItemAplicationTaiId
-                                where b.TestId = @testId";
-                return cn.Query<NumberItemsAplicationTai>(sql, new { testId }).FirstOrDefault();
+                                where b.TestId = @testId
+                                and b.[State] = @state";
+                return cn.Query<NumberItemsAplicationTai>(sql, new { testId, state }).FirstOrDefault();
             }
         }
 
@@ -31,9 +35,10 @@ namespace GestaoAvaliacao.Repository
             {
                 cn.Open();
                 var sql = @"select Id,[Name],[Value],[CreateDate],[UpdateDate],[State] 
-                                from NumberItemsAplicationTai";
+                                from NumberItemsAplicationTai
+                            where [State] = @state";
 
-                return cn.Query<NumberItemsAplicationTai>(sql);
+                return cn.Query<NumberItemsAplicationTai>(sql, new { state });
             }
         }
     }

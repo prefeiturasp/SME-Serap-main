@@ -9,16 +9,14 @@ namespace GestaoAvaliacao.Repository.Map
         {
             ToTable("NumberItemTestTai");
 
-            Property(p => p.TestId)
-               .IsRequired()
-               .HasColumnType("bigint");
+            HasRequired(t => t.Test)
+                .WithMany()
+                .HasForeignKey(t => t.TestId);
 
-            Property(p => p.ItemAplicationTaiId)
-                .IsRequired()
-                .HasColumnType("bigint");
+            HasRequired(t => t.ItemAplicationTai)
+                .WithMany()
+                .HasForeignKey(t => t.ItemAplicationTaiId);
 
-            Property(p => p.Id)
-               .IsRequired();
         }
     }
 }

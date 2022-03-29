@@ -116,6 +116,7 @@ namespace GestaoAvaliacao.Entities
         [NotMapped]
         public NumberItemsAplicationTai NumberItemsAplicationTai { get; set; }
 
+
         public DateTime? DownloadStartDate { get; set; }
     }
 }

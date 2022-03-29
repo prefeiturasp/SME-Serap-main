@@ -716,6 +716,8 @@
 
         ng.selectShowTestTAI = function () {
             ng.showTestTAI = !ng.showTestTAI;
+            ng.showFlagBIB = !ng.showTestTAI;
+            // (false);
             if (ng.temBIB)
                 ng.temBIB = false;
             self.etapa1.alterou = true;
@@ -1550,7 +1552,7 @@
                     ng.showAudioFiles = r.ShowAudioFiles;
                     ng.showTestTAI = r.ShowTestTAI;
                     if (ng.showTestTAI) {
-                        ng.e1_nItensTestTAI = r.NumberItemsAplicationTai;
+                        ng.e1_nItensTestTAI = procurarElementoEm([r.NumberItemsAplicationTai], ng.e1_nItensTestTAIList)[0];
                     }                    
                     ng.showJustificate = r.ShowJustificate;
                     e1_formato_findTest = true;
@@ -1950,7 +1952,7 @@
             if (lista instanceof Array && lista.length > 0) {
                 self.etapa2.selecionados = angular.copy(lista);
                 ng.e2_ListaItemSelecionados = ng.e2_blockAtual.SelectedItens = angular.copy(lista);
-                ng.e2_blockAtual.QtdeKnowledgeArea = calculaQtdeKnowledgeArea(ng.e2_blockAtual.SelectedItens);;
+                ng.e2_blockAtual.QtdeKnowledgeArea = calculaQtdeKnowledgeArea(ng.e2_blockAtual.SelectedItens);
                 e2_ResultadoSelecionados();
             }
             else {
