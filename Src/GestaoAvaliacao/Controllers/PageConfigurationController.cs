@@ -99,13 +99,13 @@ namespace GestaoAvaliacao.Controllers
                 IEnumerable<PageConfiguration> pageConfiguration = pageConfigurationBusiness.LoadAll();
 
                 UsuarioLogado user = SessionFacade.UsuarioLogado;
-                // if (pageConfigurationBusiness.VerificaPerfilAcessoAdminSerapEstudantes(user.Grupo.gru_id))
-                //{
+                 if (pageConfigurationBusiness.VerificaPerfilAcessoAdminSerapEstudantes(user.Grupo.gru_id))
+                {
                     List<PageConfiguration> pageConfigurationList = pageConfiguration.ToList();
                     var LinkAdminSeraEstudantes = pageConfigurationBusiness.ObterLinkAdminSeraEstudantes();
                     pageConfigurationList.Add(LinkAdminSeraEstudantes);
                     pageConfiguration = pageConfigurationList.AsEnumerable();
-                //} 
+                } 
 
                 if (pageConfiguration.Count() > 0)
                 {
