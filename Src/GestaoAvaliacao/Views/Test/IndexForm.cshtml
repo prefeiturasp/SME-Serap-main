@@ -21,8 +21,8 @@
                 <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="!showTestTAI">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
                 </a>
-                <a ng-class="{'current'}" ng-show="showTestTAI">
-                    <i class="material-icons">chevron_right</i><span ng-class="{'badge'}">1</span>Cadastro Prova
+                <a ng-class="{true:'current', false:''}[showTestTAI]" ng-show="showTestTAI">
+                    <i class="material-icons">chevron_right</i><span ng-class="{true:'badge', false:'badge badge-inverse'}[showTestTAI]">{{wizardTAI.Number}}</span>{{wizardTAI.Description}}
                 </a>
             </div>
         </div>

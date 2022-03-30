@@ -59,6 +59,7 @@
             //    arr.push(self.wizards[2]);
             //    arr.push(self.wizards[4]);
             //}
+            ng.wizardTAI = self.wizards[0];
             ng.listaWizards = arr;
         };
 
@@ -188,6 +189,7 @@
             ];
             //Lista de wizards atuais
             ng.listaWizards = [];
+            ng.wizardTAI = null;
             ng.etapaAtual = 1;
             ng.alterouEtapaAtual = false;
             ng.mostrarTela = false;
@@ -275,7 +277,7 @@
             ng.isElectronicTest = false;
             ng.showOnSerapEstudantes = false;
             ng.showVideoFiles = false;
-            ng.showAudioFiles = false;            
+            ng.showAudioFiles = false;
             ng.showJustificate = false;
             //Lista de dificuldades do tipo de prova
             ng.e1_listaDificuldades = [];
@@ -332,7 +334,7 @@
                 else {
                     $notification[result.type ? result.type : 'error'](result.message);
                 }
-            });            
+            });
         };
 
         /**
@@ -716,8 +718,12 @@
 
         ng.selectShowTestTAI = function () {
             ng.showTestTAI = !ng.showTestTAI;
-            ng.showFlagBIB = !ng.showTestTAI;
-            // (false);
+            
+            if (!ng.showTestTAI && ng.e1_cbTipoProva.Bib)
+                ng.showFlagBIB = true;
+            else
+                ng.showFlagBIB = false;
+
             if (ng.temBIB)
                 ng.temBIB = false;
             self.etapa1.alterou = true;
@@ -1195,7 +1201,7 @@
                 "ShowOnSerapEstudantes": ng.showOnSerapEstudantes,
                 "ShowVideoFiles": ng.showVideoFiles,
                 "ShowTestContext": ng.showTestContext,
-                "ShowAudioFiles": ng.showAudioFiles,                
+                "ShowAudioFiles": ng.showAudioFiles,
                 "ShowJustificate": ng.showJustificate,
                 "TestSubGroup": ng.e1_grupoSubgrupo,
                 "TestTime": ng.e1_tempoDeProva,
@@ -1553,7 +1559,7 @@
                     ng.showTestTAI = r.ShowTestTAI;
                     if (ng.showTestTAI) {
                         ng.e1_nItensTestTAI = procurarElementoEm([r.NumberItemsAplicationTai], ng.e1_nItensTestTAIList)[0];
-                    }                    
+                    }
                     ng.showJustificate = r.ShowJustificate;
                     e1_formato_findTest = true;
                     ng.e1_folhaResp = true;
