@@ -99,6 +99,8 @@
     <Compile Include="Map\BlockKnowledgeAreaMap.cs" />
     <Compile Include="Map\KnowledgeAreaDisciplineMap.cs" />
     <Compile Include="Map\KnowledgeAreaMap.cs" />
+    <Compile Include="Map\NumberItemsAplicationTaiMap.cs" />
+    <Compile Include="Map\NumberItemTestTaiMap.cs" />
     <Compile Include="Map\PageConfigurationMap.cs" />
     <Compile Include="Map\StudentTestAccoplishmentMap.cs" />
     <Compile Include="Map\StudentTestSentMap.cs" />
@@ -111,6 +113,8 @@
     <Compile Include="Map\TestSubGroupMap.cs" />
     <Compile Include="Map\TestTypeDeficiencyMap.cs" />
     <Compile Include="Map\TestTimeMap.cs" />
+    <Compile Include="NumberItemsAplicationTaiRepository.cs" />
+    <Compile Include="NumberItemTestTaiRepository.cs" />
     <Compile Include="PageConfigurationRepository.cs" />
     <Compile Include="ReportItemPerformanceRepository.cs" />
     <Compile Include="ReportTestPerformanceRepository.cs" />

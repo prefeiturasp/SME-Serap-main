@@ -34,11 +34,14 @@ namespace GestaoAvaliacao.Business
         private readonly ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness;
         private readonly IESC_EscolaBusiness escolaBusiness;
         private readonly ITestTypeDeficiencyRepository testTypeDeficiencyRepository;
+        private readonly INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository;
+        private readonly INumberItemTestTaiRepository numberItemTestTaiRepository;
 
         public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
             ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
             IBlockRepository blockRepository, IParameterBusiness parameterBusiness, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
-            IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository)
+            IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository, INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository,
+            INumberItemTestTaiRepository numberItemTestTaiRepository)
         {
             this.testRepository = testRepository;
             this.fileRepository = fileRepository;
@@ -54,6 +57,8 @@ namespace GestaoAvaliacao.Business
             this.unidadeAdministrativaBusiness = unidadeAdministrativaBusiness;
             this.escolaBusiness = escolaBusiness;
             this.testTypeDeficiencyRepository = testTypeDeficiencyRepository;
+            this.numberItemsAplicationTaiRepository = numberItemsAplicationTaiRepository;
+            this.numberItemTestTaiRepository = numberItemTestTaiRepository;
         }
 
         #region Custom
@@ -78,49 +83,49 @@ namespace GestaoAvaliacao.Business
             valid.Message = null;
             int qtdeMaxItems = 100;
 
-			if (action == ValidateAction.Save)
-			{
+            if (action == ValidateAction.Save)
+            {
                 if (string.IsNullOrEmpty(entity.Description) || entity.ApplicationEndDate == null || entity.ApplicationStartDate == null
-				|| entity.CorrectionEndDate == null || entity.CorrectionStartDate == null
-				|| entity.TestType == null || (entity.TestType != null && entity.TestType.Id <= 0)
-				|| (entity.Discipline == null && !entity.Multidiscipline) || (!entity.Multidiscipline && entity.Discipline != null && entity.Discipline.Id <= 0)
-				|| entity.TestCurriculumGrades == null || (entity.TestCurriculumGrades != null && entity.TestCurriculumGrades.Count <= 0)
+                || entity.CorrectionEndDate == null || entity.CorrectionStartDate == null
+                || entity.TestType == null || (entity.TestType != null && entity.TestType.Id <= 0)
+                || (entity.Discipline == null && !entity.Multidiscipline) || (!entity.Multidiscipline && entity.Discipline != null && entity.Discipline.Id <= 0)
+                || entity.TestCurriculumGrades == null || (entity.TestCurriculumGrades != null && entity.TestCurriculumGrades.Count <= 0)
                 || entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
-					valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
+                    valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
 
                 int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
                 if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)
                     valid.Message = string.Format("A quantidade de itens deve ser menor ou igual a {0}.", qtdeMaxItems);
             }
 
-            if(entity.Bib)
+            if (entity.Bib)
             {
-                if(entity.NumberBlock <= 0)
+                if (entity.NumberBlock <= 0)
                     valid.Message = string.Format("A quantidade de cadernos deve ser maior ou igual a 1.");
 
                 var maxBlock = parameterBusiness.GetByKey(EnumParameterKey.TEST_MAX_BLOCK.GetDescription());
-                if(maxBlock != null)
+                if (maxBlock != null)
                 {
-                    if(entity.NumberBlock > int.Parse(maxBlock.Value))
+                    if (entity.NumberBlock > int.Parse(maxBlock.Value))
                         valid.Message = string.Format("A quantidade de cadernos deve ser menor ou igual a {0}.", int.Parse(maxBlock.Value));
                 }
             }
 
-            
+
 
             if (action == ValidateAction.Update)
             {
                 var cadastred = testRepository.GetObjectWithTestType(entity.Id);
 
-				if(entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
+                if (entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
                     valid.Message = "O tempo de prova deve ser informado.";
 
-				int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
-				if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)
-					valid.Message = string.Format("A quantidade de itens deve ser menor ou igual a {0}.", qtdeMaxItems);
-				if (!((cadastred.UsuId == UsuId) || (isAdmin && cadastred.TestType.Global)))
-					valid.Message = "Apenas o proprietário da prova pode alterá-la";
-			}
+                int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
+                if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)
+                    valid.Message = string.Format("A quantidade de itens deve ser menor ou igual a {0}.", qtdeMaxItems);
+                if (!((cadastred.UsuId == UsuId) || (isAdmin && cadastred.TestType.Global)))
+                    valid.Message = "Apenas o proprietário da prova pode alterá-la";
+            }
 
             if (entity.TestContexts.Any())
             {
@@ -369,6 +374,8 @@ namespace GestaoAvaliacao.Business
             }
             if (test != null)
                 test.TestSituation = TestSituation(test);
+            if (test != null && test.TestTai)
+                test.NumberItemsAplicationTai = numberItemsAplicationTaiRepository.GetByTestId(test.Id);
             return test;
         }
 
@@ -533,6 +540,13 @@ namespace GestaoAvaliacao.Business
                 }
 
                 entity = testRepository.Save(entity, usu_id);
+
+                if (entity.TestTai)
+                {
+                    var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id);
+                    numberItemTestTaiRepository.Save(itemTestTai);
+                }
+
                 entity.Validate.Type = ValidateType.Save.ToString();
                 entity.Validate.Message = "Prova salva com sucesso.";
             }
@@ -553,6 +567,21 @@ namespace GestaoAvaliacao.Business
                         entity.NumberItem += item.Value;
                     }
                 }
+
+                if (entity.TestTai)
+                {
+                    if (entity.NumberItemsAplicationTai != null)
+                    {
+                        var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id);
+                        numberItemTestTaiRepository.DeleteSaveByTestId(itemTestTai);
+                    }
+                    else
+                    {
+                        throw new Exception("É preciso informar uma opção de quantidade de amostras para prova com aplicação TAI.");
+                    }
+                }
+                else if (entity.NumberItemsAplicationTai != null)
+                    numberItemTestTaiRepository.DeleteByTestId(entity.Id);
 
                 entity.TestSituation = ValidateTestSituation(entity);
 

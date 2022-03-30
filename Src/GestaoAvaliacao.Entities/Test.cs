@@ -110,6 +110,13 @@ namespace GestaoAvaliacao.Entities
         public int SerapEstudantesBIBQuantity { get; set; }
 
         public bool ShowTestContext { get; set; }
+
+        public bool TestTai { get; set; }
+
+        [NotMapped]
+        public NumberItemsAplicationTai NumberItemsAplicationTai { get; set; }
+
+
         public DateTime? DownloadStartDate { get; set; }
     }
 }

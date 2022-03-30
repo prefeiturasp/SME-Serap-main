@@ -393,6 +393,7 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/directives/_bundle/modal/modal.js")
                 .Include("~/Assets/js/angular/directives/_bundle/tags-input/ng-tags-input.js")
                 .Include("~/Assets/js/angular/models/testGroup/testGroupModel.js")
+                .Include("~/Assets/js/angular/models/NumberItemsAplicationTai/numberItemsAplicationTaiModel.js")
                 .Include("~/Assets/js/angular/directives/_bundle/collapse/collapse.js")
 
             );

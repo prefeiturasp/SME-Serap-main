@@ -197,6 +197,7 @@ namespace GestaoAvaliacao.Repository
                         .Include("TestSubGroup")
                         .Include("TestTime")
                         .Include("TestContexts")
+                        //.Include("NumberItemTestTai")
                         .FirstOrDefault(i => i.Id == Id && i.State == (Byte)EnumState.ativo);
 
                     return query;
@@ -1640,6 +1641,7 @@ namespace GestaoAvaliacao.Repository
                 test.ShowVideoFiles = entity.ShowVideoFiles;
                 test.ShowAudioFiles = entity.ShowAudioFiles;
                 test.ShowJustificate = entity.ShowJustificate;
+                test.TestTai = entity.TestTai;
 
                 test.UpdateDate = DateTime.Now;
 

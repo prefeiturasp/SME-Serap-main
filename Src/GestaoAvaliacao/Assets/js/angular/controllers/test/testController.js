@@ -13,7 +13,7 @@
         .module('appMain')
         .controller("TestController", TestController);
 
-    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', '$window'];
+    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', 'NumberItemsAplicationTaiModel', '$window'];
 
     /**
      * @function Controller para criação de prova
@@ -26,7 +26,7 @@
      * @param {Object} TestTypeModel
      * @returns
      */
-    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, $window) {
+    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, NumberItemsAplicationTaiModel, $window) {
 
         var self = this;
 
@@ -59,6 +59,7 @@
             //    arr.push(self.wizards[2]);
             //    arr.push(self.wizards[4]);
             //}
+            ng.wizardTAI = self.wizards[0];
             ng.listaWizards = arr;
         };
 
@@ -173,6 +174,8 @@
                 showVideoFiles: 'Exibir conteúdo de vídeo',
                 showJustificate: 'Exibir justificativa',
                 showAudioFiles: 'Exibir conteúdo de áudio',
+                showTestTAI: 'Aplicação em TAI',
+                numberItemsTestTAI: 'Nº itens na amostra',
                 showOnSerapEstudantes: 'Exibir no Serap Estudantes',
                 showTestContext: 'Apresentar contexto da prova',
                 tempoDeProva: 'Tempo de Prova',
@@ -186,6 +189,7 @@
             ];
             //Lista de wizards atuais
             ng.listaWizards = [];
+            ng.wizardTAI = null;
             ng.etapaAtual = 1;
             ng.alterouEtapaAtual = false;
             ng.mostrarTela = false;
@@ -240,6 +244,9 @@
             ng.e1_listaComponenteCurricular = [];
             //ComboBox componente curricular
             ng.e1_cbComponenteCurricular = null;
+            ng.e1_nItensTestTAI = null;
+            ng.e1_nItensTestTAIList = [];
+            ng.showTestTAI = false;
             // switch gerar folha de resposta
             ng.e1_folhaResp = false;
             ng.e1_folhaRespLock = false;
@@ -297,6 +304,7 @@
             // Modal contexto
             e1_criarObjetoDadosModalContexto();
             ng.e1_itemParaDeletarDaListaTestContex = '';
+            loadNumberItemsAplicationTai();
         };
 
         /**
@@ -311,6 +319,22 @@
                     return list[k];
                 };
             };
+        };
+
+        /**
+        * @function Carrega itens amostra prova TAI
+        * @private
+        * @param
+        */
+        function loadNumberItemsAplicationTai() {
+            NumberItemsAplicationTaiModel.loadAll({}, function (result) {
+                if (result.success) {
+                    ng.e1_nItensTestTAIList = result.lista;
+                }
+                else {
+                    $notification[result.type ? result.type : 'error'](result.message);
+                }
+            });
         };
 
         /**
@@ -499,6 +523,21 @@
                 return;
         };
 
+        /**
+        * @function Tratamento para alterações qtde itens aplicação em TAI
+        * @private
+        * @param
+        */
+
+        ng.e1_nItensTestTAIMudou = e1_nItensTestTAIMudou;
+        function e1_nItensTestTAIMudou() {
+
+            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa1.alterou = true;
+
+            if (!ng.e1_nItensTestTAI)
+                return;
+        };
+
         ng.e1_TempoDeProvaMudou = e1_TempoDeProvaMudou;
         function e1_TempoDeProvaMudou() {
 
@@ -677,6 +716,19 @@
             self.etapa1.alterou = true;
         };
 
+        ng.selectShowTestTAI = function () {
+            ng.showTestTAI = !ng.showTestTAI;
+            
+            if (!ng.showTestTAI && ng.e1_cbTipoProva.Bib)
+                ng.showFlagBIB = true;
+            else
+                ng.showFlagBIB = false;
+
+            if (ng.temBIB)
+                ng.temBIB = false;
+            self.etapa1.alterou = true;
+        };
+
         ng.selectShowJustificate = function () {
             ng.showJustificate = !ng.showJustificate;
             self.etapa1.alterou = true;
@@ -845,8 +897,8 @@
         };
 
         ng.validarItensBlocos = function (value) {
-            
-                self.etapa1.alterou = true;
+
+            self.etapa1.alterou = true;
             //} else {
             //    $notification.alert("A quantidade de itens deve ser maior que 0.");
             //}
@@ -1124,7 +1176,7 @@
             var model = {
                 "Id": ng.provaId,
                 "Description": ng.e1_testDescription,
-                "Password": ng.e1_testPassword,                
+                "Password": ng.e1_testPassword,
                 "TestType": ng.e1_cbTipoProva,
                 "Discipline": ng.e1_cbComponenteCurricular,
                 "Bib": ng.temBIB,
@@ -1154,6 +1206,8 @@
                 "TestSubGroup": ng.e1_grupoSubgrupo,
                 "TestTime": ng.e1_tempoDeProva,
                 "TestContexts": ng.testContexts,
+                "TestTAI": ng.showTestTAI,
+                "NumberItemsAplicationTai": ng.e1_nItensTestTAI,
             };
 
             self.etapa1.save(model, etapa1Salvou);
@@ -1167,7 +1221,7 @@
         function etapa1Salvou(r) {
 
             if (r.success) {
-                
+
                 var param = {
                     Id: r.TestID
                 };
@@ -1340,6 +1394,11 @@
                 return false;
             }
 
+            if (!ng.e1_nItensTestTAI) {
+                $notification.alert('O campo "' + ng.labels.numberItemsTestTAI + '" é obrigatório.');
+                return false;
+            }
+
             if (!ng.frequencyApplication) {
                 $notification.alert('O campo "' + ng.labels.frequencyApplication + '" é obrigatório.');
                 return false;
@@ -1378,7 +1437,7 @@
             }
 
 
-            if (!ng.temBIB && (ng.e1_radios == 3 || !ng.itensTotais)) {
+            if (!ng.temBIB && !ng.showTestTAI && (ng.e1_radios == 3 || !ng.itensTotais)) {
                 $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é obrigatório.');
                 return false;
             }
@@ -1497,6 +1556,10 @@
                     ng.showTestContext = r.ShowTestContext;
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
+                    ng.showTestTAI = r.ShowTestTAI;
+                    if (ng.showTestTAI) {
+                        ng.e1_nItensTestTAI = procurarElementoEm([r.NumberItemsAplicationTai], ng.e1_nItensTestTAIList)[0];
+                    }
                     ng.showJustificate = r.ShowJustificate;
                     e1_formato_findTest = true;
                     ng.e1_folhaResp = true;
@@ -1895,7 +1958,7 @@
             if (lista instanceof Array && lista.length > 0) {
                 self.etapa2.selecionados = angular.copy(lista);
                 ng.e2_ListaItemSelecionados = ng.e2_blockAtual.SelectedItens = angular.copy(lista);
-                ng.e2_blockAtual.QtdeKnowledgeArea = calculaQtdeKnowledgeArea(ng.e2_blockAtual.SelectedItens);;
+                ng.e2_blockAtual.QtdeKnowledgeArea = calculaQtdeKnowledgeArea(ng.e2_blockAtual.SelectedItens);
                 e2_ResultadoSelecionados();
             }
             else {
@@ -3799,7 +3862,7 @@
             }
         };
 
-        
+
 
         /**
         * @function Geração de modelo HTML da prova
@@ -4198,7 +4261,7 @@
                     $notification[result.type ? result.type : 'error'](result.message);
                 }
             });
-        };              
+        };
 
         ng.e1_criarObjetoDadosModalContexto = e1_criarObjetoDadosModalContexto;
         function e1_criarObjetoDadosModalContexto() {
@@ -4208,7 +4271,7 @@
                 title: '',
                 text: '',
                 imagePath: '',
-                image: {  Id: '', Guid: '', Path: '' }
+                image: { Id: '', Guid: '', Path: '' }
             };
             limparContextoSummernote();
         };
@@ -4225,7 +4288,7 @@
                     };
                     ng.testContexts[indexItemAlterar] = itemAlterado;
                 }
-                
+
             } else {
                 const itemNovo = {
                     ...ng.e1_dadosModalContexto,
@@ -4279,8 +4342,8 @@
         function limparContextoSummernote() {
             var campoContexto = obterCampoContextoSummernote();
             campoContexto.html('');
-        }        
-       
+        }
+
 
     };
 

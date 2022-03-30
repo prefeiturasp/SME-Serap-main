@@ -65,6 +65,7 @@
     <Compile Include="IItemFileBusiness.cs" />
     <Compile Include="IKnowledgeAreaBusiness.cs" />
     <Compile Include="IKnowledgeAreaDisciplineBusiness.cs" />
+    <Compile Include="INumberItemsAplicationTaiBusiness.cs" />
     <Compile Include="IPageConfigurationBusiness.cs" />
     <Compile Include="IPerformanceItemBusiness.cs" />
     <Compile Include="IReportItemChoiceBusiness.cs" />

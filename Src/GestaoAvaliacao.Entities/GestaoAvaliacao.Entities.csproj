@@ -75,6 +75,8 @@
     <Compile Include="DTO\StudentsTestSent\FinalizeCorrectionDto.cs" />
     <Compile Include="DTO\StudentTestSession\StudentTestSessionDto.cs" />
     <Compile Include="DTO\StudentTestSession\TestSessionDto.cs" />
+    <Compile Include="NumberItemsAplicationTai.cs" />
+    <Compile Include="NumberItemTestTai.cs" />
     <Compile Include="StudentsTestSent\StudentTestSent.cs" />
     <Compile Include="DTO\Abstractions\NotificableDto.cs" />
     <Compile Include="DTO\AdherenceDTO.cs" />
