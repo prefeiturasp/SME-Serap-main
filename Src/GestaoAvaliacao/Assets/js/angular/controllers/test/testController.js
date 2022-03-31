@@ -1394,7 +1394,7 @@
                 return false;
             }
 
-            if (!ng.e1_nItensTestTAI) {
+            if (ng.showTestTAI && !ng.e1_nItensTestTAI) {
                 $notification.alert('O campo "' + ng.labels.numberItemsTestTAI + '" é obrigatório.');
                 return false;
             }
