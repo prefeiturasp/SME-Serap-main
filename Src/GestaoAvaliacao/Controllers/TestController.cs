@@ -237,6 +237,7 @@ namespace GestaoAvaliacao.Controllers
                         ElectronicTest = entity.ElectronicTest,
                         ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes,
                         ShowTestContext = entity.ShowTestContext,
+                        NumberSynchronizedResponseItems = entity.NumberSynchronizedResponseItems,
                         entity.ShowVideoFiles,
                         entity.ShowAudioFiles,
                         entity.ShowJustificate,

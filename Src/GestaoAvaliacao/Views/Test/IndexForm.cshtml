@@ -209,6 +209,17 @@
                                     <div class="switch" ng-click="selectShowOnSerapEstudantes();"
                                          ng-class="{'off': !showOnSerapEstudantes}" style="position: absolute; margin: 4px 260px;"><input type="button" /></div>
                                 </div>
+                                @* Qtd Itens Sincronizacao *@
+                                <div class="campoLabel" ng-show="showOnSerapEstudantes">
+                                    <label> {{labels.numberSynchronizedResponseItems}}*:</label>
+                                    <div>
+                                        <input type="number"
+                                               ng-model="numberSynchronizedResponseItems"
+                                               ng-change="validaQtdItensSincronizacao()"
+                                               class="form-control"
+                                               maxlength="10" />
+                                    </div>
+                                </div>
 
                                 <div class="campoLabel">
                                     @* Header *@
