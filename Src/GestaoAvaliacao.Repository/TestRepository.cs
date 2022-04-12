@@ -1637,6 +1637,7 @@ namespace GestaoAvaliacao.Repository
                 test.KnowledgeAreaBlock = entity.KnowledgeAreaBlock;
                 test.ElectronicTest = entity.ElectronicTest;
                 test.ShowOnSerapEstudantes = entity.ShowOnSerapEstudantes;
+                test.NumberSynchronizedResponseItems = entity.NumberSynchronizedResponseItems;
                 test.ShowTestContext = entity.ShowTestContext;
                 test.ShowVideoFiles = entity.ShowVideoFiles;
                 test.ShowAudioFiles = entity.ShowAudioFiles;

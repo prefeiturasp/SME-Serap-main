@@ -177,6 +177,7 @@
                 showTestTAI: 'Aplicação em TAI',
                 numberItemsTestTAI: 'Nº itens na amostra',
                 showOnSerapEstudantes: 'Exibir no Serap Estudantes',
+                numberSynchronizedResponseItems: 'Qtde de itens para sincronização Resposta',
                 showTestContext: 'Apresentar contexto da prova',
                 tempoDeProva: 'Tempo de Prova',
                 temBIB: 'Prova com BIB'
@@ -276,6 +277,7 @@
             ng.isKnowledgeAreaBlock = false;
             ng.isElectronicTest = false;
             ng.showOnSerapEstudantes = false;
+            ng.numberSynchronizedResponseItems = null;
             ng.showVideoFiles = false;
             ng.showAudioFiles = false;
             ng.showJustificate = false;
@@ -454,6 +456,9 @@
         function validarPassword() {
             ng.alterouEtapaAtual = self.etapa1.alterou = true;
         }
+
+
+     
 
         /**
         * @function Carrega dados de componente curricular
@@ -693,6 +698,12 @@
         };
         ng.selectShowOnSerapEstudantes = function () {
             ng.showOnSerapEstudantes = !ng.showOnSerapEstudantes;
+            ng.numberSynchronizedResponseItems = 2;
+            self.etapa1.alterou = true;
+        };
+
+        ng.validaQtdItensSincronizacao = function () {
+
             self.etapa1.alterou = true;
         };
 
@@ -1199,6 +1210,7 @@
                 "KnowledgeAreaBlock": ng.isKnowledgeAreaBlock,
                 "ElectronicTest": ng.isElectronicTest,
                 "ShowOnSerapEstudantes": ng.showOnSerapEstudantes,
+                "NumberSynchronizedResponseItems": ng.numberSynchronizedResponseItems,
                 "ShowVideoFiles": ng.showVideoFiles,
                 "ShowTestContext": ng.showTestContext,
                 "ShowAudioFiles": ng.showAudioFiles,
@@ -1384,6 +1396,14 @@
                 return false;
             }
 
+            if (ng.showOnSerapEstudantes) {
+                
+                if (ng.numberSynchronizedResponseItems < 2) {
+                    $notification.alert('O campo "' + ng.labels.numberSynchronizedResponseItems + '"deve ser maior ou igual a dois.');
+                    return false;
+                }
+            }
+
             if (!ng.e1_testDescription) {
                 $notification.alert('O campo "' + ng.labels.descricao + '" é obrigatório.');
                 return false;
@@ -1553,6 +1573,7 @@
                     ng.isKnowledgeAreaBlock = r.KnowledgeAreaBlock;
                     ng.isElectronicTest = r.ElectronicTest;
                     ng.showOnSerapEstudantes = r.ShowOnSerapEstudantes;
+                    ng.numberSynchronizedResponseItems = r.NumberSynchronizedResponseItems;
                     ng.showTestContext = r.ShowTestContext;
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
@@ -4156,13 +4177,11 @@
         function salvar() {
 
             if (ng.navigation === 1) {
-
                 if (validarEtapa1())
                     etapa1Salvar();
             }
 
             if (ng.navigation === 2 && validarEtapa2()) {
-
                 ng.BtnSaveDisabled = true;
                 e2_Salvar();
             }
