@@ -112,14 +112,18 @@ namespace GestaoAvaliacao.Business
         {
             List<Guid> gruposPermissaoAcesso = new List<Guid>();
 
-            gruposPermissaoAcesso.Add(Guid.Parse("AAD9D772-41A3-E411-922D-782BCB3D218E"));
-            gruposPermissaoAcesso.Add(Guid.Parse("104F0759-87E8-E611-9541-782BCB3D218E"));
-            gruposPermissaoAcesso.Add(Guid.Parse("22366A3E-9E4C-E711-9541-782BCB3D218E"));
-            gruposPermissaoAcesso.Add(Guid.Parse("4318D329-17DC-4C48-8E59-7D80557F7E77"));
-            gruposPermissaoAcesso.Add(Guid.Parse("ECF7A20D-1A1E-E811-B259-782BCB3D2D76"));
-            gruposPermissaoAcesso.Add(Guid.Parse("D4026F2C-1A1E-E811-B259-782BCB3D2D76"));
-            gruposPermissaoAcesso.Add(Guid.Parse("75DCAB30-2C1E-E811-B259-782BCB3D2D76"));
-            gruposPermissaoAcesso.Add(Guid.Parse("E77E81B1-191E-E811-B259-782BCB3D2D76"));
+            gruposPermissaoAcesso.Add(Guid.Parse("aad9d772-41a3-e411-922d-782bcb3d218e"));
+            gruposPermissaoAcesso.Add(Guid.Parse("104f0759-87e8-e611-9541-782bcb3d218e"));
+            gruposPermissaoAcesso.Add(Guid.Parse("22366a3e-9e4c-e711-9541-782bcb3d218e"));
+            gruposPermissaoAcesso.Add(Guid.Parse("ecf7a20d-1a1e-e811-b259-782bcb3d2d76"));
+            gruposPermissaoAcesso.Add(Guid.Parse("d4026f2c-1a1e-e811-b259-782bcb3d2d76"));
+            gruposPermissaoAcesso.Add(Guid.Parse("75dcab30-2c1e-e811-b259-782bcb3d2d76"));
+            gruposPermissaoAcesso.Add(Guid.Parse("4318d329-17dc-4c48-8e59-7d80557f7e77"));
+            gruposPermissaoAcesso.Add(Guid.Parse("e77e81b1-191e-e811-b259-782bcb3d2d76"));
+            gruposPermissaoAcesso.Add(Guid.Parse("067d9b21-a1ff-e611-9541-782bcb3d218e"));
+            gruposPermissaoAcesso.Add(Guid.Parse("e77e81b1-191e-e811-b259-782bcb3d2d76"));
+            gruposPermissaoAcesso.Add(Guid.Parse("067d9b21-a1ff-e611-9541-782bcb3d218e"));
+
             return gruposPermissaoAcesso.Any(g => g == grupo);
         }
 
