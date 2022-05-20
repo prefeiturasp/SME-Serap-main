@@ -60,6 +60,11 @@
             //    arr.push(self.wizards[4]);
             //}
             ng.wizardTAI = self.wizards[0];
+            var wizardAnoItens = self.wizards[1];
+            wizardAnoItens.Description = 'Ano(s) dos itens da amostra';
+            ng.listaWizardTAI.push(ng.wizardTAI);
+            ng.listaWizardTAI.push(wizardAnoItens);
+
             ng.listaWizards = arr;
         };
 
@@ -167,6 +172,7 @@
                 e1_itensBlocos: 'Itens por caderno',
                 niveis: 'Níveis de desempenho',
                 matriz: 'Matriz',
+                matrizAvaliacao: 'Matriz de avaliação',
                 keywords: 'Palavra-chave',
                 multidiscipline: 'Multidisciplinar',
                 knowledgeAreaBlock: 'Gabarito com blocos de área de conhecimento',
@@ -191,6 +197,7 @@
             //Lista de wizards atuais
             ng.listaWizards = [];
             ng.wizardTAI = null;
+            ng.listaWizardTAI = [];
             ng.etapaAtual = 1;
             ng.alterouEtapaAtual = false;
             ng.mostrarTela = false;
@@ -213,6 +220,7 @@
             ng.publicFeedback = false;
             ng.showTestContext = false;
             ng.testContexts = [];
+            ng.anosItensAmostraProvaTai = [];
             //Funções para configurar Etapas
             nivelDesempenhoCarregar();
             initEtapa1();
@@ -458,7 +466,7 @@
         }
 
 
-     
+
 
         /**
         * @function Carrega dados de componente curricular
@@ -729,7 +737,7 @@
 
         ng.selectShowTestTAI = function () {
             ng.showTestTAI = !ng.showTestTAI;
-            
+
             if (!ng.showTestTAI && ng.e1_cbTipoProva.Bib)
                 ng.showFlagBIB = true;
             else
@@ -1397,7 +1405,7 @@
             }
 
             if (ng.showOnSerapEstudantes) {
-                
+
                 if (ng.numberSynchronizedResponseItems < 2) {
                     $notification.alert('O campo "' + ng.labels.numberSynchronizedResponseItems + '"deve ser maior ou igual a dois.');
                     return false;
@@ -1730,6 +1738,12 @@
 
 
             ng.escondeModal = false;
+            ng.e2_matrizAvaliacao = null;
+            ng.e2_matrizAvaliacaoList = [];
+            ng.e2_listAnoItensTai = [];
+            ng.e2_dadosModalAnoItensAmostraTai = null;
+            ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = '';
+            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = '';
 
             // ETAPA 2
             blocosCarregar();
@@ -1753,8 +1767,28 @@
             nivelEnsinoCarregar();
 
             carregaModality();
+            carregaMatrizAvaliacao();
+            carregaListAnoItensTai();
 
             self.etapa2.carregou = true;
+        };
+
+        ng.e2_matrizAvaliacaoMudou = e2_matrizAvaliacaoMudou;
+        function e2_matrizAvaliacaoMudou() {
+
+            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa2.alterou = true;
+
+            if (!ng.e2_matrizAvaliacao)
+                return;
+        };
+
+        ng.e2_anoItensAmostraTaiMudou = e2_anoItensAmostraTaiMudou;
+        function e2_anoItensAmostraTaiMudou() {
+
+            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa2.alterou = true;
+
+            if (!ng.e2_dadosModalAnoItensAmostraTai.Ano)
+                return;
         };
 
         /**
@@ -1884,6 +1918,15 @@
                 }
             });
         };
+
+        function carregaMatrizAvaliacao() {
+            ng.e2_matrizAvaliacaoList = [{ Value: 1, Description: 'Teste 1' }];
+
+        };
+
+        function carregaListAnoItensTai() {
+            ng.e2_listAnoItensTai = [{ Value: 1, Description: '1º' }, { Value: 2, Description: '2º' }, { Value: 3, Description: '3º' }];
+        }
 
         /**
         * @function Tratamentos resultado do nivel de ensino
@@ -2897,6 +2940,12 @@
         function callModalAdicionarContextoProva() {
             e1_criarObjetoDadosModalContexto();
             angular.element("#modalNovoContextoProva").modal({ backdrop: 'static' });
+        };
+
+        ng.callModalAnoItensAmostraTai = callModalAnoItensAmostraTai;
+        function callModalAnoItensAmostraTai() {
+            //e1_criarObjetoDadosModalContexto();
+            angular.element("#modalAnoItensAmostraTai").modal({ backdrop: 'static' });
         };
 
         ng.e2_exibirModalProximoBloco = e2_exibirModalProximoBloco;
@@ -4344,7 +4393,6 @@
                 ...item,
                 image: { Id: '', Guid: '', Path: item.imagePath }
             };
-            console.log(ng.e1_dadosModalContexto);
             editarContextoSummernote();
             angular.element('#modalNovoContextoProva').modal({ backdrop: 'static' });
         };
@@ -4363,6 +4411,72 @@
             campoContexto.html('');
         }
 
+
+
+
+        ng.e2_criarObjetoDadosModalAnoItensAmostraTai = e2_criarObjetoDadosModalAnoItensAmostraTai;
+        function e2_criarObjetoDadosModalAnoItensAmostraTai() {
+            ng.e2_dadosModalAnoItensAmostraTai = {
+                id: 0,
+                Ano: { Value: 0, Description: '' },
+                Porcentagem: '',
+            };
+        };
+
+        ng.e2_addDadosModalAnoItensAmostraTai = e2_addDadosModalAnoItensAmostraTai;
+        function e2_addDadosModalAnoItensAmostraTai() {
+            if (ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai) {
+                const indexItemDelete = ng.anosItensAmostraProvaTai.indexOf(ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai);
+                ng.anosItensAmostraProvaTai.splice(indexItemDelete, 1);
+                ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = '';
+                const itemAlterado = {
+                    ...ng.e2_dadosModalAnoItensAmostraTai
+                };
+                //ng.anosItensAmostraProvaTai.push(itemAlterado);
+
+            } else {
+                const itemNovo = {
+                    ...ng.e2_dadosModalAnoItensAmostraTai
+                };
+                ng.anosItensAmostraProvaTai.push(itemNovo);
+            }
+            ng.e2_criarObjetoDadosModalAnoItensAmostraTai();
+            self.etapa2.alterou = true
+            angular.element('#modalAnoItensAmostraTai').modal('hide');
+        };
+
+        ng.e2_editarModalAnoItensAmostraTai = e2_editarModalAnoItensAmostraTai;
+        function e2_editarModalAnoItensAmostraTai(item) {
+            e2_criarObjetoDadosModalAnoItensAmostraTai();
+            e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = item;
+            ng.e2_dadosModalAnoItensAmostraTai = {
+                ...item
+            };
+            angular.element('#modalAnoItensAmostraTai').modal({ backdrop: 'static' });
+        };
+
+        ng.e2_confirmarDeletarItemAnosItensAmostraProvaTai = e2_confirmarDeletarItemAnosItensAmostraProvaTai;
+        function e2_confirmarDeletarItemAnosItensAmostraProvaTai(item) {
+            ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = item;
+            angular.element('#modalDeleteItemAnosItensAmostraProvaTai').modal({ backdrop: 'static' });
+        };
+
+        ng.e2_deletarItemAnosItensAmostraProvaTai = e2_deletarItemAnosItensAmostraProvaTai;
+        function e2_deletarItemAnosItensAmostraProvaTai() {
+            if (ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai) {
+                const indexItemDelete = ng.anosItensAmostraProvaTai.indexOf(ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai);
+                ng.anosItensAmostraProvaTai.splice(indexItemDelete, 1);
+                ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = '';
+                self.etapa2.alterou = true
+            }
+            angular.element('#modalDeleteItemAnosItensAmostraProvaTai').modal('hide');
+        };
+
+        ng.e2_limparDadosModalAnoItensAmostraTai = e2_limparDadosModalAnoItensAmostraTai;
+        function e2_limparDadosModalAnoItensAmostraTai() {
+            ng.e2_dadosModalAnoItensAmostraTai = null;
+            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = '';
+        }
 
     };
 

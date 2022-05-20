@@ -21,9 +21,9 @@
                 <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="!showTestTAI">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
                 </a>
-                <a ng-class="{true:'current', false:''}[showTestTAI]" ng-show="showTestTAI">
-                    <i class="material-icons">chevron_right</i><span ng-class="{true:'badge', false:'badge badge-inverse'}[showTestTAI]">{{wizardTAI.Number}}</span>{{wizardTAI.Description}}
-                </a>
+                <a ng-repeat="wizard in listaWizardTAI" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="showTestTAI">
+                    <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
+                </a>               
             </div>
         </div>
         <div class="maxWidth" ng-show="mostrarTela && situacao" style="padding: 5px 0; text-align: right;">
@@ -598,1121 +598,1258 @@
 
                 @* Etapa 2 *@ @* Lista de itens *@
                 <div class="form-group" ng-show="navigation===2 && mostrarTela">
+
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="cards">
-                                <h4 class="padding"><strong>{{ e1_testDescription}} </strong></h4>
-                                <table class="table table-hover">
-                                    <colgroup>
-                                        <col width="15%" />
-                                        <col width="15%" />
-                                        <col width="15%" />
 
-                                        <col width="24%" />
-
-                                        <col width="8%" />
-                                        <col width="8%" />
-                                        <col width="15%" />
-                                    </colgroup>
-                                    <thead>
-                                        <tr>
-                                            <th class="table-parameter-centralize">Caderno</th>
-                                            <th class="table-parameter-centralize">Itens selecionados</th>
-                                            <th class="table-parameter-centralize">Não selecionados</th>
-                                            <th class="table-parameter-centralize"> @* Imagem *@ </th>
-                                            <th class="table-parameter-centralize">Editar</th>
-                                            <th>Adicionar</th>
-                                            <th class="table-parameter-centralize">Ordenar área de conhecimento</th>
-                                            <th class="table-parameter-centralize">Limpar itens selecionados</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="bloco in cadernos">
-                                            <th class="table-parameter-centralize">{{ bloco.Description}}</th>
-                                            <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
-                                            <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0}}</th>
-                                            <th class="table-parameter-centralize ">
-                                                <i ng-class="{ true:'material-icons check-success pull-left', false:'some-icon' }
-                                                [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
-                                            </th>
-
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModal(2, bloco)"><i type="button" class="material-icons">format_list_bulleted</i></a>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModal(1,bloco)"><i type="button" class="material-icons">add_box</i></a>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModal(7, bloco)"><i type="button" class="material-icons">swap_vert</i></a>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModalRemoverItensSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
-                                            </th>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div ng-show="!temBIB" class="panel-body">
-                                    <span><strong>Total de itens: {{e2_ItensAtuais}} de {{ itensTotais }}</strong></span>
+                        <div class="col-md-12" ng-show="showTestTAI">
+                            <div class="campoLabel col-md-12">
+                                <label for="tempoDeProva">{{labels.matrizAvaliacao}}*: </label>
+                                <div>
+                                    <select id="matrizAvaliacao" class="form-control" title="{{ e2_matrizAvaliacao.Description }}"
+                                            ng-change="e2_matrizAvaliacaoMudou();"
+                                            ng-model="e2_matrizAvaliacao"
+                                            ng-options="matriz as matriz.Description for matriz in e2_matrizAvaliacaoList"
+                                            ng-title="e2_matrizAvaliacaoList"
+                                            ng-title-propertie="Description"
+                                            ng-title-index="1">
+                                        <option value="">--Selecione uma matriz --</option>
+                                    </select>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                @* Etapa 4 *@ @* Gera Prova *@
-                <div class="form-group" ng-show="navigation===3 && mostrarTela">
-                    <div class="row">
-                        <div class="col-md-12 ">
-                            <div class="cards">
-                                <h4 class="padding"><strong>{{ e1_testDescription}}</strong></h4>
-                                <table class="table table-hover">
-                                    <colgroup>
-                                        <col width="5%" ng-hide="true">
-                                        <col width="5%">
-                                        <col width="30%">
-                                        <col width="15%">
-                                        <col width="10%">
-                                        <col width="5%">
-                                        <col width="10%">
-                                        <col width="5%">
-                                        <col width="10%">
-                                        <col width="5%">
-
-                                    </colgroup>
-                                    <thead>
-                                        <tr>
-                                            <th class="table-parameter-centralize" ng-hide="true">Gerar</th>
-                                            <th class="">Código</th>
-                                            <th class="">Prova</th>
-                                            <th class="table-parameter-centralize">Permitir download do Gabarito</th>
-                                            <th class="table-parameter-centralize">Gerar Folha de Resposta</th>
-                                            <th class="table-parameter-centralize">Exportar doc</th>
-                                            <th class="table-parameter-centralize">Gerar Prova</th>
-                                            <th class="table-parameter-centralize">Salvar</th>
-                                            <th class="table-parameter-centralize">Última Geração</th>
-                                            <th class="table-parameter-centralize">Baixar</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="p in Provas" ng-click="selecionaItem($index)">
-                                            @* CHECK *@
-                                            <th class="table-parameter-centralize" ng-hide="true">
-                                                <div class="checkbox checkbox-primary check-parameter">
-                                                    <input id="{{p.label}}" type="checkbox" ng-model="p.gerar">
-                                                    <label for="{{p.label}}" class="gerar-prova label-top"></label>
-                                                </div>
-                                            </th>
-                                            @* CÓDIGO *@
-                                            <th class="table-parameter-centralize">
-                                                <div>{{p.Description}}</div>
-                                            </th>
-                                            @* DESCRIÇÃO *@
-                                            <th class="">
-                                                <div>
-                                                    <span ng-repeat="itens in p.Blocks" class="gerar-prova span-padding">{{itens.Description}}</span>
-                                                </div>
-                                            </th>
-                                            @* DOWNLOAD DO GABARITO*@
-                                            <th class="table-parameter-centralize">
-                                                <div class="campoLabel" style="position:relative;">
-                                                    <div class="switch" ng-model="publicFeedback" ng-click="selectedFeedback(p.Registered);" ng-class="{'off': !publicFeedback }"><input type="button" /></div>
-                                                </div>
-                                            </th>
-                                            @* GERAR FOLHA DE RESPOSTA *@
-                                            <th class="table-parameter-centralize">
-                                                <div class="campoLabel" ng-show="e1_folhaRespLock" style="position:relative;"
-                                                     data-title="A folha de resposta não pode ser gerada pois o tipo de prova escolhido não tem um tipo de item definido." bs-tooltip>
-                                                    <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
-                                                         ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button" /></div>
-                                                </div>
-                                                <div class="campoLabel" ng-show="!e1_folhaRespLock" style="position:relative;">
-                                                    <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
-                                                         ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button" /></div>
-                                                </div>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <div>
-                                                    <a class="btn" ng-click="provaExportDocIndex($index)">
-                                                        <i type="button" class="material-icons">description</i>
-                                                    </a>
-                                                </div>
-                                            </th>
-                                            @* VISUALIZAR *@
-                                            <th class="table-parameter-centralize">
-                                                <div>
-                                                    <a class="btn" ng-click="visualizarProva($index)" ng-disabled="p.Registered">
-                                                        <i type="button" class="material-icons">remove_red_eye</i>
-                                                    </a>
-                                                </div>
-                                            </th>
-
-                                            @* SALVAR *@
-                                            <th class="table-parameter-centralize">
-                                                <button type="button"
-                                                        ng-disabled="BtnSaveDisabled"
-                                                        class="btn btn-primary"
-                                                        ng-hide="navigation===2"
-                                                        ng-click="salvar()" style="background-color:#5a94d6">
-                                                    Salvar
-                                                </button>
-                                            </th>
-                                            @* DATA DE GERAÇÃO *@
-                                            <th class="table-parameter-centralize">
-                                                <div>{{p.currentDate}}</div>
-                                            </th>
-                                            @* BAIXAR *@
-                                            <th class="table-parameter-centralize">
-                                                <div>
-                                                    <a class="btn" ng-click="baixarProva($index)" ng-disabled="p.Download">
-                                                        <i type="button" class="material-icons">file_download</i>
-                                                    </a>
-                                                </div>
-                                            </th>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" ng-hide="true">
-                        <div class="col-md-12 gerar-prova margin-left">
-                            <a class="hand-logo gerar-prova none-decoration" ng-click="gerarSelecionadas()">GERAR SELECIONADAS</a>&nbsp &nbsp &nbsp
-                            <a class="hand-logo gerar-prova none-decoration" ng-click="baixarSelecioandas()"><i type="button" class="material-icons">file_download</i>BAIXAR SELECIOANDAS</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @* Footer *@
-            <div class="footerCustom semPadding">
-                @* Botões *@
-                <div ng-show="mostrarTela">
-                    <div class="botoes semMargin">
-                        @* Voltar *@
-                        <button type="button"
-                                class="btnCancelar pull-left semMargin"
-                                ng-hide="navigation===1"
-                                ng-click="voltar()">
-                            Voltar
-                        </button>
-                        @* Avançar *@
-                        <button type="button"
-                                class="btnPadrao2 pull-right"
-                                ng-hide="navigation===3 || showTestTAI"
-                                ng-disabled="provaId===0"
-                                ng-click="avancar()">
-                            Avançar
-                        </button>
-                        @* Finalizar *@
-                        <button type="button"
-                                class="btnPadrao2 pull-right"
-                                ng-hide="(navigation!==ultimo && !showTestTAI) || (showTestTAI && provaId===0)"
-                                ng-click="finalizar()">
-                            Finalizar
-                        </button>
-                        @* Cancelar *@
-                        <button type="button"
-                                class="btnCancelar pull-right"
-                                ng-click="cancelar()">
-                            Cancelar
-                        </button>
-                        @* Salvar *@
-                        <button type="button"
-                                class="btnPadrao2 pull-right"
-                                ng-hide="navigation===2 || navigation===3"
-                                ng-click="salvar()">
-                            Salvar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    @* Modal que exibetodo o texto do select *@
-    <modal id="modalDescription" modal-title="{{textSelected.Description}}">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="modal-body">
-                    <span>{{textSelected.TextDescription}}</span>
-                </div>
-                <div class="col-sm-12 text-right">
-                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </modal>
-    @* Modal *@
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="width:90%;">
-            <div class="modal-content modalBig">
-                <div class="modal-header">
-                    @*<a type="button" class="pull-right centralizarY" ng-click="e2_Limpar()" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>*@
-                    <h4 class="modal-title padding-6" id="modal1Label">
-                        <strong ng-show="e2_Navegacao===1">Lista de itens disponíveis</strong>
-                        <strong ng-show="e2_Navegacao===2">Lista de itens selecionados</strong>
-                        <strong ng-show="e2_Navegacao===5">Resumo do Item</strong>
-                        <strong ng-show="e2_Navegacao===6">Versões do item</strong>
-                        <strong ng-show="e2_Navegacao===7">Lista de áreas de conhecimento</strong>
-                    </h4>
-                </div>
-                @* MODAL ADIÇÃO DE ITENS *@
-                <div class="modal-body" ng-show="e2_Navegacao==1 && escondeModal">
-                    @* Código do Item *@
-                    <div class="campoLabel hr">
-                        <label><strong>Código do item:</strong></label>
-                        <div>
-                            <input type="text"
-                                   class="form-control numbers"
-                                   style="width: 180px; float: left;"
-                                   size="5"
-                                   maxlength="20"
-                                   placeholder="Digite aqui o código do item"
-                                   ng-model="e2_codigoItem" />
-                            <button class="btn-pesquisar" ng-click="e2_pesquisarFiltros()" title="Pesquisar"><i class="material-icons">search</i></button>
-                        </div>
-                    </div>
-                    <div class="campoCodigo hr">
-
-                        @* Filtros *@
-                        <div class="campoLabel" ng-if="!isMultidiscipline">
-                            <label><strong>{{labels.componente}}: </strong></label>
-                            <label>{{e1_cbComponenteCurricular.Description}} </label>
-                        </div>
-
-                        @* Componente Curricuar *@
-                        <div class="campoLabel" ng-show="isMultidiscipline">
-                            <label><strong> {{labels.componente}} </strong></label>
-                            <div>
-                                <select id="testType" class="form-control"
-                                        ng-change="filtrosCarregar();"
-                                        ng-model="e1_cbComponenteCurricular"
-                                        ng-options="componenteCurricular as componenteCurricular.Description for componenteCurricular in e1_listaComponenteCurricular"
-                                        ng-title="e1_listaComponenteCurricular"
-                                        ng-title-propertie="Description"
-                                        ng-title-selected
-                                        ng-title-index="1">
-                                    <option value="">--Selecione--</option>
-                                </select>
-                            </div>
-                        </div>
-
-
-                        <div class="campoLabel" ng-repeat="(cbIndex, cb)  in e2_ListaComboBox">
-                            @* Lista de ComboBox's *@
-                            <label><strong>{{cb.Description}}</strong></label>
-                            <div>
-                                <select id="testType" class="form-control"
-                                        ng-change="filtrosMudou(cb);"
-                                        ng-model="e2_ListaComboBox[$index].model"
-                                        ng-options="combos as combos.Description for combos in e2_ListaComboBox[$index].lista"
-                                        ng-disabled="!e2_ListaComboBox[$index].lista||(e2_ListaComboBox[$index].lista&&!e2_ListaComboBox[$index].lista.length)"
-                                        ng-title="e2_ListaComboBox[$index].lista"
-                                        ng-title-propertie="Description"
-                                        ng-title-index="1"
-                                        ng-title-selected>
-                                    <option value="">--Selecione--</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="campoCodigo">
-                            @* Proficiência *@
-                            <div class="campoLabel">
-                                <label><b>Proficiência</b></label>
-                                <label style="max-width: 40px;"><b>De:</b></label>
-                                <input style="max-width: 70px;" class="form-control numbers"
-                                       type="text"
-                                       placeholder="100"
-                                       ng-model="e2_Proficiencia.Inicio"
-                                       ng-change="validarTotalItens(e2_Proficiencia,'Inicio');"
-                                       maxlength="3"
-                                       size="3" />
-                                <label style="max-width: 40px;"><b>até:</b></label>
-                                <input style="max-width: 70px;" class="form-control numbers"
-                                       type="text"
-                                       placeholder="500"
-                                       ng-model="e2_Proficiencia.Final"
-                                       ng-change="validarTotalItens(e2_Proficiencia,'Final');"
-                                       maxlength="3"
-                                       size="3" />
-                            </div>
-                        </div>
-                        <div class="campoLabel">
-                            @* Modalidade *@
-                            <label class="" for="modality"><b>Modalidade</b></label>
-                            <div>
-                                <select id="modality" class="form-control"
-                                        ng-change="carregaPeriodos();"
-                                        ng-model="e2_Modalidade"
-                                        ng-options="modality as modality.Description for modality in e2_ListaModalidade"
-                                        ng-title="e2_ListaModalidade"
-                                        ng-title-propertie="Description"
-                                        ng-title-index="1"
-                                        ng-title-selected>
-                                    <option value="">--Selecione--</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div ng-show="e2_Modalidade.Id > 0 && e2_ListaPeriodo.length > 0">
-                            <div class="campoLabel">
-                                @* Períodos *@
-                                <label><b>Periodos</b> {{labels.periodos}}</label>
-                                <div class="checkbox-colunas">
-                                    <div class="checkbox checkbox-primary lista-item" ng-repeat="periodo in e2_ListaPeriodo">
-                                        <input id="p{{periodo.Description}}" class="col-xs-1" type="checkbox" ng-model="e2_ListaPeriodoChecked[$index]" value="" />
-                                        <label for="p{{periodo.Description}}" class="col-xs-8 lista-item margin-left">{{ periodo.Description }}</label>
+                            <div class="row">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="cards">
+                                            <button type="button" class="btnPadrao pull-right" style="margin-right: 15px;" ng-click="callModalAnoItensAmostraTai()">Adicionar Novo Ano</button>
+                                            <h4 class="tituloCard ng-binding">Ano(s) dos itens da amostra: </h4>
+                                            <table class="table table-hover">
+                                                <colgroup>
+                                                    <col width="15%" />
+                                                    <col width="15%" />
+                                                    <col width="15%" />
+                                                    <col width="24%" />
+                                                    <col width="10%" />
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th class="table-parameter-centralize">Ano</th>
+                                                        <th class="table-parameter-centralize">Porcentagem(%)</th>
+                                                        <th class="table-parameter-centralize">Editar</th>
+                                                        <th class="table-parameter-centralize">Excluir</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="anoItem in anosItensAmostraProvaTai">
+                                                        <th class="table-parameter-centralize">{{ anoItem.Ano.Description }}</th>
+                                                        <th class="table-parameter-centralize">{{ anoItem.Poncentagem }}</th>
+                                                        <th class="table-parameter-centralize">
+                                                            <a ng-click="e2_editarModalAnoItensAmostraTai(anoItem)"><i type="button" class="material-icons">format_list_bulleted</i></a>
+                                                        </th>
+                                                        <th class="table-parameter-centralize">
+                                                            <a ng-click=""><i type="button" class="material-icons" ng-click="e2_confirmarDeletarItemAnosItensAmostraProvaTai(anoItem)">delete</i></a>
+                                                        </th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="campoLabel">
-                            @* Tipo do item *@
-                            <label><b>Tipo do item</b></label>
-                            @*<label ng-if="TestTypeItemType != null" style="max-width: 100%;">{{ItemType.Description}}</label>*@
-                            <div>
-                                <select id="modality" class="form-control"
-                                        ng-model="ItemType"
-                                        ng-options="itemType as itemType.Description for itemType in ItemTypeList"
-                                        ng-title="ItemTypeList"
-                                        ng-title-propertie="Description"
-                                        ng-title-index="1"
-                                        ng-title-selected>
-                                    <option value="">--Selecione--</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="campoLabel">
-                            @* KeyWord *@
-                            <!-- pesquisar por palavras-chave -->
-                            <label><b>{{labels.keywords}}</b></label>
-                            <tags-input ng-model="keyWords"></tags-input>
-                        </div>
-                        <div class="campoLabel">
-                            @* Dificuldade *@
-                            <label>Dificuldade</label>
-                            <div class="checkbox-colunas">
-                                <div class="checkbox checkbox-primary lista-item" ng-repeat="dificuldade in e2_ListaDificuldade">
-                                    <input id="d{{dificuldade.Description}}" type="checkbox" ng-model="e2_ListaDificuldadeChecked[$index]" />
-                                    <label for="d{{dificuldade.Description}}" lista-item margin-left" ">{{ dificuldade.Description }}</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="campoCodigo" style="text-align: right;">
-                            @* BOTÃO PESQUISAR *@
-                            <button type="button" class="btnCancelar2" style="margin: 0 20px 20px;" ng-click="e2_pesquisarFiltros()"><i class="material-icons">search</i> Pesquisar</button>
-                        </div>
-                    </div>
-                    <!-- <h6 class="row centralizar"><strong>ATENÇÃO: Sugerimos que salve antes de mudar de página.</strong> </h6> -->
-                    <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && !temBIB"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{ itensTotais }} </strong></h5>
-                    <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && temBIB"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{e1_itensBlocos}} </strong></h5>
-                    @* Resultado das busca *@
-                    <div class="campoCodigo hr">
-                        <div class="campoLabel">
-                            @* Tabela das busca *@
-                            <table class="table table-hover" ng-hide="!e2_ResultadoBusca || !e2_ResultadoBusca.length">
-                                <colgroup>
-                                    <col width="5%" />
-                                    <col width="5%" />
-                                    <col width="5%" />
-                                    <col width="25%" />
-                                    <col width="25%" />
-                                    <col width="10%" />
-                                    <col width="10%" />
-                                    <col width="10%" />
-                                    <col width="5%" />
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th class="table-parameter-centralize"> Selecionar  </th>
-                                        <th class="table-parameter-centralize"> Cód.      </th>
-                                        <th class="table-parameter-centralize"> Versão      </th>
-                                        <th class="table-parameter-centralize"> Enunciado   </th>
-                                        <th class="table-parameter-centralize"> Texto Base  </th>
-                                        <th class="table-parameter-centralize"> Habilidade  </th>
-                                        <th class="table-parameter-centralize"> Dificuldade </th>
-                                        <th class="table-parameter-centralize"> {{(curriculumGradeLabel | capitalize)}} </th>
-                                        <th class="table-parameter-centralize"> Visualizar  </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="($indexResultadoBusca, itens) in e2_ResultadoBusca track by $indexResultadoBusca" ng-class="{'revoked': itens.Revoked}">
-                                        @* CKECK *@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
-                                            <div class="checkbox checkbox-primary check-parameter">
-                                                <div class="blockCheckClick" style="margin: 0 -9px;"></div>
-                                                <input id="i_ch_{{itens.Code}}" type="checkbox" ng-model="itens.check">
-                                                <label for="i_ch_{{itens.Code}}" class="gerar-prova label-top">
-                                                    <div style="margin-top: -3px; position:absolute;" ng-if="itens.Revoked">
-                                                        <i class="material-icons" ng-if="!item.ItemLastVersion" data-trigger="hover" data-type="success" data-title="Item anulado" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>error</i>
-                                                    </div>
-                                                </label>
-
-                                            </div>
-
-                                        </th>
-                                        @*Código do Item*@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.Code}}</div></th>
-                                        @* Versão *@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.ItemVersion}}</div></th>
-                                        @* Enunciado *@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
-                                            <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.Statement}}"
-                                               data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
-                                                {{(itens.Statement | tagToString) | minimize: 22}}
-                                            </a>
-                                        </th>
-                                        @* Texto Base *@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
-                                            <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.BaseTextDescription}}"
-                                               data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
-                                                {{(itens.BaseTextDescription | tagToString:true) | minimize: 22}}
-                                            </a>
-                                        </th>
-                                        @* Habilidade *@
-                                        <th class="table-parameter-centralize">
-                                            <div ng-click="e2_CheckedItem(itens)">
-                                                <span ng-repeat="s in itens.Skills" data-trigger="hover" data-type="success" data-title="{{s.Description}}"
-                                                      data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
-                                                    {{ s.Code }}
-                                                </span>
-                                            </div>
-                                        </th>
-                                        @* Dificuldade *@
-                                        <th class="table-parameter-centralize">
-                                            <div data-ng-click="e2_CheckedItem(itens)">
-                                                <div ng-show="itens.ItemLevel.Value" data-trigger="hover" data-type="success"
-                                                     data-title="{{itens.ItemLevel.Value}}"
-                                                     data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
-                                                    <span type="button" class="btn btn-sm btn-primary btn-tiny" disabled>
-                                                        {{itens.ItemLevel.Value}}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </th>
-                                        @* Periodo *@
-                                        <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.Periodo}}</div></th>
-                                        @* Botões *@
-                                        <th class="table-parameter-centralize">
-                                            <div>
-                                                <a ng-click="e2_itemVisualizar(itens);"><i type="button" class="material-icons">visibility</i></a>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <!--Paginação-->
-                            <div style="padding: 0 30px;">
-                                <page method="e2_resultadoFiltrosCarregar()" total-pages="{{e2_Pagina}}" total-itens="{{e2_TotalPaginas}}" page-size="e2_PageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
-                                <p class="nresultados" ng-hide="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0">Nenhum resultado encontrado.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                @*MODAL DETALHES DO ITEM*@
-                <div class="modal-body" ng-show="e2_Navegacao===5">
-
-                    <!--Texto Base -->
-                    <div class="panel panel-default noselect" ng-hide="!abstract.textbase || !e2_itemTextoBaseCarregado || !e2_itemDadosCarregado">
-
-                        <!-- Titulo -->
-                        <div class="panel-heading">Texto base:</div>
-
-                        <!--Texto -->
-                        <div class="well well-sm centralizarMargin10">
-                            <div class="imgResponsive allMaxWidth100" alt="Responsive image" ng-bind-html="getTrustedHTML(abstract.textbase)"></div>
-                        </div>
 
                     </div>
 
-                    <h1 ng-hide="!abstract.textbase"></h1>
-
-                    <!--Item -->
-                    <div class="panel panel-default noselect" ng-show="e2_itemTextoBaseCarregado && e2_itemDadosCarregado">
-
-                        <!--Titulo-->
-                        <div class="panel-heading">
-                            <b>Código:</b> {{abstract.item.ItemCode}}  -
-                            <b>Versão:</b> {{abstract.item.ItemVersion}}
-                        </div>
-
-                        <!--Dados do item-->
-                        <div class="well well-sm">
-                            <!-- proficiencia -->
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <b>Proficiência do item:</b>
-                                    <span>{{abstract.item.proficiency}}</span>
-                                </div>
-                            </div>
-                            <!-- Skills -->
-                            <div class="row" ng-repeat="skill in abstract.item.ItemSkills">
-                                <div class="col-md-12">
-                                    <b>{{skill.Skill.ModelSkillLevel.Description}}:</b>
-                                    <span>{{skill.Skill.Description}}</span>
-                                </div>
-                            </div>
-                            <br />
-                            <!-- Questoes -->
-                            <div class="row">
-                                <div class="col-md-12">
+                    <div class="row" ng-show="!showTestTAI">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cards">
+                                    <h4 class="padding"><strong>{{ e1_testDescription}} </strong></h4>
                                     <table class="table table-hover">
                                         <colgroup>
-                                            <col width="100%">
+                                            <col width="15%" />
+                                            <col width="15%" />
+                                            <col width="15%" />
+
+                                            <col width="24%" />
+
+                                            <col width="8%" />
+                                            <col width="8%" />
+                                            <col width="15%" />
                                         </colgroup>
                                         <thead>
                                             <tr>
-                                                <th class="imgResponsive allMaxWidth100" alt="Responsive image" ng-bind-html="abstract.item.Statement"></th>
+                                                <th class="table-parameter-centralize">Caderno</th>
+                                                <th class="table-parameter-centralize">Itens selecionados</th>
+                                                <th class="table-parameter-centralize">Não selecionados</th>
+                                                <th class="table-parameter-centralize"> @* Imagem *@ </th>
+                                                <th class="table-parameter-centralize">Editar</th>
+                                                <th>Adicionar</th>
+                                                <th class="table-parameter-centralize">Ordenar área de conhecimento</th>
+                                                <th class="table-parameter-centralize">Limpar itens selecionados</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="alt in abstract.item.Alternatives">
-                                                <span class="label label-success" ng-show="alt.Correct"><i class="material-icons">check</i></span>
-                                                <td>
-                                                    <div class="row">
-                                                        <div class="col-md-2">
-                                                            {{ alt.Numeration}}
-                                                            <i ng-show="alt.Correct" class="material-icons">check</i>
-                                                        </div>
-                                                        <div class="col-md-10 imgResponsive allMaxWidth100" alt="Responsive image" ng-bind-html="alt.Description"></div>
+                                            <tr ng-repeat="bloco in cadernos">
+                                                <th class="table-parameter-centralize">{{ bloco.Description}}</th>
+                                                <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
+                                                <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0}}</th>
+                                                <th class="table-parameter-centralize ">
+                                                    <i ng-class="{ true:'material-icons check-success pull-left', false:'some-icon' }
+                                                [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
+                                                </th>
+
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModal(2, bloco)"><i type="button" class="material-icons">format_list_bulleted</i></a>
+                                                </th>
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModal(1,bloco)"><i type="button" class="material-icons">add_box</i></a>
+                                                </th>
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModal(7, bloco)"><i type="button" class="material-icons">swap_vert</i></a>
+                                                </th>
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModalRemoverItensSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
+                                                </th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div ng-show="!temBIB" class="panel-body">
+                                        <span><strong>Total de itens: {{e2_ItensAtuais}} de {{ itensTotais }}</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Etapa 4 *@ @* Gera Prova *@
+                    <div class="form-group" ng-show="navigation===3 && mostrarTela">
+                        <div class="row">
+                            <div class="col-md-12 ">
+                                <div class="cards">
+                                    <h4 class="padding"><strong>{{ e1_testDescription}}</strong></h4>
+                                    <table class="table table-hover">
+                                        <colgroup>
+                                            <col width="5%" ng-hide="true">
+                                            <col width="5%">
+                                            <col width="30%">
+                                            <col width="15%">
+                                            <col width="10%">
+                                            <col width="5%">
+                                            <col width="10%">
+                                            <col width="5%">
+                                            <col width="10%">
+                                            <col width="5%">
+
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th class="table-parameter-centralize" ng-hide="true">Gerar</th>
+                                                <th class="">Código</th>
+                                                <th class="">Prova</th>
+                                                <th class="table-parameter-centralize">Permitir download do Gabarito</th>
+                                                <th class="table-parameter-centralize">Gerar Folha de Resposta</th>
+                                                <th class="table-parameter-centralize">Exportar doc</th>
+                                                <th class="table-parameter-centralize">Gerar Prova</th>
+                                                <th class="table-parameter-centralize">Salvar</th>
+                                                <th class="table-parameter-centralize">Última Geração</th>
+                                                <th class="table-parameter-centralize">Baixar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="p in Provas" ng-click="selecionaItem($index)">
+                                                @* CHECK *@
+                                                <th class="table-parameter-centralize" ng-hide="true">
+                                                    <div class="checkbox checkbox-primary check-parameter">
+                                                        <input id="{{p.label}}" type="checkbox" ng-model="p.gerar">
+                                                        <label for="{{p.label}}" class="gerar-prova label-top"></label>
                                                     </div>
-                                                </td>
+                                                </th>
+                                                @* CÓDIGO *@
+                                                <th class="table-parameter-centralize">
+                                                    <div>{{p.Description}}</div>
+                                                </th>
+                                                @* DESCRIÇÃO *@
+                                                <th class="">
+                                                    <div>
+                                                        <span ng-repeat="itens in p.Blocks" class="gerar-prova span-padding">{{itens.Description}}</span>
+                                                    </div>
+                                                </th>
+                                                @* DOWNLOAD DO GABARITO*@
+                                                <th class="table-parameter-centralize">
+                                                    <div class="campoLabel" style="position:relative;">
+                                                        <div class="switch" ng-model="publicFeedback" ng-click="selectedFeedback(p.Registered);" ng-class="{'off': !publicFeedback }"><input type="button" /></div>
+                                                    </div>
+                                                </th>
+                                                @* GERAR FOLHA DE RESPOSTA *@
+                                                <th class="table-parameter-centralize">
+                                                    <div class="campoLabel" ng-show="e1_folhaRespLock" style="position:relative;"
+                                                         data-title="A folha de resposta não pode ser gerada pois o tipo de prova escolhido não tem um tipo de item definido." bs-tooltip>
+                                                        <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
+                                                             ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button" /></div>
+                                                    </div>
+                                                    <div class="campoLabel" ng-show="!e1_folhaRespLock" style="position:relative;">
+                                                        <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
+                                                             ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button" /></div>
+                                                    </div>
+                                                </th>
+                                                <th class="table-parameter-centralize">
+                                                    <div>
+                                                        <a class="btn" ng-click="provaExportDocIndex($index)">
+                                                            <i type="button" class="material-icons">description</i>
+                                                        </a>
+                                                    </div>
+                                                </th>
+                                                @* VISUALIZAR *@
+                                                <th class="table-parameter-centralize">
+                                                    <div>
+                                                        <a class="btn" ng-click="visualizarProva($index)" ng-disabled="p.Registered">
+                                                            <i type="button" class="material-icons">remove_red_eye</i>
+                                                        </a>
+                                                    </div>
+                                                </th>
+
+                                                @* SALVAR *@
+                                                <th class="table-parameter-centralize">
+                                                    <button type="button"
+                                                            ng-disabled="BtnSaveDisabled"
+                                                            class="btn btn-primary"
+                                                            ng-hide="navigation===2"
+                                                            ng-click="salvar()" style="background-color:#5a94d6">
+                                                        Salvar
+                                                    </button>
+                                                </th>
+                                                @* DATA DE GERAÇÃO *@
+                                                <th class="table-parameter-centralize">
+                                                    <div>{{p.currentDate}}</div>
+                                                </th>
+                                                @* BAIXAR *@
+                                                <th class="table-parameter-centralize">
+                                                    <div>
+                                                        <a class="btn" ng-click="baixarProva($index)" ng-disabled="p.Download">
+                                                            <i type="button" class="material-icons">file_download</i>
+                                                        </a>
+                                                    </div>
+                                                </th>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
+                        <div class="row" ng-hide="true">
+                            <div class="col-md-12 gerar-prova margin-left">
+                                <a class="hand-logo gerar-prova none-decoration" ng-click="gerarSelecionadas()">GERAR SELECIONADAS</a>&nbsp &nbsp &nbsp
+                                <a class="hand-logo gerar-prova none-decoration" ng-click="baixarSelecioandas()"><i type="button" class="material-icons">file_download</i>BAIXAR SELECIOANDAS</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                @* Footer *@
+                <div class="footerCustom semPadding">
+                    @* Botões *@
+                    <div ng-show="mostrarTela">
+                        <div class="botoes semMargin">
+                            @* Voltar *@
+                            <button type="button"
+                                    class="btnCancelar pull-left semMargin"
+                                    ng-hide="navigation===1"
+                                    ng-click="voltar()">
+                                Voltar
+                            </button>
+                            @* Avançar *@
+                            <button type="button"
+                                    class="btnPadrao2 pull-right"
+                                    ng-hide="navigation===3 || (showTestTAI && navigation===2)"
+                                    ng-disabled="provaId===0"
+                                    ng-click="avancar()">
+                                Avançar
+                            </button>
+                            @* Finalizar *@
+                            <button type="button"
+                                    class="btnPadrao2 pull-right"
+                                    ng-hide="(navigation!==ultimo && !showTestTAI) || (showTestTAI && navigation!==2)"
+                                    ng-click="finalizar()">
+                                Finalizar
+                            </button>
+                            @* Cancelar *@
+                            <button type="button"
+                                    class="btnCancelar pull-right"
+                                    ng-click="cancelar()">
+                                Cancelar
+                            </button>
+                            @* Salvar *@
+                            <button type="button"
+                                    class="btnPadrao2 pull-right"
+                                    ng-hide="navigation===2 || navigation===3"
+                                    ng-click="salvar()">
+                                Salvar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Modal que exibetodo o texto do select *@
+        <modal id="modalDescription" modal-title="{{textSelected.Description}}">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="modal-body">
+                        <span>{{textSelected.TextDescription}}</span>
+                    </div>
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </modal>
+        @* Modal *@
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+            <div class="modal-dialog modal-lg" style="width:90%;">
+                <div class="modal-content modalBig">
+                    <div class="modal-header">
+                        @*<a type="button" class="pull-right centralizarY" ng-click="e2_Limpar()" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>*@
+                        <h4 class="modal-title padding-6" id="modal1Label">
+                            <strong ng-show="e2_Navegacao===1">Lista de itens disponíveis</strong>
+                            <strong ng-show="e2_Navegacao===2">Lista de itens selecionados</strong>
+                            <strong ng-show="e2_Navegacao===5">Resumo do Item</strong>
+                            <strong ng-show="e2_Navegacao===6">Versões do item</strong>
+                            <strong ng-show="e2_Navegacao===7">Lista de áreas de conhecimento</strong>
+                        </h4>
+                    </div>
+                    @* MODAL ADIÇÃO DE ITENS *@
+                    <div class="modal-body" ng-show="e2_Navegacao==1 && escondeModal">
+                        @* Código do Item *@
+                        <div class="campoLabel hr">
+                            <label><strong>Código do item:</strong></label>
+                            <div>
+                                <input type="text"
+                                       class="form-control numbers"
+                                       style="width: 180px; float: left;"
+                                       size="5"
+                                       maxlength="20"
+                                       placeholder="Digite aqui o código do item"
+                                       ng-model="e2_codigoItem" />
+                                <button class="btn-pesquisar" ng-click="e2_pesquisarFiltros()" title="Pesquisar"><i class="material-icons">search</i></button>
+                            </div>
+                        </div>
+                        <div class="campoCodigo hr">
+
+                            @* Filtros *@
+                            <div class="campoLabel" ng-if="!isMultidiscipline">
+                                <label><strong>{{labels.componente}}: </strong></label>
+                                <label>{{e1_cbComponenteCurricular.Description}} </label>
+                            </div>
+
+                            @* Componente Curricuar *@
+                            <div class="campoLabel" ng-show="isMultidiscipline">
+                                <label><strong> {{labels.componente}} </strong></label>
+                                <div>
+                                    <select id="testType" class="form-control"
+                                            ng-change="filtrosCarregar();"
+                                            ng-model="e1_cbComponenteCurricular"
+                                            ng-options="componenteCurricular as componenteCurricular.Description for componenteCurricular in e1_listaComponenteCurricular"
+                                            ng-title="e1_listaComponenteCurricular"
+                                            ng-title-propertie="Description"
+                                            ng-title-selected
+                                            ng-title-index="1">
+                                        <option value="">--Selecione--</option>
+                                    </select>
+                                </div>
+                            </div>
 
 
-                @*MODAL LISTA DE ITENS*@
-                @* Julio Silva - 23/10/2015 *@
-                <div class="modal-body" ng-show="e2_Navegacao===2">
-                    <label ng-if="applicationActiveOrDone" style="color:brown"><strong>*Prova já aplicada ou em período de aplicação. Não é possível alterar a ordem e a versão dos itens.</strong></label>
-                    @* Lista de itens *@
-                    <div class="row" ng-if="e2_ListaItemSelecionados.length>0" style="overflow-x:auto;">
-                        @* Tabela das busca *@
-                        <table class="table ordem">
-                            <colgroup>
-                                <col width="4%" />
-                                <col width="4%" />
-                                <col width="4%" />
-                                <col width="4%" />
-                                <col width="4%" />
-                                <col width="21%" />
-                                <col width="21%" />
-                                <col width="8%" />
-                                <col width="5%" />
-                                <col width="5%" />
-                                <col width="5%" />
-                                <col width="5%" />
-                                <col width="5%" />
-                                <col width="5%" />
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th class="table-parameter-centralize"> Ordem</th>
-                                    <th class="table-parameter-centralize" ng-if="!applicationActiveOrDone"> Acima</th>
-                                    <th class="table-parameter-centralize" ng-if="!applicationActiveOrDone"> Abaixo</th>
-                                    <th class="table-parameter-centralize"> Cód.</th>
-                                    <th class="table-parameter-centralize"> Versão</th>
-                                    <th class="table-parameter-centralize"> Enunciado</th>
-                                    <th class="table-parameter-centralize"> Texto Base</th>
-                                    <th class="table-parameter-centralize"> Habilidade</th>
-                                    <th class="table-parameter-centralize"> Dificuldade </th>
-                                    <th class="table-parameter-centralize"> Disciplina</th>
-                                    <th class="table-parameter-centralize"> Área de conhecimento</th>
-                                    <th class="table-parameter-centralize"> {{curriculumGradeLabel}}</th>
-                                    <th class="table-parameter-centralize"> Ação</th>
-                                    <th class="table-parameter-centralize" ng-if="!applicationActiveOrDone"> Versões</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr data-ng-repeat-start="($indexItem, itens) in e2_ListaItemSelecionados track by $indexItem"
-                                    ng-class="{'samebasetext': ((itens.BaseTextId!=undefined && groupLimit==itens.BaseTextId) || oneLimit.Id==itens.Id), 'animaHover': itens.Animation}">
+                            <div class="campoLabel" ng-repeat="(cbIndex, cb)  in e2_ListaComboBox">
+                                @* Lista de ComboBox's *@
+                                <label><strong>{{cb.Description}}</strong></label>
+                                <div>
+                                    <select id="testType" class="form-control"
+                                            ng-change="filtrosMudou(cb);"
+                                            ng-model="e2_ListaComboBox[$index].model"
+                                            ng-options="combos as combos.Description for combos in e2_ListaComboBox[$index].lista"
+                                            ng-disabled="!e2_ListaComboBox[$index].lista||(e2_ListaComboBox[$index].lista&&!e2_ListaComboBox[$index].lista.length)"
+                                            ng-title="e2_ListaComboBox[$index].lista"
+                                            ng-title-propertie="Description"
+                                            ng-title-index="1"
+                                            ng-title-selected>
+                                        <option value="">--Selecione--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="campoCodigo">
+                                @* Proficiência *@
+                                <div class="campoLabel">
+                                    <label><b>Proficiência</b></label>
+                                    <label style="max-width: 40px;"><b>De:</b></label>
+                                    <input style="max-width: 70px;" class="form-control numbers"
+                                           type="text"
+                                           placeholder="100"
+                                           ng-model="e2_Proficiencia.Inicio"
+                                           ng-change="validarTotalItens(e2_Proficiencia,'Inicio');"
+                                           maxlength="3"
+                                           size="3" />
+                                    <label style="max-width: 40px;"><b>até:</b></label>
+                                    <input style="max-width: 70px;" class="form-control numbers"
+                                           type="text"
+                                           placeholder="500"
+                                           ng-model="e2_Proficiencia.Final"
+                                           ng-change="validarTotalItens(e2_Proficiencia,'Final');"
+                                           maxlength="3"
+                                           size="3" />
+                                </div>
+                            </div>
+                            <div class="campoLabel">
+                                @* Modalidade *@
+                                <label class="" for="modality"><b>Modalidade</b></label>
+                                <div>
+                                    <select id="modality" class="form-control"
+                                            ng-change="carregaPeriodos();"
+                                            ng-model="e2_Modalidade"
+                                            ng-options="modality as modality.Description for modality in e2_ListaModalidade"
+                                            ng-title="e2_ListaModalidade"
+                                            ng-title-propertie="Description"
+                                            ng-title-index="1"
+                                            ng-title-selected>
+                                        <option value="">--Selecione--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div ng-show="e2_Modalidade.Id > 0 && e2_ListaPeriodo.length > 0">
+                                <div class="campoLabel">
+                                    @* Períodos *@
+                                    <label><b>Periodos</b> {{labels.periodos}}</label>
+                                    <div class="checkbox-colunas">
+                                        <div class="checkbox checkbox-primary lista-item" ng-repeat="periodo in e2_ListaPeriodo">
+                                            <input id="p{{periodo.Description}}" class="col-xs-1" type="checkbox" ng-model="e2_ListaPeriodoChecked[$index]" value="" />
+                                            <label for="p{{periodo.Description}}" class="col-xs-8 lista-item margin-left">{{ periodo.Description }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="campoLabel">
+                                @* Tipo do item *@
+                                <label><b>Tipo do item</b></label>
+                                @*<label ng-if="TestTypeItemType != null" style="max-width: 100%;">{{ItemType.Description}}</label>*@
+                                <div>
+                                    <select id="modality" class="form-control"
+                                            ng-model="ItemType"
+                                            ng-options="itemType as itemType.Description for itemType in ItemTypeList"
+                                            ng-title="ItemTypeList"
+                                            ng-title-propertie="Description"
+                                            ng-title-index="1"
+                                            ng-title-selected>
+                                        <option value="">--Selecione--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="campoLabel">
+                                @* KeyWord *@
+                                <!-- pesquisar por palavras-chave -->
+                                <label><b>{{labels.keywords}}</b></label>
+                                <tags-input ng-model="keyWords"></tags-input>
+                            </div>
+                            <div class="campoLabel">
+                                @* Dificuldade *@
+                                <label>Dificuldade</label>
+                                <div class="checkbox-colunas">
+                                    <div class="checkbox checkbox-primary lista-item" ng-repeat="dificuldade in e2_ListaDificuldade">
+                                        <input id="d{{dificuldade.Description}}" type="checkbox" ng-model="e2_ListaDificuldadeChecked[$index]" />
+                                        <label for="d{{dificuldade.Description}}" lista-item margin-left" ">{{ dificuldade.Description }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="campoCodigo" style="text-align: right;">
+                                @* BOTÃO PESQUISAR *@
+                                <button type="button" class="btnCancelar2" style="margin: 0 20px 20px;" ng-click="e2_pesquisarFiltros()"><i class="material-icons">search</i> Pesquisar</button>
+                            </div>
+                        </div>
+                        <!-- <h6 class="row centralizar"><strong>ATENÇÃO: Sugerimos que salve antes de mudar de página.</strong> </h6> -->
+                        <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && !temBIB"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{ itensTotais }} </strong></h5>
+                        <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && temBIB"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{e1_itensBlocos}} </strong></h5>
+                        @* Resultado das busca *@
+                        <div class="campoCodigo hr">
+                            <div class="campoLabel">
+                                @* Tabela das busca *@
+                                <table class="table table-hover" ng-hide="!e2_ResultadoBusca || !e2_ResultadoBusca.length">
+                                    <colgroup>
+                                        <col width="5%" />
+                                        <col width="5%" />
+                                        <col width="5%" />
+                                        <col width="25%" />
+                                        <col width="25%" />
+                                        <col width="10%" />
+                                        <col width="10%" />
+                                        <col width="10%" />
+                                        <col width="5%" />
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th class="table-parameter-centralize"> Selecionar  </th>
+                                            <th class="table-parameter-centralize"> Cód.      </th>
+                                            <th class="table-parameter-centralize"> Versão      </th>
+                                            <th class="table-parameter-centralize"> Enunciado   </th>
+                                            <th class="table-parameter-centralize"> Texto Base  </th>
+                                            <th class="table-parameter-centralize"> Habilidade  </th>
+                                            <th class="table-parameter-centralize"> Dificuldade </th>
+                                            <th class="table-parameter-centralize"> {{(curriculumGradeLabel | capitalize)}} </th>
+                                            <th class="table-parameter-centralize"> Visualizar  </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="($indexResultadoBusca, itens) in e2_ResultadoBusca track by $indexResultadoBusca" ng-class="{'revoked': itens.Revoked}">
+                                            @* CKECK *@
+                                            <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
+                                                <div class="checkbox checkbox-primary check-parameter">
+                                                    <div class="blockCheckClick" style="margin: 0 -9px;"></div>
+                                                    <input id="i_ch_{{itens.Code}}" type="checkbox" ng-model="itens.check">
+                                                    <label for="i_ch_{{itens.Code}}" class="gerar-prova label-top">
+                                                        <div style="margin-top: -3px; position:absolute;" ng-if="itens.Revoked">
+                                                            <i class="material-icons" ng-if="!item.ItemLastVersion" data-trigger="hover" data-type="success" data-title="Item anulado" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>error</i>
+                                                        </div>
+                                                    </label>
 
-                                    @* Ordem do Item *@
-                                    <td class="table-parameter-centralize">{{$indexItem+1}}</td>
-                                    @* Acima *@
-                                    <td class="table-parameter-centralize"
-                                        ng-if="!applicationActiveOrDone"
-                                        ng-mouseover="e2_ListaItemSelecionadosHover(itens, 'up');"
-                                        ng-mouseleave="e2_ListaItemSelecionadosLeave();">
-                                        <div>
-                                            <a href="javascript:void(0);" ng-click="e2_ListaItemSelecionadosOrder('up', $indexItem==0);"
-                                               ng-class="{'orderBaseTextToggle':$indexItem!=0, 'cinzaorderitem': $indexItem==0}">
-                                                <i class="material-icons">keyboard_arrow_up</i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                    @* Abaixo *@
-                                    <td class="table-parameter-centralize"
-                                        ng-if="!applicationActiveOrDone"
-                                        ng-mouseover="e2_ListaItemSelecionadosHover(itens, 'down');"
-                                        ng-mouseleave="e2_ListaItemSelecionadosLeave();">
-                                        <div>
-                                            <a href="javascript:void(0);" ng-click="e2_ListaItemSelecionadosOrder('down', $indexItem==(e2_ListaItemSelecionados.length-1));"
-                                               ng-class="{'orderBaseTextToggle':$indexItem<(e2_ListaItemSelecionados.length-1), 'cinzaorderitem':$indexItem==(e2_ListaItemSelecionados.length-1)}">
-                                                <i class="material-icons">keyboard_arrow_down</i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                    @* Código do Item *@
-                                    <td class="table-parameter-centralize">{{itens.Code}}</td>
-                                    @* Versão *@
-                                    <td class="table-parameter-centralize">{{itens.ItemVersion}}</td>
-                                    @* Enunciado *@
-                                    <td class="table-parameter-centralize">
-                                        <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.Statement}}"
-                                           data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
-                                            {{(itens.Statement | tagToString) | minimize: 22}}
-                                        </a>
-                                    </td>
-                                    @* Texto Base *@
-                                    <td class="table-parameter-centralize">
-                                        <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.BaseTextDescription}}"
-                                           data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
-                                            {{(itens.BaseTextDescription | tagToString:true) | minimize: 22}}
-                                        </a>
-                                    </td>
-                                    @* Habilidade *@
-                                    <td class="table-parameter-centralize">
-                                        <div>
-                                            <span ng-repeat="s in itens.Skills" data-trigger="hover" data-type="success" data-title="{{s.Description}}"
-                                                  data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
-                                                {{ s.Code }}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    @* Dificuldade *@
-                                    <td class="table-parameter-centralize ">
-                                        <div ng-show="itens.ItemLevel.Value" data-trigger="hover" data-type="success" data-title="{{itens.ItemLevel.Description}}"
-                                             data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
-                                            <button type="button" class="btn btn-sm btn-primary btn-tiny" disabled>
-                                                {{itens.ItemLevel.Value}}
-                                            </button>
-                                        </div>
-                                    </td>
-                                    @* Disciplina *@
-                                    <td class="table-parameter-centralize">{{itens.DisciplineDescription}}</td>
-                                    @* Área de conhecimento *@
-                                    <td class="table-parameter-centralize">{{itens.KnowledgeArea_Description}}</td>
-                                    @* Periodo *@
-                                    <td class="table-parameter-centralize">{{itens.Periodo}}</td>
-                                    @* Ação *@
-                                    <td>
-                                        <button class="btnMais"
-                                                data-ng-click="changeTest(item)"
-                                                data-placement="left"
-                                                data-trigger="focus"
-                                                data-custom-class="itemListPopover"
-                                                data-template="Assets/js/angular/controllers/test/itemListMenu.html"
-                                                data-animation="popover-fade"
-                                                data-container=".modalBig"
-                                                data-bs-popover="popovermenu">
-                                            <i class="material-icons">view_list</i>
-                                        </button>
-                                    </td>
-                                    <td ng-if="!applicationActiveOrDone" ng-click="collapse($index)" class="text-center">
-                                        <a class="material-icons" ng-show="!itens.expanded" ng-click="carregarVersoes(itens); itens.expanded = true;">expand_more</a>
-                                        <a class="material-icons" ng-show="itens.expanded" ng-click="itens.expanded = false;">expand_less</a>
-                                    </td>
-                                </tr>
-                                <tr ng-if="itens.expanded && !applicationActiveOrDone">
-                                    <td colspan="14">
-                                        <div ng-show="e2_ListaItemVersoes.length == 0">
-                                            <span>Nenhum resultado encontrado.</span>
-                                        </div>
-                                        <table class="table ordem" ng-if="e2_ListaItemVersoes.length > 0">
+                                                </div>
+
+                                            </th>
+                                            @*Código do Item*@
+                                            <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.Code}}</div></th>
+                                            @* Versão *@
+                                            <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.ItemVersion}}</div></th>
+                                            @* Enunciado *@
+                                            <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
+                                                <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.Statement}}"
+                                                   data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                                    {{(itens.Statement | tagToString) | minimize: 22}}
+                                                </a>
+                                            </th>
+                                            @* Texto Base *@
+                                            <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)">
+                                                <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.BaseTextDescription}}"
+                                                   data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                                    {{(itens.BaseTextDescription | tagToString:true) | minimize: 22}}
+                                                </a>
+                                            </th>
+                                            @* Habilidade *@
+                                            <th class="table-parameter-centralize">
+                                                <div ng-click="e2_CheckedItem(itens)">
+                                                    <span ng-repeat="s in itens.Skills" data-trigger="hover" data-type="success" data-title="{{s.Description}}"
+                                                          data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
+                                                        {{ s.Code }}
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            @* Dificuldade *@
+                                            <th class="table-parameter-centralize">
+                                                <div data-ng-click="e2_CheckedItem(itens)">
+                                                    <div ng-show="itens.ItemLevel.Value" data-trigger="hover" data-type="success"
+                                                         data-title="{{itens.ItemLevel.Value}}"
+                                                         data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
+                                                        <span type="button" class="btn btn-sm btn-primary btn-tiny" disabled>
+                                                            {{itens.ItemLevel.Value}}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </th>
+                                            @* Periodo *@
+                                            <th class="table-parameter-centralize" ng-click="e2_CheckedItem(itens)"><div>{{itens.Periodo}}</div></th>
+                                            @* Botões *@
+                                            <th class="table-parameter-centralize">
+                                                <div>
+                                                    <a ng-click="e2_itemVisualizar(itens);"><i type="button" class="material-icons">visibility</i></a>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!--Paginação-->
+                                <div style="padding: 0 30px;">
+                                    <page method="e2_resultadoFiltrosCarregar()" total-pages="{{e2_Pagina}}" total-itens="{{e2_TotalPaginas}}" page-size="e2_PageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                                    <p class="nresultados" ng-hide="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0">Nenhum resultado encontrado.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @*MODAL DETALHES DO ITEM*@
+                    <div class="modal-body" ng-show="e2_Navegacao===5">
+
+                        <!--Texto Base -->
+                        <div class="panel panel-default noselect" ng-hide="!abstract.textbase || !e2_itemTextoBaseCarregado || !e2_itemDadosCarregado">
+
+                            <!-- Titulo -->
+                            <div class="panel-heading">Texto base:</div>
+
+                            <!--Texto -->
+                            <div class="well well-sm centralizarMargin10">
+                                <div class="imgResponsive allMaxWidth100" alt="Responsive image" ng-bind-html="getTrustedHTML(abstract.textbase)"></div>
+                            </div>
+
+                        </div>
+
+                        <h1 ng-hide="!abstract.textbase"></h1>
+
+                        <!--Item -->
+                        <div class="panel panel-default noselect" ng-show="e2_itemTextoBaseCarregado && e2_itemDadosCarregado">
+
+                            <!--Titulo-->
+                            <div class="panel-heading">
+                                <b>Código:</b> {{abstract.item.ItemCode}}  -
+                                <b>Versão:</b> {{abstract.item.ItemVersion}}
+                            </div>
+
+                            <!--Dados do item-->
+                            <div class="well well-sm">
+                                <!-- proficiencia -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <b>Proficiência do item:</b>
+                                        <span>{{abstract.item.proficiency}}</span>
+                                    </div>
+                                </div>
+                                <!-- Skills -->
+                                <div class="row" ng-repeat="skill in abstract.item.ItemSkills">
+                                    <div class="col-md-12">
+                                        <b>{{skill.Skill.ModelSkillLevel.Description}}:</b>
+                                        <span>{{skill.Skill.Description}}</span>
+                                    </div>
+                                </div>
+                                <br />
+                                <!-- Questoes -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table table-hover">
                                             <colgroup>
-                                                <col width="10%" />
-                                                <col width="10%" />
-                                                <col width="35%" />
-                                                <col width="35%" />
-                                                <col width="10%" />
+                                                <col width="100%">
                                             </colgroup>
                                             <thead>
                                                 <tr>
-                                                    <th class="table-parameter-centralize"> Cód.</th>
-                                                    <th class="table-parameter-centralize"> Versão</th>
-                                                    <th> Enunciado</th>
-                                                    <th> Texto Base</th>
-                                                    <th class="table-parameter-centralize"> Ação</th>
+                                                    <th class="imgResponsive allMaxWidth100" alt="Responsive image" ng-bind-html="abstract.item.Statement"></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr ng-repeat="($indexVersoes, versoes) in e2_ListaItemVersoes track by $indexVersoes">
-                                                    @* Código do Item *@
-                                                    <td class="table-parameter-centralize">{{versoes.ItemCode}}</td>
-                                                    @* Versão *@
-                                                    <td class="table-parameter-centralize">{{versoes.ItemVersion}}</td>
-                                                    @* Enunciado *@
+                                                <tr ng-repeat="alt in abstract.item.Alternatives">
+                                                    <span class="label label-success" ng-show="alt.Correct"><i class="material-icons">check</i></span>
                                                     <td>
-                                                        <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{versoes.Statement}}"
-                                                           data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
-                                                            {{(versoes.Statement | tagToString) | minimize: 22}}
-                                                        </a>
-                                                    </td>
-                                                    @* Texto Base *@
-                                                    <td>
-                                                        <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{versoes.BaseText.Description}}"
-                                                           data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
-                                                            {{(versoes.BaseText.Description | tagToString:true) | minimize: 22}}
-                                                        </a>
-                                                    </td>
-                                                    @* Ação *@
-                                                    <td class="table-parameter-centralize">
-                                                        <button class="btnMais"
-                                                                data-placement="left"
-                                                                data-trigger="focus"
-                                                                data-custom-class="itemListPopover"
-                                                                data-template="Assets/js/angular/controllers/test/itemVersionListMenu.html"
-                                                                data-animation="popover-fade"
-                                                                data-container=".modalBig"
-                                                                data-bs-popover="popovermenu">
-                                                            <i class="material-icons">view_list</i>
-                                                        </button>
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                {{ alt.Numeration}}
+                                                                <i ng-show="alt.Correct" class="material-icons">check</i>
+                                                            </div>
+                                                            <div class="col-md-10 imgResponsive allMaxWidth100" alt="Responsive image" ng-bind-html="alt.Description"></div>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </td>
-                                </tr>
-                                <tr data-ng-repeat-end="" class="collapse"></tr>
-                            </tbody>
-                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div ng-show="e2_ListaItemSelecionados.length===0">
-                        <span>Nenhum item foi selecionado.</span>
-                    </div>
-                </div>
 
-                @*MODAL LISTA DE ÁREAS DE CONHECIMENTO*@
-                <div class="modal-body" ng-show="e2_Navegacao===7">
-                    @* Lista de itens *@
-                    <div class="row" ng-if="e2_ListaKnowledgeAreaSelecionadas.length>0" style="overflow-x:auto;">
-                        @* Tabela das busca *@
-                        <table class="table ordem">
-                            <colgroup>
-                                <col width="6%" />
-                                <col width="5%" />
-                                <col width="6%" />
-                                <col width="83%" />
-                            </colgroup>
-                            <thead>
-                                <tr>
-                                    <th class="table-parameter-centralize"> Ordem</th>
-                                    <th class="table-parameter-centralize"> Acima</th>
-                                    <th class="table-parameter-centralize"> Abaixo</th>
-                                    <th> Descrição</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr data-ng-repeat-start="($indexKnowledgeArea, knowledgeAreas) in e2_ListaKnowledgeAreaSelecionadas track by $indexKnowledgeArea">
 
-                                    @* Ordem do Item *@
-                                    <td class="table-parameter-centralize">{{$indexKnowledgeArea+1}}</td>
-                                    @* Acima *@
-                                    <td class="table-parameter-centralize"
-                                        ng-mouseover="e2_ListaKnowledgeAreaSelecionadasHover(knowledgeAreas, 'up');"
-                                        ng-mouseleave="e2_ListaKnowledgeAreaSelecionadasLeave();">
-                                        <div>
-                                            <a href="javascript:void(0);" ng-click="e2_ListaItemSelecionadosOrder('up', $indexKnowledgeArea==0);"
-                                               ng-class="{'orderBaseTextToggle':$indexKnowledgeArea!=0, 'cinzaorderitem': $indexKnowledgeArea==0}">
-                                                <i class="material-icons">keyboard_arrow_up</i>
+                    @*MODAL LISTA DE ITENS*@
+                    @* Julio Silva - 23/10/2015 *@
+                    <div class="modal-body" ng-show="e2_Navegacao===2">
+                        <label ng-if="applicationActiveOrDone" style="color:brown"><strong>*Prova já aplicada ou em período de aplicação. Não é possível alterar a ordem e a versão dos itens.</strong></label>
+                        @* Lista de itens *@
+                        <div class="row" ng-if="e2_ListaItemSelecionados.length>0" style="overflow-x:auto;">
+                            @* Tabela das busca *@
+                            <table class="table ordem">
+                                <colgroup>
+                                    <col width="4%" />
+                                    <col width="4%" />
+                                    <col width="4%" />
+                                    <col width="4%" />
+                                    <col width="4%" />
+                                    <col width="21%" />
+                                    <col width="21%" />
+                                    <col width="8%" />
+                                    <col width="5%" />
+                                    <col width="5%" />
+                                    <col width="5%" />
+                                    <col width="5%" />
+                                    <col width="5%" />
+                                    <col width="5%" />
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="table-parameter-centralize"> Ordem</th>
+                                        <th class="table-parameter-centralize" ng-if="!applicationActiveOrDone"> Acima</th>
+                                        <th class="table-parameter-centralize" ng-if="!applicationActiveOrDone"> Abaixo</th>
+                                        <th class="table-parameter-centralize"> Cód.</th>
+                                        <th class="table-parameter-centralize"> Versão</th>
+                                        <th class="table-parameter-centralize"> Enunciado</th>
+                                        <th class="table-parameter-centralize"> Texto Base</th>
+                                        <th class="table-parameter-centralize"> Habilidade</th>
+                                        <th class="table-parameter-centralize"> Dificuldade </th>
+                                        <th class="table-parameter-centralize"> Disciplina</th>
+                                        <th class="table-parameter-centralize"> Área de conhecimento</th>
+                                        <th class="table-parameter-centralize"> {{curriculumGradeLabel}}</th>
+                                        <th class="table-parameter-centralize"> Ação</th>
+                                        <th class="table-parameter-centralize" ng-if="!applicationActiveOrDone"> Versões</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat-start="($indexItem, itens) in e2_ListaItemSelecionados track by $indexItem"
+                                        ng-class="{'samebasetext': ((itens.BaseTextId!=undefined && groupLimit==itens.BaseTextId) || oneLimit.Id==itens.Id), 'animaHover': itens.Animation}">
+
+                                        @* Ordem do Item *@
+                                        <td class="table-parameter-centralize">{{$indexItem+1}}</td>
+                                        @* Acima *@
+                                        <td class="table-parameter-centralize"
+                                            ng-if="!applicationActiveOrDone"
+                                            ng-mouseover="e2_ListaItemSelecionadosHover(itens, 'up');"
+                                            ng-mouseleave="e2_ListaItemSelecionadosLeave();">
+                                            <div>
+                                                <a href="javascript:void(0);" ng-click="e2_ListaItemSelecionadosOrder('up', $indexItem==0);"
+                                                   ng-class="{'orderBaseTextToggle':$indexItem!=0, 'cinzaorderitem': $indexItem==0}">
+                                                    <i class="material-icons">keyboard_arrow_up</i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        @* Abaixo *@
+                                        <td class="table-parameter-centralize"
+                                            ng-if="!applicationActiveOrDone"
+                                            ng-mouseover="e2_ListaItemSelecionadosHover(itens, 'down');"
+                                            ng-mouseleave="e2_ListaItemSelecionadosLeave();">
+                                            <div>
+                                                <a href="javascript:void(0);" ng-click="e2_ListaItemSelecionadosOrder('down', $indexItem==(e2_ListaItemSelecionados.length-1));"
+                                                   ng-class="{'orderBaseTextToggle':$indexItem<(e2_ListaItemSelecionados.length-1), 'cinzaorderitem':$indexItem==(e2_ListaItemSelecionados.length-1)}">
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        @* Código do Item *@
+                                        <td class="table-parameter-centralize">{{itens.Code}}</td>
+                                        @* Versão *@
+                                        <td class="table-parameter-centralize">{{itens.ItemVersion}}</td>
+                                        @* Enunciado *@
+                                        <td class="table-parameter-centralize">
+                                            <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.Statement}}"
+                                               data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                                {{(itens.Statement | tagToString) | minimize: 22}}
                                             </a>
-                                        </div>
-                                    </td>
-                                    @* Abaixo *@
-                                    <td class="table-parameter-centralize"
-                                        ng-mouseover="e2_ListaKnowledgeAreaSelecionadasHover(knowledgeAreas, 'down');"
-                                        ng-mouseleave="e2_ListaKnowledgeAreaSelecionadasLeave();">
-                                        <div>
-                                            <a href="javascript:void(0);" ng-click="e2_ListaItemSelecionadosOrder('down', $indexKnowledgeArea==(e2_ListaKnowledgeAreaSelecionadas.length-1));"
-                                               ng-class="{'orderBaseTextToggle':$indexKnowledgeArea<(e2_ListaKnowledgeAreaSelecionadas.length-1), 'cinzaorderitem':$indexKnowledgeArea==(e2_ListaKnowledgeAreaSelecionadas.length-1)}">
-                                                <i class="material-icons">keyboard_arrow_down</i>
+                                        </td>
+                                        @* Texto Base *@
+                                        <td class="table-parameter-centralize">
+                                            <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.BaseTextDescription}}"
+                                               data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                                {{(itens.BaseTextDescription | tagToString:true) | minimize: 22}}
                                             </a>
-                                        </div>
-                                    </td>
-                                    @* Descrição *@
-                                    <td>{{knowledgeAreas.Description}}</td>
-                                </tr>
-                                <tr data-ng-repeat-end="" class="collapse"></tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                        @* Habilidade *@
+                                        <td class="table-parameter-centralize">
+                                            <div>
+                                                <span ng-repeat="s in itens.Skills" data-trigger="hover" data-type="success" data-title="{{s.Description}}"
+                                                      data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
+                                                    {{ s.Code }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        @* Dificuldade *@
+                                        <td class="table-parameter-centralize ">
+                                            <div ng-show="itens.ItemLevel.Value" data-trigger="hover" data-type="success" data-title="{{itens.ItemLevel.Description}}"
+                                                 data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
+                                                <button type="button" class="btn btn-sm btn-primary btn-tiny" disabled>
+                                                    {{itens.ItemLevel.Value}}
+                                                </button>
+                                            </div>
+                                        </td>
+                                        @* Disciplina *@
+                                        <td class="table-parameter-centralize">{{itens.DisciplineDescription}}</td>
+                                        @* Área de conhecimento *@
+                                        <td class="table-parameter-centralize">{{itens.KnowledgeArea_Description}}</td>
+                                        @* Periodo *@
+                                        <td class="table-parameter-centralize">{{itens.Periodo}}</td>
+                                        @* Ação *@
+                                        <td>
+                                            <button class="btnMais"
+                                                    data-ng-click="changeTest(item)"
+                                                    data-placement="left"
+                                                    data-trigger="focus"
+                                                    data-custom-class="itemListPopover"
+                                                    data-template="Assets/js/angular/controllers/test/itemListMenu.html"
+                                                    data-animation="popover-fade"
+                                                    data-container=".modalBig"
+                                                    data-bs-popover="popovermenu">
+                                                <i class="material-icons">view_list</i>
+                                            </button>
+                                        </td>
+                                        <td ng-if="!applicationActiveOrDone" ng-click="collapse($index)" class="text-center">
+                                            <a class="material-icons" ng-show="!itens.expanded" ng-click="carregarVersoes(itens); itens.expanded = true;">expand_more</a>
+                                            <a class="material-icons" ng-show="itens.expanded" ng-click="itens.expanded = false;">expand_less</a>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="itens.expanded && !applicationActiveOrDone">
+                                        <td colspan="14">
+                                            <div ng-show="e2_ListaItemVersoes.length == 0">
+                                                <span>Nenhum resultado encontrado.</span>
+                                            </div>
+                                            <table class="table ordem" ng-if="e2_ListaItemVersoes.length > 0">
+                                                <colgroup>
+                                                    <col width="10%" />
+                                                    <col width="10%" />
+                                                    <col width="35%" />
+                                                    <col width="35%" />
+                                                    <col width="10%" />
+                                                </colgroup>
+                                                <thead>
+                                                    <tr>
+                                                        <th class="table-parameter-centralize"> Cód.</th>
+                                                        <th class="table-parameter-centralize"> Versão</th>
+                                                        <th> Enunciado</th>
+                                                        <th> Texto Base</th>
+                                                        <th class="table-parameter-centralize"> Ação</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="($indexVersoes, versoes) in e2_ListaItemVersoes track by $indexVersoes">
+                                                        @* Código do Item *@
+                                                        <td class="table-parameter-centralize">{{versoes.ItemCode}}</td>
+                                                        @* Versão *@
+                                                        <td class="table-parameter-centralize">{{versoes.ItemVersion}}</td>
+                                                        @* Enunciado *@
+                                                        <td>
+                                                            <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{versoes.Statement}}"
+                                                               data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                                                {{(versoes.Statement | tagToString) | minimize: 22}}
+                                                            </a>
+                                                        </td>
+                                                        @* Texto Base *@
+                                                        <td>
+                                                            <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{versoes.BaseText.Description}}"
+                                                               data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                                                {{(versoes.BaseText.Description | tagToString:true) | minimize: 22}}
+                                                            </a>
+                                                        </td>
+                                                        @* Ação *@
+                                                        <td class="table-parameter-centralize">
+                                                            <button class="btnMais"
+                                                                    data-placement="left"
+                                                                    data-trigger="focus"
+                                                                    data-custom-class="itemListPopover"
+                                                                    data-template="Assets/js/angular/controllers/test/itemVersionListMenu.html"
+                                                                    data-animation="popover-fade"
+                                                                    data-container=".modalBig"
+                                                                    data-bs-popover="popovermenu">
+                                                                <i class="material-icons">view_list</i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr data-ng-repeat-end="" class="collapse"></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div ng-show="e2_ListaItemSelecionados.length===0">
+                            <span>Nenhum item foi selecionado.</span>
+                        </div>
                     </div>
-                    <div ng-show="e2_ListaKnowledgeAreaSelecionadas.length===0">
-                        <span>Nenhum item foi selecionado.</span>
+
+                    @*MODAL LISTA DE ÁREAS DE CONHECIMENTO*@
+                    <div class="modal-body" ng-show="e2_Navegacao===7">
+                        @* Lista de itens *@
+                        <div class="row" ng-if="e2_ListaKnowledgeAreaSelecionadas.length>0" style="overflow-x:auto;">
+                            @* Tabela das busca *@
+                            <table class="table ordem">
+                                <colgroup>
+                                    <col width="6%" />
+                                    <col width="5%" />
+                                    <col width="6%" />
+                                    <col width="83%" />
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="table-parameter-centralize"> Ordem</th>
+                                        <th class="table-parameter-centralize"> Acima</th>
+                                        <th class="table-parameter-centralize"> Abaixo</th>
+                                        <th> Descrição</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat-start="($indexKnowledgeArea, knowledgeAreas) in e2_ListaKnowledgeAreaSelecionadas track by $indexKnowledgeArea">
+
+                                        @* Ordem do Item *@
+                                        <td class="table-parameter-centralize">{{$indexKnowledgeArea+1}}</td>
+                                        @* Acima *@
+                                        <td class="table-parameter-centralize"
+                                            ng-mouseover="e2_ListaKnowledgeAreaSelecionadasHover(knowledgeAreas, 'up');"
+                                            ng-mouseleave="e2_ListaKnowledgeAreaSelecionadasLeave();">
+                                            <div>
+                                                <a href="javascript:void(0);" ng-click="e2_ListaItemSelecionadosOrder('up', $indexKnowledgeArea==0);"
+                                                   ng-class="{'orderBaseTextToggle':$indexKnowledgeArea!=0, 'cinzaorderitem': $indexKnowledgeArea==0}">
+                                                    <i class="material-icons">keyboard_arrow_up</i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        @* Abaixo *@
+                                        <td class="table-parameter-centralize"
+                                            ng-mouseover="e2_ListaKnowledgeAreaSelecionadasHover(knowledgeAreas, 'down');"
+                                            ng-mouseleave="e2_ListaKnowledgeAreaSelecionadasLeave();">
+                                            <div>
+                                                <a href="javascript:void(0);" ng-click="e2_ListaItemSelecionadosOrder('down', $indexKnowledgeArea==(e2_ListaKnowledgeAreaSelecionadas.length-1));"
+                                                   ng-class="{'orderBaseTextToggle':$indexKnowledgeArea<(e2_ListaKnowledgeAreaSelecionadas.length-1), 'cinzaorderitem':$indexKnowledgeArea==(e2_ListaKnowledgeAreaSelecionadas.length-1)}">
+                                                    <i class="material-icons">keyboard_arrow_down</i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        @* Descrição *@
+                                        <td>{{knowledgeAreas.Description}}</td>
+                                    </tr>
+                                    <tr data-ng-repeat-end="" class="collapse"></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div ng-show="e2_ListaKnowledgeAreaSelecionadas.length===0">
+                            <span>Nenhum item foi selecionado.</span>
+                        </div>
                     </div>
-                </div>
 
-                @* Footer Modal *@
-                <div class="modal-footer footerCustom ">
-                    <button type="button" class="btnPadrao pull-right" ng-click="(e2_Navegacao===5)?e2_VoltarModal(modalAnterior):e2_VoltarModal()" ng-show="(e2_Navegacao===2 && !e2_ListaModal) || e2_Navegacao===5">Voltar</button>
-                    <button type="button" class="btnPadrao" ng-click="e2_Salvar(true)" data-dismiss="modal" ng-show="e2_Navegacao===1 || alterouEtapaAtual && e2_Navegacao!==5 && e2_Navegacao!==7">Salvar</button>
-                    <button type="button" class="btnPadrao" ng-click="e2_SalvarKnowLedgeAreaOrder()" data-dismiss="modal" ng-show="e2_Navegacao===7 && alterouEtapaAtual">Salvar</button>
-                    <button type="button" class="btnCancelar2" ng-click="e2_Limpar()" data-dismiss="modal" ng-hide="e2_Navegacao===5 || e2_Navegacao===7">Cancelar</button>
-                    <button type="button" class="btnCancelar2" ng-click="e2_LimparKnowLedgeArea()" data-dismiss="modal" ng-show="e2_Navegacao===7">Cancelar</button>
-                    @*<button type="button" class="btnPadrao" ng-click="e2_LimparItensSelecionados()" ng-show="e2_Navegacao===1">Limpar Itens Selecionados</button>*@
-                    <button type="button" class="btnPadrao" ng-click="e2_AvancarModal()" ng-show="e2_Navegacao===1">Itens Selecionados</button>
-                </div>
+                    @* Footer Modal *@
+                    <div class="modal-footer footerCustom ">
+                        <button type="button" class="btnPadrao pull-right" ng-click="(e2_Navegacao===5)?e2_VoltarModal(modalAnterior):e2_VoltarModal()" ng-show="(e2_Navegacao===2 && !e2_ListaModal) || e2_Navegacao===5">Voltar</button>
+                        <button type="button" class="btnPadrao" ng-click="e2_Salvar(true)" data-dismiss="modal" ng-show="e2_Navegacao===1 || alterouEtapaAtual && e2_Navegacao!==5 && e2_Navegacao!==7">Salvar</button>
+                        <button type="button" class="btnPadrao" ng-click="e2_SalvarKnowLedgeAreaOrder()" data-dismiss="modal" ng-show="e2_Navegacao===7 && alterouEtapaAtual">Salvar</button>
+                        <button type="button" class="btnCancelar2" ng-click="e2_Limpar()" data-dismiss="modal" ng-hide="e2_Navegacao===5 || e2_Navegacao===7">Cancelar</button>
+                        <button type="button" class="btnCancelar2" ng-click="e2_LimparKnowLedgeArea()" data-dismiss="modal" ng-show="e2_Navegacao===7">Cancelar</button>
+                        @*<button type="button" class="btnPadrao" ng-click="e2_LimparItensSelecionados()" ng-show="e2_Navegacao===1">Limpar Itens Selecionados</button>*@
+                        <button type="button" class="btnPadrao" ng-click="e2_AvancarModal()" ng-show="e2_Navegacao===1">Itens Selecionados</button>
+                    </div>
 
+                </div>
             </div>
         </div>
-    </div>
-    @* Modal de altreção de 'tipo de prova'/'Componente curricular' *@
-    <div class="modal fade" id="modalTipoProva" tabindex="-1" role="dialog" aria-labelledby="modalTipoProva" aria-hidden="true">
-        <div class="modal-dialog ">
-            <div class="modal-content ">
-
-                @* HEADER *@
-                <div class="modal-header">
-                    <a ng-click="e1_callModal()" class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
-                    <h4 class="modal-title" id="modalTipoProvaLabel">
-                        <strong>Alteração</strong>
-                    </h4>
-                </div>
-
-                @*  BODY *@
-                <div class="modal-body">
-                    <h5>Tem certeza que deseja realizar a alteração, os itens selecionados na segunda etapa poderão ficar inconsistentes.</h5>
-                </div>
-
-                @* FOOTER *@
-                <div class="modal-footer footerCustom ">
-                    <div class="container-fluid row-fluid">
-                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e1_callModal()" aria-hidden="true">Cancelar</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e1_callModal(1)">OK</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    @* Modal HTML *@
-    <div class="preview-test">
-        <div class="modal fade" id="modalProva" tabindex="-1" role="dialog" aria-labelledby="modalProva" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+        @* Modal de altreção de 'tipo de prova'/'Componente curricular' *@
+        <div class="modal fade" id="modalTipoProva" tabindex="-1" role="dialog" aria-labelledby="modalTipoProva" aria-hidden="true">
+            <div class="modal-dialog ">
                 <div class="modal-content ">
 
                     @* HEADER *@
                     <div class="modal-header">
-                        <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
-                        <h4 class="modal-title" id="modalProva">
-                            <strong>Prévia da prova</strong>
+                        <a ng-click="e1_callModal()" class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                        <h4 class="modal-title" id="modalTipoProvaLabel">
+                            <strong>Alteração</strong>
                         </h4>
                     </div>
 
                     @*  BODY *@
-                    <div class="modal-body scrollY" style="max-height:500px">
-                        <div id="htmlProva" ng-non-bindable></div>
-                        <div id="htmlGabarito" ng-non-bindable></div>
+                    <div class="modal-body">
+                        <h5>Tem certeza que deseja realizar a alteração, os itens selecionados na segunda etapa poderão ficar inconsistentes.</h5>
                     </div>
 
                     @* FOOTER *@
                     <div class="modal-footer footerCustom ">
                         <div class="container-fluid row-fluid">
-                            <button type="button" class="btn btnCancelar " data-dismiss="modal" aria-hidden="true">Cancelar</button>
-                            <button type="button" class="btnPadrao2 pull-right" data-dismiss="modal" ng-click="provaGerar()">Gerar prova</button>
-                            <button type="button" class="btnPadrao2 pull-right" ng-click="provaExportDoc()">Exportar doc</button>
-                            {{}}
+                            <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e1_callModal()" aria-hidden="true">Cancelar</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e1_callModal(1)">OK</button>
                         </div>
                     </div>
 
                 </div>
             </div>
         </div>
-    </div>
-    @* Modal File Download *@
-    <modal id="modalDownloadFile" class="listagem-modal" modal-title="<strong>Download do(s) arquivo(s)</strong>">
-        <div>
-            <table class="listagem-modal">
-                <colgroup>
-                    <col width="85%" />
-                    <col width="15%" />
-                </colgroup>
-                <tbody>
-                    <tr>
-                        <td><a href="{{filesTest.File.Path}}" target="_blank">{{filesTest.File.Name}}</a></td>
-                        <td><a href=""><i class="material-icons" ng-click="downloadFiles(filesTest.File.Id)">file_download</i></a></td>
-                    </tr>
-                    <tr>
-                        <td style="width: 100%;">
-                            <div><a href="{{filesTest.FileAnswerSheet.Path}} " target="_blank">{{filesTest.FileAnswerSheet.Name}}</a></div>
-                        </td>
-                        <td><a href=""><i class="material-icons" ng-click="downloadFiles(filesTest.FileAnswerSheet.Id)">file_download</i></a></td>
-                    </tr>
-                    <tr ng-show="filesTest.FileFeedback != null">
-                        <td style="width: 100%;">
-                            <div>{{filesTest.FileFeedback.Name}}</div>
-                        </td>
-                        <td><a href=""><i class="material-icons" ng-click="downloadFiles(filesTest.FileFeedback.Id)">file_download</i></a></td>
-                    </tr>
-                </tbody>
-            </table>
-            <br clear="all" /><br clear="all" />
-            <div class="row">
-                <div class="col-sm-12 text-right">
-                    <button type="button" class="btnModal" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btnModal" ng-click="downloadAllFilesZip();">Baixar Todos</button>
+        @* Modal HTML *@
+        <div class="preview-test">
+            <div class="modal fade" id="modalProva" tabindex="-1" role="dialog" aria-labelledby="modalProva" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content ">
+
+                        @* HEADER *@
+                        <div class="modal-header">
+                            <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                            <h4 class="modal-title" id="modalProva">
+                                <strong>Prévia da prova</strong>
+                            </h4>
+                        </div>
+
+                        @*  BODY *@
+                        <div class="modal-body scrollY" style="max-height:500px">
+                            <div id="htmlProva" ng-non-bindable></div>
+                            <div id="htmlGabarito" ng-non-bindable></div>
+                        </div>
+
+                        @* FOOTER *@
+                        <div class="modal-footer footerCustom ">
+                            <div class="container-fluid row-fluid">
+                                <button type="button" class="btn btnCancelar " data-dismiss="modal" aria-hidden="true">Cancelar</button>
+                                <button type="button" class="btnPadrao2 pull-right" data-dismiss="modal" ng-click="provaGerar()">Gerar prova</button>
+                                <button type="button" class="btnPadrao2 pull-right" ng-click="provaExportDoc()">Exportar doc</button>
+                                {{}}
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
-    </modal>
-
-
-    @* Modal questionar o usuário se ele deseja selecionar os itens do próximo caderno ou voltar para a lista de cadernos' *@
-    <div class="modal fade" id="modalSelecItensProxCaderno" tabindex="-1" role="dialog" aria-labelledby="modalSelecItensProxCaderno" aria-hidden="true">
-        <div class="modal-dialog ">
-            <div class="modal-content ">
-
-                @*HEADER*@
-                <div class="modal-header">
-                    <a ng-click="e1_callModal()" class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
-                    <h4 class="modal-title" id="modalSelecItensProxCadernoLabel">
-                        <strong>Atenção</strong>
-                    </h4>
-                </div>
-
-                @*BODY*@
-                <div class="modal-body">
-                    <h5>Deseja selecionar os itens do próximo caderno?</h5>
-                </div>
-
-                @*FOOTER*@
-                <div class="modal-footer footerCustom ">
-                    <div class="container-fluid row-fluid">
-                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e2_limparModalProximoBloco()" aria-hidden="true">Não</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e2_exibirModalProximoBloco()">Sim</button>
+        @* Modal File Download *@
+        <modal id="modalDownloadFile" class="listagem-modal" modal-title="<strong>Download do(s) arquivo(s)</strong>">
+            <div>
+                <table class="listagem-modal">
+                    <colgroup>
+                        <col width="85%" />
+                        <col width="15%" />
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td><a href="{{filesTest.File.Path}}" target="_blank">{{filesTest.File.Name}}</a></td>
+                            <td><a href=""><i class="material-icons" ng-click="downloadFiles(filesTest.File.Id)">file_download</i></a></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 100%;">
+                                <div><a href="{{filesTest.FileAnswerSheet.Path}} " target="_blank">{{filesTest.FileAnswerSheet.Name}}</a></div>
+                            </td>
+                            <td><a href=""><i class="material-icons" ng-click="downloadFiles(filesTest.FileAnswerSheet.Id)">file_download</i></a></td>
+                        </tr>
+                        <tr ng-show="filesTest.FileFeedback != null">
+                            <td style="width: 100%;">
+                                <div>{{filesTest.FileFeedback.Name}}</div>
+                            </td>
+                            <td><a href=""><i class="material-icons" ng-click="downloadFiles(filesTest.FileFeedback.Id)">file_download</i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br clear="all" /><br clear="all" />
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        <button type="button" class="btnModal" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btnModal" ng-click="downloadAllFilesZip();">Baixar Todos</button>
                     </div>
                 </div>
+            </div>
+        </modal>
 
+
+        @* Modal questionar o usuário se ele deseja selecionar os itens do próximo caderno ou voltar para a lista de cadernos' *@
+        <div class="modal fade" id="modalSelecItensProxCaderno" tabindex="-1" role="dialog" aria-labelledby="modalSelecItensProxCaderno" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content ">
+
+                    @*HEADER*@
+                    <div class="modal-header">
+                        <a ng-click="e1_callModal()" class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                        <h4 class="modal-title" id="modalSelecItensProxCadernoLabel">
+                            <strong>Atenção</strong>
+                        </h4>
+                    </div>
+
+                    @*BODY*@
+                    <div class="modal-body">
+                        <h5>Deseja selecionar os itens do próximo caderno?</h5>
+                    </div>
+
+                    @*FOOTER*@
+                    <div class="modal-footer footerCustom ">
+                        <div class="container-fluid row-fluid">
+                            <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e2_limparModalProximoBloco()" aria-hidden="true">Não</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e2_exibirModalProximoBloco()">Sim</button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
 
-    @* Modal para adicionar novo contexto de prova *@
-    <div class="modal fade" id="modalNovoContextoProva" tabindex="-1" role="dialog" aria-labelledby="modalNovoContextoProva" aria-hidden="true">
-        <div class="modal-dialog ">
-            <div class="modal-content ">
+        @* Modal para adicionar novo contexto de prova *@
+        <div class="modal fade" id="modalNovoContextoProva" tabindex="-1" role="dialog" aria-labelledby="modalNovoContextoProva" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content ">
 
-                @*HEADER*@
-                <div class="modal-header">
-                    <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
-                    <h4 class="modal-title" id="modalNovoContextoProvaLabel">
-                        <strong>Nova página de Contexto da Prova</strong>
-                    </h4>
-                </div>
-                @*BODY*@
-                <div class="modal-body">
-                    <div class="col-md-12">
-                        <div class="campoLabel">
-                            <label>Imagem*:</label>
-                            <div class="uploadImage">
-                                <div upload="" data-trash="true" type="@(EnumFileType.BaseText)" component="e1_dadosModalContexto.image" placeholder="uma imagem" data-filesizemb="10" data-listextensions="listextensionsImage"></div>
+                    @*HEADER*@
+                    <div class="modal-header">
+                        <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                        <h4 class="modal-title" id="modalNovoContextoProvaLabel">
+                            <strong>Nova página de Contexto da Prova</strong>
+                        </h4>
+                    </div>
+                    @*BODY*@
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div class="campoLabel">
+                                <label>Imagem*:</label>
+                                <div class="uploadImage">
+                                    <div upload="" data-trash="true" type="@(EnumFileType.BaseText)" component="e1_dadosModalContexto.image" placeholder="uma imagem" data-filesizemb="10" data-listextensions="listextensionsImage"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="campoLabel">
-                            <label>Posição*:</label>
-                            <select id="e1_dadosModalContexto.imagePositionDescription"
-                                    class="form-control"
-                                    ng-model="e1_dadosModalContexto.imagePositionDescription">
-                                <option value="">--Selecione a posição da imagem--</option>
-                                <option value="@(EnumPosition.Left.GetDescription())">@(EnumPosition.Left.GetDescription())</option>
-                                <option value="@(EnumPosition.Center.GetDescription())">@(EnumPosition.Center.GetDescription())</option>
-                                <option value="@(EnumPosition.Right.GetDescription())">@(EnumPosition.Right.GetDescription())</option>
-                            </select>
-                        </div>
-                        <div class="campoLabel">
-                            <label>Título*:</label>
-                            <div>
-                                <input type="text"
-                                       class="form-control"
-                                       maxlength="100"
-                                       ng-model="e1_dadosModalContexto.title"
-                                       placeholder="Digite o título" />
+                            <div class="campoLabel">
+                                <label>Posição*:</label>
+                                <select id="e1_dadosModalContexto.imagePositionDescription"
+                                        class="form-control"
+                                        ng-model="e1_dadosModalContexto.imagePositionDescription">
+                                    <option value="">--Selecione a posição da imagem--</option>
+                                    <option value="@(EnumPosition.Left.GetDescription())">@(EnumPosition.Left.GetDescription())</option>
+                                    <option value="@(EnumPosition.Center.GetDescription())">@(EnumPosition.Center.GetDescription())</option>
+                                    <option value="@(EnumPosition.Right.GetDescription())">@(EnumPosition.Right.GetDescription())</option>
+                                </select>
                             </div>
-                        </div>
-                        @* Texto Base *@
-                        <div class="campoLabel colunas">
-                            <div writemaths position="center top" previewposition="center bottom">
-                                <label>Texto*:</label><br />
-                                <textarea id="txtModalContexto" ng-model="e1_dadosModalContexto.text" ng-hide="true" tipo="@((Byte)EnumFileType.BaseText)"></textarea>
-                                <textarea id="summernote" ng-model="e1_dadosModalContexto.text" tipo="@((Byte)EnumFileType.BaseText)"></textarea>
+                            <div class="campoLabel">
+                                <label>Título*:</label>
+                                <div>
+                                    <input type="text"
+                                           class="form-control"
+                                           maxlength="100"
+                                           ng-model="e1_dadosModalContexto.title"
+                                           placeholder="Digite o título" />
+                                </div>
+                            </div>
+                            @* Texto Base *@
+                            <div class="campoLabel colunas">
+                                <div writemaths position="center top" previewposition="center bottom">
+                                    <label>Texto*:</label><br />
+                                    <textarea id="txtModalContexto" ng-model="e1_dadosModalContexto.text" ng-hide="true" tipo="@((Byte)EnumFileType.BaseText)"></textarea>
+                                    <textarea id="summernote" ng-model="e1_dadosModalContexto.text" tipo="@((Byte)EnumFileType.BaseText)"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                @*FOOTER*@
-                <div class="modal-footer footerCustom ">
-                    <div class="container-fluid row-fluid">
-                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e1_limparDadosModalContexto()" aria-hidden="true">Cancelar</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                ng-click="e1_addDadosModalContexto()"
-                                ng-disabled="!e1_dadosModalContexto.imagePositionDescription ||
+                    @*FOOTER*@
+                    <div class="modal-footer footerCustom ">
+                        <div class="container-fluid row-fluid">
+                            <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e1_limparDadosModalContexto()" aria-hidden="true">Cancelar</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                    ng-click="e1_addDadosModalContexto()"
+                                    ng-disabled="!e1_dadosModalContexto.imagePositionDescription ||
                                              !e1_dadosModalContexto.title ||
                                              !e1_dadosModalContexto.text ||
                                              !e1_dadosModalContexto.image.Path
                                 ">
-                            Adicionar
-                        </button>
+                                Adicionar
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-            </div>
-        </div>
-    </div>
-
-
-    @* Modal questionar o usuário se ele deseja Remover itens selecionados' *@
-    <div class="modal fade" id="modalRemoverItensSelecionados" tabindex="-1" role="dialog" aria-labelledby="modalRemoverItensSelecionados" aria-hidden="true">
-        <div class="modal-dialog ">
-            <div class="modal-content ">
-
-                @*HEADER*@
-                <div class="modal-header">
-                    <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
-                    <h4 class="modal-title" id="modalRemoverItensSelecionadosLabel">
-                        <strong>Atenção</strong>
-                    </h4>
-                </div>
-
-                @*BODY*@
-                <div class="modal-body">
-                    <div>
-                        <span>Remover itens selecionados?</span>
-                    </div>
-                </div>
-
-                @*FOOTER*@
-                <div class="modal-footer footerCustom ">
-                    <div class="container-fluid row-fluid">
-                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true">Não</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e2_LimparItensSelecionados()">Sim</button>
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    @*modalDeleteItemTestContex*@
-    <div class="modal fade" id="modalDeleteItemTestContex" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <span>Você tem certeza que deseja excluir este item?</span>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btnPadrao" data-ng-click="e1_deleteItemTestContext()">Excluir</button>
-                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+
+        @* Modal para adicionar novo ano dos itens da amostra TAI *@
+        <div class="modal fade" id="modalAnoItensAmostraTai" tabindex="-1" role="dialog" aria-labelledby="modalNovoContextoProva" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content ">
+
+                    @*HEADER*@
+                    <div class="modal-header">
+                        <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                        <h4 class="modal-title" id="modalNovoAnoItensProvaLabel">
+                            <strong>Ano escolar dos itens</strong>
+                        </h4>
+                    </div>
+                    @*BODY*@
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div class="campoLabel">
+                                <label>Ano*:</label>                                                               
+                                <select id="anosItensAnostraTai" class="form-control" title="{{ e2_dadosModalAnoItensAmostraTai.Ano.Description }}"
+                                        ng-change="e2_anoItensAmostraTaiMudou();"
+                                        ng-model="e2_dadosModalAnoItensAmostraTai.Ano"
+                                        ng-options="ano as ano.Description for ano in e2_listAnoItensTai"
+                                        ng-title="e2_listAnoItensTai"
+                                        ng-title-propertie="Description"
+                                        ng-title-index="1">
+                                    <option value="">--Selecione uma opção --</option>
+                                </select>
+                            </div>
+                            <div class="campoLabel">
+                                <label>Porcentagem(%)*:</label>
+                                <div>
+                                    <input type="number"
+                                           class="form-control"
+                                           maxlength="3"
+                                           ng-model="e2_dadosModalAnoItensAmostraTai.Porcentagem"
+                                           placeholder="Digite a Porcentagem(%)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*FOOTER*@
+                    <div class="modal-footer footerCustom ">
+                        <div class="container-fluid row-fluid">
+                            <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e2_limparDadosModalAnoItensAmostraTai()" aria-hidden="true">Cancelar</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                    ng-click="e2_addDadosModalAnoItensAmostraTai()">
+                                Adicionar
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
+
+
+        @* Modal questionar o usuário se ele deseja Remover itens selecionados' *@
+        <div class="modal fade" id="modalRemoverItensSelecionados" tabindex="-1" role="dialog" aria-labelledby="modalRemoverItensSelecionados" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content ">
+
+                    @*HEADER*@
+                    <div class="modal-header">
+                        <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                        <h4 class="modal-title" id="modalRemoverItensSelecionadosLabel">
+                            <strong>Atenção</strong>
+                        </h4>
+                    </div>
+
+                    @*BODY*@
+                    <div class="modal-body">
+                        <div>
+                            <span>Remover itens selecionados?</span>
+                        </div>
+                    </div>
+
+                    @*FOOTER*@
+                    <div class="modal-footer footerCustom ">
+                        <div class="container-fluid row-fluid">
+                            <button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true">Não</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e2_LimparItensSelecionados()">Sim</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*modalDeleteItemTestContex*@
+        <div class="modal fade" id="modalDeleteItemTestContex" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <span>Você tem certeza que deseja excluir este item?</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btnPadrao" data-ng-click="e1_deleteItemTestContext()">Excluir</button>
+                        <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*modalDeleteItemAnosItensAmostraProvaTai*@
+        <div class="modal fade" id="modalDeleteItemAnosItensAmostraProvaTai" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <span>Você tem certeza que deseja excluir este item?</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btnPadrao" data-ng-click="e2_deletarItemAnosItensAmostraProvaTai()">Excluir</button>
+                        <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-</div>
-<script src="~/Assets/js/vendor/contextoProva/scriptContexoProva.js"></script>
+    <script src="~/Assets/js/vendor/contextoProva/scriptContexoProva.js"></script>
