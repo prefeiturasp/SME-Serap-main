@@ -641,7 +641,7 @@
                                                 <tbody>
                                                     <tr ng-repeat="anoItem in anosItensAmostraProvaTai">
                                                         <th class="table-parameter-centralize">{{ anoItem.Ano.Description }}</th>
-                                                        <th class="table-parameter-centralize">{{ anoItem.Poncentagem }}</th>
+                                                        <th class="table-parameter-centralize">{{ anoItem.Porcentagem }}</th>
                                                         <th class="table-parameter-centralize">
                                                             <a ng-click="e2_editarModalAnoItensAmostraTai(anoItem)"><i type="button" class="material-icons">format_list_bulleted</i></a>
                                                         </th>
@@ -1773,7 +1773,9 @@
                         <div class="container-fluid row-fluid">
                             <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e2_limparDadosModalAnoItensAmostraTai()" aria-hidden="true">Cancelar</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                    ng-click="e2_addDadosModalAnoItensAmostraTai()">
+                                    ng-click="e2_addDadosModalAnoItensAmostraTai()"
+                                    ng-disabled="!e2_dadosModalAnoItensAmostraTai.Ano ||
+                                             !e2_dadosModalAnoItensAmostraTai.Porcentagem">
                                 Adicionar
                             </button>
                         </div>

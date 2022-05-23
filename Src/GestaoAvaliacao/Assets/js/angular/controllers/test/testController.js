@@ -1743,7 +1743,7 @@
             ng.e2_listAnoItensTai = [];
             ng.e2_dadosModalAnoItensAmostraTai = null;
             ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = '';
-            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = '';
+            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
 
             // ETAPA 2
             blocosCarregar();
@@ -4425,30 +4425,35 @@
 
         ng.e2_addDadosModalAnoItensAmostraTai = e2_addDadosModalAnoItensAmostraTai;
         function e2_addDadosModalAnoItensAmostraTai() {
-            if (ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai) {
-                const indexItemDelete = ng.anosItensAmostraProvaTai.indexOf(ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai);
-                ng.anosItensAmostraProvaTai.splice(indexItemDelete, 1);
-                ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = '';
-                const itemAlterado = {
-                    ...ng.e2_dadosModalAnoItensAmostraTai
-                };
-                //ng.anosItensAmostraProvaTai.push(itemAlterado);
+            if (validaPorcentagem()) {
+                if (ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai != null) {
+                    const indexItemDelete = ng.anosItensAmostraProvaTai.indexOf(ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai);
+                    ng.anosItensAmostraProvaTai.splice(indexItemDelete, 1);
+                    ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
+                    const itemAlterado = {
+                        ...ng.e2_dadosModalAnoItensAmostraTai
+                    };
+                    ng.anosItensAmostraProvaTai.push(itemAlterado);
 
+                } else {
+                    const itemNovo = {
+                        ...ng.e2_dadosModalAnoItensAmostraTai
+                    };
+                    ng.anosItensAmostraProvaTai.push(itemNovo);
+                }
+                ng.e2_criarObjetoDadosModalAnoItensAmostraTai();
+                self.etapa2.alterou = true
+                angular.element('#modalAnoItensAmostraTai').modal('hide');
             } else {
-                const itemNovo = {
-                    ...ng.e2_dadosModalAnoItensAmostraTai
-                };
-                ng.anosItensAmostraProvaTai.push(itemNovo);
+                $notification.alert('A porcentagem não pode ser maior que 100.');
+                return false;
             }
-            ng.e2_criarObjetoDadosModalAnoItensAmostraTai();
-            self.etapa2.alterou = true
-            angular.element('#modalAnoItensAmostraTai').modal('hide');
         };
 
         ng.e2_editarModalAnoItensAmostraTai = e2_editarModalAnoItensAmostraTai;
         function e2_editarModalAnoItensAmostraTai(item) {
             e2_criarObjetoDadosModalAnoItensAmostraTai();
-            e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = item;
+            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = item;            
             ng.e2_dadosModalAnoItensAmostraTai = {
                 ...item
             };
@@ -4475,7 +4480,22 @@
         ng.e2_limparDadosModalAnoItensAmostraTai = e2_limparDadosModalAnoItensAmostraTai;
         function e2_limparDadosModalAnoItensAmostraTai() {
             ng.e2_dadosModalAnoItensAmostraTai = null;
-            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = '';
+            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
+        }
+
+        function validaPorcentagem() {
+            var porcentagem = ng.e2_dadosModalAnoItensAmostraTai.Porcentagem;
+            for (var i = 0; i < ng.anosItensAmostraProvaTai.length; i++) {
+                var pi = ng.anosItensAmostraProvaTai[i].Porcentagem;
+                porcentagem = pi + porcentagem;
+            };
+            if (ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai != null)
+                porcentagem = porcentagem - ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai.Porcentagem;
+            console.log(porcentagem);
+            if (porcentagem > 100) {
+                return false;
+            }
+            return true;
         }
 
     };
