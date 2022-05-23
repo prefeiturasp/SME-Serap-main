@@ -24,7 +24,7 @@ namespace GestaoAvaliacao.Repository
         {
             using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                NumberItemTestTai numberItemTestTai = GestaoAvaliacaoContext.NumberItemTestTai.FirstOrDefault(a => a.TestId == testId);
+                NumberItemTestTai numberItemTestTai = GestaoAvaliacaoContext.NumberItemTestTai.FirstOrDefault(a => a.TestId == testId && a.State == 1);
 
                 if (numberItemTestTai != null)
                 {
