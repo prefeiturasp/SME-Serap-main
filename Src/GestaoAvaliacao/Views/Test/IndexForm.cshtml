@@ -253,14 +253,15 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row" ng-show="showTestTAI">
                         <div class="col-md-12">
                             @*Prova com TAI*@
                             <div class="cards">
+                                <h4 class="tituloCard">{{labels.informationTestTAI}}*: </h4>
                                 @* Header *@
-                                <h4 class="tituloCard">{{labels.numberItemsTestTAI}}*: </h4>
                                 <div class="campoLabel">
+
+                                    <label for="numberItemsTestTAI">{{labels.numberItemsTestTAI}}*: </label>
                                     <div>
                                         <select id="nItensTestTAI" class="form-control" title="{{ e1_nItensTestTAI.Name }}" ng-title-index="1"
                                                 ng-change="e1_nItensTestTAIMudou();"
@@ -271,6 +272,14 @@
                                             <option value="">--Selecione uma opção--</option>
                                         </select>
                                     </div>
+                                </div>
+                                <div class="campoLabel">
+                                    <label class="label-pos-inline">  {{labels.advanceWithoutAnswering}}: </label>
+                                    <div class="switch" ng-click="selectAdvanceWithoutAnswering();" ng-class="{'off': !advanceWithoutAnswering}" style="position: absolute; margin: 4px 250px;"><input type="button" /></div>
+                                </div>
+                                <div class="campoLabel">
+                                    <label class="label-pos-inline">  {{labels.backToPreviousItem}}: </label>
+                                    <div class="switch" ng-click="selectBackToPreviousItem();" ng-class="{'off': !backToPreviousItem}" style="position: absolute; margin: 4px 255px;"><input type="button" /></div>
                                 </div>
                             </div>
                         </div>

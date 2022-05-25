@@ -543,7 +543,8 @@ namespace GestaoAvaliacao.Business
 
                 if (entity.TestTai)
                 {
-                    var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id);
+                  
+                    var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
                     numberItemTestTaiRepository.Save(itemTestTai);
                 }
 
@@ -572,7 +573,7 @@ namespace GestaoAvaliacao.Business
                 {
                     if (entity.NumberItemsAplicationTai != null)
                     {
-                        var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id);
+                        var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
                         numberItemTestTaiRepository.DeleteSaveByTestId(itemTestTai);
                     }
                     else

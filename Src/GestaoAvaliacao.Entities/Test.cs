@@ -50,6 +50,8 @@ namespace GestaoAvaliacao.Entities
         [NotMapped]
         public bool ApplicationActiveOrDone => TestSituation != EnumTestSituation.Pending && DateTime.Today >= ApplicationStartDate;
 
+
+
         public DateTime CorrectionStartDate { get; set; }
 
 		public DateTime CorrectionEndDate { get; set; }
@@ -114,7 +116,10 @@ namespace GestaoAvaliacao.Entities
         public bool TestTai { get; set; }
         public int? NumberSynchronizedResponseItems { get; set; }
 
-
+        [NotMapped]
+        public bool AdvanceWithoutAnswering { get; set; }
+        [NotMapped]
+        public bool BackToPreviousItem { get; set; }
         [NotMapped]
         public NumberItemsAplicationTai NumberItemsAplicationTai { get; set; }
 
