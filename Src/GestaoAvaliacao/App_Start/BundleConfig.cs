@@ -371,6 +371,7 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/models/ItemType/ItemTypeModel.js")
                 .Include("~/Assets/js/angular/models/Integration/modality/modalityModel.js")
                 .Include("~/Assets/js/angular/models/testType/testTypeModel.js")
+                .Include("~/Assets/js/angular/models/evaluationMatrix/evaluationMatrixModel.js")
                 .Include("~/Assets/js/vendor/datepicker/datepicker.js")
                 .Include("~/Assets/js/angular/directives/_bundle/datepicker/datepicker-directive.js")
 

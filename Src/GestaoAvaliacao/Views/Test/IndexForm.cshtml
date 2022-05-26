@@ -6,9 +6,10 @@
 <link href="~/Assets/js/vendor/summernote/summernote-lite.min.css" rel="stylesheet">
 <script src="~/Assets/js/vendor/summernote/summernote-lite.min.js"></script>
 
+@*ng-controller="TestController"*@
 
 <alert></alert>
-<div ng-controller="TestController" ng-init="editar(@Model.Id);">
+<div data-ng-controller="TestController" ng-init="editar(@Model.Id);">
     @* Prova *@
     <div class="wellCustom">
         @* Header *@
@@ -23,7 +24,7 @@
                 </a>
                 <a ng-repeat="wizard in listaWizardTAI" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="showTestTAI">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
-                </a>               
+                </a>
             </div>
         </div>
         <div class="maxWidth" ng-show="mostrarTela && situacao" style="padding: 5px 0; text-align: right;">
@@ -599,35 +600,60 @@
                 @* Etapa 2 *@ @* Lista de itens *@
                 <div class="form-group" ng-show="navigation===2 && mostrarTela">
 
-                    <div class="row">
+                    <div class="row" ng-show="showTestTAI">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cards">
 
-                        <div class="col-md-12" ng-show="showTestTAI">
-                            <div class="campoLabel col-md-12">
-                                <label for="tempoDeProva">{{labels.matrizAvaliacao}}*: </label>
-                                <div>
-                                    <select id="matrizAvaliacao" class="form-control" title="{{ e2_matrizAvaliacao.Description }}"
-                                            ng-change="e2_matrizAvaliacaoMudou();"
-                                            ng-model="e2_matrizAvaliacao"
-                                            ng-options="matriz as matriz.Description for matriz in e2_matrizAvaliacaoList"
-                                            ng-title="e2_matrizAvaliacaoList"
-                                            ng-title-propertie="Description"
-                                            ng-title-index="1">
-                                        <option value="">--Selecione uma matriz --</option>
-                                    </select>
+                                    @* Componente Curricuar *@
+                                    <div class="campoLabel">
+                                        <label> {{labels.componente}}*: </label>
+                                        <div>
+                                            <select id="testType" class="form-control"
+                                                    ng-change="e2_ComponenteCurricularMudou();"
+                                                    ng-model="e2_cbComponenteCurricular"
+                                                    ng-options="componenteCurricular as componenteCurricular.Description for componenteCurricular in e2_listaComponenteCurricular"
+                                                    ng-title="e2_listaComponenteCurricular"
+                                                    ng-title-propertie="Description"
+                                                    ng-title-selected
+                                                    ng-title-index="1">
+                                                <option value="">--Selecione--</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="campoLabel">
+                                        <label for="matrizAvaliacao">{{labels.matrizAvaliacao}}*: </label>
+                                        <div>
+                                            <select ng-change="e2_matrizAvaliacaoMudou()"
+                                                    ng-model="e2_matrizAvaliacao"
+                                                    ng-options="matriz as matriz.Description for matriz in e2_matrizAvaliacaoList"
+                                                    style="width: 100%"
+                                                    class="matrizAvaliacao">
+                                                <option value="">--Selecione--</option>
+                                            </select>
+                                        </div>
+                                    </div>                                    
+                                   
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="cards">
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="showTestTAI">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cards">
+                                    @*<h4 class="tituloCard ng-binding">Ano(s) escolares: </h4>*@
+                                    <div class="campoLabel">
+                                        <label for="matrizAvaliacao">Ano(s) escolares:*: </label>
+                                        <div>
                                             <button type="button" class="btnPadrao pull-right" style="margin-right: 15px;" ng-click="callModalAnoItensAmostraTai()">Adicionar Novo Ano</button>
-                                            <h4 class="tituloCard ng-binding">Ano(s) dos itens da amostra: </h4>
                                             <table class="table table-hover">
                                                 <colgroup>
-                                                    <col width="15%" />
-                                                    <col width="15%" />
-                                                    <col width="15%" />
-                                                    <col width="24%" />
+                                                    <col width="40%" />
+                                                    <col width="40%" />
+                                                    <col width="10%" />
                                                     <col width="10%" />
                                                 </colgroup>
                                                 <thead>
@@ -656,7 +682,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="row" ng-show="!showTestTAI">
@@ -1744,7 +1769,7 @@
                     <div class="modal-body">
                         <div class="col-md-12">
                             <div class="campoLabel">
-                                <label>Ano*:</label>                                                               
+                                <label>Ano*:</label>
                                 <select id="anosItensAnostraTai" class="form-control" title="{{ e2_dadosModalAnoItensAmostraTai.Ano.Description }}"
                                         ng-change="e2_anoItensAmostraTaiMudou();"
                                         ng-model="e2_dadosModalAnoItensAmostraTai.Ano"

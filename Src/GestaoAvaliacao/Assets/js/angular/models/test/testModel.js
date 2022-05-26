@@ -68,6 +68,12 @@
             },
             /////////////////////////////////////////////
             // CHAMADAS DA ETAPA 2
+
+            'carregaAreaConhecimento': {
+                method: 'GET',
+                url: base_url('Item/loadallknowledgeareaactive')
+            },
+
             'loadLevelEducation': {
                 method: 'GET',
                 url: base_url('LevelEducation/Load')
