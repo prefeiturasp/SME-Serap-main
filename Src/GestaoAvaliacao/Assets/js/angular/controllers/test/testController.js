@@ -183,6 +183,9 @@
                 showAudioFiles: 'Exibir conteúdo de áudio',
                 showTestTAI: 'Aplicação em TAI',
                 numberItemsTestTAI: 'Nº itens na amostra',
+                informationTestTAI: 'Informações Teste TAI',
+                advanceWithoutAnswering: 'Permitir avançar sem responder',
+                backToPreviousItem: 'Permitir voltar ao item anterior',
                 showOnSerapEstudantes: 'Exibir no Serap Estudantes',
                 numberSynchronizedResponseItems: 'Qtde de itens para sincronização Resposta',
                 showTestContext: 'Apresentar contexto da prova',
@@ -257,6 +260,8 @@
             ng.e1_nItensTestTAI = null;
             ng.e1_nItensTestTAIList = [];
             ng.showTestTAI = false;
+            ng.advanceWithoutAnswering = false;
+            ng.backToPreviousItem = false;
             // switch gerar folha de resposta
             ng.e1_folhaResp = false;
             ng.e1_folhaRespLock = false;
@@ -730,6 +735,20 @@
             ng.showVideoFiles = !ng.showVideoFiles;
             self.etapa1.alterou = true;
         };
+
+
+        ng.selectAdvanceWithoutAnswering = function () {
+            ng.advanceWithoutAnswering = !ng.advanceWithoutAnswering;
+            self.etapa1.alterou = true;
+        };
+
+
+        ng.selectBackToPreviousItem = function () {
+            ng.backToPreviousItem = !ng.backToPreviousItem;
+            self.etapa1.alterou = true;
+        };
+
+
 
         ng.selectShowAudioFiles = function () {
             ng.showAudioFiles = !ng.showAudioFiles;
@@ -1229,6 +1248,8 @@
                 "TestContexts": ng.testContexts,
                 "TestTAI": ng.showTestTAI,
                 "NumberItemsAplicationTai": ng.e1_nItensTestTAI,
+                "AdvanceWithoutAnswering": ng.advanceWithoutAnswering,
+                "BackToPreviousItem": ng.backToPreviousItem
             };
 
             self.etapa1.save(model, etapa1Salvou);
@@ -1589,6 +1610,13 @@
                     ng.showTestTAI = r.ShowTestTAI;
                     if (ng.showTestTAI) {
                         ng.e1_nItensTestTAI = procurarElementoEm([r.NumberItemsAplicationTai], ng.e1_nItensTestTAIList)[0];
+
+                        if (ng.e1_nItensTestTAI) {
+                            console.log(ng.e1_nItensTestTAI.AdvanceWithoutAnswering, ng.e1_nItensTestTAI.BackToPreviousItem );
+                            console.log(r.AdvanceWithoutAnswering, r.BackToPreviousItem);
+                            ng.advanceWithoutAnswering = r.AdvanceWithoutAnswering;
+                            ng.backToPreviousItem = r.BackToPreviousItem;
+                        }
                     }
                     ng.showJustificate = r.ShowJustificate;
                     e1_formato_findTest = true;

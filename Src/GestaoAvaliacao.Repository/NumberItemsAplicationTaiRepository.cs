@@ -20,7 +20,7 @@ namespace GestaoAvaliacao.Repository
             using (IDbConnection cn = Connection)
             {                
                 cn.Open();
-                var sql = @"select a.Id,a.[Name],a.[Value],a.[CreateDate],a.[UpdateDate],a.[State] 
+                var sql = @"select  a.Id,a.[Name],a.[Value],a.[CreateDate],a.[UpdateDate],a.[State],b.[AdvanceWithoutAnswering], b.[BackToPreviousItem] 
                                 from NumberItemsAplicationTai a
                                 inner join NumberItemTestTai b on a.id = b.ItemAplicationTaiId
                                 where b.TestId = @testId

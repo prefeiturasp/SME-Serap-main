@@ -12,12 +12,15 @@ namespace GestaoAvaliacao.Entities
 
         }
 
-        public NumberItemTestTai(long testId, long itemAplicationTaiId)
+        public NumberItemTestTai(long testId, long itemAplicationTaiId, bool advanceWithoutAnswering, bool backToPreviousItem)
         {
             TestId = testId;
             ItemAplicationTaiId = itemAplicationTaiId;
             CreateDate = UpdateDate = DateTime.Now;
+            
             State = Convert.ToByte(EnumState.ativo);
+            AdvanceWithoutAnswering = advanceWithoutAnswering;
+            BackToPreviousItem = backToPreviousItem;
         }
 
 
@@ -33,6 +36,12 @@ namespace GestaoAvaliacao.Entities
 
         [Column("ItemAplicationTaiId")]
         public virtual long ItemAplicationTaiId { get; set; }
+        [Column("AdvanceWithoutAnswering")]
+        public virtual bool AdvanceWithoutAnswering { get; set; }
+
+        [Column("BackToPreviousItem")]
+        public virtual bool BackToPreviousItem { get; set; }
+        
 
     }
 }
