@@ -118,6 +118,7 @@
     <Compile Include="ITestRepository.cs" />
     <Compile Include="ITestSectionStatusCorrectionRepository.cs" />
     <Compile Include="ITestSubGroupRepository.cs" />
+    <Compile Include="ITestTaiCurriculumGradeRepository.cs" />
     <Compile Include="ITestTemplateRepository.cs" />
     <Compile Include="ITestTypeCourseRepository.cs" />
     <Compile Include="ITestTypeCourseCurriculumGradeRepository.cs" />
