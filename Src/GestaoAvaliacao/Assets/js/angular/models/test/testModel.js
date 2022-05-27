@@ -69,6 +69,11 @@
             /////////////////////////////////////////////
             // CHAMADAS DA ETAPA 2
 
+            'saveTestTaiCurriculumGrade': {
+                method: 'POST',
+                url: base_url('Test/TestTaiCurriculumGradeSave')
+            },
+
             'carregaAreaConhecimento': {
                 method: 'GET',
                 url: base_url('Item/loadallknowledgeareaactive')
