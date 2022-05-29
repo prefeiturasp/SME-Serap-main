@@ -617,7 +617,7 @@
                                     @* Componente Curricuar *@
                                     <div class="campoLabel">
                                         <label> {{labels.componente}}*: </label>
-                                        <div>
+                                        <div ng-show="!e2_blockComponenteMatrixTai">
                                             <select id="testType" class="form-control"
                                                     ng-change="e2_ComponenteCurricularMudou();"
                                                     ng-model="e2_cbComponenteCurricular"
@@ -625,22 +625,30 @@
                                                     ng-title="e2_listaComponenteCurricular"
                                                     ng-title-propertie="Description"
                                                     ng-title-selected
-                                                    ng-title-index="1">
+                                                    ng-title-index="1"
+                                                    ng-disabled="e2_blockComponenteMatrixTai">
                                                 <option value="">--Selecione--</option>
                                             </select>
+                                        </div>
+                                        <div ng-show="e2_blockComponenteMatrixTai">
+                                            <input ng-click="e2_avisoBlockComponenteTai();" readonly class="form-control" id="labelComponenteTai" style="background-color: rgba(0,0,0,.15)" ng-model="e2_cbComponenteCurricular.Description" />
                                         </div>
                                     </div>
 
                                     <div class="campoLabel">
                                         <label for="matrizAvaliacao">{{labels.matrizAvaliacao}}*: </label>
-                                        <div>
+                                        <div ng-show="!e2_blockComponenteMatrixTai">
                                             <select ng-change="e2_matrizAvaliacaoMudou()"
                                                     ng-model="e2_matrizAvaliacao"
                                                     ng-options="matriz as matriz.Description for matriz in e2_matrizAvaliacaoList"
                                                     style="width: 100%"
-                                                    class="matrizAvaliacao">
+                                                    class="matrizAvaliacao"
+                                                    ng-disabled="e2_blockComponenteMatrixTai">
                                                 <option value="">--Selecione--</option>
                                             </select>
+                                        </div>
+                                        <div ng-show="e2_blockComponenteMatrixTai">
+                                            <input ng-click="e2_avisoBlockMatrizTai();" readonly class="form-control" id="labelMatrizTai" style="background-color: rgba(0,0,0,.15)" ng-model="e2_matrizAvaliacao.Description" />
                                         </div>
                                     </div>                                    
                                    
@@ -1792,10 +1800,11 @@
                             <div class="campoLabel">
                                 <label>Porcentagem(%)*:</label>
                                 <div>
-                                    <input type="number"
+                                    <input type="text"
                                            class="form-control"
                                            maxlength="3"
                                            ng-model="e2_dadosModalAnoItensAmostraTai.Porcentagem"
+                                           ng-change="validarPorcentagemInteiro();"
                                            placeholder="Digite a Porcentagem(%)" />
                                 </div>
                             </div>

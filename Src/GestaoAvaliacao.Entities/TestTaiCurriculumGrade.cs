@@ -20,7 +20,7 @@ namespace GestaoAvaliacao.Entities
         [Column("Percentage")]
         public virtual int Percentage { get; set; }
 
-        [Column("TestId")]
+        [Column("Test_Id")]
         public virtual long TestId { get; set; }
 
 

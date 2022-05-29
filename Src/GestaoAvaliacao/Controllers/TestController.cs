@@ -1032,7 +1032,7 @@ namespace GestaoAvaliacao.Controllers
 
 
         }
-        [HttpPost]
+        [HttpGet]
         public JsonResult GetListTestTaiCurriculumGrade(long testId)
         {
             try

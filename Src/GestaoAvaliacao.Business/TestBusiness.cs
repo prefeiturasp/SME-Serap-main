@@ -1066,49 +1066,62 @@ namespace GestaoAvaliacao.Business
                 if (testId <= 0)
                     throw new Exception("TestId é obrigatório");
 
-                // Busca TestTaiCurriculumGrade com state 1)
                 var listTestTaiCurriculumGrade = testTaiCurriculumGradeRepository.GetListByTestId(testId);
 
-
-                foreach (var entity in listEntity)
+                if (listTestTaiCurriculumGrade == null || !listTestTaiCurriculumGrade.Any())
                 {
-                    if (entity.Id > 0)
-                    {
-                        //Altera
-                        if (listTestTaiCurriculumGrade != null || listTestTaiCurriculumGrade.Any())
-                        {
-                            var testTaiCurriculumGrade = listTestTaiCurriculumGrade.FirstOrDefault(x => x.Id == entity.Id);
-                            if (testTaiCurriculumGrade == null)
-                                //Exclui
-                                testTaiCurriculumGrade.State = 3;
-                            else
-                            {
-                                //Altera;
-                                testTaiCurriculumGrade.MatrixId = entity.MatrixId;
-                                testTaiCurriculumGrade.Percentage = entity.Percentage;
-                                testTaiCurriculumGrade.DisciplineId = entity.DisciplineId;
-                                testTaiCurriculumGrade.TypeCurriculumGradeId = entity.TypeCurriculumGradeId;
-                                testTaiCurriculumGrade.UpdateDate = DateTime.Now;
-                                testTaiCurriculumGrade.State = 1;
-
-                                testTaiCurriculumGradeRepository.Update(testTaiCurriculumGrade);
-
-                            }
-                        }
-
-                    }
-
-                    else
+                    foreach (var entity in listEntity)
                     {
                         testTaiCurriculumGradeRepository.Save(entity);
                     }
                 }
+                else
+                {
 
+                    var testTaiCurriculumGradeNew = listEntity.Where(x => !listTestTaiCurriculumGrade.Any(entity => x.DisciplineId == entity.DisciplineId
+                                                                                                                 && x.MatrixId == entity.MatrixId
+                                                                                                                 && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+
+                    var testTaiCurriculumGradeExists = listTestTaiCurriculumGrade.Where(x => listEntity.Any(entity => x.DisciplineId == entity.DisciplineId
+                                                                                                                   && x.MatrixId == entity.MatrixId
+                                                                                                                   && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+
+                    var testTaiCurriculumGradeNotExists = listTestTaiCurriculumGrade.Where(x => !listEntity.Any(entity => x.DisciplineId == entity.DisciplineId
+                                                                                                                      && x.MatrixId == entity.MatrixId
+                                                                                                                      && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+                    //Inserir
+                    foreach (var entity in testTaiCurriculumGradeNew)
+                    {
+                        testTaiCurriculumGradeRepository.Save(entity);
+                    }
+
+                    //Alterar
+                    foreach (var entity in testTaiCurriculumGradeExists)
+                    {
+                        var testTaiCurriculumGrade = listEntity.FirstOrDefault(x => x.DisciplineId == entity.DisciplineId
+                                                                                    && x.MatrixId == entity.MatrixId
+                                                                                    && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId);
+                        if (entity.Percentage != testTaiCurriculumGrade.Percentage)
+                        {
+                            entity.Percentage = testTaiCurriculumGrade.Percentage;
+                            entity.UpdateDate = DateTime.Now;
+                            testTaiCurriculumGradeRepository.Update(entity);
+                        }
+                    }
+
+                    //Excluir
+                    foreach (var entity in testTaiCurriculumGradeNotExists)
+                    {
+                        entity.State = 3;
+                        entity.UpdateDate = DateTime.Now;
+                        testTaiCurriculumGradeRepository.Update(entity);
+                    }
+                    
+                }
 
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
 
@@ -1118,8 +1131,8 @@ namespace GestaoAvaliacao.Business
         {
             if (testId <= 0)
                 throw new Exception("O parametro testId é obrigatório e não pode ser 0");
-            return testTaiCurriculumGradeRepository.GetListByTestId(testId);
 
+            return testTaiCurriculumGradeRepository.GetListByTestId(testId);
         }
 
     }
