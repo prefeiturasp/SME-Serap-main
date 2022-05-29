@@ -2947,7 +2947,7 @@
                     return $notification.alert('Selecione o(s) ano(s) dos itens da amostra.');
 
                 var porcentagem = obterPorcentagemAnoItensAmostraTai();
-                if (porcentagem != 100)
+                if (porcentagem != 100 && ng.anosItensAmostraProvaTai.length > 1)
                     return $notification.alert('A soma da porcentagem dos anos escolares deve ser igual a 100.');
 
                 return true;
@@ -4475,11 +4475,11 @@
         };
 
         ng.e2_addDadosModalAnoItensAmostraTai = e2_addDadosModalAnoItensAmostraTai;
-        function e2_addDadosModalAnoItensAmostraTai() {
+        function e2_addDadosModalAnoItensAmostraTai() {            
 
-            const itemExists = ng.anosItensAmostraProvaTai.find(t => t.Ano.Id === ng.e2_dadosModalAnoItensAmostraTai.Ano.Id);
-            if (itemExists) {
-                $notification.alert('Ano escolar já cadastrado.');
+            var porcentagem = parseInt(ng.e2_dadosModalAnoItensAmostraTai.Porcentagem);
+            if (porcentagem == 0) {
+                $notification.alert('A porcentagem deve ser maior que Zero.');
                 return;
             }
 
@@ -4493,11 +4493,19 @@
                     };
                     ng.anosItensAmostraProvaTai.push(itemAlterado);
                 } else {
+
+                    const itemExists = ng.anosItensAmostraProvaTai.find(t => t.Ano.Id === ng.e2_dadosModalAnoItensAmostraTai.Ano.Id);
+                    if (itemExists) {
+                        $notification.alert('Ano escolar já cadastrado.');
+                        return;
+                    }
+
                     const itemNovo = {
                         ...ng.e2_dadosModalAnoItensAmostraTai
                     };
                     ng.anosItensAmostraProvaTai.push(itemNovo);
                     ng.e2_blockComponenteMatrixTai = true;
+
                 }
                 ng.e2_criarObjetoDadosModalAnoItensAmostraTai();
                 self.etapa2.alterou = true
@@ -4645,6 +4653,12 @@
                     percentage: parseInt(anoItem.Porcentagem),
                     testId: ng.provaId
                 };
+
+                if (ng.anosItensAmostraProvaTai.length == 1) {
+                    item.percentage = 100;
+                    ng.anosItensAmostraProvaTai[i].Porcentagem = 100;
+                }                    
+
                 listaTestTaiCurriculumGradeSave.push(item);
             };
             return listaTestTaiCurriculumGradeSave;
