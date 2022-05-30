@@ -62,7 +62,7 @@
                             return { results: data };
                         }
                     }
-                })
+            })
 
             $(".comboComponenteCurricular").select2({
                 placeholder: "Selecione um componente curricular"

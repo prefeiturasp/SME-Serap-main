@@ -111,6 +111,7 @@
     <Compile Include="Map\TestContextMap.cs" />
     <Compile Include="Map\TestPermissionMap.cs" />
     <Compile Include="Map\TestSubGroupMap.cs" />
+    <Compile Include="Map\TestTaiCurriculumGrade.cs" />
     <Compile Include="Map\TestTypeDeficiencyMap.cs" />
     <Compile Include="Map\TestTimeMap.cs" />
     <Compile Include="NumberItemsAplicationTaiRepository.cs" />
@@ -206,6 +207,7 @@
     <Compile Include="TestPerformanceLevelRepository.cs" />
     <Compile Include="TestRepository.cs" />
     <Compile Include="TestSubGroupRepository.cs" />
+    <Compile Include="TestTaiCurriculumGradeRepository.cs" />
     <Compile Include="TestTypeCourseCurriculumGradeRepository.cs" />
     <Compile Include="TestTypeCourseRepository.cs" />
     <Compile Include="TestTypeDeficiencyRepository.cs" />

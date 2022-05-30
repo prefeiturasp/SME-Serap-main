@@ -13,7 +13,7 @@
         .module('appMain')
         .controller("TestController", TestController);
 
-    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', 'NumberItemsAplicationTaiModel', '$window'];
+    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', 'NumberItemsAplicationTaiModel', '$window', 'EvaluationMatrixModel'];
 
     /**
      * @function Controller para criação de prova
@@ -26,8 +26,9 @@
      * @param {Object} TestTypeModel
      * @returns
      */
-    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, NumberItemsAplicationTaiModel, $window) {
+    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, NumberItemsAplicationTaiModel, $window, EvaluationMatrixModel) {
 
+        ng.params = $util.getUrlParams();
         var self = this;
 
         /*$scope.listextensionsImage = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'];*/
@@ -59,7 +60,9 @@
             //    arr.push(self.wizards[2]);
             //    arr.push(self.wizards[4]);
             //}
-            ng.wizardTAI = self.wizards[0];
+
+            ng.listaWizardTAI = self.wizardsTai;
+
             ng.listaWizards = arr;
         };
 
@@ -144,6 +147,10 @@
                 { Number: 2, Description: 'Selecionar itens' },
                 { Number: 3, Description: 'Gerar provas' },
             ];
+            self.wizardsTai = [
+                { Number: 1, Description: 'Cadastro Prova' },
+                { Number: 2, Description: 'Ano(s) dos itens da amostra' },
+            ];
             ng.labels = {
                 tipo: 'Tipo de prova',
                 descricao: 'Descrição da prova',
@@ -167,6 +174,7 @@
                 e1_itensBlocos: 'Itens por caderno',
                 niveis: 'Níveis de desempenho',
                 matriz: 'Matriz',
+                matrizAvaliacao: 'Matriz de avaliação',
                 keywords: 'Palavra-chave',
                 multidiscipline: 'Multidisciplinar',
                 knowledgeAreaBlock: 'Gabarito com blocos de área de conhecimento',
@@ -193,7 +201,7 @@
             ];
             //Lista de wizards atuais
             ng.listaWizards = [];
-            ng.wizardTAI = null;
+            ng.listaWizardTAI = [];
             ng.etapaAtual = 1;
             ng.alterouEtapaAtual = false;
             ng.mostrarTela = false;
@@ -216,6 +224,7 @@
             ng.publicFeedback = false;
             ng.showTestContext = false;
             ng.testContexts = [];
+            ng.anosItensAmostraProvaTai = [];
             //Funções para configurar Etapas
             nivelDesempenhoCarregar();
             initEtapa1();
@@ -463,7 +472,7 @@
         }
 
 
-     
+
 
         /**
         * @function Carrega dados de componente curricular
@@ -748,7 +757,7 @@
 
         ng.selectShowTestTAI = function () {
             ng.showTestTAI = !ng.showTestTAI;
-            
+
             if (!ng.showTestTAI && ng.e1_cbTipoProva.Bib)
                 ng.showFlagBIB = true;
             else
@@ -1254,15 +1263,13 @@
         function etapa1Salvou(r) {
 
             if (r.success) {
-
                 var param = {
                     Id: r.TestID
                 };
 
                 infoProva(param);
 
-                if (ng.provaId === 0)
-                    ng.provaId = r.TestID;
+                ng.provaId = r.TestID;
 
                 ng.etapaAtual = 2;
                 $notification.success('Prova salva com sucesso!');
@@ -1418,7 +1425,7 @@
             }
 
             if (ng.showOnSerapEstudantes) {
-                console.log(ng.e1_nItensTestTAI);
+
                 if (ng.numberSynchronizedResponseItems < 2) {
                     $notification.alert('O campo "' + ng.labels.numberSynchronizedResponseItems + '"deve ser maior ou igual a dois.');
                     return false;
@@ -1603,8 +1610,6 @@
                         ng.e1_nItensTestTAI = procurarElementoEm([r.NumberItemsAplicationTai], ng.e1_nItensTestTAIList)[0];
 
                         if (ng.e1_nItensTestTAI) {
-                            console.log(ng.e1_nItensTestTAI.AdvanceWithoutAnswering, ng.e1_nItensTestTAI.BackToPreviousItem );
-                            console.log(r.AdvanceWithoutAnswering, r.BackToPreviousItem);
                             ng.advanceWithoutAnswering = r.AdvanceWithoutAnswering;
                             ng.backToPreviousItem = r.BackToPreviousItem;
                         }
@@ -1756,33 +1761,61 @@
         */
         function initEtapa2() {
 
-
             ng.escondeModal = false;
+            ng.e2_matrizAvaliacao = null;
+            ng.e2_matrizAvaliacaoList = [];
+            ng.e2_listAnoItensTai = [];
+            ng.e2_dadosModalAnoItensAmostraTai = null;
+            ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = '';
+            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
+            ng.e2_blockComponenteMatrixTai = false;
 
-            // ETAPA 2
-            blocosCarregar();
+            ng.e2_listaComponenteCurricular = [];
+            ng.e2_cbComponenteCurricular
 
             ng.e2_ItensAtuais = 0;
             ng.e2_Navegacao = 1;
             /////////// FIM ETAPA 2
 
+            //TAI
+            if (ng.showTestTAI)
+                configuraEtapa2Tai();
+            else {
+                // ETAPA 2
+                blocosCarregar();
 
-            // MODAL DE ADIÇÃO
-            initModalAdicao();
-            /////////////////// FIM  MODAL DE ADIÇÃO
+                // MODAL DE ADIÇÃO
+                initModalAdicao();
+                /////////////////// FIM  MODAL DE ADIÇÃO
 
+                // LISTAGEM DE ITENS
+                ng.e2_ListaModal;
+                //////////////////// FIM LISTAGEM DE ITENS
+                createView();
 
-            // LISTAGEM DE ITENS
-            ng.e2_ListaModal;
-            //////////////////// FIM LISTAGEM DE ITENS
+                nivelEnsinoCarregar();
 
-            createView();
-
-            nivelEnsinoCarregar();
-
-            carregaModality();
+                carregaModality();
+            }
 
             self.etapa2.carregou = true;
+        };
+
+        ng.e2_matrizAvaliacaoMudou = e2_matrizAvaliacaoMudou;
+        function e2_matrizAvaliacaoMudou() {
+            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa2.alterou = true;
+
+            if (!ng.e2_matrizAvaliacao)
+                return;
+        };
+
+        ng.e2_anoItensAmostraTaiMudou = e2_anoItensAmostraTaiMudou;
+        function e2_anoItensAmostraTaiMudou() {
+
+            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa2.alterou = true;
+
+            if (!ng.e2_dadosModalAnoItensAmostraTai.Ano)
+                return;
         };
 
         /**
@@ -1912,6 +1945,10 @@
                 }
             });
         };
+
+        function carregaListAnoItensTai() {
+            ng.e2_listAnoItensTai = ng.e1_listaPeriodos;
+        }
 
         /**
         * @function Tratamentos resultado do nivel de ensino
@@ -2865,14 +2902,25 @@
         */
         ng.e2_Salvar = e2_Salvar
         function e2_Salvar(salvouPeloModal = false) {
+            if (ng.showTestTAI) {
+                var listaParaSalvar = e2_mapearParaListaTestTaiCurriculumGradeSave();
+                TestModel.saveTestTaiCurriculumGrade({ listEntity: listaParaSalvar }, function (result) {
+                    if (result.success) {
+                        $notification.success('A prova foi salva com sucesso!');
+                        ng.alterouEtapaAtual = (false);
+                        carregarListaTestTaiCurriculumGrade();
+                    } else {
+                        if (result.type && result.message)
+                            $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
 
-            ng.selecItensProxCaderno = salvouPeloModal;
-
-            if (!ng.alterouEtapaAtual)
-                return;
-
-            self.etapa2.salvar(validarEtapa2(), e2_salvo);
-
+            } else {
+                ng.selecItensProxCaderno = salvouPeloModal;
+                if (!ng.alterouEtapaAtual)
+                    return;
+                self.etapa2.salvar(validarEtapa2(), e2_salvo);
+            }
         };
 
         /**
@@ -2887,33 +2935,52 @@
          */
         function validarEtapa2() {
 
-            var obj = {
-                entity: {
-                    Id: ng.e2_blockAtual.Id,
-                    Description: ng.e2_blockAtual.Description,
-                    Test_Id: ng.provaId
+            if (ng.showTestTAI) {
+
+                if (!ng.e2_cbComponenteCurricular)
+                    return $notification.alert('Selecione um componente curricular.');
+
+                if (!ng.e2_matrizAvaliacao)
+                    return $notification.alert('Selecione uma matriz de avaliação.');
+
+                if (!ng.anosItensAmostraProvaTai || ng.anosItensAmostraProvaTai.length == 0)
+                    return $notification.alert('Selecione o(s) ano(s) dos itens da amostra.');
+
+                var porcentagem = obterPorcentagemAnoItensAmostraTai();
+                if (porcentagem != 100 && ng.anosItensAmostraProvaTai.length > 1)
+                    return $notification.alert('A soma da porcentagem dos anos escolares deve ser igual a 100.');
+
+                return true;
+
+            } else {
+                var obj = {
+                    entity: {
+                        Id: ng.e2_blockAtual.Id,
+                        Description: ng.e2_blockAtual.Description,
+                        Test_Id: ng.provaId
+                    }
+                };
+
+                var blockItem = [];
+                var arr = ng.e2_ListaItemSelecionados;
+                var len = arr.length;
+
+                for (var i = 0; i < len; i++) {
+
+                    if (arr[i].Id) {
+
+                        blockItem[i] = {
+                            Item_Id: arr[i].Id,
+                            Block_Id: ng.e2_blockAtual.Id,
+                            Order: i
+                        };
+                    }
                 }
-            };
 
-            var blockItem = [];
-            var arr = ng.e2_ListaItemSelecionados;
-            var len = arr.length;
+                obj.entity['BlockItems'] = blockItem;
 
-            for (var i = 0; i < len; i++) {
-
-                if (arr[i].Id) {
-
-                    blockItem[i] = {
-                        Item_Id: arr[i].Id,
-                        Block_Id: ng.e2_blockAtual.Id,
-                        Order: i
-                    };
-                }
+                return obj;
             }
-
-            obj.entity['BlockItems'] = blockItem;
-
-            return obj;
         };
 
         ng.e2_callModalAposSalvar = e2_callModalAposSalvar;
@@ -2925,6 +2992,11 @@
         function callModalAdicionarContextoProva() {
             e1_criarObjetoDadosModalContexto();
             angular.element("#modalNovoContextoProva").modal({ backdrop: 'static' });
+        };
+
+        ng.callModalAnoItensAmostraTai = callModalAnoItensAmostraTai;
+        function callModalAnoItensAmostraTai() {
+            angular.element("#modalAnoItensAmostraTai").modal({ backdrop: 'static' });
         };
 
         ng.e2_exibirModalProximoBloco = e2_exibirModalProximoBloco;
@@ -4372,7 +4444,6 @@
                 ...item,
                 image: { Id: '', Guid: '', Path: item.imagePath }
             };
-            console.log(ng.e1_dadosModalContexto);
             editarContextoSummernote();
             angular.element('#modalNovoContextoProva').modal({ backdrop: 'static' });
         };
@@ -4391,6 +4462,271 @@
             campoContexto.html('');
         }
 
+
+
+
+        ng.e2_criarObjetoDadosModalAnoItensAmostraTai = e2_criarObjetoDadosModalAnoItensAmostraTai;
+        function e2_criarObjetoDadosModalAnoItensAmostraTai() {
+            ng.e2_dadosModalAnoItensAmostraTai = {
+                id: 0,
+                Ano: { Value: 0, Description: '' },
+                Porcentagem: '',
+            };
+        };
+
+        ng.e2_addDadosModalAnoItensAmostraTai = e2_addDadosModalAnoItensAmostraTai;
+        function e2_addDadosModalAnoItensAmostraTai() {            
+
+            var porcentagem = parseInt(ng.e2_dadosModalAnoItensAmostraTai.Porcentagem);
+            if (porcentagem == 0) {
+                $notification.alert('A porcentagem deve ser maior que Zero.');
+                return;
+            }
+
+            if (validaPorcentagem()) {
+                if (ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai != null) {
+                    const indexItemDelete = ng.anosItensAmostraProvaTai.indexOf(ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai);
+                    ng.anosItensAmostraProvaTai.splice(indexItemDelete, 1);
+                    ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
+                    const itemAlterado = {
+                        ...ng.e2_dadosModalAnoItensAmostraTai
+                    };
+                    ng.anosItensAmostraProvaTai.push(itemAlterado);
+                } else {
+
+                    const itemExists = ng.anosItensAmostraProvaTai.find(t => t.Ano.Id === ng.e2_dadosModalAnoItensAmostraTai.Ano.Id);
+                    if (itemExists) {
+                        $notification.alert('Ano escolar já cadastrado.');
+                        return;
+                    }
+
+                    const itemNovo = {
+                        ...ng.e2_dadosModalAnoItensAmostraTai
+                    };
+                    ng.anosItensAmostraProvaTai.push(itemNovo);
+                    ng.e2_blockComponenteMatrixTai = true;
+
+                }
+                ng.e2_criarObjetoDadosModalAnoItensAmostraTai();
+                self.etapa2.alterou = true
+                angular.element('#modalAnoItensAmostraTai').modal('hide');
+            } else {
+                $notification.alert('A soma das porcentagens dos anos escolares não pode ser maior que 100.');
+                return false;
+            }
+        };
+
+        ng.e2_editarModalAnoItensAmostraTai = e2_editarModalAnoItensAmostraTai;
+        function e2_editarModalAnoItensAmostraTai(item) {
+            e2_criarObjetoDadosModalAnoItensAmostraTai();
+            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = item;
+            ng.e2_dadosModalAnoItensAmostraTai = {
+                ...item
+            };
+            angular.element('#modalAnoItensAmostraTai').modal({ backdrop: 'static' });
+        };
+
+        ng.e2_confirmarDeletarItemAnosItensAmostraProvaTai = e2_confirmarDeletarItemAnosItensAmostraProvaTai;
+        function e2_confirmarDeletarItemAnosItensAmostraProvaTai(item) {
+            ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = item;
+            angular.element('#modalDeleteItemAnosItensAmostraProvaTai').modal({ backdrop: 'static' });
+        };
+
+        ng.e2_deletarItemAnosItensAmostraProvaTai = e2_deletarItemAnosItensAmostraProvaTai;
+        function e2_deletarItemAnosItensAmostraProvaTai() {
+            if (ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai) {
+                const indexItemDelete = ng.anosItensAmostraProvaTai.indexOf(ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai);
+                ng.anosItensAmostraProvaTai.splice(indexItemDelete, 1);
+                ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = '';
+                self.etapa2.alterou = true
+                if (!ng.anosItensAmostraProvaTai || ng.anosItensAmostraProvaTai.length == 0)
+                    ng.e2_blockComponenteMatrixTai = false;
+            }
+            angular.element('#modalDeleteItemAnosItensAmostraProvaTai').modal('hide');
+        };
+
+        ng.e2_limparDadosModalAnoItensAmostraTai = e2_limparDadosModalAnoItensAmostraTai;
+        function e2_limparDadosModalAnoItensAmostraTai() {
+            ng.e2_dadosModalAnoItensAmostraTai = null;
+            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
+        }
+
+        function obterPorcentagemAnoItensAmostraTai() {
+            var porcentagem = 0;
+            for (var i = 0; i < ng.anosItensAmostraProvaTai.length; i++) {
+                var pi = parseInt(ng.anosItensAmostraProvaTai[i].Porcentagem);
+                porcentagem = pi + porcentagem;
+            };
+            return porcentagem;
+        }
+
+        function validaPorcentagem() {
+            var porcentagem = parseInt(obterPorcentagemAnoItensAmostraTai());
+            porcentagem = porcentagem + parseInt(ng.e2_dadosModalAnoItensAmostraTai.Porcentagem);
+            if (ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai != null)
+                porcentagem = porcentagem - parseInt(ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai.Porcentagem);
+            if (porcentagem > 100) {
+                return false;
+            }
+            return true;
+        }
+
+        function carregaMatrizAvaliacao() {
+            try {
+                EvaluationMatrixModel.loadByMatriz({ Id: ng.e2_cbComponenteCurricular.Id }, function (result) {
+                    if (result.success) {
+                        ng.e2_matrizAvaliacaoList = result.lista;
+                        if (ng.e2_matrizAvaliacao)
+                            ng.e2_matrizAvaliacao = procurarElementoEm([ng.e2_matrizAvaliacao], ng.e2_matrizAvaliacaoList)[0];
+                    }
+                    else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
+            }
+            catch (error) {
+                $notification.error("Não há nenhuma matriz cadastrada!");
+            }
+
+        };
+
+        function e2_ComponenteCurricularCarregado(r) {
+
+            if (r.success) {
+                if (ng.editMode)
+                    return;
+
+                ng.e2_listaComponenteCurricular = angular.copy(r.lista);
+
+                if (ng.e2_cbComponenteCurricular) {
+                    ng.e2_cbComponenteCurricular = procurarElementoEm([ng.e2_cbComponenteCurricular], ng.e2_listaComponenteCurricular)[0];
+                    carregaMatrizAvaliacao();
+                }
+
+            } else {
+                if (r.type && r.message)
+                    $notification[r.type ? r.type : 'error'](r.message);
+                return false;
+            }
+        };
+
+        ng.e2_ComponenteCurricularMudou = e2_ComponenteCurricularMudou;
+        function e2_ComponenteCurricularMudou() {
+
+            ng.e2_matrizAvaliacaoList = [];
+            if (!ng.e2_cbComponenteCurricular)
+                return;
+
+            carregaMatrizAvaliacao();
+
+            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa2.alterou = true;
+        };
+
+        function e2_ComponenteCurricularCarregar(tipoNivelEnsino) {
+            if (tipoNivelEnsino || tipoNivelEnsino == 0) {
+                TestModel.searchDisciplinesSaves({ typeLevelEducation: tipoNivelEnsino.Id }, function (result) {
+                    if (result.success) {
+                        e2_ComponenteCurricularCarregado(result);
+                    }
+                    else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
+            }
+            else {
+                $notification.alert('Este tipo de prova não possui nível ensino cadastrado.');
+            }
+        };
+
+        function e2_mapearParaListaTestTaiCurriculumGradeSave() {
+            var idComponente = ng.e2_cbComponenteCurricular.Id;
+            var idMatriz = ng.e2_matrizAvaliacao.Id;
+
+            var listaTestTaiCurriculumGradeSave = [];
+            for (var i = 0; i < ng.anosItensAmostraProvaTai.length; i++) {
+                var anoItem = ng.anosItensAmostraProvaTai[i];
+                var item = {
+                    id: 0,
+                    disciplineId: idComponente,
+                    matrixId: idMatriz,
+                    typeCurriculumGradeId: anoItem.Ano.Id,
+                    percentage: parseInt(anoItem.Porcentagem),
+                    testId: ng.provaId
+                };
+
+                if (ng.anosItensAmostraProvaTai.length == 1) {
+                    item.percentage = 100;
+                    ng.anosItensAmostraProvaTai[i].Porcentagem = 100;
+                }                    
+
+                listaTestTaiCurriculumGradeSave.push(item);
+            };
+            return listaTestTaiCurriculumGradeSave;
+        }
+
+        function carregarListaTestTaiCurriculumGrade() {
+            try {
+                TestModel.loadTestTaiCurriculumGrade({ testId: ng.provaId }, function (result) {
+                    if (result.success) {
+                        var lista = result.lista;
+                        if (lista && lista.length > 0) {
+                            var componenteMatriz = lista[0];
+                            ng.e2_cbComponenteCurricular = { Id: componenteMatriz.DisciplineId };
+                            carregaMatrizAvaliacao();
+                            ng.e2_matrizAvaliacao = { Id: componenteMatriz.MatrixId };
+                            popularAnosItensAmostraProvaTai(lista);
+                            ng.e2_blockComponenteMatrixTai = true;
+                        }
+                        e2_ComponenteCurricularCarregar(ng.e1_tipoNivelEnsino);
+                    }
+                    else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
+            }
+            catch (error) {
+                $notification.error("Erro ao listar os anos escolares já cadastrados.");
+            }
+        }
+
+        function popularAnosItensAmostraProvaTai(lista) {
+            ng.anosItensAmostraProvaTai = [];
+            for (var i = 0; i < lista.length; i++) {
+                var itemLista = lista[i];
+                var anoEscolar = procurarElementoEm([{ Id: itemLista.TypeCurriculumGradeId }], ng.e2_listAnoItensTai)[0];
+                var item = {
+                    id: 0,
+                    Ano: anoEscolar,
+                    Porcentagem: itemLista.Percentage,
+                };
+                ng.anosItensAmostraProvaTai.push(item);
+            };
+        }
+
+        function configuraEtapa2Tai() {
+            if (ng.provaId && ng.provaId > 0) {
+                carregarListaTestTaiCurriculumGrade()
+            } else {
+                e2_ComponenteCurricularCarregar(ng.e1_tipoNivelEnsino);
+            }
+            var $matrizAvaliacao = $(".matrizAvaliacao");
+            $matrizAvaliacao.select2();
+            carregaListAnoItensTai();
+        }
+
+        ng.e2_avisoBlockComponenteTai = function __avisoBlockComponenteTai() {
+            return $notification.alert('É preciso excluir todos os registros para alterar o componente curricular.');
+        }
+
+        ng.e2_avisoBlockMatrizTai = function __avisoBlockMatrizTai() {
+            return $notification.alert('É preciso excluir todos os registros para alterar a matriz.');
+        }
+
+        ng.validarPorcentagemInteiro = validarPorcentagemInteiro;
+        function validarPorcentagemInteiro() {
+            var porcentagem = ng.e2_dadosModalAnoItensAmostraTai.Porcentagem;
+            ng.e2_dadosModalAnoItensAmostraTai.Porcentagem = porcentagem.replace(/[^0-9]/g, "");
+        };
 
     };
 

@@ -142,6 +142,7 @@
     <Compile Include="TestPermission.cs" />
     <Compile Include="TestSectionStatusCorrection.cs" />
     <Compile Include="TestSubGroup.cs" />
+    <Compile Include="TestTaiCurriculumGrade.cs" />
     <Compile Include="TestTemplate.cs" />
     <Compile Include="TestFiles.cs" />
     <Compile Include="ModelTest.cs" />

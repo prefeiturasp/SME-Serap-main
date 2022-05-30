@@ -362,6 +362,12 @@ namespace GestaoAvaliacao.MappingDependence
 					.WithService.AllInterfaces()
 					.SetLifestyle(LifestylePerWebRequest));
 
+			container.Register(Classes.FromAssemblyContaining<TestTaiCurriculumGradeRepository>()
+				.BasedOn(typeof(ITestTaiCurriculumGradeRepository))
+				.WithService.AllInterfaces()
+				.SetLifestyle(LifestylePerWebRequest));
+
+
 			#region GestaoEscolar
 
 			container.Register(Classes.FromAssemblyContaining<ACA_CursoRepository>()
