@@ -18,6 +18,7 @@ using EntityFile = GestaoAvaliacao.Entities.File;
 namespace GestaoAvaliacao.API.Controllers
 {
 	[CustomAuthorizationAttribute]
+	[ApiExplorerSettings(IgnoreApi = true)]
 	public class AnswerSheetController : ApiController
 	{
 		private readonly IAbsenceReasonBusiness _absenceReasonBusiness;

@@ -15,6 +15,7 @@ using System.Web.Http.Description;
 namespace GestaoAvaliacao.API.Controllers
 {
     [CustomAuthorizationAttribute]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class CorrectionController : ApiController
     {
         #region Propriedades
