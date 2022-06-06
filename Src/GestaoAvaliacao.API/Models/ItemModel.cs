@@ -2,13 +2,40 @@
 {
     public class ItemModel
     {
-        public long Id { get; set; }
-        public long AlternativeId { get; set; }
-        public int Order { get; set; }
-        public int AlternativeOrder { get; set; }
-        public bool EmptyAlternative { get; set; }
-        public bool DuplicateAlternative { get; set; }
+        //public long Id { get; set; }
+        //public long AlternativeId { get; set; }
+        //public int Order { get; set; }
+        //public int AlternativeOrder { get; set; }
+        //public bool EmptyAlternative { get; set; }
+        //public bool DuplicateAlternative { get; set; }
 
+        //public long DisciplinaId { get; set; }
+        //public long MatrizId { get; set; }
+        //public long ModeloMatrizId { get; set; }
+
+        //public string TextoBaseDescricao { get; set; }
+        //public string TextoBaseOrientacaoFonte { get; set; }
+
+
+        public string ItemCodigo { get; set; }
+        public long EixoId { get; set; }
+        public long HabilidadeId { get; set; }
+        public long AssuntoId { get; set; }
+        public long SubassuntoId { get; set; }
+        public long SituacaoId { get; set; }
+        public long TipoItemId { get; set; }
+        public bool SigiloItem { get; set; }
+        public string[] PalavrasChave { get; set; }
+        public int Proficiencia { get; set; }
+        public int[] Series { get; set; }
+        public long DificuldadeId { get; set; }
+        public string Observacao { get; set; }
+
+        public int Discriminacao { get; set; }
+        public string Dificuldade { get; set; }
+        public int AcertoCasual { get; set; }
+        public string Enunciado { get; set; }
+        public Alternativa[] Alternativas { get; set; }
 
         //-------- PASSO 1
         //disciplina **
@@ -22,8 +49,8 @@
         //-------- PASSO 3
         //Código do item
 
-        //Eixo.Id **
-        //Habilidade.Id **
+        //EixoId **
+        //HabilidadeId **
 
         //assunto.Id **
         //subassunto.Id **
@@ -55,5 +82,23 @@
         //texto **
         //justificativa
 
+    }
+
+    public class Alternativa
+    {
+        public string Texto { get; set; }
+        public string Justificativa { get; set; }
+
+        public bool Correta { get; set; }
+
+        public int Ordem { get; set; }
+
+        public string Numeracao { get; set; }
+
+        public decimal? TCTCoeficienteBisserial { get; set; }
+
+        public decimal? TCTProporcaoAcertos { get; set; }
+
+        public decimal? TCTDiscriminacao { get; set; }
     }
 }
