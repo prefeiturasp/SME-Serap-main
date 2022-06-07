@@ -18,6 +18,8 @@
 
 
         public string ItemCodigo { get; set; }
+        public TextoBase TextoBase { get; set; }
+
         public long EixoId { get; set; }
         public long HabilidadeId { get; set; }
         public long AssuntoId { get; set; }
@@ -31,10 +33,12 @@
         public long DificuldadeId { get; set; }
         public string Observacao { get; set; }
 
-        public int Discriminacao { get; set; }
-        public string Dificuldade { get; set; }
-        public int AcertoCasual { get; set; }
+        public decimal? TriDiscriminacao { get; set; }
+        public decimal? TriDificuldade { get; set; }
+        public decimal? TriAcertoCasual { get; set; }
+
         public string Enunciado { get; set; }
+
         public Alternativa[] Alternativas { get; set; }
 
         //-------- PASSO 1
@@ -100,5 +104,11 @@
         public decimal? TCTProporcaoAcertos { get; set; }
 
         public decimal? TCTDiscriminacao { get; set; }
+    }
+
+    public class TextoBase
+    {
+        public string Descricao { get; set; }
+        public string Fonte { get; set; }
     }
 }

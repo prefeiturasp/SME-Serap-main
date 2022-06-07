@@ -618,6 +618,11 @@ namespace GestaoAvaliacao.Business
 			return _entity;
 		}
 
+		public Item SaveApi(Item entity)
+        {
+
+        }
+
 		public bool VerifyItemCodeAlreadyExists(string itemCode, long? itemId = null)
 		{
 			return itemRepository.VerifyItemCodeAlreadyExists(itemCode, itemId);
