@@ -2,21 +2,7 @@
 {
     public class ItemModel
     {
-        //public long Id { get; set; }
-        //public long AlternativeId { get; set; }
-        //public int Order { get; set; }
-        //public int AlternativeOrder { get; set; }
-        //public bool EmptyAlternative { get; set; }
-        //public bool DuplicateAlternative { get; set; }
-
-        //public long DisciplinaId { get; set; }
-        //public long MatrizId { get; set; }
-        //public long ModeloMatrizId { get; set; }
-
-        //public string TextoBaseDescricao { get; set; }
-        //public string TextoBaseOrientacaoFonte { get; set; }
-
-
+        
         public string ItemCodigo { get; set; }
         public TextoBase TextoBase { get; set; }
 
@@ -40,6 +26,25 @@
         public string Enunciado { get; set; }
 
         public Alternativa[] Alternativas { get; set; }
+
+
+
+
+        //public long Id { get; set; }
+        //public long AlternativeId { get; set; }
+        //public int Order { get; set; }
+        //public int AlternativeOrder { get; set; }
+        //public bool EmptyAlternative { get; set; }
+        //public bool DuplicateAlternative { get; set; }
+
+        //public long DisciplinaId { get; set; }
+        //public long MatrizId { get; set; }
+        //public long ModeloMatrizId { get; set; }
+
+        //public string TextoBaseDescricao { get; set; }
+        //public string TextoBaseOrientacaoFonte { get; set; }
+
+
 
         //-------- PASSO 1
         //disciplina **
