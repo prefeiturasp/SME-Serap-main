@@ -4291,14 +4291,14 @@
                     $notification.success(result.message);
 
                     for (var k = 0; k < ng.e2_ListaItemSelecionados.length; k++) {
-                        if (ng.e2_ListaItemSelecionados[k].Id == item.Id) {
-                            ng.e2_ListaItemSelecionados[k].Id = versao.Id;
-                            ng.e2_ListaItemSelecionados[k].BaseTextId = versao.BaseText.Id;
-                            ng.e2_ListaItemSelecionados[k].BaseTextDescription = versao.BaseText.Description;
-                            ng.e2_ListaItemSelecionados[k].Code = versao.ItemCode;
-                            ng.e2_ListaItemSelecionados[k].ItemCodeVersion = versao.ItemCodeVersion;
-                            ng.e2_ListaItemSelecionados[k].ItemVersion = versao.ItemVersion;
-                            ng.e2_ListaItemSelecionados[k].Statement = versao.Statement;
+                        if (ng.e2_ListaItemSelecionados[k].Id == itens.Id) {
+                            ng.e2_ListaItemSelecionados[k].Id = versoes.Id;
+                            ng.e2_ListaItemSelecionados[k].BaseTextId = versoes.BaseText.Id;
+                            ng.e2_ListaItemSelecionados[k].BaseTextDescription = versoes.BaseText.Description;
+                            ng.e2_ListaItemSelecionados[k].Code = versoes.ItemCode;
+                            ng.e2_ListaItemSelecionados[k].ItemCodeVersion = versoes.ItemCodeVersion;
+                            ng.e2_ListaItemSelecionados[k].ItemVersion = versoes.ItemVersion;
+                            ng.e2_ListaItemSelecionados[k].Statement = versoes.Statement;
                         }
 
                         ng.e2_ListaItemSelecionados[k].expanded = false;
