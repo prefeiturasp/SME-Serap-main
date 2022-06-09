@@ -2,11 +2,12 @@
 {
     public class ItemModel
     {
-        
+
+        public long MatrizId { get; set; }
+
         public string ItemCodigo { get; set; }
         public TextoBase TextoBase { get; set; }
 
-        public long EixoId { get; set; }
         public long HabilidadeId { get; set; }
         public long AssuntoId { get; set; }
         public long SubassuntoId { get; set; }

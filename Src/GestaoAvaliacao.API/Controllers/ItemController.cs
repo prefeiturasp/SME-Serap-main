@@ -5,6 +5,7 @@ using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -34,7 +35,7 @@ namespace GestaoAvaliacao.API.Controllers
             {
                 entity = MapearParaItemSerap(model);
                 //entity = itemBusiness.Save(0, item);
-                var result = new ItemResult();
+                var result = itemBusiness.SaveApi(entity);
 
                 return Request.CreateResponse(HttpStatusCode.OK, result);
             }
@@ -50,11 +51,17 @@ namespace GestaoAvaliacao.API.Controllers
         private Item MapearParaItemSerap(ItemModel model)
         {
             Item entity = new Item();
+
+            entity.EvaluationMatrix_Id = model.MatrizId;
+
             entity.ItemCode = model.ItemCodigo;
             var textoBase = model.TextoBase;
             entity.BaseText = new BaseText { Description = textoBase.Descricao, Source = textoBase.Fonte };
 
-            //verificar Eixo e Habilidade
+            entity.ItemSkills.Add(new ItemSkill { Skill_Id = model.HabilidadeId });
+            // obter o eixo com o ParentId da Habilidade acima
+
+
             entity.SubSubject = new SubSubject { Id = model.AssuntoId };
             entity.SubSubject_Id = model.SubassuntoId;
             entity.ItemSituation_Id = model.SituacaoId;
