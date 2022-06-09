@@ -1,4 +1,5 @@
 ﻿using GestaoAvaliacao.API.App_Start;
+using GestaoAvaliacao.API.Middleware;
 using GestaoAvaliacao.API.Models;
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IBusiness;
@@ -13,7 +14,7 @@ using System.Web.Http.Description;
 
 namespace GestaoAvaliacao.API.Controllers
 {
-    [CustomAuthorizationAttribute]
+    [AutAttribute]
     public class ItemController : ApiController
     {
         private readonly IItemBusiness itemBusiness;
@@ -23,7 +24,16 @@ namespace GestaoAvaliacao.API.Controllers
             this.itemBusiness = itemBusiness;
         }
 
-        [Route("api/Item/Save")]
+
+        [Route("api/Item/Get")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> Get(int itemId)
+        {
+            return Request.CreateResponse(HttpStatusCode.OK, "Ok");
+        }
+        
+
+            [Route("api/Item/Save")]
         [HttpPost]
         [ResponseType(typeof(ItemResult))]
         public async Task<HttpResponseMessage> ItemSave([FromBody] ItemModel model)

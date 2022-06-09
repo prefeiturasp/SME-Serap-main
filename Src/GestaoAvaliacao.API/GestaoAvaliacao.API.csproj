@@ -177,6 +177,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Middleware\FilterAttribute.cs" />
     <Compile Include="Models\AbsenceModel.cs" />
     <Compile Include="Models\AdherenceModel.cs" />
     <Compile Include="Models\BatchResultModel.cs" />

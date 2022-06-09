@@ -66,6 +66,7 @@ namespace GestaoAvaliacao.Util
 		#region API
 		public const string access_token = "Authorization";
 		public const string user_info = "user_info";
+		public const string keyApi = "keyApi";
 		#endregion
 	}
 }
