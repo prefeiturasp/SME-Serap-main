@@ -27,6 +27,8 @@ namespace GestaoAvaliacao.Business
         private readonly IGenerateHtmlBusiness generateHtmlBusiness;
         private readonly IEvaluationMatrixRepository evaluationMatrixRepository;
         private readonly ISkillRepository skillRepository;
+        private readonly ISubjectRepository subjectRepository;
+        private readonly IItemSituationRepository itemSituationRepository;
 
         const string RESPOSTA_CONSTRUIDA = "Resposta construída";
         const string MULTIPLA_ESCOLHA_4_ALTERNATIVAS = "Múltipla escolha 4 alternativas";
@@ -34,7 +36,9 @@ namespace GestaoAvaliacao.Business
 
         public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository, IStorage storage, IFileRepository fileRepository, IParameterBusiness parambusiness, IBaseTextRepository baseTextRepository, IHTMLToPDF htmltopdf, IItemTypeRepository itemTypeRepository, IGenerateHtmlBusiness generateHtmlBusiness,
             IEvaluationMatrixRepository evaluationMatrixRepository,
-            ISkillRepository skillRepository)
+            ISkillRepository skillRepository,
+            ISubjectRepository subjectRepository,
+            IItemSituationRepository itemSituationRepository)
         {
             this.itemRepository = itemRepository;
             this.alternativeRepository = alternativeRepository;
@@ -47,7 +51,8 @@ namespace GestaoAvaliacao.Business
             this.generateHtmlBusiness = generateHtmlBusiness;
             this.evaluationMatrixRepository = evaluationMatrixRepository;
             this.skillRepository = skillRepository;
-
+            this.subjectRepository = subjectRepository;
+            this.itemSituationRepository = itemSituationRepository;
         }
 
         #region Custom
@@ -628,11 +633,24 @@ namespace GestaoAvaliacao.Business
         {
             List<string> erros = new List<string>();
             var result = new ItemResult();
+
+            //ETAPA 1
             var matriz = evaluationMatrixRepository.GetByMatriz(entity.EvaluationMatrix_Id);
             if (matriz != null && matriz.Any())
                 entity.EvaluationMatrix = matriz.FirstOrDefault();
             else
                 erros.Add("Matriz não encontrada");
+
+            //ETAPA 3
+            if (!entity.ItemCode.IsNullOrEmptyOrWhiteSpace())
+            {
+                bool codigoExiste;
+                codigoExiste = itemRepository.VerifyItemCodeAlreadyExists(entity.ItemCode);
+                if (codigoExiste)
+                    erros.Add("O código do item já existe");
+            }
+            else
+                erros.Add("O código do item é obrigatório");
 
             var habilidadeItem = entity.ItemSkills.FirstOrDefault();
             var habilidade = skillRepository.Get(habilidadeItem.Skill_Id);
@@ -641,6 +659,23 @@ namespace GestaoAvaliacao.Business
             else
                 erros.Add("Habilidade não encontrada");
 
+            var assunto = subjectRepository.LoadSubjectBySubsubject((long)entity.SubSubject_Id);
+            if (assunto == null)
+                erros.Add("Subassunto não encontrado");
+
+            var situacao = itemSituationRepository.Get(entity.ItemSituation_Id);
+            if (situacao == null)
+                erros.Add("Situação do item não encontrada");
+
+            var tipoItem = itemTypeRepository.Get(entity.ItemType_Id);
+            if (tipoItem == null)
+                erros.Add("Tipo do item não encontrado");
+
+            if(entity.proficiency != null)
+            {
+                if((int)entity.proficiency < 100 || (int)entity.proficiency > 500)
+                    erros.Add("Proficiência deve ser de 100 a 500");
+            }
 
             return result;
         }

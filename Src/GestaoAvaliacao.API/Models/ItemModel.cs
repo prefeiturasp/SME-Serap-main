@@ -9,13 +9,12 @@
         public TextoBase TextoBase { get; set; }
 
         public long HabilidadeId { get; set; }
-        public long AssuntoId { get; set; }
         public long SubassuntoId { get; set; }
         public long SituacaoId { get; set; }
         public long TipoItemId { get; set; }
         public bool SigiloItem { get; set; }
         public string[] PalavrasChave { get; set; }
-        public int Proficiencia { get; set; }
+        public int? Proficiencia { get; set; }
         public int[] Series { get; set; }
         public long DificuldadeId { get; set; }
         public string Observacao { get; set; }
