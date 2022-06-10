@@ -1,4 +1,5 @@
-﻿using GestaoAvaliacao.Entities;
+﻿using GestaoAvaliacao.Dtos.ItemApi;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,8 @@ namespace GestaoAvaliacao.IBusiness
 		List<AJX_Select2> LoadAllKnowledgeAreaActive();
 
 		List<AJX_Select2> LoadDisciplineByKnowledgeArea(int knowledgeAreas);
+		List<EvaluationMatrix> LoadMatrixByDiscipline(long idDiscipline);
+		List<SkillDto> LoadSkillByMatrix(long idMatrix);
 
 
 	}

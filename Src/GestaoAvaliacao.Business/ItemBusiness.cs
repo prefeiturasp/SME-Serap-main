@@ -1,4 +1,5 @@
-﻿using GestaoAvaliacao.Entities;
+﻿using GestaoAvaliacao.Dtos.ItemApi;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IFileServer;
@@ -27,12 +28,24 @@ namespace GestaoAvaliacao.Business
 		private readonly IGenerateHtmlBusiness generateHtmlBusiness;
 		private readonly IKnowledgeAreaRepository knowledgeAreaRepository;
 		private readonly IDisciplineRepository disciplineRepository;
+		private readonly IEvaluationMatrixRepository evaluationMatrixRepository;
+		private readonly ISkillRepository skillRepository;
+
 		const string RESPOSTA_CONSTRUIDA = "Resposta construída";
 		const string MULTIPLA_ESCOLHA_4_ALTERNATIVAS = "Múltipla escolha 4 alternativas";
 		const string MULTIPLA_ESCOLHA_5_ALTERNATIVAS = "Múltipla escolha 5 alternativas";
 		Guid entityId = Guid.Parse("6CF424DC-8EC3-E011-9B36-00155D033206");
 
-		public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository, IStorage storage, IFileRepository fileRepository, IParameterBusiness parambusiness, IBaseTextRepository baseTextRepository, IHTMLToPDF htmltopdf, IItemTypeRepository itemTypeRepository, IGenerateHtmlBusiness generateHtmlBusiness ,IKnowledgeAreaRepository knowledgeAreaRepository, IDisciplineRepository disciplineRepository)
+
+		public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository,
+							IStorage storage, IFileRepository fileRepository,
+							IParameterBusiness parambusiness, IBaseTextRepository baseTextRepository,
+							IHTMLToPDF htmltopdf, IItemTypeRepository itemTypeRepository,
+							IGenerateHtmlBusiness generateHtmlBusiness,
+							IKnowledgeAreaRepository knowledgeAreaRepository,
+							IDisciplineRepository disciplineRepository,
+							IEvaluationMatrixRepository evaluationMatrixRepository,
+							ISkillRepository skillRepository)
 		{
 			this.itemRepository = itemRepository;
 			this.alternativeRepository = alternativeRepository;
@@ -45,7 +58,8 @@ namespace GestaoAvaliacao.Business
 			this.generateHtmlBusiness = generateHtmlBusiness;
 			this.knowledgeAreaRepository = knowledgeAreaRepository;
 			this.disciplineRepository = disciplineRepository;
-
+			this.evaluationMatrixRepository = evaluationMatrixRepository;
+			this.skillRepository = skillRepository;
 		}
 
 		#region Custom
@@ -950,20 +964,39 @@ namespace GestaoAvaliacao.Business
 
 		#region ItemsNewApi
 
+		#endregion
+
+		#region ItemsNewApi
+
 		public List<AJX_Select2> LoadAllKnowledgeAreaActive()
 		{
-			
 			return knowledgeAreaRepository.LoadAllKnowledgeAreaActive(string.Empty, entityId);
 		}
 
 
 		public List<AJX_Select2> LoadDisciplineByKnowledgeArea(int knowledgeAreas)
 		{
-			return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty,  knowledgeAreas.ToString(), entityId);
+			return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty, knowledgeAreas.ToString(), entityId);
 		}
 
 
+		public List<EvaluationMatrix> LoadMatrixByDiscipline(long idDiscipline)
+		{
+			return evaluationMatrixRepository.GetComboByDiscipline(idDiscipline).ToList();
+		}
+		public List<SkillDto> LoadSkillByMatrix(long idMatrix)
+		{
+			var listSkillDto = skillRepository.GetByMatrix(idMatrix).Select(s =>  new SkillDto
+			{
+				Id = s.Id,
+				Descricao = s.Description,
+				Codigo = s.Code
+			}).ToList() ;
+
+			return listSkillDto; 
+		} 
 		#endregion
+
 
 	}
 }

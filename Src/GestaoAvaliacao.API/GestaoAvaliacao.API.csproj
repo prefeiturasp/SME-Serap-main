@@ -223,6 +223,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.Dtos\GestaoAvaliacao.Dtos.csproj">
+      <Project>{BC0B4ECE-7048-4E0E-A993-AB2F6089ECDD}</Project>
+      <Name>GestaoAvaliacao.Dtos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
       <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>
       <Name>GestaoAvaliacao.Entities</Name>
@@ -254,6 +258,10 @@
     <ProjectReference Include="..\GestaoAvaliacao.WebProject\GestaoAvaliacao.WebProject.csproj">
       <Project>{e6038ad8-4fe9-49dd-80ce-05dfcf7891fc}</Project>
       <Name>GestaoAvaliacao.WebProject</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.IBusiness\GestaoEscolar.IBusiness.csproj">
+      <Project>{21F7980E-6A17-48CA-BF47-8A298810565A}</Project>
+      <Name>GestaoEscolar.IBusiness</Name>
     </ProjectReference>
     <ProjectReference Include="..\OMRService\OMRService.csproj">
       <Project>{edae4fec-1800-4d82-af1a-4ab8e451d9db}</Project>
