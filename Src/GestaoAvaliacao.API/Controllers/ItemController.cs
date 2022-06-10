@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
+
 namespace GestaoAvaliacao.API.Controllers
 {
     [AutAttribute]
@@ -25,15 +26,24 @@ namespace GestaoAvaliacao.API.Controllers
         }
 
 
-        [Route("api/Item/Get")]
+        [Route("api/Item/AreasDeConhecimento")]
         [HttpGet]
-        public async Task<HttpResponseMessage> Get(int itemId)
+        public async Task<HttpResponseMessage> GetAllKnowledgeAreaActive(int itemId)
         {
-            return Request.CreateResponse(HttpStatusCode.OK, "Ok");
+            try
+            {
+                var result = itemBusiness.LoadAllKnowledgeAreaActive();
+                return Request.CreateResponse(HttpStatusCode.OK, result);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return null;
+            }
         }
-        
 
-            [Route("api/Item/Save")]
+
+        [Route("api/Item/Save")]
         [HttpPost]
         [ResponseType(typeof(ItemResult))]
         public async Task<HttpResponseMessage> ItemSave([FromBody] ItemModel model)
@@ -42,7 +52,7 @@ namespace GestaoAvaliacao.API.Controllers
             try
             {
 
-                //entity = itemBusiness.Save(0, item);
+                // entity = itemBusiness.Save(0, item);
                 var result = new ItemResult();
 
                 return Request.CreateResponse(HttpStatusCode.OK, result);

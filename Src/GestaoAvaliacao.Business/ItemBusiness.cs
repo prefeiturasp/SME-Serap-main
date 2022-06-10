@@ -25,12 +25,13 @@ namespace GestaoAvaliacao.Business
 		private readonly IHTMLToPDF htmltopdf;
 		private readonly IItemTypeRepository itemTypeRepository;
 		private readonly IGenerateHtmlBusiness generateHtmlBusiness;
+		private readonly IKnowledgeAreaRepository knowledgeAreaRepository;
 
 		const string RESPOSTA_CONSTRUIDA = "Resposta construída";
 		const string MULTIPLA_ESCOLHA_4_ALTERNATIVAS = "Múltipla escolha 4 alternativas";
 		const string MULTIPLA_ESCOLHA_5_ALTERNATIVAS = "Múltipla escolha 5 alternativas";
 
-		public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository, IStorage storage, IFileRepository fileRepository, IParameterBusiness parambusiness, IBaseTextRepository baseTextRepository, IHTMLToPDF htmltopdf, IItemTypeRepository itemTypeRepository, IGenerateHtmlBusiness generateHtmlBusiness)
+		public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository, IStorage storage, IFileRepository fileRepository, IParameterBusiness parambusiness, IBaseTextRepository baseTextRepository, IHTMLToPDF htmltopdf, IItemTypeRepository itemTypeRepository, IGenerateHtmlBusiness generateHtmlBusiness ,IKnowledgeAreaRepository knowledgeAreaRepository)
 		{
 			this.itemRepository = itemRepository;
 			this.alternativeRepository = alternativeRepository;
@@ -41,6 +42,7 @@ namespace GestaoAvaliacao.Business
 			this.htmltopdf = htmltopdf;
 			this.itemTypeRepository = itemTypeRepository;
 			this.generateHtmlBusiness = generateHtmlBusiness;
+			this.knowledgeAreaRepository = knowledgeAreaRepository;
 
 		}
 
@@ -943,5 +945,17 @@ namespace GestaoAvaliacao.Business
 		}
 
 		#endregion
+
+		#region ItemsNewApi
+
+		public List<AJX_Select2> LoadAllKnowledgeAreaActive()
+		{
+			var entityId = Guid.Parse("6CF424DC-8EC3-E011-9B36-00155D033206");
+			return knowledgeAreaRepository.LoadAllKnowledgeAreaActive(string.Empty, entityId);
+		}
+
+
+		#endregion
+
 	}
 }

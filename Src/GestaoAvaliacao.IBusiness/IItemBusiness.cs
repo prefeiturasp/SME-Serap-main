@@ -40,5 +40,9 @@ namespace GestaoAvaliacao.IBusiness
         Item RevokeItem(long Item_Id, bool Revoked);
         Item SaveChangeItem(Item item, long TestId, long itemIdAntigo);
 
-    }
+		//NewApi
+		List<AJX_Select2> LoadAllKnowledgeAreaActive();
+
+
+	}
 }
