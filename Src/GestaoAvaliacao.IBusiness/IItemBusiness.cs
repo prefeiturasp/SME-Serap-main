@@ -43,6 +43,8 @@ namespace GestaoAvaliacao.IBusiness
 		//NewApi
 		List<AJX_Select2> LoadAllKnowledgeAreaActive();
 
+		List<AJX_Select2> LoadDisciplineByKnowledgeArea(int knowledgeAreas);
+
 
 	}
 }

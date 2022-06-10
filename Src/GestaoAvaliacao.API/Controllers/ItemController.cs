@@ -26,9 +26,9 @@ namespace GestaoAvaliacao.API.Controllers
         }
 
 
-        [Route("api/Item/AreasDeConhecimento")]
+        [Route("api/Item/AreasConhecimento")]
         [HttpGet]
-        public async Task<HttpResponseMessage> GetAllKnowledgeAreaActive(int itemId)
+        public async Task<HttpResponseMessage> GetAllKnowledgeAreaActive()
         {
             try
             {
@@ -41,6 +41,24 @@ namespace GestaoAvaliacao.API.Controllers
                 return null;
             }
         }
+
+
+        [Route("api/Item/Matrizes/AreaConhecimentoId")]
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetAlDisciplinebyknowledgearea(int areaConhecimentoId)
+        {
+            try
+            {
+                var result = itemBusiness.LoadDisciplineByKnowledgeArea(areaConhecimentoId);
+                return Request.CreateResponse(HttpStatusCode.OK, result);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return null;
+            }
+        }
+
 
 
         [Route("api/Item/Save")]

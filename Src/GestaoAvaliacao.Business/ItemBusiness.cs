@@ -26,12 +26,13 @@ namespace GestaoAvaliacao.Business
 		private readonly IItemTypeRepository itemTypeRepository;
 		private readonly IGenerateHtmlBusiness generateHtmlBusiness;
 		private readonly IKnowledgeAreaRepository knowledgeAreaRepository;
-
+		private readonly IDisciplineRepository disciplineRepository;
 		const string RESPOSTA_CONSTRUIDA = "Resposta construída";
 		const string MULTIPLA_ESCOLHA_4_ALTERNATIVAS = "Múltipla escolha 4 alternativas";
 		const string MULTIPLA_ESCOLHA_5_ALTERNATIVAS = "Múltipla escolha 5 alternativas";
+		Guid entityId = Guid.Parse("6CF424DC-8EC3-E011-9B36-00155D033206");
 
-		public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository, IStorage storage, IFileRepository fileRepository, IParameterBusiness parambusiness, IBaseTextRepository baseTextRepository, IHTMLToPDF htmltopdf, IItemTypeRepository itemTypeRepository, IGenerateHtmlBusiness generateHtmlBusiness ,IKnowledgeAreaRepository knowledgeAreaRepository)
+		public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository, IStorage storage, IFileRepository fileRepository, IParameterBusiness parambusiness, IBaseTextRepository baseTextRepository, IHTMLToPDF htmltopdf, IItemTypeRepository itemTypeRepository, IGenerateHtmlBusiness generateHtmlBusiness ,IKnowledgeAreaRepository knowledgeAreaRepository, IDisciplineRepository disciplineRepository)
 		{
 			this.itemRepository = itemRepository;
 			this.alternativeRepository = alternativeRepository;
@@ -43,6 +44,7 @@ namespace GestaoAvaliacao.Business
 			this.itemTypeRepository = itemTypeRepository;
 			this.generateHtmlBusiness = generateHtmlBusiness;
 			this.knowledgeAreaRepository = knowledgeAreaRepository;
+			this.disciplineRepository = disciplineRepository;
 
 		}
 
@@ -950,8 +952,14 @@ namespace GestaoAvaliacao.Business
 
 		public List<AJX_Select2> LoadAllKnowledgeAreaActive()
 		{
-			var entityId = Guid.Parse("6CF424DC-8EC3-E011-9B36-00155D033206");
+			
 			return knowledgeAreaRepository.LoadAllKnowledgeAreaActive(string.Empty, entityId);
+		}
+
+
+		public List<AJX_Select2> LoadDisciplineByKnowledgeArea(int knowledgeAreas)
+		{
+			return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty,  knowledgeAreas.ToString(), entityId);
 		}
 
 
