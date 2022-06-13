@@ -42,14 +42,16 @@ namespace GestaoAvaliacao.IBusiness
         Item SaveChangeItem(Item item, long TestId, long itemIdAntigo);
 
 		//NewApi
-		List<AJX_Select2> LoadAllKnowledgeAreaActive();
+		List<BaseDto> LoadAllKnowledgeAreaActive();
 
-		List<AJX_Select2> LoadDisciplineByKnowledgeArea(int knowledgeAreas);
-		List<EvaluationMatrix> LoadMatrixByDiscipline(long idDiscipline);
+		List<BaseDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas);
+		List<BaseDto> LoadMatrixByDiscipline(long idDiscipline);
 		List<SkillDto> LoadSkillByMatrix(long idMatrix);
 		List<AbilityDto> LoadAbilityBySkill(long idSkill);
-		List<AJX_Select2> LoadAllSubjects();
-		List<AJX_Select2> LoadSubsubjectBySubject(string idSubjects);
+		List<BaseDto> LoadAllSubjects();
+		List<BaseDto> LoadSubsubjectBySubject(string idSubjects);
+		List<ItemTypeDto> FindForTestType();
+
 
 	}
 }

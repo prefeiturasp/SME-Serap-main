@@ -45,6 +45,7 @@
     <Compile Include="Export\FiltroExportacaoResultadoDto.cs" />
     <Compile Include="ItemApi\AbilityDto.cs" />
     <Compile Include="ItemApi\BaseDto.cs" />
+    <Compile Include="ItemApi\ItemTypeDto.cs" />
     <Compile Include="ItemApi\MatrixDto.cs" />
     <Compile Include="ItemApi\SkillDto.cs" />
     <Compile Include="StudentTest\StudentTestTimeListaDto.cs" />

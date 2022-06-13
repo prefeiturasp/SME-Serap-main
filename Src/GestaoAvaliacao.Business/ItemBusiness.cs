@@ -971,21 +971,33 @@ namespace GestaoAvaliacao.Business
 
         #region ItemsNewApi
 
-        public List<AJX_Select2> LoadAllKnowledgeAreaActive()
+        public List<BaseDto> LoadAllKnowledgeAreaActive()
         {
-            return knowledgeAreaRepository.LoadAllKnowledgeAreaActive(string.Empty, ENTITY_ID);
+            return knowledgeAreaRepository.LoadAllKnowledgeAreaActive(string.Empty, ENTITY_ID).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
         }
 
 
-        public List<AJX_Select2> LoadDisciplineByKnowledgeArea(int knowledgeAreas)
+        public List<BaseDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas)
         {
-            return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty, knowledgeAreas.ToString(), ENTITY_ID);
+            return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty, knowledgeAreas.ToString(), ENTITY_ID).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
         }
 
 
-        public List<EvaluationMatrix> LoadMatrixByDiscipline(long idDiscipline)
+        public List<BaseDto> LoadMatrixByDiscipline(long idDiscipline)
         {
-            return evaluationMatrixRepository.GetComboByDiscipline(idDiscipline).ToList();
+            return evaluationMatrixRepository.GetComboByDiscipline(idDiscipline).Select(s => new BaseDto
+            {
+                Id =s.Id ,
+                Descricao = s.Description
+            }).ToList();
         }
         public List<SkillDto> LoadSkillByMatrix(long idMatrix)
         {
@@ -1012,19 +1024,40 @@ namespace GestaoAvaliacao.Business
         }
 
 
-        public List<AJX_Select2> LoadAllSubjects()
+        public List<BaseDto> LoadAllSubjects()
         {
-            return subjectRepository.LoadAllSubjects(string.Empty, ENTITY_ID);
+            return subjectRepository.LoadAllSubjects(string.Empty, ENTITY_ID).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
+        }
+    
+
+        public List<BaseDto> LoadSubsubjectBySubject(string idSubjects)
+        {
+            return subjectRepository.LoadSubsubjectBySubject(string.Empty, idSubjects, ENTITY_ID).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
         }
 
-        public List<AJX_Select2> LoadSubsubjectBySubject(string idSubjects)
+          public List<ItemTypeDto> FindForTestType()
         {
-            return subjectRepository.LoadSubsubjectBySubject(string.Empty, idSubjects, ENTITY_ID);
+            var list = itemTypeRepository.FindForTestType(ENTITY_ID).Select(i => new ItemTypeDto
+            {
+                Id = i.Id,
+                Descricao = i.Description,
+                EhPadrao = i.IsDefault,
+                QuantidadeAlternativa = i.QuantityAlternative
+            }).ToList();
+            return list;
         }
 
 
-        #endregion
+    #endregion
 
 
-    }
+}
 }

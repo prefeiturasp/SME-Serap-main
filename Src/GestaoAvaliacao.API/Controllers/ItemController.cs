@@ -31,6 +31,7 @@ namespace GestaoAvaliacao.API.Controllers
 
         [Route("api/Item/AreasConhecimento")]
         [HttpGet]
+        [ResponseType(typeof(BaseDto))]
         public async Task<HttpResponseMessage> GetAllKnowledgeAreaActive()
         {
             try
@@ -48,6 +49,7 @@ namespace GestaoAvaliacao.API.Controllers
 
         [Route("api/Item/Disciplinas/AreaConhecimentoId")]
         [HttpGet]
+        [ResponseType(typeof(BaseDto))]
         public async Task<HttpResponseMessage> GetAlDisciplinebyknowledgearea(int areaConhecimentoId)
         {
             try
@@ -64,6 +66,7 @@ namespace GestaoAvaliacao.API.Controllers
 
         [Route("api/Item/Matrizes/DisciplinaId")]
         [HttpGet]
+        [ResponseType(typeof(BaseDto))]
         public async Task<HttpResponseMessage> GetEvaluationMatrixbyDiscipline(int disciplinaId)
         {
             try
@@ -144,7 +147,7 @@ namespace GestaoAvaliacao.API.Controllers
 
         [Route("api/Item/Assuntos")]
         [HttpGet]
-        [ResponseType(typeof(AJX_Select2))]
+        [ResponseType(typeof(BaseDto))]
         public async Task<HttpResponseMessage> GetAllSubjects()
         {
             try
@@ -164,7 +167,7 @@ namespace GestaoAvaliacao.API.Controllers
 
         [Route("api/Item/Assuntos/SubAssuntos/AssuntoId")]
         [HttpGet]
-        [ResponseType(typeof(AJX_Select2))]
+        [ResponseType(typeof(BaseDto))]
         public async Task<HttpResponseMessage> GetSubsubjectBySubject(int assuntoId)
         {
             try
@@ -180,6 +183,26 @@ namespace GestaoAvaliacao.API.Controllers
             {
                 LogFacade.SaveError(ex);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de assuntos");
+            }
+        }
+
+        [Route("api/Item/Tipos")]
+        [HttpGet]
+        [ResponseType(typeof(BaseDto))]
+        public async Task<HttpResponseMessage> GetItemTypes()
+        {
+            try
+            {
+                var lista = itemBusiness.FindForTestType();
+                   
+                if (lista == null || !lista.Any())
+                    return Request.CreateResponse(HttpStatusCode.NoContent, "Itens não encontrados.");
+                return Request.CreateResponse(HttpStatusCode.OK, lista);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de tipos de itens.");
             }
         }
 
