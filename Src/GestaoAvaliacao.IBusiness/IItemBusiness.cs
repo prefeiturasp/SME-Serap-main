@@ -47,6 +47,7 @@ namespace GestaoAvaliacao.IBusiness
 		List<AJX_Select2> LoadDisciplineByKnowledgeArea(int knowledgeAreas);
 		List<EvaluationMatrix> LoadMatrixByDiscipline(long idDiscipline);
 		List<SkillDto> LoadSkillByMatrix(long idMatrix);
+		List<AbilityDto> LoadAbilityBySkill(long idSkill);
 
 
 	}

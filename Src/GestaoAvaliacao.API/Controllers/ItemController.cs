@@ -117,6 +117,33 @@ namespace GestaoAvaliacao.API.Controllers
         }
 
 
+        [Route("api/Item/Habilidade/EixoId")]
+        [HttpGet]
+        [ResponseType(typeof(AbilityDto))]
+        public async Task<HttpResponseMessage> GetAbilityBySkill(long eixoId)
+        {
+            try
+            {
+                if (eixoId <= 0)
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro eixoId é obrigatório e tem que ser maior que zero.");
+
+
+                var lista = itemBusiness.LoadAbilityBySkill(eixoId);
+
+                if (lista == null || !lista.Any())
+                    return Request.CreateResponse(HttpStatusCode.NoContent, "Habilidades não encontrados.");
+                // TODO return dto 
+                return Request.CreateResponse(HttpStatusCode.OK, lista);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de habilidades desse eixo");
+            }
+        }
+
+
+
 
         [Route("api/Item/Save")]
         [HttpPost]

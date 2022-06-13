@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Export\FiltroExportacaoResultadoDto.cs" />
+    <Compile Include="ItemApi\AbilityDto.cs" />
     <Compile Include="ItemApi\BaseDto.cs" />
     <Compile Include="ItemApi\MatrixDto.cs" />
     <Compile Include="ItemApi\SkillDto.cs" />
