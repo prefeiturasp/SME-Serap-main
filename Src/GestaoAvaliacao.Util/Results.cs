@@ -202,6 +202,13 @@ namespace GestaoAvaliacao.Util
 		public string message { get; set; }
 		public long alu_id { get; set; }
 		public long item_id { get; set; }
-	}	
+	}
+	public class ItemApiResult
+	{
+		public bool success { get; set; }
+		public string type { get; set; }
+		public string message { get; set; }
+		public long item_id { get; set; }
+	}
 	#endregion
 }
