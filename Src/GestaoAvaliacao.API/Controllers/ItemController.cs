@@ -72,14 +72,14 @@ namespace GestaoAvaliacao.API.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro disciplinaId é obrigatório e tem que ser maior que zero.");
 
 
-              var lista = itemBusiness.LoadMatrixByDiscipline(disciplinaId);
+                var lista = itemBusiness.LoadMatrixByDiscipline(disciplinaId);
 
                 if (lista == null || !lista.Any())
                     return Request.CreateResponse(HttpStatusCode.NoContent, "Matriz de avaliação não encontrada.");
 
                 // TODO return dto
 
-           
+
 
                 return Request.CreateResponse(HttpStatusCode.OK, lista);
             }
@@ -127,8 +127,8 @@ namespace GestaoAvaliacao.API.Controllers
                 if (eixoId <= 0)
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro eixoId é obrigatório e tem que ser maior que zero.");
 
-
                 var lista = itemBusiness.LoadAbilityBySkill(eixoId);
+
 
                 if (lista == null || !lista.Any())
                     return Request.CreateResponse(HttpStatusCode.NoContent, "Habilidades não encontrados.");
@@ -142,7 +142,46 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
+        [Route("api/Item/Assuntos")]
+        [HttpGet]
+        [ResponseType(typeof(AJX_Select2))]
+        public async Task<HttpResponseMessage> GetAllSubjects()
+        {
+            try
+            {
+                var lista = itemBusiness.LoadAllSubjects();
+                if (lista == null || !lista.Any())
+                    return Request.CreateResponse(HttpStatusCode.NoContent, "Assuntos não encontrados.");
+                return Request.CreateResponse(HttpStatusCode.OK, lista);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de assuntos");
+            }
+        }
 
+
+        [Route("api/Item/Assuntos/SubAssuntos/AssuntoId")]
+        [HttpGet]
+        [ResponseType(typeof(AJX_Select2))]
+        public async Task<HttpResponseMessage> GetSubsubjectBySubject(int assuntoId)
+        {
+            try
+            {
+                if (assuntoId <= 0)
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro assuntoId é obrigatório e tem que ser maior que zero.");
+                var lista = itemBusiness.LoadSubsubjectBySubject(assuntoId.ToString());
+                if (lista == null || !lista.Any())
+                    return Request.CreateResponse(HttpStatusCode.NoContent, "Assuntos não encontrados.");
+                return Request.CreateResponse(HttpStatusCode.OK, lista);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de assuntos");
+            }
+        }
 
 
         [Route("api/Item/Save")]

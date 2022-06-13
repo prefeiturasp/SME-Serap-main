@@ -48,7 +48,8 @@ namespace GestaoAvaliacao.IBusiness
 		List<EvaluationMatrix> LoadMatrixByDiscipline(long idDiscipline);
 		List<SkillDto> LoadSkillByMatrix(long idMatrix);
 		List<AbilityDto> LoadAbilityBySkill(long idSkill);
-
+		List<AJX_Select2> LoadAllSubjects();
+		List<AJX_Select2> LoadSubsubjectBySubject(string idSubjects);
 
 	}
 }

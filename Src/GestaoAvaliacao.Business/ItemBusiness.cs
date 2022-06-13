@@ -30,11 +30,12 @@ namespace GestaoAvaliacao.Business
         private readonly IDisciplineRepository disciplineRepository;
         private readonly IEvaluationMatrixRepository evaluationMatrixRepository;
         private readonly ISkillRepository skillRepository;
+        private readonly ISubjectRepository subjectRepository;
 
         const string RESPOSTA_CONSTRUIDA = "Resposta construída";
         const string MULTIPLA_ESCOLHA_4_ALTERNATIVAS = "Múltipla escolha 4 alternativas";
         const string MULTIPLA_ESCOLHA_5_ALTERNATIVAS = "Múltipla escolha 5 alternativas";
-        Guid entityId = Guid.Parse("6CF424DC-8EC3-E011-9B36-00155D033206");
+        Guid ENTITY_ID = Guid.Parse("6CF424DC-8EC3-E011-9B36-00155D033206");
 
 
         public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository,
@@ -45,7 +46,8 @@ namespace GestaoAvaliacao.Business
                             IKnowledgeAreaRepository knowledgeAreaRepository,
                             IDisciplineRepository disciplineRepository,
                             IEvaluationMatrixRepository evaluationMatrixRepository,
-                            ISkillRepository skillRepository)
+                            ISkillRepository skillRepository,
+                            ISubjectRepository subjectRepository)
         {
             this.itemRepository = itemRepository;
             this.alternativeRepository = alternativeRepository;
@@ -60,6 +62,7 @@ namespace GestaoAvaliacao.Business
             this.disciplineRepository = disciplineRepository;
             this.evaluationMatrixRepository = evaluationMatrixRepository;
             this.skillRepository = skillRepository;
+            this.subjectRepository = subjectRepository;
         }
 
         #region Custom
@@ -970,13 +973,13 @@ namespace GestaoAvaliacao.Business
 
         public List<AJX_Select2> LoadAllKnowledgeAreaActive()
         {
-            return knowledgeAreaRepository.LoadAllKnowledgeAreaActive(string.Empty, entityId);
+            return knowledgeAreaRepository.LoadAllKnowledgeAreaActive(string.Empty, ENTITY_ID);
         }
 
 
         public List<AJX_Select2> LoadDisciplineByKnowledgeArea(int knowledgeAreas)
         {
-            return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty, knowledgeAreas.ToString(), entityId);
+            return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty, knowledgeAreas.ToString(), ENTITY_ID);
         }
 
 
@@ -1007,6 +1010,18 @@ namespace GestaoAvaliacao.Business
             }).ToList();
             return listAbilityDto;
         }
+
+
+        public List<AJX_Select2> LoadAllSubjects()
+        {
+            return subjectRepository.LoadAllSubjects(string.Empty, ENTITY_ID);
+        }
+
+        public List<AJX_Select2> LoadSubsubjectBySubject(string idSubjects)
+        {
+            return subjectRepository.LoadSubsubjectBySubject(string.Empty, idSubjects, ENTITY_ID);
+        }
+
 
         #endregion
 
