@@ -7,6 +7,8 @@ using GestaoAvaliacao.IPDFConverter;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.Util.Extensions;
+using GestaoEscolar.Entities;
+using GestaoEscolar.IBusiness;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,6 +33,8 @@ namespace GestaoAvaliacao.Business
         private readonly IEvaluationMatrixRepository evaluationMatrixRepository;
         private readonly ISkillRepository skillRepository;
         private readonly ISubjectRepository subjectRepository;
+        private readonly IEvaluationMatrixCourseCurriculumGradeBusiness evaluationMatrixCourseCurriculumBusiness;
+        private readonly IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness;
 
         const string RESPOSTA_CONSTRUIDA = "Resposta construída";
         const string MULTIPLA_ESCOLHA_4_ALTERNATIVAS = "Múltipla escolha 4 alternativas";
@@ -47,7 +51,9 @@ namespace GestaoAvaliacao.Business
                             IDisciplineRepository disciplineRepository,
                             IEvaluationMatrixRepository evaluationMatrixRepository,
                             ISkillRepository skillRepository,
-                            ISubjectRepository subjectRepository)
+                            ISubjectRepository subjectRepository,
+                            IEvaluationMatrixCourseCurriculumGradeBusiness evaluationMatrixCourseCurriculumBusiness,
+                            IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness)
         {
             this.itemRepository = itemRepository;
             this.alternativeRepository = alternativeRepository;
@@ -63,6 +69,8 @@ namespace GestaoAvaliacao.Business
             this.evaluationMatrixRepository = evaluationMatrixRepository;
             this.skillRepository = skillRepository;
             this.subjectRepository = subjectRepository;
+            this.evaluationMatrixCourseCurriculumBusiness = evaluationMatrixCourseCurriculumBusiness;
+            this.tipoCurriculoPeriodoBusiness = tipoCurriculoPeriodoBusiness;
         }
 
         #region Custom
@@ -1055,9 +1063,33 @@ namespace GestaoAvaliacao.Business
             return list;
         }
 
+        public List<CurriculumGradeDto> LoadCurriculumGradesByMatrix(int evaluationMatrixId)
+        {
+            IEnumerable<ACA_TipoCurriculoPeriodo> listCurriculumGrades = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
+            List<EvaluationMatrixCourseCurriculumGrade> list = evaluationMatrixCourseCurriculumBusiness.GetCurriculumGradesByMatrix(evaluationMatrixId);
 
-    #endregion
 
 
-}
+            if (list != null && list.Count > 0)
+            {
+                var query = list.Select(i => new CurriculumGradeDto
+                {
+                    TypeCurriculumGradeId = i.TypeCurriculumGradeId,
+                    TypeCurriculumGrade = i.TypeCurriculumGradeId > 0 ? new TypeCurriculumGradeDto
+                    {
+                        Id = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_id,
+                        Description = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_descricao,
+                        Order = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_ordem
+                    } : null
+                }).Where(x => x.TypeCurriculumGrade != null).OrderBy(x => x.TypeCurriculumGrade.Order).ToList();
+                return query;
+            }
+            return default;
+        }
+
+
+        #endregion
+
+
+    }
 }

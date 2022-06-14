@@ -194,7 +194,7 @@ namespace GestaoAvaliacao.API.Controllers
             try
             {
                 var lista = itemBusiness.FindForTestType();
-                   
+
                 if (lista == null || !lista.Any())
                     return Request.CreateResponse(HttpStatusCode.NoContent, "Itens não encontrados.");
                 return Request.CreateResponse(HttpStatusCode.OK, lista);
@@ -203,6 +203,29 @@ namespace GestaoAvaliacao.API.Controllers
             {
                 LogFacade.SaveError(ex);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de tipos de itens.");
+            }
+        }
+
+        [Route("api/Item/CurriculumGrades/EvaluationMatrixId")]
+        [HttpGet]
+        [ResponseType(typeof(List<CurriculumGradeDto>))]
+        public async Task<HttpResponseMessage> GetCurriculumGradesByMatrix(int evaluationMatrixId)
+        {
+            try
+            {
+                if (evaluationMatrixId <= 0)
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro evaluationMatrixId é obrigatório e tem que ser maior que zero.");
+                var lista = itemBusiness.LoadCurriculumGradesByMatrix(evaluationMatrixId);
+
+                if (lista == null || !lista.Any())
+                    return Request.CreateResponse(HttpStatusCode.NoContent, "Os anos da matriz não foram encontrados.");
+                // TODO return dto
+                return Request.CreateResponse(HttpStatusCode.OK, lista);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de habilidades desse eixo");
             }
         }
 

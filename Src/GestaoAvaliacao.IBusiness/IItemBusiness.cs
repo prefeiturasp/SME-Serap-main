@@ -51,7 +51,7 @@ namespace GestaoAvaliacao.IBusiness
 		List<BaseDto> LoadAllSubjects();
 		List<BaseDto> LoadSubsubjectBySubject(string idSubjects);
 		List<ItemTypeDto> FindForTestType();
-
+		List<CurriculumGradeDto> LoadCurriculumGradesByMatrix(int evaluationMatrixId);
 
 	}
 }
