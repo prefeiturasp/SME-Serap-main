@@ -4358,10 +4358,14 @@
         };
 
         ng.changeVersionItem = function changeVersionItem(itens, versoes) {
-            TestModel.saveChangeItem({ item: versoes, test_id: ng.params, itemIdAntigo: itens.Id }, function (result) {
+            console.log(ng.e2_blockAtual.Id, "Teste")
+            TestModel.saveChangeItem({ item: versoes, test_id: ng.params, itemIdAntigo: itens.Id, blockId: ng.e2_blockAtual.Id }, function (result) {
+
+                console.log(result, "result");
+
                 if (result.success) {
                     $notification.success(result.message);
-
+                  
                     for (var k = 0; k < ng.e2_ListaItemSelecionados.length; k++) {
                         if (ng.e2_ListaItemSelecionados[k].Id == itens.Id) {
                             ng.e2_ListaItemSelecionados[k].Id = versoes.Id;
