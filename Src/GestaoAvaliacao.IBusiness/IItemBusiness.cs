@@ -38,7 +38,7 @@ namespace GestaoAvaliacao.IBusiness
         byte[] GetItemPreview(long id, string url, List<Parameter> parameters);
         byte[] GetItemPreviewByBaseText(long id, string url, List<Parameter> parameters);
         Item RevokeItem(long Item_Id, bool Revoked);
-        Item SaveChangeItem(Item item, long TestId, long itemIdAntigo);
+        Item SaveChangeItem(Item item, long TestId, long itemIdAntigo, long blockId);
 
     }
 }

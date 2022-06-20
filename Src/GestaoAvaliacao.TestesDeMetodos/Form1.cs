@@ -92,8 +92,9 @@ namespace GestaoAvaliacao.TestesDeMetodos
             var _itemBusiness = container.Resolve<IItemBusiness>();
 
             var item = new Item { Id = 12434 };
-            _itemBusiness.SaveChangeItem(item, 601, 11532);
-            _itemBusiness.SaveChangeItem(item, 602, 11532);
+            _itemBusiness.SaveChangeItem(item, 601, 11532,1);
+            _itemBusiness.SaveChangeItem(item, 602, 11532,1);
+            _itemBusiness.SaveChangeItem(item, 602, 11532,1);
         }
 
         private void button4_Click(object sender, EventArgs e)

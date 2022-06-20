@@ -966,12 +966,12 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpPost]
-        public JsonResult SaveChangeItem(Item item, long test_id, long itemIdAntigo)
+        public JsonResult SaveChangeItem(Item item, long test_id, long itemIdAntigo,  long blockId)
         {
             Item entity = new Item();
             try
             {
-                entity = itemBusiness.SaveChangeItem(item, test_id, itemIdAntigo);
+                entity = itemBusiness.SaveChangeItem(item, test_id, itemIdAntigo, blockId);
             }
             catch (Exception ex)
             {

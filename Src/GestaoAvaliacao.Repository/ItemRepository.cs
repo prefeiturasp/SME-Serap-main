@@ -1506,12 +1506,12 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public void SaveChangeItem(Item item, long TestId, long itemIdAntigo)
+        public void SaveChangeItem(Item item, long TestId, long itemIdAntigo, long blockId)
         {
 
             using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                Block block = GestaoAvaliacaoContext.Block.Include("BlockItems").FirstOrDefault(p => p.Test_Id == TestId);
+                Block block = GestaoAvaliacaoContext.Block.Include("BlockItems").FirstOrDefault(p => p.Test_Id == TestId && p.Id == blockId);
                 BlockItem blockItemAntigo = block.BlockItems.FirstOrDefault(p => p.Item_Id == itemIdAntigo && p.State == (byte)EnumState.ativo);
 
                 blockItemAntigo.State = Convert.ToByte(EnumState.excluido);

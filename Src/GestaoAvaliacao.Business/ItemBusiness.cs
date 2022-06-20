@@ -892,13 +892,13 @@ namespace GestaoAvaliacao.Business
 			return entity;
 		}
 
-        public Item SaveChangeItem(Item item, long TestId, long itemIdAntigo)
+        public Item SaveChangeItem(Item item, long TestId, long itemIdAntigo, long blockId)
         {
             Item entity = new Item { Id = item.Id };
            
             if (entity.Validate.IsValid)
             {
-                itemRepository.SaveChangeItem(item, TestId, itemIdAntigo);
+                itemRepository.SaveChangeItem(item, TestId, itemIdAntigo, blockId);
 
                 entity.Validate.Type = ValidateType.Delete.ToString();
                 entity.Validate.Message = "Versão do item alterada com sucesso.";
