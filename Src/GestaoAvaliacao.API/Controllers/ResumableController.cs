@@ -5,10 +5,12 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace GestaoAvaliacao.API.Controllers
 {
     [RoutePrefix("api/File")]
+	[ApiExplorerSettings(IgnoreApi = true)]
 	public class FileUploadController : ApiController
 	{
 		private readonly string root = System.Web.Hosting.HostingEnvironment.MapPath("~/Files");

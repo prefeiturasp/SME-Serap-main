@@ -1,4 +1,5 @@
-﻿using GestaoAvaliacao.Entities;
+﻿using GestaoAvaliacao.Dtos.ItemApi;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
@@ -40,5 +41,17 @@ namespace GestaoAvaliacao.IBusiness
         Item RevokeItem(long Item_Id, bool Revoked);
         Item SaveChangeItem(Item item, long TestId, long itemIdAntigo, long blockId);
 
-    }
+		//NewApi
+		List<BaseDto> LoadAllKnowledgeAreaActive();
+
+		List<BaseDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas);
+		List<BaseDto> LoadMatrixByDiscipline(long idDiscipline);
+		List<SkillDto> LoadSkillByMatrix(long idMatrix);
+		List<AbilityDto> LoadAbilityBySkill(long idSkill);
+		List<BaseDto> LoadAllSubjects();
+		List<BaseDto> LoadSubsubjectBySubject(string idSubjects);
+		List<ItemTypeDto> FindForTestType();
+		List<CurriculumGradeDto> LoadCurriculumGradesByMatrix(int evaluationMatrixId);
+
+	}
 }
