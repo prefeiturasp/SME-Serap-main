@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace GestaoAvaliacao.API.Controllers
 {
-    public class ValuesController : ApiController
+	[ApiExplorerSettings(IgnoreApi = true)]
+	public class ValuesController : ApiController
 	{
 		// GET api/values
 		public IEnumerable<string> Get()

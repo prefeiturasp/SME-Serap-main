@@ -7,10 +7,12 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace GestaoAvaliacao.API.Controllers
 {
-    public class UserController : ApiController
+	[ApiExplorerSettings(IgnoreApi = true)]
+	public class UserController : ApiController
 	{
 		[HttpPost]
 		[Route("api/user/signin")]
