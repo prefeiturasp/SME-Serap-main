@@ -59,6 +59,9 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Swashbuckle.Core.5.6.0\lib\net40\Swashbuckle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -134,6 +137,9 @@
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebActivatorEx.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -155,6 +161,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\ResumableConfiguration.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\WindsorCompositionRoot.cs" />
     <Compile Include="App_Start\WindsorControllerFactory.cs" />
@@ -170,6 +177,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Middleware\FilterAttribute.cs" />
     <Compile Include="Models\AbsenceModel.cs" />
     <Compile Include="Models\AdherenceModel.cs" />
     <Compile Include="Models\BatchResultModel.cs" />
@@ -216,6 +224,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.Dtos\GestaoAvaliacao.Dtos.csproj">
+      <Project>{BC0B4ECE-7048-4E0E-A993-AB2F6089ECDD}</Project>
+      <Name>GestaoAvaliacao.Dtos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
       <Project>{834efdfb-45fe-48f4-9618-222beb838a4a}</Project>
       <Name>GestaoAvaliacao.Entities</Name>
@@ -247,6 +259,10 @@
     <ProjectReference Include="..\GestaoAvaliacao.WebProject\GestaoAvaliacao.WebProject.csproj">
       <Project>{e6038ad8-4fe9-49dd-80ce-05dfcf7891fc}</Project>
       <Name>GestaoAvaliacao.WebProject</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GestaoEscolar.IBusiness\GestaoEscolar.IBusiness.csproj">
+      <Project>{21F7980E-6A17-48CA-BF47-8A298810565A}</Project>
+      <Name>GestaoEscolar.IBusiness</Name>
     </ProjectReference>
     <ProjectReference Include="..\OMRService\OMRService.csproj">
       <Project>{edae4fec-1800-4d82-af1a-4ab8e451d9db}</Project>

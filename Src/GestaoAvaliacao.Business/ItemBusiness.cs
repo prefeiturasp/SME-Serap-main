@@ -1,4 +1,5 @@
-﻿using GestaoAvaliacao.Entities;
+﻿using GestaoAvaliacao.Dtos.ItemApi;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IFileServer;
@@ -6,6 +7,8 @@ using GestaoAvaliacao.IPDFConverter;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.Util.Extensions;
+using GestaoEscolar.Entities;
+using GestaoEscolar.IBusiness;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,20 +28,32 @@ namespace GestaoAvaliacao.Business
         private readonly IHTMLToPDF htmltopdf;
         private readonly IItemTypeRepository itemTypeRepository;
         private readonly IGenerateHtmlBusiness generateHtmlBusiness;
+        private readonly IKnowledgeAreaRepository knowledgeAreaRepository;
+        private readonly IDisciplineRepository disciplineRepository;
         private readonly IEvaluationMatrixRepository evaluationMatrixRepository;
         private readonly ISkillRepository skillRepository;
         private readonly ISubjectRepository subjectRepository;
-        private readonly IItemSituationRepository itemSituationRepository;
+        private readonly IEvaluationMatrixCourseCurriculumGradeBusiness evaluationMatrixCourseCurriculumBusiness;
+        private readonly IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness;
 
         const string RESPOSTA_CONSTRUIDA = "Resposta construída";
         const string MULTIPLA_ESCOLHA_4_ALTERNATIVAS = "Múltipla escolha 4 alternativas";
         const string MULTIPLA_ESCOLHA_5_ALTERNATIVAS = "Múltipla escolha 5 alternativas";
+        Guid ENTITY_ID = Guid.Parse("6CF424DC-8EC3-E011-9B36-00155D033206");
 
-        public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository, IStorage storage, IFileRepository fileRepository, IParameterBusiness parambusiness, IBaseTextRepository baseTextRepository, IHTMLToPDF htmltopdf, IItemTypeRepository itemTypeRepository, IGenerateHtmlBusiness generateHtmlBusiness,
-            IEvaluationMatrixRepository evaluationMatrixRepository,
-            ISkillRepository skillRepository,
-            ISubjectRepository subjectRepository,
-            IItemSituationRepository itemSituationRepository)
+
+        public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository,
+                            IStorage storage, IFileRepository fileRepository,
+                            IParameterBusiness parambusiness, IBaseTextRepository baseTextRepository,
+                            IHTMLToPDF htmltopdf, IItemTypeRepository itemTypeRepository,
+                            IGenerateHtmlBusiness generateHtmlBusiness,
+                            IKnowledgeAreaRepository knowledgeAreaRepository,
+                            IDisciplineRepository disciplineRepository,
+                            IEvaluationMatrixRepository evaluationMatrixRepository,
+                            ISkillRepository skillRepository,
+                            ISubjectRepository subjectRepository,
+                            IEvaluationMatrixCourseCurriculumGradeBusiness evaluationMatrixCourseCurriculumBusiness,
+                            IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness)
         {
             this.itemRepository = itemRepository;
             this.alternativeRepository = alternativeRepository;
@@ -49,10 +64,13 @@ namespace GestaoAvaliacao.Business
             this.htmltopdf = htmltopdf;
             this.itemTypeRepository = itemTypeRepository;
             this.generateHtmlBusiness = generateHtmlBusiness;
+            this.knowledgeAreaRepository = knowledgeAreaRepository;
+            this.disciplineRepository = disciplineRepository;
             this.evaluationMatrixRepository = evaluationMatrixRepository;
             this.skillRepository = skillRepository;
             this.subjectRepository = subjectRepository;
-            this.itemSituationRepository = itemSituationRepository;
+            this.evaluationMatrixCourseCurriculumBusiness = evaluationMatrixCourseCurriculumBusiness;
+            this.tipoCurriculoPeriodoBusiness = tipoCurriculoPeriodoBusiness;
         }
 
         #region Custom
@@ -1005,5 +1023,124 @@ namespace GestaoAvaliacao.Business
         }
 
         #endregion
+
+        #region ItemsNewApi
+
+        #endregion
+
+        #region ItemsNewApi
+
+        public List<BaseDto> LoadAllKnowledgeAreaActive()
+        {
+            return knowledgeAreaRepository.LoadAllKnowledgeAreaActive(string.Empty, ENTITY_ID).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
+        }
+
+
+        public List<BaseDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas)
+        {
+            return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty, knowledgeAreas.ToString(), ENTITY_ID).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
+        }
+
+
+        public List<BaseDto> LoadMatrixByDiscipline(long idDiscipline)
+        {
+            return evaluationMatrixRepository.GetComboByDiscipline(idDiscipline).Select(s => new BaseDto
+            {
+                Id =s.Id ,
+                Descricao = s.Description
+            }).ToList();
+        }
+        public List<SkillDto> LoadSkillByMatrix(long idMatrix)
+        {
+            var listSkillDto = skillRepository.GetByMatrix(idMatrix).Select(s => new SkillDto
+            {
+                Id = s.Id,
+                Descricao = s.Description,
+                Codigo = s.Code
+            }).ToList();
+
+            return listSkillDto;
+        }
+
+        public List<AbilityDto> LoadAbilityBySkill(long idSkill)
+        {
+            var listAbilityDto = skillRepository.GetByParent(idSkill)
+            .Select(s => new AbilityDto
+            {
+                Id = s.Id,
+                Descricao = s.Description,
+                UltimoNivel = s.LastLevel
+            }).ToList();
+            return listAbilityDto;
+        }
+
+
+        public List<BaseDto> LoadAllSubjects()
+        {
+            return subjectRepository.LoadAllSubjects(string.Empty, ENTITY_ID).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
+        }
+    
+
+        public List<BaseDto> LoadSubsubjectBySubject(string idSubjects)
+        {
+            return subjectRepository.LoadSubsubjectBySubject(string.Empty, idSubjects, ENTITY_ID).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
+        }
+
+          public List<ItemTypeDto> FindForTestType()
+        {
+            var list = itemTypeRepository.FindForTestType(ENTITY_ID).Select(i => new ItemTypeDto
+            {
+                Id = i.Id,
+                Descricao = i.Description,
+                EhPadrao = i.IsDefault,
+                QuantidadeAlternativa = i.QuantityAlternative
+            }).ToList();
+            return list;
+        }
+
+        public List<CurriculumGradeDto> LoadCurriculumGradesByMatrix(int evaluationMatrixId)
+        {
+            IEnumerable<ACA_TipoCurriculoPeriodo> listCurriculumGrades = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
+            List<EvaluationMatrixCourseCurriculumGrade> list = evaluationMatrixCourseCurriculumBusiness.GetCurriculumGradesByMatrix(evaluationMatrixId);
+
+
+
+            if (list != null && list.Count > 0)
+            {
+                var query = list.Select(i => new CurriculumGradeDto
+                {
+                    TypeCurriculumGradeId = i.TypeCurriculumGradeId,
+                    TypeCurriculumGrade = i.TypeCurriculumGradeId > 0 ? new TypeCurriculumGradeDto
+                    {
+                        Id = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_id,
+                        Description = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_descricao,
+                        Order = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_ordem
+                    } : null
+                }).Where(x => x.TypeCurriculumGrade != null).OrderBy(x => x.TypeCurriculumGrade.Order).ToList();
+                return query;
+            }
+            return default;
+        }
+
+
+        #endregion
+
+
     }
 }
