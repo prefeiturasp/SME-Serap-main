@@ -182,8 +182,6 @@
     <Compile Include="Models\AdherenceModel.cs" />
     <Compile Include="Models\BatchResultModel.cs" />
     <Compile Include="Models\CorrectionModel.cs" />
-    <Compile Include="Models\ItemModel.cs" />
-    <Compile Include="Models\PictureModel.cs" />
     <Compile Include="Models\StudentModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

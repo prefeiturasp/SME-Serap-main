@@ -11,7 +11,6 @@ namespace GestaoAvaliacao.IBusiness
 		Item GetItemByItemCode(string itemCode);
 		bool VerifyItemCodeAlreadyExists(string itemCode, long? itemId = null);
         Item Save(long Id, Item entity, List<File> files = null);
-		ItemResult SaveApi(Item entity);
 		Item Update(long Id, Item entity, List<File> files = null);
 		Item Delete(long Id);
 		Item _GetMatrixBytem(long itemId);
@@ -44,7 +43,6 @@ namespace GestaoAvaliacao.IBusiness
 
 		//NewApi
 		List<BaseDto> LoadAllKnowledgeAreaActive();
-
 		List<BaseDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas);
 		List<BaseDto> LoadMatrixByDiscipline(long idDiscipline);
 		List<SkillDto> LoadSkillByMatrix(long idMatrix);
@@ -53,6 +51,6 @@ namespace GestaoAvaliacao.IBusiness
 		List<BaseDto> LoadSubsubjectBySubject(string idSubjects);
 		List<ItemTypeDto> FindForTestType();
 		List<CurriculumGradeDto> LoadCurriculumGradesByMatrix(int evaluationMatrixId);
-
-	}
+        ItemApiResult SaveApi(ItemApiDto model);
+    }
 }
