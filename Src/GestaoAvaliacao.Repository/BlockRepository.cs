@@ -867,6 +867,8 @@ namespace GestaoAvaliacao.Repository
 
                 #endregion
 
+                _entity.Test.UpdateDate = dateNow;
+
                 gestaoAvaliacaoContext.Entry(_entity).State = System.Data.Entity.EntityState.Modified;
                 gestaoAvaliacaoContext.SaveChanges();
             }
