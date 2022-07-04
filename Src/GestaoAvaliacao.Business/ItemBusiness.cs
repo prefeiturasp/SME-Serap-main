@@ -1412,9 +1412,7 @@ namespace GestaoAvaliacao.Business
             var entidade = parambusiness.GetByKey("ENTIDADE");
 
             var virtualDirectory = parambusiness.GetByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), new Guid(entidade.Value));
-            //var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
-
-            var physicalDirectory = @"C:\Users\AMcom\source\repos\SME-Serap-main\Src\GestaoAvaliacao.API\File";
+            var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
 
             UploadModel upload = new UploadModel
             {
@@ -1424,7 +1422,7 @@ namespace GestaoAvaliacao.Business
                 Stream = null,
                 FileName = picture.FileName,
                 VirtualDirectory = virtualDirectory.Value,
-                PhysicalDirectory = physicalDirectory,
+                PhysicalDirectory = physicalDirectory.Value,
                 FileType = type
             };
 
