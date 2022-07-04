@@ -1,8 +1,10 @@
-﻿using GestaoAvaliacao.API.Middleware;
+﻿using GestaoAvaliacao.API.App_Start;
+using GestaoAvaliacao.API.Middleware;
 using GestaoAvaliacao.API.Models;
 using GestaoAvaliacao.Dtos.ItemApi;
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IBusiness;
+using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
 using GestaoEscolar.IBusiness;
 using System;
@@ -21,11 +23,12 @@ namespace GestaoAvaliacao.API.Controllers
     public class ItemController : ApiController
     {
         private readonly IItemBusiness itemBusiness;
-        private readonly IACA_TipoNivelEnsinoBusiness levelEducationBusiness;
+        private readonly IFileBusiness fileBusiness;
 
-        public ItemController(IItemBusiness itemBusiness)
+        public ItemController(IItemBusiness itemBusiness, IFileBusiness fileBusiness)
         {
             this.itemBusiness = itemBusiness;
+            this.fileBusiness = fileBusiness;
         }
 
 
@@ -229,28 +232,31 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-
         [Route("api/Item/Save")]
         [HttpPost]
-        [ResponseType(typeof(ItemResult))]
-        public async Task<HttpResponseMessage> ItemSave([FromBody] ItemModel model)
+        [ResponseType(typeof(ItemApiResult))]
+        public HttpResponseMessage ItemSave([FromBody] ItemApiDto model)
         {
-            Item entity = new Item();
+            ItemApiResult itemResult = new ItemApiResult();
             try
             {
+                if (model == null)
+                    throw new ArgumentNullException("model");
 
-                // entity = itemBusiness.Save(0, item);
-                var result = new ItemResult();
-
-                return Request.CreateResponse(HttpStatusCode.OK, result);
+                itemResult = itemBusiness.SaveApi(model);
             }
             catch (Exception ex)
             {
-                LogFacade.SaveError(ex);
-                var result = new ItemResult();
+                itemResult.success = false;
+                itemResult.type = ValidateType.error.ToString();
+                itemResult.message = "Erro ao salvar item.";
 
-                return Request.CreateResponse(HttpStatusCode.OK, result);
+                LogFacade.SaveBasicError(ex.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, itemResult);
             }
+
+            var statusCode = itemResult.success ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
+            return Request.CreateResponse(statusCode, itemResult);
         }
     }
 }
