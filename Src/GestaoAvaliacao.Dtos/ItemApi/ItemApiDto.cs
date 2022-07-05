@@ -29,6 +29,7 @@ namespace GestaoAvaliacao.Dtos.ItemApi
         public long? SubSubject_Id { get; set; }
 
         public List<PictureDto> Pictures { get; set; }
+        public List<VideoDto> Videos { get; set; }
     }
 
     public class BaseTextDto
@@ -74,5 +75,18 @@ namespace GestaoAvaliacao.Dtos.ItemApi
         ThumbnailVideo = 30,
         [Description("Audio")]
         Audio = 31
+    }
+
+    public class VideoDto
+    {
+        public int ContentLength { get; set; }
+        public string ContentType { get; set; }
+        public string InputStream { get; set; }
+        public string FileName { get; set; }
+
+        public int? ThumbnailContentLength { get; set; }
+        public string ThumbnailContentType { get; set; }
+        public string ThumbnailInputStream { get; set; }
+        public string ThumbnailFileName { get; set; }
     }
 }

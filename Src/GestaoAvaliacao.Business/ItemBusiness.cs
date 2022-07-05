@@ -7,12 +7,14 @@ using GestaoAvaliacao.IPDFConverter;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.Util.Extensions;
+using GestaoAvaliacao.Util.Videos;
 using GestaoEscolar.Entities;
 using GestaoEscolar.IBusiness;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.Business
@@ -38,9 +40,12 @@ namespace GestaoAvaliacao.Business
         private readonly IItemSituationBusiness itemSituationRepository;
         private readonly IFileBusiness fileBusiness;
         private readonly IItemLevelRepository itemLevelRepository;
+        private readonly IVideoConverter videoConverter;
 
         const string RESPOSTA_CONSTRUIDA = "Resposta construída";
 
+
+        private const string VideoConvertedContentType = "video/webm";
         const string TIPO_IMAGENS_PERMITIDOS = "image/jpeg, image/png, image/gif, image/bmp";
         const string TIPO_VIDEOS_PERMITIDOS = "video/mp4, video/webm, video/ogg, application/ogg, video/x-flv, application/x-mpegURL, video/MP2T, video/3gpp, video/quicktime, video/x-msvideo, video/x-ms-wmv";
         const string TIPO_AUDIO_PERMITIDOS = "audio/mpeg, audio/mp4, audio/mp3, audio/vnd.wav, audio/x-ms-wma, audio/ogg";
@@ -59,7 +64,9 @@ namespace GestaoAvaliacao.Business
                             IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
                             IItemSituationBusiness itemSituationRepository,
                             IFileBusiness fileBusiness,
-                            IItemLevelRepository itemLevelRepository)
+                            IItemLevelRepository itemLevelRepository
+            //IVideoConverter videoConverter
+            )
         {
             this.itemRepository = itemRepository;
             this.alternativeRepository = alternativeRepository;
@@ -80,6 +87,7 @@ namespace GestaoAvaliacao.Business
             this.itemSituationRepository = itemSituationRepository;
             this.fileBusiness = fileBusiness;
             this.itemLevelRepository = itemLevelRepository;
+            //this.videoConverter = videoConverter;
         }
 
         #region Custom
@@ -1272,6 +1280,36 @@ namespace GestaoAvaliacao.Business
                 }
             }
 
+            if (model.Videos != null && model.Videos.Any())
+            {
+                foreach (var video in model.Videos)
+                {
+                    if (video.ContentLength == 0)
+                        itemResult.message += "<br/>O campo ContentLength em Pictures deve ser informado.";
+
+                    if (video.ContentType.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O campo ContentType em Pictures deve ser informado.";
+
+                    if (video.InputStream.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O campo InputStream em Pictures deve ser informado.";
+
+                    if (!TIPO_VIDEOS_PERMITIDOS.Contains(video.ContentType))
+                        itemResult.message += "<br/>Tipo de video não permitido.";
+
+                    if (video.ThumbnailContentLength.HasValue && video.ThumbnailContentLength.Value == 0)
+                        itemResult.message += "<br/>O campo ThumbnailContentLength em Videos deve ser informado.";
+
+                    if (video.ThumbnailContentLength.HasValue && video.ThumbnailContentType.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O campo ThumbnailContentType em Videos deve ser informado.";
+
+                    if (video.ThumbnailContentLength.HasValue && video.ThumbnailInputStream.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O campo ThumbnailInputStream em Videos deve ser informado.";
+
+                    if (video.ThumbnailContentLength.HasValue && !TIPO_IMAGENS_PERMITIDOS.Contains(video.ThumbnailContentType))
+                        itemResult.message += "<br/>Tipo de Imagem não permitido em Thumbnail.";
+                }
+            }
+
             if (!itemResult.message.IsNullOrEmptyOrWhiteSpace())
                 itemResult.success = false;
         }
@@ -1290,7 +1328,7 @@ namespace GestaoAvaliacao.Business
 
             if (!itemResult.success) return itemResult;
 
-            var files = new List<Entities.File>();
+            var files = new List<EntityFile>();
             if (model.Pictures != null && model.Pictures.Count > 0)
             {
                 foreach (var picture in model.Pictures)
@@ -1332,6 +1370,22 @@ namespace GestaoAvaliacao.Business
                                 }
                             }
                             break;
+                    }
+                }
+            }
+
+            var itemFiles = new List<ItemFile>();
+            if (model.Videos != null && model.Videos.Count > 0)
+            {
+                foreach (var video in model.Videos)
+                {
+                    var itemFile = UploadVideo(video);
+                    if (itemFile.Validate.Message.IsNullOrEmptyOrWhiteSpace())
+                        itemFiles.Add(itemFile);
+                    else
+                    {
+                        itemResult.message = itemFile.Validate.Message;
+                        break;
                     }
                 }
             }
@@ -1381,7 +1435,8 @@ namespace GestaoAvaliacao.Business
                 }).ToList(),
                 IsRestrict = model.IsRestrict,
                 KnowledgeArea_Id = model.KnowledgeArea_Id,
-                SubSubject_Id = model.SubSubject_Id
+                SubSubject_Id = model.SubSubject_Id,
+                ItemFiles = itemFiles
             };
 
             foreach (var file in files)
@@ -1407,10 +1462,9 @@ namespace GestaoAvaliacao.Business
             return itemResult;
         }
 
-        private string UploadPictureTagImg(EnumFileType type, List<Entities.File> files, PictureDto picture)
+        private string UploadPictureTagImg(EnumFileType type, List<EntityFile> files, PictureDto picture)
         {
             var entidade = parambusiness.GetByKey("ENTIDADE");
-
             var virtualDirectory = parambusiness.GetByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), new Guid(entidade.Value));
             var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
 
@@ -1431,6 +1485,108 @@ namespace GestaoAvaliacao.Business
 
             var tabImg = $"<img src='{file.Path}' id='{file.Id}'>";
             return tabImg;
+        }
+
+        private ItemFile UploadVideo(VideoDto videoDto)
+        {
+            var itemFile = new ItemFile();
+
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var virtualDirectory = parambusiness.GetByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), new Guid(entidade.Value));
+            var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
+
+            EntityFile entityFileConvert = null;
+            var sizeToConvertVideo = parambusiness.GetByKey(EnumParameterKey.SIZE_TO_CONVERT_VIDEO_FILE.GetDescription());
+            if (videoDto.ContentLength >= int.Parse(sizeToConvertVideo.Value))
+                entityFileConvert = ConvertVideoAsync(videoDto.InputStream, videoDto.ContentType, videoDto.FileName, virtualDirectory.Value, physicalDirectory.Value);
+
+
+            EntityFile entityThumbnail = null;
+            if(videoDto.ThumbnailContentLength.HasValue && videoDto.ThumbnailContentLength >= 0)
+            {
+                UploadModel uploadThumbnail = new UploadModel
+                {
+                    ContentLength = videoDto.ThumbnailContentLength.Value,
+                    ContentType = videoDto.ThumbnailContentType,
+                    InputStream = videoDto.ThumbnailInputStream,
+                    Stream = null,
+                    FileName = videoDto.ThumbnailFileName,
+                    VirtualDirectory = virtualDirectory.Value,
+                    PhysicalDirectory = physicalDirectory.Value,
+                    FileType = EnumFileType.ThumbnailVideo
+                };
+
+                entityThumbnail = fileBusiness.Upload(uploadThumbnail);
+            }
+
+            var upload = new UploadModel
+            {
+                ContentLength = videoDto.ContentLength,
+                ContentType = videoDto.ContentType,
+                InputStream = videoDto.InputStream,
+                FileName = videoDto.FileName,
+                VirtualDirectory = virtualDirectory.Value,
+                PhysicalDirectory = physicalDirectory.Value,
+                FileType = EnumFileType.Video
+            };
+            EntityFile entity = fileBusiness.Upload(upload);
+
+            if(entityFileConvert != null && !entityFileConvert.Validate.IsValid)
+                itemFile.Validate.Message += entityFileConvert.Validate.Message;
+
+            if (entityThumbnail != null && !entityThumbnail.Validate.IsValid)
+                itemFile.Validate.Message += entityThumbnail.Validate.Message;
+
+            if (!entity.Validate.IsValid)
+                itemFile.Validate.Message += entity.Validate.Message;
+
+            itemFile.File = entity;
+
+            if(entityFileConvert != null)
+            {
+                itemFile.ConvertedFileId = entityFileConvert.Id;
+                itemFile.ConvertedFile = entityFileConvert;
+            }
+
+            if(entityThumbnail != null)
+            {
+                itemFile.ThumbnailId = entityThumbnail.Id;
+                itemFile.Thumbnail = entityThumbnail;
+            }
+
+            return itemFile;
+        }
+
+        private EntityFile ConvertVideoAsync(string inputStream, string contentType, string fileName, string virtualDirectory, string physicalDirectory)
+        {
+            var entity = new EntityFile();
+
+            var bytes = Convert.FromBase64String(inputStream);
+            var stream = new MemoryStream(bytes);
+
+            var convertedVideoDto = videoConverter.Convert(stream, contentType, fileName, Guid.Empty).Result;
+            if (convertedVideoDto is null)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message =
+                    "Não foi possível realizar a conversão do vídeo para um tamanho menor. O vídeo origianl será mantido.";
+                return entity;
+            }
+
+            var uploadConvertedVideo = new UploadModel
+            {
+                ContentLength = (int)convertedVideoDto.Stream.Length,
+                ContentType = VideoConvertedContentType,
+                InputStream = null,
+                Stream = convertedVideoDto.Stream,
+                FileName = convertedVideoDto.FileName,
+                VirtualDirectory = virtualDirectory,
+                PhysicalDirectory = physicalDirectory,
+                FileType = EnumFileType.Video
+            };
+
+            return fileBusiness.Upload(uploadConvertedVideo);
         }
 
         #endregion

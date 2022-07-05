@@ -241,9 +241,15 @@ namespace GestaoAvaliacao.API.Controllers
             try
             {
                 if (model == null)
-                    throw new ArgumentNullException("model");
-
-                itemResult = itemBusiness.SaveApi(model);
+                {
+                    itemResult.success = false;
+                    itemResult.type = ValidateType.error.ToString();
+                    itemResult.message = "Estrutura do json informado é inválida.";
+                }
+                else
+                {
+                    itemResult = itemBusiness.SaveApi(model);
+                }
             }
             catch (Exception ex)
             {
