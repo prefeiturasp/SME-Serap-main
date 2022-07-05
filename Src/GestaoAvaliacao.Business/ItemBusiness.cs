@@ -1019,12 +1019,14 @@ namespace GestaoAvaliacao.Business
 
         public List<SkillDto> LoadSkillByMatrix(long idMatrix)
         {
-            var listSkillDto = skillRepository.GetByMatrix(idMatrix).Select(s => new SkillDto
-            {
-                Id = s.Id,
-                Descricao = s.Description,
-                Codigo = s.Code
-            }).ToList();
+            var listSkillDto = skillRepository.GetByMatrix(idMatrix)
+                .Where(t => t.ModelSkillLevel.Id == 1)
+                .Select(s => new SkillDto
+                {
+                    Id = s.Id,
+                    Descricao = s.Description,
+                    Codigo = s.Code
+                }).ToList();
 
             return listSkillDto;
         }
@@ -1161,18 +1163,23 @@ namespace GestaoAvaliacao.Business
             else
                 itemResult.message += "<br/>O campo TypeCurriculumGradeId deve ser informado com o código da grade curricular.";
 
-            if (model.ItemSkills != null && model.ItemSkills.Any())
+            if (model.Axle_Id != 0)
             {
-                foreach (var skill in model.ItemSkills)
-                {
-                    var habilidade = skillRepository.Get(skill);
-
-                    if (habilidade == null)
-                        itemResult.message += $"<br/>O código da habilidade {skill} no campo ItemSkills não foi encontrado.";
-                }
+                var listSkillDto = skillRepository.GetByMatrix(model.EvaluationMatrix_Id);
+                if (!listSkillDto.Any(t => t.Id == model.Axle_Id && t.ModelSkillLevel.Id == 1))
+                    itemResult.message += "<br/>O código do Eixo no campo Exle_Id não foi encontrado.";
             }
             else
-                itemResult.message += "<br/>O campo ItemSkills deve ser informado com as habilidades do item.";
+                itemResult.message += "<br/>O campo Exle_Id deve ser informado com o código do eixo.";
+
+            if (model.Ability_Id != 0)
+            {
+                var listAbilityDto = skillRepository.GetByParent(model.Axle_Id);
+                if (listAbilityDto == null || !listAbilityDto.Any(t => t.Id == model.Ability_Id))
+                    itemResult.message += "<br/>O código da habilidade no campo Ability_Id não foi encontrado.";
+            }
+            else
+                itemResult.message += "<br/>O campo Ability_Id deve ser informado com o código da habilidade.";
 
             if (model.SubSubject_Id != 0)
             {
@@ -1361,16 +1368,12 @@ namespace GestaoAvaliacao.Business
                 ItemCode = model.ItemCode,
                 ItemVersion = model.ItemVersion,
                 ItemCurriculumGrades = new List<ItemCurriculumGrade>()
-                    {
-                        new ItemCurriculumGrade() {
-                            TypeCurriculumGradeId = model.TypeCurriculumGradeId
-                        }
-                    },
-                ItemSkills = model.ItemSkills.Select(t => new ItemSkill()
                 {
-                    Skill_Id = t,
-                    OriginalSkill = true
-                }).ToList(),
+                    new ItemCurriculumGrade() {
+                        TypeCurriculumGradeId = model.TypeCurriculumGradeId
+                    }
+                },
+                ItemSkills = new List<ItemSkill>(),
                 Alternatives = model.Alternatives.Select(t => new Alternative()
                 {
                     Description = t.Description,
@@ -1383,6 +1386,18 @@ namespace GestaoAvaliacao.Business
                 KnowledgeArea_Id = model.KnowledgeArea_Id,
                 SubSubject_Id = model.SubSubject_Id
             };
+
+            item.ItemSkills.Add(new ItemSkill()
+            {
+                Skill_Id = model.Axle_Id,
+                OriginalSkill = true
+            });
+
+            item.ItemSkills.Add(new ItemSkill()
+            {
+                Skill_Id = model.Ability_Id,
+                OriginalSkill = true
+            });
 
             foreach (var file in files)
             {
