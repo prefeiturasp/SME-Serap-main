@@ -36,12 +36,14 @@ namespace GestaoAvaliacao.Business
         private readonly ITestTypeDeficiencyRepository testTypeDeficiencyRepository;
         private readonly INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository;
         private readonly INumberItemTestTaiRepository numberItemTestTaiRepository;
+        private readonly ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository;
+
 
         public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
             ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
             IBlockRepository blockRepository, IParameterBusiness parameterBusiness, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
             IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository, INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository,
-            INumberItemTestTaiRepository numberItemTestTaiRepository)
+            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository)
         {
             this.testRepository = testRepository;
             this.fileRepository = fileRepository;
@@ -59,6 +61,7 @@ namespace GestaoAvaliacao.Business
             this.testTypeDeficiencyRepository = testTypeDeficiencyRepository;
             this.numberItemsAplicationTaiRepository = numberItemsAplicationTaiRepository;
             this.numberItemTestTaiRepository = numberItemTestTaiRepository;
+            this.testTaiCurriculumGradeRepository = testTaiCurriculumGradeRepository;
         }
 
         #region Custom
@@ -543,7 +546,7 @@ namespace GestaoAvaliacao.Business
 
                 if (entity.TestTai)
                 {
-                  
+
                     var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
                     numberItemTestTaiRepository.Save(itemTestTai);
                 }
@@ -1054,6 +1057,86 @@ namespace GestaoAvaliacao.Business
             testRepository.Update(testDestino);
         }
 
-        #endregion
+        public void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> listEntity)
+        {
+            try
+            {
+                var testId = listEntity.FirstOrDefault().TestId;
+
+                if (testId <= 0)
+                    throw new Exception("TestId é obrigatório");
+
+                var listTestTaiCurriculumGrade = testTaiCurriculumGradeRepository.GetListByTestId(testId);
+
+                if (listTestTaiCurriculumGrade == null || !listTestTaiCurriculumGrade.Any())
+                {
+                    foreach (var entity in listEntity)
+                    {
+                        testTaiCurriculumGradeRepository.Save(entity);
+                    }
+                }
+                else
+                {
+
+                    var testTaiCurriculumGradeNew = listEntity.Where(x => !listTestTaiCurriculumGrade.Any(entity => x.DisciplineId == entity.DisciplineId
+                                                                                                                 && x.MatrixId == entity.MatrixId
+                                                                                                                 && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+
+                    var testTaiCurriculumGradeExists = listTestTaiCurriculumGrade.Where(x => listEntity.Any(entity => x.DisciplineId == entity.DisciplineId
+                                                                                                                   && x.MatrixId == entity.MatrixId
+                                                                                                                   && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+
+                    var testTaiCurriculumGradeNotExists = listTestTaiCurriculumGrade.Where(x => !listEntity.Any(entity => x.DisciplineId == entity.DisciplineId
+                                                                                                                      && x.MatrixId == entity.MatrixId
+                                                                                                                      && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+                    //Inserir
+                    foreach (var entity in testTaiCurriculumGradeNew)
+                    {
+                        testTaiCurriculumGradeRepository.Save(entity);
+                    }
+
+                    //Alterar
+                    foreach (var entity in testTaiCurriculumGradeExists)
+                    {
+                        var testTaiCurriculumGrade = listEntity.FirstOrDefault(x => x.DisciplineId == entity.DisciplineId
+                                                                                    && x.MatrixId == entity.MatrixId
+                                                                                    && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId);
+                        if (entity.Percentage != testTaiCurriculumGrade.Percentage)
+                        {
+                            entity.Percentage = testTaiCurriculumGrade.Percentage;
+                            entity.UpdateDate = DateTime.Now;
+                            testTaiCurriculumGradeRepository.Update(entity);
+                        }
+                    }
+
+                    //Excluir
+                    foreach (var entity in testTaiCurriculumGradeNotExists)
+                    {
+                        entity.State = 3;
+                        entity.UpdateDate = DateTime.Now;
+                        testTaiCurriculumGradeRepository.Update(entity);
+                    }
+                    
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId)
+        {
+            if (testId <= 0)
+                throw new Exception("O parametro testId é obrigatório e não pode ser 0");
+
+            return testTaiCurriculumGradeRepository.GetListByTestId(testId);
+        }
+
     }
+
+    #endregion
 }
+

@@ -1,18 +1,13 @@
-﻿using GestaoAvaliacao.API.App_Start;
-using GestaoAvaliacao.API.Middleware;
-using GestaoAvaliacao.API.Models;
+﻿using GestaoAvaliacao.API.Middleware;
 using GestaoAvaliacao.Dtos.ItemApi;
-using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
-using GestaoEscolar.IBusiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -23,19 +18,16 @@ namespace GestaoAvaliacao.API.Controllers
     public class ItemController : ApiController
     {
         private readonly IItemBusiness itemBusiness;
-        private readonly IFileBusiness fileBusiness;
 
-        public ItemController(IItemBusiness itemBusiness, IFileBusiness fileBusiness)
+        public ItemController(IItemBusiness itemBusiness)
         {
             this.itemBusiness = itemBusiness;
-            this.fileBusiness = fileBusiness;
         }
-
 
         [Route("api/Item/AreasConhecimento")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetAllKnowledgeAreaActive()
+        public HttpResponseMessage GetAllKnowledgeAreaActive()
         {
             try
             {
@@ -49,11 +41,10 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-
         [Route("api/Item/Disciplinas/AreaConhecimentoId")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetAlDisciplinebyknowledgearea(int areaConhecimentoId)
+        public HttpResponseMessage GetAlDisciplinebyknowledgearea(int areaConhecimentoId)
         {
             try
             {
@@ -70,7 +61,7 @@ namespace GestaoAvaliacao.API.Controllers
         [Route("api/Item/Matrizes/DisciplinaId")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetEvaluationMatrixbyDiscipline(int disciplinaId)
+        public HttpResponseMessage GetEvaluationMatrixbyDiscipline(int disciplinaId)
         {
             try
             {
@@ -96,11 +87,10 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-
         [Route("api/Item/Eixos/MatrizId")]
         [HttpGet]
         [ResponseType(typeof(SkillDto))]
-        public async Task<HttpResponseMessage> GetSkillbymatriz(long matrizId)
+        public HttpResponseMessage GetSkillbymatriz(long matrizId)
         {
             try
             {
@@ -122,11 +112,10 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-
         [Route("api/Item/Habilidade/EixoId")]
         [HttpGet]
         [ResponseType(typeof(AbilityDto))]
-        public async Task<HttpResponseMessage> GetAbilityBySkill(long eixoId)
+        public HttpResponseMessage GetAbilityBySkill(long eixoId)
         {
             try
             {
@@ -151,7 +140,7 @@ namespace GestaoAvaliacao.API.Controllers
         [Route("api/Item/Assuntos")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetAllSubjects()
+        public HttpResponseMessage GetAllSubjects()
         {
             try
             {
@@ -167,11 +156,10 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-
         [Route("api/Item/Assuntos/SubAssuntos/AssuntoId")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetSubsubjectBySubject(int assuntoId)
+        public HttpResponseMessage GetSubsubjectBySubject(int assuntoId)
         {
             try
             {
@@ -192,7 +180,7 @@ namespace GestaoAvaliacao.API.Controllers
         [Route("api/Item/Tipos")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetItemTypes()
+        public HttpResponseMessage GetItemTypes()
         {
             try
             {
@@ -212,7 +200,7 @@ namespace GestaoAvaliacao.API.Controllers
         [Route("api/Item/CurriculumGrades/EvaluationMatrixId")]
         [HttpGet]
         [ResponseType(typeof(List<CurriculumGradeDto>))]
-        public async Task<HttpResponseMessage> GetCurriculumGradesByMatrix(int evaluationMatrixId)
+        public HttpResponseMessage GetCurriculumGradesByMatrix(int evaluationMatrixId)
         {
             try
             {

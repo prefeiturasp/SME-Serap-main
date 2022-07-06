@@ -22,7 +22,8 @@ namespace GestaoAvaliacao.Dtos.ItemApi
         public string ItemCode { get; set; }
         public int ItemVersion { get; set; }
         public int TypeCurriculumGradeId { get; set; }
-        public int[] ItemSkills { get; set; }
+        public int Axle_Id { get; set; }
+        public int Ability_Id { get; set; }
         public List<AlternativeDto> Alternatives { get; set; }
         public bool IsRestrict { get; set; }
         public long? KnowledgeArea_Id { get; set; }
