@@ -87,7 +87,7 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-        [Route("api/Item/Eixos/MatrizId")]
+        [Route("api/Item/Competencias/MatrizId")]
         [HttpGet]
         [ResponseType(typeof(SkillDto))]
         public HttpResponseMessage GetSkillbymatriz(long matrizId)
@@ -112,7 +112,7 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-        [Route("api/Item/Habilidade/EixoId")]
+        [Route("api/Item/Habilidades/CompetenciaId")]
         [HttpGet]
         [ResponseType(typeof(AbilityDto))]
         public HttpResponseMessage GetAbilityBySkill(long eixoId)
@@ -156,7 +156,7 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-        [Route("api/Item/Assuntos/SubAssuntos/AssuntoId")]
+        [Route("api/Item/SubAssuntos/AssuntoId")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
         public HttpResponseMessage GetSubsubjectBySubject(int assuntoId)
@@ -197,7 +197,7 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-        [Route("api/Item/CurriculumGrades/EvaluationMatrixId")]
+        [Route("api/Item/TiposGradeCurricular/MatrizId")]
         [HttpGet]
         [ResponseType(typeof(List<CurriculumGradeDto>))]
         public HttpResponseMessage GetCurriculumGradesByMatrix(int evaluationMatrixId)
@@ -220,7 +220,7 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-        [Route("api/Item/Save")]
+        [Route("api/Item/Salvar")]
         [HttpPost]
         [ResponseType(typeof(ItemApiResult))]
         public HttpResponseMessage ItemSave([FromBody] ItemApiDto model)
@@ -243,7 +243,7 @@ namespace GestaoAvaliacao.API.Controllers
             {
                 itemResult.success = false;
                 itemResult.type = ValidateType.error.ToString();
-                itemResult.message = "Erro ao salvar item.";
+                itemResult.message = "Erro ao salvar item. erro original: " + ex.Message;
 
                 LogFacade.SaveBasicError(ex.Message);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, itemResult);
