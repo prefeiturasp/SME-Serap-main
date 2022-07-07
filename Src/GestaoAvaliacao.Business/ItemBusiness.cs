@@ -1103,54 +1103,54 @@ namespace GestaoAvaliacao.Business
 
         private void ValidateApi(ItemApiDto model, ItemApiResult itemResult)
         {
-            itemResult.message = string.Empty;
+            itemResult.mensagem = string.Empty;
 
             if (model.AreaConhecimentoId != 0)
             {
                 var knowledgeArea = knowledgeAreaRepository.Get(model.AreaConhecimentoId);
                 if (knowledgeArea == null)
-                    itemResult.message += "<br/>O id da área de conhecimento é invãlido.";
+                    itemResult.mensagem += "<br/>O id da área de conhecimento é invãlido.";
             }
             else
-                itemResult.message += "<br/>O id da área de conhecimento é obrigatório.";
+                itemResult.mensagem += "<br/>O id da área de conhecimento é obrigatório.";
 
 
             if (model.MatrizId != 0)
             {
                 var matriz = evaluationMatrixRepository.GetByMatriz(model.MatrizId);
                 if (!matriz.Any())
-                    itemResult.message += "<br/>O id da matriz é inválido.";
+                    itemResult.mensagem += "<br/>O id da matriz é inválido.";
             }
             else
-                itemResult.message += "<br/>O id da matriz é obrigatório.";
+                itemResult.mensagem += "<br/>O id da matriz é obrigatório.";
 
             if (!model.CodigoItem.IsNullOrEmptyOrWhiteSpace())
             {
                 bool codigoExiste = itemRepository.VerifyItemCodeAlreadyExists(model.CodigoItem);
                 if (codigoExiste)
-                    itemResult.message += "<br/>O código do item já existe.";
+                    itemResult.mensagem += "<br/>O código do item já existe.";
             }
             else
-                itemResult.message += "<br/>O código do item é obrigatório.";
+                itemResult.mensagem += "<br/>O código do item é obrigatório.";
 
             if (model.Dificuldade != Dificuldade.Nenhum)
             {
                 var level = itemLevelRepository.Get((int)model.Dificuldade);
                 if (level == null)
-                    itemResult.message += "<br/>A dificuldade é inválida [1 - Muito Fácil, 2 - Fácil, 3 - Médio, 4 - Difícil, 5 - Muito Difícil].";
+                    itemResult.mensagem += "<br/>A dificuldade é inválida [1 - Muito Fácil, 2 - Fácil, 3 - Médio, 4 - Difícil, 5 - Muito Difícil].";
             }
             else
-                itemResult.message += "<br/>A dificuldade do item é obrigatório [1 - Muito Fácil, 2 - Fácil, 3 - Médio, 4 - Difícil, 5 - Muito Difícil].";
+                itemResult.mensagem += "<br/>A dificuldade do item é obrigatório [1 - Muito Fácil, 2 - Fácil, 3 - Médio, 4 - Difícil, 5 - Muito Difícil].";
 
             ItemType itemType = null;
             if (model.TipoItemId != 0)
             {
                 itemType = itemTypeRepository.Get(model.TipoItemId);
                 if (itemType == null)
-                    itemResult.message += "<br/>O id do tipo do item é inválido.";
+                    itemResult.mensagem += "<br/>O id do tipo do item é inválido.";
             }
             else
-                itemResult.message += "<br/>O id do tipo do item é obrigatório.";
+                itemResult.mensagem += "<br/>O id do tipo do item é obrigatório.";
 
             if (model.TipoGradeCurricularId != 0)
             {
@@ -1158,107 +1158,107 @@ namespace GestaoAvaliacao.Business
                 {
                     var grades = evaluationMatrixCourseCurriculumBusiness.GetCurriculumGradesByMatrix((int)model.MatrizId);
                     if (!grades.Any(t => t.TypeCurriculumGradeId == model.TipoGradeCurricularId))
-                        itemResult.message += "<br/>O id do tipo de grade curricular é inválido.";
+                        itemResult.mensagem += "<br/>O id do tipo de grade curricular é inválido.";
                 }
             }
             else
-                itemResult.message += "<br/>O id do tipo de grade curricular é obrigatório.";
+                itemResult.mensagem += "<br/>O id do tipo de grade curricular é obrigatório.";
 
             if (model.CompetenciaId != 0)
             {
                 var listSkillDto = skillRepository.GetByMatrix(model.MatrizId);
                 if (!listSkillDto.Any(t => t.Id == model.CompetenciaId && t.ModelSkillLevel.Id == 1))
-                    itemResult.message += "<br/>O id da competência é inválido.";
+                    itemResult.mensagem += "<br/>O id da competência é inválido.";
             }
             else
-                itemResult.message += "<br/>O id da competência é obrigatório.";
+                itemResult.mensagem += "<br/>O id da competência é obrigatório.";
 
             if (model.HabilidadeId != 0)
             {
                 var listAbilityDto = skillRepository.GetByParent(model.CompetenciaId);
                 if (listAbilityDto == null || !listAbilityDto.Any(t => t.Id == model.HabilidadeId))
-                    itemResult.message += "<br/>O id da habilidade é inválido.";
+                    itemResult.mensagem += "<br/>O id da habilidade é inválido.";
             }
             else
-                itemResult.message += "<br/>O id da habilidade é obrigatório.";
+                itemResult.mensagem += "<br/>O id da habilidade é obrigatório.";
 
             if (model.SubassuntoId != 0)
             {
                 var assunto = subjectRepository.LoadSubjectBySubsubject((long)model.SubassuntoId);
                 if (assunto == null)
-                    itemResult.message += "<br/>O id do subassunto é inválido.";
+                    itemResult.mensagem += "<br/>O id do subassunto é inválido.";
             }
             else
-                itemResult.message += "<br/>O id do subassunto é obrigatório.";
+                itemResult.mensagem += "<br/>O id do subassunto é obrigatório.";
 
             if (model.Proficiencia != null)
             {
                 if ((int)model.Proficiencia < 100 || (int)model.Proficiencia > 500)
-                    itemResult.message += "<br/>Proficiência deve ser de 100 a 500.";
+                    itemResult.mensagem += "<br/>Proficiência deve ser de 100 a 500.";
             }
 
             if (model.Enunciado.IsNullOrEmptyOrWhiteSpace())
-                itemResult.message += "<br/>O Enunciado é obrigatório.";
+                itemResult.mensagem += "<br/>O Enunciado é obrigatório.";
 
             if (itemType != null && !itemType.Description.Contains(RESPOSTA_CONSTRUIDA))
             {
                 if (model.Alternativas != null && model.Alternativas.Any())
                 {
                     if (!model.Alternativas.Any(t => t.Correta))
-                        itemResult.message += "<br/>O item deve possuir 1 alternativa correta.";
+                        itemResult.mensagem += "<br/>O item deve possuir 1 alternativa correta.";
 
                     if (model.Alternativas.Count(t => t.Correta) > 1)
-                        itemResult.message += "<br/>O item deve possuir somente 1 alternativa correta.";
+                        itemResult.mensagem += "<br/>O item deve possuir somente 1 alternativa correta.";
 
                     if (itemType.QuantityAlternative != model.Alternativas.Count)
-                        itemResult.message += $"<br/>O item deve possuir {itemType.QuantityAlternative} alternativas.";
+                        itemResult.mensagem += $"<br/>O item deve possuir {itemType.QuantityAlternative} alternativas.";
 
                     if (model.Alternativas.GroupBy(t => t.Ordem).Any(t => t.Count() > 1))
-                        itemResult.message += $"<br/>O item não pode conter a ordem duplicada.";
+                        itemResult.mensagem += $"<br/>O item não pode conter a ordem duplicada.";
 
                     if (model.Alternativas.GroupBy(t => t.Numeracao).Any(t => t.Count() > 1))
-                        itemResult.message += $"<br/>O item não pode conter a numeração duplicada.";
+                        itemResult.mensagem += $"<br/>O item não pode conter a numeração duplicada.";
 
 
-                    foreach(var alternativa in model.Alternativas)
+                    foreach (var alternativa in model.Alternativas)
                     {
                         if (alternativa.Descricao.IsNullOrEmptyOrWhiteSpace())
-                            itemResult.message += "<br/>A descrição da alternativa é obrigatório.";
+                            itemResult.mensagem += "<br/>A descrição da alternativa é obrigatório.";
 
                         if (alternativa.Numeracao.IsNullOrEmptyOrWhiteSpace())
-                            itemResult.message += "<br/>A numeração da alternativa é obrigatório.";
+                            itemResult.mensagem += "<br/>A numeração da alternativa é obrigatório.";
                     }
 
                 }
                 else
-                    itemResult.message += $"<br/>O item deve possuir {itemType.QuantityAlternative} alternativas.";
+                    itemResult.mensagem += $"<br/>O item deve possuir {itemType.QuantityAlternative} alternativas.";
             }
 
             if (model.Imagens != null && model.Imagens.Any())
             {
                 if (model.Imagens.GroupBy(t => t.Tag).Any(t => t.Count() > 1))
-                    itemResult.message += $"<br/>O item não pode conter imagens com a tag duplicada.";
+                    itemResult.mensagem += $"<br/>O item não pode conter imagens com a tag duplicada.";
 
                 foreach (var picture in model.Imagens)
                 {
                     if (picture.Tag.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>A tag da imagem é obrigatória.";
+                        itemResult.mensagem += "<br/>A tag da imagem é obrigatória.";
 
                     if (picture.Tamanho == 0)
-                        itemResult.message += "<br/>O tamanho da imagem é obrigatório.";
+                        itemResult.mensagem += "<br/>O tamanho da imagem é obrigatório.";
 
                     if (picture.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O tipo do conteúdo da imagem é obrigatório.";
+                        itemResult.mensagem += "<br/>O tipo do conteúdo da imagem é obrigatório.";
 
                     if (picture.Base64.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O arquivo em base64 da imagem é obrigatório.";
+                        itemResult.mensagem += "<br/>O arquivo em base64 da imagem é obrigatório.";
 
                     if (picture.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O nome do arquivo da imagem é obrigatório.";
+                        itemResult.mensagem += "<br/>O nome do arquivo da imagem é obrigatório.";
 
                     if (!TIPO_IMAGENS_PERMITIDOS.Contains(picture.TipoConteudo))
                     {
-                        itemResult.message += "<br/>Tipo de imagem não permitido. [.jpeg, .png, .gif, .bmp]";
+                        itemResult.mensagem += "<br/>Tipo de imagem não permitido. [.jpeg, .png, .gif, .bmp]";
                         continue;
                     }
 
@@ -1266,11 +1266,11 @@ namespace GestaoAvaliacao.Business
                     {
                         case PictureType.BaseText:
                             if (!model.TextoBase.Contains(picture.Tag))
-                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em texto base.";
+                                itemResult.mensagem += $"<br/>A tag {picture.Tag} não foi encontrada em texto base.";
                             break;
                         case PictureType.Statement:
                             if (!model.Enunciado.Contains(picture.Tag))
-                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em enunciado.";
+                                itemResult.mensagem += $"<br/>A tag {picture.Tag} não foi encontrada em enunciado.";
                             break;
 
                         case PictureType.Alternative:
@@ -1281,7 +1281,7 @@ namespace GestaoAvaliacao.Business
                             }
 
                             if (!contemTagAlternative)
-                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em nenhuma alternativa.";
+                                itemResult.mensagem += $"<br/>A tag {picture.Tag} não foi encontrada em nenhuma alternativa.";
                             break;
                         case PictureType.Justificative:
                             var contemTagJustificative = false;
@@ -1291,7 +1291,7 @@ namespace GestaoAvaliacao.Business
                             }
 
                             if (!contemTagJustificative)
-                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em nenhuma justificativa das alternativas.";
+                                itemResult.mensagem += $"<br/>A tag {picture.Tag} não foi encontrada em nenhuma justificativa das alternativas.";
                             break;
                     }
                 }
@@ -1302,48 +1302,48 @@ namespace GestaoAvaliacao.Business
                 foreach (var video in model.Videos)
                 {
                     if (video.Tamanho == 0)
-                        itemResult.message += "<br/>O tamanho do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O tamanho do video é obrigatório.";
 
                     if (video.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O tipo do conteúdo do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O tipo do conteúdo do video é obrigatório.";
 
                     if (video.Base64.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O arquivo em base64 do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O arquivo em base64 do video é obrigatório.";
 
                     if (video.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O nome do arquivo do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O nome do arquivo do video é obrigatório.";
 
                     if (!TIPO_VIDEOS_PERMITIDOS.Contains(video.TipoConteudo))
-                        itemResult.message += "<br/>Tipo de video não permitido.";
+                        itemResult.mensagem += "<br/>Tipo de video não permitido.";
 
 
                     if (video.Tamanho == 0)
-                        itemResult.message += "<br/>O tamanho do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O tamanho do video é obrigatório.";
 
                     if (video.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O tipo do conteúdo do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O tipo do conteúdo do video é obrigatório.";
 
                     if (video.Base64.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O arquivo em base64 do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O arquivo em base64 do video é obrigatório.";
 
                     if (video.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O nome do arquivo do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O nome do arquivo do video é obrigatório.";
 
 
                     if (video.MiniaturaTamanho == 0)
-                        itemResult.message += "<br/>O tamanho da miniatura do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O tamanho da miniatura do video é obrigatório.";
 
                     if (video.MiniaturaTipoConteudo.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O tipo de conteúdo da miniatura do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O tipo de conteúdo da miniatura do video é obrigatório.";
 
                     if (video.MiniaturaBase64.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O arquivo em base64 da miniatura do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O arquivo em base64 da miniatura do video é obrigatório.";
 
                     if (video.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O nome do arquivo da miniatura do video é obrigatório.";
+                        itemResult.mensagem += "<br/>O nome do arquivo da miniatura do video é obrigatório.";
 
                     if (!TIPO_IMAGENS_PERMITIDOS.Contains(video.MiniaturaTipoConteudo))
-                        itemResult.message += "<br/>Tipo de Imagem não permitido na miniatura do video.";
+                        itemResult.mensagem += "<br/>Tipo de Imagem não permitido na miniatura do video.";
                 }
             }
 
@@ -1352,189 +1352,190 @@ namespace GestaoAvaliacao.Business
                 foreach (var audio in model.Audios)
                 {
                     if (audio.Tamanho == 0)
-                        itemResult.message += "<br/>O tamanho do audio é obrigatório.";
+                        itemResult.mensagem += "<br/>O tamanho do audio é obrigatório.";
 
                     if (audio.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O tipo do conteúdo do audio é obrigatório.";
+                        itemResult.mensagem += "<br/>O tipo do conteúdo do audio é obrigatório.";
 
                     if (audio.Base64.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O arquivo em base64 do audio é obrigatório.";
+                        itemResult.mensagem += "<br/>O arquivo em base64 do audio é obrigatório.";
 
                     if (!TIPO_AUDIO_PERMITIDOS.Contains(audio.TipoConteudo))
-                        itemResult.message += "<br/>Tipo de audio não permitido.";
+                        itemResult.mensagem += "<br/>Tipo de audio não permitido.";
                 }
             }
 
-            if (!itemResult.message.IsNullOrEmptyOrWhiteSpace())
-                itemResult.success = false;
+            if (!itemResult.mensagem.IsNullOrEmptyOrWhiteSpace())
+                itemResult.sucesso = false;
         }
 
-        public ItemApiResult SaveApi(ItemApiDto model)
+        public List<ItemApiResult> SaveApi(List<ItemApiDto> items)
         {
-            ItemApiResult itemResult = new ItemApiResult
+            var result = new List<ItemApiResult>();
+
+            for (int i = 0; i < items.Count; i++)
             {
-                success = true
-            };
+                var model = items[i];
 
-            ValidateApi(model, itemResult);
-
-            if (!itemResult.success) return itemResult;
-
-            var files = new List<EntityFile>();
-            if (model.Imagens != null && model.Imagens.Count > 0)
-            {
-                foreach (var picture in model.Imagens)
+                ItemApiResult itemResult = new ItemApiResult
                 {
-                    switch (picture.Tipo)
+                    sucesso = true,
+                    sequencia = i + 1
+                };
+
+                try
+                {
+                    ValidateApi(model, itemResult);
+
+                    if (!itemResult.sucesso) throw new Exception(itemResult.mensagem);
+
+                    var files = new List<EntityFile>();
+
+                    if (model.Imagens != null && model.Imagens.Count > 0)
                     {
-                        case PictureType.BaseText:
-                            if (model.TextoBase.Contains(picture.Tag))
+                        foreach (var picture in model.Imagens)
+                        {
+                            switch (picture.Tipo)
                             {
-                                string tabImg = UploadPictureTagImg(EnumFileType.BaseText, files, picture);
-                                model.TextoBase = model.TextoBase.Replace(picture.Tag, tabImg);
-                            }
-                            break;
-                        case PictureType.Statement:
-                            if (model.Enunciado.Contains(picture.Tag))
-                            {
-                                string tabImg = UploadPictureTagImg(EnumFileType.Statement, files, picture);
-                                model.Enunciado = model.Enunciado.Replace(picture.Tag, tabImg);
-                            }
-                            break;
+                                case PictureType.BaseText:
+                                    if (model.TextoBase.Contains(picture.Tag))
+                                    {
+                                        string tabImg = UploadPictureTagImg(EnumFileType.BaseText, files, picture);
+                                        model.TextoBase = model.TextoBase.Replace(picture.Tag, tabImg);
+                                    }
+                                    break;
+                                case PictureType.Statement:
+                                    if (model.Enunciado.Contains(picture.Tag))
+                                    {
+                                        string tabImg = UploadPictureTagImg(EnumFileType.Statement, files, picture);
+                                        model.Enunciado = model.Enunciado.Replace(picture.Tag, tabImg);
+                                    }
+                                    break;
 
-                        case PictureType.Alternative:
-                            foreach (var alternative in model.Alternativas)
-                            {
-                                if (alternative.Descricao.Contains(picture.Tag))
-                                {
-                                    string tabImg = UploadPictureTagImg(EnumFileType.Alternative, files, picture);
-                                    alternative.Descricao = alternative.Descricao.Replace(picture.Tag, tabImg);
-                                }
+                                case PictureType.Alternative:
+                                    foreach (var alternative in model.Alternativas)
+                                    {
+                                        if (alternative.Descricao.Contains(picture.Tag))
+                                        {
+                                            string tabImg = UploadPictureTagImg(EnumFileType.Alternative, files, picture);
+                                            alternative.Descricao = alternative.Descricao.Replace(picture.Tag, tabImg);
+                                        }
+                                    }
+                                    break;
+                                case PictureType.Justificative:
+                                    foreach (var alternative in model.Alternativas)
+                                    {
+                                        if (alternative.Justificativa.Contains(picture.Tag))
+                                        {
+                                            string tabImg = UploadPictureTagImg(EnumFileType.Justificative, files, picture);
+                                            alternative.Justificativa = alternative.Justificativa.Replace(picture.Tag, tabImg);
+                                        }
+                                    }
+                                    break;
                             }
-                            break;
-                        case PictureType.Justificative:
-                            foreach (var alternative in model.Alternativas)
-                            {
-                                if (alternative.Justificativa.Contains(picture.Tag))
-                                {
-                                    string tabImg = UploadPictureTagImg(EnumFileType.Justificative, files, picture);
-                                    alternative.Justificativa = alternative.Justificativa.Replace(picture.Tag, tabImg);
-                                }
-                            }
-                            break;
+
+                            if (files.Any(t => !t.Validate.IsValid)) throw new Exception(files.FirstOrDefault(t => !t.Validate.IsValid).Validate.Message);
+                        }
                     }
-                }
-            }
 
-            var itemFiles = new List<ItemFile>();
-            if (model.Videos != null && model.Videos.Count > 0)
-            {
-                foreach (var video in model.Videos)
-                {
-                    var itemFile = UploadVideo(video);
-                    if (itemFile.Validate.Message.IsNullOrEmptyOrWhiteSpace())
-                        itemFiles.Add(itemFile);
-                    else
+                    var itemFiles = new List<ItemFile>();
+                    if (model.Videos != null && model.Videos.Count > 0)
                     {
-                        itemResult.message = itemFile.Validate.Message;
-                        break;
+                        foreach (var video in model.Videos)
+                        {
+                            var itemFile = UploadVideo(video);
+
+                            if (!itemFile.Validate.Message.IsNullOrEmptyOrWhiteSpace())
+                                throw new Exception(itemFile.Validate.Message);
+
+                            itemFiles.Add(itemFile);
+                        }
                     }
-                }
-            }
 
-            var itemAudios = new List<ItemAudio>();
-            if (model.Audios != null && model.Audios.Count > 0)
-            {
-                foreach (var audio in model.Audios)
-                {
-                    var itemAudio = UploadAudio(audio);
-
-                    if (itemAudio.Validate.Message.IsNullOrEmptyOrWhiteSpace())
-                        itemAudios.Add(itemAudio);
-                    else
+                    var itemAudios = new List<ItemAudio>();
+                    if (model.Audios != null && model.Audios.Count > 0)
                     {
-                        itemResult.message = itemAudio.Validate.Message;
-                        break;
+                        foreach (var audio in model.Audios)
+                        {
+                            var itemAudio = UploadAudio(audio);
+
+                            if (!itemAudio.Validate.Message.IsNullOrEmptyOrWhiteSpace())
+                                throw new Exception(itemAudio.Validate.Message);
+
+                            itemAudios.Add(itemAudio);
+                        }
                     }
+
+                    Item item = new Item()
+                    {
+                        Statement = model.Enunciado,
+                        proficiency = model.Proficiencia,
+                        EvaluationMatrix_Id = model.MatrizId,
+                        Keywords = model.PalavrasChave,
+                        Tips = model.Observacao,
+                        TRICasualSetting = model.TRIAcertoCasual,
+                        TRIDifficulty = model.TRIDificuldade,
+                        TRIDiscrimination = model.TRIDiscrimicacao,
+                        BaseText = new BaseText()
+                        {
+                            Description = model.TextoBase,
+                            Source = model.Fonte
+                        },
+                        ItemSituation_Id = 1, // -> Situação 1 = Aceito
+                        ItemType_Id = model.TipoItemId,
+                        ItemLevel_Id = (long)model.Dificuldade,
+                        ItemCode = model.CodigoItem,
+                        ItemCurriculumGrades = new List<ItemCurriculumGrade>()
+                        {
+                            new ItemCurriculumGrade() {
+                                TypeCurriculumGradeId = model.TipoGradeCurricularId
+                            }
+                        },
+                        ItemSkills = new List<ItemSkill>(),
+                        Alternatives = model.Alternativas.Select(t => new Alternative()
+                        {
+                            Description = t.Descricao,
+                            Correct = t.Correta,
+                            Order = t.Ordem,
+                            Justificative = t.Justificativa,
+                            Numeration = t.Numeracao
+                        }).ToList(),
+                        IsRestrict = model.Sigiloso,
+                        KnowledgeArea_Id = model.AreaConhecimentoId,
+                        SubSubject_Id = model.SubassuntoId,
+                        ItemFiles = itemFiles,
+                        ItemAudios = itemAudios,
+                    };
+
+                    item.ItemSkills.Add(new ItemSkill()
+                    {
+                        Skill_Id = model.CompetenciaId,
+                        OriginalSkill = true
+                    });
+
+                    item.ItemSkills.Add(new ItemSkill()
+                    {
+                        Skill_Id = model.HabilidadeId,
+                        OriginalSkill = true
+                    });
+
+                    var entity = Save(0, item, files);
+
+                    itemResult.sucesso = entity.Validate.IsValid;
+                    itemResult.tipo = entity.Validate.Type.ToString();
+                    itemResult.mensagem = entity.Validate.Message;
                 }
+                catch (Exception ex)
+                {
+                    itemResult.sucesso = false;
+                    itemResult.tipo = ValidateType.error.ToString();
+                    itemResult.mensagem = "Erro ao salvar item. Erro(s): " + ex.Message;
+                }
+
+                result.Add(itemResult);
             }
 
-            if (!itemResult.message.IsNullOrEmptyOrWhiteSpace()) return itemResult;
-
-            Item item = new Item()
-            {
-                Statement = model.Enunciado,
-                proficiency = model.Proficiencia,
-                EvaluationMatrix_Id = model.MatrizId,
-                Keywords = model.PalavrasChave,
-                Tips = model.Observacao,
-                TRICasualSetting = model.TRIAcertoCasual,
-                TRIDifficulty = model.TRIDificuldade,
-                TRIDiscrimination = model.TRIDiscrimicacao,
-                BaseText = new BaseText()
-                {
-                    Description = model.TextoBase,
-                    Source = model.Fonte
-                },
-                ItemSituation_Id = 1, // -> Situação 1 = Aceito
-                ItemType_Id = model.TipoItemId,
-                ItemLevel_Id = (long)model.Dificuldade,
-                ItemCode = model.CodigoItem,
-                ItemCurriculumGrades = new List<ItemCurriculumGrade>()
-                {
-                    new ItemCurriculumGrade() {
-                        TypeCurriculumGradeId = model.TipoGradeCurricularId
-                    }
-                },
-                ItemSkills = new List<ItemSkill>(),
-                Alternatives = model.Alternativas.Select(t => new Alternative()
-                {
-                    Description = t.Descricao,
-                    Correct = t.Correta,
-                    Order = t.Ordem,
-                    Justificative = t.Justificativa,
-                    Numeration = t.Numeracao
-                }).ToList(),
-                IsRestrict = model.Sigiloso,
-                KnowledgeArea_Id = model.AreaConhecimentoId,
-                SubSubject_Id = model.SubassuntoId,
-                ItemFiles = itemFiles,
-                ItemAudios = itemAudios,
-            };
-
-            item.ItemSkills.Add(new ItemSkill()
-            {
-                Skill_Id = model.CompetenciaId,
-                OriginalSkill = true
-            });
-
-            item.ItemSkills.Add(new ItemSkill()
-            {
-                Skill_Id = model.HabilidadeId,
-                OriginalSkill = true
-            });
-
-            foreach (var file in files)
-            {
-                if (!file.Validate.IsValid)
-                {
-                    itemResult.success = file.Validate.IsValid;
-                    itemResult.type = file.Validate.Type.ToString();
-                    itemResult.message = file.Validate.Message;
-                    itemResult.item_id = file.Id;
-
-                    return itemResult;
-                }
-            }
-
-            var entity = Save(0, item, files);
-
-            itemResult.success = entity.Validate.IsValid;
-            itemResult.type = entity.Validate.Type.ToString();
-            itemResult.message = entity.Validate.Message;
-            itemResult.item_id = entity.Id;
-
-            return itemResult;
+            return result;
         }
 
         private string UploadPictureTagImg(EnumFileType type, List<EntityFile> files, PictureDto picture)

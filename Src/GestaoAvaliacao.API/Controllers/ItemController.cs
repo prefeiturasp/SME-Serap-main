@@ -222,35 +222,43 @@ namespace GestaoAvaliacao.API.Controllers
 
         [Route("api/Item/Salvar")]
         [HttpPost]
-        [ResponseType(typeof(ItemApiResult))]
-        public HttpResponseMessage ItemSave([FromBody] ItemApiDto model)
+        [ResponseType(typeof(List<ItemApiResult>))]
+        public HttpResponseMessage ItemSave([FromBody] List<ItemApiDto> items)
         {
-            ItemApiResult itemResult = new ItemApiResult();
+            List<ItemApiResult> lista = new List<ItemApiResult>();
             try
             {
-                if (model == null)
+                if (items == null || !items.Any())
                 {
-                    itemResult.success = false;
-                    itemResult.type = ValidateType.error.ToString();
-                    itemResult.message = "Estrutura do json informado é inválida.";
+                    var itemResult = new ItemApiResult
+                    {
+                        sucesso = false,
+                        tipo = ValidateType.error.ToString(),
+                        mensagem = "Estrutura do json informado é inválida."
+                    };
+
+                    lista.Add(itemResult);
                 }
                 else
                 {
-                    itemResult = itemBusiness.SaveApi(model);
+                    lista = itemBusiness.SaveApi(items);
                 }
             }
             catch (Exception ex)
             {
-                itemResult.success = false;
-                itemResult.type = ValidateType.error.ToString();
-                itemResult.message = "Erro ao salvar item. erro original: " + ex.Message;
+                var itemResult = new ItemApiResult
+                {
+                    sucesso = false,
+                    tipo = ValidateType.error.ToString(),
+                    mensagem = "Erro ao salvar item(s). erro original: " + ex.Message
+                };
+                lista.Add(itemResult);
 
                 LogFacade.SaveBasicError(ex.Message);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, itemResult);
             }
 
-            var statusCode = itemResult.success ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
-            return Request.CreateResponse(statusCode, itemResult);
+            return Request.CreateResponse(HttpStatusCode.OK, lista);
         }
     }
 }

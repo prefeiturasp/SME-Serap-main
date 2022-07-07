@@ -205,10 +205,10 @@ namespace GestaoAvaliacao.Util
 	}
 	public class ItemApiResult
 	{
-		public bool success { get; set; }
-		public string type { get; set; }
-		public string message { get; set; }
-		public long item_id { get; set; }
+		public bool sucesso { get; set; }
+		public string tipo { get; set; }
+		public string mensagem { get; set; }
+		public int sequencia { get; set; }
 	}
 	#endregion
 }
