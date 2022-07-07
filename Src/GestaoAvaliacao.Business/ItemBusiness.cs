@@ -7,6 +7,7 @@ using GestaoAvaliacao.IPDFConverter;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.Util.Extensions;
+using GestaoAvaliacao.Util.Videos;
 using GestaoEscolar.Entities;
 using GestaoEscolar.IBusiness;
 using System;
@@ -38,9 +39,12 @@ namespace GestaoAvaliacao.Business
         private readonly IItemSituationBusiness itemSituationRepository;
         private readonly IFileBusiness fileBusiness;
         private readonly IItemLevelRepository itemLevelRepository;
+        private readonly IVideoConverter videoConverter;
 
         const string RESPOSTA_CONSTRUIDA = "Resposta construída";
 
+
+        private const string VideoConvertedContentType = "video/webm";
         const string TIPO_IMAGENS_PERMITIDOS = "image/jpeg, image/png, image/gif, image/bmp";
         const string TIPO_VIDEOS_PERMITIDOS = "video/mp4, video/webm, video/ogg, application/ogg, video/x-flv, application/x-mpegURL, video/MP2T, video/3gpp, video/quicktime, video/x-msvideo, video/x-ms-wmv";
         const string TIPO_AUDIO_PERMITIDOS = "audio/mpeg, audio/mp4, audio/mp3, audio/vnd.wav, audio/x-ms-wma, audio/ogg";
@@ -59,7 +63,9 @@ namespace GestaoAvaliacao.Business
                             IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
                             IItemSituationBusiness itemSituationRepository,
                             IFileBusiness fileBusiness,
-                            IItemLevelRepository itemLevelRepository)
+                            IItemLevelRepository itemLevelRepository,
+                            IVideoConverter videoConverter
+            )
         {
             this.itemRepository = itemRepository;
             this.alternativeRepository = alternativeRepository;
@@ -80,6 +86,7 @@ namespace GestaoAvaliacao.Business
             this.itemSituationRepository = itemSituationRepository;
             this.fileBusiness = fileBusiness;
             this.itemLevelRepository = itemLevelRepository;
+            this.videoConverter = videoConverter;
         }
 
         #region Custom
@@ -1081,20 +1088,14 @@ namespace GestaoAvaliacao.Business
             IEnumerable<ACA_TipoCurriculoPeriodo> listCurriculumGrades = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
             List<EvaluationMatrixCourseCurriculumGrade> list = evaluationMatrixCourseCurriculumBusiness.GetCurriculumGradesByMatrix(evaluationMatrixId);
 
-
-
             if (list != null && list.Count > 0)
             {
                 var query = list.Select(i => new CurriculumGradeDto
                 {
-                    TypeCurriculumGradeId = i.TypeCurriculumGradeId,
-                    TypeCurriculumGrade = i.TypeCurriculumGradeId > 0 ? new TypeCurriculumGradeDto
-                    {
-                        Id = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_id,
-                        Description = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_descricao,
-                        Order = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_ordem
-                    } : null
-                }).Where(x => x.TypeCurriculumGrade != null).OrderBy(x => x.TypeCurriculumGrade.Order).ToList();
+                    Id = i.TypeCurriculumGradeId,
+                    Descricao = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_descricao,
+                    Ordem = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_ordem
+                }).Where(x => x.Id > 0).OrderBy(x => x.Ordem).ToList();
                 return query;
             }
             return default;
@@ -1104,178 +1105,263 @@ namespace GestaoAvaliacao.Business
         {
             itemResult.message = string.Empty;
 
-            if (model.EvaluationMatrix_Id != 0)
+            if (model.AreaConhecimentoId != 0)
             {
-                var matriz = evaluationMatrixRepository.GetByMatriz(model.EvaluationMatrix_Id);
+                var knowledgeArea = knowledgeAreaRepository.Get(model.AreaConhecimentoId);
+                if (knowledgeArea == null)
+                    itemResult.message += "<br/>O id da área de conhecimento é invãlido.";
+            }
+            else
+                itemResult.message += "<br/>O id da área de conhecimento é obrigatório.";
+
+
+            if (model.MatrizId != 0)
+            {
+                var matriz = evaluationMatrixRepository.GetByMatriz(model.MatrizId);
                 if (!matriz.Any())
-                    itemResult.message += "<br/>O código de matriz no campo EvaluationMatrix_Id não foi encontrada.";
+                    itemResult.message += "<br/>O id da matriz é inválido.";
             }
             else
-                itemResult.message += "<br/>O campo EvaluationMatrix_Id deve ser informado com um código de matriz válida.";
+                itemResult.message += "<br/>O id da matriz é obrigatório.";
 
-            if (!model.ItemCode.IsNullOrEmptyOrWhiteSpace())
+            if (!model.CodigoItem.IsNullOrEmptyOrWhiteSpace())
             {
-                bool codigoExiste;
-                codigoExiste = itemRepository.VerifyItemCodeAlreadyExists(model.ItemCode);
+                bool codigoExiste = itemRepository.VerifyItemCodeAlreadyExists(model.CodigoItem);
                 if (codigoExiste)
-                    itemResult.message += "<br/>O código do item no campo ItemCode já existe.";
+                    itemResult.message += "<br/>O código do item já existe.";
             }
             else
-                itemResult.message += "<br/>O campo ItemCode deve ser informado com o código do item.";
+                itemResult.message += "<br/>O código do item é obrigatório.";
 
-            if (model.ItemLevel_Id.HasValue && model.ItemLevel_Id != 0)
+            if (model.Dificuldade != Dificuldade.Nenhum)
             {
-                var level = itemLevelRepository.Get((int)model.ItemLevel_Id);
+                var level = itemLevelRepository.Get((int)model.Dificuldade);
                 if (level == null)
-                    itemResult.message += "<br/>A Dificuldade da prova deve ser [1 - Muito Fácil, 2 - Fácil, 3 - Médio, 4 - Difícil, 5 - Muito Difícil].";
+                    itemResult.message += "<br/>A dificuldade é inválida [1 - Muito Fácil, 2 - Fácil, 3 - Médio, 4 - Difícil, 5 - Muito Difícil].";
             }
             else
-                itemResult.message += "<br/>O campo ItemLevel_Id deve ser informado a dificuldade do item [1 - Muito Fácil, 2 - Fácil, 3 - Médio, 4 - Difícil, 5 - Muito Difícil]";
-
-            if (model.ItemSituation_Id != 0)
-            {
-                var situacao = itemSituationRepository.GetItemSituationById(model.ItemSituation_Id);
-                if (situacao == null)
-                    itemResult.message += "<br/>O código da situação no campo ItemSituation_Id não foi encontrado.";
-            }
-            else
-                itemResult.message += "<br/>O campo ItemSituation_Id deve ser informado com a situação do item.";
+                itemResult.message += "<br/>A dificuldade do item é obrigatório [1 - Muito Fácil, 2 - Fácil, 3 - Médio, 4 - Difícil, 5 - Muito Difícil].";
 
             ItemType itemType = null;
-            if (model.ItemType_Id != 0)
+            if (model.TipoItemId != 0)
             {
-                itemType = itemTypeRepository.Get(model.ItemType_Id);
+                itemType = itemTypeRepository.Get(model.TipoItemId);
                 if (itemType == null)
-                    itemResult.message += "<br/>O código do tipo do item no campo ItemType_Id não foi encontrado.";
+                    itemResult.message += "<br/>O id do tipo do item é inválido.";
             }
             else
-                itemResult.message += "<br/>O campo ItemType_Id deve ser informado com o tipo do item.";
+                itemResult.message += "<br/>O id do tipo do item é obrigatório.";
 
-            if (model.TypeCurriculumGradeId != 0)
+            if (model.TipoGradeCurricularId != 0)
             {
-                if (model.EvaluationMatrix_Id != 0)
+                if (model.MatrizId != 0)
                 {
-                    var grades = evaluationMatrixCourseCurriculumBusiness.GetCurriculumGradesByMatrix((int)model.EvaluationMatrix_Id);
-                    if (!grades.Any(t => t.TypeCurriculumGradeId == model.TypeCurriculumGradeId))
-                        itemResult.message += "<br/>O código da Grade Curricular no campo TypeCurriculumGradeId não foi encontrado.";
+                    var grades = evaluationMatrixCourseCurriculumBusiness.GetCurriculumGradesByMatrix((int)model.MatrizId);
+                    if (!grades.Any(t => t.TypeCurriculumGradeId == model.TipoGradeCurricularId))
+                        itemResult.message += "<br/>O id do tipo de grade curricular é inválido.";
                 }
             }
             else
-                itemResult.message += "<br/>O campo TypeCurriculumGradeId deve ser informado com o código da grade curricular.";
+                itemResult.message += "<br/>O id do tipo de grade curricular é obrigatório.";
 
-            if (model.Axle_Id != 0)
+            if (model.CompetenciaId != 0)
             {
-                var listSkillDto = skillRepository.GetByMatrix(model.EvaluationMatrix_Id);
-                if (!listSkillDto.Any(t => t.Id == model.Axle_Id && t.ModelSkillLevel.Id == 1))
-                    itemResult.message += "<br/>O código do Eixo no campo Exle_Id não foi encontrado.";
+                var listSkillDto = skillRepository.GetByMatrix(model.MatrizId);
+                if (!listSkillDto.Any(t => t.Id == model.CompetenciaId && t.ModelSkillLevel.Id == 1))
+                    itemResult.message += "<br/>O id da competência é inválido.";
             }
             else
-                itemResult.message += "<br/>O campo Exle_Id deve ser informado com o código do eixo.";
+                itemResult.message += "<br/>O id da competência é obrigatório.";
 
-            if (model.Ability_Id != 0)
+            if (model.HabilidadeId != 0)
             {
-                var listAbilityDto = skillRepository.GetByParent(model.Axle_Id);
-                if (listAbilityDto == null || !listAbilityDto.Any(t => t.Id == model.Ability_Id))
-                    itemResult.message += "<br/>O código da habilidade no campo Ability_Id não foi encontrado.";
+                var listAbilityDto = skillRepository.GetByParent(model.CompetenciaId);
+                if (listAbilityDto == null || !listAbilityDto.Any(t => t.Id == model.HabilidadeId))
+                    itemResult.message += "<br/>O id da habilidade é inválido.";
             }
             else
-                itemResult.message += "<br/>O campo Ability_Id deve ser informado com o código da habilidade.";
+                itemResult.message += "<br/>O id da habilidade é obrigatório.";
 
-            if (model.SubSubject_Id != 0)
+            if (model.SubassuntoId != 0)
             {
-                var assunto = subjectRepository.LoadSubjectBySubsubject((long)model.SubSubject_Id);
+                var assunto = subjectRepository.LoadSubjectBySubsubject((long)model.SubassuntoId);
                 if (assunto == null)
-                    itemResult.message += "<br/>O código do subassunto do item no campo SubSubject_Id não foi encontrado.";
+                    itemResult.message += "<br/>O id do subassunto é inválido.";
             }
             else
-                itemResult.message += "<br/>O campo SubSubject_Id deve ser informado com o subassunto do item.";
+                itemResult.message += "<br/>O id do subassunto é obrigatório.";
 
-            if (model.Proficiency != null)
+            if (model.Proficiencia != null)
             {
-                if ((int)model.Proficiency < 100 || (int)model.Proficiency > 500)
+                if ((int)model.Proficiencia < 100 || (int)model.Proficiencia > 500)
                     itemResult.message += "<br/>Proficiência deve ser de 100 a 500.";
             }
 
-            if (model.Statement.IsNullOrEmptyOrWhiteSpace())
-                itemResult.message += "<br/>Enunciado deve ser informado.";
+            if (model.Enunciado.IsNullOrEmptyOrWhiteSpace())
+                itemResult.message += "<br/>O Enunciado é obrigatório.";
 
             if (itemType != null && !itemType.Description.Contains(RESPOSTA_CONSTRUIDA))
             {
-                if (model.Alternatives != null && model.Alternatives.Any())
+                if (model.Alternativas != null && model.Alternativas.Any())
                 {
-                    if (!model.Alternatives.Any(t => t.Correct))
-                        itemResult.message += "<br/>O campo Alternatives deve possuir uma alternativa correta.";
+                    if (!model.Alternativas.Any(t => t.Correta))
+                        itemResult.message += "<br/>O item deve possuir 1 alternativa correta.";
 
-                    if (model.Alternatives.Count(t => t.Correct) > 1)
-                        itemResult.message += "<br/>O campo Alternatives deve possuir somente uma alternativa correta.";
+                    if (model.Alternativas.Count(t => t.Correta) > 1)
+                        itemResult.message += "<br/>O item deve possuir somente 1 alternativa correta.";
 
-                    if (itemType.QuantityAlternative != model.Alternatives.Count)
-                        itemResult.message += $"<br/>O campo Alternatives deve possuir {itemType.QuantityAlternative} registros.";
+                    if (itemType.QuantityAlternative != model.Alternativas.Count)
+                        itemResult.message += $"<br/>O item deve possuir {itemType.QuantityAlternative} alternativas.";
 
-                    if (model.Alternatives.GroupBy(t => t.Order).Any(t => t.Count() > 1))
-                        itemResult.message += $"<br/>O campo Alternatives não pode conter a ordem duplicada.";
+                    if (model.Alternativas.GroupBy(t => t.Ordem).Any(t => t.Count() > 1))
+                        itemResult.message += $"<br/>O item não pode conter a ordem duplicada.";
+
+                    if (model.Alternativas.GroupBy(t => t.Numeracao).Any(t => t.Count() > 1))
+                        itemResult.message += $"<br/>O item não pode conter a numeração duplicada.";
+
+
+                    foreach(var alternativa in model.Alternativas)
+                    {
+                        if (alternativa.Descricao.IsNullOrEmptyOrWhiteSpace())
+                            itemResult.message += "<br/>A descrição da alternativa é obrigatório.";
+
+                        if (alternativa.Numeracao.IsNullOrEmptyOrWhiteSpace())
+                            itemResult.message += "<br/>A numeração da alternativa é obrigatório.";
+                    }
+
                 }
                 else
-                    itemResult.message += "<br/>O campo Alternatives deve ser informado com as alternativas do item.";
+                    itemResult.message += $"<br/>O item deve possuir {itemType.QuantityAlternative} alternativas.";
             }
 
-            if (model.Pictures != null && model.Pictures.Any())
+            if (model.Imagens != null && model.Imagens.Any())
             {
-                if (model.Pictures.GroupBy(t => t.Tag).Any(t => t.Count() > 1))
-                    itemResult.message += $"<br/>O campo Pictures não pode conter a tag duplicada.";
+                if (model.Imagens.GroupBy(t => t.Tag).Any(t => t.Count() > 1))
+                    itemResult.message += $"<br/>O item não pode conter imagens com a tag duplicada.";
 
-                foreach (var picture in model.Pictures)
+                foreach (var picture in model.Imagens)
                 {
                     if (picture.Tag.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O campo Tag em Pictures deve ser informado.";
+                        itemResult.message += "<br/>A tag da imagem é obrigatória.";
 
-                    if (picture.ContentLength == 0)
-                        itemResult.message += "<br/>O campo ContentLength em Pictures deve ser informado.";
+                    if (picture.Tamanho == 0)
+                        itemResult.message += "<br/>O tamanho da imagem é obrigatório.";
 
-                    if (picture.ContentType.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O campo ContentType em Pictures deve ser informado.";
+                    if (picture.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O tipo do conteúdo da imagem é obrigatório.";
 
-                    if (picture.InputStream.IsNullOrEmptyOrWhiteSpace())
-                        itemResult.message += "<br/>O campo InputStream em Pictures deve ser informado.";
+                    if (picture.Base64.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O arquivo em base64 da imagem é obrigatório.";
 
-                    if (!TIPO_IMAGENS_PERMITIDOS.Contains(picture.ContentType))
+                    if (picture.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O nome do arquivo da imagem é obrigatório.";
+
+                    if (!TIPO_IMAGENS_PERMITIDOS.Contains(picture.TipoConteudo))
                     {
-                        itemResult.message += "<br/>Tipo de imagem não permitido.";
+                        itemResult.message += "<br/>Tipo de imagem não permitido. [.jpeg, .png, .gif, .bmp]";
                         continue;
                     }
 
-                    switch (picture.Type)
+                    switch (picture.Tipo)
                     {
                         case PictureType.BaseText:
-                            if (!model.BaseText.Description.Contains(picture.Tag))
-                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em BaseText.";
+                            if (!model.TextoBase.Contains(picture.Tag))
+                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em texto base.";
                             break;
                         case PictureType.Statement:
-                            if (!model.Statement.Contains(picture.Tag))
-                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em Statement.";
+                            if (!model.Enunciado.Contains(picture.Tag))
+                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em enunciado.";
                             break;
 
                         case PictureType.Alternative:
                             var contemTagAlternative = false;
-                            foreach (var alternative in model.Alternatives)
+                            foreach (var alternative in model.Alternativas)
                             {
-                                if (alternative.Description.Contains(picture.Tag)) contemTagAlternative = true;
+                                if (alternative.Descricao.Contains(picture.Tag)) contemTagAlternative = true;
                             }
 
                             if (!contemTagAlternative)
-                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em Alternatives.";
+                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em nenhuma alternativa.";
                             break;
                         case PictureType.Justificative:
                             var contemTagJustificative = false;
-                            foreach (var alternative in model.Alternatives)
+                            foreach (var alternative in model.Alternativas)
                             {
-                                if (alternative.Justificative.Contains(picture.Tag)) contemTagJustificative = true;
+                                if (alternative.Justificativa.Contains(picture.Tag)) contemTagJustificative = true;
                             }
 
                             if (!contemTagJustificative)
-                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em Justificative.";
+                                itemResult.message += $"<br/>A tag {picture.Tag} não foi encontrada em nenhuma justificativa das alternativas.";
                             break;
                     }
+                }
+            }
+
+            if (model.Videos != null && model.Videos.Any())
+            {
+                foreach (var video in model.Videos)
+                {
+                    if (video.Tamanho == 0)
+                        itemResult.message += "<br/>O tamanho do video é obrigatório.";
+
+                    if (video.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O tipo do conteúdo do video é obrigatório.";
+
+                    if (video.Base64.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O arquivo em base64 do video é obrigatório.";
+
+                    if (video.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O nome do arquivo do video é obrigatório.";
+
+                    if (!TIPO_VIDEOS_PERMITIDOS.Contains(video.TipoConteudo))
+                        itemResult.message += "<br/>Tipo de video não permitido.";
+
+
+                    if (video.Tamanho == 0)
+                        itemResult.message += "<br/>O tamanho do video é obrigatório.";
+
+                    if (video.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O tipo do conteúdo do video é obrigatório.";
+
+                    if (video.Base64.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O arquivo em base64 do video é obrigatório.";
+
+                    if (video.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O nome do arquivo do video é obrigatório.";
+
+
+                    if (video.MiniaturaTamanho == 0)
+                        itemResult.message += "<br/>O tamanho da miniatura do video é obrigatório.";
+
+                    if (video.MiniaturaTipoConteudo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O tipo de conteúdo da miniatura do video é obrigatório.";
+
+                    if (video.MiniaturaBase64.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O arquivo em base64 da miniatura do video é obrigatório.";
+
+                    if (video.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O nome do arquivo da miniatura do video é obrigatório.";
+
+                    if (!TIPO_IMAGENS_PERMITIDOS.Contains(video.MiniaturaTipoConteudo))
+                        itemResult.message += "<br/>Tipo de Imagem não permitido na miniatura do video.";
+                }
+            }
+
+            if (model.Audios != null && model.Audios.Any())
+            {
+                foreach (var audio in model.Audios)
+                {
+                    if (audio.Tamanho == 0)
+                        itemResult.message += "<br/>O tamanho do audio é obrigatório.";
+
+                    if (audio.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O tipo do conteúdo do audio é obrigatório.";
+
+                    if (audio.Base64.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.message += "<br/>O arquivo em base64 do audio é obrigatório.";
+
+                    if (!TIPO_AUDIO_PERMITIDOS.Contains(audio.TipoConteudo))
+                        itemResult.message += "<br/>Tipo de audio não permitido.";
                 }
             }
 
@@ -1290,55 +1376,85 @@ namespace GestaoAvaliacao.Business
                 success = true
             };
 
-            //-> Situação aceito.
-            model.ItemSituation_Id = 1;
-
             ValidateApi(model, itemResult);
 
             if (!itemResult.success) return itemResult;
 
-            var files = new List<Entities.File>();
-            if (model.Pictures != null && model.Pictures.Count > 0)
+            var files = new List<EntityFile>();
+            if (model.Imagens != null && model.Imagens.Count > 0)
             {
-                foreach (var picture in model.Pictures)
+                foreach (var picture in model.Imagens)
                 {
-                    switch (picture.Type)
+                    switch (picture.Tipo)
                     {
                         case PictureType.BaseText:
-                            if (model.BaseText.Description.Contains(picture.Tag))
+                            if (model.TextoBase.Contains(picture.Tag))
                             {
                                 string tabImg = UploadPictureTagImg(EnumFileType.BaseText, files, picture);
-                                model.BaseText.Description = model.BaseText.Description.Replace(picture.Tag, tabImg);
+                                model.TextoBase = model.TextoBase.Replace(picture.Tag, tabImg);
                             }
                             break;
                         case PictureType.Statement:
-                            if (model.Statement.Contains(picture.Tag))
+                            if (model.Enunciado.Contains(picture.Tag))
                             {
                                 string tabImg = UploadPictureTagImg(EnumFileType.Statement, files, picture);
-                                model.Statement = model.Statement.Replace(picture.Tag, tabImg);
+                                model.Enunciado = model.Enunciado.Replace(picture.Tag, tabImg);
                             }
                             break;
 
                         case PictureType.Alternative:
-                            foreach (var alternative in model.Alternatives)
+                            foreach (var alternative in model.Alternativas)
                             {
-                                if (alternative.Description.Contains(picture.Tag))
+                                if (alternative.Descricao.Contains(picture.Tag))
                                 {
                                     string tabImg = UploadPictureTagImg(EnumFileType.Alternative, files, picture);
-                                    alternative.Description = alternative.Description.Replace(picture.Tag, tabImg);
+                                    alternative.Descricao = alternative.Descricao.Replace(picture.Tag, tabImg);
                                 }
                             }
                             break;
                         case PictureType.Justificative:
-                            foreach (var alternative in model.Alternatives)
+                            foreach (var alternative in model.Alternativas)
                             {
-                                if (alternative.Justificative.Contains(picture.Tag))
+                                if (alternative.Justificativa.Contains(picture.Tag))
                                 {
                                     string tabImg = UploadPictureTagImg(EnumFileType.Justificative, files, picture);
-                                    alternative.Justificative = alternative.Justificative.Replace(picture.Tag, tabImg);
+                                    alternative.Justificativa = alternative.Justificativa.Replace(picture.Tag, tabImg);
                                 }
                             }
                             break;
+                    }
+                }
+            }
+
+            var itemFiles = new List<ItemFile>();
+            if (model.Videos != null && model.Videos.Count > 0)
+            {
+                foreach (var video in model.Videos)
+                {
+                    var itemFile = UploadVideo(video);
+                    if (itemFile.Validate.Message.IsNullOrEmptyOrWhiteSpace())
+                        itemFiles.Add(itemFile);
+                    else
+                    {
+                        itemResult.message = itemFile.Validate.Message;
+                        break;
+                    }
+                }
+            }
+
+            var itemAudios = new List<ItemAudio>();
+            if (model.Audios != null && model.Audios.Count > 0)
+            {
+                foreach (var audio in model.Audios)
+                {
+                    var itemAudio = UploadAudio(audio);
+
+                    if (itemAudio.Validate.Message.IsNullOrEmptyOrWhiteSpace())
+                        itemAudios.Add(itemAudio);
+                    else
+                    {
+                        itemResult.message = itemAudio.Validate.Message;
+                        break;
                     }
                 }
             }
@@ -1347,55 +1463,54 @@ namespace GestaoAvaliacao.Business
 
             Item item = new Item()
             {
-                ItemCodeVersion = model.ItemCodeVersion,
-                Statement = model.Statement,
-                descriptorSentence = model.DescriptorSentence,
-                proficiency = model.Proficiency,
-                EvaluationMatrix_Id = model.EvaluationMatrix_Id,
-                Keywords = model.Keywords,
-                Tips = model.Tips,
-                TRICasualSetting = model.TRICasualSetting,
-                TRIDifficulty = model.TRIDifficulty,
-                TRIDiscrimination = model.TRIDiscrimination,
+                Statement = model.Enunciado,
+                proficiency = model.Proficiencia,
+                EvaluationMatrix_Id = model.MatrizId,
+                Keywords = model.PalavrasChave,
+                Tips = model.Observacao,
+                TRICasualSetting = model.TRIAcertoCasual,
+                TRIDifficulty = model.TRIDificuldade,
+                TRIDiscrimination = model.TRIDiscrimicacao,
                 BaseText = new BaseText()
                 {
-                    Description = model.BaseText.Description,
-                    Source = model.BaseText.Source
+                    Description = model.TextoBase,
+                    Source = model.Fonte
                 },
-                ItemSituation_Id = model.ItemSituation_Id,
-                ItemType_Id = model.ItemType_Id,
-                ItemLevel_Id = model.ItemLevel_Id,
-                ItemCode = model.ItemCode,
-                ItemVersion = model.ItemVersion,
+                ItemSituation_Id = 1, // -> Situação 1 = Aceito
+                ItemType_Id = model.TipoItemId,
+                ItemLevel_Id = (long)model.Dificuldade,
+                ItemCode = model.CodigoItem,
                 ItemCurriculumGrades = new List<ItemCurriculumGrade>()
                 {
                     new ItemCurriculumGrade() {
-                        TypeCurriculumGradeId = model.TypeCurriculumGradeId
+                        TypeCurriculumGradeId = model.TipoGradeCurricularId
                     }
                 },
                 ItemSkills = new List<ItemSkill>(),
-                Alternatives = model.Alternatives.Select(t => new Alternative()
+                Alternatives = model.Alternativas.Select(t => new Alternative()
                 {
-                    Description = t.Description,
-                    Correct = t.Correct,
-                    Order = t.Order,
-                    Justificative = t.Justificative,
-                    Numeration = t.Numeration
+                    Description = t.Descricao,
+                    Correct = t.Correta,
+                    Order = t.Ordem,
+                    Justificative = t.Justificativa,
+                    Numeration = t.Numeracao
                 }).ToList(),
-                IsRestrict = model.IsRestrict,
-                KnowledgeArea_Id = model.KnowledgeArea_Id,
-                SubSubject_Id = model.SubSubject_Id
+                IsRestrict = model.Sigiloso,
+                KnowledgeArea_Id = model.AreaConhecimentoId,
+                SubSubject_Id = model.SubassuntoId,
+                ItemFiles = itemFiles,
+                ItemAudios = itemAudios,
             };
 
             item.ItemSkills.Add(new ItemSkill()
             {
-                Skill_Id = model.Axle_Id,
+                Skill_Id = model.CompetenciaId,
                 OriginalSkill = true
             });
 
             item.ItemSkills.Add(new ItemSkill()
             {
-                Skill_Id = model.Ability_Id,
+                Skill_Id = model.HabilidadeId,
                 OriginalSkill = true
             });
 
@@ -1422,20 +1537,18 @@ namespace GestaoAvaliacao.Business
             return itemResult;
         }
 
-        private string UploadPictureTagImg(EnumFileType type, List<Entities.File> files, PictureDto picture)
+        private string UploadPictureTagImg(EnumFileType type, List<EntityFile> files, PictureDto picture)
         {
             var entidade = parambusiness.GetByKey("ENTIDADE");
-
             var virtualDirectory = parambusiness.GetByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), new Guid(entidade.Value));
             var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
 
             UploadModel upload = new UploadModel
             {
-                ContentLength = picture.ContentLength,
-                ContentType = picture.ContentType,
-                InputStream = picture.InputStream,
+                ContentLength = picture.Tamanho,
+                ContentType = picture.TipoConteudo,
+                InputStream = picture.Base64,
                 Stream = null,
-                FileName = picture.FileName,
                 VirtualDirectory = virtualDirectory.Value,
                 PhysicalDirectory = physicalDirectory.Value,
                 FileType = type
@@ -1446,6 +1559,136 @@ namespace GestaoAvaliacao.Business
 
             var tabImg = $"<img src='{file.Path}' id='{file.Id}'>";
             return tabImg;
+        }
+
+        private ItemFile UploadVideo(VideoDto videoDto)
+        {
+            var itemFile = new ItemFile();
+
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var virtualDirectory = parambusiness.GetByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), new Guid(entidade.Value));
+            var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
+
+            EntityFile entityFileConvert = null;
+            var sizeToConvertVideo = parambusiness.GetByKey(EnumParameterKey.SIZE_TO_CONVERT_VIDEO_FILE.GetDescription());
+            if (videoDto.Tamanho >= int.Parse(sizeToConvertVideo.Value))
+                entityFileConvert = ConvertVideoAsync(videoDto.Base64, videoDto.TipoConteudo, videoDto.NomeArquivo, virtualDirectory.Value, physicalDirectory.Value);
+
+            EntityFile entityThumbnail = null;
+            if (videoDto.MiniaturaTamanho >= 0)
+            {
+                UploadModel uploadThumbnail = new UploadModel
+                {
+                    ContentLength = videoDto.MiniaturaTamanho,
+                    ContentType = videoDto.MiniaturaTipoConteudo,
+                    InputStream = videoDto.MiniaturaBase64,
+                    Stream = null,
+                    VirtualDirectory = virtualDirectory.Value,
+                    PhysicalDirectory = physicalDirectory.Value,
+                    FileType = EnumFileType.ThumbnailVideo
+                };
+
+                entityThumbnail = fileBusiness.Upload(uploadThumbnail);
+            }
+
+            var upload = new UploadModel
+            {
+                ContentLength = videoDto.Tamanho,
+                ContentType = videoDto.TipoConteudo,
+                InputStream = videoDto.Base64,
+                FileName = videoDto.NomeArquivo,
+                VirtualDirectory = virtualDirectory.Value,
+                PhysicalDirectory = physicalDirectory.Value,
+                FileType = EnumFileType.Video
+            };
+            EntityFile entity = fileBusiness.Upload(upload);
+
+            if (entityFileConvert != null && !entityFileConvert.Validate.IsValid)
+                itemFile.Validate.Message += entityFileConvert.Validate.Message;
+
+            if (entityThumbnail != null && !entityThumbnail.Validate.IsValid)
+                itemFile.Validate.Message += entityThumbnail.Validate.Message;
+
+            if (!entity.Validate.IsValid)
+                itemFile.Validate.Message += entity.Validate.Message;
+
+            itemFile.File = entity;
+
+            if (entityFileConvert != null)
+            {
+                itemFile.ConvertedFileId = entityFileConvert.Id;
+                itemFile.ConvertedFile = entityFileConvert;
+            }
+
+            if (entityThumbnail != null)
+            {
+                itemFile.ThumbnailId = entityThumbnail.Id;
+                itemFile.Thumbnail = entityThumbnail;
+            }
+            else
+                itemFile.Thumbnail = new EntityFile();
+
+            return itemFile;
+        }
+
+        private EntityFile ConvertVideoAsync(string inputStream, string contentType, string fileName, string virtualDirectory, string physicalDirectory)
+        {
+            var entity = new EntityFile();
+
+            var bytes = Convert.FromBase64String(inputStream);
+            var stream = new MemoryStream(bytes);
+
+            var convertedVideoDto = videoConverter.Convert(stream, contentType, fileName, Guid.Empty).Result;
+            if (convertedVideoDto is null)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message =
+                    "Não foi possível realizar a conversão do vídeo para um tamanho menor. O vídeo origianl será mantido.";
+                return entity;
+            }
+
+            var uploadConvertedVideo = new UploadModel
+            {
+                ContentLength = (int)convertedVideoDto.Stream.Length,
+                ContentType = VideoConvertedContentType,
+                InputStream = null,
+                Stream = convertedVideoDto.Stream,
+                FileName = convertedVideoDto.FileName,
+                VirtualDirectory = virtualDirectory,
+                PhysicalDirectory = physicalDirectory,
+                FileType = EnumFileType.Video
+            };
+
+            return fileBusiness.Upload(uploadConvertedVideo);
+        }
+
+        private ItemAudio UploadAudio(AudioDto audioDto)
+        {
+            ItemAudio itemAudio = new ItemAudio();
+
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var virtualDirectory = parambusiness.GetByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), new Guid(entidade.Value));
+            var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
+
+            UploadModel upload = new UploadModel
+            {
+                ContentLength = audioDto.Tamanho,
+                ContentType = audioDto.TipoConteudo,
+                InputStream = audioDto.Base64,
+                FileName = audioDto.NomeArquivo,
+                VirtualDirectory = virtualDirectory.Value,
+                PhysicalDirectory = physicalDirectory.Value,
+                FileType = EnumFileType.Audio
+            };
+
+            var entity = fileBusiness.Upload(upload);
+
+            if (!entity.Validate.IsValid)
+                itemAudio.Validate.Message += entity.Validate.Message;
+
+            itemAudio.File = entity;
+            return itemAudio;
         }
 
         #endregion
