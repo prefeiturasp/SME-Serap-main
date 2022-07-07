@@ -51,6 +51,6 @@ namespace GestaoAvaliacao.IBusiness
 		List<BaseDto> LoadSubsubjectBySubject(string idSubjects);
 		List<ItemTypeDto> FindForTestType();
 		List<CurriculumGradeDto> LoadCurriculumGradesByMatrix(int evaluationMatrixId);
-        ItemApiResult SaveApi(ItemApiDto model);
+        List<ItemApiResult> SaveApi(List<ItemApiDto> items);
     }
 }
