@@ -1492,14 +1492,14 @@ namespace GestaoAvaliacao.Business
                             }
                         },
                         ItemSkills = new List<ItemSkill>(),
-                        Alternatives = model.Alternativas.Select(t => new Alternative()
+                        Alternatives = model.Alternativas != null ? model.Alternativas.Select(t => new Alternative()
                         {
                             Description = t.Descricao,
                             Correct = t.Correta,
                             Order = t.Ordem,
                             Justificative = t.Justificativa,
                             Numeration = t.Numeracao
-                        }).ToList(),
+                        }).ToList() : new List<Alternative>(),
                         IsRestrict = model.Sigiloso,
                         KnowledgeArea_Id = model.AreaConhecimentoId,
                         SubSubject_Id = model.SubassuntoId,
