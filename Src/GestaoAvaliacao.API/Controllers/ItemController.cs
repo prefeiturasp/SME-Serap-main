@@ -1,18 +1,13 @@
-﻿using GestaoAvaliacao.API.App_Start;
-using GestaoAvaliacao.API.Middleware;
-using GestaoAvaliacao.API.Models;
+﻿using GestaoAvaliacao.API.Middleware;
 using GestaoAvaliacao.Dtos.ItemApi;
-using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
-using GestaoEscolar.IBusiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -23,19 +18,16 @@ namespace GestaoAvaliacao.API.Controllers
     public class ItemController : ApiController
     {
         private readonly IItemBusiness itemBusiness;
-        private readonly IFileBusiness fileBusiness;
 
-        public ItemController(IItemBusiness itemBusiness, IFileBusiness fileBusiness)
+        public ItemController(IItemBusiness itemBusiness)
         {
             this.itemBusiness = itemBusiness;
-            this.fileBusiness = fileBusiness;
         }
-
 
         [Route("api/Item/AreasConhecimento")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetAllKnowledgeAreaActive()
+        public HttpResponseMessage GetAllKnowledgeAreaActive()
         {
             try
             {
@@ -49,11 +41,10 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-
         [Route("api/Item/Disciplinas/AreaConhecimentoId")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetAlDisciplinebyknowledgearea(int areaConhecimentoId)
+        public HttpResponseMessage GetAlDisciplinebyknowledgearea(int areaConhecimentoId)
         {
             try
             {
@@ -70,7 +61,7 @@ namespace GestaoAvaliacao.API.Controllers
         [Route("api/Item/Matrizes/DisciplinaId")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetEvaluationMatrixbyDiscipline(int disciplinaId)
+        public HttpResponseMessage GetEvaluationMatrixbyDiscipline(int disciplinaId)
         {
             try
             {
@@ -96,11 +87,10 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-
-        [Route("api/Item/Eixos/MatrizId")]
+        [Route("api/Item/Competencias/MatrizId")]
         [HttpGet]
         [ResponseType(typeof(SkillDto))]
-        public async Task<HttpResponseMessage> GetSkillbymatriz(long matrizId)
+        public HttpResponseMessage GetSkillbymatriz(long matrizId)
         {
             try
             {
@@ -122,11 +112,10 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-
-        [Route("api/Item/Habilidade/EixoId")]
+        [Route("api/Item/Habilidades/CompetenciaId")]
         [HttpGet]
         [ResponseType(typeof(AbilityDto))]
-        public async Task<HttpResponseMessage> GetAbilityBySkill(long eixoId)
+        public HttpResponseMessage GetAbilityBySkill(long eixoId)
         {
             try
             {
@@ -151,7 +140,7 @@ namespace GestaoAvaliacao.API.Controllers
         [Route("api/Item/Assuntos")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetAllSubjects()
+        public HttpResponseMessage GetAllSubjects()
         {
             try
             {
@@ -167,11 +156,10 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-
-        [Route("api/Item/Assuntos/SubAssuntos/AssuntoId")]
+        [Route("api/Item/SubAssuntos/AssuntoId")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetSubsubjectBySubject(int assuntoId)
+        public HttpResponseMessage GetSubsubjectBySubject(int assuntoId)
         {
             try
             {
@@ -192,7 +180,7 @@ namespace GestaoAvaliacao.API.Controllers
         [Route("api/Item/Tipos")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]
-        public async Task<HttpResponseMessage> GetItemTypes()
+        public HttpResponseMessage GetItemTypes()
         {
             try
             {
@@ -209,10 +197,10 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-        [Route("api/Item/CurriculumGrades/EvaluationMatrixId")]
+        [Route("api/Item/TiposGradeCurricular/MatrizId")]
         [HttpGet]
         [ResponseType(typeof(List<CurriculumGradeDto>))]
-        public async Task<HttpResponseMessage> GetCurriculumGradesByMatrix(int evaluationMatrixId)
+        public HttpResponseMessage GetCurriculumGradesByMatrix(int evaluationMatrixId)
         {
             try
             {
@@ -232,31 +220,45 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-        [Route("api/Item/Save")]
+        [Route("api/Item/Salvar")]
         [HttpPost]
-        [ResponseType(typeof(ItemApiResult))]
-        public HttpResponseMessage ItemSave([FromBody] ItemApiDto model)
+        [ResponseType(typeof(List<ItemApiResult>))]
+        public HttpResponseMessage ItemSave([FromBody] List<ItemApiDto> items)
         {
-            ItemApiResult itemResult = new ItemApiResult();
+            List<ItemApiResult> lista = new List<ItemApiResult>();
             try
             {
-                if (model == null)
-                    throw new ArgumentNullException("model");
+                if (items == null || !items.Any())
+                {
+                    var itemResult = new ItemApiResult
+                    {
+                        sucesso = false,
+                        tipo = ValidateType.error.ToString(),
+                        mensagem = "Estrutura do json informado é inválida."
+                    };
 
-                itemResult = itemBusiness.SaveApi(model);
+                    lista.Add(itemResult);
+                }
+                else
+                {
+                    lista = itemBusiness.SaveApi(items);
+                }
             }
             catch (Exception ex)
             {
-                itemResult.success = false;
-                itemResult.type = ValidateType.error.ToString();
-                itemResult.message = "Erro ao salvar item.";
+                var itemResult = new ItemApiResult
+                {
+                    sucesso = false,
+                    tipo = ValidateType.error.ToString(),
+                    mensagem = "Erro ao salvar item(s). erro original: " + ex.Message
+                };
+                lista.Add(itemResult);
 
                 LogFacade.SaveBasicError(ex.Message);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, itemResult);
             }
 
-            var statusCode = itemResult.success ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
-            return Request.CreateResponse(statusCode, itemResult);
+            return Request.CreateResponse(HttpStatusCode.OK, lista);
         }
     }
 }

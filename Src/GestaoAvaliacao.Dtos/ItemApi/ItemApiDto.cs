@@ -3,61 +3,65 @@ using System.ComponentModel;
 
 namespace GestaoAvaliacao.Dtos.ItemApi
 {
-    public class ItemApiDto
+    public enum Dificuldade
     {
-        public int ItemCodeVersion { get; set; }
-        public string Statement { get; set; }
-        public string DescriptorSentence { get; set; }
-        public int? Proficiency { get; set; }
-        public long EvaluationMatrix_Id { get; set; }
-        public string Keywords { get; set; }
-        public string Tips { get; set; }
-        public decimal? TRICasualSetting { get; set; }
-        public decimal? TRIDifficulty { get; set; }
-        public decimal? TRIDiscrimination { get; set; }
-        public BaseTextDto BaseText { get; set; }
-        public long ItemSituation_Id { get; set; }
-        public long ItemType_Id { get; set; }
-        public long? ItemLevel_Id { get; set; }
-        public string ItemCode { get; set; }
-        public int ItemVersion { get; set; }
-        public int TypeCurriculumGradeId { get; set; }
-        public int[] ItemSkills { get; set; }
-        public List<AlternativeDto> Alternatives { get; set; }
-        public bool IsRestrict { get; set; }
-        public long? KnowledgeArea_Id { get; set; }
-        public long? SubSubject_Id { get; set; }
-
-        public List<PictureDto> Pictures { get; set; }
+        Nenhum = 0,
+        MuitoFacil = 1,
+        Facil = 2,
+        Medio = 3,
+        Dificil = 4,
+        MuitoDificil = 5
     }
 
-    public class BaseTextDto
+    public class ItemApiDto
     {
-        public string Description { get; set; }
-        public string Source { get; set; }
+        public long AreaConhecimentoId { get; set; }
+        public long MatrizId { get; set; }
+        public string TextoBase { get; set; }
+        public string Fonte { get; set; }
+        public string CodigoItem { get; set; }
+        public int CompetenciaId { get; set; }
+        public int HabilidadeId { get; set; }
+        public int TipoGradeCurricularId { get; set; }
+        public Dificuldade Dificuldade { get; set; }
+        public long SubassuntoId { get; set; }
+        public string Observacao { get; set; }
+        public long TipoItemId { get; set; }
+        public bool Sigiloso { get; set; }
+        public decimal? TRIDiscrimicacao { get; set; }
+        public decimal? TRIAcertoCasual { get; set; }
+        public decimal? TRIDificuldade { get; set; }
+        public string PalavrasChave { get; set; }
+        public int? Proficiencia { get; set; }
+        public string Enunciado { get; set; }
+
+        public List<AlternativeDto> Alternativas { get; set; }
+        public List<PictureDto> Imagens { get; set; }
+        public List<VideoDto> Videos { get; set; }
+        public List<AudioDto> Audios { get; set; }
     }
 
     public class AlternativeDto
     {
-        public string Description { get; set; }
+        public string Descricao { get; set; }
 
-        public bool Correct { get; set; }
+        public bool Correta { get; set; }
 
-        public int Order { get; set; }
+        public int Ordem { get; set; }
 
-        public string Justificative { get; set; }
+        public string Justificativa { get; set; }
 
-        public string Numeration { get; set; }
+        public string Numeracao { get; set; }
     }
 
     public class PictureDto
     {
         public string Tag { get; set; }
-        public int ContentLength { get; set; }
-        public string ContentType { get; set; }
-        public string InputStream { get; set; }
-        public string FileName { get; set; }
-        public PictureType Type { get; set; }
+        public int Tamanho { get; set; }
+        public string TipoConteudo { get; set; }
+        public string Base64 { get; set; }
+        public string NomeArquivo { get; set; }
+        public PictureType Tipo { get; set; }
     }
 
     public enum PictureType
@@ -69,10 +73,27 @@ namespace GestaoAvaliacao.Dtos.ItemApi
         [Description("Justificativa")]
         Justificative = 3,
         [Description("Enunciado")]
-        Statement = 4,
-        [Description("Thumbnail_Video")]
-        ThumbnailVideo = 30,
-        [Description("Audio")]
-        Audio = 31
+        Statement = 4
+    }
+
+    public class VideoDto
+    {
+        public int Tamanho { get; set; }
+        public string TipoConteudo { get; set; }
+        public string Base64 { get; set; }
+        public string NomeArquivo { get; set; }
+
+        public int MiniaturaTamanho { get; set; }
+        public string MiniaturaTipoConteudo { get; set; }
+        public string MiniaturaBase64 { get; set; }
+        public string MiniaturaNomeArquivo { get; set; }
+    }
+
+    public class AudioDto
+    {
+        public int Tamanho { get; set; }
+        public string TipoConteudo { get; set; }
+        public string Base64 { get; set; }
+        public string NomeArquivo { get; set; }
     }
 }
