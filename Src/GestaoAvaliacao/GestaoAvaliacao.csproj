@@ -511,6 +511,7 @@
     <Content Include="Assets\js\angular\controllers\absenceReason\formAbsenceReasonController.js" />
     <Content Include="Assets\js\angular\controllers\absenceReason\listAbsenceReasonController.js" />
     <Content Include="Assets\js\angular\controllers\adherence\adherenceController.js" />
+    <Content Include="Assets\js\angular\controllers\adminAcompanhamentoProva\adminAcompanhamentoProva.js" />
     <Content Include="Assets\js\angular\controllers\administrativeUnitType\administrativeUnitTypeController.js" />
     <Content Include="Assets\js\angular\controllers\adminSerapEstudantes\adminSerapEstudantesController.js" />
     <Content Include="Assets\js\angular\controllers\answerSheet\answerSheetLotController.js" />
@@ -1766,6 +1767,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AdminAcompanhamentoProvasController.cs" />
     <Compile Include="Controllers\AdminSerapEstudantesController.cs" />
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
     <Compile Include="Controllers\NumberItemsAplicationTaiController.cs" />

@@ -1949,6 +1949,8 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/directives/_bundle/modal/modal.js")
                 .Include("~/Assets/js/angular/services/_bundle/util/util.js")
                 .Include("~/Assets/js/angular/controllers/adminSerapEstudantes/adminSerapEstudantesController.js")
+                .Include("~/Assets/js/angular/controllers/adminSerapEstudantes/adminAcompanhamentoProva.js")
+
             );
 
             bundles.Add(
