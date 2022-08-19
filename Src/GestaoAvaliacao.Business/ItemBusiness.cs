@@ -1045,7 +1045,8 @@ namespace GestaoAvaliacao.Business
             {
                 Id = s.Id,
                 Descricao = s.Description,
-                UltimoNivel = s.LastLevel
+                UltimoNivel = s.LastLevel,
+                Codigo = s.Code
             }).ToList();
             return listAbilityDto;
         }

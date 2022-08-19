@@ -115,14 +115,14 @@ namespace GestaoAvaliacao.API.Controllers
         [Route("api/Item/Habilidades/CompetenciaId")]
         [HttpGet]
         [ResponseType(typeof(AbilityDto))]
-        public HttpResponseMessage GetAbilityBySkill(long eixoId)
+        public HttpResponseMessage GetAbilityBySkill(long competenciaId)
         {
             try
             {
-                if (eixoId <= 0)
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro eixoId é obrigatório e tem que ser maior que zero.");
+                if (competenciaId <= 0)
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro competenciaId é obrigatório e tem que ser maior que zero.");
 
-                var lista = itemBusiness.LoadAbilityBySkill(eixoId);
+                var lista = itemBusiness.LoadAbilityBySkill(competenciaId);
 
 
                 if (lista == null || !lista.Any())
