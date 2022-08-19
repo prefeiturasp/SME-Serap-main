@@ -463,7 +463,12 @@ namespace GestaoAvaliacao.MappingDependence
             container.Register(Classes.FromAssemblyContaining<NumberItemsAplicationTaiBusiness>()
                     .BasedOn(typeof(INumberItemsAplicationTaiBusiness))
                     .WithService.AllInterfaces()
-                    .SetLifestyle(LifestylePerWebRequest));            
+                    .SetLifestyle(LifestylePerWebRequest));
+
+            container.Register(Classes.FromAssemblyContaining<AdminAcompanhamentoProvaBusiness>()
+                .BasedOn(typeof(IAdminAcompanhamentoProvaBusiness))
+                .WithService.AllInterfaces()
+                .SetLifestyle(LifestylePerWebRequest));
 
 
             #region GestaoEscolar
