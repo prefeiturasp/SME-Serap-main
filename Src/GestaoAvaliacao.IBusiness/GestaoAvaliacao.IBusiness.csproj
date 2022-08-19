@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAdminAcompanhamentoProvaBusiness.cs" />
     <Compile Include="IAdministrativeUnitTypeBusiness.cs" />
     <Compile Include="IAnswerSheetBatchLogBusiness.cs" />
     <Compile Include="IAnswerSheetBatchFilesBusiness.cs" />
