@@ -8,6 +8,7 @@ namespace GestaoAvaliacao.Dtos.ItemApi
 {
    public class AbilityDto : BaseDto
     {
-        public bool UltimoNivel; 
+        public string Codigo { get; set; }
+        public bool UltimoNivel { get; set; }
     }
 }
