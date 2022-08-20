@@ -153,7 +153,7 @@ INSERT INTO [dbo].[SYS_VisaoModuloMenu]
 --Administrador Serap na UE 4318D329-17DC-4C48-8E59-7D80557F7E77
 --Diretor Escolar           75DCAB30-2C1E-E811-B259-782BCB3D2D76
 --Coordenador Pedagógico    D4026F2C-1A1E-E811-B259-782BCB3D2D76
- 
+-- Assistente de Diretor na UE -   ECF7A20D-1A1E-E811-B259-782BCB3D2D76 
 
 
 -------------------------Administrador------------------AAD9D772-41A3-E411-922D-782BCB3D218E
@@ -273,4 +273,21 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
            ,1
            ,1);
 GO
-------------------------------------------------------------------------------------------
+-------------------------- Assistente de Diretor na UE
+INSERT INTO [dbo].[SYS_GrupoPermissao]
+           ([gru_id]
+           ,[sis_id]
+           ,[mod_id]
+           ,[grp_consultar]
+           ,[grp_inserir]
+           ,[grp_alterar]
+           ,[grp_excluir])
+     VALUES
+           ('ECF7A20D-1A1E-E811-B259-782BCB3D2D76'
+           , 204
+           ,48
+           ,1
+           ,1
+           ,1
+           ,1);
+GO
