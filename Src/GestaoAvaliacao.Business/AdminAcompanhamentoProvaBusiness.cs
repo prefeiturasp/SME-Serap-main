@@ -9,7 +9,7 @@ namespace GestaoAvaliacao.Business
 {
   public class AdminAcompanhamentoProvaBusiness : IAdminAcompanhamentoProvaBusiness
     {
-        public static readonly string ENDPOINT_ADMIN_AUTENTICACAO = "autenticacao";
+        public static readonly string ENDPOINT_ADMIN_AUTENTICACAO = "api/v1/autenticacao";
 
         private  string baseUrl;
         private readonly string chaveSerapProvaApi;
