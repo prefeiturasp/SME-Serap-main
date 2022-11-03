@@ -114,6 +114,9 @@ namespace GestaoAvaliacao.Entities
         public bool ShowTestContext { get; set; }
 
         public bool TestTai { get; set; }
+        public bool ProvaComProficiencia { get; set; }
+        public bool ApresentarResultados { get; set; }
+        public bool ApresentarResultadosPorItem { get; set; }
         public int? NumberSynchronizedResponseItems { get; set; }
 
         [NotMapped]

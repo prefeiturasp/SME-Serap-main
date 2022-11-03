@@ -183,6 +183,9 @@
                 showJustificate: 'Exibir justificativa',
                 showAudioFiles: 'Exibir conteúdo de áudio',
                 showTestTAI: 'Aplicação em TAI',
+                ProvaComProficiencia: 'Prova com proficiência',
+                ApresentarResultados: 'Apresentar resultados',
+                ApresentarResultadosPorItem: 'Apresentar resultados por item',
                 numberItemsTestTAI: 'Nº itens na amostra',
                 informationTestTAI: 'Informações Teste TAI',
                 advanceWithoutAnswering: 'Permitir avançar sem responder',
@@ -260,6 +263,9 @@
             ng.e1_nItensTestTAI = null;
             ng.e1_nItensTestTAIList = [];
             ng.showTestTAI = false;
+            ng.ProvaComProficiencia = false;
+            ng.ApresentarResultados = false;
+            ng.ApresentarResultadosPorItem = false;
             ng.advanceWithoutAnswering = false;
             ng.backToPreviousItem = false;
             // switch gerar folha de resposta
@@ -768,6 +774,21 @@
             self.etapa1.alterou = true;
         };
 
+        ng.selecionaProvaComProficiencia = function () {
+            ng.ProvaComProficiencia = !ng.ProvaComProficiencia;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selecionaApresentarResultados = function () {
+            ng.ApresentarResultados = !ng.ApresentarResultados;
+            self.etapa1.alterou = true;
+        };
+
+        ng.selecionaApresentarResultadosPorItem = function () {
+            ng.ApresentarResultadosPorItem = !ng.ApresentarResultadosPorItem;
+            self.etapa1.alterou = true;
+        };
+
         ng.selectShowJustificate = function () {
             ng.showJustificate = !ng.showJustificate;
             self.etapa1.alterou = true;
@@ -1247,6 +1268,9 @@
                 "TestTime": ng.e1_tempoDeProva,
                 "TestContexts": ng.testContexts,
                 "TestTAI": ng.showTestTAI,
+                "ProvaComProficiencia": ng.ProvaComProficiencia,
+                "ApresentarResultados": ng.ApresentarResultados,
+                "ApresentarResultadosPorItem": ng.ApresentarResultadosPorItem,
                 "NumberItemsAplicationTai": ng.e1_nItensTestTAI,
                 "AdvanceWithoutAnswering": ng.advanceWithoutAnswering,
                 "BackToPreviousItem": ng.backToPreviousItem
@@ -1614,6 +1638,9 @@
                             ng.backToPreviousItem = r.BackToPreviousItem;
                         }
                     }
+                    ng.ProvaComProficiencia = r.ProvaComProficiencia;
+                    ng.ApresentarResultados = r.ApresentarResultados;
+                    ng.ApresentarResultadosPorItem = r.ApresentarResultadosPorItem;
                     ng.showJustificate = r.ShowJustificate;
                     e1_formato_findTest = true;
                     ng.e1_folhaResp = true;

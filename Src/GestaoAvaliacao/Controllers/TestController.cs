@@ -244,6 +244,9 @@ namespace GestaoAvaliacao.Controllers
                         TestSubGroup = entity.TestSubGroup != null ? new { Id = entity.TestSubGroup.Id, Description = entity.TestSubGroup.Description } : null,
                         TempoDeProva = new { entity.TestTime.Id, entity.TestTime.Description },
                         ShowTestTAI = entity.TestTai,
+                        ProvaComProficiencia = entity.ProvaComProficiencia,
+                        ApresentarResultados = entity.ApresentarResultados,
+                        ApresentarResultadosPorItem = entity.ApresentarResultadosPorItem,
                         NumberItemsAplicationTai = entity.NumberItemsAplicationTai != null ? new { entity.NumberItemsAplicationTai.Id, entity.NumberItemsAplicationTai.Name, entity.NumberItemsAplicationTai.Value, entity.NumberItemsAplicationTai.AdvanceWithoutAnswering, entity.NumberItemsAplicationTai.BackToPreviousItem } : null,
                         AdvanceWithoutAnswering = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.AdvanceWithoutAnswering : false,
                         BackToPreviousItem = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.BackToPreviousItem : false
