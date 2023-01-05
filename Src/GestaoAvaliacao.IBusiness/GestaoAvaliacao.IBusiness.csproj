@@ -74,6 +74,7 @@
     <Compile Include="IReportItemPerformanceBusiness.cs" />
     <Compile Include="IRequestRevokeBusiness.cs" />
     <Compile Include="IResponseChangeLogBusiness.cs" />
+    <Compile Include="IResultadoPspBusiness.cs" />
     <Compile Include="ISectionTestGenerateLotBusiness.cs" />
     <Compile Include="ISectionTestStatsBusiness.cs" />
     <Compile Include="ISerapEstudantesBusiness.cs" />

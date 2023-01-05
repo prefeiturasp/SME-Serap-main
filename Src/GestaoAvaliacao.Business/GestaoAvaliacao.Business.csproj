@@ -134,6 +134,7 @@
     <Compile Include="ReportItemPerformanceBusiness.cs" />
     <Compile Include="RequestRevokeBusiness.cs" />
     <Compile Include="ResponseChangeLogBusiness.cs" />
+    <Compile Include="ResultadoPspBusiness.cs" />
     <Compile Include="SectionTestGenerateLotBusiness.cs" />
     <Compile Include="SectionTestStatsBusiness.cs" />
     <Compile Include="ServiceAnswerSheetInfoBusiness.cs" />

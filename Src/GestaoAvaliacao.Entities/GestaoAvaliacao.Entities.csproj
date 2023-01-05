@@ -57,6 +57,7 @@
     <Compile Include="Alternative.cs" />
     <Compile Include="AnswerSheetBatchQueue.cs" />
     <Compile Include="AnswerSheetLot.cs" />
+    <Compile Include="ArquivoResultadoPsp.cs" />
     <Compile Include="BaseText.cs" />
     <Compile Include="Base\EntityBase.cs" />
     <Compile Include="Block.cs" />

@@ -74,6 +74,7 @@
     <Compile Include="IRequestRevokeRepository.cs" />
     <Compile Include="IResponseChangeLogMongoRepository.cs" />
     <Compile Include="IResponseChangeLogRepository.cs" />
+    <Compile Include="IResultadoPspRepository.cs" />
     <Compile Include="ISectionTestGenerateLotRepository.cs" />
     <Compile Include="ISectionTestStatsRepository.cs" />
     <Compile Include="IServiceAnswerSheetInfoRepository.cs" />

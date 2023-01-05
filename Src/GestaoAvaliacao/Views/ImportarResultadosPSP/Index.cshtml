@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<alert></alert>
+
+<div class="wellCustom" ng-controller="ImportarResultadosPSPController">
+    <div class="headerCustom">
+        <h4>{{title}}<span>Listagem</span></h4>
+    </div>
+
+    <div class="pesquisa-upload row">
+        <div class="col-md-8">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" class="form-pesquisa cinza ng-pristine ng-valid" name="myText" placeholder="Código ou arquivo" ng-model="nameArquivo" maxlength="50">
+                </div>
+                <button class="btn-pesquisar" ng-click="searchFile(true)" title="Pesquisar"><i class="material-icons">search</i></button>
+            </form>
+        </div>        
+    </div>
+
+    <div class="well well-large">
+        <form class="form-inline telaImagem" role="form">
+
+            <div class="campoLabel">
+                <label for="tipoResultado">Tipo Resultado: </label>
+                <div>
+                    <select id="tipoResultado" class="form-control" title="{{ tipoResultado.Description }}"
+                            ng-change="e1_GrupoSubgrupoMudou();"
+                            ng-model="tipoResultado"
+                            ng-options="tipoResult as tipoResult.Description for tipoResult in listaTiposResultados"
+                            ng-title="listaTiposResultados"
+                            ng-title-propertie="Description"
+                            ng-title-index="1">
+                        <option value="">--Selecione uma opção--</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="campoLabel">
+                <div class="uploadImage">
+                    <div upload="" type="File" trash="true" placeholder="um arquivo" callback="fileUploadSuccess" component="modelFile"></div>
+                </div>
+            </div>
+
+        </form>
+
+        <table class="table table-hover" ng-show="listaImportacoes.length != null" style=" margin-top: 0px;">
+            <colgroup>
+                <col width="10%" />
+                <col width="55%" />
+                <col width="15%" />
+                <col width="20%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="center">Código</th>
+                    <th class="center">Arquivo</th>
+                    <th class="center">Status</th>
+                    <th class="center">Data de upload</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="arquivo in listaImportacoes">
+                    <td class="center">{{arquivo.Id }}</td>
+                    <td class="center">{{arquivo.NomeArquivo }}</td>
+                    <td class="center">{{arquivo.Status }}</td>
+                    <td class="center">{{arquivo.CreateDate }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <page method="carregaImportacoes('paginate')" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" ng-show="listaImportacoes != null" data-arr-page-size="[10,20,30,40,50,100]"></page>
+        <p class="nresultados" ng-show="listaImportacoes == null" class="nresultados">Nenhum resultado encontrado.</p>
+
+    </div>
+
+</div>

@@ -131,6 +131,7 @@
     <Compile Include="RepositoryCache.cs" />
     <Compile Include="RequestRevokeRepository.cs" />
     <Compile Include="ResponseChangeLogRepository.cs" />
+    <Compile Include="ResultadoPspRepository.cs" />
     <Compile Include="StudentsTestSent\StudentTestSentRepository.cs" />
     <Compile Include="StudentTestAccoplishments\StudentTestAccoplishmentRepository.cs" />
     <Compile Include="SubjectRepository.cs" />
