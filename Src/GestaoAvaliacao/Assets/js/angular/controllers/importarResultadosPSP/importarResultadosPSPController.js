@@ -1,95 +1,128 @@
 ﻿
 (function (angular, $) {
 
-	//~SETTER
-	angular
-		.module('appMain', ['services', 'filters', 'directives', 'tooltip']);
+    //~SETTER
+    angular
+        .module('appMain', ['services', 'filters', 'directives', 'tooltip']);
 
-	//~GETTER
-	angular
-		.module('appMain')
-		.controller("ImportarResultadosPSPController", ImportarResultadosPSPController);
+    //~GETTER
+    angular
+        .module('appMain')
+        .controller("ImportarResultadosPSPController", ImportarResultadosPSPController);
 
-	ImportarResultadosPSPController.$inject = ['$rootScope', '$scope', 'ImportarResultadosPSPModel', '$notification', '$timeout', '$sce', '$pager', '$compile', '$util'];
+    ImportarResultadosPSPController.$inject = ['$rootScope', '$scope', 'ImportarResultadosPSPModel', '$notification', '$timeout', '$sce', '$pager', '$compile', '$util', '$http',];
 
 
-	function ImportarResultadosPSPController($rootScope, $scope, ImportarResultadosPSPModel, $notification, $timeout, $sce, $pager, $compile, $util) {
+    function ImportarResultadosPSPController($rootScope, $scope, ImportarResultadosPSPModel, $notification, $timeout, $sce, $pager, $compile, $util, $http) {
 
-		var self = this;
-		var params = $util.getUrlParams();
+        var self = this;
+        var params = $util.getUrlParams();
 
-		$scope.tipoResultado = null;
-		$scope.listaTiposResultados = [];
-		$scope.listaImportacoes = null;
-		$scope.codigoOuNomeArquivo = "";
-		$scope.paginate = $pager(ImportarResultadosPSPModel.carregaImportacoes);
-		$scope.pageSize = 10;
+        $scope.tipoResultado = null;
+        $scope.listaTiposResultados = [];
+        $scope.listaImportacoes = null;
+        $scope.codigoOuNomeArquivo = "";
+        $scope.arquivoSelecionado = null;
+        $scope.paginate = $pager(ImportarResultadosPSPModel.carregaImportacoes);
+        $scope.pageSize = 10;
 
-		/**
-		 * @function carrega funções de configuração
-		 * @private
-		 * @param
-		 */
-		$scope.load = function _load() {
-			$notification.clear();
-			carregaTiposResultados();
-			$scope.carregaImportacoes();
-		};
+        $scope.load = function _load() {
+            $notification.clear();
+            $scope.carregaTiposResultados();
+            $scope.carregaImportacoes();
+        };
 
-		$scope.carregaImportacoes = function __Importacoes(paginate, codigoOuNomeArquivo) {
-			$scope.listaImportacoes = [];
+        $scope.pesquisarArquivo = function _pesquisarArquivo() {
+            $scope.pages = 0;
+            $scope.totalItens = 0;
+            $scope.paginate.indexPage(0);
+            $scope.pageSize = $scope.paginate.getPageSize();
+            $scope.carregaImportacoes('paginate', $scope.codigoOuNomeArquivo);
+        };
 
-			$scope.paginate.paginate(codigoOuNomeArquivo).then(
-				function (result) {
-					if (result.success) {
-						if (result.lista.length > 0) {
-							$scope.paginate.nextPage();
-							$scope.listaImportacoes = result.lista;
-							$scope.pageSize = result.pageSize;
-							if (!$scope.pages > 0) {
-								$scope.pages = $scope.paginate.totalPages();
-								$scope.totalItens = $scope.paginate.totalItens();
-							}
-						} else {
-							$scope.listaImportacoes = null;
-						}
-						if (!codigoOuNomeArquivo && codigoOuNomeArquivo == undefined) $scope.codigoOuNomeArquivo = "";
-					} else {
-						$notification[result.type ? result.type : 'error'](result.message);
-					}
-				});
+        $scope.carregaImportacoes = function __Importacoes(paginate, codigoOuNomeArquivo) {
+            $scope.listaImportacoes = [];
+
+            $scope.paginate.paginate(codigoOuNomeArquivo).then(
+                function (result) {
+                    if (result.success) {
+                        if (result.lista.length > 0) {
+                            $scope.paginate.nextPage();
+                            $scope.listaImportacoes = result.lista;
+                            $scope.pageSize = result.pageSize;
+                            if (!$scope.pages > 0) {
+                                $scope.pages = $scope.paginate.totalPages();
+                                $scope.totalItens = $scope.paginate.totalItens();
+                            }
+                        } else {
+                            $scope.listaImportacoes = null;
+                        }
+                        if (!codigoOuNomeArquivo && codigoOuNomeArquivo == undefined) $scope.codigoOuNomeArquivo = "";
+                    } else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
 
         }
 
-		$scope.fileUploadSuccess = function __fileUploadSuccess(data) {
+        $scope.selecionarArquivo = function __selecionarArquivo(element) {
+            $scope.arquivoSelecionado = element.files[0];            
+        }
 
-			//$timeout(function () {
-			//	angular.element('#' + $scope.modelFile.Guid).css('width', '0%');
-			//	$scope.modelFile.Path = "";
-			//}, 2000);
+        $scope.salvarImportacao = function __salvarImportacao() {
+            console.log($scope.tipoResultado);
+            var form = new FormData();
+            form.append('file', $scope.arquivoSelecionado);
+            form.append('codigoTipoResultado', $scope.tipoResultado.Codigo);
+            $http.post($util.getWindowLocation('/ImportarResultadosPSP/ImportarArquivoResultado'), form, {
+                transformRequest: angular.identity,
+                headers: {
+                    'Content-Type': undefined,
+                    //'__XHR__': function () {
+                    //    return function (xhr) {
+                    //        xhr.upload.addEventListener("progress", function (event) {
+                    //            $scope.progressup = parseInt(((event.loaded / event.total) * 100));
+                    //            if ($scope.progressup < 99)
+                    //                angular.element('#' + $scope.component.Guid).css('width', $scope.progressup + '%');
+                    //        });
+                    //    };
+                    //}
+                }
+            })
+                .success(function (data, status) {
+                    if (data.success) {
+                        $scope.tipoResultado = null;
+                        $scope.arquivoSelecionado = null;
+                        $scope.carregaImportacoes();
+                        $notification.success("Arquivo importado com sucesso!");
+                    }
+                    else {
+                        $notification[data.type ? data.type : 'error'](data.message);
+                    }
+                })
+                .error(function (data, status) {
+                    $notification.error(data);
+                });
 
-			//$scope.LimparCampos();
-			//$scope.searchFile();
-		};
+        }
 
-		function carregaTiposResultados() {
-			//TestGroupModel.loadGroupsSubGroups(function (result) {
-			//	if (result.success) {
-			//		ng.grupoSubgrupoList = result.groupSubGroup;
-			//		ng.e1_grupoSubgrupo = setValuesComb(ng.grupoSubgrupoList, result.groupSubGroup);
-			//	}
-			//	else {
-			//		$notification[result.type ? result.type : 'error'](result.message);
-			//	}
-			//});
-			$scope.listaTiposResultados = [{ Id: 1, Description: "Resultado aluno" },
-											{ Id: 2, Description: "Resultado turma" },
-											{ Id: 3, Description: "Resultado escola" }];
-		};
+        $scope.carregaTiposResultados = function __carregaTiposResultados() {
+            ImportarResultadosPSPModel.carregaTiposResultadoPspAtivos(function (result) {
+                if (result.success) {
+                    if (result.lista.length > 0) {
+                        $scope.listaTiposResultados = result.lista;
+                    } else {
+                        $scope.listaTiposResultados = null;
+                    }
+                }
+                else {
+                    $notification[result.type ? result.type : 'error'](result.message);
+                }
+            });
+        };
 
+        $scope.load();
 
-		$scope.load();
-
-	};
+    };
 
 })(angular, jQuery);

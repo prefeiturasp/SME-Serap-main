@@ -1,9 +1,11 @@
-﻿using GestaoAvaliacao.Entities;
+﻿using Dapper;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace GestaoAvaliacao.Repository
@@ -18,21 +20,44 @@ namespace GestaoAvaliacao.Repository
         public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivo)
         {
             //var retorno = query.Read<ArquivoResultadoPsp>();
-            //var count = query.Read<int>().FirstOrDefault();
+            //var count = query.Read<int>().FirstOrDefault();            
 
-            var retorno = new List<ArquivoResultadoPsp>();
-            retorno.Add(new ArquivoResultadoPsp { Id = 1, NomeArquivo = "teste_1.csv", Status = 1, CreateDate = DateTime.Now.AddDays(-1) });
-            retorno.Add(new ArquivoResultadoPsp { Id = 2, NomeArquivo = "teste_2.csv", Status = 2, CreateDate = DateTime.Now });
-            retorno.Add(new ArquivoResultadoPsp { Id = 3, NomeArquivo = "teste_3.csv", Status = 3, CreateDate = DateTime.Now.AddDays(-2) });
-            retorno.Add(new ArquivoResultadoPsp { Id = 4, NomeArquivo = "teste_4.csv", Status = 4, CreateDate = DateTime.Now.AddDays(-5) });
-            retorno.Add(new ArquivoResultadoPsp { Id = 5, NomeArquivo = "teste_5.csv", Status = 4, CreateDate = DateTime.Now.AddDays(-6) });
-            var count = retorno.Count;
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+                var sql = @"select 
+								[Id]
+								,[Codigo]
+								,[Nome]
+								,[NomeTabelaProvaSp]
+								,[CreateDate]
+								,[UpdateDate]
+								,[State]
+								from TipoResultadoPsp
+								where [State] = 1
+                                and Codigo = @codigoTipoResultado";
 
-            pager.SetTotalItens(count);
-            pager.SetTotalPages((int)Math.Ceiling(count / (double)pager.PageSize));
+                var result = cn.Read<ArquivoResultadoPsp>(sql, new { codigoOuNomeArquivo });
+                var count = result.Count;
 
-            return retorno.AsEnumerable();
+                pager.SetTotalItens(count);
+                pager.SetTotalPages((int)Math.Ceiling(count / (double)pager.PageSize));
 
+                return result;
+            }
+
+
+        }
+
+        public ArquivoResultadoPsp InserirNovo(ArquivoResultadoPsp arquivoResultado)
+        {
+            using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                GestaoAvaliacaoContext.ArquivoResultadoPsp.Add(arquivoResultado);
+                GestaoAvaliacaoContext.SaveChanges();
+
+                return arquivoResultado;
+            }
         }
 
     }

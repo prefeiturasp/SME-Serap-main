@@ -9,8 +9,10 @@ namespace GestaoAvaliacao.Entities
 
         }
 
+        public int FileId { get; set; }
         public string NomeArquivo { get; set; }
-        public int Status { get; set; }
+        public string NomeOriginalArquivo { get; set; }
+        public int CodigoTipoResultado { get; set; }
 
     }
 }

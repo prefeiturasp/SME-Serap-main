@@ -94,6 +94,7 @@
     <Compile Include="KnowledgeAreaDisciplineRepository.cs" />
     <Compile Include="KnowledgeAreaRepository.cs" />
     <Compile Include="Map\AdministrativeUnitTypeMap.cs" />
+    <Compile Include="Map\ArquivoResultadoPspMap.cs" />
     <Compile Include="Map\ItemAudioMap.cs" />
     <Compile Include="Map\ItemFileMap.cs" />
     <Compile Include="Map\BlockKnowledgeAreaMap.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="TestTimeRepository.cs" />
     <Compile Include="TestTypeRepository.cs" />
     <Compile Include="FormatTypeRepository.cs" />
+    <Compile Include="TipoResultadoPspRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

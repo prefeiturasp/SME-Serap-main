@@ -7,5 +7,6 @@ namespace GestaoAvaliacao.IRepository
     public interface IResultadoPspRepository
     {
         IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivo);
+        ArquivoResultadoPsp InserirNovo(ArquivoResultadoPsp arquivoResultado);
     }
 }

@@ -194,6 +194,7 @@
     <Compile Include="TestTime.cs" />
     <Compile Include="TestTypeItemLevel.cs" />
     <Compile Include="FormatType.cs" />
+    <Compile Include="TipoResultadoPsp.cs" />
     <Compile Include="Uploader.cs" />
   </ItemGroup>
   <ItemGroup>

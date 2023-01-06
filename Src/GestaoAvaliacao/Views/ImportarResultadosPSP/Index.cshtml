@@ -2,10 +2,10 @@
 @{
     ViewBag.Title = "Index";
 }
-
 <alert></alert>
 
 <div class="wellCustom" ng-controller="ImportarResultadosPSPController">
+
     <div class="headerCustom">
         <h4>{{title}}<span>Listagem</span></h4>
     </div>
@@ -14,38 +14,57 @@
         <div class="col-md-8">
             <form class="form-inline">
                 <div class="form-group">
-                    <input type="text" class="form-pesquisa cinza ng-pristine ng-valid" name="myText" placeholder="Código ou arquivo" ng-model="nameArquivo" maxlength="50">
+                    <input type="text" class="form-pesquisa cinza ng-pristine ng-valid" name="myText" placeholder="Código ou arquivo" ng-model="codigoOuNomeArquivo" maxlength="50">
                 </div>
-                <button class="btn-pesquisar" ng-click="searchFile(true)" title="Pesquisar"><i class="material-icons">search</i></button>
+                <button class="btn-pesquisar" ng-click="pesquisarArquivo(true)" title="Pesquisar"><i class="material-icons">search</i></button>
             </form>
-        </div>        
+        </div>
     </div>
 
+
     <div class="well well-large">
-        <form class="form-inline telaImagem" role="form">
 
-            <div class="campoLabel">
-                <label for="tipoResultado">Tipo Resultado: </label>
-                <div>
-                    <select id="tipoResultado" class="form-control" title="{{ tipoResultado.Description }}"
-                            ng-change="e1_GrupoSubgrupoMudou();"
-                            ng-model="tipoResultado"
-                            ng-options="tipoResult as tipoResult.Description for tipoResult in listaTiposResultados"
-                            ng-title="listaTiposResultados"
-                            ng-title-propertie="Description"
-                            ng-title-index="1">
-                        <option value="">--Selecione uma opção--</option>
-                    </select>
+        <div class="container-fluid semPadding">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <div class="campoLabel">
+                                <label>Tipo Resultado*: </label>
+                                <div>
+                                    <select id="tipoResultado" class="form-control" title="{{ tipoResultado.Nome }}"
+                                            ng-model="tipoResultado"
+                                            ng-options="tipoResult as tipoResult.Nome for tipoResult in listaTiposResultados"
+                                            ng-title="listaTiposResultados"
+                                            ng-title-propertie="Nome"
+                                            ng-title-index="1">
+                                        <option value="">--Selecione uma opção--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="campoLabel">
+                                <label>Arquivo*: </label>
+                                <input type="file" ng-model="arquivoSelecionado" onchange="angular.element(this).scope().selecionarArquivo(this)" />
+                            </div>
+                            <div class="campoLabel">
+                                <div class="footerCustom semPadding">
+                                    <div class="botoes semMargin">
+                                        <button type="button"
+                                                class="btnPadrao2 pull-left"
+                                                ng-click="salvarImportacao()">
+                                            Importar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="campoLabel">
-                <div class="uploadImage">
-                    <div upload="" type="File" trash="true" placeholder="um arquivo" callback="fileUploadSuccess" component="modelFile"></div>
-                </div>
-            </div>
-
-        </form>
+        @*<form class="form-inline telaImagem" role="form">
+            </form>*@
 
         <table class="table table-hover" ng-show="listaImportacoes.length != null" style=" margin-top: 0px;">
             <colgroup>
@@ -72,7 +91,7 @@
             </tbody>
         </table>
         <page method="carregaImportacoes('paginate')" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" ng-show="listaImportacoes != null" data-arr-page-size="[10,20,30,40,50,100]"></page>
-        <p class="nresultados" ng-show="listaImportacoes == null" class="nresultados">Nenhum resultado encontrado.</p>
+        <p class="nresultados" ng-show="listaImportacoes == null">Nenhum resultado encontrado.</p>
 
     </div>
 
