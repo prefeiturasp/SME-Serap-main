@@ -137,7 +137,7 @@ namespace GestaoAvaliacao.Controllers
 
                     return Json(new { success = true }, JsonRequestBehavior.AllowGet);
                 }
-                return Json(new { success = false }, JsonRequestBehavior.AllowGet);                
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -145,9 +145,8 @@ namespace GestaoAvaliacao.Controllers
                 entity.Validate.Type = ValidateType.error.ToString();
                 entity.Validate.Message = "Erro ao realizar o upload do arquivo.";
                 LogFacade.SaveError(ex);
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
             }
-
-            return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, filelink = entity.Path, idFile = entity.Id }, JsonRequestBehavior.AllowGet);
         }
     }
 }
