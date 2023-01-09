@@ -99,6 +99,7 @@ namespace GestaoAvaliacao.Repository.Context
 			modelBuilder.Configurations.Add(new NumberItemTestTaiMap());
 			modelBuilder.Configurations.Add(new TestTaiCurriculumGradeMap());
             modelBuilder.Configurations.Add(new ArquivoResultadoPspMap());
+            modelBuilder.Configurations.Add(new DadosArquivoResultadoPspMap());
 
 
             modelBuilder.Entity<Subject>()
@@ -193,6 +194,7 @@ namespace GestaoAvaliacao.Repository.Context
 		public DbSet<NumberItemTestTai> NumberItemTestTai { get; set; }
 		public DbSet<TestTaiCurriculumGrade> TestTaiCurriculumGrade { get; set; }
         public DbSet<ArquivoResultadoPsp> ArquivoResultadoPsp { get; set; }
+        public DbSet<DadosArquivoResultadoPsp> DadosArquivoResultadoPsp { get; set; }
 
     }
 }

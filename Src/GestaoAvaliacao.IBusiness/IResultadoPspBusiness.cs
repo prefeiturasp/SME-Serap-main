@@ -10,6 +10,7 @@ namespace GestaoAvaliacao.IBusiness
         IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivo);
         IEnumerable<TipoResultadoPsp> ObterTiposResultadoPspAtivos();
         TipoResultadoPsp ObterTipoResultadoPorCodigo(int codigo);
-        bool ImportarArquivoResultado(ArquivoResultadoPsp arquivoResultado, EntityFile entity);
+        long ImportarArquivoResultado(ArquivoResultadoPsp arquivoResultado, EntityFile entity);
+        bool SalvarDadosArquivoResultado(long arquivoResultadoId, string pathArquivo);
     }
 }

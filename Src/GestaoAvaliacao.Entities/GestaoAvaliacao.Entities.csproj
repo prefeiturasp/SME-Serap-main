@@ -57,7 +57,7 @@
     <Compile Include="Alternative.cs" />
     <Compile Include="AnswerSheetBatchQueue.cs" />
     <Compile Include="AnswerSheetLot.cs" />
-    <Compile Include="ArquivoResultadoPsp.cs" />
+    <Compile Include="ResultadoPsp\ArquivoResultadoPsp.cs" />
     <Compile Include="BaseText.cs" />
     <Compile Include="Base\EntityBase.cs" />
     <Compile Include="Block.cs" />
@@ -78,6 +78,7 @@
     <Compile Include="DTO\StudentTestSession\TestSessionDto.cs" />
     <Compile Include="NumberItemsAplicationTai.cs" />
     <Compile Include="NumberItemTestTai.cs" />
+    <Compile Include="ResultadoPsp\DadosArquivoResultadoPsp.cs" />
     <Compile Include="StudentsTestSent\StudentTestSent.cs" />
     <Compile Include="DTO\Abstractions\NotificableDto.cs" />
     <Compile Include="DTO\AdherenceDTO.cs" />

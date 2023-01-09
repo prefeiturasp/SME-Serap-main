@@ -95,6 +95,7 @@
     <Compile Include="KnowledgeAreaRepository.cs" />
     <Compile Include="Map\AdministrativeUnitTypeMap.cs" />
     <Compile Include="Map\ArquivoResultadoPspMap.cs" />
+    <Compile Include="Map\DadosArquivoResultadoPspMap.cs" />
     <Compile Include="Map\ItemAudioMap.cs" />
     <Compile Include="Map\ItemFileMap.cs" />
     <Compile Include="Map\BlockKnowledgeAreaMap.cs" />
@@ -132,7 +133,8 @@
     <Compile Include="RepositoryCache.cs" />
     <Compile Include="RequestRevokeRepository.cs" />
     <Compile Include="ResponseChangeLogRepository.cs" />
-    <Compile Include="ResultadoPspRepository.cs" />
+    <Compile Include="ResultadoPsp\DadosArquivoResultadoPspRepository.cs" />
+    <Compile Include="ResultadoPsp\ResultadoPspRepository.cs" />
     <Compile Include="StudentsTestSent\StudentTestSentRepository.cs" />
     <Compile Include="StudentTestAccoplishments\StudentTestAccoplishmentRepository.cs" />
     <Compile Include="SubjectRepository.cs" />

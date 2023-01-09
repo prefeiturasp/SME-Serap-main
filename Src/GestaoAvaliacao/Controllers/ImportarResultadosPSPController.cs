@@ -47,7 +47,7 @@ namespace GestaoAvaliacao.Controllers
                     {
                         Id = entity.Id,
                         NomeArquivo = entity.NomeOriginalArquivo,
-                        Status = entity.State,
+                        Status = ((EnumStatusImportResulProvaSp)entity.State).GetDescription(),
                         CreateDate = entity.CreateDate.ToShortDateString()
                     });
 
@@ -117,8 +117,8 @@ namespace GestaoAvaliacao.Controllers
                     Stream = file.InputStream,
                     FileName = file.FileName,
                     VirtualDirectory = ApplicationFacade.VirtualDirectory,
-                    PhysicalDirectory = $"{ApplicationFacade.PhysicalDirectory}\\ResultadosPSP\\{tipoResultado.NomeTabelaProvaSp}",
-                    FileType = EnumFileType.File,
+                    PhysicalDirectory = ApplicationFacade.PhysicalDirectory,
+                    FileType = EnumFileType.ResultadosPsp,
                     UsuId = SessionFacade.UsuarioLogado.Usuario.usu_id
                 };
 
@@ -126,18 +126,20 @@ namespace GestaoAvaliacao.Controllers
                 arquivoResultado.NomeOriginalArquivo = file.FileName;
                 entity = fileBusiness.Upload(upload);
 
+                var retorno = true;
                 if (entity != null && entity.Validate.IsValid)
                 {
-                    var resultado = resultadoPspBusiness.ImportarArquivoResultado(arquivoResultado, entity);
-                    if (!resultado)
-                    {
-                        fileBusiness.Delete(entity.Id);
-                        return Json(new { success = false }, JsonRequestBehavior.AllowGet);
-                    }
+                    var arquivoResultadoId = resultadoPspBusiness.ImportarArquivoResultado(arquivoResultado, entity);
+                    retorno = arquivoResultadoId > 0; 
 
-                    return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+                    if (retorno)
+                        retorno = resultadoPspBusiness.SalvarDadosArquivoResultado(arquivoResultadoId, entity.Path);
+
+                    if (!retorno)
+                        fileBusiness.Delete(entity.Id);
                 }
-                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { success = retorno }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

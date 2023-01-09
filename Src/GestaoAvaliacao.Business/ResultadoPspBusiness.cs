@@ -6,6 +6,7 @@ using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.Business
@@ -17,12 +18,17 @@ namespace GestaoAvaliacao.Business
         private readonly IResultadoPspRepository resultadoPspRepository;
         private readonly ITipoResultadoPspRepository tipoResultadoPspRepository;
         private readonly IFileRepository fileRepository;
+        private readonly IDadosArquivoResultadoPspRepository dadosArquivoResultadoPspRepository;
 
-        public ResultadoPspBusiness(IResultadoPspRepository resultadoPspRepository, ITipoResultadoPspRepository tipoResultadoPspRepository, IFileRepository fileRepository)
+        public ResultadoPspBusiness(IResultadoPspRepository resultadoPspRepository, 
+            ITipoResultadoPspRepository tipoResultadoPspRepository, 
+            IFileRepository fileRepository,
+            IDadosArquivoResultadoPspRepository dadosArquivoResultadoPspRepository)
         {
             this.resultadoPspRepository = resultadoPspRepository;
             this.tipoResultadoPspRepository = tipoResultadoPspRepository;
             this.fileRepository = fileRepository;
+            this.dadosArquivoResultadoPspRepository = dadosArquivoResultadoPspRepository;
         }
 
         public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivo)
@@ -40,7 +46,7 @@ namespace GestaoAvaliacao.Business
             return tipoResultadoPspRepository.ObterPorCodigo(codigo);
         }
 
-        public bool ImportarArquivoResultado(ArquivoResultadoPsp arquivoResultado, EntityFile entity)
+        public long ImportarArquivoResultado(ArquivoResultadoPsp arquivoResultado, EntityFile entity)
         {
             try
             {
@@ -51,9 +57,33 @@ namespace GestaoAvaliacao.Business
                 {
                     entity.State = (byte)EnumState.inativo;// inativa o arquivo para não aparecer nas demais telas do sistema.
                     fileRepository.Update(entity.Id, entity);
-                    return true;
+                    return result.Id;
                 }                
-                return false;
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        public bool SalvarDadosArquivoResultado(long arquivoResultadoId, string pathArquivo)
+        {
+            try
+            {                
+                using (var reader = new StreamReader(pathArquivo))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var textoLinhaArquivo = reader.ReadLine();
+                        if (textoLinhaArquivo != null && !string.IsNullOrEmpty(textoLinhaArquivo))
+                        {
+                            var dadoArquivo = new DadosArquivoResultadoPsp(arquivoResultadoId, textoLinhaArquivo);
+                            dadosArquivoResultadoPspRepository.InserirNovo(dadoArquivo);
+                        }
+                    }
+                }
+                return true;
             }
             catch (Exception ex)
             {

@@ -21,7 +21,6 @@
         </div>
     </div>
 
-
     <div class="well well-large">
 
         <div class="container-fluid semPadding">
@@ -44,8 +43,22 @@
                             </div>
                             <div class="campoLabel">
                                 <label>Arquivo*: </label>
-                                <input type="file" ng-model="arquivoSelecionado" onchange="angular.element(this).scope().selecionarArquivo(this)" />
+                                <input id="arquivo_resultado" type="file" ng-model="arquivoSelecionado" onchange="angular.element(this).scope().selecionarArquivo(this)" />
                             </div>
+                            <!--<div class="campoLabel">
+                                <div class="upload-group">
+                                    <div ng-if="arquivoSelecionado.name"><label>Último arquivo selecionado:</label><br><label>{{arquivoSelecionado.name}}</label><br><br></div>
+                                    <input type="text" placeholder="Clique no ícone para selecionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado" disabled="true">
+                                    <span class="input-group-btn fake-upload">
+                                        <i class="material-icons">file_upload</i>-->
+                                        @*<input type="file" title="Arquivo" uploader="field" id="file_uploader_{{component.Guid}}" ng-disabled="look" />*@                                        
+                                    <!--</span>
+                                    <div class="progress">
+                                        <div id="processando_upload" class="progress-bar progress-bar-success active" role="progressbar" style="width: 0%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
                             <div class="campoLabel">
                                 <div class="footerCustom semPadding">
                                     <div class="botoes semMargin">

@@ -66,11 +66,11 @@
         }
 
         $scope.selecionarArquivo = function __selecionarArquivo(element) {
-            $scope.arquivoSelecionado = element.files[0];            
+            $scope.arquivoSelecionado = element.files[0];
+            console.log($scope.arquivoSelecionado);
         }
 
         $scope.salvarImportacao = function __salvarImportacao() {
-            console.log($scope.tipoResultado);
             var form = new FormData();
             form.append('file', $scope.arquivoSelecionado);
             form.append('codigoTipoResultado', $scope.tipoResultado.Codigo);
