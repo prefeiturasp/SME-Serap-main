@@ -101,53 +101,24 @@ namespace GestaoAvaliacao.Controllers
         [HttpPost]
         public JsonResult ImportarArquivoResultado(HttpPostedFileBase file, int codigoTipoResultado)
         {
-            EntityFile entity = new EntityFile();
-            var arquivoResultado = new ArquivoResultadoPsp();
-
             try
             {
-
+                var arquivoResultado = new ArquivoResultadoPsp();
                 var tipoResultado = resultadoPspBusiness.ObterTipoResultadoPorCodigo(codigoTipoResultado);
 
-                UploadModel upload = new UploadModel
-                {
-                    ContentLength = file.ContentLength,
-                    ContentType = file.ContentType,
-                    InputStream = null,
-                    Stream = file.InputStream,
-                    FileName = file.FileName,
-                    VirtualDirectory = ApplicationFacade.VirtualDirectory,
-                    PhysicalDirectory = ApplicationFacade.PhysicalDirectory,
-                    FileType = EnumFileType.ResultadosPsp,
-                    UsuId = SessionFacade.UsuarioLogado.Usuario.usu_id
-                };
-
+                var guidArquivo = Guid.NewGuid();
                 arquivoResultado.CodigoTipoResultado = codigoTipoResultado;
+                arquivoResultado.NomeArquivo = $"{guidArquivo}.csv";
                 arquivoResultado.NomeOriginalArquivo = file.FileName;
-                entity = fileBusiness.Upload(upload);
 
-                var retorno = true;
-                if (entity != null && entity.Validate.IsValid)
-                {
-                    var arquivoResultadoId = resultadoPspBusiness.ImportarArquivoResultado(arquivoResultado, entity);
-                    retorno = arquivoResultadoId > 0; 
-
-                    if (retorno)
-                        retorno = resultadoPspBusiness.SalvarDadosArquivoResultado(arquivoResultadoId, entity.Path);
-
-                    if (!retorno)
-                        fileBusiness.Delete(entity.Id);
-                }
-
-                return Json(new { success = retorno }, JsonRequestBehavior.AllowGet);
+                var retorno = resultadoPspBusiness.ImportarArquivoResultado(arquivoResultado, file);
+                
+                return Json(new { success = retorno, message = retorno ? null : "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                entity.Validate.IsValid = false;
-                entity.Validate.Type = ValidateType.error.ToString();
-                entity.Validate.Message = "Erro ao realizar o upload do arquivo.";
                 LogFacade.SaveError(ex);
-                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
             }
         }
     }

@@ -569,6 +569,24 @@ namespace GestaoAvaliacao.Util
         Erro = 4,        
     }
 
+    public enum EnumTiposResultadoProvaSp : byte
+    {
+        [Description("ResultadoAluno")]
+        ResultadoAluno = 1,
+
+        [Description("ResultadoTurma")]
+        ResultadoTurma = 2,
+
+        [Description("ResultadoEscola")]
+        ResultadoEscola = 3,
+
+        [Description("ResultadoDre")]
+        ResultadoDre = 4,
+
+        [Description("ResultadoSme")]
+        ResultadoSme = 5,
+    }
+
     #endregion
 
     #region EnumHelper

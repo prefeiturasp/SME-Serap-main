@@ -60,7 +60,6 @@
     <Compile Include="IConnectionMultiplexerSME.cs" />
     <Compile Include="ICorrectionRepository.cs" />
     <Compile Include="ICorrectionResultsRepository.cs" />
-    <Compile Include="IDadosArquivoResultadoPspRepository.cs" />
     <Compile Include="IExportAnalysisRepository.cs" />
     <Compile Include="IItemAudioRepository.cs" />
     <Compile Include="IItemFileRepository.cs" />

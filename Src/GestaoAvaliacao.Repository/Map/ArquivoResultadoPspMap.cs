@@ -9,10 +9,6 @@ namespace GestaoAvaliacao.Repository.Map
         {
             ToTable("ArquivoResultadoPsp");
 
-            Property(p => p.FileId)
-               .IsRequired()
-               .HasColumnType("bigint");
-
             Property(p => p.CodigoTipoResultado)
                 .IsRequired()
                 .HasColumnType("bigint");

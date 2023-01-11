@@ -37,8 +37,7 @@ namespace GestaoAvaliacao.Repository
 
                     			WITH Resultado AS (
 								select 
-								Id
-								,FileId
+								 Id
 								,CodigoTipoResultado
 								,NomeArquivo
 								,NomeOriginalArquivo
@@ -50,7 +49,7 @@ namespace GestaoAvaliacao.Repository
 								where 1=1
                                 {and}
 								)
-								select Id,FileId,CodigoTipoResultado,NomeArquivo,NomeOriginalArquivo,CreateDate,UpdateDate,[State] 
+								select Id,CodigoTipoResultado,NomeArquivo,NomeOriginalArquivo,CreateDate,UpdateDate,[State] 
                                 from Resultado
 								WHERE RowNumber > ( @pageSize * @page ) 
 								AND RowNumber <= ( ( @page + 1 ) * @pageSize ) 
@@ -86,6 +85,22 @@ namespace GestaoAvaliacao.Repository
 
                 return arquivoResultado;
             }
+        }
+
+        public bool ExcluirPorId(long id)
+        {
+            var sql = new StringBuilder("delete from ArquivoResultadoPsp where id = @id");
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                cn.Execute(sql.ToString(),
+                    new
+                    {
+                        id = id,
+                    });
+            }
+            return true;
         }
 
     }

@@ -67,10 +67,16 @@
 
         $scope.selecionarArquivo = function __selecionarArquivo(element) {
             $scope.arquivoSelecionado = element.files[0];
-            console.log($scope.arquivoSelecionado);
+            var tamanhoArquivo = parseInt($scope.arquivoSelecionado.size);
+            var fileSize = kmgtbytes(tamanhoArquivo);
+            //console.log('fileSize: ', fileSize);
         }
 
         $scope.salvarImportacao = function __salvarImportacao() {
+
+            $timeout(function () {
+            }, 5000);
+
             var form = new FormData();
             form.append('file', $scope.arquivoSelecionado);
             form.append('codigoTipoResultado', $scope.tipoResultado.Codigo);
@@ -78,25 +84,20 @@
                 transformRequest: angular.identity,
                 headers: {
                     'Content-Type': undefined,
-                    //'__XHR__': function () {
-                    //    return function (xhr) {
-                    //        xhr.upload.addEventListener("progress", function (event) {
-                    //            $scope.progressup = parseInt(((event.loaded / event.total) * 100));
-                    //            if ($scope.progressup < 99)
-                    //                angular.element('#' + $scope.component.Guid).css('width', $scope.progressup + '%');
-                    //        });
-                    //    };
-                    //}
                 }
             })
                 .success(function (data, status) {
                     if (data.success) {
                         $scope.tipoResultado = null;
                         $scope.arquivoSelecionado = null;
-                        $scope.carregaImportacoes();
+                        //$('#arquivo_resultado').val(null);
+                        //angular.element("input[type='file']").val(null);
+                        $scope.carregaImportacoes('paginate', $scope.codigoOuNomeArquivo);
                         $notification.success("Arquivo importado com sucesso!");
                     }
                     else {
+                        //$('#arquivo_resultado').val(null);
+                        //angular.element("input[type='file']").val(null);
                         $notification[data.type ? data.type : 'error'](data.message);
                     }
                 })
@@ -119,6 +120,18 @@
                     $notification[result.type ? result.type : 'error'](result.message);
                 }
             });
+        };
+
+        
+        function kmgtbytes(num) {
+            if (num > 0) {
+                if (num < 1024) { return [num, 'Byte'] }
+                if (num < 1048576) { return [parseInt(num / 1024), 'KB'] }
+                if (num < 1073741824) { return [parseInt(num / 1024 / 1024), 'MB'] }
+                if (num < 1099511600000) { return [parseInt(num / 1024 / 1024 / 1024), 'GB'] }
+                return [num / 1024 / 1024 / 1024 / 1024, "TB"]
+            }
+            return num
         };
 
         $scope.load();

@@ -377,11 +377,6 @@ namespace GestaoAvaliacao.MappingDependence
                 .WithService.AllInterfaces()
                 .SetLifestyle(LifestylePerWebRequest));
 
-            container.Register(Classes.FromAssemblyContaining<DadosArquivoResultadoPspRepository>()
-                .BasedOn(typeof(IDadosArquivoResultadoPspRepository))
-                .WithService.AllInterfaces()
-                .SetLifestyle(LifestylePerWebRequest));
-
 
             #region GestaoEscolar
 

@@ -8,5 +8,6 @@ namespace GestaoAvaliacao.IRepository
     {
         IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivo);
         ArquivoResultadoPsp InserirNovo(ArquivoResultadoPsp arquivoResultado);
+        bool ExcluirPorId(long id);
     }
 }
