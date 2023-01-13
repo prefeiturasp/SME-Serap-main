@@ -97,19 +97,13 @@
                         </div>
                         <div class="campoLabel">
                             <label>Arquivo*: </label>
-                            @*<div class="uploadImage">
-                                <input id="arquivo_resultado" type="file" accept="text/csv" ng-model="arquivoSelecionado" onchange="angular.element(this).scope().selecionarArquivo(this)" />
-                            </div>*@
-
-                            <div class="upload-group" ng-class="customclass">
-                                <div ng-if="arquivoSelecionado.name"><label>Último arquivo selecionado:</label><br><label>{{arquivoSelecionado.name}}</label><br><br></div>
-                                <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado" disabled="true">
+                            <div class="upload-group">
+                                <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">
                                 <span class="input-group-btn fake-upload">
                                     <i class="material-icons">file_upload</i>
-                                    <input type="file" title="Arquivo" uploader="arquivoSelecionado" id="file_uploader_2" ng-disabled="false" />
-                                </span>                                
+                                    <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
+                                </span>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -122,7 +116,7 @@
                                 class="btn btn-primary" data-dismiss="modal"
                                 ng-click="salvarImportacao()"
                                 ng-disabled="!arquivoSelecionado.name ||
-                                             !tipoResultado.Codigo == null">
+                                             !tipoResultado.Codigo">
                             Salvar
                         </button>
                     </div>

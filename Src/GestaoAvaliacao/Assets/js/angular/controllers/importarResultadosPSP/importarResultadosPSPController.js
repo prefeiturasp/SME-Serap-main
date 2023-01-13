@@ -99,9 +99,6 @@
                 $notification['error']("Arquivo muito grande!");
                 return false;
             }
-
-            console.log('arquivoSelecionado: ', $scope.arquivoSelecionado);
-            console.log('tipoResultado: ', $scope.tipoResultado);
         }
 
         $scope.exibirLoading = function __exibirLoading(exibir) {
