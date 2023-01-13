@@ -18,20 +18,11 @@ namespace GestaoAvaliacao.Repository
 
         }
 
-        public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivo)
+        public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager)
         {
 
             using (IDbConnection cn = Connection)
             {
-
-                string and = "";
-                if (!string.IsNullOrEmpty(codigoOuNomeArquivo))
-                {
-                    int codigo = 0;
-                    if (int.TryParse(codigoOuNomeArquivo, out codigo))
-                        and = $" and Id = {codigoOuNomeArquivo}";
-                    and = $" and NomeOriginalArquivo like '%{codigoOuNomeArquivo}%'";
-                }
 
                 var sql = new StringBuilder($@"
 
@@ -45,9 +36,7 @@ namespace GestaoAvaliacao.Repository
 								,UpdateDate
 								,[State]
 								,ROW_NUMBER() OVER (ORDER BY CreateDate DESC) AS RowNumber
-								from ArquivoResultadoPsp WITH (NOLOCK)
-								where 1=1
-                                {and}
+								from ArquivoResultadoPsp WITH (NOLOCK)								
 								)
 								select Id,CodigoTipoResultado,NomeArquivo,NomeOriginalArquivo,CreateDate,UpdateDate,[State] 
                                 from Resultado
@@ -55,21 +44,64 @@ namespace GestaoAvaliacao.Repository
 								AND RowNumber <= ( ( @page + 1 ) * @pageSize ) 
 
 								select count(Id) total
-								from ArquivoResultadoPsp WITH (NOLOCK)
-								where 1=1
-                                {and}
+								from ArquivoResultadoPsp WITH (NOLOCK)								
                 ");
 
                 cn.Open();
 
-                var query = cn.QueryMultiple(sql.ToString(), 
+                var query = cn.QueryMultiple(sql.ToString(),
                     new { pageSize = pager.PageSize, page = pager.CurrentPage });
 
                 var result = query.Read<ArquivoResultadoPsp>();
                 var count = query.Read<int>().FirstOrDefault();
 
                 pager.SetTotalItens(count);
-                pager.SetTotalPages((int)Math.Ceiling(count / (double)pager.PageSize));                
+                pager.SetTotalPages((int)Math.Ceiling(count / (double)pager.PageSize));
+
+                return result;
+            }
+
+        }
+
+        public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(string codigoOuNomeArquivo)
+        {
+
+            using (IDbConnection cn = Connection)
+            {
+
+                string and = "";
+                if (!string.IsNullOrEmpty(codigoOuNomeArquivo))
+                {
+                    int codigo = 0;
+                    if (int.TryParse(codigoOuNomeArquivo, out codigo))
+                        and = $" and Id = {codigoOuNomeArquivo}";
+                    else
+                        and = $" and NomeOriginalArquivo like '%{codigoOuNomeArquivo}%'";
+                }
+
+                var sql = new StringBuilder($@"
+
+                    			WITH Resultado AS (
+								select 
+								 Id
+								,CodigoTipoResultado
+								,NomeArquivo
+								,NomeOriginalArquivo
+								,CreateDate
+								,UpdateDate
+								,[State]
+								from ArquivoResultadoPsp WITH (NOLOCK)
+                                where 1=1 
+                                {and}
+								)
+								select Id,CodigoTipoResultado,NomeArquivo,NomeOriginalArquivo,CreateDate,UpdateDate,[State] 
+                                from Resultado
+                ");
+
+                cn.Open();
+
+                var query = cn.QueryMultiple(sql.ToString());
+                var result = query.Read<ArquivoResultadoPsp>();
 
                 return result;
             }

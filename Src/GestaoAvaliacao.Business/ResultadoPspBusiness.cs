@@ -28,7 +28,9 @@ namespace GestaoAvaliacao.Business
 
         public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivo)
         {
-            return resultadoPspRepository.ObterImportacoes(ref pager, codigoOuNomeArquivo);
+            if (!string.IsNullOrEmpty(codigoOuNomeArquivo))
+                return resultadoPspRepository.ObterImportacoes(codigoOuNomeArquivo);
+            return resultadoPspRepository.ObterImportacoes(ref pager);
         }
 
         public IEnumerable<TipoResultadoPsp> ObterTiposResultadoPspAtivos()
