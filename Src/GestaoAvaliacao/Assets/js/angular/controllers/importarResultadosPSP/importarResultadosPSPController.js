@@ -10,10 +10,10 @@
         .module('appMain')
         .controller("ImportarResultadosPSPController", ImportarResultadosPSPController);
 
-    ImportarResultadosPSPController.$inject = ['$rootScope', '$scope', 'ImportarResultadosPSPModel', '$notification', '$timeout', '$sce', '$pager', '$compile', '$util', '$http', '$q'];
+    ImportarResultadosPSPController.$inject = ['$scope', 'ImportarResultadosPSPModel', '$notification','$pager', '$util', '$http', '$q'];
 
 
-    function ImportarResultadosPSPController($rootScope, $scope, ImportarResultadosPSPModel, $notification, $timeout, $sce, $pager, $compile, $util, $http, $q) {
+    function ImportarResultadosPSPController($scope, ImportarResultadosPSPModel, $notification, $pager, $util, $http, $q) {
 
         var self = this;
         var params = $util.getUrlParams();
@@ -52,6 +52,7 @@
                         if (result.lista.length > 0) {
                             $scope.listaImportacoes = result.lista;
                             $scope.pageSize = result.pageSize;
+                            $scope.totalItens = result.lista.length;
                         } else {
                             $scope.listaImportacoes = null;
                         }
@@ -73,9 +74,9 @@
                                 $scope.paginate.nextPage();
                             $scope.listaImportacoes = result.lista;
                             $scope.pageSize = result.pageSize;
+                            $scope.totalItens = $scope.paginate.totalItens();
                             if (!$scope.pages > 0) {
                                 $scope.pages = $scope.paginate.totalPages();
-                                $scope.totalItens = $scope.paginate.totalItens();
                             }
                         } else {
                             $scope.listaImportacoes = null;
@@ -92,11 +93,23 @@
         };
 
         $scope.selecionarArquivo = function __selecionarArquivo(element) {
-            $scope.arquivoSelecionado = element.files[0];
+            $scope.arquivoSelecionado = element.files[0];            
+            $scope.validacoesArquivo();            
+        }
+
+        $scope.validacoesArquivo = function __validacoesArquivo() {
             var tamanhoArquivo = parseInt($scope.arquivoSelecionado.size);
             var fileSize = kmgtbytes(tamanhoArquivo);
-            if (fileSize[1] == 'GB' || fileSize[1] == 'TR') {
-                $notification['error']("Arquivo muito grande!");
+            if (fileSize[1] == 'GB' || fileSize[1] == 'TR' || (fileSize[1] == 'MB' && fileSize[0] > 10)) {
+                $scope.arquivoSelecionado = null;
+                angular.element("input[type='file']").val(null);
+                $notification['alert']("Tamanho do arquivo excede o permitido (10 MB)!");
+                return false;
+            }
+            if ($scope.arquivoSelecionado.type !== 'text/csv') {
+                $scope.arquivoSelecionado = null;
+                angular.element("input[type='file']").val(null);
+                $notification['error']("Selecione um arquivo .CSV");
                 return false;
             }
         }
@@ -117,16 +130,18 @@
         $scope.salvarImportacao = function __salvarImportacao() {
 
             if ($scope.tipoResultado === null || $scope.tipoResultado === undefined) {
-                $notification['error']("Selecione o tipo de resultado!");
                 $scope.callModalNovaImportacao();
+                $notification['error']("Selecione o tipo de resultado!");
                 return false;
             }
 
             if ($scope.arquivoSelecionado === null || $scope.arquivoSelecionado === undefined) {
-                $notification['error']("Selecione um arquivo!");
                 $scope.callModalNovaImportacao();
+                $notification['error']("Selecione um arquivo!");
                 return false;
             }
+
+            $scope.validacoesArquivo();
 
             $scope.exibirLoading(true);
 

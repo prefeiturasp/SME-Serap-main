@@ -45,17 +45,19 @@ namespace GestaoAvaliacao.Business
 
         public bool ImportarArquivoResultado(ArquivoResultadoPsp arquivoResultado, HttpPostedFileBase file)
         {
+            long processoId = 0;
             try
             {
                 var result = resultadoPspRepository.InserirNovo(arquivoResultado);
                 if (result != null && result.Id > 0)
                 {
-                    var resultApi = UploadArquivoResultadoPsp(file, arquivoResultado.NomeArquivo, ((EnumTiposResultadoProvaSp)arquivoResultado.CodigoTipoResultado).GetDescription());
+                    processoId = result.Id;
+                    var resultApi = UploadArquivoResultadoPsp(file, arquivoResultado.NomeArquivo);
 
                     if (resultApi)
                         resultApi = PublicarFilaTratarProcessoImportacao(arquivoResultado);
                     else
-                        resultadoPspRepository.ExcluirPorId(result.Id);
+                        ExcluirProcessoPorId(processoId);
 
                     return resultApi;
                 }
@@ -63,11 +65,25 @@ namespace GestaoAvaliacao.Business
             }
             catch (Exception ex)
             {
+                ExcluirProcessoPorId(processoId);
+                return false;
+            }
+        }
+        public bool ExcluirProcessoPorId(long id)
+        {
+            try
+            {
+                if (id > 0)
+                    return resultadoPspRepository.ExcluirPorId(id);
+                return false;
+            }
+            catch (Exception)
+            {
                 return false;
             }
         }
 
-        private bool UploadArquivoResultadoPsp(HttpPostedFileBase file, string nomeArquivo, string pathArquivo)
+        private bool UploadArquivoResultadoPsp(HttpPostedFileBase file, string nomeArquivo)
         {
             try
             {
@@ -76,7 +92,6 @@ namespace GestaoAvaliacao.Business
                 var formContent = new MultipartFormDataContent
                 {
                     {new StringContent(nomeArquivo),"arquivoResultadoDto.NomeArquivo"},
-                    {new StringContent(pathArquivo),"arquivoResultadoDto.PathArquivo"},
                     {new StreamContent(new MemoryStream(bytesArquivo)),"arquivo",nomeArquivo}
                 };
 
