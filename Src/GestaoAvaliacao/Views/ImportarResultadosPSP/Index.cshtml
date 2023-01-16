@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<div id="div_loading" class="loading-box" style="display:none; width:100%; height:100%; position:fixed; background:rgba(255,255,255,.3); top:0; z-index:99999"><label id="preloading">Carregando...</label></div>
+<alert></alert>
+
+<div class="wellCustom" ng-controller="ImportarResultadosPSPController">
+
+    <div class="headerCustom">
+        <h4>{{title}}<span>Importar resultados PSP</span></h4>
+    </div>
+
+    <div class="pesquisa-upload row">
+        <div class="col-md-8">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" class="form-pesquisa cinza ng-pristine ng-valid" name="myText" placeholder="Código ou arquivo" ng-model="codigoOuNomeArquivo" maxlength="50">
+                </div>
+                <button class="btn-pesquisar" ng-click="pesquisarArquivo(true)" title="Pesquisar"><i class="material-icons">search</i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="well well-large">
+
+        <div class="container-fluid semPadding">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="campoLabel">
+                            <button type="button" class="btnPadrao pull-left" style="margin-right: 15px;" ng-click="callModalNovaImportacao()">Nova importação</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="table table-hover" ng-show="listaImportacoes.length != null" style=" margin-top: 0px;">
+            <colgroup>
+                <col width="10%" />
+                <col width="55%" />
+                <col width="15%" />
+                <col width="20%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="center">Código</th>
+                    <th class="center">Arquivo</th>
+                    <th class="center">Status</th>
+                    <th class="center">Data de upload</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="arquivo in listaImportacoes">
+                    <td class="center">{{arquivo.Id }}</td>
+                    <td class="center">{{arquivo.NomeArquivo }}</td>
+                    <td class="center">{{arquivo.Status }}</td>
+                    <td class="center">{{arquivo.CreateDate }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <page method="carregaImportacoesPaginado('paginate')" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" ng-show="listaImportacoes != null" data-arr-page-size="[10,20,30,40,50,100]"></page>
+        <p class="nresultados" ng-show="listaImportacoes == null">Nenhum resultado encontrado.</p>
+
+    </div>
+
+
+    @* Modal para importar novo arquivo de resultados *@
+    <div class="modal fade" id="modalNovaImportacao" tabindex="-1" role="dialog" aria-labelledby="modalNovaImportacao" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content ">
+
+                @*HEADER*@
+                <div class="modal-header">
+                    <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                    <h4 class="modal-title">
+                        <strong>Nova importação de resultados</strong>
+                    </h4>
+                </div>
+                @*BODY*@
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="campoLabel">
+                            <label>Tipo Resultado*: </label>
+                            <div>
+                                <select id="tipoResultado" class="form-control" title="{{ tipoResultado.Nome }}"
+                                        ng-model="tipoResultado"
+                                        ng-options="tipoResult as tipoResult.Nome for tipoResult in listaTiposResultados"
+                                        ng-title="listaTiposResultados"
+                                        ng-title-propertie="Nome"
+                                        ng-title-index="1">
+                                    <option value="">--Selecione uma opção--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 20px;" class="campoLabel">
+                            <label>Arquivo*: </label>
+                            <div>
+                                <div class="upload-group">
+                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">
+                                    <span class="input-group-btn fake-upload">
+                                        <i class="material-icons">file_upload</i>
+                                        <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
+                                    </span>
+                                </div>
+                                <p style="font-size: 11px;" class="textoDescricao pull-left">Tamanho máximo de 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*FOOTER*@
+                <div class="modal-footer footerCustom ">
+                    <div class="container-fluid row-fluid">
+                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="limparDados()" aria-hidden="true">Cancelar</button>
+                        <button type="button"
+                                class="btn btn-primary" data-dismiss="modal"
+                                ng-click="salvarImportacao()"
+                                ng-disabled="!arquivoSelecionado.name ||
+                                             !tipoResultado.Codigo">
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
