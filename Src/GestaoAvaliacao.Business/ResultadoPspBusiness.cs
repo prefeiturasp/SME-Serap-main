@@ -158,13 +158,12 @@ namespace GestaoAvaliacao.Business
         {
             HttpClient client = new HttpClient();
             string uriConfig = WebConfigurationManager.AppSettings["URL_API_SERAP_ESTUDANTES"];
-            string nomeChaveApi = "ChaveSerapProvaApi";
-            string chaveApi = WebConfigurationManager.AppSettings[nomeChaveApi];
+            string chaveApi = WebConfigurationManager.AppSettings["ChaveSerapProvaApi"];
             client.BaseAddress = new Uri(uriConfig);
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
-            client.DefaultRequestHeaders.Add(nomeChaveApi, chaveApi);
+            client.DefaultRequestHeaders.Add("chave-api", chaveApi);
             return client;
         }
 
