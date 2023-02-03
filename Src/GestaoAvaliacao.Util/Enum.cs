@@ -571,19 +571,19 @@ namespace GestaoAvaliacao.Util
 
     public enum EnumTiposResultadoProvaSp : byte
     {
-        [Description("ResultadoAluno")]
+        [Description("Resultado Aluno")]
         ResultadoAluno = 1,
 
-        [Description("ResultadoTurma")]
+        [Description("Resultado Turma")]
         ResultadoTurma = 2,
 
-        [Description("ResultadoEscola")]
+        [Description("Resultado Escola")]
         ResultadoEscola = 3,
 
-        [Description("ResultadoDre")]
+        [Description("Resultado Dre")]
         ResultadoDre = 4,
 
-        [Description("ResultadoSme")]
+        [Description("Resultado Sme")]
         ResultadoSme = 5,
     }
 

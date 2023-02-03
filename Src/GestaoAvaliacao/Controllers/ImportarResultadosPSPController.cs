@@ -47,6 +47,7 @@ namespace GestaoAvaliacao.Controllers
                     {
                         Id = entity.Id,
                         NomeArquivo = entity.NomeOriginalArquivo,
+                        Tipo = ((EnumTiposResultadoProvaSp)entity.CodigoTipoResultado).GetDescription(),
                         Status = ((EnumStatusImportResulProvaSp)entity.State).GetDescription(),
                         CreateDate = entity.CreateDate.ToShortDateString()
                     });

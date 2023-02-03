@@ -40,14 +40,16 @@
         <table class="table table-hover" ng-show="listaImportacoes.length != null" style=" margin-top: 0px;">
             <colgroup>
                 <col width="10%" />
-                <col width="55%" />
-                <col width="15%" />
+                <col width="40%" />
+                <col width="20%" />
+                <col width="10%" />
                 <col width="20%" />
             </colgroup>
             <thead>
                 <tr>
                     <th class="center">Código</th>
                     <th class="center">Arquivo</th>
+                    <th class="center">Tipo</th>
                     <th class="center">Status</th>
                     <th class="center">Data de upload</th>
                 </tr>
@@ -56,6 +58,7 @@
                 <tr ng-repeat="arquivo in listaImportacoes">
                     <td class="center">{{arquivo.Id }}</td>
                     <td class="center">{{arquivo.NomeArquivo }}</td>
+                    <td class="center">{{arquivo.Tipo }}</td>
                     <td class="center">{{arquivo.Status }}</td>
                     <td class="center">{{arquivo.CreateDate }}</td>
                 </tr>
