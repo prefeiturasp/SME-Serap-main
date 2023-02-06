@@ -16,7 +16,7 @@
     function ImportarResultadosPSPController($scope, ImportarResultadosPSPModel, $notification, $pager, $util, $http, $q) {
 
         var self = this;
-        var params = $util.getUrlParams();
+        var params = $util.getUrlParams();        
 
         $scope.processando = true;
         $scope.tipoResultado = null;
@@ -28,6 +28,9 @@
         $scope.pageSize = 10;
 
         $scope.load = function _load() {
+            self.chamadasBack = {
+                baixarModelo: ImportarResultadosPSPModel.baixarModelo
+            };
             $notification.clear();
             $scope.carregaTiposResultados();
             $scope.carregaImportacoesPaginado(null);
@@ -125,6 +128,10 @@
             $scope.tipoResultado = null;
             $scope.arquivoSelecionado = null;
             angular.element("input[type='file']").val(null);
+        }
+
+        $scope.baixarModelo = function __baixarModelo() {            
+            window.open("/ImportarResultadosPSP/BaixarModelo?codigoTipoResultado=" + $scope.tipoResultado.Codigo, "_self");
         }
 
         $scope.salvarImportacao = function __salvarImportacao() {
