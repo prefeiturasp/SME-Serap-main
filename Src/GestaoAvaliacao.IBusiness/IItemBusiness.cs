@@ -43,8 +43,8 @@ namespace GestaoAvaliacao.IBusiness
 
 		//NewApi
 		List<BaseDto> LoadAllKnowledgeAreaActive();
-		List<BaseDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas);
-		List<BaseDto> LoadMatrixByDiscipline(long idDiscipline);
+		List<DisciplineDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas);
+		List<MatrixDto> LoadMatrixByDiscipline(long idDiscipline);
 		List<SkillDto> LoadSkillByMatrix(long idMatrix);
 		List<AbilityDto> LoadAbilityBySkill(long idSkill);
 		List<BaseDto> LoadAllSubjects();

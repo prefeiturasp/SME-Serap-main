@@ -20,6 +20,6 @@ namespace GestaoAvaliacao.IRepository
 		IEnumerable<Discipline> LoadComboByTest(long test_id);
 		List<AJX_Select2> LoadDisciplineByKnowledgeArea(string description, string knowledgeAreas, Guid EntityId);
 		IEnumerable<Discipline> GetDisciplinesByTestSubGroup_Id(long TestSubGroup_Id);
-
-	}
+        List<Discipline> LoadDisciplineByKnowledgeArea(string knowledgeAreas, Guid EntityId);
+    }
 }

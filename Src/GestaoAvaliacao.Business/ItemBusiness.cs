@@ -10,6 +10,7 @@ using GestaoAvaliacao.Util.Extensions;
 using GestaoAvaliacao.Util.Videos;
 using GestaoEscolar.Entities;
 using GestaoEscolar.IBusiness;
+using GestaoEscolar.IRepository;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,6 +41,7 @@ namespace GestaoAvaliacao.Business
         private readonly IFileBusiness fileBusiness;
         private readonly IItemLevelRepository itemLevelRepository;
         private readonly IVideoConverter videoConverter;
+        private readonly IACA_TipoNivelEnsinoRepository levelEducationRepository;
 
         const string RESPOSTA_CONSTRUIDA = "Resposta construída";
 
@@ -64,7 +66,8 @@ namespace GestaoAvaliacao.Business
                             IItemSituationBusiness itemSituationRepository,
                             IFileBusiness fileBusiness,
                             IItemLevelRepository itemLevelRepository,
-                            IVideoConverter videoConverter
+                            IVideoConverter videoConverter,
+                            IACA_TipoNivelEnsinoRepository levelEducationRepository
             )
         {
             this.itemRepository = itemRepository;
@@ -87,6 +90,7 @@ namespace GestaoAvaliacao.Business
             this.fileBusiness = fileBusiness;
             this.itemLevelRepository = itemLevelRepository;
             this.videoConverter = videoConverter;
+            this.levelEducationRepository = levelEducationRepository;
         }
 
         #region Custom
@@ -1005,22 +1009,35 @@ namespace GestaoAvaliacao.Business
             }).ToList();
         }
 
-        public List<BaseDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas)
+        public List<DisciplineDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas)
         {
+            var lista = new List<DisciplineDto>();
+
             var entidade = parambusiness.GetByKey("ENTIDADE");
-            return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty, knowledgeAreas.ToString(), new Guid(entidade.Value)).Select(s => new BaseDto
+
+            var disciplinas = disciplineRepository.LoadDisciplineByKnowledgeArea(knowledgeAreas.ToString(), new Guid(entidade.Value));
+            foreach (var disciplina in disciplinas)
             {
-                Id = long.Parse(s.id),
-                Descricao = s.text
-            }).ToList();
+                var nivelEnsino = levelEducationRepository.Get(disciplina.TypeLevelEducationId);
+
+                lista.Add(new DisciplineDto()
+                {
+                    Id = disciplina.Id,
+                    Descricao = disciplina.Description,
+                    NivelEnsino = nivelEnsino?.tne_nome
+                });
+            }
+
+            return lista;
         }
 
-        public List<BaseDto> LoadMatrixByDiscipline(long idDiscipline)
+        public List<MatrixDto> LoadMatrixByDiscipline(long idDiscipline)
         {
-            return evaluationMatrixRepository.GetComboByDiscipline(idDiscipline).Select(s => new BaseDto
+            return evaluationMatrixRepository.GetComboByDiscipline(idDiscipline).Select(s => new MatrixDto
             {
                 Id = s.Id,
-                Descricao = s.Description
+                Descricao = s.Description,
+                Modelo = s.ModelEvaluationMatrix.Description
             }).ToList();
         }
 
