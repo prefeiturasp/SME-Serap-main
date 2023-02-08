@@ -156,22 +156,34 @@ namespace GestaoAvaliacao.Repository
 
         public IEnumerable<EvaluationMatrix> GetComboByDiscipline(long idDiscipline)
         {
-            using (IDbConnection cn = Connection)
+            using (GestaoAvaliacaoContext ctx = new GestaoAvaliacaoContext())
             {
-                cn.Open();
-                var sql = @"SELECT e.Id, e.Description " +
-                           "FROM EvaluationMatrix e " +
-                           "WHERE e.Discipline_Id = @idDiscipline " +
-                           "AND e.State = @state";
 
-                var evaluationMatrix = cn.Query<EvaluationMatrix>(sql, new
-                {
-                    idDiscipline = idDiscipline,
-                    state = (Byte)EnumState.ativo
-                });
+                var query = ctx.EvaluationMatrix
+                    .AsNoTracking()
+                    .Include("ModelEvaluationMatrix")
+                    .Where(m => m.Discipline.Id == idDiscipline && m.State == (byte)EnumState.ativo)
+                    .ToList();
 
-                return evaluationMatrix;
+                return query;
             }
+
+            //using (IDbConnection cn = Connection)
+            //{
+            //    cn.Open();
+            //    var sql = @"SELECT e.Id, e.Description " +
+            //               "FROM EvaluationMatrix e " +
+            //               "WHERE e.Discipline_Id = @idDiscipline " +
+            //               "AND e.State = @state";
+
+            //    var evaluationMatrix = cn.Query<EvaluationMatrix>(sql, new
+            //    {
+            //        idDiscipline = idDiscipline,
+            //        state = (Byte)EnumState.ativo
+            //    });
+
+            //    return evaluationMatrix;
+            //}
         }
 
         public IEnumerable<EvaluationMatrix> Search(String search, String searchEdition, Guid ent_id, ref Pager pager)

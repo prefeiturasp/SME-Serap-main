@@ -43,7 +43,7 @@ namespace GestaoAvaliacao.API.Controllers
 
         [Route("api/Item/Disciplinas/AreaConhecimentoId")]
         [HttpGet]
-        [ResponseType(typeof(BaseDto))]
+        [ResponseType(typeof(DisciplineDto))]
         public HttpResponseMessage GetAlDisciplinebyknowledgearea(int areaConhecimentoId)
         {
             try
@@ -60,7 +60,7 @@ namespace GestaoAvaliacao.API.Controllers
 
         [Route("api/Item/Matrizes/DisciplinaId")]
         [HttpGet]
-        [ResponseType(typeof(BaseDto))]
+        [ResponseType(typeof(MatrixDto))]
         public HttpResponseMessage GetEvaluationMatrixbyDiscipline(int disciplinaId)
         {
             try

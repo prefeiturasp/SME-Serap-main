@@ -238,7 +238,7 @@ namespace GestaoAvaliacao.Repository
                 sql.AppendLine("ON KAD.KnowledgeArea_Id = KA.Id ");
                 sql.AppendLine("INNER JOIN dbo.Discipline AS DIS WITH(NOLOCK) ");
                 sql.AppendLine("ON DIS.Id = KAD.Discipline_Id ");
-                sql.AppendLine(string.Format("WHERE @knowledgeAreas IS NOT NULL AND KA.Id IN ({0}) ", knowledgeAreas));
+				sql.AppendFormat("WHERE @knowledgeAreas IS NOT NULL AND KA.Id IN ({0}) ", knowledgeAreas);
                 sql.AppendLine("AND DIS.State = @state ");
                 sql.AppendLine("AND KAD.State = @state ");
                 sql.AppendLine("AND KA.State = @state ");
@@ -266,6 +266,33 @@ namespace GestaoAvaliacao.Repository
 			}
 		}
 
+		public List<Discipline> LoadDisciplineByKnowledgeArea(string knowledgeAreas, Guid EntityId)
+		{
+			using (IDbConnection cn = Connection)
+			{
+				cn.Open();
+
+				StringBuilder sql = new StringBuilder();
+
+				sql.AppendLine("SELECT DIS.Id, DIS.Description, DIS.TypeLevelEducationId ");
+				sql.AppendLine("FROM KnowledgeArea AS KA WITH(NOLOCK) ");
+				sql.AppendLine("INNER JOIN KnowledgeAreaDiscipline AS KAD WITH(NOLOCK) ");
+				sql.AppendLine("ON KAD.KnowledgeArea_Id = KA.Id ");
+				sql.AppendLine("INNER JOIN dbo.Discipline AS DIS WITH(NOLOCK) ");
+				sql.AppendLine("ON DIS.Id = KAD.Discipline_Id ");
+				sql.AppendFormat("WHERE @knowledgeAreas IS NOT NULL AND KA.Id IN ({0}) ", knowledgeAreas);
+				sql.AppendLine("AND DIS.State = @state ");
+				sql.AppendLine("AND KAD.State = @state ");
+				sql.AppendLine("AND KA.State = @state ");
+				sql.AppendLine("AND KA.EntityId = @entityid ");
+				sql.AppendLine("AND KA.EntityId = @entityid ");
+				sql.AppendLine("GROUP BY DIS.Id, DIS.Description, DIS.TypeLevelEducationId ");
+				sql.AppendLine("ORDER BY DIS.Description ");
+
+				var query = cn.Query<Discipline>(sql.ToString(), new { state = (Byte)EnumState.ativo, entityid = EntityId, knowledgeAreas = knowledgeAreas });
+				return query.ToList();
+			}
+		}
 		#endregion
 
 		#region CRUD
