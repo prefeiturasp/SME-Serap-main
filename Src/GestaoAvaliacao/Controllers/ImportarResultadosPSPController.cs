@@ -37,7 +37,6 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-
                 Pager pager = this.GetPager();
                 IEnumerable<ArquivoResultadoPsp> result = resultadoPspBusiness.ObterImportacoes(ref pager, codigoOuNomeArquivo);
 
@@ -45,10 +44,11 @@ namespace GestaoAvaliacao.Controllers
                 {
                     var ret = result.Select(entity => new
                     {
-                        Id = entity.Id,
+                        entity.Id,
                         NomeArquivo = entity.NomeOriginalArquivo,
                         Status = ((EnumStatusImportResulProvaSp)entity.State).GetDescription(),
-                        CreateDate = entity.CreateDate.ToShortDateString()
+                        CreateDate = entity.CreateDate.ToShortDateString(),
+                        entity.Tipo
                     });
 
                     return Json(new { success = true, lista = ret, pageSize = pager.PageSize }, JsonRequestBehavior.AllowGet);

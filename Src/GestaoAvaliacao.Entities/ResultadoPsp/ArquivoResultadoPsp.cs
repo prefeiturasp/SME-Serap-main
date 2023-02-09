@@ -11,6 +11,7 @@ namespace GestaoAvaliacao.Entities
 
         public string NomeArquivo { get; set; }
         public string NomeOriginalArquivo { get; set; }
+        public string Tipo { get; set; }
         public int CodigoTipoResultado { get; set; }
 
     }
