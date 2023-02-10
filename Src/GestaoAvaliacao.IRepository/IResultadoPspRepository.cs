@@ -7,7 +7,7 @@ namespace GestaoAvaliacao.IRepository
     public interface IResultadoPspRepository
     {        
         IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager);
-        IEnumerable<ArquivoResultadoPsp> ObterImportacoes(string codigoOuNomeArquivo);
+        IEnumerable<ArquivoResultadoPsp> ObterImportacoes(string codigoOuNomeArquivoOuTipo);
         ArquivoResultadoPsp InserirNovo(ArquivoResultadoPsp arquivoResultado);
         bool ExcluirPorId(long id);
     }

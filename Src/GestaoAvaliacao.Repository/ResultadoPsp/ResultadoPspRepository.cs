@@ -63,20 +63,21 @@ namespace GestaoAvaliacao.Repository
 
         }
 
-        public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(string codigoOuNomeArquivo)
+        public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(string codigoOuNomeArquivoOuTipo)
         {
 
             using (IDbConnection cn = Connection)
             {
-
                 string and = "";
-                if (!string.IsNullOrEmpty(codigoOuNomeArquivo))
+
+                if (!string.IsNullOrEmpty(codigoOuNomeArquivoOuTipo))
                 {
                     int codigo = 0;
-                    if (int.TryParse(codigoOuNomeArquivo, out codigo))
-                        and = $" and Id = {codigoOuNomeArquivo}";
+
+                    if (int.TryParse(codigoOuNomeArquivoOuTipo, out codigo))
+                        and = $" and Arp.Id = {codigoOuNomeArquivoOuTipo} ";
                     else
-                        and = $" and NomeOriginalArquivo like '%{codigoOuNomeArquivo}%'";
+                        and = $" and ((Arp.NomeOriginalArquivo like '%{codigoOuNomeArquivoOuTipo}%') or (Trp.Nome like '%{codigoOuNomeArquivoOuTipo}%')) ";
                 }
 
                 var sql = new StringBuilder($@"

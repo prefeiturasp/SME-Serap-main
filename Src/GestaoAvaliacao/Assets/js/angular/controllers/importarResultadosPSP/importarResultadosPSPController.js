@@ -22,7 +22,7 @@
         $scope.tipoResultado = null;
         $scope.listaTiposResultados = [];
         $scope.listaImportacoes = null;
-        $scope.codigoOuNomeArquivo = "";
+        $scope.codigoOuNomeArquivoOuTipo = "";
         $scope.arquivoSelecionado = null;
         $scope.paginate = $pager(ImportarResultadosPSPModel.carregaImportacoes);
         $scope.pageSize = 10;
@@ -41,15 +41,15 @@
             $scope.totalItens = 0;
             $scope.paginate.indexPage(0);
             $scope.pageSize = $scope.paginate.getPageSize();
-            if ($scope.codigoOuNomeArquivo === '' || $scope.codigoOuNomeArquivo === null || $scope.codigoOuNomeArquivo === undefined)
+            if ($scope.codigoOuNomeArquivoOuTipo === '' || $scope.codigoOuNomeArquivoOuTipo === null || $scope.codigoOuNomeArquivoOuTipo === undefined)
                 $scope.carregaImportacoesPaginado(null);
             else
-                $scope.carregaImportacoes($scope.codigoOuNomeArquivo);
+                $scope.carregaImportacoes($scope.codigoOuNomeArquivoOuTipo);
         };
 
-        $scope.carregaImportacoes = function __Importacoes(codigoOuNomeArquivo) {
+        $scope.carregaImportacoes = function __Importacoes(codigoOuNomeArquivoOuTipo) {
             $scope.listaImportacoes = [];
-            ImportarResultadosPSPModel.carregaImportacoes({ codigoOuNomeArquivo: codigoOuNomeArquivo },
+            ImportarResultadosPSPModel.carregaImportacoes({ codigoOuNomeArquivoOuTipo: codigoOuNomeArquivoOuTipo },
                 function (result) {
                     if (result.success) {
                         if (result.lista.length > 0) {
@@ -59,7 +59,7 @@
                         } else {
                             $scope.listaImportacoes = null;
                         }
-                        $scope.codigoOuNomeArquivo = "";
+                        $scope.codigoOuNomeArquivoOuTipo = "";
                     } else {
                         $notification[result.type ? result.type : 'error'](result.message);
                     }

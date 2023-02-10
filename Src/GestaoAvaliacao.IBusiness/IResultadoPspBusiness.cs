@@ -7,7 +7,7 @@ namespace GestaoAvaliacao.IBusiness
 {
     public interface IResultadoPspBusiness
     {
-        IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivo);
+        IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivoOuTipo);
         IEnumerable<TipoResultadoPsp> ObterTiposResultadoPspAtivos();
         TipoResultadoPsp ObterTipoResultadoPorCodigo(int codigo);
         bool ImportarArquivoResultado(ArquivoResultadoPsp arquivoResultado, HttpPostedFileBase file);
