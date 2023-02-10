@@ -33,12 +33,12 @@ namespace GestaoAvaliacao.Controllers
 
         [HttpGet]
         [Paginate]
-        public JsonResult ObterImportacoes(string codigoOuNomeArquivo)
+        public JsonResult ObterImportacoes(string codigoOuNomeArquivoOuTipo)
         {
             try
             {
                 Pager pager = this.GetPager();
-                IEnumerable<ArquivoResultadoPsp> result = resultadoPspBusiness.ObterImportacoes(ref pager, codigoOuNomeArquivo);
+                IEnumerable<ArquivoResultadoPsp> result = resultadoPspBusiness.ObterImportacoes(ref pager, codigoOuNomeArquivoOuTipo);
 
                 if (result != null)
                 {

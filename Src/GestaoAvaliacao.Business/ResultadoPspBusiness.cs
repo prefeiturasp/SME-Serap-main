@@ -26,10 +26,10 @@ namespace GestaoAvaliacao.Business
             this.tipoResultadoPspRepository = tipoResultadoPspRepository;
         }
 
-        public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivo)
+        public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(ref Pager pager, string codigoOuNomeArquivoOuTipo)
         {
-            if (!string.IsNullOrEmpty(codigoOuNomeArquivo))
-                return resultadoPspRepository.ObterImportacoes(codigoOuNomeArquivo);
+            if (!string.IsNullOrEmpty(codigoOuNomeArquivoOuTipo))
+                return resultadoPspRepository.ObterImportacoes(codigoOuNomeArquivoOuTipo);
             return resultadoPspRepository.ObterImportacoes(ref pager);
         }
 
