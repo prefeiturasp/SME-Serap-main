@@ -244,6 +244,9 @@ namespace GestaoAvaliacao.Controllers
                         TestSubGroup = entity.TestSubGroup != null ? new { Id = entity.TestSubGroup.Id, Description = entity.TestSubGroup.Description } : null,
                         TempoDeProva = new { entity.TestTime.Id, entity.TestTime.Description },
                         ShowTestTAI = entity.TestTai,
+                        ProvaComProficiencia = entity.ProvaComProficiencia,
+                        ApresentarResultados = entity.ApresentarResultados,
+                        ApresentarResultadosPorItem = entity.ApresentarResultadosPorItem,
                         NumberItemsAplicationTai = entity.NumberItemsAplicationTai != null ? new { entity.NumberItemsAplicationTai.Id, entity.NumberItemsAplicationTai.Name, entity.NumberItemsAplicationTai.Value, entity.NumberItemsAplicationTai.AdvanceWithoutAnswering, entity.NumberItemsAplicationTai.BackToPreviousItem } : null,
                         AdvanceWithoutAnswering = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.AdvanceWithoutAnswering : false,
                         BackToPreviousItem = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.BackToPreviousItem : false
@@ -810,7 +813,7 @@ namespace GestaoAvaliacao.Controllers
 
                 if (entity.Id > 0)
                 {
-                    
+
                     entity = testBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.usu_id,
                             (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
                                 SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
@@ -836,7 +839,7 @@ namespace GestaoAvaliacao.Controllers
 
                 if (entity.Validate.IsValid)
                 {
-                    entity.TestSituation = testBusiness.TestSituation(entity);                    
+                    entity.TestSituation = testBusiness.TestSituation(entity);
                 }
 
 
@@ -1010,6 +1013,48 @@ namespace GestaoAvaliacao.Controllers
 
             return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message, TestID = entity.Id }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> listEntity)
+        {
+            try
+            {
+
+                testBusiness.TestTaiCurriculumGradeSave(listEntity);
+
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+                throw ex;
+            }
+
+            //GetListTestTaiCurriculumGrade
+
+
+        }
+        [HttpGet]
+        public JsonResult GetListTestTaiCurriculumGrade(long testId)
+        {
+            try
+            {
+                var list = testBusiness.GetListTestTaiCurriculumGrade(testId);
+
+                if (list != null && list.Any())
+                    return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
+
+
+                return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, lista = "" }, JsonRequestBehavior.AllowGet);
+                throw ex;
+            }
+        }
+
 
         #endregion
 
@@ -1263,7 +1308,7 @@ namespace GestaoAvaliacao.Controllers
         {
             var entity = new ExportAnalysis() { StateExecution = EnumServiceState.Pending, Test_Id = TestId };
             try
-            {                
+            {
                 entity = exportAnalysisBusiness.SolicitExport(entity.Test_Id);
                 return Json(new
                 {
@@ -1282,6 +1327,8 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
 
         #endregion
     }

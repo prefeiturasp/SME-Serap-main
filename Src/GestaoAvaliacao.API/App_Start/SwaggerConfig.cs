@@ -19,6 +19,7 @@ namespace GestaoAvaliacao.API
                 {
                     c.SingleApiVersion("v1", "GestaoAvaliacao.API");
                     c.OperationFilter<ProducesOperationFilter>();
+                    //c.Schemes(new[] { "https" });
                 })
                 .EnableSwaggerUi();
         }

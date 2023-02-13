@@ -1642,6 +1642,9 @@ namespace GestaoAvaliacao.Repository
                 test.ShowAudioFiles = entity.ShowAudioFiles;
                 test.ShowJustificate = entity.ShowJustificate;
                 test.TestTai = entity.TestTai;
+                test.ProvaComProficiencia = entity.ProvaComProficiencia;
+                test.ApresentarResultados = entity.ApresentarResultados;
+                test.ApresentarResultadosPorItem = entity.ApresentarResultadosPorItem;
 
                 test.UpdateDate = DateTime.Now;
 

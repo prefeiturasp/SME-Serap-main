@@ -66,5 +66,8 @@ namespace GestaoAvaliacao.IBusiness
 		Task<ElectronicTestDTO> GetElectronicTestByPesIdAndTestId(Guid pes_id, long testId);
 
 		Task<List<ElectronicTestDTO>> GetTestsByPesId(Guid pes_id);
+
+		void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> entity);
+		List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId);
 	}
 }

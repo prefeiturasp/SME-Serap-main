@@ -527,6 +527,7 @@
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\formCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\listCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\electronicTestResult\indexElectronicTestResultController.js" />
+    <Content Include="Assets\js\angular\controllers\importarResultadosPSP\importarResultadosPSPController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsResultController.js" />
     <Content Include="Assets\js\angular\controllers\correction\correctionResultController.js" />
@@ -584,6 +585,7 @@
     <Content Include="Assets\js\angular\filters\_bundle\capitalize\capitalize.js" />
     <Content Include="Assets\js\angular\models\administrativeUnitType\administrativeUnitTypeModel.js" />
     <Content Include="Assets\js\angular\models\electronicTestResult\electronicTestResultModel.js" />
+    <Content Include="Assets\js\angular\models\importarResultadosPSP\importarResultadosPSPModel.js" />
     <Content Include="Assets\js\angular\models\NumberItemsAplicationTai\numberItemsAplicationTaiModel.js" />
     <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsApiModel.js" />
     <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsModel.js" />
@@ -1759,6 +1761,7 @@
     <Content Include="Views\StudentResults\Index_BKP.cshtml" />
     <Content Include="Views\ElectronicTestResult\Index.cshtml" />
     <Content Include="Views\AdminSerapEstudantes\Index.cshtml" />
+    <Content Include="Views\ImportarResultadosPSP\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1770,6 +1773,7 @@
     <Compile Include="Controllers\AdminAcompanhamentoProvasController.cs" />
     <Compile Include="Controllers\AdminSerapEstudantesController.cs" />
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
+    <Compile Include="Controllers\ImportarResultadosPSPController.cs" />
     <Compile Include="Controllers\NumberItemsAplicationTaiController.cs" />
     <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
     <Compile Include="Controllers\StudentResultsController.cs" />

@@ -470,6 +470,10 @@ namespace GestaoAvaliacao.MappingDependence
                 .WithService.AllInterfaces()
                 .SetLifestyle(LifestylePerWebRequest));
 
+            container.Register(Classes.FromAssemblyContaining<ResultadoPspBusiness>()
+                .BasedOn(typeof(IResultadoPspBusiness))
+                .WithService.AllInterfaces()
+                .SetLifestyle(LifestylePerWebRequest));
 
             #region GestaoEscolar
 

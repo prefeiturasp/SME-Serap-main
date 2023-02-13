@@ -48,8 +48,17 @@ namespace GestaoAvaliacao.Business
                 HttpResponseMessage response = client.PostAsJsonAsync(ENDPOINT_ADMIN_AUTENTICACAO, adminAutenticacaoDTO).Result;
                 response.EnsureSuccessStatusCode();
 
-                AdminAutenticacaoRespostaDTO resposta = response.Content.ReadFromJsonAsync<AdminAutenticacaoRespostaDTO>().Result;
+                AdminAutenticacaoRespostaDTO resposta = new AdminAutenticacaoRespostaDTO();
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    resposta = response.Content.ReadFromJsonAsync<AdminAutenticacaoRespostaDTO>().Result;
+                }
+                else if (response.StatusCode != System.Net.HttpStatusCode.Unauthorized)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
 
+                resposta.StatusCode = (int)response.StatusCode;
                 return resposta;
             }
         }
