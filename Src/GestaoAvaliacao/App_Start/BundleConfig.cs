@@ -371,6 +371,7 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/models/ItemType/ItemTypeModel.js")
                 .Include("~/Assets/js/angular/models/Integration/modality/modalityModel.js")
                 .Include("~/Assets/js/angular/models/testType/testTypeModel.js")
+                .Include("~/Assets/js/angular/models/evaluationMatrix/evaluationMatrixModel.js")
                 .Include("~/Assets/js/vendor/datepicker/datepicker.js")
                 .Include("~/Assets/js/angular/directives/_bundle/datepicker/datepicker-directive.js")
 
@@ -1960,6 +1961,35 @@ namespace GestaoAvaliacao.App_Start
             #endregion
 
             #endregion
+
+            #region ImportarResultadosPSP
+
+            bundles.Add(
+                new ScriptBundle("~/bundles/ImportarResultadosPSP_js")
+                .Include("~/Assets/js/angular/directives/_bundle/ng-change-file/ng-change-file.js")
+                .Include("~/Assets/js/angular/directives/_bundle/modal/modal.js")
+                .Include("~/Assets/js/angular/services/_bundle/util/util.js")
+                .Include("~/Assets/js/angular/directives/_bundle/uploader/uploader.js")
+                .Include("~/Assets/js/angular/directives/_bundle/uploader/upload.js")
+                .Include("~/Assets/js/angular/directives/_bundle/checkbox-group/ckeckbox-group.js")
+                .Include("~/Assets/js/vendor/datepicker/datepicker.js")
+                .Include("~/Assets/js/angular/directives/_bundle/datepicker/datepicker-directive.js")                
+                .Include("~/Assets/js/angular/models/file/fileModel.js")
+                .Include("~/Assets/js/angular/models/test/testListModel.js")
+                .Include("~/Assets/js/vendor/compressor/compressor.js")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.js")
+                .Include("~/Assets/js/angular/services/_bundle/pager/services.js")
+                .Include("~/Assets/js/angular/controllers/importarResultadosPSP/importarResultadosPSPController.js")
+                .Include("~/Assets/js/angular/models/importarResultadosPSP/importarResultadosPSPModel.js")
+            );
+            bundles.Add(
+                new StyleBundle("~/bundles/ImportarResultadosPSP_css")
+                .Include("~/Assets/js/vendor/datepicker/datepicker.css")
+                .Include("~/Assets/js/angular/directives/_bundle/page/page.css")
+            );
+
+            #endregion
+
         }
     }
 }

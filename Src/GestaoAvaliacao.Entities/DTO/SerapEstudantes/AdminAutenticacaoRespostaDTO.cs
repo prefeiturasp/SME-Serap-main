@@ -2,6 +2,7 @@
 {
     public class AdminAutenticacaoRespostaDTO
     {
+        public int  StatusCode { get; set; }
         public string Codigo { get; set; }
     }
 }

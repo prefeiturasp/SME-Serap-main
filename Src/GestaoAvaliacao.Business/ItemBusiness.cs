@@ -7,6 +7,7 @@ using GestaoAvaliacao.IPDFConverter;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.Util.Extensions;
+using GestaoAvaliacao.Util.Videos;
 using GestaoEscolar.Entities;
 using GestaoEscolar.IBusiness;
 using System;
@@ -35,12 +36,18 @@ namespace GestaoAvaliacao.Business
         private readonly ISubjectRepository subjectRepository;
         private readonly IEvaluationMatrixCourseCurriculumGradeBusiness evaluationMatrixCourseCurriculumBusiness;
         private readonly IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness;
+        private readonly IItemSituationBusiness itemSituationRepository;
+        private readonly IFileBusiness fileBusiness;
+        private readonly IItemLevelRepository itemLevelRepository;
+        private readonly IVideoConverter videoConverter;
 
         const string RESPOSTA_CONSTRUIDA = "Resposta construída";
-        const string MULTIPLA_ESCOLHA_4_ALTERNATIVAS = "Múltipla escolha 4 alternativas";
-        const string MULTIPLA_ESCOLHA_5_ALTERNATIVAS = "Múltipla escolha 5 alternativas";
-        Guid ENTITY_ID = Guid.Parse("6CF424DC-8EC3-E011-9B36-00155D033206");
 
+
+        private const string VideoConvertedContentType = "video/webm";
+        const string TIPO_IMAGENS_PERMITIDOS = "image/jpeg, image/png, image/gif, image/bmp";
+        const string TIPO_VIDEOS_PERMITIDOS = "video/mp4, video/webm, video/ogg, application/ogg, video/x-flv, application/x-mpegURL, video/MP2T, video/3gpp, video/quicktime, video/x-msvideo, video/x-ms-wmv";
+        const string TIPO_AUDIO_PERMITIDOS = "audio/mpeg, audio/mp4, audio/mp3, audio/vnd.wav, audio/x-ms-wma, audio/ogg";
 
         public ItemBusiness(IItemRepository itemRepository, IAlternativeRepository alternativeRepository,
                             IStorage storage, IFileRepository fileRepository,
@@ -53,7 +60,12 @@ namespace GestaoAvaliacao.Business
                             ISkillRepository skillRepository,
                             ISubjectRepository subjectRepository,
                             IEvaluationMatrixCourseCurriculumGradeBusiness evaluationMatrixCourseCurriculumBusiness,
-                            IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness)
+                            IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
+                            IItemSituationBusiness itemSituationRepository,
+                            IFileBusiness fileBusiness,
+                            IItemLevelRepository itemLevelRepository,
+                            IVideoConverter videoConverter
+            )
         {
             this.itemRepository = itemRepository;
             this.alternativeRepository = alternativeRepository;
@@ -71,6 +83,10 @@ namespace GestaoAvaliacao.Business
             this.subjectRepository = subjectRepository;
             this.evaluationMatrixCourseCurriculumBusiness = evaluationMatrixCourseCurriculumBusiness;
             this.tipoCurriculoPeriodoBusiness = tipoCurriculoPeriodoBusiness;
+            this.itemSituationRepository = itemSituationRepository;
+            this.fileBusiness = fileBusiness;
+            this.itemLevelRepository = itemLevelRepository;
+            this.videoConverter = videoConverter;
         }
 
         #region Custom
@@ -85,106 +101,110 @@ namespace GestaoAvaliacao.Business
                     || entity.ItemSkills == null || (entity.ItemSkills != null && entity.ItemSkills.Count <= 0)
                     || entity.ItemCurriculumGrades == null || (entity.ItemCurriculumGrades != null && entity.ItemCurriculumGrades.Count <= 0)
                     || entity.EvaluationMatrix_Id <= 0)
-                    valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
+                    valid.SetErrorMessage("Não foram preenchidos todos os campos obrigatórios.");
 
-                //id da página de item = 2
-                var parameters = parambusiness.GetParamsByPage(2);
-                parameters = parameters.Where(p => p.Obligatory == true).ToList();
-                var filled = true;
 
-                var listTemp = entity.Alternatives != null ? entity.Alternatives.Where(a => a.State == (byte)EnumState.ativo).ToList() : new List<Alternative>();
-                ItemType itemType = null;
-                if (entity.ItemType_Id > 0)
-                    itemType = itemTypeRepository.Get(entity.ItemType_Id);
-
-                foreach (var par in parameters)
+                if (valid.IsValid)
                 {
-                    switch (par.Key)
+                    //id da página de item = 2
+                    var parameters = parambusiness.GetParamsByPage(2);
+                    parameters = parameters.Where(p => p.Obligatory == true).ToList();
+                    var filled = true;
+
+                    var listTemp = entity.Alternatives != null ? entity.Alternatives.Where(a => a.State == (byte)EnumState.ativo).ToList() : new List<Alternative>();
+                    ItemType itemType = null;
+                    if (entity.ItemType_Id > 0)
+                        itemType = itemTypeRepository.Get(entity.ItemType_Id);
+
+                    foreach (var par in parameters)
                     {
-                        case "BASETEXT":
-                            if (string.IsNullOrEmpty(entity.BaseText.Description)) filled = false;
-                            break;
-                        case "SOURCE":
-                            if (string.IsNullOrEmpty(entity.BaseText.Description) || string.IsNullOrEmpty(entity.BaseText.Source)) filled = false;
-                            break;
-                        case "BASETEXT_ORIENTATION":
-                            if ((entity.ItemNarrated != null && (bool)entity.ItemNarrated) && (string.IsNullOrEmpty(entity.BaseText.Description) || string.IsNullOrEmpty(entity.BaseText.BaseTextOrientation))) filled = false;
-                            break;
-                        case "INITIAL_ORIENTATION":
-                            if (entity.ItemNarrated != null && (bool)entity.ItemNarrated && string.IsNullOrEmpty(entity.BaseText.InitialOrientation)) filled = false;
-                            break;
-                        case "INITIAL_STATEMENT":
-                            if (entity.ItemNarrated != null && (bool)entity.ItemNarrated && string.IsNullOrEmpty(entity.BaseText.InitialStatement)) filled = false;
-                            break;
-                        case "DESCRIPTORSENTENCE":
-                            if ((par.State != (byte)EnumState.inativo) && (string.IsNullOrEmpty(entity.descriptorSentence))) filled = false;
-                            break;
-                        case "KEYWORDS":
-                            if (string.IsNullOrEmpty(entity.Keywords)) filled = false;
-                            break;
-                        case "PROFICIENCY":
-                            if (entity.proficiency == null) filled = false;
-                            break;
-                        case "ITEMLEVEL":
-                            if (entity.ItemLevel_Id == null) filled = false;
-                            break;
-                        case "STATEMENT":
-                            if (string.IsNullOrEmpty(entity.Statement)) filled = false;
-                            break;
-                        case "TRI":
-                            if (entity.TRICasualSetting == null || entity.TRIDifficulty == null || entity.TRIDiscrimination == null) filled = false;
-                            break;
-                        case "TIPS":
-                            if (string.IsNullOrEmpty(entity.Tips)) filled = false;
-                            break;
-                        case "ALTERNATIVES":
-                            if (!ValidateAlternatives(listTemp, itemType))
-                                filled = false;
-                            break;
-                        case "TCT":
-                            if (listTemp == null || (listTemp != null && listTemp.Count <= 0) ||
-                                (listTemp != null && listTemp.Count > 0 && listTemp.Any(a => a.TCTBiserialCoefficient == null)) ||
-                                (listTemp != null && listTemp.Count > 0 && listTemp.Any(a => a.TCTDificulty == null)) ||
-                                (listTemp != null && listTemp.Count > 0 && listTemp.Any(a => a.TCTDiscrimination == null)))
-                                filled = false;
-                            break;
-                        case "JUSTIFICATIVE":
-                            if (!ValidateJustificatives(listTemp, itemType))
-                                filled = false;
-                            break;
-                        case "CODE":
-                            if (entity.ItemCode.IsNullOrEmptyOrWhiteSpace())
-                                filled = false;
-                            break;
+                        switch (par.Key)
+                        {
+                            case "BASETEXT":
+                                if (string.IsNullOrEmpty(entity.BaseText.Description)) filled = false;
+                                break;
+                            case "SOURCE":
+                                if (string.IsNullOrEmpty(entity.BaseText.Description) || string.IsNullOrEmpty(entity.BaseText.Source)) filled = false;
+                                break;
+                            case "BASETEXT_ORIENTATION":
+                                if ((entity.ItemNarrated != null && (bool)entity.ItemNarrated) && (string.IsNullOrEmpty(entity.BaseText.Description) || string.IsNullOrEmpty(entity.BaseText.BaseTextOrientation))) filled = false;
+                                break;
+                            case "INITIAL_ORIENTATION":
+                                if (entity.ItemNarrated != null && (bool)entity.ItemNarrated && string.IsNullOrEmpty(entity.BaseText.InitialOrientation)) filled = false;
+                                break;
+                            case "INITIAL_STATEMENT":
+                                if (entity.ItemNarrated != null && (bool)entity.ItemNarrated && string.IsNullOrEmpty(entity.BaseText.InitialStatement)) filled = false;
+                                break;
+                            case "DESCRIPTORSENTENCE":
+                                if ((par.State != (byte)EnumState.inativo) && (string.IsNullOrEmpty(entity.descriptorSentence))) filled = false;
+                                break;
+                            case "KEYWORDS":
+                                if (string.IsNullOrEmpty(entity.Keywords)) filled = false;
+                                break;
+                            case "PROFICIENCY":
+                                if (entity.proficiency == null) filled = false;
+                                break;
+                            case "ITEMLEVEL":
+                                if (entity.ItemLevel_Id == null) filled = false;
+                                break;
+                            case "STATEMENT":
+                                if (string.IsNullOrEmpty(entity.Statement)) filled = false;
+                                break;
+                            case "TRI":
+                                if (entity.TRICasualSetting == null || entity.TRIDifficulty == null || entity.TRIDiscrimination == null) filled = false;
+                                break;
+                            case "TIPS":
+                                if (string.IsNullOrEmpty(entity.Tips)) filled = false;
+                                break;
+                            case "ALTERNATIVES":
+                                if (!ValidateAlternatives(listTemp, itemType))
+                                    filled = false;
+                                break;
+                            case "TCT":
+                                if (listTemp == null || (listTemp != null && listTemp.Count <= 0) ||
+                                    (listTemp != null && listTemp.Count > 0 && listTemp.Any(a => a.TCTBiserialCoefficient == null)) ||
+                                    (listTemp != null && listTemp.Count > 0 && listTemp.Any(a => a.TCTDificulty == null)) ||
+                                    (listTemp != null && listTemp.Count > 0 && listTemp.Any(a => a.TCTDiscrimination == null)))
+                                    filled = false;
+                                break;
+                            case "JUSTIFICATIVE":
+                                if (!ValidateJustificatives(listTemp, itemType))
+                                    filled = false;
+                                break;
+                            case "CODE":
+                                if (entity.ItemCode.IsNullOrEmptyOrWhiteSpace())
+                                    filled = false;
+                                break;
+                        }
+                        if (!filled) break;
                     }
-                    if (!filled) break;
-                }
 
-                if (!filled)
-                    valid.Message += "<br/>Não foram preenchidos todos os campos obrigatórios.";
+                    if (!filled)
+                        valid.Message += "<br/>Não foram preenchidos todos os campos obrigatórios.";
 
-                if (entity.BaseText != null
-                    && (entity.Id > 0 && (entity.BaseText.Id <= 0 || string.IsNullOrEmpty(entity.BaseText.Description))
-                    || (entity.Id <= 0 && string.IsNullOrEmpty(entity.BaseText.Description))))
-                {
-                    Parameter paramBaseText = parambusiness.GetParamsByPage(2).FirstOrDefault(i => i.Key.Equals("BASETEXT"));
-                    if (paramBaseText != null && (!string.IsNullOrEmpty(entity.BaseText.Source) || (entity.ItemNarrated != null && (bool)entity.ItemNarrated && !string.IsNullOrEmpty(entity.BaseText.BaseTextOrientation))))
+                    if (entity.BaseText != null
+                        && (entity.Id > 0 && (entity.BaseText.Id <= 0 || string.IsNullOrEmpty(entity.BaseText.Description))
+                        || (entity.Id <= 0 && string.IsNullOrEmpty(entity.BaseText.Description))))
                     {
-                        valid.Message += string.Format("<br/>O campo {0} não pode ficar em branco, pois existe(m) campo(s) preenchido(s) referente(s) a(ao) {0}.<br/>Por favor, verifique.", paramBaseText.Value);
+                        Parameter paramBaseText = parambusiness.GetParamsByPage(2).FirstOrDefault(i => i.Key.Equals("BASETEXT"));
+                        if (paramBaseText != null && (!string.IsNullOrEmpty(entity.BaseText.Source) || (entity.ItemNarrated != null && (bool)entity.ItemNarrated && !string.IsNullOrEmpty(entity.BaseText.BaseTextOrientation))))
+                        {
+                            valid.Message += string.Format("<br/>O campo {0} não pode ficar em branco, pois existe(m) campo(s) preenchido(s) referente(s) a(ao) {0}.<br/>Por favor, verifique.", paramBaseText.Value);
+                        }
                     }
-                }
 
-                if (!entity.ItemCode.IsNullOrEmptyOrWhiteSpace())
-                {
-                    bool codeAlreadyExists;
+                    if (!entity.ItemCode.IsNullOrEmptyOrWhiteSpace())
+                    {
+                        bool codeAlreadyExists;
 
-                    if (action == ValidateAction.Update)
-                        codeAlreadyExists = itemRepository.VerifyItemCodeAlreadyExists(entity.ItemCode, entity.Id);
-                    else
-                        codeAlreadyExists = itemRepository.VerifyItemCodeAlreadyExists(entity.ItemCode);
+                        if (action == ValidateAction.Update)
+                            codeAlreadyExists = itemRepository.VerifyItemCodeAlreadyExists(entity.ItemCode, entity.Id);
+                        else
+                            codeAlreadyExists = itemRepository.VerifyItemCodeAlreadyExists(entity.ItemCode);
 
-                    if (codeAlreadyExists)
-                        valid.Message += "<br/>O código do item já existe.";
+                        if (codeAlreadyExists)
+                            valid.Message += "<br/>O código do item já existe.";
+                    }
                 }
             }
 
@@ -975,46 +995,45 @@ namespace GestaoAvaliacao.Business
 
         #region ItemsNewApi
 
-        #endregion
-
-        #region ItemsNewApi
-
         public List<BaseDto> LoadAllKnowledgeAreaActive()
         {
-            return knowledgeAreaRepository.LoadAllKnowledgeAreaActive(string.Empty, ENTITY_ID).Select(s => new BaseDto
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            return knowledgeAreaRepository.LoadAllKnowledgeAreaActive(string.Empty, new Guid(entidade.Value)).Select(s => new BaseDto
             {
                 Id = long.Parse(s.id),
                 Descricao = s.text
             }).ToList();
         }
-
 
         public List<BaseDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas)
         {
-            return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty, knowledgeAreas.ToString(), ENTITY_ID).Select(s => new BaseDto
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            return disciplineRepository.LoadDisciplineByKnowledgeArea(string.Empty, knowledgeAreas.ToString(), new Guid(entidade.Value)).Select(s => new BaseDto
             {
                 Id = long.Parse(s.id),
                 Descricao = s.text
             }).ToList();
         }
-
 
         public List<BaseDto> LoadMatrixByDiscipline(long idDiscipline)
         {
             return evaluationMatrixRepository.GetComboByDiscipline(idDiscipline).Select(s => new BaseDto
             {
-                Id =s.Id ,
+                Id = s.Id,
                 Descricao = s.Description
             }).ToList();
         }
+
         public List<SkillDto> LoadSkillByMatrix(long idMatrix)
         {
-            var listSkillDto = skillRepository.GetByMatrix(idMatrix).Select(s => new SkillDto
-            {
-                Id = s.Id,
-                Descricao = s.Description,
-                Codigo = s.Code
-            }).ToList();
+            var listSkillDto = skillRepository.GetByMatrix(idMatrix)
+                .Where(t => t.ModelSkillLevel.Id == 1)
+                .Select(s => new SkillDto
+                {
+                    Id = s.Id,
+                    Descricao = s.Description,
+                    Codigo = s.Code
+                }).ToList();
 
             return listSkillDto;
         }
@@ -1026,34 +1045,36 @@ namespace GestaoAvaliacao.Business
             {
                 Id = s.Id,
                 Descricao = s.Description,
-                UltimoNivel = s.LastLevel
+                UltimoNivel = s.LastLevel,
+                Codigo = s.Code
             }).ToList();
             return listAbilityDto;
         }
 
-
         public List<BaseDto> LoadAllSubjects()
         {
-            return subjectRepository.LoadAllSubjects(string.Empty, ENTITY_ID).Select(s => new BaseDto
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            return subjectRepository.LoadAllSubjects(string.Empty, new Guid(entidade.Value)).Select(s => new BaseDto
             {
                 Id = long.Parse(s.id),
                 Descricao = s.text
             }).ToList();
         }
-    
 
         public List<BaseDto> LoadSubsubjectBySubject(string idSubjects)
         {
-            return subjectRepository.LoadSubsubjectBySubject(string.Empty, idSubjects, ENTITY_ID).Select(s => new BaseDto
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            return subjectRepository.LoadSubsubjectBySubject(string.Empty, idSubjects, new Guid(entidade.Value)).Select(s => new BaseDto
             {
                 Id = long.Parse(s.id),
                 Descricao = s.text
             }).ToList();
         }
 
-          public List<ItemTypeDto> FindForTestType()
+        public List<ItemTypeDto> FindForTestType()
         {
-            var list = itemTypeRepository.FindForTestType(ENTITY_ID).Select(i => new ItemTypeDto
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var list = itemTypeRepository.FindForTestType(new Guid(entidade.Value)).Select(i => new ItemTypeDto
             {
                 Id = i.Id,
                 Descricao = i.Description,
@@ -1068,28 +1089,612 @@ namespace GestaoAvaliacao.Business
             IEnumerable<ACA_TipoCurriculoPeriodo> listCurriculumGrades = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
             List<EvaluationMatrixCourseCurriculumGrade> list = evaluationMatrixCourseCurriculumBusiness.GetCurriculumGradesByMatrix(evaluationMatrixId);
 
-
-
             if (list != null && list.Count > 0)
             {
                 var query = list.Select(i => new CurriculumGradeDto
                 {
-                    TypeCurriculumGradeId = i.TypeCurriculumGradeId,
-                    TypeCurriculumGrade = i.TypeCurriculumGradeId > 0 ? new TypeCurriculumGradeDto
-                    {
-                        Id = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_id,
-                        Description = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_descricao,
-                        Order = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_ordem
-                    } : null
-                }).Where(x => x.TypeCurriculumGrade != null).OrderBy(x => x.TypeCurriculumGrade.Order).ToList();
+                    Id = i.TypeCurriculumGradeId,
+                    Descricao = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_descricao,
+                    Ordem = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_ordem
+                }).Where(x => x.Id > 0).OrderBy(x => x.Ordem).ToList();
                 return query;
             }
             return default;
         }
 
+        private void ValidateApi(ItemApiDto model, ItemApiResult itemResult)
+        {
+            itemResult.mensagem = string.Empty;
+
+            if (model.AreaConhecimentoId != 0)
+            {
+                var knowledgeArea = knowledgeAreaRepository.Get(model.AreaConhecimentoId);
+                if (knowledgeArea == null)
+                    itemResult.mensagem += "<br/>O id da área de conhecimento é invãlido.";
+            }
+            else
+                itemResult.mensagem += "<br/>O id da área de conhecimento é obrigatório.";
+
+
+            if (model.MatrizId != 0)
+            {
+                var matriz = evaluationMatrixRepository.GetByMatriz(model.MatrizId);
+                if (!matriz.Any())
+                    itemResult.mensagem += "<br/>O id da matriz é inválido.";
+            }
+            else
+                itemResult.mensagem += "<br/>O id da matriz é obrigatório.";
+
+            if (!model.CodigoItem.IsNullOrEmptyOrWhiteSpace())
+            {
+                bool codigoExiste = itemRepository.VerifyItemCodeAlreadyExists(model.CodigoItem);
+                if (codigoExiste)
+                    itemResult.mensagem += "<br/>O código do item já existe.";
+            }
+            else
+                itemResult.mensagem += "<br/>O código do item é obrigatório.";
+
+            if (model.Dificuldade != Dificuldade.Nenhum)
+            {
+                var level = itemLevelRepository.Get((int)model.Dificuldade);
+                if (level == null)
+                    itemResult.mensagem += "<br/>A dificuldade é inválida [1 - Muito Fácil, 2 - Fácil, 3 - Médio, 4 - Difícil, 5 - Muito Difícil].";
+            }
+            else
+                itemResult.mensagem += "<br/>A dificuldade do item é obrigatório [1 - Muito Fácil, 2 - Fácil, 3 - Médio, 4 - Difícil, 5 - Muito Difícil].";
+
+            ItemType itemType = null;
+            if (model.TipoItemId != 0)
+            {
+                itemType = itemTypeRepository.Get(model.TipoItemId);
+                if (itemType == null)
+                    itemResult.mensagem += "<br/>O id do tipo do item é inválido.";
+            }
+            else
+                itemResult.mensagem += "<br/>O id do tipo do item é obrigatório.";
+
+            if (model.TipoGradeCurricularId != 0)
+            {
+                if (model.MatrizId != 0)
+                {
+                    var grades = evaluationMatrixCourseCurriculumBusiness.GetCurriculumGradesByMatrix((int)model.MatrizId);
+                    if (!grades.Any(t => t.TypeCurriculumGradeId == model.TipoGradeCurricularId))
+                        itemResult.mensagem += "<br/>O id do tipo de grade curricular é inválido.";
+                }
+            }
+            else
+                itemResult.mensagem += "<br/>O id do tipo de grade curricular é obrigatório.";
+
+            if (model.CompetenciaId != 0)
+            {
+                var listSkillDto = skillRepository.GetByMatrix(model.MatrizId);
+                if (!listSkillDto.Any(t => t.Id == model.CompetenciaId && t.ModelSkillLevel.Id == 1))
+                    itemResult.mensagem += "<br/>O id da competência é inválido.";
+            }
+            else
+                itemResult.mensagem += "<br/>O id da competência é obrigatório.";
+
+            if (model.HabilidadeId != 0)
+            {
+                var listAbilityDto = skillRepository.GetByParent(model.CompetenciaId);
+                if (listAbilityDto == null || !listAbilityDto.Any(t => t.Id == model.HabilidadeId))
+                    itemResult.mensagem += "<br/>O id da habilidade é inválido.";
+            }
+            else
+                itemResult.mensagem += "<br/>O id da habilidade é obrigatório.";
+
+            if (model.SubassuntoId != 0)
+            {
+                var assunto = subjectRepository.LoadSubjectBySubsubject((long)model.SubassuntoId);
+                if (assunto == null)
+                    itemResult.mensagem += "<br/>O id do subassunto é inválido.";
+            }
+            else
+                itemResult.mensagem += "<br/>O id do subassunto é obrigatório.";
+
+            if (model.Proficiencia != null)
+            {
+                if ((int)model.Proficiencia < 100 || (int)model.Proficiencia > 500)
+                    itemResult.mensagem += "<br/>Proficiência deve ser de 100 a 500.";
+            }
+
+            if (model.Enunciado.IsNullOrEmptyOrWhiteSpace())
+                itemResult.mensagem += "<br/>O Enunciado é obrigatório.";
+
+            if (itemType != null && !itemType.Description.Contains(RESPOSTA_CONSTRUIDA))
+            {
+                if (model.Alternativas != null && model.Alternativas.Any())
+                {
+                    if (!model.Alternativas.Any(t => t.Correta))
+                        itemResult.mensagem += "<br/>O item deve possuir 1 alternativa correta.";
+
+                    if (model.Alternativas.Count(t => t.Correta) > 1)
+                        itemResult.mensagem += "<br/>O item deve possuir somente 1 alternativa correta.";
+
+                    if (itemType.QuantityAlternative != model.Alternativas.Count)
+                        itemResult.mensagem += $"<br/>O item deve possuir {itemType.QuantityAlternative} alternativas.";
+
+                    if (model.Alternativas.GroupBy(t => t.Ordem).Any(t => t.Count() > 1))
+                        itemResult.mensagem += $"<br/>O item não pode conter a ordem duplicada.";
+
+                    if (model.Alternativas.GroupBy(t => t.Numeracao).Any(t => t.Count() > 1))
+                        itemResult.mensagem += $"<br/>O item não pode conter a numeração duplicada.";
+
+
+                    foreach (var alternativa in model.Alternativas)
+                    {
+                        if (alternativa.Descricao.IsNullOrEmptyOrWhiteSpace())
+                            itemResult.mensagem += "<br/>A descrição da alternativa é obrigatório.";
+
+                        if (alternativa.Numeracao.IsNullOrEmptyOrWhiteSpace())
+                            itemResult.mensagem += "<br/>A numeração da alternativa é obrigatório.";
+                    }
+
+                }
+                else
+                    itemResult.mensagem += $"<br/>O item deve possuir {itemType.QuantityAlternative} alternativas.";
+            }
+
+            if (model.Imagens != null && model.Imagens.Any())
+            {
+                if (model.Imagens.GroupBy(t => t.Tag).Any(t => t.Count() > 1))
+                    itemResult.mensagem += $"<br/>O item não pode conter imagens com a tag duplicada.";
+
+                foreach (var picture in model.Imagens)
+                {
+                    if (picture.Tag.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>A tag da imagem é obrigatória.";
+
+                    if (picture.Tamanho == 0)
+                        itemResult.mensagem += "<br/>O tamanho da imagem é obrigatório.";
+
+                    if (picture.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O tipo do conteúdo da imagem é obrigatório.";
+
+                    if (picture.Base64.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O arquivo em base64 da imagem é obrigatório.";
+
+                    if (picture.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O nome do arquivo da imagem é obrigatório.";
+
+                    if (!TIPO_IMAGENS_PERMITIDOS.Contains(picture.TipoConteudo))
+                    {
+                        itemResult.mensagem += "<br/>Tipo de imagem não permitido. [.jpeg, .png, .gif, .bmp]";
+                        continue;
+                    }
+
+                    switch (picture.Tipo)
+                    {
+                        case PictureType.BaseText:
+                            if (!model.TextoBase.Contains(picture.Tag))
+                                itemResult.mensagem += $"<br/>A tag {picture.Tag} não foi encontrada em texto base.";
+                            break;
+                        case PictureType.Statement:
+                            if (!model.Enunciado.Contains(picture.Tag))
+                                itemResult.mensagem += $"<br/>A tag {picture.Tag} não foi encontrada em enunciado.";
+                            break;
+
+                        case PictureType.Alternative:
+                            var contemTagAlternative = false;
+                            foreach (var alternative in model.Alternativas)
+                            {
+                                if (alternative.Descricao.Contains(picture.Tag)) contemTagAlternative = true;
+                            }
+
+                            if (!contemTagAlternative)
+                                itemResult.mensagem += $"<br/>A tag {picture.Tag} não foi encontrada em nenhuma alternativa.";
+                            break;
+                        case PictureType.Justificative:
+                            var contemTagJustificative = false;
+                            foreach (var alternative in model.Alternativas)
+                            {
+                                if (alternative.Justificativa.Contains(picture.Tag)) contemTagJustificative = true;
+                            }
+
+                            if (!contemTagJustificative)
+                                itemResult.mensagem += $"<br/>A tag {picture.Tag} não foi encontrada em nenhuma justificativa das alternativas.";
+                            break;
+                    }
+                }
+            }
+
+            if (model.Videos != null && model.Videos.Any())
+            {
+                foreach (var video in model.Videos)
+                {
+                    if (video.Tamanho == 0)
+                        itemResult.mensagem += "<br/>O tamanho do video é obrigatório.";
+
+                    if (video.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O tipo do conteúdo do video é obrigatório.";
+
+                    if (video.Base64.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O arquivo em base64 do video é obrigatório.";
+
+                    if (video.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O nome do arquivo do video é obrigatório.";
+
+                    if (!TIPO_VIDEOS_PERMITIDOS.Contains(video.TipoConteudo))
+                        itemResult.mensagem += "<br/>Tipo de video não permitido.";
+
+
+                    if (video.Tamanho == 0)
+                        itemResult.mensagem += "<br/>O tamanho do video é obrigatório.";
+
+                    if (video.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O tipo do conteúdo do video é obrigatório.";
+
+                    if (video.Base64.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O arquivo em base64 do video é obrigatório.";
+
+                    if (video.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O nome do arquivo do video é obrigatório.";
+
+
+                    if (video.MiniaturaTamanho == 0)
+                        itemResult.mensagem += "<br/>O tamanho da miniatura do video é obrigatório.";
+
+                    if (video.MiniaturaTipoConteudo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O tipo de conteúdo da miniatura do video é obrigatório.";
+
+                    if (video.MiniaturaBase64.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O arquivo em base64 da miniatura do video é obrigatório.";
+
+                    if (video.NomeArquivo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O nome do arquivo da miniatura do video é obrigatório.";
+
+                    if (!TIPO_IMAGENS_PERMITIDOS.Contains(video.MiniaturaTipoConteudo))
+                        itemResult.mensagem += "<br/>Tipo de Imagem não permitido na miniatura do video.";
+                }
+            }
+
+            if (model.Audios != null && model.Audios.Any())
+            {
+                foreach (var audio in model.Audios)
+                {
+                    if (audio.Tamanho == 0)
+                        itemResult.mensagem += "<br/>O tamanho do audio é obrigatório.";
+
+                    if (audio.TipoConteudo.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O tipo do conteúdo do audio é obrigatório.";
+
+                    if (audio.Base64.IsNullOrEmptyOrWhiteSpace())
+                        itemResult.mensagem += "<br/>O arquivo em base64 do audio é obrigatório.";
+
+                    if (!TIPO_AUDIO_PERMITIDOS.Contains(audio.TipoConteudo))
+                        itemResult.mensagem += "<br/>Tipo de audio não permitido.";
+                }
+            }
+
+            if (!itemResult.mensagem.IsNullOrEmptyOrWhiteSpace())
+                itemResult.sucesso = false;
+        }
+
+        public List<ItemApiResult> SaveApi(List<ItemApiDto> items)
+        {
+            var result = new List<ItemApiResult>();
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                var model = items[i];
+
+                ItemApiResult itemResult = new ItemApiResult
+                {
+                    sucesso = true,
+                    sequencia = i + 1
+                };
+
+                try
+                {
+                    ValidateApi(model, itemResult);
+
+                    if (!itemResult.sucesso) throw new Exception(itemResult.mensagem);
+
+                    var files = new List<EntityFile>();
+
+                    if (model.Imagens != null && model.Imagens.Count > 0)
+                    {
+                        foreach (var picture in model.Imagens)
+                        {
+                            switch (picture.Tipo)
+                            {
+                                case PictureType.BaseText:
+                                    if (model.TextoBase.Contains(picture.Tag))
+                                    {
+                                        string tabImg = UploadPictureTagImg(EnumFileType.BaseText, files, picture);
+                                        model.TextoBase = model.TextoBase.Replace(picture.Tag, tabImg);
+                                    }
+                                    break;
+                                case PictureType.Statement:
+                                    if (model.Enunciado.Contains(picture.Tag))
+                                    {
+                                        string tabImg = UploadPictureTagImg(EnumFileType.Statement, files, picture);
+                                        model.Enunciado = model.Enunciado.Replace(picture.Tag, tabImg);
+                                    }
+                                    break;
+
+                                case PictureType.Alternative:
+                                    foreach (var alternative in model.Alternativas)
+                                    {
+                                        if (alternative.Descricao.Contains(picture.Tag))
+                                        {
+                                            string tabImg = UploadPictureTagImg(EnumFileType.Alternative, files, picture);
+                                            alternative.Descricao = alternative.Descricao.Replace(picture.Tag, tabImg);
+                                        }
+                                    }
+                                    break;
+                                case PictureType.Justificative:
+                                    foreach (var alternative in model.Alternativas)
+                                    {
+                                        if (alternative.Justificativa.Contains(picture.Tag))
+                                        {
+                                            string tabImg = UploadPictureTagImg(EnumFileType.Justificative, files, picture);
+                                            alternative.Justificativa = alternative.Justificativa.Replace(picture.Tag, tabImg);
+                                        }
+                                    }
+                                    break;
+                            }
+
+                            if (files.Any(t => !t.Validate.IsValid)) throw new Exception(files.FirstOrDefault(t => !t.Validate.IsValid).Validate.Message);
+                        }
+                    }
+
+                    var itemFiles = new List<ItemFile>();
+                    if (model.Videos != null && model.Videos.Count > 0)
+                    {
+                        foreach (var video in model.Videos)
+                        {
+                            var itemFile = UploadVideo(video);
+
+                            if (!itemFile.Validate.Message.IsNullOrEmptyOrWhiteSpace())
+                                throw new Exception(itemFile.Validate.Message);
+
+                            itemFiles.Add(itemFile);
+                        }
+                    }
+
+                    var itemAudios = new List<ItemAudio>();
+                    if (model.Audios != null && model.Audios.Count > 0)
+                    {
+                        foreach (var audio in model.Audios)
+                        {
+                            var itemAudio = UploadAudio(audio);
+
+                            if (!itemAudio.Validate.Message.IsNullOrEmptyOrWhiteSpace())
+                                throw new Exception(itemAudio.Validate.Message);
+
+                            itemAudios.Add(itemAudio);
+                        }
+                    }
+
+                    Item item = new Item()
+                    {
+                        Statement = model.Enunciado,
+                        proficiency = model.Proficiencia,
+                        EvaluationMatrix_Id = model.MatrizId,
+                        Keywords = model.PalavrasChave,
+                        Tips = model.Observacao,
+                        TRICasualSetting = model.TRIAcertoCasual,
+                        TRIDifficulty = model.TRIDificuldade,
+                        TRIDiscrimination = model.TRIDiscrimicacao,
+                        BaseText = new BaseText()
+                        {
+                            Description = model.TextoBase,
+                            Source = model.Fonte
+                        },
+                        ItemSituation_Id = 1, // -> Situação 1 = Aceito
+                        ItemType_Id = model.TipoItemId,
+                        ItemLevel_Id = (long)model.Dificuldade,
+                        ItemCode = model.CodigoItem,
+                        ItemCurriculumGrades = new List<ItemCurriculumGrade>()
+                        {
+                            new ItemCurriculumGrade() {
+                                TypeCurriculumGradeId = model.TipoGradeCurricularId
+                            }
+                        },
+                        ItemSkills = new List<ItemSkill>(),
+                        Alternatives = model.Alternativas != null ? model.Alternativas.Select(t => new Alternative()
+                        {
+                            Description = t.Descricao,
+                            Correct = t.Correta,
+                            Order = t.Ordem,
+                            Justificative = t.Justificativa,
+                            Numeration = t.Numeracao
+                        }).ToList() : new List<Alternative>(),
+                        IsRestrict = model.Sigiloso,
+                        KnowledgeArea_Id = model.AreaConhecimentoId,
+                        SubSubject_Id = model.SubassuntoId,
+                        ItemFiles = itemFiles,
+                        ItemAudios = itemAudios,
+                    };
+
+                    item.ItemSkills.Add(new ItemSkill()
+                    {
+                        Skill_Id = model.CompetenciaId,
+                        OriginalSkill = true
+                    });
+
+                    item.ItemSkills.Add(new ItemSkill()
+                    {
+                        Skill_Id = model.HabilidadeId,
+                        OriginalSkill = true
+                    });
+
+                    var entity = Save(0, item, files);
+
+                    itemResult.sucesso = entity.Validate.IsValid;
+                    itemResult.tipo = entity.Validate.Type.ToString();
+                    itemResult.mensagem = entity.Validate.Message;
+                }
+                catch (Exception ex)
+                {
+                    itemResult.sucesso = false;
+                    itemResult.tipo = ValidateType.error.ToString();
+                    itemResult.mensagem = "Erro ao salvar item. Erro(s): " + ex.Message;
+                }
+
+                result.Add(itemResult);
+            }
+
+            return result;
+        }
+
+        private string UploadPictureTagImg(EnumFileType type, List<EntityFile> files, PictureDto picture)
+        {
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var virtualDirectory = parambusiness.GetByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), new Guid(entidade.Value));
+            var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
+
+            UploadModel upload = new UploadModel
+            {
+                ContentLength = picture.Tamanho,
+                ContentType = picture.TipoConteudo,
+                InputStream = picture.Base64,
+                FileName = picture.NomeArquivo,
+                Stream = null,
+                VirtualDirectory = virtualDirectory.Value,
+                PhysicalDirectory = physicalDirectory.Value,
+                FileType = type
+            };
+
+            var file = fileBusiness.Upload(upload);
+            files.Add(file);
+
+            var tabImg = $"<img src='{file.Path}' id='{file.Id}'>";
+            return tabImg;
+        }
+
+        private ItemFile UploadVideo(VideoDto videoDto)
+        {
+            var itemFile = new ItemFile();
+
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var virtualDirectory = parambusiness.GetByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), new Guid(entidade.Value));
+            var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
+
+            EntityFile entityFileConvert = null;
+            var sizeToConvertVideo = parambusiness.GetByKey(EnumParameterKey.SIZE_TO_CONVERT_VIDEO_FILE.GetDescription());
+            if (videoDto.Tamanho >= int.Parse(sizeToConvertVideo.Value))
+                entityFileConvert = ConvertVideoAsync(videoDto.Base64, videoDto.TipoConteudo, videoDto.NomeArquivo, virtualDirectory.Value, physicalDirectory.Value);
+
+            EntityFile entityThumbnail = null;
+            if (videoDto.MiniaturaTamanho >= 0)
+            {
+                UploadModel uploadThumbnail = new UploadModel
+                {
+                    ContentLength = videoDto.MiniaturaTamanho,
+                    ContentType = videoDto.MiniaturaTipoConteudo,
+                    InputStream = videoDto.MiniaturaBase64,
+                    FileName = videoDto.NomeArquivo,
+                    Stream = null,
+                    VirtualDirectory = virtualDirectory.Value,
+                    PhysicalDirectory = physicalDirectory.Value,
+                    FileType = EnumFileType.ThumbnailVideo
+                };
+
+                entityThumbnail = fileBusiness.Upload(uploadThumbnail);
+            }
+
+            var upload = new UploadModel
+            {
+                ContentLength = videoDto.Tamanho,
+                ContentType = videoDto.TipoConteudo,
+                InputStream = videoDto.Base64,
+                FileName = videoDto.NomeArquivo,
+                VirtualDirectory = virtualDirectory.Value,
+                PhysicalDirectory = physicalDirectory.Value,
+                FileType = EnumFileType.Video
+            };
+            EntityFile entity = fileBusiness.Upload(upload);
+
+            if (entityFileConvert != null && !entityFileConvert.Validate.IsValid)
+                itemFile.Validate.Message += entityFileConvert.Validate.Message;
+
+            if (entityThumbnail != null && !entityThumbnail.Validate.IsValid)
+                itemFile.Validate.Message += entityThumbnail.Validate.Message;
+
+            if (!entity.Validate.IsValid)
+                itemFile.Validate.Message += entity.Validate.Message;
+
+            itemFile.File = entity;
+
+            if (entityFileConvert != null)
+            {
+                itemFile.ConvertedFileId = entityFileConvert.Id;
+                itemFile.ConvertedFile = entityFileConvert;
+            }
+
+            if (entityThumbnail != null)
+            {
+                itemFile.ThumbnailId = entityThumbnail.Id;
+                itemFile.Thumbnail = entityThumbnail;
+            }
+            else
+                itemFile.Thumbnail = new EntityFile();
+
+            return itemFile;
+        }
+
+        private EntityFile ConvertVideoAsync(string inputStream, string contentType, string fileName, string virtualDirectory, string physicalDirectory)
+        {
+            var entity = new EntityFile();
+
+            var bytes = Convert.FromBase64String(inputStream);
+            var stream = new MemoryStream(bytes);
+
+            var convertedVideoDto = videoConverter.Convert(stream, contentType, fileName, Guid.Empty).Result;
+            if (convertedVideoDto is null)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message =
+                    "Não foi possível realizar a conversão do vídeo para um tamanho menor. O vídeo origianl será mantido.";
+                return entity;
+            }
+
+            var uploadConvertedVideo = new UploadModel
+            {
+                ContentLength = (int)convertedVideoDto.Stream.Length,
+                ContentType = VideoConvertedContentType,
+                InputStream = null,
+                Stream = convertedVideoDto.Stream,
+                FileName = convertedVideoDto.FileName,
+                VirtualDirectory = virtualDirectory,
+                PhysicalDirectory = physicalDirectory,
+                FileType = EnumFileType.Video
+            };
+
+            return fileBusiness.Upload(uploadConvertedVideo);
+        }
+
+        private ItemAudio UploadAudio(AudioDto audioDto)
+        {
+            ItemAudio itemAudio = new ItemAudio();
+
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var virtualDirectory = parambusiness.GetByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), new Guid(entidade.Value));
+            var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
+
+            UploadModel upload = new UploadModel
+            {
+                ContentLength = audioDto.Tamanho,
+                ContentType = audioDto.TipoConteudo,
+                InputStream = audioDto.Base64,
+                FileName = audioDto.NomeArquivo,
+                VirtualDirectory = virtualDirectory.Value,
+                PhysicalDirectory = physicalDirectory.Value,
+                FileType = EnumFileType.Audio
+            };
+
+            var entity = fileBusiness.Upload(upload);
+
+            if (!entity.Validate.IsValid)
+                itemAudio.Validate.Message += entity.Validate.Message;
+
+            itemAudio.File = entity;
+            return itemAudio;
+        }
 
         #endregion
-
-
     }
 }

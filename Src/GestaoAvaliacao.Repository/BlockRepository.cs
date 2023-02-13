@@ -183,7 +183,6 @@ namespace GestaoAvaliacao.Repository
 									 INNER JOIN EvaluationMatrix EM WITH (NOLOCK)ON EM.Id = I.EvaluationMatrix_Id 
 									 INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
 									 WHERE I.State = @state 
-									 AND EM.State = @state 
 									 AND D.State = @state 
 									 AND I.Id = @id "
                                    ;
@@ -866,6 +865,8 @@ namespace GestaoAvaliacao.Repository
                     _entity.BlockKnowledgeAreas.AddRange(blockKnowledgeAreas);
 
                 #endregion
+
+                _entity.Test.UpdateDate = dateNow;
 
                 gestaoAvaliacaoContext.Entry(_entity).State = System.Data.Entity.EntityState.Modified;
                 gestaoAvaliacaoContext.SaveChanges();

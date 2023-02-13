@@ -43,7 +43,6 @@ namespace GestaoAvaliacao.IBusiness
 
 		//NewApi
 		List<BaseDto> LoadAllKnowledgeAreaActive();
-
 		List<BaseDto> LoadDisciplineByKnowledgeArea(int knowledgeAreas);
 		List<BaseDto> LoadMatrixByDiscipline(long idDiscipline);
 		List<SkillDto> LoadSkillByMatrix(long idMatrix);
@@ -52,6 +51,6 @@ namespace GestaoAvaliacao.IBusiness
 		List<BaseDto> LoadSubsubjectBySubject(string idSubjects);
 		List<ItemTypeDto> FindForTestType();
 		List<CurriculumGradeDto> LoadCurriculumGradesByMatrix(int evaluationMatrixId);
-
-	}
+        List<ItemApiResult> SaveApi(List<ItemApiDto> items);
+    }
 }

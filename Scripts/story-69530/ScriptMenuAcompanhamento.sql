@@ -26,6 +26,7 @@ INSERT INTO [dbo].[SYS_Modulo]
            ,1
            ,GETDATE()
            ,GETDATE())
+GO
 
 -------------------------------------MODULOSITEMAP------------------------------------------------
 
@@ -47,6 +48,7 @@ INSERT INTO [dbo].[SYS_ModuloSiteMap]
            ,'/AdminAcompanhamentoProvas/Index'
            ,null
            ,null)
+GO
 ------------------------------------------VisaoModulo---------------------------------------------I
 
 ------------Administração------------------		  
@@ -157,7 +159,8 @@ INSERT INTO [dbo].[SYS_VisaoModuloMenu]
 --Administrador Serap na UE 4318D329-17DC-4C48-8E59-7D80557F7E77
 --Diretor Escolar           75DCAB30-2C1E-E811-B259-782BCB3D2D76
 --Coordenador Pedagógico    D4026F2C-1A1E-E811-B259-782BCB3D2D76
- 
+-- Assistente de Diretor na UE -   ECF7A20D-1A1E-E811-B259-782BCB3D2D76 
+
 
 
 -------------------------Administrador------------------AAD9D772-41A3-E411-922D-782BCB3D218E
@@ -177,6 +180,7 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
            ,1
            ,1
            ,1);
+GO
 
 
 ----------------------------------Administrador - NTA   22366A3E-9E4C-E711-9541-782BCB3D218E    
@@ -197,6 +201,7 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
            ,1
            ,1
            ,1);
+GO
 
 ------------------------------Administrador Serap DRE-----------------------------------   
 
@@ -216,6 +221,7 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
            ,1
            ,1
            ,1);
+GO
 
 
 ------------------------------Administrador Serap na UE   4318D329-17DC-4C48-8E59-7D80557F7E77--   
@@ -236,6 +242,7 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
            ,1
            ,1
            ,1);
+GO
 
 ------------------------------Diretor Escolar           75DCAB30-2C1E-E811-B259-782BCB3D2D76
 INSERT INTO [dbo].[SYS_GrupoPermissao]
@@ -254,6 +261,7 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
            ,1
            ,1
            ,1);
+GO
 ------------------------Coordenador Pedagógico    D4026F2C-1A1E-E811-B259-782BCB3D2D76
 
 INSERT INTO [dbo].[SYS_GrupoPermissao]
