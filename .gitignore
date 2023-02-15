@@ -216,9 +216,11 @@
 **/*.obj
 **/obj/
 .vs
+.idea
 **/*.csprojAssemblyReference.cache
 *.obj
 *.bin
+*.user
 
 **/bin/
 **/Release/

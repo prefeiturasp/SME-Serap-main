@@ -46,6 +46,7 @@ namespace GestaoAvaliacao.Repository
 								,[Codigo]
 								,[Nome]
 								,[NomeTabelaProvaSp]
+                                ,[ModeloArquivo]
 								,[CreateDate]
 								,[UpdateDate]
 								,[State]

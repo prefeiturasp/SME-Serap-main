@@ -46,6 +46,7 @@
     <Compile Include="ItemApi\AbilityDto.cs" />
     <Compile Include="ItemApi\BaseDto.cs" />
     <Compile Include="ItemApi\CurriculumGradeDto.cs" />
+    <Compile Include="ItemApi\DisciplineDto.cs" />
     <Compile Include="ItemApi\ItemApiDto.cs" />
     <Compile Include="ItemApi\ItemTypeDto.cs" />
     <Compile Include="ItemApi\MatrixDto.cs" />

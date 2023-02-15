@@ -16,18 +16,21 @@
     function ImportarResultadosPSPController($scope, ImportarResultadosPSPModel, $notification, $pager, $util, $http, $q) {
 
         var self = this;
-        var params = $util.getUrlParams();
+        var params = $util.getUrlParams();        
 
         $scope.processando = true;
         $scope.tipoResultado = null;
         $scope.listaTiposResultados = [];
         $scope.listaImportacoes = null;
-        $scope.codigoOuNomeArquivo = "";
+        $scope.codigoOuNomeArquivoOuTipo = "";
         $scope.arquivoSelecionado = null;
         $scope.paginate = $pager(ImportarResultadosPSPModel.carregaImportacoes);
         $scope.pageSize = 10;
 
         $scope.load = function _load() {
+            self.chamadasBack = {
+                baixarModelo: ImportarResultadosPSPModel.baixarModelo
+            };
             $notification.clear();
             $scope.carregaTiposResultados();
             $scope.carregaImportacoesPaginado(null);
@@ -38,15 +41,15 @@
             $scope.totalItens = 0;
             $scope.paginate.indexPage(0);
             $scope.pageSize = $scope.paginate.getPageSize();
-            if ($scope.codigoOuNomeArquivo === '' || $scope.codigoOuNomeArquivo === null || $scope.codigoOuNomeArquivo === undefined)
+            if ($scope.codigoOuNomeArquivoOuTipo === '' || $scope.codigoOuNomeArquivoOuTipo === null || $scope.codigoOuNomeArquivoOuTipo === undefined)
                 $scope.carregaImportacoesPaginado(null);
             else
-                $scope.carregaImportacoes($scope.codigoOuNomeArquivo);
+                $scope.carregaImportacoes($scope.codigoOuNomeArquivoOuTipo);
         };
 
-        $scope.carregaImportacoes = function __Importacoes(codigoOuNomeArquivo) {
+        $scope.carregaImportacoes = function __Importacoes(codigoOuNomeArquivoOuTipo) {
             $scope.listaImportacoes = [];
-            ImportarResultadosPSPModel.carregaImportacoes({ codigoOuNomeArquivo: codigoOuNomeArquivo },
+            ImportarResultadosPSPModel.carregaImportacoes({ codigoOuNomeArquivoOuTipo: codigoOuNomeArquivoOuTipo },
                 function (result) {
                     if (result.success) {
                         if (result.lista.length > 0) {
@@ -56,7 +59,7 @@
                         } else {
                             $scope.listaImportacoes = null;
                         }
-                        $scope.codigoOuNomeArquivo = "";
+                        $scope.codigoOuNomeArquivoOuTipo = "";
                     } else {
                         $notification[result.type ? result.type : 'error'](result.message);
                     }
@@ -125,6 +128,10 @@
             $scope.tipoResultado = null;
             $scope.arquivoSelecionado = null;
             angular.element("input[type='file']").val(null);
+        }
+
+        $scope.baixarModelo = function __baixarModelo() {            
+            window.open("/ImportarResultadosPSP/BaixarModelo?codigoTipoResultado=" + $scope.tipoResultado.Codigo, "_self");
         }
 
         $scope.salvarImportacao = function __salvarImportacao() {

@@ -18,7 +18,11 @@
 			'importarArquivoResultado': {
 				method: 'POST',
 				url: base_url('ImportarResultadosPSP/ImportarArquivoResultado')
-			},			
+			},
+			'baixarModelo': {
+				method: 'GET',
+				url: base_url('ImportarResultadosPSP/BaixarModelo')
+			},
 		};
 
 		// Retorna o serviço       

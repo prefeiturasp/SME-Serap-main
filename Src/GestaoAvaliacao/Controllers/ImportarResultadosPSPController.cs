@@ -6,9 +6,9 @@ using GestaoAvaliacao.WebProject.Facade;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.Controllers
 {
@@ -33,22 +33,22 @@ namespace GestaoAvaliacao.Controllers
 
         [HttpGet]
         [Paginate]
-        public JsonResult ObterImportacoes(string codigoOuNomeArquivo)
+        public JsonResult ObterImportacoes(string codigoOuNomeArquivoOuTipo)
         {
             try
             {
-
                 Pager pager = this.GetPager();
-                IEnumerable<ArquivoResultadoPsp> result = resultadoPspBusiness.ObterImportacoes(ref pager, codigoOuNomeArquivo);
+                IEnumerable<ArquivoResultadoPsp> result = resultadoPspBusiness.ObterImportacoes(ref pager, codigoOuNomeArquivoOuTipo);
 
                 if (result != null)
                 {
                     var ret = result.Select(entity => new
                     {
-                        Id = entity.Id,
+                        entity.Id,
                         NomeArquivo = entity.NomeOriginalArquivo,
                         Status = ((EnumStatusImportResulProvaSp)entity.State).GetDescription(),
-                        CreateDate = entity.CreateDate.ToShortDateString()
+                        CreateDate = entity.CreateDate.ToShortDateString(),
+                        entity.Tipo
                     });
 
                     return Json(new { success = true, lista = ret, pageSize = pager.PageSize }, JsonRequestBehavior.AllowGet);
@@ -119,6 +119,29 @@ namespace GestaoAvaliacao.Controllers
             {
                 LogFacade.SaveError(ex);
                 return Json(new { success = false, message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public void BaixarModelo(int codigoTipoResultado)
+        {
+            try
+            {
+                var arquivoResultado = new ArquivoResultadoPsp();
+                var tipoResultado = resultadoPspBusiness.ObterTipoResultadoPorCodigo(codigoTipoResultado);
+                Response.Clear();
+                Response.Buffer = true;
+                Response.AddHeader("content-disposition", $"attachment; filename=Modelo{tipoResultado.NomeTabelaProvaSp.Trim()}.csv");
+                Response.Charset = "";
+                Response.ContentType = "application/text";
+                Response.Output.Write(tipoResultado.ModeloArquivo);
+                Response.Flush();
+                Response.End();
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                throw ex;
             }
         }
     }

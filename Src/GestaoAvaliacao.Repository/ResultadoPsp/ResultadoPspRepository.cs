@@ -25,26 +25,26 @@ namespace GestaoAvaliacao.Repository
             {
 
                 var sql = new StringBuilder($@"
-
                     			WITH Resultado AS (
 								select 
-								 Id
-								,CodigoTipoResultado
-								,NomeArquivo
-								,NomeOriginalArquivo
-								,CreateDate
-								,UpdateDate
-								,[State]
-								,ROW_NUMBER() OVER (ORDER BY CreateDate DESC) AS RowNumber
-								from ArquivoResultadoPsp WITH (NOLOCK)								
+								 Arp.Id
+								,Arp.CodigoTipoResultado
+								,Arp.NomeArquivo
+								,Arp.NomeOriginalArquivo
+								,Arp.CreateDate
+								,Arp.UpdateDate
+                                ,Trp.Nome as Tipo
+								,Arp.State
+								,ROW_NUMBER() OVER (ORDER BY Arp.CreateDate DESC) AS RowNumber
+								from ArquivoResultadoPsp Arp WITH (NOLOCK)
+                                inner join TipoResultadoPsp Trp WITH (NOLOCK) on Trp.Codigo = Arp.CodigoTipoResultado
 								)
-								select Id,CodigoTipoResultado,NomeArquivo,NomeOriginalArquivo,CreateDate,UpdateDate,[State] 
+								select Id,CodigoTipoResultado,NomeArquivo,NomeOriginalArquivo,CreateDate,UpdateDate,Tipo,[State] 
                                 from Resultado
 								WHERE RowNumber > ( @pageSize * @page ) 
 								AND RowNumber <= ( ( @page + 1 ) * @pageSize ) 
-
-								select count(Id) total
-								from ArquivoResultadoPsp WITH (NOLOCK)								
+								select count(Arp.Id) total
+								from ArquivoResultadoPsp Arp WITH (NOLOCK)								
                 ");
 
                 cn.Open();
@@ -63,38 +63,40 @@ namespace GestaoAvaliacao.Repository
 
         }
 
-        public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(string codigoOuNomeArquivo)
+        public IEnumerable<ArquivoResultadoPsp> ObterImportacoes(string codigoOuNomeArquivoOuTipo)
         {
 
             using (IDbConnection cn = Connection)
             {
-
                 string and = "";
-                if (!string.IsNullOrEmpty(codigoOuNomeArquivo))
+
+                if (!string.IsNullOrEmpty(codigoOuNomeArquivoOuTipo))
                 {
                     int codigo = 0;
-                    if (int.TryParse(codigoOuNomeArquivo, out codigo))
-                        and = $" and Id = {codigoOuNomeArquivo}";
+
+                    if (int.TryParse(codigoOuNomeArquivoOuTipo, out codigo))
+                        and = $" and Arp.Id = {codigoOuNomeArquivoOuTipo} ";
                     else
-                        and = $" and NomeOriginalArquivo like '%{codigoOuNomeArquivo}%'";
+                        and = $" and ((Arp.NomeOriginalArquivo like '%{codigoOuNomeArquivoOuTipo}%') or (Trp.Nome like '%{codigoOuNomeArquivoOuTipo}%')) ";
                 }
 
                 var sql = new StringBuilder($@"
-
                     			WITH Resultado AS (
 								select 
-								 Id
-								,CodigoTipoResultado
-								,NomeArquivo
-								,NomeOriginalArquivo
-								,CreateDate
-								,UpdateDate
-								,[State]
-								from ArquivoResultadoPsp WITH (NOLOCK)
+								 Arp.Id
+								,Arp.CodigoTipoResultado
+								,Arp.NomeArquivo
+								,Arp.NomeOriginalArquivo
+								,Arp.CreateDate
+								,Arp.UpdateDate
+                                ,Trp.Nome as Tipo
+								,Arp.State
+								from ArquivoResultadoPsp Arp WITH (NOLOCK)
+                                inner join TipoResultadoPsp Trp WITH (NOLOCK) on Trp.Codigo = Arp.CodigoTipoResultado
                                 where 1=1 
                                 {and}
 								)
-								select Id,CodigoTipoResultado,NomeArquivo,NomeOriginalArquivo,CreateDate,UpdateDate,[State] 
+								select Id,CodigoTipoResultado,NomeArquivo,NomeOriginalArquivo,CreateDate,UpdateDate,Tipo,[State]
                                 from Resultado
                 ");
 
