@@ -50,6 +50,10 @@ namespace GestaoAvaliacao.Controllers
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
+
+                if(ex.InnerException != null)
+                    LogFacade.SaveError(ex.InnerException);
+
                 return RedirectToAction("Index", "Error");
             }
         }
