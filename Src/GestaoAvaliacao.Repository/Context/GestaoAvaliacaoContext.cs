@@ -95,8 +95,14 @@ namespace GestaoAvaliacao.Repository.Context
 			modelBuilder.Configurations.Add(new StudentTestAccoplishmentMap());
 			modelBuilder.Configurations.Add(new StudentTestSessionMap());
 			modelBuilder.Configurations.Add(new StudentTestSentMap());
+			modelBuilder.Configurations.Add(new NumberItemsAplicationTaiMap());
+			modelBuilder.Configurations.Add(new NumberItemTestTaiMap());
+			modelBuilder.Configurations.Add(new TestTaiCurriculumGradeMap());
+            modelBuilder.Configurations.Add(new ArquivoResultadoPspMap());
+            modelBuilder.Configurations.Add(new DadosArquivoResultadoPspMap());
 
-			modelBuilder.Entity<Subject>()
+
+            modelBuilder.Entity<Subject>()
                 .HasMany<Discipline>(s => s.Disciplines)
                 .WithMany(c => c.Subjects)
                 .Map(cs =>
@@ -184,5 +190,11 @@ namespace GestaoAvaliacao.Repository.Context
         public DbSet<AdministrativeUnitType> AdministrativeUnitType { get; set; }
         public DbSet<ItemFile> ItemFile { get; set; }
         public DbSet<ItemAudio> ItemAudio { get; set; }
+		public DbSet<NumberItemsAplicationTai> NumberItemsAplicationTai { get; set; }
+		public DbSet<NumberItemTestTai> NumberItemTestTai { get; set; }
+		public DbSet<TestTaiCurriculumGrade> TestTaiCurriculumGrade { get; set; }
+        public DbSet<ArquivoResultadoPsp> ArquivoResultadoPsp { get; set; }
+        public DbSet<DadosArquivoResultadoPsp> DadosArquivoResultadoPsp { get; set; }
+
     }
 }

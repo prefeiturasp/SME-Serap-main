@@ -1506,27 +1506,34 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public void SaveChangeItem(Item item, long TestId, long itemIdAntigo)
+        public void SaveChangeItem(Item item, long TestId, long itemIdAntigo, long blockId)
         {
 
             using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                Block block = GestaoAvaliacaoContext.Block.Include("BlockItems").FirstOrDefault(p => p.Test_Id == TestId);
+                Test test = GestaoAvaliacaoContext.Test.Find(TestId);
+                Block block = GestaoAvaliacaoContext.Block.Include("BlockItems").FirstOrDefault(p => p.Test_Id == TestId && p.Id == blockId);
                 BlockItem blockItemAntigo = block.BlockItems.FirstOrDefault(p => p.Item_Id == itemIdAntigo && p.State == (byte)EnumState.ativo);
 
+                var datetimenow = DateTime.Now;
+
                 blockItemAntigo.State = Convert.ToByte(EnumState.excluido);
-                blockItemAntigo.UpdateDate = DateTime.Now;
+                blockItemAntigo.UpdateDate = datetimenow;
 
                 BlockItem blockItem = new BlockItem();
                 blockItem.Block_Id = blockItemAntigo.Block_Id;
                 blockItem.Item_Id = item.Id;
                 blockItem.Order = blockItemAntigo.Order;
                 blockItem.State = Convert.ToByte(EnumState.ativo);
-                blockItem.CreateDate = DateTime.Now;
-                blockItem.UpdateDate = DateTime.Now;
+                blockItem.CreateDate = datetimenow;
+                blockItem.UpdateDate = datetimenow;
+
+                block.UpdateDate = datetimenow;
+                test.UpdateDate = datetimenow;
 
                 GestaoAvaliacaoContext.Entry(blockItemAntigo).State = System.Data.Entity.EntityState.Modified;
                 GestaoAvaliacaoContext.Entry(blockItem).State = System.Data.Entity.EntityState.Added;
+
                 GestaoAvaliacaoContext.SaveChanges();
             }
         }

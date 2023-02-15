@@ -511,7 +511,9 @@
     <Content Include="Assets\js\angular\controllers\absenceReason\formAbsenceReasonController.js" />
     <Content Include="Assets\js\angular\controllers\absenceReason\listAbsenceReasonController.js" />
     <Content Include="Assets\js\angular\controllers\adherence\adherenceController.js" />
+    <Content Include="Assets\js\angular\controllers\adminAcompanhamentoProva\adminAcompanhamentoProva.js" />
     <Content Include="Assets\js\angular\controllers\administrativeUnitType\administrativeUnitTypeController.js" />
+    <Content Include="Assets\js\angular\controllers\adminSerapEstudantes\adminSerapEstudantesController.js" />
     <Content Include="Assets\js\angular\controllers\answerSheet\answerSheetLotController.js" />
     <Content Include="Assets\js\angular\controllers\answerSheet\answerSheetStudentController.js" />
     <Content Include="Assets\js\angular\controllers\answerSheet\batchDetailsLotController.js" />
@@ -525,6 +527,7 @@
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\formCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\listCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\electronicTestResult\indexElectronicTestResultController.js" />
+    <Content Include="Assets\js\angular\controllers\importarResultadosPSP\importarResultadosPSPController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsResultController.js" />
     <Content Include="Assets\js\angular\controllers\correction\correctionResultController.js" />
@@ -582,6 +585,8 @@
     <Content Include="Assets\js\angular\filters\_bundle\capitalize\capitalize.js" />
     <Content Include="Assets\js\angular\models\administrativeUnitType\administrativeUnitTypeModel.js" />
     <Content Include="Assets\js\angular\models\electronicTestResult\electronicTestResultModel.js" />
+    <Content Include="Assets\js\angular\models\importarResultadosPSP\importarResultadosPSPModel.js" />
+    <Content Include="Assets\js\angular\models\NumberItemsAplicationTai\numberItemsAplicationTaiModel.js" />
     <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsApiModel.js" />
     <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsModel.js" />
     <Content Include="Assets\js\angular\models\electronicTest\electronicTestModel.js" />
@@ -1755,6 +1760,8 @@
     <Content Include="Views\StudentResultsGraphics\Index.cshtml" />
     <Content Include="Views\StudentResults\Index_BKP.cshtml" />
     <Content Include="Views\ElectronicTestResult\Index.cshtml" />
+    <Content Include="Views\AdminSerapEstudantes\Index.cshtml" />
+    <Content Include="Views\ImportarResultadosPSP\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1763,7 +1770,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AdminAcompanhamentoProvasController.cs" />
+    <Compile Include="Controllers\AdminSerapEstudantesController.cs" />
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
+    <Compile Include="Controllers\ImportarResultadosPSPController.cs" />
+    <Compile Include="Controllers\NumberItemsAplicationTaiController.cs" />
     <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
     <Compile Include="Controllers\StudentResultsController.cs" />
     <Compile Include="Controllers\ProvaSPController.cs" />
@@ -1929,6 +1940,7 @@
     <Folder Include="Assets\tests\unit\filters\" />
     <Folder Include="Assets\tests\unit\models\" />
     <Folder Include="Assets\tests\unit\services\" />
+    <Folder Include="Views\NumberItemsAplicationTai\" />
     <Folder Include="Views\TesteCI\" />
   </ItemGroup>
   <ItemGroup>

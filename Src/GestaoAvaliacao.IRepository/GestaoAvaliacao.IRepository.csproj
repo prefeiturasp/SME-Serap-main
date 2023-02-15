@@ -65,6 +65,8 @@
     <Compile Include="IItemFileRepository.cs" />
     <Compile Include="IKnowledgeAreaDisciplineRepository.cs" />
     <Compile Include="IKnowledgeAreaRepository.cs" />
+    <Compile Include="INumberItemsAplicationTaiRepository.cs" />
+    <Compile Include="INumberItemTestTaiRepository.cs" />
     <Compile Include="IPageConfigurationRepository.cs" />
     <Compile Include="IPerformanceItemRepository.cs" />
     <Compile Include="IReportItemPerformanceRepository.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="IRequestRevokeRepository.cs" />
     <Compile Include="IResponseChangeLogMongoRepository.cs" />
     <Compile Include="IResponseChangeLogRepository.cs" />
+    <Compile Include="IResultadoPspRepository.cs" />
     <Compile Include="ISectionTestGenerateLotRepository.cs" />
     <Compile Include="ISectionTestStatsRepository.cs" />
     <Compile Include="IServiceAnswerSheetInfoRepository.cs" />
@@ -116,6 +119,7 @@
     <Compile Include="ITestRepository.cs" />
     <Compile Include="ITestSectionStatusCorrectionRepository.cs" />
     <Compile Include="ITestSubGroupRepository.cs" />
+    <Compile Include="ITestTaiCurriculumGradeRepository.cs" />
     <Compile Include="ITestTemplateRepository.cs" />
     <Compile Include="ITestTypeCourseRepository.cs" />
     <Compile Include="ITestTypeCourseCurriculumGradeRepository.cs" />
@@ -124,6 +128,7 @@
     <Compile Include="ITestTimeRepository.cs" />
     <Compile Include="ITestTypeRepository.cs" />
     <Compile Include="IFormatTypeRepository.cs" />
+    <Compile Include="ITipoResultadoPspRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StudentsTestSent\IStudentTestSentRepository.cs" />
   </ItemGroup>

@@ -43,7 +43,7 @@ namespace GestaoAvaliacao.IRepository
 		List<ItemReportItemCurriculumGrade> _GetItemCurriculumGrade(int id, int situacao, Guid EntityId, long typeLevelEducation);
 		List<ItemReportItemSituation> _GetItemSituation(int id, string inicio, string fim, Guid EntityId, long typeLevelEducation);
         Item RevokeItem(Item Item);
-        void SaveChangeItem(Item item, long TestId, long itemIdAntigo);
+        void SaveChangeItem(Item item, long TestId, long itemIdAntigo, long blockId);
 
     }
 }

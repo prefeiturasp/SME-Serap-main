@@ -117,7 +117,9 @@ namespace GestaoAvaliacao.Util
         [Description("Thumbnail_Video")]
         ThumbnailVideo = 30,
         [Description("Audio")]
-        Audio = 31
+        Audio = 31,
+        [Description("ResultadosPSP")]
+        ResultadosPsp = 32,
     }
 
 	public enum EnumSYS_Visao
@@ -553,6 +555,36 @@ namespace GestaoAvaliacao.Util
 
         [Description("Finalizada")]
         Done = 3
+    }
+
+    public enum EnumStatusImportResulProvaSp : byte
+    {
+        [Description("Pendente")]
+        Pendente = 1,
+        [Description("Em andamento")]
+        EmAndamento = 2,
+        [Description("Processado")]
+        Processado = 3,
+        [Description("Erro")]
+        Erro = 4,        
+    }
+
+    public enum EnumTiposResultadoProvaSp : byte
+    {
+        [Description("ResultadoAluno")]
+        ResultadoAluno = 1,
+
+        [Description("ResultadoTurma")]
+        ResultadoTurma = 2,
+
+        [Description("ResultadoEscola")]
+        ResultadoEscola = 3,
+
+        [Description("ResultadoDre")]
+        ResultadoDre = 4,
+
+        [Description("ResultadoSme")]
+        ResultadoSme = 5,
     }
 
     #endregion

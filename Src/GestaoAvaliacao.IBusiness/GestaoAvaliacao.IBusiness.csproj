@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAdminAcompanhamentoProvaBusiness.cs" />
     <Compile Include="IAdministrativeUnitTypeBusiness.cs" />
     <Compile Include="IAnswerSheetBatchLogBusiness.cs" />
     <Compile Include="IAnswerSheetBatchFilesBusiness.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="IItemFileBusiness.cs" />
     <Compile Include="IKnowledgeAreaBusiness.cs" />
     <Compile Include="IKnowledgeAreaDisciplineBusiness.cs" />
+    <Compile Include="INumberItemsAplicationTaiBusiness.cs" />
     <Compile Include="IPageConfigurationBusiness.cs" />
     <Compile Include="IPerformanceItemBusiness.cs" />
     <Compile Include="IReportItemChoiceBusiness.cs" />
@@ -72,8 +74,10 @@
     <Compile Include="IReportItemPerformanceBusiness.cs" />
     <Compile Include="IRequestRevokeBusiness.cs" />
     <Compile Include="IResponseChangeLogBusiness.cs" />
+    <Compile Include="IResultadoPspBusiness.cs" />
     <Compile Include="ISectionTestGenerateLotBusiness.cs" />
     <Compile Include="ISectionTestStatsBusiness.cs" />
+    <Compile Include="ISerapEstudantesBusiness.cs" />
     <Compile Include="IServiceAnswerSheetInfoBusiness.cs" />
     <Compile Include="IReportTestPerformanceBusiness.cs" />
     <Compile Include="IStudentTestSessionBusiness.cs" />

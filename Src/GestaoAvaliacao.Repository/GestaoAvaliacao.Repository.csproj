@@ -94,11 +94,15 @@
     <Compile Include="KnowledgeAreaDisciplineRepository.cs" />
     <Compile Include="KnowledgeAreaRepository.cs" />
     <Compile Include="Map\AdministrativeUnitTypeMap.cs" />
+    <Compile Include="Map\ArquivoResultadoPspMap.cs" />
+    <Compile Include="Map\DadosArquivoResultadoPspMap.cs" />
     <Compile Include="Map\ItemAudioMap.cs" />
     <Compile Include="Map\ItemFileMap.cs" />
     <Compile Include="Map\BlockKnowledgeAreaMap.cs" />
     <Compile Include="Map\KnowledgeAreaDisciplineMap.cs" />
     <Compile Include="Map\KnowledgeAreaMap.cs" />
+    <Compile Include="Map\NumberItemsAplicationTaiMap.cs" />
+    <Compile Include="Map\NumberItemTestTaiMap.cs" />
     <Compile Include="Map\PageConfigurationMap.cs" />
     <Compile Include="Map\StudentTestAccoplishmentMap.cs" />
     <Compile Include="Map\StudentTestSentMap.cs" />
@@ -109,8 +113,11 @@
     <Compile Include="Map\TestContextMap.cs" />
     <Compile Include="Map\TestPermissionMap.cs" />
     <Compile Include="Map\TestSubGroupMap.cs" />
+    <Compile Include="Map\TestTaiCurriculumGrade.cs" />
     <Compile Include="Map\TestTypeDeficiencyMap.cs" />
     <Compile Include="Map\TestTimeMap.cs" />
+    <Compile Include="NumberItemsAplicationTaiRepository.cs" />
+    <Compile Include="NumberItemTestTaiRepository.cs" />
     <Compile Include="PageConfigurationRepository.cs" />
     <Compile Include="ReportItemPerformanceRepository.cs" />
     <Compile Include="ReportTestPerformanceRepository.cs" />
@@ -126,6 +133,7 @@
     <Compile Include="RepositoryCache.cs" />
     <Compile Include="RequestRevokeRepository.cs" />
     <Compile Include="ResponseChangeLogRepository.cs" />
+    <Compile Include="ResultadoPsp\ResultadoPspRepository.cs" />
     <Compile Include="StudentsTestSent\StudentTestSentRepository.cs" />
     <Compile Include="StudentTestAccoplishments\StudentTestAccoplishmentRepository.cs" />
     <Compile Include="SubjectRepository.cs" />
@@ -202,6 +210,7 @@
     <Compile Include="TestPerformanceLevelRepository.cs" />
     <Compile Include="TestRepository.cs" />
     <Compile Include="TestSubGroupRepository.cs" />
+    <Compile Include="TestTaiCurriculumGradeRepository.cs" />
     <Compile Include="TestTypeCourseCurriculumGradeRepository.cs" />
     <Compile Include="TestTypeCourseRepository.cs" />
     <Compile Include="TestTypeDeficiencyRepository.cs" />
@@ -209,6 +218,7 @@
     <Compile Include="TestTimeRepository.cs" />
     <Compile Include="TestTypeRepository.cs" />
     <Compile Include="FormatTypeRepository.cs" />
+    <Compile Include="TipoResultadoPspRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

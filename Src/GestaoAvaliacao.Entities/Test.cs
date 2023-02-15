@@ -50,6 +50,8 @@ namespace GestaoAvaliacao.Entities
         [NotMapped]
         public bool ApplicationActiveOrDone => TestSituation != EnumTestSituation.Pending && DateTime.Today >= ApplicationStartDate;
 
+
+
         public DateTime CorrectionStartDate { get; set; }
 
 		public DateTime CorrectionEndDate { get; set; }
@@ -110,6 +112,21 @@ namespace GestaoAvaliacao.Entities
         public int SerapEstudantesBIBQuantity { get; set; }
 
         public bool ShowTestContext { get; set; }
+
+        public bool TestTai { get; set; }
+        public bool ProvaComProficiencia { get; set; }
+        public bool ApresentarResultados { get; set; }
+        public bool ApresentarResultadosPorItem { get; set; }
+        public int? NumberSynchronizedResponseItems { get; set; }
+
+        [NotMapped]
+        public bool AdvanceWithoutAnswering { get; set; }
+        [NotMapped]
+        public bool BackToPreviousItem { get; set; }
+        [NotMapped]
+        public NumberItemsAplicationTai NumberItemsAplicationTai { get; set; }
+
+
         public DateTime? DownloadStartDate { get; set; }
     }
 }

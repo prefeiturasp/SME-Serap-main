@@ -1,5 +1,6 @@
 ﻿using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Util;
+using System;
 using System.Collections.Generic;
 
 namespace GestaoAvaliacao.IBusiness
@@ -16,5 +17,7 @@ namespace GestaoAvaliacao.IBusiness
         PageConfiguration Delete(long id);
         bool ExistsModelDescription(long id, string description);
         bool ExistsFeaturedVideo(long id);
+        PageConfiguration ObterLinkAdminSeraEstudantes();
+        bool VerificaPerfilAcessoAdminSerapEstudantes(Guid grupo);
     }
 }

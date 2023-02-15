@@ -57,6 +57,7 @@
     <Compile Include="Alternative.cs" />
     <Compile Include="AnswerSheetBatchQueue.cs" />
     <Compile Include="AnswerSheetLot.cs" />
+    <Compile Include="ResultadoPsp\ArquivoResultadoPsp.cs" />
     <Compile Include="BaseText.cs" />
     <Compile Include="Base\EntityBase.cs" />
     <Compile Include="Block.cs" />
@@ -69,9 +70,15 @@
     <Compile Include="AnswerSheetBatchFiles.cs" />
     <Compile Include="AnswerSheetBatchLog.cs" />
     <Compile Include="CorrectionStudentGrid.cs" />
+    <Compile Include="DTO\AdminSerapEstudantesDTO.cs" />
+    <Compile Include="DTO\SerapEstudantes\AdminAutenticacaoDTO.cs" />
+    <Compile Include="DTO\SerapEstudantes\AdminAutenticacaoRespostaDTO.cs" />
     <Compile Include="DTO\StudentsTestSent\FinalizeCorrectionDto.cs" />
     <Compile Include="DTO\StudentTestSession\StudentTestSessionDto.cs" />
     <Compile Include="DTO\StudentTestSession\TestSessionDto.cs" />
+    <Compile Include="NumberItemsAplicationTai.cs" />
+    <Compile Include="NumberItemTestTai.cs" />
+    <Compile Include="ResultadoPsp\DadosArquivoResultadoPsp.cs" />
     <Compile Include="StudentsTestSent\StudentTestSent.cs" />
     <Compile Include="DTO\Abstractions\NotificableDto.cs" />
     <Compile Include="DTO\AdherenceDTO.cs" />
@@ -137,6 +144,7 @@
     <Compile Include="TestPermission.cs" />
     <Compile Include="TestSectionStatusCorrection.cs" />
     <Compile Include="TestSubGroup.cs" />
+    <Compile Include="TestTaiCurriculumGrade.cs" />
     <Compile Include="TestTemplate.cs" />
     <Compile Include="TestFiles.cs" />
     <Compile Include="ModelTest.cs" />
@@ -187,6 +195,7 @@
     <Compile Include="TestTime.cs" />
     <Compile Include="TestTypeItemLevel.cs" />
     <Compile Include="FormatType.cs" />
+    <Compile Include="TipoResultadoPsp.cs" />
     <Compile Include="Uploader.cs" />
   </ItemGroup>
   <ItemGroup>

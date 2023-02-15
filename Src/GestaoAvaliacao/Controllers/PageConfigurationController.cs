@@ -2,8 +2,8 @@
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
+using GestaoAvaliacao.WebProject.Entities;
 using GestaoAvaliacao.WebProject.Facade;
-using GestaoEscolar.IBusiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,6 +97,15 @@ namespace GestaoAvaliacao.Controllers
             try
             {
                 IEnumerable<PageConfiguration> pageConfiguration = pageConfigurationBusiness.LoadAll();
+
+                UsuarioLogado user = SessionFacade.UsuarioLogado;
+                 if (pageConfigurationBusiness.VerificaPerfilAcessoAdminSerapEstudantes(user.Grupo.gru_id))
+                {
+                    List<PageConfiguration> pageConfigurationList = pageConfiguration.ToList();
+                    var LinkAdminSeraEstudantes = pageConfigurationBusiness.ObterLinkAdminSeraEstudantes();
+                    pageConfigurationList.Add(LinkAdminSeraEstudantes);
+                    pageConfiguration = pageConfigurationList.AsEnumerable();
+                } 
 
                 if (pageConfiguration.Count() > 0)
                 {

@@ -18,7 +18,8 @@ namespace GestaoAvaliacao.API
 								.Install(new BusinessInstaller())
 								.Install(new RepositoriesInstaller())
 								.Install(new StorageInstaller())
-								.Install(new PDFConverterInstaller());
+								.Install(new PDFConverterInstaller())
+								.Install(new UtilIntaller());
 
 
 			GlobalConfiguration.Configure(WebApiConfig.Register);
