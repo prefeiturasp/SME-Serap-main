@@ -731,7 +731,6 @@ namespace GestaoAvaliacao.Repository
 							AND tcc.test_id = @testId
 							AND ttcp.ttcr_situacao = @state
 							AND tc.tcr_situacao = @state
-							AND tc.tcr_situacao = @state
 							AND ttc.state = @state
 							AND tcc.state = @state;
 

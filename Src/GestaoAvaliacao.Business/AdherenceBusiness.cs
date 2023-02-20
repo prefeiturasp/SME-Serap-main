@@ -48,23 +48,24 @@ namespace GestaoAvaliacao.Business
 
 			EnumSYS_Visao visao = (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), grupo.vis_id.ToString());
 
-			DataTable dt = null;
-			IEnumerable<string> uads = null;
+			DataTable dt;
+			IEnumerable<string> uads;
+
 			switch (visao)
 			{
 				case EnumSYS_Visao.Administracao:
-                    retorno = (esc_id == 0 && uad_id == Guid.Parse("00000000-0000-0000-0000-000000000000")) ?
+                    retorno = esc_id == 0 && uad_id == Guid.Parse("00000000-0000-0000-0000-000000000000") ?
                         adherenceRepository.LoadSchoolGridFull(user.ent_id, test.AllAdhered, test.Id, test.TestType_Id, ttn_id, crp_ordem) :
                         adherenceRepository.LoadSchoolGrid(user.ent_id, ref pager, uad_id, esc_id, test.AllAdhered, test.Id, test.TestType_Id, ttn_id, crp_ordem);
                     break;
 				case EnumSYS_Visao.Gestao:
-					dt = MSTech.CoreSSO.BLL.SYS_UsuarioGrupoUABO.GetSelect(user.usu_id, grupo.gru_id);
+					dt = SYS_UsuarioGrupoUABO.GetSelect(user.usu_id, grupo.gru_id);
 					uads = dt.AsEnumerable().Select(x => string.Concat("'", x.Field<Guid>("uad_id"), "'"));
 
 					retorno = adherenceRepository.LoadSchoolGrid(user.ent_id, ref pager, uad_id, esc_id, test.AllAdhered, test.Id, test.TestType_Id, ttn_id, crp_ordem, uadGestor: uads);
 					break;
 				case EnumSYS_Visao.UnidadeAdministrativa:
-					dt = MSTech.CoreSSO.BLL.SYS_UsuarioGrupoUABO.GetSelect(user.usu_id, grupo.gru_id);
+					dt = SYS_UsuarioGrupoUABO.GetSelect(user.usu_id, grupo.gru_id);
 					uads = dt.AsEnumerable().Select(x => string.Concat("'", x.Field<Guid>("uad_id"), "'"));
 
 					retorno = adherenceRepository.LoadSchoolGrid(user.ent_id, ref pager, uad_id, esc_id, test.AllAdhered, test.Id, test.TestType_Id, ttn_id, crp_ordem, uadCoordenador: uads);
@@ -72,31 +73,43 @@ namespace GestaoAvaliacao.Business
 				case EnumSYS_Visao.Individual:
 					retorno = adherenceRepository.LoadSchoolGrid(user.ent_id, ref pager, uad_id, esc_id, test.AllAdhered, test.Id, test.TestType_Id, ttn_id, crp_ordem, pes_id: user.pes_id);
 					break;
-				default:
-					break;
-			}
+            }
 
-			retorno = FilterAdherenceSchoolsWithStudentsWithDeficiency(test.Id, test.TestType_Id, retorno);
-            int count = retorno.Count();
+            retorno = FilterAdherenceSchoolsWithStudentsWithDeficiency(test.Id, test.TestType_Id, retorno).ToList();
+
+            var ehRetornoAdministracaoCompleto = esc_id == 0 &&
+                                                 uad_id == Guid.Parse("00000000-0000-0000-0000-000000000000") &&
+                                                 visao == EnumSYS_Visao.Administracao;
+
+            if (ehRetornoAdministracaoCompleto) 
+                return retorno;
+
+            var count = retorno.Count();
             pager.SetTotalPages((int)Math.Ceiling(count / (double)pager.PageSize));
             pager.SetTotalItens(count);
+
             return retorno;
-		}
+        }
 
 		private IEnumerable<AdherenceGrid> FilterAdherenceSchoolsWithStudentsWithDeficiency(long testId, long testTypeId, IEnumerable<AdherenceGrid> adherenceSchools)
 		{
 			var targetToStudentsWithDeficiencies = testTypeRepository.GetTestTypeTargetToStudentsWithDeficiencies(testTypeId);
+
 			var deficienciesToFilter = targetToStudentsWithDeficiencies
 				? testTypeDeficiencyRepository.GetDeficienciesIds(testTypeId)
 				: null;
 
-			if (!targetToStudentsWithDeficiencies || (!adherenceSchools?.Any() ?? true) || (!deficienciesToFilter?.Any() ?? true)) return adherenceSchools;
+			if (!targetToStudentsWithDeficiencies || (!adherenceSchools?.Any() ?? true) || (!deficienciesToFilter?.Any() ?? true)) 
+                return adherenceSchools;
 
 			var studentsOfSchoolsAdherence = adherenceRepository.GetAdherenceStudentsOfSchools(testId, testTypeId, adherenceSchools.Select(x => x.esc_id));
-			if (!studentsOfSchoolsAdherence?.Any() ?? true) return adherenceSchools;
+
+			if (!studentsOfSchoolsAdherence?.Any() ?? true)
+                return adherenceSchools;
 
 			var studentsToDoTestWithDeficiency = GetAdherenceStudentsWithDeficiency(studentsOfSchoolsAdherence.Select(x => x.pes_id), deficienciesToFilter);
-			if (!studentsToDoTestWithDeficiency?.Any() ?? true) return new List<AdherenceGrid>();
+			if (!studentsToDoTestWithDeficiency?.Any() ?? true)
+                return new List<AdherenceGrid>();
 
 			var schoolIdsWithStudentsWithDeficiency = studentsOfSchoolsAdherence
 				.Where(x => studentsToDoTestWithDeficiency.Contains(x.pes_id))
@@ -184,7 +197,8 @@ namespace GestaoAvaliacao.Business
 		private IEnumerable<Guid> GetAdherenceStudentsWithDeficiency(IEnumerable<Guid> studentsPesIds, IEnumerable<Guid> deficienciesIds)
         {
 			var page = 0;
-			var studentsPerPage = 500;
+			const int studentsPerPage = 500;
+
 			var result = new List<Guid>();
 
 			do
@@ -194,9 +208,14 @@ namespace GestaoAvaliacao.Business
 					.Take(studentsPerPage)
 					.ToList();
 
-				if (!studentsIds.Any()) break;
+				if (!studentsIds.Any()) 
+                    break;
+
 				var studentsSelected = adherenceRepository.GetAdherenceStudentsWithDeficiency(studentsIds, deficienciesIds);
-				if (!studentsSelected?.Any() ?? true) continue;
+
+				if (!studentsSelected?.Any() ?? true) 
+                    continue;
+
 				result.AddRange(studentsSelected);
 
 			} while (true);
