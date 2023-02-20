@@ -220,7 +220,7 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
-        [Route("api/Item/Dificuldade")]
+        [Route("api/Item/Dificuldades")]
         [HttpGet]
         [ResponseType(typeof(List<ItemLevelDto>))]
         public HttpResponseMessage GetAllItemLevel()
