@@ -1119,6 +1119,19 @@ namespace GestaoAvaliacao.Business
             return default;
         }
 
+        public List<ItemLevelDto> LoadAllItemLevel()
+        {
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var list = itemLevelRepository.LoadLevels(new Guid(entidade.Value)).Select(i => new ItemLevelDto()
+            {
+                Id = i.Id,
+                Descricao = i.Description,
+                Ordem = i.Value
+            }).ToList();
+
+            return list;
+        }
+
         private void ValidateApi(ItemApiDto model, ItemApiResult itemResult)
         {
             itemResult.mensagem = string.Empty;

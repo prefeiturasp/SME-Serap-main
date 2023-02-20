@@ -220,6 +220,26 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
+        [Route("api/Item/Dificuldade")]
+        [HttpGet]
+        [ResponseType(typeof(List<ItemLevelDto>))]
+        public HttpResponseMessage GetAllItemLevel()
+        {
+            try
+            {
+                var lista = itemBusiness.LoadAllItemLevel();
+                if (lista == null || !lista.Any())
+                    return Request.CreateResponse(HttpStatusCode.NoContent, "As dificuldades sugeridas não foram encontrados.");
+
+                return Request.CreateResponse(HttpStatusCode.OK, lista);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de deficuldades sugeridas");
+            }
+        }
+
         [Route("api/Item/Salvar")]
         [HttpPost]
         [ResponseType(typeof(List<ItemApiResult>))]
