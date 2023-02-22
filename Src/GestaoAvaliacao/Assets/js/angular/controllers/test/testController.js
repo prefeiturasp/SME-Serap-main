@@ -13,7 +13,7 @@
         .module('appMain')
         .controller("TestController", TestController);
 
-    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', 'NumberItemsAplicationTaiModel', '$window', 'EvaluationMatrixModel'];
+    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', 'NumberItemsAplicationTaiModel', '$window', 'EvaluationMatrixModel', '$sce'];
 
     /**
      * @function Controller para criação de prova
@@ -26,7 +26,7 @@
      * @param {Object} TestTypeModel
      * @returns
      */
-    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, NumberItemsAplicationTaiModel, $window, EvaluationMatrixModel) {
+    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, NumberItemsAplicationTaiModel, $window, EvaluationMatrixModel, $sce) {
 
         ng.params = $util.getUrlParams();
         var self = this;
@@ -2677,7 +2677,7 @@
             TestModel.getBaseTextItems({ itemId: _id }, function (r) {
                 if (r.success) {
                     ng.abstract.navigation = 0;
-                    ng.abstract.textbase = (r.lista.Description == 'O Item não possui Texto base.') ? (false) : (angular.copy(r.lista.Description));
+                    ng.abstract.textbase = (r.lista.Description == 'O Item não possui Texto base.') ? (false) : ($sce.trustAsHtml(angular.copy(r.lista.Description)));
                     ng.abstract.statement = r.lista.Description != null ? r.lista.Description.Statement : "";
                     ng.abstract.listaItensID = (r.lista.Items.length > 0) ? r.lista.Items : [r.lista.Items];
                     ng.abstract.currentID = ng.abstract.listaItensID[0];
