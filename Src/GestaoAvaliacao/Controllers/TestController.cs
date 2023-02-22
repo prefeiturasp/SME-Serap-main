@@ -249,9 +249,11 @@ namespace GestaoAvaliacao.Controllers
                         ApresentarResultadosPorItem = entity.ApresentarResultadosPorItem,
                         NumberItemsAplicationTai = entity.NumberItemsAplicationTai != null ? new { entity.NumberItemsAplicationTai.Id, entity.NumberItemsAplicationTai.Name, entity.NumberItemsAplicationTai.Value, entity.NumberItemsAplicationTai.AdvanceWithoutAnswering, entity.NumberItemsAplicationTai.BackToPreviousItem } : null,
                         AdvanceWithoutAnswering = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.AdvanceWithoutAnswering : false,
-                        BackToPreviousItem = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.BackToPreviousItem : false
-
-
+                        BackToPreviousItem = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.BackToPreviousItem : false,
+                        entity.BlockChain,
+                        entity.BlockChainNumber,
+                        entity.BlockChainItems,
+                        entity.BlockChainForBlock
                     };
 
                     return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);

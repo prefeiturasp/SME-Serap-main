@@ -1648,6 +1648,11 @@ namespace GestaoAvaliacao.Repository
 
                 test.UpdateDate = DateTime.Now;
 
+                test.BlockChain = entity.BlockChain;
+                test.BlockChainNumber = entity.BlockChainNumber;
+                test.BlockChainItems = entity.BlockChainItems;
+                test.BlockChainForBlock = entity.BlockChainForBlock;
+
                 GestaoAvaliacaoContext.Entry(test).State = System.Data.Entity.EntityState.Modified;
                 GestaoAvaliacaoContext.SaveChanges();
                 LimparCache_GetObject(Id);

@@ -126,7 +126,10 @@ namespace GestaoAvaliacao.Entities
         [NotMapped]
         public NumberItemsAplicationTai NumberItemsAplicationTai { get; set; }
 
-
         public DateTime? DownloadStartDate { get; set; }
+        public bool BlockChain { get; set; }
+        public int BlockChainNumber { get; set; }
+        public int BlockChainItems { get; set; }
+        public int BlockChainForBlock { get; set; }
     }
 }
