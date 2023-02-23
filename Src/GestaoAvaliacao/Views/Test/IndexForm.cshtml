@@ -604,7 +604,7 @@
                         <div class="col-md-12">
                             <div class="cards">
                                 <div class="campoLabel">
-                                    <label> {{labels.quantidadeBlocos}}<span>*</span>: </label>
+                                    <label style="max-width:230px;"> {{labels.quantidadeBlocos}}<span>*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_qtdBlocos');validarBlocos('value')"
                                            ng-model="e1_qtdBlocos"
@@ -615,7 +615,7 @@
                                 </div>
 
                                 <div class="campoLabel">
-                                    <label> {{labels.quantidadeCadeiaBlocos}}<span>*</span>: </label>
+                                    <label style="max-width:230px;"> {{labels.quantidadeCadeiaBlocos}}<span>*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_qtdCadeiaBlocos');validarBlocos('value')"
                                            ng-model="e1_qtdCadeiaBlocos"
@@ -626,7 +626,7 @@
                                 </div>
 
                                 <div class="campoLabel">
-                                    <label> {{labels.quantidadeItensCadeiaBlocos}}<span>*</span>: </label>
+                                    <label style="max-width:230px;"> {{labels.quantidadeItensCadeiaBlocos}}<span>*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_qtdItensCadeiaBlocos');validarBlocos('value');calcularQuantidadeItemsPorBloco()"
                                            ng-model="e1_qtdItensCadeiaBlocos"
@@ -637,7 +637,7 @@
                                 </div>
 
                                 <div class="campoLabel">
-                                    <label> {{labels.quantidadeCadeiaBlocosPorBloco}}<span>*</span>: </label>
+                                    <label style="max-width:230px;"> {{labels.quantidadeCadeiaBlocosPorBloco}}<span>*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_qtdCadeiaBlocosPorBloco');validarBlocos('value');calcularQuantidadeItemsPorBloco()"
                                            ng-model="e1_qtdCadeiaBlocosPorBloco"
@@ -648,7 +648,7 @@
                                 </div>
 
                                 <div class="campoLabel">
-                                    <label> {{labels.e1_itensBlocos}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
+                                    <label style="max-width:230px;"> {{labels.e1_itensBlocos}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_itensBlocos');validarItensBlocos('value')"
                                            ng-model="e1_itensBlocos"
