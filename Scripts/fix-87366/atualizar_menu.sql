@@ -1,6 +1,6 @@
 use CoreSSO
 
-IF EXISTS (SELECT 1 FROM SYS_Modulo sm  WHERE sm.sis_id = 204 and sm.mod_nome = 'Cadastrar novo item teste')  
+IF EXISTS (SELECT 1 FROM SYS_Modulo sm  WHERE sm.sis_id = 204 and sm.mod_nome = 'Cadastrar novo item')  
 BEGIN  
 	UPDATE SYS_Modulo 
 	SET mod_nome = 'Banco de itens (Novo)',
@@ -13,7 +13,7 @@ ELSE
 BEGIN  
 	INSERT INTO SYS_Modulo values (204,
 		(select MAX(mod_id) + 1 from SYS_Modulo where sis_id = 204),
-		'Banco de itens (Novo) teste',
+		'Banco de itens (Novo)',
 		null,
 		14,
 		0,
