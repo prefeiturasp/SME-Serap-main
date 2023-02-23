@@ -1535,7 +1535,7 @@
                     return false;
                 }
 
-                if (!ng.e1e1_qtdCadeiaBlocosPorBloco && ng.cadeiaBlocos) {
+                if (!ng.e1_qtdCadeiaBlocosPorBloco && ng.cadeiaBlocos) {
                     $notification.alert('O campo "' + ng.labels.quantidadeCadeiaBlocosPorBloco + '" é obrigatório.');
                     return false;
                 }
