@@ -114,15 +114,15 @@ namespace GestaoAvaliacao.Business
                         valid.Message = string.Format("A quantidade de cadernos deve ser menor ou igual a {0}.", int.Parse(maxBlock.Value));
                 }
 
-                if (entity.BlockChain)
+                if (entity.BlockChain.GetValueOrDefault())
                 {
-                    if (entity.BlockChainNumber <= 0)
+                    if (entity.BlockChainNumber.GetValueOrDefault() <= 0)
                         valid.Message = "A quantidade de blocos deve ser maior ou igual a 1.";
 
-                    if (entity.BlockChainItems <= 0)
+                    if (entity.BlockChainItems.GetValueOrDefault() <= 0)
                         valid.Message = "A quantidade de itens por bloco deve ser maior ou igual a 1.";
 
-                    if (entity.BlockChainForBlock <= 0)
+                    if (entity.BlockChainForBlock.GetValueOrDefault() <= 0)
                         valid.Message = "A quantidade de blocos por caderno deve ser maior ou igual a 1.";
                 }
             }

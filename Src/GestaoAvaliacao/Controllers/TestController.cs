@@ -250,10 +250,10 @@ namespace GestaoAvaliacao.Controllers
                         NumberItemsAplicationTai = entity.NumberItemsAplicationTai != null ? new { entity.NumberItemsAplicationTai.Id, entity.NumberItemsAplicationTai.Name, entity.NumberItemsAplicationTai.Value, entity.NumberItemsAplicationTai.AdvanceWithoutAnswering, entity.NumberItemsAplicationTai.BackToPreviousItem } : null,
                         AdvanceWithoutAnswering = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.AdvanceWithoutAnswering : false,
                         BackToPreviousItem = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.BackToPreviousItem : false,
-                        entity.BlockChain,
-                        entity.BlockChainNumber,
-                        entity.BlockChainItems,
-                        entity.BlockChainForBlock
+                        BlockChain = entity.BlockChain.GetValueOrDefault(),
+                        BlockChainNumber = entity.BlockChainNumber.GetValueOrDefault(),
+                        BlockChainItems = entity.BlockChainItems.GetValueOrDefault(),
+                        BlockChainForBlock = entity.BlockChainForBlock.GetValueOrDefault()
                     };
 
                     return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
@@ -866,7 +866,6 @@ namespace GestaoAvaliacao.Controllers
 
             if (EnumPosition.Right.GetDescription() == imagePositionDescription)
                 return EnumPosition.Right;
-
 
             return EnumPosition.Left;
         }
