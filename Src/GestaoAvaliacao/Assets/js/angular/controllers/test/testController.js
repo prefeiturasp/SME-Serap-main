@@ -194,7 +194,10 @@
                 numberSynchronizedResponseItems: 'Qtde de itens para sincronização Resposta',
                 showTestContext: 'Apresentar contexto da prova',
                 tempoDeProva: 'Tempo de Prova',
-                temBIB: 'Prova com BIB'
+                temBIB: 'Prova com BIB',
+                quantidadeCadeiaBlocos: 'Quantidade de blocos',
+                quantidadeItensCadeiaBlocos: 'Quantidade de itens por bloco',
+                quantidadeCadeiaBlocosPorBloco: 'Quantidade de blocos por caderno'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
             //Lista de escolha 
@@ -310,6 +313,7 @@
             ng.e1_listaDesempenho = ng.listasSimNao;
             ng.e1_listaNiveis = [];
             //Usar BIB
+            ng.cadeiaBlocos = true;
             ng.e1_cbBIB = null;
             ng.e1_listaBIB = ng.listasSimNao;
             ng.e1_qtdBlocos = null;
@@ -968,6 +972,16 @@
             self.etapa1.alterou = true;
         };
 
+        ng.calcularQuantidadeItemsPorBloco = function () {
+
+            if (ng.e1_qtdCadeiaBlocosPorBloco > ng.e1_qtdCadeiaBlocos) {
+                $notification.alert("A quantidade de blocos por caderno não pode ser maior que a quantidade de blocos.");
+                ng.e1_qtdCadeiaBlocosPorBloco = null;
+            }
+
+            ng.e1_itensBlocos = ng.e1_qtdCadeiaBlocosPorBloco * ng.e1_qtdItensCadeiaBlocos;
+        }
+
         /**
         * @function Distribui porcentagem do total de itens desejado
         * @private
@@ -1240,8 +1254,12 @@
                 "TestType": ng.e1_cbTipoProva,
                 "Discipline": ng.e1_cbComponenteCurricular,
                 "Bib": ng.temBIB,
-                "NumberItemsBlock": ng.temBIB ? parseInt(ng.e1_itensBlocos) : 0,
+                "BlockChain": ng.cadeiaBlocos,
                 "NumberBlock": ng.temBIB ? parseInt(ng.e1_qtdBlocos) : 0,
+                "BlockChainNumber": ng.temBIB ? parseInt(ng.e1_qtdCadeiaBlocos) : 0,
+                "BlockChainItems": ng.temBIB ? parseInt(ng.e1_qtdItensCadeiaBlocos) : 0,
+                "BlockChainForBlock": ng.temBIB ? parseInt(ng.e1_qtdCadeiaBlocosPorBloco) : 0,
+                "NumberItemsBlock": ng.temBIB ? parseInt(ng.e1_itensBlocos) : 0,
                 "NumberItem": ng.e1_radios == 2 ? ng.itensTotais : 0,
                 "FormatType": ng.e1_radios !== 2 ? ng.e1_formato : null,
                 "ApplicationStartDate": ng.e1_aplicacao.Inicio,
@@ -1490,7 +1508,60 @@
             if (validarData() === false)
                 return false;
 
-            if (ng.temBIB && parseInt(ng.e1_itensBlocos) < 1) {
+            // Validacao BIB
+            if (!ng.temBIB && !ng.showTestTAI && (ng.e1_radios == 3 || !ng.itensTotais)) {
+                $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é obrigatório.');
+                return false;
+            }
+
+            if (!ng.temBIB && (ng.e1_radios == 1 && !validarPorcentagemItens())) {
+                $notification.alert('No campo dificuldade do item não é permitido valor fracionado.');
+                return false;
+            }
+
+            if (ng.temBIB) {
+                if (!ng.e1_qtdBlocos) {
+                    $notification.alert('O campo "' + ng.labels.quantidadeBlocos + '" é obrigatório.');
+                    return false;
+                }
+
+                if (!ng.e1_qtdCadeiaBlocos && ng.cadeiaBlocos) {
+                    $notification.alert('O campo "' + ng.labels.quantidadeCadeiaBlocos + '" é obrigatório.');
+                    return false;
+                }
+
+                if (!ng.e1_qtdItensCadeiaBlocos && ng.cadeiaBlocos) {
+                    $notification.alert('O campo "' + ng.labels.quantidadeItensCadeiaBlocos + '" é obrigatório.');
+                    return false;
+                }
+
+                if (!ng.e1e1_qtdCadeiaBlocosPorBloco && ng.cadeiaBlocos) {
+                    $notification.alert('O campo "' + ng.labels.quantidadeCadeiaBlocosPorBloco + '" é obrigatório.');
+                    return false;
+                }
+
+                if (!ng.e1_itensBlocos) {
+                    $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" é obrigatório.');
+                    return false;
+                }
+            }
+
+            if (ng.temBIB && ng.cadeiaBlocos && parseInt(ng.e1_qtdCadeiaBlocos) < 1) {
+                $notification.alert('O campo "' + ng.labels.quantidadeCadeiaBlocos + '" não pode ser menor ou igual a 0.');
+                return false;
+            }
+
+            if (ng.temBIB && ng.cadeiaBlocos && parseInt(ng.e1e1_qtdCadeiaBlocosPorBloco) < 1) {
+                $notification.alert('O campo "' + ng.labels.quantidadeCadeiaBlocosPorBloco + '" não pode ser menor ou igual a 0.');
+                return false;
+            }
+
+            if (ng.temBIB && ng.cadeiaBlocos && parseInt(ng.e1_qtdItensCadeiaBlocos) < 1) {
+                $notification.alert('O campo "' + ng.labels.quantidadeItensCadeiaBlocos + '" não pode ser menor ou igual a 0.');
+                return false;
+            }
+
+            if (ng.temBIB && !ng.cadeiaBlocos && parseInt(ng.e1_itensBlocos) < 1) {
                 $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" não pode ser menor ou igual a 0.');
                 return false;
             }
@@ -1508,32 +1579,6 @@
 
             }
 
-
-            if (!ng.temBIB && !ng.showTestTAI && (ng.e1_radios == 3 || !ng.itensTotais)) {
-                $notification.alert('O campo "' + ng.labels.quantidadeItens + '" é obrigatório.');
-                return false;
-            }
-
-            if (!ng.temBIB && (ng.e1_radios == 1 && !validarPorcentagemItens())) {
-                $notification.alert('No campo dificuldade do item não é permitido valor fracionado.');
-                return false;
-            }
-
-            if (ng.temBIB)
-                if (ng.e1_cbBIB) {
-
-                    if (!ng.e1_qtdBlocos) {
-                        $notification.alert('O campo "' + ng.labels.quantidadeBlocos + '" é obrigatório.');
-                        return false;
-                    }
-
-                    if (!ng.e1_itensBlocos) {
-                        $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" é obrigatório.');
-                        return false;
-                    }
-                }
-
-
             if (ng.e1_cbNiveisDesempenho) {
                 //	$notification.alert('O campo "' + ng.labels.niveis + '" é obrigatório.');
 
@@ -1549,13 +1594,6 @@
 
                 if (retorno) return false;
             }
-
-
-
-
-
-
-
 
             return true;
         };
@@ -1607,17 +1645,26 @@
                 if (r.success) {
                     r = r.lista;
                     ng.params = r.Id;
-                    ng.temBIB = r.Bib;
-                    ng.showFlagBIB = r.Bib;
+
                     ng.e1_cbTipoProva = procurarElementoEm([r.TestType], ng.e1_listaTipoProva)[0];
                     ng.e1_grupoSubgrupo = procurarElementoEm([r.TestSubGroup], ng.grupoSubgrupoList)[0];
                     ng.e1_tempoDeProva = procurarElementoEm([r.TempoDeProva], ng.tempoDeProvaList)[0];
                     ng.Global = r.TestType.Global;
                     tipoProvaMudou();
+
+                    // BIB
+                    ng.temBIB = r.Bib;
+                    ng.showFlagBIB = r.Bib;
                     ng.e1_cbTipoProva.Block = r.BlockItem > 0 || r.NumberBlock;
                     ng.e1_cbTipoProva.BlockItem = r.BlockItem || r.NumberItemsBlock;
-                    ng.e1_itensBlocos = r.NumberItemsBlock;
+
+                    ng.cadeiaBlocos = r.BlockChain;
                     ng.e1_qtdBlocos = r.NumberBlock;
+                    ng.e1_qtdCadeiaBlocos = r.BlockChainNumber;
+                    ng.e1_qtdItensCadeiaBlocos = r.BlockChainItems;
+                    ng.e1_qtdCadeiaBlocosPorBloco = r.BlockChainForBlock;
+                    ng.e1_itensBlocos = r.NumberItemsBlock;
+
                     ng.e1_testDescription = r.Description;
                     ng.e1_testPassword = r.Password;
                     ng.e1_cbComponenteCurricular = procurarElementoEm([r.Discipline], ng.e1_listaComponenteCurricular)[0];
@@ -4392,7 +4439,7 @@
 
                 if (result.success) {
                     $notification.success(result.message);
-                  
+
                     for (var k = 0; k < ng.e2_ListaItemSelecionados.length; k++) {
                         if (ng.e2_ListaItemSelecionados[k].Id == itens.Id) {
                             ng.e2_ListaItemSelecionados[k].Id = versoes.Id;
@@ -4506,7 +4553,7 @@
         };
 
         ng.e2_addDadosModalAnoItensAmostraTai = e2_addDadosModalAnoItensAmostraTai;
-        function e2_addDadosModalAnoItensAmostraTai() {            
+        function e2_addDadosModalAnoItensAmostraTai() {
 
             var porcentagem = parseInt(ng.e2_dadosModalAnoItensAmostraTai.Porcentagem);
             if (porcentagem == 0) {
@@ -4688,7 +4735,7 @@
                 if (ng.anosItensAmostraProvaTai.length == 1) {
                     item.percentage = 100;
                     ng.anosItensAmostraProvaTai[i].Porcentagem = 100;
-                }                    
+                }
 
                 listaTestTaiCurriculumGradeSave.push(item);
             };
