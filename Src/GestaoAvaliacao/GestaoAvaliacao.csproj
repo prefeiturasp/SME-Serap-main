@@ -1772,6 +1772,7 @@
   <ItemGroup>
     <Compile Include="Controllers\AdminAcompanhamentoProvasController.cs" />
     <Compile Include="Controllers\AdminSerapEstudantesController.cs" />
+    <Compile Include="Controllers\BlockChainController.cs" />
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
     <Compile Include="Controllers\ImportarResultadosPSPController.cs" />
     <Compile Include="Controllers\NumberItemsAplicationTaiController.cs" />
@@ -1940,6 +1941,7 @@
     <Folder Include="Assets\tests\unit\filters\" />
     <Folder Include="Assets\tests\unit\models\" />
     <Folder Include="Assets\tests\unit\services\" />
+    <Folder Include="Views\BlockChain\" />
     <Folder Include="Views\NumberItemsAplicationTai\" />
     <Folder Include="Views\TesteCI\" />
   </ItemGroup>
