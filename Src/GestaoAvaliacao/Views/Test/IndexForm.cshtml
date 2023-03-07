@@ -19,10 +19,13 @@
         @* BreadComb das etapas *@
         <div ng-show="mostrarTela" class="wizard">
             <div class="maxWidth">
-                <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="!showTestTAI">
+                <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="!showTestTAI && !cadeiaBlocos">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
                 </a>
-                <a ng-repeat="wizard in listaWizardTAI" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="showTestTAI">
+                <a ng-repeat="wizard in listaWizardTAI" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="showTestTAI && !cadeiaBlocos ">
+                    <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
+                </a>
+                <a ng-repeat="wizard in listaWizardBlockChains" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="cadeiaBlocos">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
                 </a>
             </div>
