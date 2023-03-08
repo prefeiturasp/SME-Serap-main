@@ -61,8 +61,8 @@
             //    arr.push(self.wizards[4]);
             //}
 
+            ng.listaWizardBlockChains = self.wizardsBlockChain;
             ng.listaWizardTAI = self.wizardsTai;
-
             ng.listaWizards = arr;
         };
 
@@ -151,6 +151,12 @@
                 { Number: 1, Description: 'Cadastro Prova' },
                 { Number: 2, Description: 'Ano(s) dos itens da amostra' },
             ];
+            self.wizardsBlockChain = [
+                { Number: 1, Description: 'Cadastro de Prova' },
+                { Number: 2, Description: 'Montagem dos blocos' },
+                { Number: 3, Description: 'Montagem dos cadernos' },
+                { Number: 4, Description: 'Gerar provas' },
+            ]
             ng.labels = {
                 tipo: 'Tipo de prova',
                 descricao: 'Descrição da prova',
@@ -208,6 +214,7 @@
             //Lista de wizards atuais
             ng.listaWizards = [];
             ng.listaWizardTAI = [];
+            ng.listaWizardBlockChains = [];
             ng.etapaAtual = 1;
             ng.alterouEtapaAtual = false;
             ng.mostrarTela = false;
@@ -313,7 +320,7 @@
             ng.e1_listaDesempenho = ng.listasSimNao;
             ng.e1_listaNiveis = [];
             //Usar BIB
-            ng.cadeiaBlocos = true;
+            ng.cadeiaBlocos = false;
             ng.e1_cbBIB = null;
             ng.e1_listaBIB = ng.listasSimNao;
             ng.e1_qtdBlocos = null;
@@ -322,10 +329,13 @@
             ng.e1_listaItensBlocos = null;
             ng.testId = null;
             ng.e1_formato_findTest = false;
+
             ng.params = {
                 Id: ng.params
             };
-            ng.provaId = ng.params.Id || 0;
+
+            ng.provaId = ng.params.Id.Value ? ng.params.Id : 0;
+
             tipoProvaCarregar();
             // Modal contexto
             e1_criarObjetoDadosModalContexto();
@@ -738,6 +748,10 @@
 
         ng.selectTemBIB = function () {
             ng.temBIB = !ng.temBIB;
+
+            if (ng.provaId == 0)
+                ng.cadeiaBlocos = ng.temBIB;
+
             self.etapa1.alterou = true;
         };
 
@@ -746,19 +760,15 @@
             self.etapa1.alterou = true;
         };
 
-
         ng.selectAdvanceWithoutAnswering = function () {
             ng.advanceWithoutAnswering = !ng.advanceWithoutAnswering;
             self.etapa1.alterou = true;
         };
 
-
         ng.selectBackToPreviousItem = function () {
             ng.backToPreviousItem = !ng.backToPreviousItem;
             self.etapa1.alterou = true;
         };
-
-
 
         ng.selectShowAudioFiles = function () {
             ng.showAudioFiles = !ng.showAudioFiles;
@@ -775,6 +785,7 @@
 
             if (ng.temBIB)
                 ng.temBIB = false;
+
             self.etapa1.alterou = true;
         };
 
