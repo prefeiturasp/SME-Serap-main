@@ -96,5 +96,22 @@ namespace GestaoAvaliacao.Business
 
             return blockChain;
         }
+
+        public void RemoveBlockChainItem(long blockChainId, long itemId)
+        {
+            blockChainRepository.RemoveBlockChainItem(blockChainId, itemId);
+        }
+
+        public BlockChain DeleteBlockChainItems(long id)
+        {
+            var entity = new BlockChain { Id = id };
+
+            blockChainRepository.DeleteBlockChainItems(id);
+
+            entity.Validate.Type = ValidateType.Delete.ToString();
+            entity.Validate.Message = "Itens removidos com sucesso.";
+
+            return entity;
+        }
     }
 }

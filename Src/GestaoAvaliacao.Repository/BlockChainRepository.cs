@@ -94,5 +94,46 @@ namespace GestaoAvaliacao.Repository
                 gestaoAvaliacaoContext.SaveChanges();
             }
         }
+
+        public void RemoveBlockChainItem(long blockChainId, long itemId)
+        {
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                var entity = gestaoAvaliacaoContext.BlockChainItems.FirstOrDefault(b => b.BlockChain_Id == blockChainId && b.Item_Id == itemId && b.State == (byte)EnumState.ativo);
+
+                if (entity == null)
+                    return;
+
+                entity.State = Convert.ToByte(EnumState.excluido);
+                entity.UpdateDate = DateTime.Now;
+
+                gestaoAvaliacaoContext.Entry(entity).State = System.Data.Entity.EntityState.Modified;
+                gestaoAvaliacaoContext.SaveChanges();
+            }
+        }
+
+        public void DeleteBlockChainItems(long id)
+        {
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                var blockChain = gestaoAvaliacaoContext.BlockChains.FirstOrDefault(a => a.Id == id);
+
+                if (blockChain == null) 
+                    return;
+
+                var blockChainItems = gestaoAvaliacaoContext.BlockChainItems.Include("BlockChain")
+                    .Where(i => i.BlockChain_Id == id).ToList();
+
+                blockChainItems.ForEach(i =>
+                {
+                    i.State = Convert.ToByte(EnumState.excluido);
+                    i.UpdateDate = DateTime.Now;
+                    gestaoAvaliacaoContext.Entry(i).State = System.Data.Entity.EntityState.Modified;
+                });
+
+                blockChain.UpdateDate = DateTime.Now;
+                gestaoAvaliacaoContext.Entry(blockChain).State = System.Data.Entity.EntityState.Modified;
+            }
+        }
     }
 }

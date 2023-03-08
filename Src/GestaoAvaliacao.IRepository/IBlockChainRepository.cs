@@ -6,5 +6,7 @@ namespace GestaoAvaliacao.IRepository
     {
         BlockChain Save(BlockChain blockChain);
         void Update(BlockChain blockChain);
+        void RemoveBlockChainItem(long blockChainId, long itemId);
+        void DeleteBlockChainItems(long id);
     }
 }

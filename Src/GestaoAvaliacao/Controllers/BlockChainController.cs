@@ -64,6 +64,65 @@ namespace GestaoAvaliacao.Controllers
                 }, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// Método utilizado na remoção de um item unitário de um bloco.
+        /// </summary>
+        /// <param name="blockChainId"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult RemoveBlockChainItem(long blockChainId, long itemId)
+        {
+            var entity = new BlockChain { Id = blockChainId };
+
+            try
+            {
+                blockChainBusiness.RemoveBlockChainItem(entity.Id, itemId);
+                entity.Validate.Message = "Item do bloco excluído com sucesso.";
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                entity.Validate.IsValid = false;
+                entity.Validate.Message = "Erro ao tentar excluir o item do bloco.";
+            }
+
+            return Json(
+                new
+                {
+                    success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message
+                }, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// Método utilizado para remoção dos itens de um bloco
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult DeleteBlockItems(long id)
+        {
+            var entity = new BlockChain();
+
+            try
+            {
+                entity = blockChainBusiness.DeleteBlockChainItems(id);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao tentar excluir os itens.";
+                LogFacade.SaveError(ex);
+            }
+
+            return Json(
+                new
+                {
+                    success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message
+                }, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
     }
 }

@@ -8,5 +8,7 @@ namespace GestaoAvaliacao.IBusiness
     {
         BlockChain Save(BlockChain blockChain, Guid usuId, EnumSYS_Visao vision);
         BlockChain Update(BlockChain blockChain, Guid usuId, EnumSYS_Visao vision);
+        void RemoveBlockChainItem(long blockChainId, long itemId);
+        BlockChain DeleteBlockChainItems(long id);
     }
 }
