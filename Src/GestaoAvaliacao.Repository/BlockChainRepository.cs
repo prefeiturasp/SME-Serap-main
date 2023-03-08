@@ -5,6 +5,7 @@ using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dapper;
 using GestaoAvaliacao.Entities.Enumerator;
 
 namespace GestaoAvaliacao.Repository
@@ -134,6 +135,48 @@ namespace GestaoAvaliacao.Repository
                 blockChain.UpdateDate = DateTime.Now;
                 gestaoAvaliacaoContext.Entry(blockChain).State = System.Data.Entity.EntityState.Modified;
             }
+        }
+
+        public IEnumerable<BlockChain> GetTestBlockChains(long testId)
+        {
+            /*
+            using (var cn = Connection)
+            {
+                cn.Open();
+
+                const string sql = @"SELECT Id, Description, Test_Id " +
+                                   "FROM Block WITH (NOLOCK) " +
+                                   "WHERE Test_Id = @TestId " +
+                                   "AND State = @state " +
+
+                                   "SELECT T.Id, T.KnowledgeAreaBlock " +
+                                   "FROM Test T WITH(NOLOCK)" +
+                                   "WHERE Id = @TestId " +
+
+                                   "SELECT BI.Id, BI.Block_Id, BI.Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS [Order], I.KnowledgeArea_Id " +
+                                   "FROM BlockItem BI WITH (NOLOCK) " +
+                                   "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
+                                   "INNER JOIN Item I WITH(NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3 " +
+                                   "INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] " +
+                                   "LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state " +
+                                   "WHERE B.Test_Id = @TestId " +
+                                   "AND BI.State = @state AND B.State = @state";
+
+                var multi = cn.QueryMultiple(sql, new { TestId = TestId, state = (Byte)EnumState.ativo });
+
+                var listBlock = multi.Read<Block>();
+                var listTest = multi.Read<Test>();
+                var listBlockItem = multi.Read<BlockItem>();
+
+                foreach (var block in listBlock)
+                {
+                    block.Test = listTest.FirstOrDefault(p => p.Id == block.Test_Id);
+                    block.BlockItems.AddRange(listBlockItem.Where(i => i.Block_Id.Equals(block.Id)));
+                }
+
+                return listBlock;
+            */
+            return new List<BlockChain>();
         }
     }
 }

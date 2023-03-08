@@ -44,22 +44,28 @@
          * @returns
          */
         function configuraWizard(q) {
-            if (q) ng.temBIB = q;
+            if (q)
+                ng.temBIB = q;
+
             var arr = [];
             arr.push(self.wizards[0]);
             arr.push(self.wizards[1]);
-            if (ng.temBIB === null) return;
-            arr.push(self.wizards[2]);
-            ng.ultimo = 3;
-            //if (!ng.temBIB) {
-            //    ng.ultimo = 3;
-            //    arr.push(self.wizards[3]);
-            //}
-            //else {
-            //    ng.ultimo = 4;
-            //    arr.push(self.wizards[2]);
-            //    arr.push(self.wizards[4]);
-            //}
+
+            if (ng.temBIB === null)
+                return;            
+
+            if (ng.cadeiaBlocos) {
+                arr.push(self.wizards[2]);
+                arr.push(self.wizards[3]);
+                ng.ultimo = 4;
+            }
+            else if (ng.showTestTAI) {
+                ng.ultimo = 2;
+            }
+            else {
+                arr.push(self.wizards[2]);
+                ng.ultimo = 3;
+            }
 
             ng.listaWizardBlockChains = self.wizardsBlockChain;
             ng.listaWizardTAI = self.wizardsTai;
@@ -112,11 +118,13 @@
                 { Id: 4, Description: "Aplicada", Style: "icone-aplicar material-icons situacao", Icon: 'check_circle' }
             ];
             //Chamadas utilizada na Etapa 2
+            // TODO:
             self.etapa2 = {
-                salvar: TestModel.saveBlock,
-                remover: TestModel.deleteBlock,
+                salvar: ng.cadeiaBlocos ? TestModel.saveBlockChain : TestModel.saveBlock,
+                remover: ng.cadeiaBlocos ? TestModel.deleteBlockChain : TestModel.deleteBlock,
                 salvarKnowLedgeAreaOrder: TestModel.saveKnowLedgeAreaOrder,
-                paginacao: TestModel.searchBlock,
+                //paginacao: mg.cadeiaBlocos ? TestModel.searchBlockChain : TestModel.searchBlock,                
+                paginacao: TestModel.searchBlock,                
                 nivelEnsino: TestModel.loadLevelEducation,
                 modalidade: TestModel.loadModality,
                 matrix: TestModel.getComboByDiscipline,
@@ -129,7 +137,6 @@
                 itensBloco: TestModel.visualizar,
                 blockKnowledgeAreas: TestModel.getBlockKnowledgeAreas,
                 itensVersoes: TestModel.GetItemVersions
-
             };
             //Chamadas utilizada na Etapa 3
             self.etapa3 = {
@@ -320,6 +327,7 @@
             ng.e1_listaDesempenho = ng.listasSimNao;
             ng.e1_listaNiveis = [];
             //Usar BIB
+            ng.consideraCadeiaBlocosAoEditar = false;
             ng.cadeiaBlocos = false;
             ng.e1_cbBIB = null;
             ng.e1_listaBIB = ng.listasSimNao;
@@ -334,7 +342,10 @@
                 Id: ng.params
             };
 
-            ng.provaId = ng.params.Id.Value ? ng.params.Id : 0;
+            if (ng.editMode)
+                ng.provaId = ng.params.Id || 0;
+            else
+                ng.provaId = ng.params.Id.Value ? ng.params.Id : 0;
 
             tipoProvaCarregar();
             // Modal contexto
@@ -490,9 +501,6 @@
         function validarPassword() {
             ng.alterouEtapaAtual = self.etapa1.alterou = true;
         }
-
-
-
 
         /**
         * @function Carrega dados de componente curricular
@@ -749,10 +757,11 @@
         ng.selectTemBIB = function () {
             ng.temBIB = !ng.temBIB;
 
-            if (ng.provaId == 0)
+            if (ng.provaId == 0 || (ng.provaId > 0 && ng.consideraCadeiaBlocosAoEditar))
                 ng.cadeiaBlocos = ng.temBIB;
 
             self.etapa1.alterou = true;
+            configuraWizard(ng.temBIB);
         };
 
         ng.selectShowVideoFiles = function () {
@@ -787,6 +796,7 @@
                 ng.temBIB = false;
 
             self.etapa1.alterou = true;
+            configuraWizard(ng.temBIB);
         };
 
         ng.selecionaProvaComProficiencia = function () {
@@ -1669,7 +1679,8 @@
                     ng.e1_cbTipoProva.Block = r.BlockItem > 0 || r.NumberBlock;
                     ng.e1_cbTipoProva.BlockItem = r.BlockItem || r.NumberItemsBlock;
 
-                    ng.cadeiaBlocos = r.BlockChain;
+                    ng.consideraCadeiaBlocosAoEditar = r.BlockChain != null;
+                    ng.cadeiaBlocos = r.BlockChain == null ? false : r.BlockChain;
                     ng.e1_qtdBlocos = r.NumberBlock;
                     ng.e1_qtdCadeiaBlocos = r.BlockChainNumber;
                     ng.e1_qtdItensCadeiaBlocos = r.BlockChainItems;
@@ -1845,7 +1856,6 @@
         * @param
         */
         function initEtapa2() {
-
             ng.escondeModal = false;
             ng.e2_matrizAvaliacao = null;
             ng.e2_matrizAvaliacaoList = [];
@@ -4801,6 +4811,10 @@
             var $matrizAvaliacao = $(".matrizAvaliacao");
             $matrizAvaliacao.select2();
             carregaListAnoItensTai();
+        }
+
+        function configuraEtapa2CadeiaBlocos() {
+
         }
 
         ng.e2_avisoBlockComponenteTai = function __avisoBlockComponenteTai() {

@@ -154,12 +154,36 @@
             'deleteBlockItems': {
                 method: 'POST',
                 url: base_url('Block/DeleteBlockItems')
-            },
-            
+            },            
 
             'saveKnowLedgeAreaOrder': {
                 method: 'POST',
                 url: base_url('Block/SaveKnowLedgeAreaOrder')
+            },
+
+            'loadBlockChains': {
+                method: 'GET',
+                url: base_url('Block/GetTestBlockChains')
+            },
+
+            'searchBlockChain': {
+                method: 'GET',
+                url: base_url('Block/SearchBlockChainItem')
+            },
+
+            'saveBlockChain': {
+                method: 'POST',
+                url: base_url('BlockChain/Save')
+            },
+
+            'deleteBlockChain': {
+                method: 'DELETE',
+                url: base_url('BlockChain/RemoveBlockChainItem')
+            },
+
+            'deleteBlockChainItems': {
+                method: 'DELETE',
+                url: base_url('BlockChain/DeleteBlockChainItems')
             },
             /////////////////////////////////////////////
             // CHAMADAS DA ETAPA 4

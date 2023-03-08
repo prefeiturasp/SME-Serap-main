@@ -22,7 +22,7 @@
                 <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="!showTestTAI && !cadeiaBlocos">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
                 </a>
-                <a ng-repeat="wizard in listaWizardTAI" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="showTestTAI && !cadeiaBlocos ">
+                <a ng-repeat="wizard in listaWizardTAI" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="showTestTAI">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
                 </a>
                 <a ng-repeat="wizard in listaWizardBlockChains" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="cadeiaBlocos">
@@ -33,7 +33,7 @@
         <div class="maxWidth" ng-show="mostrarTela && situacao" style="padding: 5px 0; text-align: right;">
             <span ng-class="situacao.Style">{{situacao.Icon}}</span>{{situacao.Description}}
         </div>
-        <div class="well well-large itens">
+        <div class="well well-lg itens">
             <div class="container-fluid semPadding">
                 <div class="form-group" ng-show="mostrarTela && navigation===1">
                     <div class="row">
@@ -107,11 +107,11 @@
                                 </div>
 
 
-                                @* Componente Curricuar *@
+                                @* Componente Curricular *@
                                 <div class="campoLabel" ng-show="e1_listaComponenteCurricular && !isMultidiscipline">
                                     <label> {{labels.componente}}*: </label>
                                     <div>
-                                        <select id="testType" class="form-control"
+                                        <select id="testCompnent" class="form-control"
                                                 ng-change="e1_ComponenteCurricularMudou();"
                                                 ng-model="e1_cbComponenteCurricular"
                                                 ng-options="componenteCurricular as componenteCurricular.Description for componenteCurricular in e1_listaComponenteCurricular"
@@ -170,7 +170,7 @@
                                 <div class="campoLabel col-md-12">
                                     <label for="tempoDeProva">{{labels.tempoDeProva}}*: </label>
                                     <div>
-                                        <select id="groupSubgroup" class="form-control" title="{{ e1_tempoDeProva.Description }}"
+                                        <select id="examTime" class="form-control" title="{{ e1_tempoDeProva.Description }}"
                                                 ng-change="e1_TempoDeProvaMudou();"
                                                 ng-model="e1_tempoDeProva"
                                                 ng-options="tempoDeProva as tempoDeProva.Description for tempoDeProva in tempoDeProvaList"
@@ -253,7 +253,6 @@
                                     <div class="switch" ng-click="selectShowTestTAI();" ng-class="{'off': !showTestTAI}" style="position: absolute; margin: 4px 255px;"><input type="button" /></div>
                                 </div>
 
-
                                 <div class="campoLabel">
                                     <label class="label-pos-inline">  {{labels.ProvaComProficiencia}}: </label>
                                     <div class="switch" ng-click="selecionaProvaComProficiencia();" ng-class="{'off': !ProvaComProficiencia}" style="position: absolute; margin: 4px 255px;"><input type="button" /></div>
@@ -301,7 +300,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-12">
                             @* Cronograma *@
@@ -667,13 +665,13 @@
 
                 @* Etapa 2 *@ @* Lista de itens *@
                 <div class="form-group" ng-show="navigation===2 && mostrarTela">
-
+                    <!-- TAI -->
                     <div class="row" ng-show="showTestTAI">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="cards">
 
-                                    @* Componente Curricuar *@
+                                    @* Componente Curricular *@
                                     <div class="campoLabel">
                                         <label> {{labels.componente}}*: </label>
                                         <div ng-show="!e2_blockComponenteMatrixTai">
@@ -759,8 +757,69 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Cadeia de blocos  TODO: -->
+                    <div class="row" ng-show="cadeiaBlocos">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="cards">
+                                    <h4 class="padding"><strong>{{ e1_testDescription}} </strong></h4>
+                                    <table class="table table-hover">
+                                        <colgroup>
+                                            <col width="15%" />
+                                            <col width="15%" />
+                                            <col width="15%" />
+                                            <col width="10%" />
+                                            <col width="15%" />
+                                            <col width="15%" />
+                                            <col width="15%" />
+                                        </colgroup>
+                                        <thead>
+                                        <tr>
+                                            <th class="table-parameter-centralize">Blocos</th>
+                                            <th class="table-parameter-centralize">Itens selecionados</th>
+                                            <th class="table-parameter-centralize" colspan="2">Não selecionados</th>
+                                            <th class="table-parameter-centralize">Editar</th>
+                                            <th class="table-parameter-centralize">Adicionar</th>
+                                            <th class="table-parameter-centralize">Limpar itens selecionados</th>
+                                        </tr>
+                                        </thead>
+                                        <!-- TODO:
+                                        <tbody>
+                                        <tr ng-repeat="bloco in cadernos">
+                                            <th class="table-parameter-centralize">{{ bloco.Description}}</th>
+                                            <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
+                                            <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0}}</th>
+                                            <th class="table-parameter-centralize ">
+                                                <i ng-class="{ true:'material-icons check-success pull-left', false:'some-icon' }
+                                                [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
+                                            </th>
 
-                    <div class="row" ng-show="!showTestTAI">
+                                            <th class="table-parameter-centralize">
+                                                <a ng-click="e2_callModal(2, bloco)"><i type="button" class="material-icons">format_list_bulleted</i></a>
+                                            </th>
+                                            <th class="table-parameter-centralize">
+                                                <a ng-click="e2_callModal(1,bloco)"><i type="button" class="material-icons">add_box</i></a>
+                                            </th>
+                                            <th class="table-parameter-centralize">
+                                                <a ng-click="e2_callModal(7, bloco)"><i type="button" class="material-icons">swap_vert</i></a>
+                                            </th>
+                                            <th class="table-parameter-centralize">
+                                                <a ng-click="e2_callModalRemoverItensSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
+                                            </th>
+                                        </tr>
+                                        </tbody>
+                                        -->
+                                    </table>
+                                    <!--
+                                    <div ng-show="!temBIB" class="panel-body">
+                                        <span><strong>Total de itens: {{e2_ItensAtuais}} de {{ itensTotais }}</strong></span>
+                                    </div>
+                                    -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-show="!showTestTAI && !cadeiaBlocos">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="cards">
@@ -1041,7 +1100,7 @@
                                 <label>{{e1_cbComponenteCurricular.Description}} </label>
                             </div>
 
-                            @* Componente Curricuar *@
+                            @* Componente Curricular *@
                             <div class="campoLabel" ng-show="isMultidiscipline">
                                 <label><strong> {{labels.componente}} </strong></label>
                                 <div>
@@ -1131,7 +1190,7 @@
                                 <label><b>Tipo do item</b></label>
                                 @*<label ng-if="TestTypeItemType != null" style="max-width: 100%;">{{ItemType.Description}}</label>*@
                                 <div>
-                                    <select id="modality" class="form-control"
+                                    <select id="itemType" class="form-control"
                                             ng-model="ItemType"
                                             ng-options="itemType as itemType.Description for itemType in ItemTypeList"
                                             ng-title="ItemTypeList"
@@ -1154,7 +1213,7 @@
                                 <div class="checkbox-colunas">
                                     <div class="checkbox checkbox-primary lista-item" ng-repeat="dificuldade in e2_ListaDificuldade">
                                         <input id="d{{dificuldade.Description}}" type="checkbox" ng-model="e2_ListaDificuldadeChecked[$index]" />
-                                        <label for="d{{dificuldade.Description}}" lista-item margin-left" ">{{ dificuldade.Description }}</label>
+                                        <label for="d{{dificuldade.Description}}" lista-item margin-left>{{ dificuldade.Description }}</label>
                                     </div>
                                 </div>
                             </div>
@@ -1957,3 +2016,4 @@
 
     </div>
     <script src="~/Assets/js/vendor/contextoProva/scriptContexoProva.js"></script>
+</div>

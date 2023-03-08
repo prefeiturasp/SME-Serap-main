@@ -70,7 +70,7 @@ namespace GestaoAvaliacao.Controllers
         /// <param name="blockChainId"></param>
         /// <param name="itemId"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpDelete]
         public JsonResult RemoveBlockChainItem(long blockChainId, long itemId)
         {
             var entity = new BlockChain { Id = blockChainId };
@@ -99,8 +99,8 @@ namespace GestaoAvaliacao.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPost]
-        public JsonResult DeleteBlockItems(long id)
+        [HttpDelete]
+        public JsonResult DeleteBlockChainItems(long id)
         {
             var entity = new BlockChain();
 
