@@ -19,13 +19,13 @@
         @* BreadComb das etapas *@
         <div ng-show="mostrarTela" class="wizard">
             <div class="maxWidth">
-                <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="!showTestTAI && !cadeiaBlocos">
+                <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="!showTestTAI && !ehCadeiaBlocos">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
                 </a>
                 <a ng-repeat="wizard in listaWizardTAI" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="showTestTAI">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
                 </a>
-                <a ng-repeat="wizard in listaWizardBlockChains" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="cadeiaBlocos">
+                <a ng-repeat="wizard in listaWizardBlockChains" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="ehCadeiaBlocos">
                     <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
                 </a>
             </div>
@@ -573,7 +573,7 @@
                         </div>
                     </div>
                     @* BIB *@
-                    <div class="row" ng-show="temBIB && !cadeiaBlocos">
+                    <div class="row" ng-show="temBIB && !ehCadeiaBlocos">
                         <div class="col-md-12">
                             <div class="cards">
                                 <div class="campoLabel">
@@ -601,7 +601,7 @@
                         </div>
                     </div>
 
-                    <div class="row" ng-show="temBIB && cadeiaBlocos">
+                    <div class="row" ng-show="temBIB && ehCadeiaBlocos">
                         <div class="col-md-12">
                             <div class="cards">
                                 <div class="campoLabel">
@@ -758,7 +758,7 @@
                         </div>
                     </div>
                     <!-- Cadeia de blocos  TODO: -->
-                    <div class="row" ng-show="cadeiaBlocos">
+                    <div class="row" ng-show="ehCadeiaBlocos">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="cards">
@@ -783,43 +783,34 @@
                                             <th class="table-parameter-centralize">Limpar itens selecionados</th>
                                         </tr>
                                         </thead>
-                                        <!-- TODO:
                                         <tbody>
-                                        <tr ng-repeat="bloco in cadernos">
-                                            <th class="table-parameter-centralize">{{ bloco.Description}}</th>
-                                            <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
-                                            <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0}}</th>
-                                            <th class="table-parameter-centralize ">
-                                                <i ng-class="{ true:'material-icons check-success pull-left', false:'some-icon' }
-                                                [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
-                                            </th>
+                                            <tr ng-repeat="bloco in cadeiaBlocos">
+                                                <th class="table-parameter-centralize">{{ bloco.Description}}</th>
+                                                <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
+                                                <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0}}</th>
 
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModal(2, bloco)"><i type="button" class="material-icons">format_list_bulleted</i></a>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModal(1,bloco)"><i type="button" class="material-icons">add_box</i></a>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModal(7, bloco)"><i type="button" class="material-icons">swap_vert</i></a>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModalRemoverItensSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
-                                            </th>
-                                        </tr>
+                                                <th class="table-parameter-centralize ">
+                                                    <i ng-class="{ true:'material-icons check-success pull-left', false:'some-icon' }
+                                                    [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
+                                                </th>
+
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModal(2, bloco)"><i type="button" class="material-icons">format_list_bulleted</i></a>
+                                                </th>
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModal(1,bloco)"><i type="button" class="material-icons">add_box</i></a>
+                                                </th>
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModalRemoverItensSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
+                                                </th>
+                                            </tr>
                                         </tbody>
-                                        -->
                                     </table>
-                                    <!--
-                                    <div ng-show="!temBIB" class="panel-body">
-                                        <span><strong>Total de itens: {{e2_ItensAtuais}} de {{ itensTotais }}</strong></span>
-                                    </div>
-                                    -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-show="!showTestTAI && !cadeiaBlocos">
+                    <div class="row" ng-show="!showTestTAI && !ehCadeiaBlocos">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="cards">

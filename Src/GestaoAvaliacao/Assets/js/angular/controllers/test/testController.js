@@ -54,7 +54,7 @@
             if (ng.temBIB === null)
                 return;            
 
-            if (ng.cadeiaBlocos) {
+            if (ng.ehCadeiaBlocos) {
                 arr.push(self.wizards[2]);
                 arr.push(self.wizards[3]);
                 ng.ultimo = 4;
@@ -120,10 +120,10 @@
             //Chamadas utilizada na Etapa 2
             // TODO:
             self.etapa2 = {
-                salvar: ng.cadeiaBlocos ? TestModel.saveBlockChain : TestModel.saveBlock,
-                remover: ng.cadeiaBlocos ? TestModel.deleteBlockChain : TestModel.deleteBlock,
+                salvar: ng.ehCadeiaBlocos ? TestModel.saveBlockChain : TestModel.saveBlock,
+                remover: ng.ehCadeiaBlocos ? TestModel.deleteBlockChain : TestModel.deleteBlock,
                 salvarKnowLedgeAreaOrder: TestModel.saveKnowLedgeAreaOrder,
-                //paginacao: mg.cadeiaBlocos ? TestModel.searchBlockChain : TestModel.searchBlock,                
+                //paginacao: mg.ehCadeiaBlocos ? TestModel.searchBlockChain : TestModel.searchBlock,
                 paginacao: TestModel.searchBlock,                
                 nivelEnsino: TestModel.loadLevelEducation,
                 modalidade: TestModel.loadModality,
@@ -134,7 +134,9 @@
                 pegarMatrix: TestModel.getByMatriz,
                 pegarHabilidade: TestModel.getByParent,
                 blocos: TestModel.loadBlock,
+                cadeiaBlocos: TestModel.loadBlockChains,
                 itensBloco: TestModel.visualizar,
+                itensCadeiaBloco: TestModel.visualizarItensCadeiaBloco,
                 blockKnowledgeAreas: TestModel.getBlockKnowledgeAreas,
                 itensVersoes: TestModel.GetItemVersions
             };
@@ -328,7 +330,7 @@
             ng.e1_listaNiveis = [];
             //Usar BIB
             ng.consideraCadeiaBlocosAoEditar = false;
-            ng.cadeiaBlocos = false;
+            ng.ehCadeiaBlocos = false;
             ng.e1_cbBIB = null;
             ng.e1_listaBIB = ng.listasSimNao;
             ng.e1_qtdBlocos = null;
@@ -337,6 +339,9 @@
             ng.e1_listaItensBlocos = null;
             ng.testId = null;
             ng.e1_formato_findTest = false;
+            ng.e1_qtdCadeiaBlocos = null;
+            ng.e1_qtdItensCadeiaBlocos = null;
+            ng.e1_qtdCadeiaBlocosPorBloco = null;
 
             ng.params = {
                 Id: ng.params
@@ -758,7 +763,7 @@
             ng.temBIB = !ng.temBIB;
 
             if (ng.provaId == 0 || (ng.provaId > 0 && ng.consideraCadeiaBlocosAoEditar))
-                ng.cadeiaBlocos = ng.temBIB;
+                ng.ehCadeiaBlocos = ng.temBIB;
 
             self.etapa1.alterou = true;
             configuraWizard(ng.temBIB);
@@ -1275,7 +1280,7 @@
                 "TestType": ng.e1_cbTipoProva,
                 "Discipline": ng.e1_cbComponenteCurricular,
                 "Bib": ng.temBIB,
-                "BlockChain": ng.cadeiaBlocos,
+                "BlockChain": ng.ehCadeiaBlocos,
                 "NumberBlock": ng.temBIB ? parseInt(ng.e1_qtdBlocos) : 0,
                 "BlockChainNumber": ng.temBIB ? parseInt(ng.e1_qtdCadeiaBlocos) : 0,
                 "BlockChainItems": ng.temBIB ? parseInt(ng.e1_qtdItensCadeiaBlocos) : 0,
@@ -1546,17 +1551,17 @@
                     return false;
                 }
 
-                if (!ng.e1_qtdCadeiaBlocos && ng.cadeiaBlocos) {
+                if (!ng.e1_qtdCadeiaBlocos && ng.ehCadeiaBlocos) {
                     $notification.alert('O campo "' + ng.labels.quantidadeCadeiaBlocos + '" é obrigatório.');
                     return false;
                 }
 
-                if (!ng.e1_qtdItensCadeiaBlocos && ng.cadeiaBlocos) {
+                if (!ng.e1_qtdItensCadeiaBlocos && ng.ehCadeiaBlocos) {
                     $notification.alert('O campo "' + ng.labels.quantidadeItensCadeiaBlocos + '" é obrigatório.');
                     return false;
                 }
 
-                if (!ng.e1_qtdCadeiaBlocosPorBloco && ng.cadeiaBlocos) {
+                if (!ng.e1_qtdCadeiaBlocosPorBloco && ng.ehCadeiaBlocos) {
                     $notification.alert('O campo "' + ng.labels.quantidadeCadeiaBlocosPorBloco + '" é obrigatório.');
                     return false;
                 }
@@ -1567,22 +1572,22 @@
                 }
             }
 
-            if (ng.temBIB && ng.cadeiaBlocos && parseInt(ng.e1_qtdCadeiaBlocos) < 1) {
+            if (ng.temBIB && ng.ehCadeiaBlocos && parseInt(ng.e1_qtdCadeiaBlocos) < 1) {
                 $notification.alert('O campo "' + ng.labels.quantidadeCadeiaBlocos + '" não pode ser menor ou igual a 0.');
                 return false;
             }
 
-            if (ng.temBIB && ng.cadeiaBlocos && parseInt(ng.e1e1_qtdCadeiaBlocosPorBloco) < 1) {
+            if (ng.temBIB && ng.ehCadeiaBlocos && parseInt(ng.e1e1_qtdCadeiaBlocosPorBloco) < 1) {
                 $notification.alert('O campo "' + ng.labels.quantidadeCadeiaBlocosPorBloco + '" não pode ser menor ou igual a 0.');
                 return false;
             }
 
-            if (ng.temBIB && ng.cadeiaBlocos && parseInt(ng.e1_qtdItensCadeiaBlocos) < 1) {
+            if (ng.temBIB && ng.ehCadeiaBlocos && parseInt(ng.e1_qtdItensCadeiaBlocos) < 1) {
                 $notification.alert('O campo "' + ng.labels.quantidadeItensCadeiaBlocos + '" não pode ser menor ou igual a 0.');
                 return false;
             }
 
-            if (ng.temBIB && !ng.cadeiaBlocos && parseInt(ng.e1_itensBlocos) < 1) {
+            if (ng.temBIB && !ng.ehCadeiaBlocos && parseInt(ng.e1_itensBlocos) < 1) {
                 $notification.alert('O campo "' + ng.labels.e1_itensBlocos + '" não pode ser menor ou igual a 0.');
                 return false;
             }
@@ -1680,7 +1685,7 @@
                     ng.e1_cbTipoProva.BlockItem = r.BlockItem || r.NumberItemsBlock;
 
                     ng.consideraCadeiaBlocosAoEditar = r.BlockChain != null;
-                    ng.cadeiaBlocos = r.BlockChain == null ? false : r.BlockChain;
+                    ng.ehCadeiaBlocos = r.BlockChain == null ? false : r.BlockChain;
                     ng.e1_qtdBlocos = r.NumberBlock;
                     ng.e1_qtdCadeiaBlocos = r.BlockChainNumber;
                     ng.e1_qtdItensCadeiaBlocos = r.BlockChainItems;
@@ -1788,6 +1793,7 @@
 
         function initModalAdicao() {
             ng.e2_blockAtual;
+            ng.e2_blockChainAtual;
 
             // Filtro
             ng.e2_CodigoItem;
@@ -1872,8 +1878,10 @@
             ng.e2_Navegacao = 1;
             /////////// FIM ETAPA 2
 
-            //TAI
-            if (ng.showTestTAI)
+            if (ng.ehCadeiaBlocos)
+                // TODO: configurar etapa 2 para cadeia de blocos
+                cadeiaBlocosCarregar();
+            else if (ng.showTestTAI)
                 configuraEtapa2Tai();
             else {
                 // ETAPA 2
@@ -2012,7 +2020,98 @@
                 }
             }
 
+            contarItensSelecionadosCadernos();
+
+            if (ng.navigation === ng.ultimo)
+                initEtapa4();
+            else
+                ng.mostrarTela = true;
+        };
+
+        /**
+        * @function Carrega cadeia de blocos
+        * @private
+        * @param
+        */
+        function cadeiaBlocosCarregar() {
+            self.etapa2.cadeiaBlocos({ testId: ng.provaId }, cadeiaBlocosCarregado);
+        };
+
+        /**
+        * @function Tratamento para dados do caderno
+        * @private
+        * @param r = resposta do servidor
+        */
+        function cadeiaBlocosCarregado(r) {
+            if (r.success === false) {
+                ng.cadeiaBlocos = [];
+
+                for (var b = 1; b <= ng.e1_qtdCadeiaBlocos; b++) {
+                    ng.cadeiaBlocos.push({
+                        Description: b,
+                        ItensCount: 0,
+                        Id: 0,
+                        Total: ng.e1_qtdItensCadeiaBlocos,
+                        Resto: ng.e1_qtdItensCadeiaBlocos,
+                        SelectedItens: []
+                    });
+                }
+
+                ng.e2_blockChainAtual = ng.cadeiaBlocos[0];
+            }
+            else {
+                r = angular.copy(r.lista);
+
+                ng.cadeiaBlocos = angular.copy(r);
+
+                var cadeiaBloco;
+
+                for (var q = 0; q < ng.cadeiaBlocos.length; q++) {
+                    cadeiaBloco = ng.cadeiaBlocos[q];
+                    cadeiaBloco.Total = ng.e1_qtdItensCadeiaBlocos;
+                    cadeiaBloco.Resto = cadeiaBloco.Total - cadeiaBloco.ItensCount;
+                }
+
+                if (ng.cadeiaBloco.length < ng.quantidadeCadeiaBlocos) {
+                    const cadeiaBloco = [];
+
+                    for (var b = 1; b <= ng.quantidadeCadeiaBlocos; b++) {
+                        cadeiaBloco.push({
+                            Description: String(b),
+                            ItensCount: 0,
+                            Id: 0,
+                            Total: ng.e1_qtdItensCadeiaBlocos,
+                            Resto: ng.e1_qtdItensCadeiaBlocos,
+                            SelectedItens: []
+                        });
+                    }
+
+                    const cadeiaBlocosSemIds = cadeiaBlocos.filter(cadeiaBloco => {
+                        const temCadeiaBlocoIdIgual = ng.cadeiaBlocos.find(c => c.Description === cadeiaBloco.Description);
+
+                        if (temCadeiaBlocoIdIgual) {
+                            return false;
+                        }
+
+                        return true;
+                    });
+
+                    ng.cadeiaBlocos = cadeiaBlocosSemIds.concat(ng.cadeiaBlocos);
+
+                    // ORDENAR BLOCOS!
+                    const indice = 'Description';
+
+                    const ordenar = (a, b) => {
+                        return a[indice] - b[indice];
+                    };
+
+                    ng.cadeiaBlocos.sort(ordenar);
+                }
+            }
+
+            /* TODO:
             contarItensSelecionados();
+            */
 
             if (ng.navigation === ng.ultimo)
                 initEtapa4();
@@ -2116,6 +2215,7 @@
             }
         };
 
+
         /**
         * @function Carrega todos as áreas de conhecimento do bloco.
         * @private
@@ -2172,7 +2272,7 @@
             }
         };
 
-        function contarItensSelecionados() {
+        function contarItensSelecionadosCadernos() {
             var i = 0, bloco, e;
 
             if (ng.cadernos)
@@ -2644,7 +2744,7 @@
             ng.e2_ListaItemSelecionados = ng.e2_blockAtual.SelectedItens;
             ng.e2_blockAtual.QtdeKnowledgeArea = calculaQtdeKnowledgeArea(ng.e2_blockAtual.SelectedItens);
 
-            contarItensSelecionados();
+            contarItensSelecionadosCadernos();
         };
 
         /**
@@ -2876,7 +2976,6 @@
                 if (r.type && r.message)
                     $notification[r.type ? r.type : 'error'](r.message);
             }
-
         }
 
         ng.e2_callModalRemoverItensSelecionados = e2_callModalRemoverItensSelecionados;
@@ -3161,7 +3260,7 @@
             ng.e2_blockAtual.QtdeKnowledgeArea = calculaQtdeKnowledgeArea(ng.e2_blockAtual.SelectedItens);
             ng.e2_blockAtual.ItensCount = ng.e2_blockAtual.SelectedItens.length;
             ng.e2_blockAtual.Resto = ng.e2_blockAtual.Total - ng.e2_blockAtual.ItensCount;
-            contarItensSelecionados();
+            contarItensSelecionadosCadernos();
         };
 
         function calculaQtdeKnowledgeArea(listItem) {
@@ -4811,10 +4910,6 @@
             var $matrizAvaliacao = $(".matrizAvaliacao");
             $matrizAvaliacao.select2();
             carregaListAnoItensTai();
-        }
-
-        function configuraEtapa2CadeiaBlocos() {
-
         }
 
         ng.e2_avisoBlockComponenteTai = function __avisoBlockComponenteTai() {

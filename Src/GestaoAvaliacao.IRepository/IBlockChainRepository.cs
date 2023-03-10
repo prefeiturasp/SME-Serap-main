@@ -11,5 +11,6 @@ namespace GestaoAvaliacao.IRepository
         void RemoveBlockChainItem(long blockChainId, long itemId);
         void DeleteBlockChainItems(long id);
         IEnumerable<BlockChain> GetTestBlockChains(long testId);
+        IEnumerable<Item> GetBlockChainItems(long blockChainId, int page, int pageItems);
     }
 }

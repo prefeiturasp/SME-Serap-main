@@ -161,14 +161,20 @@
                 url: base_url('Block/SaveKnowLedgeAreaOrder')
             },
 
+            // CHAMADAS PARA CADEIA DE BLOCOS
             'loadBlockChains': {
                 method: 'GET',
-                url: base_url('Block/GetTestBlockChains')
+                url: base_url('BlockChain/GetTestBlockChains')
             },
 
             'searchBlockChain': {
                 method: 'GET',
-                url: base_url('Block/SearchBlockChainItem')
+                url: base_url('BlockChain/SearchBlockChainItem')
+            },
+
+            'visualizarItensCadeiaBloco': {
+                method: 'GET',
+                url: base_url('BlockChain/GetBlockChainItems')
             },
 
             'saveBlockChain': {
