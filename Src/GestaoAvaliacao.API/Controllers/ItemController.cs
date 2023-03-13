@@ -156,6 +156,25 @@ namespace GestaoAvaliacao.API.Controllers
             }
         }
 
+        [Route("api/Item/Assuntos/DisciplinaId")]
+        [HttpGet]
+        [ResponseType(typeof(BaseDto))]
+        public HttpResponseMessage ObterAssuntosPorDisciplina(int disciplinaId)
+        {
+            try
+            {
+                var lista = itemBusiness.ObterAssuntosPorDisciplina(disciplinaId);
+                if (lista == null || !lista.Any())
+                    return Request.CreateResponse(HttpStatusCode.NoContent, "Assuntos não encontrados.");
+                return Request.CreateResponse(HttpStatusCode.OK, lista);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de assuntos");
+            }
+        }
+
         [Route("api/Item/SubAssuntos/AssuntoId")]
         [HttpGet]
         [ResponseType(typeof(BaseDto))]

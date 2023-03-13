@@ -2,9 +2,6 @@
 using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.IRepository
 {
@@ -18,6 +15,7 @@ namespace GestaoAvaliacao.IRepository
         bool ExistsDescription(string description, Guid ent_id);
         Subject Get(long id);
         List<AJX_Select2> LoadAllSubjects(string description, Guid EntityId);
+        List<AJX_Select2> ObterAssuntosPorDisciplinaId(Guid EntityId, long DisciplinaId);
         List<AJX_Select2> LoadSubsubjectBySubject(string description, string subjects, Guid EntityId);
         Subject LoadSubjectBySubsubject(long idSubsubject);
         bool ExistsItemRelated(Subject subject, Guid ent_id);
