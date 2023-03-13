@@ -120,10 +120,9 @@
             //Chamadas utilizada na Etapa 2
             // TODO:
             self.etapa2 = {
-                salvar: ng.ehCadeiaBlocos ? TestModel.saveBlockChain : TestModel.saveBlock,
-                remover: ng.ehCadeiaBlocos ? TestModel.deleteBlockChain : TestModel.deleteBlock,
+                salvar: TestModel.saveBlock,
+                remover: TestModel.deleteBlock,
                 salvarKnowLedgeAreaOrder: TestModel.saveKnowLedgeAreaOrder,
-                //paginacao: mg.ehCadeiaBlocos ? TestModel.searchBlockChain : TestModel.searchBlock,
                 paginacao: TestModel.searchBlock,                
                 nivelEnsino: TestModel.loadLevelEducation,
                 modalidade: TestModel.loadModality,
@@ -136,7 +135,6 @@
                 blocos: TestModel.loadBlock,
                 cadeiaBlocos: TestModel.loadBlockChains,
                 itensBloco: TestModel.visualizar,
-                itensCadeiaBloco: TestModel.visualizarItensCadeiaBloco,
                 blockKnowledgeAreas: TestModel.getBlockKnowledgeAreas,
                 itensVersoes: TestModel.GetItemVersions
             };
@@ -736,13 +734,13 @@
                     ng.e1_listaNiveis[i].Value2 = null;
                 }
             }
-
         };
 
         ng.selectProvaEletronica = function () {
             ng.isElectronicTest = !ng.isElectronicTest;
             self.etapa1.alterou = true;
         };
+
         ng.selectShowOnSerapEstudantes = function () {
             ng.showOnSerapEstudantes = !ng.showOnSerapEstudantes;
             ng.numberSynchronizedResponseItems = 2;
@@ -750,7 +748,6 @@
         };
 
         ng.validaQtdItensSincronizacao = function () {
-
             self.etapa1.alterou = true;
         };
 
@@ -850,7 +847,7 @@
         };
 
         /**
-         * @function Tratamento para alterações de componente frequência de aplicação
+        * @function Tratamento para alterações de componente frequência de aplicação
         * @private
         * @param
         */
@@ -866,7 +863,6 @@
         */
         ng.radioSelect = radioSelect;
         function radioSelect() {
-
             if (ng.e1_radios == 1) {
                 ng.itensTotais = parseInt(ng.e1_qtdItens);
 
@@ -881,7 +877,6 @@
 
             if (ng.mostrarTela && !ng.editMode)
                 ng.alterouEtapaAtual = self.etapa1.alterou = true;
-
         };
 
         /**
@@ -1138,24 +1133,20 @@
                 return false
             }
 
-
             if (ng.e1_aplicacao.Final === "Invalid Date") {
                 $notification.alert("O campo '" + ng.labels.finalAplicacao + "' contém uma data inválida.");
                 return false
             }
-
 
             if (ng.e1_correcao.Inicio === "Invalid Date") {
                 $notification.alert("O campo '" + ng.labels.inicioCorrecao + "' contém uma data inválida.");
                 return false
             }
 
-
             if (ng.e1_correcao.Final === "Invalid Date") {
                 $notification.alert("O campo '" + ng.labels.finalCorrecao + "' contém uma data inválida.");
                 return false
             }
-
 
             if (!ng.e1_tempoDeProva) {
                 $notification.alert("O campo '" + ng.labels.tempoDeProva + "' é obrigatório.");
@@ -1177,19 +1168,15 @@
                 return false;
             }
 
-
             if (!ng.e1_correcao.Inicio) {
                 $notification.alert("O campo '" + ng.labels.inicioCorrecao + "' é obrigatório.");
                 return false;
             }
 
-
             if (!ng.e1_correcao.Final) {
                 $notification.alert("O campo '" + ng.labels.finalCorrecao + "' é obrigatório.");
                 return false;
             }
-
-
 
             if (q) {
                 if (a1 > a2) {
@@ -1202,7 +1189,6 @@
                     }
                 }
             }
-
 
             if (w)
                 if (new Date(ng.e1_correcao.Inicio) > new Date(ng.e1_correcao.Final)) {
@@ -1232,7 +1218,6 @@
             if (typeof ng.e1_listaNiveis[item].Value1 === 'string') {
                 ng.e1_listaNiveis[item].Value1 = ng.e1_listaNiveis[item].Value1.replace(/[^0-9]/g, "");
             }
-
 
             if (typeof ng.e1_listaNiveis[item].Value2 === 'string')
                 ng.e1_listaNiveis[item].Value2 = ng.e1_listaNiveis[item].Value2.replace(/[^0-9]/g, "");
@@ -1879,7 +1864,6 @@
             /////////// FIM ETAPA 2
 
             if (ng.ehCadeiaBlocos)
-                // TODO: configurar etapa 2 para cadeia de blocos
                 cadeiaBlocosCarregar();
             else if (ng.showTestTAI)
                 configuraEtapa2Tai();
@@ -2175,10 +2159,10 @@
 
         function e2_itensCarregar() {
             addEventkeyUp();
+
             if (ng.e2_blockAtual.Id) {
                 inicarCarregamentoDosItensPaginados();
             }
-            //self.etapa2.itensBloco({ Id: ng.e2_blockAtual.Id }, e2_itensCarregado);
         };
 
         function inicarCarregamentoDosItensPaginados() {
@@ -2215,7 +2199,6 @@
             }
         };
 
-
         /**
         * @function Carrega todos as áreas de conhecimento do bloco.
         * @private
@@ -2225,9 +2208,7 @@
             addEventkeyUp();
             if (ng.e2_blockAtual.Id)
                 self.etapa2.blockKnowledgeAreas({ Id: ng.e2_blockAtual.Id }, e2_knowledgeAreasCarregado);
-
         };
-
 
         /**
         * @function Tratamento para todos itens selecionados
@@ -2235,7 +2216,6 @@
         * @param r = resposta do servidor
         */
         function e2_itensCarregado(lista) {
-
             if (lista instanceof Array && lista.length > 0) {
                 self.etapa2.selecionados = angular.copy(lista);
                 ng.e2_ListaItemSelecionados = ng.e2_blockAtual.SelectedItens = angular.copy(lista);
@@ -2988,6 +2968,14 @@
             angular.element("#modalRemoverItensSelecionados").modal({ backdrop: 'static' });
         };
 
+        ng.e2_callModalRemoverItensCadeiaBlocoSelecionados = e2_callModalRemoverItensCadeiaBlocoSelecionados;
+        function e2_callModalRemoverItensCadeiaBlocoSelecionados(blockChain) {
+            if (blockChain)
+                ng.e2_blockChainAtual = blockChain;
+
+            angular.element("#modalRemoverItensCadeiaBlocoSelecionados").modal({ backdrop: 'static' });
+        }
+
 
         ng.e2_excluirCaderno = e2_excluirCaderno;
         function e2_excluirCaderno() {
@@ -3062,7 +3050,6 @@
             removeEventkeyUp();
             ng.alterouEtapaAtual = (false);
             ng.modalAnterior = null;
-            // ng.e2_ListaItemSelecionados = self.etapa2.selecionados;
             atualizarBloco();
             ng.e2_ResultadoBusca = [];
             self.etapa2.selecionados = [];
@@ -3436,6 +3423,20 @@
 
             ng.alterouEtapaAtual = (true);
             e2_Salvar();
+        }
+
+        ng.e2_LimparItensCadeiaBlocosSelecionados = e2_LimparItensCadeiaBlocosSelecionados;
+        function e2_LimparItensCadeiaBlocosSelecionados() {
+            if (ng.e2_ResultadoBusca && ng.e2_ResultadoBusca.length) {
+                ng.e2_ResultadoBusca.forEach(item => {
+                    item.check = false;
+                });
+            }
+            self.etapa2.selecionados = [];
+            ng.e2_ListaItemSelecionados = [];
+
+            ng.alterouEtapaAtual = (true);
+            // TODO: AJUSTAR PARA SALVAR BLOCKCHAIN e2_Salvar();
         }
 
         /**
