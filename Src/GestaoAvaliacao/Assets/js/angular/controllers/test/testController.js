@@ -1794,7 +1794,6 @@
             ng.e2_ListaModalidade;
             ng.esconderNivelEnsinoModalidade;
 
-
             // Situação
             //ng.e2_ListaSituacao = [{ Description: 'Ativo' }, { Description: 'Inativo' }, ];
             //ng.e2_ListaSituacaoChecked = [];
@@ -1814,7 +1813,6 @@
             };
 
             ng.keyWords = [];
-
 
             // Busca
             ng.e2_BtnPesquisar;
@@ -2093,10 +2091,6 @@
                 }
             }
 
-            /* TODO:
-            contarItensSelecionados();
-            */
-
             if (ng.navigation === ng.ultimo)
                 initEtapa4();
             else
@@ -2200,17 +2194,6 @@
         };
 
         /**
-        * @function Carrega todos as áreas de conhecimento do bloco.
-        * @private
-        * @param
-        */
-        function e2_knowledgeAreasCarregar() {
-            addEventkeyUp();
-            if (ng.e2_blockAtual.Id)
-                self.etapa2.blockKnowledgeAreas({ Id: ng.e2_blockAtual.Id }, e2_knowledgeAreasCarregado);
-        };
-
-        /**
         * @function Tratamento para todos itens selecionados
         * @private
         * @param r = resposta do servidor
@@ -2228,6 +2211,17 @@
                 ng.e2_blockAtual.QtdeKnowledgeArea = 0;
                 e2_ResultadoSelecionados();
             }
+        };
+
+        /**
+        * @function Carrega todos as áreas de conhecimento do bloco.
+        * @private
+        * @param
+        */
+        function e2_knowledgeAreasCarregar() {
+            addEventkeyUp();
+            if (ng.e2_blockAtual.Id)
+                self.etapa2.blockKnowledgeAreas({ Id: ng.e2_blockAtual.Id }, e2_knowledgeAreasCarregado);
         };
 
         /**
@@ -2920,10 +2914,8 @@
 
             }
             else if (id === 1) {
-
-                if (ng.e2_ResultadoBusca)
+                if (ng.e2_ResultadoBusca) {
                     if (ng.e2_ResultadoBusca.length < 1) {
-
                         ng.e2_ListaPeriodoChecked = [];
                         ng.e2_Modalidade = null;
 
@@ -2933,6 +2925,7 @@
                         if (!ng.isMultidiscipline)
                             pesquisarFiltros();
                     }
+                }
 
                 ng.e2_ListaModal = false;
             }
