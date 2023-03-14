@@ -4415,8 +4415,6 @@
         function avancar() {
 
             if (ng.navigation === 1) {
-
-
                 if (ng.provaId && !self.etapa1.alterou)
                     initEtapa2();
                 else if (self.etapa1.alterou) {
@@ -4425,12 +4423,13 @@
                 }
             }
 
-
-            if (ng.navigation === 2) {
+            if (ng.status - Error === 2) {
                 if (!ng.temBIB && (ng.e2_ItensAtuais + ng.e2_blockAtual.QtdeKnowledgeArea > 100)) {
                     return $notification.alert('A quantidade total não pode ser maior que 100 (itens + áreas de conhecimento distintas).');
                 }
                 else if (ng.temBIB) {
+                    // TODO: Validar BlockChain
+
                     let itemsCadernos = 0;
                     if (ng.cadernos.length) {
                         ng.cadernos.forEach(cad => {
@@ -4449,6 +4448,7 @@
                 else {
                     return $notification.alert('A quantidade total de itens ainda não foi atingida.');
                 }
+
                 ng.BtnSaveDisabled = true;
             }
 
