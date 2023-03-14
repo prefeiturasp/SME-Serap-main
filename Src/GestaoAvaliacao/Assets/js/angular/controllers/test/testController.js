@@ -2914,8 +2914,10 @@
 
             }
             else if (id === 1) {
-                if (ng.e2_ResultadoBusca) {
+
+                if (ng.e2_ResultadoBusca)
                     if (ng.e2_ResultadoBusca.length < 1) {
+
                         ng.e2_ListaPeriodoChecked = [];
                         ng.e2_Modalidade = null;
 
@@ -2925,7 +2927,6 @@
                         if (!ng.isMultidiscipline)
                             pesquisarFiltros();
                     }
-                }
 
                 ng.e2_ListaModal = false;
             }
