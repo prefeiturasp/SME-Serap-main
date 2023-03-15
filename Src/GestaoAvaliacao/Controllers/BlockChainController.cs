@@ -100,14 +100,14 @@ namespace GestaoAvaliacao.Controllers
         /// </summary>
         /// <param name="blockChainId"></param>
         /// <param name="page"></param>
-        /// <param name="pageItems"></param>
+        /// <param name="pageItens"></param>
         /// <returns></returns>
         [HttpGet]
-        public JsonResult GetBlockChainItems(long blockChainId, int page, int pageItems)
+        public JsonResult GetBlockChainItems(long blockChainId, int page, int pageItens)
         {
             try
             {
-                var blockChainItems = blockChainBusiness.GetBlockChainItems(blockChainId, page, pageItems);
+                var blockChainItems = blockChainBusiness.GetBlockChainItems(blockChainId, page, pageItens);
 
                 if (blockChainItems == null || !blockChainItems.Any())
                     return Json(new { success = true, lista = "" }, JsonRequestBehavior.AllowGet);
@@ -189,7 +189,7 @@ namespace GestaoAvaliacao.Controllers
                 new
                 {
                     success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message,
-                    blockid = entity.Id, TestSituation = EnumTestSituation.Pending
+                    blockChainId = entity.Id, TestSituation = EnumTestSituation.Pending
                 }, JsonRequestBehavior.AllowGet);
         }
 

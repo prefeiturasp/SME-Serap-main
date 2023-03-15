@@ -1,0 +1,217 @@
+﻿@*MODAL LISTA DE ITENS DO BLOCO*@
+@* Julio Silva - 23/10/2015 *@
+<div class="modal-body" ng-show="e2_Navegacao===3">
+    <label ng-if="applicationActiveOrDone" style="color:brown"><strong>*Prova já aplicada ou em período de aplicação. Não é possível alterar a ordem e a versão dos itens.</strong></label>
+    @* Lista de itens *@
+    <div class="row" ng-if="e2_ListaItemSelecionados.length>0" style="overflow-x:auto;">
+        @* Tabela da busca *@
+        <table class="table ordem">
+            <colgroup>
+                <col width="4%" />
+                <col width="4%" />
+                <col width="4%" />
+                <col width="4%" />
+                <col width="4%" />
+                <col width="21%" />
+                <col width="21%" />
+                <col width="8%" />
+                <col width="5%" />
+                <col width="5%" />
+                <col width="5%" />
+                <col width="5%" />
+                <col width="5%" />
+                <col width="5%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="table-parameter-centralize"> Ordem</th>
+                    <th class="table-parameter-centralize" ng-if="!applicationActiveOrDone"> Acima</th>
+                    <th class="table-parameter-centralize" ng-if="!applicationActiveOrDone"> Abaixo</th>
+                    <th class="table-parameter-centralize"> Cód.</th>
+                    <th class="table-parameter-centralize"> Versão</th>
+                    <th class="table-parameter-centralize"> Enunciado</th>
+                    <th class="table-parameter-centralize"> Texto Base</th>
+                    <th class="table-parameter-centralize"> Habilidade</th>
+                    <th class="table-parameter-centralize"> Dificuldade </th>
+                    <th class="table-parameter-centralize"> Disciplina</th>
+                    <th class="table-parameter-centralize"> Área de conhecimento</th>
+                    <th class="table-parameter-centralize"> {{curriculumGradeLabel}}</th>
+                    <th class="table-parameter-centralize"> Ação</th>
+                    <th class="table-parameter-centralize" ng-if="!applicationActiveOrDone"> Versões</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat-start="($indexItem, itens) in e2_ListaItemSelecionados track by $indexItem"
+                    ng-class="{'samebasetext': ((itens.BaseTextId!=undefined && groupLimit==itens.BaseTextId) || oneLimit.Id==itens.Id), 'animaHover': itens.Animation}">
+
+                    @* Ordem do Item *@
+                    <td class="table-parameter-centralize">{{$indexItem+1}}</td>
+
+                    @* Acima *@
+                    <td class="table-parameter-centralize"
+                        ng-if="!applicationActiveOrDone"
+                        ng-mouseover="e2_ListaItemSelecionadosHover(itens, 'up');"
+                        ng-mouseleave="e2_ListaItemSelecionadosLeave();">
+                        <div>
+                            <a href="javascript:void(0);" ng-click="e2_ListaItemSelecionadosOrder('up', $indexItem==0);"
+                               ng-class="{'orderBaseTextToggle':$indexItem!=0, 'cinzaorderitem': $indexItem==0}">
+                                <i class="material-icons">keyboard_arrow_up</i>
+                            </a>
+                        </div>
+                    </td>
+
+                    @* Abaixo *@
+                    <td class="table-parameter-centralize"
+                        ng-if="!applicationActiveOrDone"
+                        ng-mouseover="e2_ListaItemSelecionadosHover(itens, 'down');"
+                        ng-mouseleave="e2_ListaItemSelecionadosLeave();">
+                        <div>
+                            <a href="javascript:void(0);" ng-click="e2_ListaItemSelecionadosOrder('down', $indexItem==(e2_ListaItemSelecionados.length-1));"
+                               ng-class="{'orderBaseTextToggle':$indexItem<(e2_ListaItemSelecionados.length-1), 'cinzaorderitem':$indexItem==(e2_ListaItemSelecionados.length-1)}">
+                                <i class="material-icons">keyboard_arrow_down</i>
+                            </a>
+                        </div>
+                    </td>
+
+                    @* Código do Item *@
+                    <td class="table-parameter-centralize">{{itens.Code}}</td>
+
+                    @* Versão *@
+                    <td class="table-parameter-centralize">{{itens.ItemVersion}}</td>
+
+                    @* Enunciado *@
+                    <td class="table-parameter-centralize">
+                        <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.Statement}}"
+                           data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                            {{(itens.Statement | tagToString) | minimize: 22}}
+                        </a>
+                    </td>
+
+                    @* Texto Base *@
+                    <td class="table-parameter-centralize">
+                        <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{itens.BaseTextDescription}}"
+                           data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                            {{(itens.BaseTextDescription | tagToString:true) | minimize: 22}}
+                        </a>
+                    </td>
+
+                    @* Habilidade *@
+                    <td class="table-parameter-centralize">
+                        <div>
+                            <span ng-repeat="s in itens.Skills" data-trigger="hover" data-type="success" data-title="{{s.Description}}"
+                                  data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
+                                {{ s.Code }}
+                            </span>
+                        </div>
+                    </td>
+
+                    @* Dificuldade *@
+                    <td class="table-parameter-centralize ">
+                        <div ng-show="itens.ItemLevel.Value" data-trigger="hover" data-type="success" data-title="{{itens.ItemLevel.Description}}"
+                             data-animation="am-fade" data-placement="top" data-container="body" delay="150" bs-tooltip>
+                            <button type="button" class="btn btn-sm btn-primary btn-tiny" disabled>
+                                {{itens.ItemLevel.Value}}
+                            </button>
+                        </div>
+                    </td>
+
+                    @* Disciplina *@
+                    <td class="table-parameter-centralize">{{itens.DisciplineDescription}}</td>
+
+                    @* Área de conhecimento *@
+                    <td class="table-parameter-centralize">{{itens.KnowledgeArea_Description}}</td>
+
+                    @* Periodo *@
+                    <td class="table-parameter-centralize">{{itens.Periodo}}</td>
+
+                    @* Ação *@
+                    <td>
+                        <button class="btnMais"
+                                data-ng-click="changeTest(item)"
+                                data-placement="left"
+                                data-trigger="focus"
+                                data-custom-class="itemListPopover"
+                                data-template="Assets/js/angular/controllers/test/itemListMenu.html"
+                                data-animation="popover-fade"
+                                data-container=".modalBig"
+                                data-bs-popover="popovermenu">
+                            <i class="material-icons">view_list</i>
+                        </button>
+                    </td>
+                    <td ng-if="!applicationActiveOrDone" ng-click="collapse($index)" class="text-center">
+                        <a class="material-icons" ng-show="!itens.expanded" ng-click="carregarVersoes(itens); itens.expanded = true;">expand_more</a>
+                        <a class="material-icons" ng-show="itens.expanded" ng-click="itens.expanded = false;">expand_less</a>
+                    </td>
+                </tr>
+                <tr ng-if="itens.expanded && !applicationActiveOrDone">
+                    <td colspan="14">
+                        <div ng-show="e2_ListaItemVersoes.length == 0">
+                            <span>Nenhum resultado encontrado.</span>
+                        </div>
+                        <table class="table ordem" ng-if="e2_ListaItemVersoes.length > 0">
+                            <colgroup>
+                                <col width="10%" />
+                                <col width="10%" />
+                                <col width="35%" />
+                                <col width="35%" />
+                                <col width="10%" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class="table-parameter-centralize"> Cód.</th>
+                                    <th class="table-parameter-centralize"> Versão</th>
+                                    <th> Enunciado</th>
+                                    <th> Texto Base</th>
+                                    <th class="table-parameter-centralize"> Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="($indexVersoes, versoes) in e2_ListaItemVersoes track by $indexVersoes">
+                                    @* Código do Item *@
+                                    <td class="table-parameter-centralize">{{versoes.ItemCode}}</td>
+
+                                    @* Versão *@
+                                    <td class="table-parameter-centralize">{{versoes.ItemVersion}}</td>
+
+                                    @* Enunciado *@
+                                    <td>
+                                        <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{versoes.Statement}}"
+                                           data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                            {{(versoes.Statement | tagToString) | minimize: 22}}
+                                        </a>
+                                    </td>
+
+                                    @* Texto Base *@
+                                    <td>
+                                        <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{versoes.BaseText.Description}}"
+                                           data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                            {{(versoes.BaseText.Description | tagToString:true) | minimize: 22}}
+                                        </a>
+                                    </td>
+
+                                    @* Ação *@
+                                    <td class="table-parameter-centralize">
+                                        <button class="btnMais"
+                                                data-placement="left"
+                                                data-trigger="focus"
+                                                data-custom-class="itemListPopover"
+                                                data-template="Assets/js/angular/controllers/test/itemVersionListMenu.html"
+                                                data-animation="popover-fade"
+                                                data-container=".modalBig"
+                                                data-bs-popover="popovermenu">
+                                            <i class="material-icons">view_list</i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr data-ng-repeat-end="" class="collapse"></tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-show="e2_ListaItemSelecionados.length===0">
+        <span>Nenhum item foi selecionado.</span>
+    </div>
+</div>

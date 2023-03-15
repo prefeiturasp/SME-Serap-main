@@ -189,7 +189,7 @@ namespace GestaoAvaliacao.Repository
                                             INNER JOIN BlockChainItem BCI WITH (NOLOCK) ON BCI.Item_Id = I.Id 
                                             INNER JOIN BlockChain BC WITH (NOLOCK) ON BC.Id = BCI.BlockChain_Id
                                             INNER JOIN Test T WITH(NOLOCK) ON T.Id = BC.[Test_Id]
-                                            LEFT JOIN KnowledgeArea KA WITH(NOLOCK) ON KnowledgeArea_Id = I.KnowledgeArea_Id
+                                            LEFT JOIN KnowledgeArea KA WITH(NOLOCK) ON KA.Id = I.KnowledgeArea_Id
                                                 AND KA.State = @state
                                         WHERE BCI.BlockChain_Id = @blockChainId
                                         AND BCI.State = @state 
@@ -204,18 +204,18 @@ namespace GestaoAvaliacao.Repository
             const string sqlMulti = @"SELECT B.Id, B.Description, B.Source 
                                         FROM Item I WITH (NOLOCK) 
                                         INNER JOIN BaseText B WITH (NOLOCK) ON B.Id = I.BaseText_Id
-                                        WHERE I.Id = @id 
+                                        WHERE I.Id = @blockChainId 
                                         AND I.State = @state AND B.State = @state 
 
                                         SELECT L.Description, L.Value 
                                         FROM Item I WITH (NOLOCK) 
                                         INNER JOIN ItemLevel L WITH (NOLOCK) ON L.Id = I.ItemLevel_Id 
-                                        WHERE I.Id = @id 
+                                        WHERE I.Id = @blockChainId
                                         AND I.State = @state AND L.State = @state 
 
                                         SELECT TypeCurriculumGradeId 
                                         FROM ItemCurriculumGrade WITH (NOLOCK) 
-                                        WHERE Item_Id = @id 
+                                        WHERE Item_Id = @blockChainId
                                         AND State = @state 
 
                                         SELECT BCI.Id, BCI.BlockChain_Id, BCI.Item_Id, BCI.[Order]  
@@ -232,7 +232,7 @@ namespace GestaoAvaliacao.Repository
                                         INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
                                         WHERE I.State = @state 
                                         AND D.State = @state 
-                                        AND I.Id = @id ";
+                                        AND I.Id = @blockChainId ";
 
             using (var cn = Connection)
             {
