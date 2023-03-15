@@ -4043,9 +4043,11 @@
             ng.alterouEtapaAtual = true;
         };
 
+        function initEtapa3() {
+
+        }
+
         function initEtapa4() {
-
-
             ng.Provas;
 
             ng.provaCaminho = [];
@@ -4053,7 +4055,6 @@
             e4_cadernoCarregar();
 
             self.etapa4.carregou = true;
-
         };
 
         /**
@@ -4389,8 +4390,12 @@
         */
         ng.voltar = voltar;
         function voltar() {
-            if (ng.navigation > 0)
+            if (ng.navigation > 0) {
+                if (ng.navigation === 2 && ng.ehCadeiaBlocos)
+                    ng.mostrarAvisoQtdItensCadeiaBlocosNaoAtingida = false;
+
                 ng.navigation--;
+            }
         };
 
         /**
@@ -4411,9 +4416,9 @@
         * @private
         * @param item: elemento que esta sendo validado
         */
+        ng.mostrarAvisoQtdItensCadeiaBlocosNaoAtingida = false;
         ng.avancar = avancar;
         function avancar() {
-
             if (ng.navigation === 1) {
                 if (ng.provaId && !self.etapa1.alterou)
                     initEtapa2();
@@ -4423,30 +4428,49 @@
                 }
             }
 
-            if (ng.status - Error === 2) {
+            if (ng.navigation === 2) {
+                const msgItens = 'A quantidade total de itens ainda não foi atingida.';
+
                 if (!ng.temBIB && (ng.e2_ItensAtuais + ng.e2_blockAtual.QtdeKnowledgeArea > 100)) {
                     return $notification.alert('A quantidade total não pode ser maior que 100 (itens + áreas de conhecimento distintas).');
                 }
                 else if (ng.temBIB) {
-                    // TODO: Validar BlockChain
+                    if (ng.ehCadeiaBlocos) {
+                        let itensCadeiaBloco = 0;
 
-                    let itemsCadernos = 0;
-                    if (ng.cadernos.length) {
-                        ng.cadernos.forEach(cad => {
-                            itemsCadernos += cad.ItensCount;
-                        });
-                    }
+                        if (ng.cadeiaBlocos.length) {
+                            ng.cadeiaBlocos.forEach(c => {
+                                itensCadeiaBloco += c.ItensCount;
+                            });
+                        }
 
-                    if (itemsCadernos === (parseInt(ng.e1_itensBlocos) * parseInt(ng.e1_qtdBlocos))) {
-                        initEtapa4();
+                        if (itensCadeiaBloco === (parseInt(ng.e1_qtdItensCadeiaBlocos) * parseInt(ng.e1_qtdCadeiaBlocos))) {
+                            ng.mostrarAvisoQtdItensCadeiaBlocosNaoAtingida = false;
+                            initEtapa3();
+                        } else {
+                            ng.mostrarAvisoQtdItensCadeiaBlocosNaoAtingida = true;
+                            return $notification.alert(msgItens);
+                        }
                     } else {
-                        return $notification.alert('A quantidade total de itens ainda não foi atingida.');
+                        let itemsCadernos = 0;
+
+                        if (ng.cadernos.length) {
+                            ng.cadernos.forEach(cad => {
+                                itemsCadernos += cad.ItensCount;
+                            });
+                        }
+
+                        if (itemsCadernos === (parseInt(ng.e1_itensBlocos) * parseInt(ng.e1_qtdBlocos))) {
+                            initEtapa4();
+                        } else {
+                            return $notification.alert(msgItens);
+                        }
                     }
                 }
                 else if (ng.e2_ItensAtuais === ng.itensTotais)
                     initEtapa4();
                 else {
-                    return $notification.alert('A quantidade total de itens ainda não foi atingida.');
+                    return $notification.alert(msgItens);
                 }
 
                 ng.BtnSaveDisabled = true;
@@ -4454,7 +4478,6 @@
 
             if (ng.navigation < ng.listaWizards.length)
                 ng.navigation++;
-
         };
 
         /**

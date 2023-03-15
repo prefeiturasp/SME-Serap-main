@@ -963,7 +963,8 @@
                             @* Avançar *@
                             <button type="button"
                                     class="btnPadrao2 pull-right"
-                                    ng-hide="navigation===3 || (showTestTAI && navigation===2)"
+                                    @*ng-hide="navigation===3 || (showTestTAI && navigation===2)"*@
+                                    ng-hide="navigation===ultimo"
                                     ng-disabled="provaId===0"
                                     ng-click="avancar()">
                                 Avançar
@@ -971,7 +972,8 @@
                             @* Finalizar *@
                             <button type="button"
                                     class="btnPadrao2 pull-right"
-                                    ng-hide="(navigation!==ultimo && !showTestTAI) || (showTestTAI && navigation!==2)"
+                                    @*ng-hide="(navigation!==ultimo && !showTestTAI) || (showTestTAI && navigation!==2)"*@
+                                    ng-hide="navigation!==ultimo"
                                     ng-click="finalizar()">
                                 Finalizar
                             </button>
@@ -984,7 +986,8 @@
                             @* Salvar *@
                             <button type="button"
                                     class="btnPadrao2 pull-right"
-                                    ng-hide="(navigation===2 && !showTestTAI) || navigation===3"
+                                    @*ng-hide="(navigation===2 && !showTestTAI) || navigation===3"*@
+                                    ng-hide="(navigation===2 && !showTestTAI) || navigation===ultimo"
                                     ng-click="salvar()">
                                 Salvar
                             </button>
@@ -1016,6 +1019,7 @@
                         <h4 class="modal-title padding-6" id="modal1Label">
                             <strong ng-show="e2_Navegacao===1">Lista de itens disponíveis</strong>
                             <strong ng-show="e2_Navegacao===2">Lista de itens selecionados</strong>
+                            <strong ng-show="e2_Navegacao===3">Lista de itens selecionados nos blocos</strong>
                             <strong ng-show="e2_Navegacao===5">Resumo do Item</strong>
                             <strong ng-show="e2_Navegacao===6">Versões do item</strong>
                             <strong ng-show="e2_Navegacao===7">Lista de áreas de conhecimento</strong>

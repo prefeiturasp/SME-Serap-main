@@ -32,7 +32,7 @@
                             <th class="table-parameter-centralize ">
                                 <i ng-class="{ true:'material-icons check-success pull-left', false:'material-icons status-Error pull-left' }
                                     [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">
-                                    {{ (bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0) ? 'done' : (bloco.ItensCount !== 0) ? 'error' : '' }}
+                                    {{ (bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0) ? 'done' : mostrarAvisoQtdItensCadeiaBlocosNaoAtingida ? 'error' : '' }}
                                 </i>
                             </th>
 
