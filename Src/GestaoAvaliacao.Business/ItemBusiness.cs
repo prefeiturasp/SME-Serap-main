@@ -1078,6 +1078,16 @@ namespace GestaoAvaliacao.Business
             }).ToList();
         }
 
+        public List<BaseDto> ObterAssuntosPorDisciplina(long DisciplinaId)
+        {
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            return subjectRepository.ObterAssuntosPorDisciplinaId(new Guid(entidade.Value), DisciplinaId).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
+        }
+
         public List<BaseDto> LoadSubsubjectBySubject(string idSubjects)
         {
             var entidade = parambusiness.GetByKey("ENTIDADE");
