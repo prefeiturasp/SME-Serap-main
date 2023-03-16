@@ -171,11 +171,6 @@
                 url: base_url('BlockChain/GetTestBlockChains')
             },
 
-            'searchBlockChain': {
-                method: 'GET',
-                url: base_url('BlockChain/SearchBlockChainItem')
-            },
-
             'visualizarItensCadeiaBloco': {
                 method: 'GET',
                 url: base_url('BlockChain/GetBlockChainItems')
