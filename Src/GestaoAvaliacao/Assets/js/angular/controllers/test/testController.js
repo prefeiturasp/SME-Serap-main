@@ -4639,31 +4639,58 @@
         };
 
         ng.changeVersionItem = function changeVersionItem(itens, versoes) {
-            TestModel.saveChangeItem({ item: versoes, test_id: ng.params, itemIdAntigo: itens.Id, blockId: ng.e2_blockAtual.Id }, function (result) {
+            if (ng.ehCadeiaBlocos) {
+                TestModel.saveChangeBlockChainItem({ item: versoes, testId: ng.params, itemIdAntigo: itens.Id, blockChainId: ng.e2_blockChainAtual.Id }, function (result) {
+                    console.log(result, "result");
 
-                console.log(result, "result");
+                    if (result.success) {
+                        $notification.success(result.message);
 
-                if (result.success) {
-                    $notification.success(result.message);
+                        for (var k = 0; k < ng.e2_ListaItemSelecionados.length; k++) {
+                            if (ng.e2_ListaItemSelecionados[k].Id == itens.Id) {
+                                ng.e2_ListaItemSelecionados[k].Id = versoes.Id;
+                                ng.e2_ListaItemSelecionados[k].BaseTextId = versoes.BaseText.Id;
+                                ng.e2_ListaItemSelecionados[k].BaseTextDescription = versoes.BaseText.Description;
+                                ng.e2_ListaItemSelecionados[k].Code = versoes.ItemCode;
+                                ng.e2_ListaItemSelecionados[k].ItemCodeVersion = versoes.ItemCodeVersion;
+                                ng.e2_ListaItemSelecionados[k].ItemVersion = versoes.ItemVersion;
+                                ng.e2_ListaItemSelecionados[k].Statement = versoes.Statement;
+                            }
 
-                    for (var k = 0; k < ng.e2_ListaItemSelecionados.length; k++) {
-                        if (ng.e2_ListaItemSelecionados[k].Id == itens.Id) {
-                            ng.e2_ListaItemSelecionados[k].Id = versoes.Id;
-                            ng.e2_ListaItemSelecionados[k].BaseTextId = versoes.BaseText.Id;
-                            ng.e2_ListaItemSelecionados[k].BaseTextDescription = versoes.BaseText.Description;
-                            ng.e2_ListaItemSelecionados[k].Code = versoes.ItemCode;
-                            ng.e2_ListaItemSelecionados[k].ItemCodeVersion = versoes.ItemCodeVersion;
-                            ng.e2_ListaItemSelecionados[k].ItemVersion = versoes.ItemVersion;
-                            ng.e2_ListaItemSelecionados[k].Statement = versoes.Statement;
-                        }
+                            ng.e2_ListaItemSelecionados[k].expanded = false;
+                        };
+                    }
+                    else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
+            }
+            else {
+                TestModel.saveChangeItem({ item: versoes, test_id: ng.params, itemIdAntigo: itens.Id, blockId: ng.e2_blockAtual.Id }, function (result) {
+                    console.log(result, "result");
 
-                        ng.e2_ListaItemSelecionados[k].expanded = false;
-                    };
-                }
-                else {
-                    $notification[result.type ? result.type : 'error'](result.message);
-                }
-            });
+                    if (result.success) {
+                        $notification.success(result.message);
+
+                        for (var k = 0; k < ng.e2_ListaItemSelecionados.length; k++) {
+                            if (ng.e2_ListaItemSelecionados[k].Id == itens.Id) {
+                                ng.e2_ListaItemSelecionados[k].Id = versoes.Id;
+                                ng.e2_ListaItemSelecionados[k].BaseTextId = versoes.BaseText.Id;
+                                ng.e2_ListaItemSelecionados[k].BaseTextDescription = versoes.BaseText.Description;
+                                ng.e2_ListaItemSelecionados[k].Code = versoes.ItemCode;
+                                ng.e2_ListaItemSelecionados[k].ItemCodeVersion = versoes.ItemCodeVersion;
+                                ng.e2_ListaItemSelecionados[k].ItemVersion = versoes.ItemVersion;
+                                ng.e2_ListaItemSelecionados[k].Statement = versoes.Statement;
+                            }
+
+                            ng.e2_ListaItemSelecionados[k].expanded = false;
+                        };
+                    }
+                    else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
+            }
         };
 
         ng.e1_criarObjetoDadosModalContexto = e1_criarObjetoDadosModalContexto;

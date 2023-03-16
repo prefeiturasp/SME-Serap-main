@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -1535,6 +1534,49 @@ namespace GestaoAvaliacao.Repository
                 GestaoAvaliacaoContext.Entry(blockItem).State = System.Data.Entity.EntityState.Added;
 
                 GestaoAvaliacaoContext.SaveChanges();
+            }
+        }
+
+        public void SaveChangeBlockChainItem(Item item, long testId, long itemIdAntigo, long blockChainId)
+        {
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                var test = gestaoAvaliacaoContext.Test.Find(testId);
+
+                if (test == null)
+                    return;
+
+                var blockChain = gestaoAvaliacaoContext.BlockChains.Include("BlockChainItems")
+                    .FirstOrDefault(p => p.Test_Id == testId && p.Id == blockChainId);
+
+                var blockChainItemAntigo = blockChain?.BlockChainItems.FirstOrDefault(p =>
+                    p.Item_Id == itemIdAntigo && p.State == (byte)EnumState.ativo);
+
+                if (blockChainItemAntigo == null)
+                    return;
+
+                var datetimenow = DateTime.Now;
+
+                blockChainItemAntigo.State = Convert.ToByte(EnumState.excluido);
+                blockChainItemAntigo.UpdateDate = datetimenow;
+
+                var blockChainItem = new BlockChainItem
+                {
+                    BlockChain_Id = blockChainItemAntigo.BlockChain_Id,
+                    Item_Id = item.Id,
+                    Order = blockChainItemAntigo.Order,
+                    State = Convert.ToByte(EnumState.ativo),
+                    CreateDate = datetimenow,
+                    UpdateDate = datetimenow
+                };
+
+                blockChain.UpdateDate = datetimenow;
+                test.UpdateDate = datetimenow;
+
+                gestaoAvaliacaoContext.Entry(blockChainItemAntigo).State = System.Data.Entity.EntityState.Modified;
+                gestaoAvaliacaoContext.Entry(blockChainItem).State = System.Data.Entity.EntityState.Added;
+
+                gestaoAvaliacaoContext.SaveChanges();
             }
         }
 

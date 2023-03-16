@@ -34,7 +34,7 @@
                             </th>
 
                             <th class="table-parameter-centralize ">
-                                <i ng-class="{ true:'material-icons check-success pull-left', false:'material-icons status-Error pull-left' }
+                                <i title="{{ (bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0) ? '' : 'Selecione itens para este bloco' }}" ng-class="{ true:'material-icons check-success pull-left', false:'material-icons status-Error pull-left' }
                                     [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">
                                     {{ (bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0) ? 'done' : mostrarAvisoQtdItensCadeiaBlocosNaoAtingida ? 'error' : '' }}
                                 </i>

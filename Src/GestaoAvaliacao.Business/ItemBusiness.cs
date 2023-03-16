@@ -960,6 +960,21 @@ namespace GestaoAvaliacao.Business
             return entity;
         }
 
+        public Item SaveChangeBlockChainItem(Item item, long testId, long itemIdAntigo, long blockChainId)
+        {
+            var entity = new Item { Id = item.Id };
+
+            if (!entity.Validate.IsValid)
+                return entity;
+
+            itemRepository.SaveChangeBlockChainItem(item, testId, itemIdAntigo, blockChainId);
+
+            entity.Validate.Type = ValidateType.Delete.ToString();
+            entity.Validate.Message = "Versão do item do bloco alterada com sucesso.";
+
+            return entity;
+        }
+
         public EntityFile Upload(Uploader file, string VirtualDirectory, string PhysicalDirectory)
         {
             EntityFile entityFile = new EntityFile();

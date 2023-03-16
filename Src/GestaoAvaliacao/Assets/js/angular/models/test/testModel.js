@@ -131,6 +131,10 @@
                 method: 'POST',
                 url: base_url('Item/SaveChangeItem')
             },
+            'saveChangeBlockChainItem': {
+                method: 'POST',
+                url: base_url('Item/SaveChangeBlockChainItem')
+            },
             'removerBlock': {
                 method: 'POST',
                 url: base_url('Block/RemoveBlockItem')
