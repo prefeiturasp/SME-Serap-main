@@ -118,7 +118,6 @@
                 { Id: 4, Description: "Aplicada", Style: "icone-aplicar material-icons situacao", Icon: 'check_circle' }
             ];
             //Chamadas utilizada na Etapa 2
-            // TODO:
             self.etapa2 = {
                 salvar: TestModel.saveBlock,
                 remover: TestModel.deleteBlock,
@@ -3500,7 +3499,7 @@
             ng.e2_ListaItemSelecionados = [];
 
             ng.alterouEtapaAtual = (true);
-            // TODO: AJUSTAR PARA SALVAR BLOCKCHAIN e2_Salvar();
+            e2_Salvar();
         }
 
         /**
