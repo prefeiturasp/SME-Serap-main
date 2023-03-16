@@ -13,8 +13,8 @@ namespace GestaoAvaliacao.Repository.Context
 		public GestaoAvaliacaoContext()
 			: base(Connection.GetConnectionString("GestaoAvaliacao"))
 		{
-			this.Configuration.ProxyCreationEnabled = false;
-			this.Configuration.LazyLoadingEnabled = false;
+			Configuration.ProxyCreationEnabled = false;
+			Configuration.LazyLoadingEnabled = false;
 		}
 
 		public GestaoAvaliacaoContext(string connectionString) : base(connectionString) { }
@@ -29,6 +29,7 @@ namespace GestaoAvaliacao.Repository.Context
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
 			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
 			modelBuilder.Configurations.Add(new AbsenceReasonMap());
 			modelBuilder.Configurations.Add(new AlternativeMap());
 			modelBuilder.Configurations.Add(new BaseTextMap());
@@ -100,7 +101,8 @@ namespace GestaoAvaliacao.Repository.Context
 			modelBuilder.Configurations.Add(new TestTaiCurriculumGradeMap());
             modelBuilder.Configurations.Add(new ArquivoResultadoPspMap());
             modelBuilder.Configurations.Add(new DadosArquivoResultadoPspMap());
-
+            modelBuilder.Configurations.Add(new BlockChainMap());
+            modelBuilder.Configurations.Add(new BlockChainItemMap());
 
             modelBuilder.Entity<Subject>()
                 .HasMany<Discipline>(s => s.Disciplines)
@@ -195,6 +197,7 @@ namespace GestaoAvaliacao.Repository.Context
 		public DbSet<TestTaiCurriculumGrade> TestTaiCurriculumGrade { get; set; }
         public DbSet<ArquivoResultadoPsp> ArquivoResultadoPsp { get; set; }
         public DbSet<DadosArquivoResultadoPsp> DadosArquivoResultadoPsp { get; set; }
-
+		public DbSet<BlockChain> BlockChains { get; set; }
+		public DbSet<BlockChainItem> BlockChainItems { get; set; }
     }
 }
