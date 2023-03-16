@@ -1928,37 +1928,9 @@
         </div>
     </div>
     
-    
-    @* Modal questionar o usuário se ele deseja Remover itens selecionados' *@
-    <div class="modal fade" id="modalRemoverItensCadeiaBlocoSelecionados" tabindex="-1" role="dialog" aria-labelledby="modalRemoverItensCadeiaBlocoSelecionados" aria-hidden="true">
-        <div class="modal-dialog ">
-            <div class="modal-content ">
-
-                @*HEADER*@
-                <div class="modal-header">
-                    <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
-                    <h4 class="modal-title" id="modalRemoverItensCadeiaBlocoSelecionadosLabel">
-                        <strong>Atenção</strong>
-                    </h4>
-                </div>
-
-                @*BODY*@
-                <div class="modal-body">
-                    <div>
-                        <span>Remover itens selecionados?</span>
-                    </div>
-                </div>
-
-                @*FOOTER*@
-                <div class="modal-footer footerCustom ">
-                    <div class="container-fluid row-fluid">
-                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true">Não</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e2_LimparItensCadeiaBlocosSelecionados()">Sim</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    @{
+        Html.RenderPartial("_ClearSelectedItemsBlockChain");
+    }
 
     @*modalDeleteItemTestContex*@
         <div class="modal fade" id="modalDeleteItemTestContex" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

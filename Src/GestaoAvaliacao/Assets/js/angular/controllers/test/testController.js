@@ -4639,7 +4639,6 @@
         };
 
         ng.changeVersionItem = function changeVersionItem(itens, versoes) {
-            console.log(ng.e2_blockAtual.Id, "Teste")
             TestModel.saveChangeItem({ item: versoes, test_id: ng.params, itemIdAntigo: itens.Id, blockId: ng.e2_blockAtual.Id }, function (result) {
 
                 console.log(result, "result");

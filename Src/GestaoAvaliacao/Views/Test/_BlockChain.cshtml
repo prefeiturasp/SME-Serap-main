@@ -5,13 +5,13 @@
                 <h4 class="padding"><strong>{{ e1_testDescription }}</strong></h4>
                 <table class="table table-hover">
                     <colgroup>
+                        <col width="14%" />
+                        <col width="14%" />
                         <col width="15%" />
                         <col width="15%" />
-                        <col width="15%" />
-                        <col width="10%" />
-                        <col width="15%" />
-                        <col width="15%" />
-                        <col width="15%" />
+                        <col width="14%" />
+                        <col width="14%" />
+                        <col width="14%" />
                     </colgroup>
                     <thead>
                         <tr>
@@ -27,7 +27,11 @@
                         <tr ng-repeat="bloco in cadeiaBlocos">
                             <th class="table-parameter-centralize">{{ bloco.Description }}</th>
                             <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
-                            <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0 }}</th>
+                            <th class="table-parameter-centralize">
+                                <div style="text-align: right">
+                                    {{ bloco.Resto >-1? bloco.Resto:0 }}
+                                </div>
+                            </th>
 
                             <th class="table-parameter-centralize ">
                                 <i ng-class="{ true:'material-icons check-success pull-left', false:'material-icons status-Error pull-left' }
