@@ -1,4 +1,6 @@
 ﻿using GestaoAvaliacao.Entities;
+using System.Collections.Generic;
+using System;
 
 namespace GestaoAvaliacao.IRepository
 {
@@ -8,5 +10,7 @@ namespace GestaoAvaliacao.IRepository
         void Update(BlockChain blockChain);
         void RemoveBlockChainItem(long blockChainId, long itemId);
         void DeleteBlockChainItems(long id);
+        IEnumerable<BlockChain> GetTestBlockChains(long testId);
+        IEnumerable<Item> GetBlockChainItems(long blockChainId, int page, int pageItems);
     }
 }

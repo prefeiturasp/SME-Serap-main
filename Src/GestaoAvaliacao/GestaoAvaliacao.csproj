@@ -1762,6 +1762,9 @@
     <Content Include="Views\ElectronicTestResult\Index.cshtml" />
     <Content Include="Views\AdminSerapEstudantes\Index.cshtml" />
     <Content Include="Views\ImportarResultadosPSP\Index.cshtml" />
+    <Content Include="Views\Test\_BlockChain.cshtml" />
+    <Content Include="Views\Test\_EditBlockChain.cshtml" />
+    <Content Include="Views\Test\_ClearSelectedItemsBlockChain.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

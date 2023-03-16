@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
+using Item = GestaoAvaliacao.Entities.Item;
 
 namespace GestaoAvaliacao.Business
 {
@@ -112,6 +114,16 @@ namespace GestaoAvaliacao.Business
             entity.Validate.Message = "Itens removidos com sucesso.";
 
             return entity;
+        }
+
+        public IEnumerable<BlockChain> GetTestBlockChains(long testId)
+        {
+            return blockChainRepository.GetTestBlockChains(testId);
+        }
+
+        public IEnumerable<Item> GetBlockChainItems(long blockChainId, int page, int pageItems)
+        {
+            return blockChainRepository.GetBlockChainItems(blockChainId, page, pageItems);
         }
     }
 }

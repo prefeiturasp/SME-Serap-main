@@ -326,8 +326,9 @@ h1 {
 
 .status-Error {
   color: #d80c0c; }
-  .status-Error:hover {
-    color: #d80c0c; }
+
+.status-Error:hover {
+  color: #d80c0c; }
 
 .status-Error.botao {
   background: #fbbfbf;

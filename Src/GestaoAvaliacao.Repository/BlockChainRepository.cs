@@ -5,6 +5,7 @@ using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dapper;
 using GestaoAvaliacao.Entities.Enumerator;
 
 namespace GestaoAvaliacao.Repository
@@ -133,6 +134,144 @@ namespace GestaoAvaliacao.Repository
 
                 blockChain.UpdateDate = DateTime.Now;
                 gestaoAvaliacaoContext.Entry(blockChain).State = System.Data.Entity.EntityState.Modified;
+            }
+        }
+
+        public IEnumerable<BlockChain> GetTestBlockChains(long testId)
+        {
+            const string sql = @"SELECT Id, Description, Test_Id " +
+                               "FROM BlockChain WITH (NOLOCK) " +
+                               "WHERE Test_Id = @testId " +
+                               "AND State = @state " +
+
+                               "SELECT T.Id " +
+                               "FROM Test T WITH(NOLOCK)" +
+                               "WHERE Id = @testId " +
+
+                               "SELECT BCI.Id, BCI.BlockChain_Id, BCI.Item_Id, " +
+                               "(DENSE_RANK() OVER(ORDER BY BCI.[Order]) - 1) AS [Order] " +
+                               "FROM BlockChainItem BCI WITH (NOLOCK) " +
+                               "INNER JOIN BlockChain BC WITH (NOLOCK) ON BC.Id = BCI.BlockChain_Id " +
+                               "INNER JOIN Item I WITH(NOLOCK) ON I.Id = BCI.Item_Id AND I.State <> 3 " +
+                               "INNER JOIN Test T WITH(NOLOCK) ON T.Id = BC.[Test_Id] " +
+                               "WHERE BC.Test_Id = @testId " +
+                               "AND BCI.State = @state AND BC.State = @state";
+
+            using (var cn = Connection)
+            {
+                cn.Open();
+
+                var multi = cn.QueryMultiple(sql, new { testId, state = (byte)EnumState.ativo });
+
+                var listBlockChain = multi.Read<BlockChain>().ToList();
+                var listTest = multi.Read<Test>().ToList();
+                var listBlockChainItem = multi.Read<BlockChainItem>().ToList();
+
+                foreach (var blockChain in listBlockChain)
+                {
+                    blockChain.Test = listTest.FirstOrDefault(p => p.Id == blockChain.Test_Id);
+                    blockChain.BlockChainItems.AddRange(listBlockChainItem.Where(i => i.BlockChain_Id.Equals(blockChain.Id)));
+                }
+
+                return listBlockChain;
+            }
+        }
+
+        public IEnumerable<Item> GetBlockChainItems(long blockChainId, int page, int pageItems)
+        {
+            const string sql = @"WITH ItensPage AS
+                                    (
+                                        SELECT ROW_NUMBER() OVER (ORDER BY BCI.[Order]) AS RowNum, 
+                                            I.Id, I.ItemCode, I.ItemVersion, I.Statement, I.Revoked, I.KnowledgeArea_Id,
+                                            I.ItemCodeVersion, KA.Description AS KnowledgeArea_Description,
+                                            0 AS KnowledgeArea_Order
+                                        FROM Item I WITH (NOLOCK) 
+                                            INNER JOIN BlockChainItem BCI WITH (NOLOCK) ON BCI.Item_Id = I.Id 
+                                            INNER JOIN BlockChain BC WITH (NOLOCK) ON BC.Id = BCI.BlockChain_Id
+                                            INNER JOIN Test T WITH(NOLOCK) ON T.Id = BC.[Test_Id]
+                                            LEFT JOIN KnowledgeArea KA WITH(NOLOCK) ON KA.Id = I.KnowledgeArea_Id
+                                                AND KA.State = @state
+                                        WHERE BCI.BlockChain_Id = @blockChainId
+                                        AND BCI.State = @state 
+                                        AND I.State = @state 
+                                    )
+
+                                    SELECT
+                                        *
+                                    FROM ItensPage
+                                    WHERE RowNum BETWEEN @initialPageItem AND @finalPageItem;";
+
+            const string sqlMulti = @"SELECT B.Id, B.Description, B.Source 
+                                        FROM Item I WITH (NOLOCK) 
+                                        INNER JOIN BaseText B WITH (NOLOCK) ON B.Id = I.BaseText_Id
+                                        WHERE I.Id = @blockChainId 
+                                        AND I.State = @state AND B.State = @state 
+
+                                        SELECT L.Description, L.Value 
+                                        FROM Item I WITH (NOLOCK) 
+                                        INNER JOIN ItemLevel L WITH (NOLOCK) ON L.Id = I.ItemLevel_Id 
+                                        WHERE I.Id = @blockChainId
+                                        AND I.State = @state AND L.State = @state 
+
+                                        SELECT TypeCurriculumGradeId 
+                                        FROM ItemCurriculumGrade WITH (NOLOCK) 
+                                        WHERE Item_Id = @blockChainId
+                                        AND State = @state 
+
+                                        SELECT BCI.Id, BCI.BlockChain_Id, BCI.Item_Id, BCI.[Order]  
+                                        FROM BlockChainItem BCI WITH (NOLOCK) 
+                                        INNER JOIN BlockChain BC WITH (NOLOCK) ON BC.Id = BCI.BlockChain_Id 
+                                        INNER JOIN Item I WITH (NOLOCK) ON I.Id = BCI.Item_Id 
+                                        INNER JOIN Test T WITH(NOLOCK) ON T.Id = BC.[Test_Id] 
+                                        WHERE BCI.Item_Id = @itemId AND BCI.BlockChain_Id = @blockChainId 
+                                        AND I.State = @state AND BCI.State = @state 
+
+                                        SELECT D.Id, D.Description 
+                                        FROM Item I 
+                                        INNER JOIN EvaluationMatrix EM WITH (NOLOCK)ON EM.Id = I.EvaluationMatrix_Id 
+                                        INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
+                                        WHERE I.State = @state 
+                                        AND D.State = @state 
+                                        AND I.Id = @blockChainId ";
+
+            using (var cn = Connection)
+            {
+                cn.Open();
+
+                var initialPageItem = page * pageItems + 1;
+
+                var listItems = cn.Query<Item>(sql,
+                    new
+                    {
+                        blockChainId, state = (byte)EnumState.ativo, initialPageItem,
+                        finalPageItem = initialPageItem + pageItems - 1
+                    }).ToList();
+
+                foreach (var item in listItems)
+                {
+                    var itemId = item.Id;
+
+                    var multi = cn.QueryMultiple(sqlMulti,
+                        new { itemId, blockChainId, state = (byte)EnumState.ativo });
+
+                    var listBaseText = multi.Read<BaseText>();
+                    var listItemLevel = multi.Read<ItemLevel>();
+                    var listItemCurriculumGrade = multi.Read<ItemCurriculumGrade>();
+                    var listBlockChainItems = multi.Read<BlockChainItem>();
+                    var discipline = multi.Read<Discipline>();
+
+                    item.BaseText = listBaseText.FirstOrDefault();
+                    item.ItemLevel = listItemLevel.FirstOrDefault();
+                    item.ItemCurriculumGrades.AddRange(listItemCurriculumGrade);
+                    item.BlockChainItems.AddRange(listBlockChainItems);
+
+                    item.EvaluationMatrix = new EvaluationMatrix
+                    {
+                        Discipline = discipline.FirstOrDefault()
+                    };
+                }
+
+                return listItems;
             }
         }
     }
