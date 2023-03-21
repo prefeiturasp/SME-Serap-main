@@ -6,6 +6,6 @@ namespace GestaoAvaliacao.Entities
     {
         public string Description { get; set; }
         public virtual BlockChain BlockChain { get; set; }
-        public long? BlockChain_Id { get; set; }
+        public long BlockChain_Id { get; set; }
     }
 }
