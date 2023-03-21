@@ -78,6 +78,7 @@
     <Compile Include="AnswerSheetBatchQueueRepository.cs" />
     <Compile Include="AnswerSheetLotRepository.cs" />
     <Compile Include="BaseTextRepository.cs" />
+    <Compile Include="Map\BlockChainBlockMap.cs" />
     <Compile Include="BlockChainRepository.cs" />
     <Compile Include="BlockRepository.cs" />
     <Compile Include="BookletRepository.cs" />

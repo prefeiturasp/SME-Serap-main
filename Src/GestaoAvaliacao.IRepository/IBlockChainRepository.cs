@@ -1,6 +1,5 @@
 ﻿using GestaoAvaliacao.Entities;
 using System.Collections.Generic;
-using System;
 
 namespace GestaoAvaliacao.IRepository
 {
