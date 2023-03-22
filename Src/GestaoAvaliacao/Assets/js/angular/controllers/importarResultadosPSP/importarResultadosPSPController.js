@@ -73,11 +73,10 @@
                 function (result) {
                     if (result.success) {
                         if (result.lista.length > 0) {
-                            if (paginate !== null)
-                                $scope.paginate.nextPage();
                             $scope.listaImportacoes = result.lista;
                             $scope.pageSize = result.pageSize;
                             $scope.totalItens = $scope.paginate.totalItens();
+
                             if (!$scope.pages > 0) {
                                 $scope.pages = $scope.paginate.totalPages();
                             }
