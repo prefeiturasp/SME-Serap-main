@@ -5,8 +5,8 @@ using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -101,15 +101,48 @@ namespace GestaoAvaliacao.Controllers
         [HttpPost]
         public JsonResult ImportarArquivoResultado(HttpPostedFileBase file, int codigoTipoResultado)
         {
+            var sr = new StreamReader(file.InputStream);
+
+            var line = sr.ReadLine();
+
+            if (line == null)
+                return Json(new { success = false, message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
+
+            var splitRow = line.Trim().Split(';');
+
             try
             {
-                var arquivoResultado = new ArquivoResultadoPsp();
                 var tipoResultado = resultadoPspBusiness.ObterTipoResultadoPorCodigo(codigoTipoResultado);
 
+                var positionOfNewLine = tipoResultado.ModeloArquivo.IndexOf("\r\n", StringComparison.Ordinal);
+
+                if (positionOfNewLine < 0)
+                    positionOfNewLine = tipoResultado.ModeloArquivo.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+
+                var splitRowModel = tipoResultado.ModeloArquivo.Substring(0, positionOfNewLine).Trim()
+                    .Replace("\"", string.Empty).Split(';');
+
+                var isFileValid = splitRowModel.All(c => splitRow.Contains(c)) && splitRowModel.Length == splitRow.Length;
+
+                if (!isFileValid)
+                {
+                    return Json(
+                        new
+                        {
+                            success = false, type = ValidateType.alert.ToString(),
+                            message = $"O arquivo selecionado não é válido para o tipo {tipoResultado.Nome}."
+                        }, JsonRequestBehavior.AllowGet);
+                }
+
                 var guidArquivo = Guid.NewGuid();
-                arquivoResultado.CodigoTipoResultado = codigoTipoResultado;
-                arquivoResultado.NomeArquivo = $"{guidArquivo}.csv";
-                arquivoResultado.NomeOriginalArquivo = file.FileName;
+
+                var arquivoResultado = new ArquivoResultadoPsp
+                {
+                    CodigoTipoResultado = codigoTipoResultado,
+                    NomeArquivo = $"{guidArquivo}.csv",
+                    Tipo = tipoResultado.Nome,
+                    NomeOriginalArquivo = file.FileName
+                };
 
                 var retorno = resultadoPspBusiness.ImportarArquivoResultado(arquivoResultado, file);
                 
