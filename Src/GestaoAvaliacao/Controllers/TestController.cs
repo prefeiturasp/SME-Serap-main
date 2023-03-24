@@ -231,6 +231,11 @@ namespace GestaoAvaliacao.Controllers
                             text = tc.Text,
                             title = tc.Title
                         }).ToList(),
+                        BlockChains = entity.BlockChains.Where(c => c.State == (byte)EnumState.ativo).Select(c => new
+                        {
+                            c.Id, 
+                            c.Description
+                        }).ToList(),
                         TestSituation = entity.TestSituation,
                         PublicFeedback = entity.PublicFeedback,
                         Multidiscipline = entity.Multidiscipline,
@@ -533,6 +538,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar itens pesquisados." }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         [Paginate]
         public JsonResult GetSectionAdministrate(long test_id, int esc_id, int ttn_id, string dre_id, int crp_ordem, string statusCorrection)
@@ -823,6 +829,7 @@ namespace GestaoAvaliacao.Controllers
                     if (entity.TestContexts.Any())
                     {
                         testContextBusiness.DeleteByTestId(entity.Id);
+
                         foreach (var testContext in entity.TestContexts)
                         {
                             var position = ObterPosicionamento(testContext.ImagePositionDescription);
@@ -833,7 +840,7 @@ namespace GestaoAvaliacao.Controllers
                         }
                     }
 
-                    if (entity.BlockChains.Any())
+                    if (entity.RemoveBlockChain && entity.BlockChains.Any())
                         blockChainBusiness.DeleteByTestId(entity.Id);
                 }
                 else
@@ -846,9 +853,6 @@ namespace GestaoAvaliacao.Controllers
                 {
                     entity.TestSituation = testBusiness.TestSituation(entity);
                 }
-
-
-
             }
             catch (Exception ex)
             {
