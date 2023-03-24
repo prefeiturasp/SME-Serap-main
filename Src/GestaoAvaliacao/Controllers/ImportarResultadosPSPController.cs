@@ -108,7 +108,7 @@ namespace GestaoAvaliacao.Controllers
             if (line == null)
                 return Json(new { success = false, message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
 
-            var splitRow = line.Trim().Split(';');
+            var splitRow = line.Trim().Replace("\"", string.Empty).Split(';');
 
             try
             {

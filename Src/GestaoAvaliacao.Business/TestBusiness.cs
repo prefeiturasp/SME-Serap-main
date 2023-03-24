@@ -600,7 +600,10 @@ namespace GestaoAvaliacao.Business
 
                 entity.TestSituation = ValidateTestSituation(entity);
 
-                testRepository.Update(Id, entity);
+                var test = testRepository.Update(Id, entity);
+
+                entity.BlockChains.AddRange(test.BlockChains);
+                entity.RemoveBlockChain = test.RemoveBlockChain;
                 entity.Validate.Type = ValidateType.Update.ToString();
                 entity.Validate.Message = "Prova alterada com sucesso.";
             }
