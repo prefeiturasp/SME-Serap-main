@@ -197,6 +197,7 @@ namespace GestaoAvaliacao.Repository
                         .Include("TestSubGroup")
                         .Include("TestTime")
                         .Include("TestContexts")
+                        .Include("BlockChains")
                         .FirstOrDefault(i => i.Id == Id && i.State == (Byte)EnumState.ativo);
 
                     return query;
@@ -1499,7 +1500,7 @@ namespace GestaoAvaliacao.Repository
                 Test test = GestaoAvaliacaoContext.Test.Include("Discipline").Include("TestCurriculumGrades")
                     .Include("TestPerformanceLevels").Include("TestPerformanceLevels.PerformanceLevel")
                     .Include("TestItemLevels").Include("TestItemLevels.ItemLevel").Include("TestType")
-                    .Include("TestSubGroup").FirstOrDefault(a => a.Id == entity.Id);
+                    .Include("TestSubGroup").Include("BlockChains").FirstOrDefault(a => a.Id == entity.Id);
 
                 test.TestSituation = entity.TestSituation;
 
@@ -1564,6 +1565,7 @@ namespace GestaoAvaliacao.Repository
 
                 if (testCurriculumGrades != null && testCurriculumGrades.Count > 0)
                     test.TestCurriculumGrades.AddRange(testCurriculumGrades);
+                
 
                 #endregion
 
@@ -1598,6 +1600,8 @@ namespace GestaoAvaliacao.Repository
 
                 if (itemlevels != null && itemlevels.Count > 0)
                     test.TestItemLevels.AddRange(itemlevels);
+
+                entity.BlockChains.AddRange(test.BlockChains);
 
                 #endregion
 

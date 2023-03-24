@@ -35,11 +35,12 @@ namespace GestaoAvaliacao.Controllers
         private readonly ITestCurriculumGradeBusiness testCurriculumGradeBusiness;
         private readonly ITestPermissionBusiness testPermissionBusiness;
         private readonly ITestContextBusiness testContextBusiness;
+        private readonly IBlockChainBusiness blockChainBusiness;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
             IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
             IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness,
-            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness)
+            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness, IBlockChainBusiness blockChainBusiness)
         {
             this.testBusiness = testBusiness;
             this.testFilesBusiness = testFilesBusiness;
@@ -53,7 +54,7 @@ namespace GestaoAvaliacao.Controllers
             this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
             this.testPermissionBusiness = testPermissionBusiness;
             this.testContextBusiness = testContextBusiness;
-
+            this.blockChainBusiness = blockChainBusiness;
         }
 
         public ActionResult Index() => View();
@@ -808,14 +809,13 @@ namespace GestaoAvaliacao.Controllers
             {
                 foreach (var testContext in entity.TestContexts)
                 {
-                    EnumPosition position = ObterPosicionamento(testContext.ImagePositionDescription);
+                    var position = ObterPosicionamento(testContext.ImagePositionDescription);
 
                     testContext.ImagePosition = position;
                 }
 
                 if (entity.Id > 0)
                 {
-
                     entity = testBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.usu_id,
                             (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
                                 SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
@@ -825,13 +825,16 @@ namespace GestaoAvaliacao.Controllers
                         testContextBusiness.DeleteByTestId(entity.Id);
                         foreach (var testContext in entity.TestContexts)
                         {
-                            EnumPosition position = ObterPosicionamento(testContext.ImagePositionDescription);
+                            var position = ObterPosicionamento(testContext.ImagePositionDescription);
 
                             testContext.ImagePosition = position;
                             testContext.Test_Id = entity.Id;
                             testContextBusiness.Save(testContext);
                         }
                     }
+
+                    if (entity.BlockChains.Any())
+                        blockChainBusiness.DeleteByTestId(entity.Id);
                 }
                 else
                 {

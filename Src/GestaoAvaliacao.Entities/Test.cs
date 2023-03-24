@@ -17,6 +17,7 @@ namespace GestaoAvaliacao.Entities
             TestItemLevels = new List<TestItemLevel>();
             Visible = true;
             TestContexts = new List<TestContext>();
+            BlockChains = new List<BlockChain>();
         }
 
 		public string Description { get; set; }
@@ -69,7 +70,8 @@ namespace GestaoAvaliacao.Entities
 		public virtual List<TestItemLevel> TestItemLevels { get; set; }
 
         public virtual List<TestContext> TestContexts { get; set; }
-        
+        public virtual List<BlockChain> BlockChains { get; set; }
+
 
         public bool AllAdhered { get; set; }
 
