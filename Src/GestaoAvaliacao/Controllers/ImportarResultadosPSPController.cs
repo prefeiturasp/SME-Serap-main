@@ -101,38 +101,40 @@ namespace GestaoAvaliacao.Controllers
         [HttpPost]
         public JsonResult ImportarArquivoResultado(HttpPostedFileBase file, int codigoTipoResultado)
         {
-            var sr = new StreamReader(file.InputStream);
+            var b = new BinaryReader(file.InputStream);
+            var binData = b.ReadBytes(file.ContentLength);
+            var result = System.Text.Encoding.UTF8.GetString(binData);
 
-            var line = sr.ReadLine();
+            var splitRowResult = result.Substring(0, StringHelper.PositionOfNewLine(result)).Trim()
+                .Replace("\"", string.Empty).Split(';');
 
-            if (line == null)
+            if (string.IsNullOrEmpty(splitRowResult.ToString()))
                 return Json(new { success = false, message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
 
-            var splitRow = line.Trim().Replace("\"", string.Empty).Split(';');
+            b.BaseStream.Position = 0;
 
             try
             {
                 var tipoResultado = resultadoPspBusiness.ObterTipoResultadoPorCodigo(codigoTipoResultado);
 
-                var positionOfNewLine = tipoResultado.ModeloArquivo.IndexOf("\r\n", StringComparison.Ordinal);
+                var splitRowModeloArquivo = tipoResultado.ModeloArquivo
+                    .Substring(0, StringHelper.PositionOfNewLine(tipoResultado.ModeloArquivo))
+                    .Trim().Replace("\"", string.Empty).Split(';');
 
-                if (positionOfNewLine < 0)
-                    positionOfNewLine = tipoResultado.ModeloArquivo.IndexOf(Environment.NewLine, StringComparison.Ordinal);
-
-                var splitRowModel = tipoResultado.ModeloArquivo.Substring(0, positionOfNewLine).Trim()
-                    .Replace("\"", string.Empty).Split(';');
-
-                var isFileValid = splitRowModel.All(c => splitRow.Contains(c)) && splitRowModel.Length == splitRow.Length;
+                var isFileValid = splitRowModeloArquivo.All(c => splitRowResult.Contains(c)) &&
+                                  splitRowModeloArquivo.Length == splitRowResult.Length;
 
                 if (!isFileValid)
                 {
                     return Json(
                         new
                         {
-                            success = false, type = ValidateType.alert.ToString(),
+                            success = false,
+                            type = ValidateType.alert.ToString(),
                             message = $"O arquivo selecionado não é válido para o tipo {tipoResultado.Nome}."
                         }, JsonRequestBehavior.AllowGet);
                 }
+
 
                 var guidArquivo = Guid.NewGuid();
 
