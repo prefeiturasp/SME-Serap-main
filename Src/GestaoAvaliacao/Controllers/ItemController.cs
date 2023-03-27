@@ -985,6 +985,30 @@ namespace GestaoAvaliacao.Controllers
             return Json(new { success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult SaveChangeBlockChainItem(Item item, long testId, long itemIdAntigo, long blockChainId)
+        {
+            var entity = new Item();
+            try
+            {
+                entity = itemBusiness.SaveChangeBlockChainItem(item, testId, itemIdAntigo, blockChainId);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao tentar atualizar o item na prova.";
+
+                LogFacade.SaveError(ex);
+            }
+
+            return Json(
+                new
+                {
+                    success = entity.Validate.IsValid, type = entity.Validate.Type, message = entity.Validate.Message
+                }, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region Preview Print

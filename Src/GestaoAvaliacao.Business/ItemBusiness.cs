@@ -960,6 +960,21 @@ namespace GestaoAvaliacao.Business
             return entity;
         }
 
+        public Item SaveChangeBlockChainItem(Item item, long testId, long itemIdAntigo, long blockChainId)
+        {
+            var entity = new Item { Id = item.Id };
+
+            if (!entity.Validate.IsValid)
+                return entity;
+
+            itemRepository.SaveChangeBlockChainItem(item, testId, itemIdAntigo, blockChainId);
+
+            entity.Validate.Type = ValidateType.Delete.ToString();
+            entity.Validate.Message = "Versão do item do bloco alterada com sucesso.";
+
+            return entity;
+        }
+
         public EntityFile Upload(Uploader file, string VirtualDirectory, string PhysicalDirectory)
         {
             EntityFile entityFile = new EntityFile();
@@ -1078,6 +1093,16 @@ namespace GestaoAvaliacao.Business
             }).ToList();
         }
 
+        public List<BaseDto> ObterAssuntosPorDisciplina(long DisciplinaId)
+        {
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            return subjectRepository.ObterAssuntosPorDisciplinaId(new Guid(entidade.Value), DisciplinaId).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
+        }
+
         public List<BaseDto> LoadSubsubjectBySubject(string idSubjects)
         {
             var entidade = parambusiness.GetByKey("ENTIDADE");
@@ -1117,6 +1142,19 @@ namespace GestaoAvaliacao.Business
                 return query;
             }
             return default;
+        }
+
+        public List<ItemLevelDto> LoadAllItemLevel()
+        {
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var list = itemLevelRepository.LoadLevels(new Guid(entidade.Value)).Select(i => new ItemLevelDto()
+            {
+                Id = i.Id,
+                Descricao = i.Description,
+                Ordem = i.Value
+            }).ToList();
+
+            return list;
         }
 
         private void ValidateApi(ItemApiDto model, ItemApiResult itemResult)

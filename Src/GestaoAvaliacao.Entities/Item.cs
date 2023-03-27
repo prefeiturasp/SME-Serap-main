@@ -13,6 +13,7 @@ namespace GestaoAvaliacao.Entities
 			ItemCurriculumGrades = new List<ItemCurriculumGrade>();
 			IsRestrict = false;
 			BlockItems = new List<BlockItem>();
+            BlockChainItems = new List<BlockChainItem>();
             ItemFiles = new List<ItemFile>();
             ItemAudios = new List<ItemAudio>();
         }
@@ -49,6 +50,7 @@ namespace GestaoAvaliacao.Entities
         public virtual List<Alternative> Alternatives { get; set; }
         public virtual List<ItemCurriculumGrade> ItemCurriculumGrades { get; set; }
         public virtual List<BlockItem> BlockItems { get; set; }
+        public virtual List<BlockChainItem> BlockChainItems { get; set; }
         public bool? ItemNarrated { get; set; }
         public bool? StudentStatement { get; set; }
         public bool? NarrationStudentStatement { get; set; }

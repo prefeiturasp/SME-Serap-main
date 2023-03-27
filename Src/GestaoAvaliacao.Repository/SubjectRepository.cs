@@ -219,6 +219,37 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
+        public List<AJX_Select2> ObterAssuntosPorDisciplinaId(Guid EntityId, long DisciplinaId)
+        {
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                var sql = @"SELECT Id, Description
+                                FROM Subject s
+                            inner join SubjectDiscipline sd on s.id = sd.Subject_Id
+                                WHERE EntityId = @entityid
+                                AND State = @state
+                                and sd.Discipline_Id = @disciplinaId";
+
+                var lstsubjects = cn.Query<Subject>(sql, new { state = (Byte)EnumState.ativo, entityid = EntityId, disciplinaId = DisciplinaId });
+
+                List<AJX_Select2> lstAJX_Select2 = new List<AJX_Select2>();
+
+                foreach (Subject subject in lstsubjects)
+                {
+                    AJX_Select2 AJX_Select2 = new AJX_Select2();
+
+                    AJX_Select2.id = subject.Id.ToString();
+                    AJX_Select2.text = subject.Description;
+
+                    lstAJX_Select2.Add(AJX_Select2);
+                }
+
+                return lstAJX_Select2;
+            }
+        }
+
         public List<AJX_Select2> LoadSubsubjectBySubject(string description, string subjects, Guid EntityId)
         {
             using (IDbConnection cn = Connection)

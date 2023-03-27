@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using GestaoAvaliacao.Entities.Enumerator;
 
 namespace GestaoAvaliacao.Repository
 {
@@ -25,11 +26,13 @@ namespace GestaoAvaliacao.Repository
 
         public IEnumerable<Guid> GetDeficienciesIds(long testTypeId)
         {
-            using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
-                return GestaoAvaliacaoContext.TestTypeDeficiencies
-                    .Where(a => a.TestType.Id == testTypeId)
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                return gestaoAvaliacaoContext.TestTypeDeficiencies
+                    .Where(a => a.TestType_Id == testTypeId && a.State != (byte)EnumState.excluido)
                     .Select(a => a.DeficiencyId)
                     .ToList();
+            }
         }
     }
 }

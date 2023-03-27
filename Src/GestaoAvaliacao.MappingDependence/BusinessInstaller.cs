@@ -7,7 +7,6 @@ using AvaliaMais.FolhaRespostas.Domain.ProcessamentoInicial.Interfaces;
 using AvaliaMais.FolhaRespostas.Domain.ProcessamentoInicial.Services;
 using AvaliaMais.FolhaRespostas.Domain.ProcessamentoProva.Interfaces;
 using AvaliaMais.FolhaRespostas.Domain.ProcessamentoProva.Services;
-using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
@@ -20,13 +19,11 @@ using GestaoAvaliacao.Business.StudentTestAccoplishments.Validators;
 using GestaoAvaliacao.Entities.DTO.StudentTestAccoplishments;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IBusiness.StudentsTestSent;
-using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.MongoRepository;
 using GestaoAvaliacao.Repository;
 using GestaoAvaliacao.Repository.StudentTestAccoplishments;
 using GestaoEscolar.Business;
 using GestaoEscolar.IBusiness;
-using Microsoft.AspNet.SignalR;
 
 namespace GestaoAvaliacao.MappingDependence
 {
@@ -472,6 +469,11 @@ namespace GestaoAvaliacao.MappingDependence
 
             container.Register(Classes.FromAssemblyContaining<ResultadoPspBusiness>()
                 .BasedOn(typeof(IResultadoPspBusiness))
+                .WithService.AllInterfaces()
+                .SetLifestyle(LifestylePerWebRequest));
+
+            container.Register(Classes.FromAssemblyContaining<BlockChainBusiness>()
+                .BasedOn(typeof(IBlockChainBusiness))
                 .WithService.AllInterfaces()
                 .SetLifestyle(LifestylePerWebRequest));
 
