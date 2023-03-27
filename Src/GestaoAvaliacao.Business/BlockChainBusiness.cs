@@ -125,5 +125,10 @@ namespace GestaoAvaliacao.Business
         {
             return blockChainRepository.GetBlockChainItems(blockChainId, page, pageItems);
         }
+
+        public void DeleteByTestId(long testId)
+        {
+            blockChainRepository.DeleteByTestId(testId);
+        }
     }
 }
