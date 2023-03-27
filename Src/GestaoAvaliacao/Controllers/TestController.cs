@@ -35,11 +35,12 @@ namespace GestaoAvaliacao.Controllers
         private readonly ITestCurriculumGradeBusiness testCurriculumGradeBusiness;
         private readonly ITestPermissionBusiness testPermissionBusiness;
         private readonly ITestContextBusiness testContextBusiness;
+        private readonly IBlockChainBusiness blockChainBusiness;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
             IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
             IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness,
-            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness)
+            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness, IBlockChainBusiness blockChainBusiness)
         {
             this.testBusiness = testBusiness;
             this.testFilesBusiness = testFilesBusiness;
@@ -53,7 +54,7 @@ namespace GestaoAvaliacao.Controllers
             this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
             this.testPermissionBusiness = testPermissionBusiness;
             this.testContextBusiness = testContextBusiness;
-
+            this.blockChainBusiness = blockChainBusiness;
         }
 
         public ActionResult Index() => View();
@@ -229,6 +230,11 @@ namespace GestaoAvaliacao.Controllers
                             imagePath = tc.ImagePath,
                             text = tc.Text,
                             title = tc.Title
+                        }).ToList(),
+                        BlockChains = entity.BlockChains.Where(c => c.State == (byte)EnumState.ativo).Select(c => new
+                        {
+                            c.Id, 
+                            c.Description
                         }).ToList(),
                         TestSituation = entity.TestSituation,
                         PublicFeedback = entity.PublicFeedback,
@@ -532,6 +538,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar itens pesquisados." }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         [Paginate]
         public JsonResult GetSectionAdministrate(long test_id, int esc_id, int ttn_id, string dre_id, int crp_ordem, string statusCorrection)
@@ -808,14 +815,13 @@ namespace GestaoAvaliacao.Controllers
             {
                 foreach (var testContext in entity.TestContexts)
                 {
-                    EnumPosition position = ObterPosicionamento(testContext.ImagePositionDescription);
+                    var position = ObterPosicionamento(testContext.ImagePositionDescription);
 
                     testContext.ImagePosition = position;
                 }
 
                 if (entity.Id > 0)
                 {
-
                     entity = testBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.usu_id,
                             (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
                                 SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
@@ -823,15 +829,19 @@ namespace GestaoAvaliacao.Controllers
                     if (entity.TestContexts.Any())
                     {
                         testContextBusiness.DeleteByTestId(entity.Id);
+
                         foreach (var testContext in entity.TestContexts)
                         {
-                            EnumPosition position = ObterPosicionamento(testContext.ImagePositionDescription);
+                            var position = ObterPosicionamento(testContext.ImagePositionDescription);
 
                             testContext.ImagePosition = position;
                             testContext.Test_Id = entity.Id;
                             testContextBusiness.Save(testContext);
                         }
                     }
+
+                    if (entity.RemoveBlockChain && entity.BlockChains.Any())
+                        blockChainBusiness.DeleteByTestId(entity.Id);
                 }
                 else
                 {
@@ -843,9 +853,6 @@ namespace GestaoAvaliacao.Controllers
                 {
                     entity.TestSituation = testBusiness.TestSituation(entity);
                 }
-
-
-
             }
             catch (Exception ex)
             {
