@@ -1009,7 +1009,6 @@
                 </div>
             </div>
         </modal>
-        @* TODO: *@    
         @* Modal *@
         <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
             <div class="modal-dialog modal-lg" style="width:90%;">
@@ -1172,7 +1171,8 @@
                         </div>
                         <!-- <h6 class="row centralizar"><strong>ATENÇÃO: Sugerimos que salve antes de mudar de página.</strong> </h6> -->
                         <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && !temBIB"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{ itensTotais }} </strong></h5>
-                        <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && temBIB"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{e1_itensBlocos}} </strong></h5>
+                        <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && temBIB && !ehCadeiaBlocos"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{e1_itensBlocos}} </strong></h5>
+                        <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && temBIB && ehCadeiaBlocos"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{e1_qtdItensCadeiaBlocos}} </strong></h5>
                         @* Resultado das busca *@
                         <div class="campoCodigo hr">
                             <div class="campoLabel">
