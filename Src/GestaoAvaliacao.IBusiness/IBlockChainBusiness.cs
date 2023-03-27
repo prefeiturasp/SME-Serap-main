@@ -12,6 +12,7 @@ namespace GestaoAvaliacao.IBusiness
         void RemoveBlockChainItem(long blockChainId, long itemId);
         BlockChain DeleteBlockChainItems(long id);
         IEnumerable<BlockChain> GetTestBlockChains(long testId);
+        IEnumerable<Block> ObterCadernosPorProva(long testId);
         IEnumerable<Item> GetBlockChainItems(long blockChainId, int page, int pageItems);
         void DeleteByTestId(long testId);
     }

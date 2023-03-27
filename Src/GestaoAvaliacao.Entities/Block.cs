@@ -8,6 +8,7 @@ namespace GestaoAvaliacao.Entities
         public Block()
         {
             BlockItems = new List<BlockItem>();
+            BlockChains = new List<BlockChain>();
         }
 
         public string Description { get; set; }
@@ -17,5 +18,7 @@ namespace GestaoAvaliacao.Entities
         public long? Test_Id { get; set; }
         public virtual List<BlockItem> BlockItems { get; set; }
         public virtual List<BlockKnowledgeArea> BlockKnowledgeAreas { get; set; }
+        public virtual List<BlockChain> BlockChains { get; set; }
+
     }
 }
