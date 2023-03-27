@@ -1,4 +1,4 @@
-use CoreSSO
+ï»¿use CoreSSO
 
 declare @modId int = (select MAX(mod_id) + 1 from SYS_Modulo where sis_id = 204);
 declare @modIdPai int = 17, @sisId int = 204,
@@ -14,12 +14,12 @@ values
 (@sisId,@modId,1,@nome,null,'/ImportarResultadosPSP',null,null)
 
 insert into SYS_VisaoModulo (vis_id, sis_id, mod_id)
-values (1,	@sisId,	@modId) -- Administração
+values (1,	@sisId,	@modId) -- AdministraÃ§Ã£o
 
 insert into SYS_VisaoModuloMenu 
 (vis_id,sis_id,mod_id,msm_id,vmm_ordem)
 values
-(1,@sisId,@modId,1,8) -- Administração
+(1,@sisId,@modId,1,8) -- AdministraÃ§Ã£o
 
 insert into SYS_GrupoPermissao 
 (gru_id,sis_id,mod_id,grp_consultar,grp_inserir,grp_alterar,grp_excluir)

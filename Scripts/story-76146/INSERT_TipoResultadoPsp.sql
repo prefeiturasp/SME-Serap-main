@@ -1,4 +1,4 @@
-use GestaoAvaliacao
+ï»¿use GestaoAvaliacao
 
 insert into TipoResultadoPsp (Codigo,Nome,NomeTabelaProvaSp,CreateDate,UpdateDate,[State])
 values 
@@ -14,11 +14,11 @@ values
 (10,'Ciclo Escola','ResultadoCicloEscola',getdate(),getdate(),0),
 (11,'Ciclo SME','ResultadoCicloSme',getdate(),getdate(),0),
 (12,'Ciclo Turma','ResultadoCicloTurma',getdate(),getdate(),0),
-(13,'Participação DRE', 'ParticipacaoDRE',getdate(),getdate(),0),
-(14,'Participação DRE - AreaConhecimento', 'ParticipacaoDREAreaConhecimento',getdate(),getdate(),0),
-(15,'Participação Escola', 'ParticipacaoEscola',getdate(),getdate(),0),
-(16,'Participação Escola - AreaConhecimento', 'ParticipacaoEscolaAreaConhecimento',getdate(),getdate(),0),
-(17,'Participação SME', 'ParticipacaoSME',getdate(),getdate(),0),
-(18,'Participação SME - AreaConhecimento', 'ParticipacaoSMEAreaConhecimento',getdate(),getdate(),0),
-(19,'Participação Turma', 'ParticipacaoTurma',getdate(),getdate(),0),
-(20,'Participação Turma - AreaConhecimento', 'ParticipacaoTurmaAreaConhecimento',getdate(),getdate(),0);
+(13,'ParticipaÃ§Ã£o DRE', 'ParticipacaoDRE',getdate(),getdate(),0),
+(14,'ParticipaÃ§Ã£o DRE - AreaConhecimento', 'ParticipacaoDREAreaConhecimento',getdate(),getdate(),0),
+(15,'ParticipaÃ§Ã£o Escola', 'ParticipacaoEscola',getdate(),getdate(),0),
+(16,'ParticipaÃ§Ã£o Escola - AreaConhecimento', 'ParticipacaoEscolaAreaConhecimento',getdate(),getdate(),0),
+(17,'ParticipaÃ§Ã£o SME', 'ParticipacaoSME',getdate(),getdate(),0),
+(18,'ParticipaÃ§Ã£o SME - AreaConhecimento', 'ParticipacaoSMEAreaConhecimento',getdate(),getdate(),0),
+(19,'ParticipaÃ§Ã£o Turma', 'ParticipacaoTurma',getdate(),getdate(),0),
+(20,'ParticipaÃ§Ã£o Turma - AreaConhecimento', 'ParticipacaoTurmaAreaConhecimento',getdate(),getdate(),0);
