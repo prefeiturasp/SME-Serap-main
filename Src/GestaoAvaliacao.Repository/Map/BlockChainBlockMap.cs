@@ -10,11 +10,11 @@ namespace GestaoAvaliacao.Repository.Map
             ToTable("BlockChainBlock");
 
             HasRequired(p => p.Block)
-                .WithMany()
+                .WithMany(p => p.BlockChainBlocks)
                 .HasForeignKey(p => p.Block_Id);
 
             HasRequired(p => p.BlockChain)
-                .WithMany()
+                .WithMany(p => p.BlockChainBlocks)
                 .HasForeignKey(p => p.BlockChain_Id);
         }
     }

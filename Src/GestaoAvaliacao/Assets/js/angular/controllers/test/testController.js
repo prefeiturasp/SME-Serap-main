@@ -141,6 +141,8 @@
             };
             //Chamadas utilizada na Etapa 3
             self.etapa3 = {
+                salvar: TestModel.saveBlock,
+                cadernosComCadeiaBlocos: TestModel.loadBlockChainBlocks
             };
             //Chamadas utilizada na Etapa 4
             self.etapa4 = {
@@ -1779,6 +1781,7 @@
         function initModalAdicao() {
             ng.e2_blockAtual;
             ng.e2_blockChainAtual;
+            ng.e3_blockChainBlockAtual;
 
             // Filtro
             ng.e2_CodigoItem;
@@ -2019,7 +2022,16 @@
         };
 
         /**
-        * @function Tratamento para dados do caderno
+        * @function Carrega cadernos com cadeia de blocos
+        * @private
+        * @param
+        */
+        function cadernosComCadeiaBlocos() {
+            self.etapa3.cadernosComCadeiaBlocos({ testId: ng.provaId }, cadernosComCadeiaBlocosCarregado);
+        };
+
+        /**
+        * @function Tratamento para dados da cadeia de blocos
         * @private
         * @param r = resposta do servidor
         */
@@ -2087,6 +2099,84 @@
                     };
 
                     ng.cadeiaBlocos.sort(ordenar);
+                }
+            }
+
+            if (ng.navigation === ng.ultimo)
+                initEtapa4();
+            else
+                ng.mostrarTela = true;
+        };
+
+        /**
+        * @function Tratamento para dados do caderno com cadeia de blocos
+        * @private
+        * @param r = resposta do servidor
+        */
+        function cadernosComCadeiaBlocosCarregado(r) {
+            if (r.success === false) {
+                ng.cadernosComCadeiaBlocos = [];
+
+                for (var b = 1; b <= ng.e1_qtdBlocos; b++) {
+                    ng.cadernosComCadeiaBlocos.push({
+                        Description: b,
+                        ItensCount: 0,
+                        Id: 0,
+                        Total: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
+                        Resto: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
+                        SelectedItens: []
+                    });
+                }
+
+                ng.e3_blockChainBlockAtual = ng.cadernosComCadeiaBlocos[0];
+            }
+            else {
+                r = angular.copy(r.lista);
+
+                ng.cadernosComCadeiaBlocos = angular.copy(r);
+
+                var cadernoComCadeiaBloco;
+
+                for (var q = 0; q < ng.cadernosComCadeiaBlocos.length; q++) {
+                    cadernoComCadeiaBloco = ng.cadernosComCadeiaBlocos[q];
+                    cadernoComCadeiaBloco.Total = parseInt(ng.e1_qtdCadeiaBlocosPorBloco);
+                    cadernoComCadeiaBloco.Resto = cadernoComCadeiaBloco.Total - cadernoComCadeiaBloco.ItensCount;
+                }
+
+                if (ng.cadernosComCadeiaBlocos.length < ng.e1_qtdBlocos) {
+                    const cadernosComCadeiaBlocos = [];
+
+                    for (var b = 1; b <= ng.e1_qtdBlocos; b++) {
+                        cadernosComCadeiaBlocos.push({
+                            Description: String(b),
+                            ItensCount: 0,
+                            Id: 0,
+                            Total: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
+                            Resto: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
+                            SelectedItens: []
+                        });
+                    }
+
+                    const cadernosComCadeiaBlocosSemIds = cadernosComCadeiaBlocos.filter(cadernoCadeiaBloco => {
+                        const temCadernoCadeiaBlocoIdIgual = ng.cadernosComCadeiaBlocos.find(c => c.Description === cadernoCadeiaBloco.Description);
+
+                        if (temCadernoCadeiaBlocoIdIgual) {
+                            return false;
+                        }
+
+                        return true;
+                    });
+
+                    ng.cadernosComCadeiaBlocos = cadernosComCadeiaBlocosSemIds.concat(ng.cadernosComCadeiaBlocos);
+
+                    // ORDENAR CADERNOS!
+                    const indice = 'Description';
+
+                    const ordenar = (a, b) => {
+                        return a[indice] - b[indice];
+                    };
+
+                    ng.cadernosComCadeiaBlocos.sort(ordenar);
                 }
             }
 
@@ -4113,7 +4203,7 @@
         };
 
         function initEtapa3() {
-
+            cadernosCadeiaBlocosCarregar();
         }
 
         function initEtapa4() {
