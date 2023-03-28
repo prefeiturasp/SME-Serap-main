@@ -1,9 +1,12 @@
 ﻿using GestaoAvaliacao.Entities.DTO.SerapEstudantes;
 using GestaoAvaliacao.IBusiness;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace GestaoAvaliacao.Business
 {
@@ -22,6 +25,8 @@ namespace GestaoAvaliacao.Business
 
         private HttpClient ObterClientConfigurado()
         {
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => { return true; };
+
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(baseUrl);
             client.DefaultRequestHeaders.Accept.Clear();

@@ -44,6 +44,6 @@ namespace GestaoAvaliacao.IRepository
 		List<ItemReportItemSituation> _GetItemSituation(int id, string inicio, string fim, Guid EntityId, long typeLevelEducation);
         Item RevokeItem(Item Item);
         void SaveChangeItem(Item item, long TestId, long itemIdAntigo, long blockId);
-
+        void SaveChangeBlockChainItem(Item item, long testId, long itemIdAntigo, long blockChainId);
     }
 }

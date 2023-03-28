@@ -104,17 +104,28 @@ namespace GestaoAvaliacao.Business
             if (entity.Bib)
             {
                 if (entity.NumberBlock <= 0)
-                    valid.Message = string.Format("A quantidade de cadernos deve ser maior ou igual a 1.");
+                    valid.Message = "A quantidade de cadernos deve ser maior ou igual a 1.";
 
                 var maxBlock = parameterBusiness.GetByKey(EnumParameterKey.TEST_MAX_BLOCK.GetDescription());
+
                 if (maxBlock != null)
                 {
                     if (entity.NumberBlock > int.Parse(maxBlock.Value))
                         valid.Message = string.Format("A quantidade de cadernos deve ser menor ou igual a {0}.", int.Parse(maxBlock.Value));
                 }
+
+                if (entity.BlockChain.GetValueOrDefault())
+                {
+                    if (entity.BlockChainNumber.GetValueOrDefault() <= 0)
+                        valid.Message = "A quantidade de blocos deve ser maior ou igual a 1.";
+
+                    if (entity.BlockChainItems.GetValueOrDefault() <= 0)
+                        valid.Message = "A quantidade de itens por bloco deve ser maior ou igual a 1.";
+
+                    if (entity.BlockChainForBlock.GetValueOrDefault() <= 0)
+                        valid.Message = "A quantidade de blocos por caderno deve ser maior ou igual a 1.";
+                }
             }
-
-
 
             if (action == ValidateAction.Update)
             {
@@ -589,7 +600,10 @@ namespace GestaoAvaliacao.Business
 
                 entity.TestSituation = ValidateTestSituation(entity);
 
-                testRepository.Update(Id, entity);
+                var test = testRepository.Update(Id, entity);
+
+                entity.BlockChains.AddRange(test.BlockChains);
+                entity.RemoveBlockChain = test.RemoveBlockChain;
                 entity.Validate.Type = ValidateType.Update.ToString();
                 entity.Validate.Message = "Prova alterada com sucesso.";
             }
@@ -692,6 +706,11 @@ namespace GestaoAvaliacao.Business
 
             oldEntity.TestType = null;
             oldEntity.TestType_Id = entity.TestType.Id;
+
+            oldEntity.BlockChain = entity.BlockChain;
+            oldEntity.BlockChainNumber = entity.BlockChainNumber;
+            oldEntity.BlockChainItems = entity.BlockChainItems;
+            oldEntity.BlockChainForBlock = entity.BlockChainForBlock;
 
             #region testCurriculumGrades
 

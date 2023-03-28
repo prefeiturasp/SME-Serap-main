@@ -57,6 +57,8 @@
     <Compile Include="Alternative.cs" />
     <Compile Include="AnswerSheetBatchQueue.cs" />
     <Compile Include="AnswerSheetLot.cs" />
+    <Compile Include="BlockChain.cs" />
+    <Compile Include="BlockChainItem.cs" />
     <Compile Include="ResultadoPsp\ArquivoResultadoPsp.cs" />
     <Compile Include="BaseText.cs" />
     <Compile Include="Base\EntityBase.cs" />

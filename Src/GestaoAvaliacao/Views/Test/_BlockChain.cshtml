@@ -1,0 +1,58 @@
+﻿<div class="row" ng-show="ehCadeiaBlocos">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="cards">
+                <h4 class="padding"><strong>{{ e1_testDescription }}</strong></h4>
+                <table class="table table-hover">
+                    <colgroup>
+                        <col width="14%" />
+                        <col width="14%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="14%" />
+                        <col width="14%" />
+                        <col width="14%" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="table-parameter-centralize">Blocos</th>
+                            <th class="table-parameter-centralize">Itens selecionados</th>
+                            <th class="table-parameter-centralize" colspan="2">Não selecionados</th>
+                            <th class="table-parameter-centralize">Editar</th>
+                            <th class="table-parameter-centralize">Adicionar</th>
+                            <th class="table-parameter-centralize">Limpar itens selecionados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="bloco in cadeiaBlocos">
+                            <th class="table-parameter-centralize">{{ bloco.Description }}</th>
+                            <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
+                            <th class="table-parameter-centralize">
+                                <div style="text-align: right">
+                                    {{ bloco.Resto >-1? bloco.Resto:0 }}
+                                </div>
+                            </th>
+
+                            <th class="table-parameter-centralize ">
+                                <i title="{{ (bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0) ? '' : 'Selecione itens para este bloco' }}" ng-class="{ true:'material-icons check-success pull-left', false:'material-icons status-Error pull-left' }
+                                    [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">
+                                    {{ (bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0) ? 'done' : mostrarAvisoQtdItensCadeiaBlocosNaoAtingida ? 'error' : '' }}
+                                </i>
+                            </th>
+
+                            <th class="table-parameter-centralize">
+                                <a ng-click="e2_callModal(3,bloco)"><i type="button" class="material-icons">edit</i></a>
+                            </th>
+                            <th class="table-parameter-centralize">
+                                <a ng-click="e2_callModal(1,bloco)"><i type="button" class="material-icons">add_box</i></a>
+                            </th>
+                            <th class="table-parameter-centralize">
+                                <a ng-click="e2_callModalRemoverItensCadeiaBlocoSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
