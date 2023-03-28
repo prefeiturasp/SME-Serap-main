@@ -1,3 +1,9 @@
+
+declare @mod_id int
+
+select @mod_id = (MAX(mod_id) + 1) from SYS_Modulo
+where sis_id = 204
+
 ------------------------------------------[SYS_ModuloSiteMap]---------------------------------------------
 
 INSERT INTO [dbo].[SYS_Modulo]
@@ -12,7 +18,7 @@ INSERT INTO [dbo].[SYS_Modulo]
            ,[mod_dataAlteracao])
      VALUES
            (204,
-            48,
+            @mod_id,
             'Acompanhamento de provas',
 		    '',		
           17
@@ -35,7 +41,7 @@ INSERT INTO [dbo].[SYS_ModuloSiteMap]
            ,[msm_urlHelp])
      VALUES
            (204
-           ,48
+           ,@mod_id
            ,1
            ,'Acompanhamento de provas'
            ,null
@@ -53,7 +59,7 @@ INSERT INTO [dbo].[SYS_VisaoModulo]
      VALUES
            ( 1
            ,204
-           ,48);
+           ,@mod_id);
 
 --------------Gestão------------------		   
 INSERT INTO [dbo].[SYS_VisaoModulo]
@@ -63,7 +69,7 @@ INSERT INTO [dbo].[SYS_VisaoModulo]
      VALUES
            (2
            ,204
-           ,48);
+           ,@mod_id);
 
 -----------Unidade-Administrativa-----------			   
 INSERT INTO [dbo].[SYS_VisaoModulo]
@@ -73,7 +79,7 @@ INSERT INTO [dbo].[SYS_VisaoModulo]
      VALUES
            (3
            ,204
-           ,48);
+           ,@mod_id);
 
 -------------Individual------------------	
 INSERT INTO [dbo].[SYS_VisaoModulo]
@@ -83,7 +89,7 @@ INSERT INTO [dbo].[SYS_VisaoModulo]
      VALUES
            ( 4
            ,204
-           ,48);
+           ,@mod_id);
 --------------[SYS_VisaoModuloMenu]---------------------------------------------------------------------------
 ------------Administração------------------		
 INSERT INTO [dbo].[SYS_VisaoModuloMenu]
@@ -95,7 +101,7 @@ INSERT INTO [dbo].[SYS_VisaoModuloMenu]
      VALUES
            (   1 
             ,204
-            , 48
+            , @mod_id
             ,  1
             ,  3);
 
@@ -109,7 +115,7 @@ INSERT INTO [dbo].[SYS_VisaoModuloMenu]
      VALUES
            (   2 
             ,204
-            , 48
+            , @mod_id
             ,  1
             ,  3);
 
@@ -123,7 +129,7 @@ INSERT INTO [dbo].[SYS_VisaoModuloMenu]
      VALUES
            (   3 
             ,204
-            , 48
+            , @mod_id
             ,  1
             ,  3);
 
@@ -137,7 +143,7 @@ INSERT INTO [dbo].[SYS_VisaoModuloMenu]
      VALUES
            (   4 
             ,204
-            , 48
+            , @mod_id
             ,  1
             ,  3);
 ------------------------------------------------------------------------------------------------------
@@ -156,6 +162,7 @@ INSERT INTO [dbo].[SYS_VisaoModuloMenu]
 -- Assistente de Diretor na UE -   ECF7A20D-1A1E-E811-B259-782BCB3D2D76 
 
 
+
 -------------------------Administrador------------------AAD9D772-41A3-E411-922D-782BCB3D218E
 INSERT INTO [dbo].[SYS_GrupoPermissao]
            ([gru_id]
@@ -168,12 +175,13 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
      VALUES
            ('AAD9D772-41A3-E411-922D-782BCB3D218E'
            , 204
-           ,48
+           ,@mod_id
            ,1
            ,1
            ,1
            ,1);
 GO
+
 
 ----------------------------------Administrador - NTA   22366A3E-9E4C-E711-9541-782BCB3D218E    
 
@@ -188,7 +196,7 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
      VALUES
            ('22366A3E-9E4C-E711-9541-782BCB3D218E'
            , 204
-           ,48
+           ,@mod_id
            ,1
            ,1
            ,1
@@ -208,7 +216,7 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
      VALUES
            ('104F0759-87E8-E611-9541-782BCB3D218E'
            , 204
-           ,48
+           ,@mod_id
            ,1
            ,1
            ,1
@@ -229,7 +237,7 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
      VALUES
            ('4318D329-17DC-4C48-8E59-7D80557F7E77'
            , 204
-           ,48
+           ,@mod_id
            ,1
            ,1
            ,1
@@ -248,7 +256,7 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
      VALUES
            ('75DCAB30-2C1E-E811-B259-782BCB3D2D76'
            , 204
-           ,48
+           ,@mod_id
            ,1
            ,1
            ,1
@@ -267,27 +275,9 @@ INSERT INTO [dbo].[SYS_GrupoPermissao]
      VALUES
            ('D4026F2C-1A1E-E811-B259-782BCB3D2D76'
            , 204
-           ,48
+           ,@mod_id
            ,1
            ,1
            ,1
            ,1);
-GO
--------------------------- Assistente de Diretor na UE
-INSERT INTO [dbo].[SYS_GrupoPermissao]
-           ([gru_id]
-           ,[sis_id]
-           ,[mod_id]
-           ,[grp_consultar]
-           ,[grp_inserir]
-           ,[grp_alterar]
-           ,[grp_excluir])
-     VALUES
-           ('ECF7A20D-1A1E-E811-B259-782BCB3D2D76'
-           , 204
-           ,48
-           ,1
-           ,1
-           ,1
-           ,1);
-GO
+------------------------------------------------------------------------------------------

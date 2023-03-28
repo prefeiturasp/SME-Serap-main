@@ -657,26 +657,25 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-
         #endregion
 
         #region Write
 
         public Block Save(Block block)
         {
-            using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                DateTime datenow = DateTime.Now;
+                var datenow = DateTime.Now;
 
                 if (!block.Test.Bib)
                 {
-                    Booklet booklet = new Booklet
+                    var booklet = new Booklet
                     {
                         Order = 1,
                         CreateDate = datenow,
                         UpdateDate = datenow,
                         Test_Id = block.Test_Id,
-                        State = (Byte)EnumState.ativo
+                        State = (byte)EnumState.ativo
                     };
 
                     gestaoAvaliacaoContext.Booklet.Add(booklet);
@@ -687,30 +686,50 @@ namespace GestaoAvaliacao.Repository
 
                 block.Test = null;
 
-                List<BlockKnowledgeArea> blockKnowledgeAreas = new List<BlockKnowledgeArea>();
-                List<long> itens = block.BlockItems.Where(q => q.State == (byte)EnumState.ativo).Select(p => p.Item_Id).ToList();
-                int maxOrder = 0;
-                foreach (long idItem in itens)
-                {
-                    Item item = gestaoAvaliacaoContext.Item.Where(p => p.Id == idItem).FirstOrDefault();
+                var blockKnowledgeAreas = new List<BlockKnowledgeArea>();
+                var itens = block.BlockItems.Where(q => q.State == (byte)EnumState.ativo).Select(p => p.Item_Id).ToList();
+                var maxOrder = 0;
 
-                    if (item.KnowledgeArea_Id.HasValue && !blockKnowledgeAreas.Exists(p => p.KnowledgeArea_Id == item.KnowledgeArea_Id))
+                foreach (var idItem in itens)
+                {
+                    var item = gestaoAvaliacaoContext.Item.FirstOrDefault(p => p.Id == idItem);
+
+                    if (item?.KnowledgeArea_Id == null ||
+                        blockKnowledgeAreas.Exists(p => p.KnowledgeArea_Id == item.KnowledgeArea_Id))
                     {
-                        BlockKnowledgeArea blockKnowledgeArea = new BlockKnowledgeArea
-                        {
-                            Block_Id = block.Id,
-                            KnowledgeArea_Id = item.KnowledgeArea_Id.Value,
-                            Order = maxOrder,
-                            State = (byte)EnumState.ativo,
-                            CreateDate = datenow,
-                            UpdateDate = datenow
-                        };
-                        blockKnowledgeAreas.Add(blockKnowledgeArea);
-                        maxOrder++;
+                        continue;
                     }
+
+                    var blockKnowledgeArea = new BlockKnowledgeArea
+                    {
+                        Block_Id = block.Id,
+                        KnowledgeArea_Id = item.KnowledgeArea_Id.Value,
+                        Order = maxOrder,
+                        State = (byte)EnumState.ativo,
+                        CreateDate = datenow,
+                        UpdateDate = datenow
+                    };
+
+                    blockKnowledgeAreas.Add(blockKnowledgeArea);
+                    maxOrder++;
                 }
 
                 block.BlockKnowledgeAreas = blockKnowledgeAreas;
+
+                var blockChainBlocks = new List<BlockChainBlock>();
+                var idsBlockChainBlock = block.BlockChainBlocks.Where(c => c.State == (byte)EnumState.ativo)
+                    .Select(c => c.Id).ToList();
+
+                foreach (var blockChainBlock in idsBlockChainBlock
+                             .Select(idBlockChainBlock =>
+                                 gestaoAvaliacaoContext.BlockChainBlocks.FirstOrDefault(c => c.Id == idBlockChainBlock))
+                             .Where(blockChainBlock => blockChainBlock != null &&
+                                                       !blockChainBlocks.Exists(c => c.Id == blockChainBlock.Id)))
+                {
+                    blockChainBlocks.Add(blockChainBlock);
+                }
+
+                block.BlockChainBlocks = blockChainBlocks;
 
                 gestaoAvaliacaoContext.Block.Add(block);
                 gestaoAvaliacaoContext.SaveChanges();

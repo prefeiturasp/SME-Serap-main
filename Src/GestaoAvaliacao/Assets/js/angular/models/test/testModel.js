@@ -196,6 +196,12 @@
                 url: base_url('BlockChain/GetCadernosProva')
             },
 
+
+            // CHAMADAS PARA CADERNOS COM CADEIA DE BLOCOS
+            'loadBlockChainBlocks': {
+                method: 'GET',
+                url: base_url('BlockChain/GetCadernosProva')
+            },
             /////////////////////////////////////////////
             // CHAMADAS DA ETAPA 4
             'getAllByTest': {

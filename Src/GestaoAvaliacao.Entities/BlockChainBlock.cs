@@ -4,7 +4,8 @@ namespace GestaoAvaliacao.Entities
 {
     public class BlockChainBlock : EntityBase
     {
-        public string Description { get; set; }
+        public virtual Block Block { get; set; }
+        public long Block_Id { get; set; }
         public virtual BlockChain BlockChain { get; set; }
         public long BlockChain_Id { get; set; }
     }

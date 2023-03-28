@@ -1,13 +1,14 @@
 ﻿using GestaoAvaliacao.Entities.DTO.SerapEstudantes;
 using GestaoAvaliacao.IBusiness;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace GestaoAvaliacao.Business
 {
-  public class AdminAcompanhamentoProvaBusiness : IAdminAcompanhamentoProvaBusiness
+    public class AdminAcompanhamentoProvaBusiness : IAdminAcompanhamentoProvaBusiness
     {
         public static readonly string ENDPOINT_ADMIN_AUTENTICACAO = "api/v1/autenticacao";
 
@@ -22,6 +23,8 @@ namespace GestaoAvaliacao.Business
 
         private HttpClient ObterClientConfigurado(string ChaveApi)
         {
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => { return true; };
+
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(baseUrl);
             client.DefaultRequestHeaders.Accept.Clear();
@@ -46,6 +49,7 @@ namespace GestaoAvaliacao.Business
                 adminAutenticacaoDTO.ChaveApi = this.chaveSerapProvaApi;
 
                 HttpResponseMessage response = client.PostAsJsonAsync(ENDPOINT_ADMIN_AUTENTICACAO, adminAutenticacaoDTO).Result;
+                response.EnsureSuccessStatusCode();
 
                 AdminAutenticacaoRespostaDTO resposta = new AdminAutenticacaoRespostaDTO();
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)

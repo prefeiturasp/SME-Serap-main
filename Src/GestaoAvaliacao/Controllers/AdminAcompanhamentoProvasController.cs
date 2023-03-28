@@ -28,6 +28,7 @@ namespace GestaoAvaliacao.Controllers
 
                 UsuarioLogado user = SessionFacade.UsuarioLogado;
 
+                
                 var resposta = adminAcompanhamentoProvaBusiness.AdminAutenticacao(new Entities.DTO.SerapEstudantes.AdminAutenticacaoDTO(user.Usuario.usu_login, user.Grupo.gru_id));
 
                 if (resposta.StatusCode == 200)
@@ -49,6 +50,10 @@ namespace GestaoAvaliacao.Controllers
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
+
+                if(ex.InnerException != null)
+                    LogFacade.SaveError(ex.InnerException);
+
                 return RedirectToAction("Index", "Error");
             }
         }

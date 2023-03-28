@@ -714,65 +714,70 @@
                         </div>
                     </div>
 
-                    <div class="row" ng-show="showTestTAI">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="cards">
-                                    @*<h4 class="tituloCard ng-binding">Ano(s) escolares: </h4>*@
-                                    <div class="campoLabel">
-                                        <label for="matrizAvaliacao">Ano(s) escolares:*: </label>
-                                        <div>
-                                            <button type="button" class="btnPadrao pull-right" style="margin-right: 15px;" ng-click="callModalAnoItensAmostraTai()">Adicionar Novo Ano</button>
-                                            <table class="table table-hover">
-                                                <colgroup>
-                                                    <col width="40%" />
-                                                    <col width="40%" />
-                                                    <col width="10%" />
-                                                    <col width="10%" />
-                                                </colgroup>
-                                                <thead>
-                                                    <tr>
-                                                        <th class="table-parameter-centralize">Ano</th>
-                                                        <th class="table-parameter-centralize">Porcentagem(%)</th>
-                                                        <th class="table-parameter-centralize">Editar</th>
-                                                        <th class="table-parameter-centralize">Excluir</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="anoItem in anosItensAmostraProvaTai">
-                                                        <th class="table-parameter-centralize">{{ anoItem.Ano.Description }}</th>
-                                                        <th class="table-parameter-centralize">{{ anoItem.Porcentagem }}</th>
-                                                        <th class="table-parameter-centralize">
-                                                            <a ng-click="e2_editarModalAnoItensAmostraTai(anoItem)"><i type="button" class="material-icons">format_list_bulleted</i></a>
-                                                        </th>
-                                                        <th class="table-parameter-centralize">
-                                                            <a ng-click=""><i type="button" class="material-icons" ng-click="e2_confirmarDeletarItemAnosItensAmostraProvaTai(anoItem)">delete</i></a>
-                                                        </th>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                <div class="row" ng-show="showTestTAI">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="cards">
+                                @*<h4 class="tituloCard ng-binding">Ano(s) escolares: </h4>*@
+                                <div class="campoLabel">
+                                    <label for="matrizAvaliacao">Ano(s) escolares:*: </label>
+                                    <div>
+                                        <button type="button" class="btnPadrao pull-right" style="margin-right: 15px;" ng-click="callModalAnoItensAmostraTai()">Adicionar Novo Ano</button>
+                                        <table class="table table-hover">
+                                            <colgroup>
+                                                <col width="40%" />
+                                                <col width="40%" />
+                                                <col width="10%" />
+                                                <col width="10%" />
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th class="table-parameter-centralize">Ano</th>
+                                                    <th class="table-parameter-centralize">Porcentagem(%)</th>
+                                                    <th class="table-parameter-centralize">Editar</th>
+                                                    <th class="table-parameter-centralize">Excluir</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="anoItem in anosItensAmostraProvaTai">
+                                                    <th class="table-parameter-centralize">{{ anoItem.Ano.Description }}</th>
+                                                    <th class="table-parameter-centralize">{{ anoItem.Porcentagem }}</th>
+                                                    <th class="table-parameter-centralize">
+                                                        <a ng-click="e2_editarModalAnoItensAmostraTai(anoItem)"><i type="button" class="material-icons">format_list_bulleted</i></a>
+                                                    </th>
+                                                    <th class="table-parameter-centralize">
+                                                        <a ng-click=""><i type="button" class="material-icons" ng-click="e2_confirmarDeletarItemAnosItensAmostraProvaTai(anoItem)">delete</i></a>
+                                                    </th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Cadeia de blocos -->
-                    @{
-                        Html.RenderPartial("_BlockChain");
-                    }
+                <!-- Montagem dos blocos -->
+                @{
+                    Html.RenderPartial("_BlockChain");
+                }
 
-                    <div class="row" ng-show="!showTestTAI && !ehCadeiaBlocos">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="cards">
-                                    <h4 class="padding"><strong>{{ e1_testDescription}} </strong></h4>
-                                    <table class="table table-hover">
-                                        <colgroup>
-                                            <col width="15%" />
-                                            <col width="15%" />
-                                            <col width="15%" />
+                <!-- Montagem dos cadernos -->
+                @{
+                    Html.RenderPartial("_BlockChainBlock");
+                }
+
+                <div class="row" ng-show="!showTestTAI && !ehCadeiaBlocos">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="cards">
+                                <h4 class="padding"><strong>{{ e1_testDescription}} </strong></h4>
+                                <table class="table table-hover">
+                                    <colgroup>
+                                        <col width="15%" />
+                                        <col width="15%" />
+                                        <col width="15%" />
 
                                             <col width="24%" />
 
@@ -1285,7 +1290,7 @@
 
                             <!-- Titulo -->
                             <div class="panel-heading">Texto base:</div>
-
+                            
                             <!--Texto -->
                             <div class="well well-sm centralizarMargin10">
                                 <div class="imgResponsive allMaxWidth100" alt="Responsive image" ng-bind-html="abstract.textbase"></div>
