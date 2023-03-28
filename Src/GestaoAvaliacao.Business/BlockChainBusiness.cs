@@ -121,6 +121,11 @@ namespace GestaoAvaliacao.Business
             return blockChainRepository.GetTestBlockChains(testId);
         }
 
+        public IEnumerable<Block> ObterCadernosPorProva(long testId)
+        {
+            return blockChainRepository.ObterCadernosPorProva(testId);
+        }
+
         public IEnumerable<Item> GetBlockChainItems(long blockChainId, int page, int pageItems)
         {
             return blockChainRepository.GetBlockChainItems(blockChainId, page, pageItems);
