@@ -66,7 +66,7 @@ namespace GestaoAvaliacao.Repository
 
                 foreach (var blockChainItemFront in blockChain.BlockChainItems)
                 {
-                    if (blockChainItemFront == null) 
+                    if (blockChainItemFront == null)
                         continue;
 
                     var blockChainItemDb = entity.BlockChainItems
@@ -119,7 +119,7 @@ namespace GestaoAvaliacao.Repository
             {
                 var blockChain = gestaoAvaliacaoContext.BlockChains.FirstOrDefault(a => a.Id == id);
 
-                if (blockChain == null) 
+                if (blockChain == null)
                     return;
 
                 var blockChainItems = gestaoAvaliacaoContext.BlockChainItems.Include("BlockChain")
@@ -174,6 +174,50 @@ namespace GestaoAvaliacao.Repository
                 }
 
                 return listBlockChain;
+            }
+        }
+
+        public IEnumerable<Block> ObterCadernosPorProva(long testId)
+        {
+            const string sql = @"SELECT b.Id, b.Description, bc.Test_Id
+									FROM BlockChain bc WITH (NOLOCK)
+									inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
+									inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
+									WHERE bc.Test_Id = @testId
+									AND bc.State = @state
+									AND bcb.State = @state
+									AND b.State = @state
+
+									SELECT T.Id
+									FROM Test T WITH(NOLOCK)
+									WHERE Id = @testId
+
+									SELECT b.Id, bc.Id BlockChain_Id
+									FROM BlockChain bc WITH (NOLOCK)
+									inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
+									inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
+									WHERE bc.Test_Id = @testId
+									AND bc.State = @state
+									AND bcb.State = @state
+									AND b.State = @state";
+
+            using (var cn = Connection)
+            {
+                cn.Open();
+
+                var multi = cn.QueryMultiple(sql, new { testId, state = (byte)EnumState.ativo });
+
+                var listaBlocos = multi.Read<Block>().ToList();
+                var listaProva = multi.Read<Test>().ToList();
+                var listaBlockChainBlock = multi.Read<BlockChainBlock>().ToList();
+
+                foreach (var bloco in listaBlocos)
+                {
+                    bloco.Test = listaProva.FirstOrDefault(p => p.Id == bloco.Test_Id);
+                    bloco.BlockChains.AddRange(listaBlockChainBlock.Where(i => i.Id.Equals(bloco.Id)).Select(x => new BlockChain { Id = x.BlockChain_Id }));
+                }
+
+                return listaBlocos;
             }
         }
 
@@ -243,7 +287,9 @@ namespace GestaoAvaliacao.Repository
                 var listItems = cn.Query<Item>(sql,
                     new
                     {
-                        blockChainId, state = (byte)EnumState.ativo, initialPageItem,
+                        blockChainId,
+                        state = (byte)EnumState.ativo,
+                        initialPageItem,
                         finalPageItem = initialPageItem + pageItems - 1
                     }).ToList();
 

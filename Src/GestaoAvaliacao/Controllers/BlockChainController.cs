@@ -96,6 +96,46 @@ namespace GestaoAvaliacao.Controllers
         }
 
         /// <summary>
+        /// Retorna os cadernos já criadas na prova pelo Id
+        /// </summary>
+        /// <param name="testId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public JsonResult GetCadernosProva(long testId)
+        {
+            try
+            {
+                var blocos = blockChainBusiness.ObterCadernosPorProva(testId).ToList();
+
+                if (!blocos.Any())
+                {
+                    return Json(
+                        new
+                        {
+                            success = false,
+                            type = ValidateType.alert.ToString(),
+                            message = "Não existe(m) caderno(s) de prova criado(s)."
+                        }, JsonRequestBehavior.AllowGet);
+                }
+
+                var retorno = blocos.Select(x => new
+                {
+                    x.Id,
+                    x.Description,
+                    BlocosCount = x.BlockChains?.Count ?? 0,
+                    BlocosId = x.BlockChains?.Select(i => i.Id)
+                }).ToList();
+
+                return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao buscar os cadernos da prova." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
         /// Retorna os itens já inseridos na cadeia de blocos pelo Id.
         /// </summary>
         /// <param name="blockChainId"></param>
