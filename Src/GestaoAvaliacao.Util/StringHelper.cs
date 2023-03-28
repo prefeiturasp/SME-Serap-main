@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -109,6 +110,22 @@ namespace GestaoAvaliacao.Util
         {
             string pattern = @"(?![a-z0-9áàâãéèêíìîóòôõúùûçñ\s_-]).";
             return Regex.Replace(str, pattern, string.Empty, RegexOptions.IgnoreCase);
+        }
+
+        public static int PositionOfNewLine(string text)
+        {
+            var positionOfNewLine = text.IndexOf("\r\n", StringComparison.Ordinal);
+
+            if (positionOfNewLine < 0)
+                positionOfNewLine = text.IndexOf("\r", StringComparison.Ordinal);
+
+            if (positionOfNewLine < 0)
+                positionOfNewLine = text.IndexOf("\n", StringComparison.Ordinal);
+
+            if (positionOfNewLine < 0)
+                positionOfNewLine = text.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+
+            return positionOfNewLine;
         }
     }
 }
