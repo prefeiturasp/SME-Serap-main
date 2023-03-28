@@ -135,6 +135,7 @@
                 cadeiaBlocos: TestModel.loadBlockChains,
                 itensBloco: TestModel.visualizar,
                 itensCadeiaBloco: TestModel.visualizarItensCadeiaBloco,
+                cadernosComBlocos: TestModel.obterCadernosComBlocos,
                 blockKnowledgeAreas: TestModel.getBlockKnowledgeAreas,
                 itensVersoes: TestModel.GetItemVersions,
                 salvarCadeiaBloco: TestModel.saveBlockChain
@@ -2095,6 +2096,8 @@
             else
                 ng.mostrarTela = true;
         };
+
+
 
         /**
         * @function Carregar dados do nivel de ensino

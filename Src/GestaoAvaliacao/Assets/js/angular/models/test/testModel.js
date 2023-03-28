@@ -190,6 +190,12 @@
                 method: 'DELETE',
                 url: base_url('BlockChain/DeleteBlockChainItems')
             },
+
+            'obterCadernosComBlocos': {
+                method: 'GET',
+                url: base_url('BlockChain/GetCadernosProva')
+            },
+
             /////////////////////////////////////////////
             // CHAMADAS DA ETAPA 4
             'getAllByTest': {
