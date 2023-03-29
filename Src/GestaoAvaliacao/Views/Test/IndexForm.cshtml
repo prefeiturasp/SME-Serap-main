@@ -106,7 +106,6 @@
                                          ng-class="{'off': !isMultidiscipline}" style="position: absolute; margin: 4px 206px;"><input type="button" /></div>
                                 </div>
 
-
                                 @* Componente Curricular *@
                                 <div class="campoLabel" ng-show="e1_listaComponenteCurricular && !isMultidiscipline">
                                     <label> {{labels.componente}}*: </label>
@@ -826,7 +825,7 @@
                     </div>
                 
                     @* Etapa 3 *@ @* Lista de cadernos *@
-                    <div class="form-group" ng-show="mostrarTela && navigation===3">
+                    <div class="form-group" ng-show="(mostrarTela && navigation===3)">
                         <!-- Montagem dos cadernos -->
                         @{
                             Html.RenderPartial("_BlockChainBlock");

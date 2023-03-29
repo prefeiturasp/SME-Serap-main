@@ -48,28 +48,32 @@
                 ng.temBIB = q;
 
             var arr = [];
-            arr.push(self.wizards[0]);
-            arr.push(self.wizards[1]);
 
             if (ng.temBIB === null)
                 return;            
 
             if (ng.ehCadeiaBlocos) {
-                arr.push(self.wizards[2]);
-                arr.push(self.wizards[3]);
+                arr.push(self.wizardsBlockChain[0]);
+                arr.push(self.wizardsBlockChain[1]);
+                arr.push(self.wizardsBlockChain[2]);
+                arr.push(self.wizardsBlockChain[3]);
                 ng.ultimo = 4;
             }
             else if (ng.showTestTAI) {
+                arr.push(self.wizardsTai[0]);
+                arr.push(self.wizardsTai[1]);
                 ng.ultimo = 2;
             }
             else {
+                arr.push(self.wizards[0]);
+                arr.push(self.wizards[1]);
                 arr.push(self.wizards[2]);
                 ng.ultimo = 3;
             }
 
             ng.listaWizardBlockChains = self.wizardsBlockChain;
             ng.listaWizardTAI = self.wizardsTai;
-            ng.listaWizards = arr;
+            ng.listaWizards = self.wizards;
         };
 
         /**
@@ -4684,16 +4688,18 @@
                     ng.mostrarAvisoQtdBlocosCadernoNaoAtingida = true;
                     return $notification.alert(msgBlocos);
                 }
+
+                ng.BtnSaveDisabled = true;
             }
 
-            let listaComp = ng.listaWizards.length;
+            let listaWizardCount = ng.listaWizards.length;
 
             if (ng.ehCadeiaBlocos)
-                listaComp = ng.listaWizardBlockChains.length;
+                listaWizardCount = ng.listaWizardBlockChains.length;
             else if (ng.showTestTAI)
-                listaComp = ng.listaWizardTAI.length;
+                listaWizardCount = ng.listaWizardTAI.length;
 
-            if (ng.navigation < listaComp)
+            if (ng.navigation < listaWizardCount)
                 ng.navigation++;
         };
 
@@ -4737,7 +4743,6 @@
 
         ng.carregaPeriodos = carregaPeriodos;
         function carregaPeriodos() {
-
             if (!ng.e2_Modalidade)
                 ng.e2_ListaPeriodoChecked = [];
 
