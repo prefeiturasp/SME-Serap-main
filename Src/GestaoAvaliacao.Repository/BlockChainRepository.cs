@@ -179,7 +179,7 @@ namespace GestaoAvaliacao.Repository
 
         public IEnumerable<Block> ObterCadernosPorProva(long testId)
         {
-            const string sql = @"SELECT b.Id, b.Description, bc.Test_Id
+            const string sql = @"SELECT b.Id, b.Description, b.Test_Id
 									FROM BlockChain bc WITH (NOLOCK)
 									inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
 									inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
@@ -192,7 +192,7 @@ namespace GestaoAvaliacao.Repository
 									FROM Test T WITH(NOLOCK)
 									WHERE Id = @testId
 
-									SELECT b.Id, bc.Id BlockChain_Id
+									SELECT bcb.Id, bcb.Block_Id, bcb.BlockChain_Id
 									FROM BlockChain bc WITH (NOLOCK)
 									inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
 									inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
@@ -214,7 +214,7 @@ namespace GestaoAvaliacao.Repository
                 foreach (var bloco in listaBlocos)
                 {
                     bloco.Test = listaProva.FirstOrDefault(p => p.Id == bloco.Test_Id);
-                    bloco.BlockChains.AddRange(listaBlockChainBlock.Where(i => i.Id.Equals(bloco.Id)).Select(x => new BlockChain { Id = x.BlockChain_Id }));
+                    bloco.BlockChainBlocks.AddRange(listaBlockChainBlock.Where(c => c.Block_Id.Equals(bloco.Id)));
                 }
 
                 return listaBlocos;
