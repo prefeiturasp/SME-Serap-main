@@ -52,7 +52,7 @@
             arr.push(self.wizards[1]);
 
             if (ng.temBIB === null)
-                return;            
+                return;
 
             if (ng.ehCadeiaBlocos) {
                 arr.push(self.wizards[2]);
@@ -122,7 +122,7 @@
                 salvar: TestModel.saveBlock,
                 remover: TestModel.deleteBlock,
                 salvarKnowLedgeAreaOrder: TestModel.saveKnowLedgeAreaOrder,
-                paginacao: TestModel.searchBlock,                
+                paginacao: TestModel.searchBlock,
                 nivelEnsino: TestModel.loadLevelEducation,
                 modalidade: TestModel.loadModality,
                 matrix: TestModel.getComboByDiscipline,
@@ -140,11 +140,13 @@
                 itensVersoes: TestModel.GetItemVersions,
                 salvarCadeiaBloco: TestModel.saveBlockChain
             };
+
             //Chamadas utilizada na Etapa 3
             self.etapa3 = {
                 salvar: TestModel.saveBlock,
                 cadernosComCadeiaBlocos: TestModel.loadBlockChainBlocks
             };
+
             //Chamadas utilizada na Etapa 4
             self.etapa4 = {
                 cadernos: TestModel.getAllByTest,
@@ -2846,6 +2848,49 @@
 
             e2_itemVisualizarModal(id);
         };
+
+        ng.cadernoSelecionado = {};
+        ng.listaBlocosSelecionadosCadernoModal = [];
+
+        ng.e3_callModalAddBlocosCaderno = e3_callModalAddBlocosCaderno;
+        function e3_callModalAddBlocosCaderno() {
+            e3_selecionarBlocosCadernoAtual();
+            angular.element("#modalAddBlocos").modal({ backdrop: 'static' });
+        };
+
+        ng.e3_selecionarBlocosCadernoAtual = e3_selecionarBlocosCadernoAtual;
+        function e3_selecionarBlocosCadernoAtual() {
+            ng.cadeiaBlocos.forEach(function (element) {
+                ng.listaBlocosSelecionadosCadernoModal.map(b => {
+                    element.check = b == element.Id;
+                });
+            });
+        };
+
+        ng.e3_selecionarBlocosModal = e3_selecionarBlocosModal;
+        function e3_selecionarBlocosModal(bloco) {
+            console.log(bloco);
+            console.log(ng.listaBlocosSelecionadosCadernoModal);
+            if (bloco.check) {
+                if (ng.listaBlocosSelecionadosCadernoModal.length >= ng.e1_qtdCadeiaBlocosPorBloco) {
+                    e3_selecionarBlocosCadernoAtual();
+                    $notification.alert('O total máximo de blocos já foi atingido');
+                } else
+                    ng.listaBlocosSelecionadosCadernoModal.push(bloco.Id);
+            } else {
+                const index = ng.listaBlocosSelecionadosCadernoModal.findIndex(obj => obj === bloco.Id);
+                if (index >= 0) {
+                    ng.listaBlocosSelecionadosCadernoModal.splice(index, 1);
+                    e3_selecionarBlocosCadernoAtual();
+                }
+            }
+        };
+
+        ng.e3_salvarBlocosCaderno = e3_salvarBlocosCaderno;
+        function e3_salvarBlocosCaderno() {
+            console.log(ng.listaBlocosSelecionadosCadernoModal);
+        };
+
 
         /**
          * @function Callback para visualizar

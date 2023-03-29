@@ -10,21 +10,27 @@
                 <h4 class="modal-title" id="modalAddBlocosLabel">
                     <strong>Selecionar blocos</strong>
                 </h4>
-                <span>Selecione {{e1_qtdCadeiaBlocosPorBloco}} blocos</span>
+                <span>Selecione {{e1_qtdCadeiaBlocosPorBloco}} bloco(s)</span>
             </div>
 
             @*BODY*@
             <div class="modal-body">
-                <div>
+                <div class="campoLabel">
                     <div ng-repeat="bloco in cadeiaBlocos">
                         <div class="checkbox checkbox-primary checkbox-inline">
-                            <input id="c{{bloco.Id}}"
-                                   type="checkbox"
-                                   ng-change="e1_nivelDesempenhoMudou()"
-                                   checklist-model="e1_listaPeriodosChecked"
-                                   checklist-value="bloco">
+                            @*<input id="b_{{bloco.Id}}"
+                                type="checkbox"
+                                ng-click="e3_contBlocos(bloco, this.checked)"
+                                ng-change="e3_blocosCadernoModalMudou()"
+                                checklist-model="listaBlocosSelecionadosCadernoModal"
+                                checklist-value="bloco">*@
 
-                            <label for="c{{bloco.Id}}"> {{bloco.Description}}</label>
+                            <input id="b_{{bloco.Id}}"
+                                   type="checkbox"
+                                   ng-click="e3_selecionarBlocosModal(bloco)"
+                                   ng-model="bloco.check">
+
+                            <label for="b_{{bloco.Id}}"> Bloco {{bloco.Description}}</label>
                         </div>
                     </div>
                 </div>
@@ -34,9 +40,10 @@
             <div class="modal-footer footerCustom ">
                 <div class="container-fluid row-fluid">
                     <button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true">Cancelar</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e2_LimparItensCadeiaBlocosSelecionados()">Salvar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e3_salvarBlocosCaderno()">Salvar</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true" ng-click="e3_callModalAddBlocosCaderno()">teste modal add blocos</button>
