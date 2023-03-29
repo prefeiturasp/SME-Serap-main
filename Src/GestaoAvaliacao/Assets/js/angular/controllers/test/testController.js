@@ -3060,7 +3060,7 @@
             initModalAdicaoEtapa3();
 
             ng.e3_Navegacao = id;
-            ng.e2_blockChainBlockAtual = block;
+            ng.e3_blockChainBlockAtual = block;
         };
 
         ng.e2_cadernoExcluido = e2_cadernoExcluido;
