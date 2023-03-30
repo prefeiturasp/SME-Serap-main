@@ -3060,11 +3060,11 @@
         * @param id = qual id deve ser chamado
         */
         ng.e3_callModal = e3_callModal;
-        function e3_callModal(id, block) {
+        function e3_callModal(id, caderno) {
             initModalAdicaoEtapa3();
 
             ng.e3_Navegacao = id;
-            ng.e3_blockChainBlockAtual = block;
+            ng.e3_blockChainBlockAtual = caderno;
         };
 
         ng.e2_cadernoExcluido = e2_cadernoExcluido;
