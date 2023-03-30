@@ -9,13 +9,12 @@ namespace GestaoAvaliacao.Repository.Map
         {
             ToTable("BlockChainBlock");
 
-            Property(p => p.Description)
-                .IsRequired()
-                .HasMaxLength(10)
-                .HasColumnType("varchar");
+            HasRequired(p => p.Block)
+                .WithMany(p => p.BlockChainBlocks)
+                .HasForeignKey(p => p.Block_Id);
 
-            HasOptional(p => p.BlockChain)
-                .WithMany()
+            HasRequired(p => p.BlockChain)
+                .WithMany(p => p.BlockChainBlocks)
                 .HasForeignKey(p => p.BlockChain_Id);
         }
     }
