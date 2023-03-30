@@ -179,27 +179,36 @@ namespace GestaoAvaliacao.Repository
 
         public IEnumerable<Block> ObterCadernosPorProva(long testId)
         {
-            const string sql = @"SELECT b.Id, b.Description, b.Test_Id
-									FROM BlockChain bc WITH (NOLOCK)
-									inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
-									inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
-									WHERE bc.Test_Id = @testId
-									AND bc.State = @state
-									AND bcb.State = @state
-									AND b.State = @state
+            const string sql = @"SELECT distinct b.Id, b.Description, b.Test_Id
+								FROM BlockChain bc WITH (NOLOCK)
+								inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
+								inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
+								WHERE bc.Test_Id = @testId
+								AND bc.State = @state
+								AND bcb.State = @state
+								AND b.State = @state
 
-									SELECT T.Id
-									FROM Test T WITH(NOLOCK)
-									WHERE Id = @testId
+								SELECT T.Id
+								FROM Test T WITH(NOLOCK)
+								WHERE Id = @testId
 
-									SELECT bcb.Id, bcb.Block_Id, bcb.BlockChain_Id
-									FROM BlockChain bc WITH (NOLOCK)
-									inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
-									inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
-									WHERE bc.Test_Id = @testId
-									AND bc.State = @state
-									AND bcb.State = @state
-									AND b.State = @state";
+								SELECT bcb.BlockChain_Id, bcb.Block_Id
+								FROM BlockChain bc WITH (NOLOCK)
+								inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
+								inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
+								WHERE bc.Test_Id = @testId
+								AND bc.State = @state
+								AND bcb.State = @state
+								AND b.State = @state
+
+								SELECT bc.Id, bc.Description
+								FROM BlockChain bc WITH (NOLOCK)
+								inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
+								inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
+								WHERE bc.Test_Id = @testId
+								AND bc.State = @state
+								AND bcb.State = @state
+								AND b.State = @state";
 
             using (var cn = Connection)
             {
@@ -210,11 +219,14 @@ namespace GestaoAvaliacao.Repository
                 var listaBlocos = multi.Read<Block>().ToList();
                 var listaProva = multi.Read<Test>().ToList();
                 var listaBlockChainBlock = multi.Read<BlockChainBlock>().ToList();
+                var listaBlockChain = multi.Read<BlockChain>().ToList();
 
                 foreach (var bloco in listaBlocos)
                 {
                     bloco.Test = listaProva.FirstOrDefault(p => p.Id == bloco.Test_Id);
-                    bloco.BlockChainBlocks.AddRange(listaBlockChainBlock.Where(c => c.Block_Id.Equals(bloco.Id)));
+                    var blocosCaderno = listaBlockChainBlock.Where(x => x.Block_Id == bloco.Id);
+                    if (blocosCaderno != null && blocosCaderno.Any())
+                        bloco.Blocos.AddRange(listaBlockChain.Where(bc => blocosCaderno.Any(x => x.BlockChain_Id == bc.Id)).Select(x => x.Id));
                 }
 
                 return listaBlocos;

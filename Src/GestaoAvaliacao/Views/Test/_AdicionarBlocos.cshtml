@@ -1,0 +1,41 @@
+﻿@* Modal para adicionar blocos nos cadernos' *@
+
+<div class="modal fade" id="modalAddBlocos" tabindex="-1" role="dialog" aria-labelledby="modalAddBlocos" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content ">
+
+            @*HEADER*@
+            <div class="modal-header">
+                <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                <h4 class="modal-title" id="modalAddBlocosLabel">
+                    <strong>Selecionar blocos</strong>
+                </h4>
+                <span>Selecione {{e1_qtdCadeiaBlocosPorBloco}} bloco(s)</span>
+            </div>
+
+            @*BODY*@
+            <div class="modal-body">
+                <div class="campoLabel">
+                    <div ng-repeat="bloco in cadeiaBlocos">
+                        <div class="checkbox checkbox-primary checkbox-inline">
+                            <input id="b_{{bloco.Id}}"
+                                   type="checkbox"
+                                   ng-click="e3_selecionarBlocosModal(bloco)"
+                                   ng-model="bloco.check">
+
+                            <label for="b_{{bloco.Id}}"> Bloco {{bloco.Description}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*FOOTER*@
+            <div class="modal-footer footerCustom ">
+                <div class="container-fluid row-fluid">
+                    <button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e3_salvarBlocosCaderno()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

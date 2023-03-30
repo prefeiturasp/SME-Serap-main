@@ -122,8 +122,9 @@ namespace GestaoAvaliacao.Controllers
                 {
                     x.Id,
                     x.Description,
-                    BlocosCount = x.BlockChainBlocks.Select(c => c.Block_Id).Distinct().Count(),
-                    BlocosId = x.BlockChainBlocks.Select(c => c.Block_Id).Distinct()
+                    Test_Id = testId,
+                    BlocosCount = x.Blocos.Distinct().Count(),
+                    Blocos = x.Blocos.Distinct()
                 }).ToList();
 
                 return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);

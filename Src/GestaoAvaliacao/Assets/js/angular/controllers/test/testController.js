@@ -50,7 +50,7 @@
             var arr = [];
 
             if (ng.temBIB === null)
-                return;            
+                return;
 
             if (ng.ehCadeiaBlocos) {
                 arr.push(self.wizardsBlockChain[0]);
@@ -126,7 +126,7 @@
                 salvar: TestModel.saveBlock,
                 remover: TestModel.deleteBlock,
                 salvarKnowLedgeAreaOrder: TestModel.saveKnowLedgeAreaOrder,
-                paginacao: TestModel.searchBlock,                
+                paginacao: TestModel.searchBlock,
                 nivelEnsino: TestModel.loadLevelEducation,
                 modalidade: TestModel.loadModality,
                 matrix: TestModel.getComboByDiscipline,
@@ -139,15 +139,18 @@
                 cadeiaBlocos: TestModel.loadBlockChains,
                 itensBloco: TestModel.visualizar,
                 itensCadeiaBloco: TestModel.visualizarItensCadeiaBloco,
+                cadernosComBlocos: TestModel.obterCadernosComBlocos,
                 blockKnowledgeAreas: TestModel.getBlockKnowledgeAreas,
                 itensVersoes: TestModel.GetItemVersions,
                 salvarCadeiaBloco: TestModel.saveBlockChain
             };
+
             //Chamadas utilizada na Etapa 3
             self.etapa3 = {
                 salvar: TestModel.saveBlock,
                 cadernosComBlocos: TestModel.loadBlockChainBlocks
             };
+
             //Chamadas utilizada na Etapa 4
             self.etapa4 = {
                 cadernos: TestModel.getAllByTest,
@@ -2121,6 +2124,8 @@
                 ng.mostrarTela = true;
         };
 
+
+
         /**
         * @function Tratamento para dados do caderno com cadeia de blocos
         * @private
@@ -2137,7 +2142,7 @@
                         Id: 0,
                         Total: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
                         Resto: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
-                        SelectedItens: []
+                        Blocos: []
                     });
                 }
 
@@ -2149,7 +2154,6 @@
                 ng.cadernosComBlocos = angular.copy(r);
 
                 var cadernoComCadeiaBloco;
-
                 for (var q = 0; q < ng.cadernosComBlocos.length; q++) {
                     cadernoComCadeiaBloco = ng.cadernosComBlocos[q];
                     cadernoComCadeiaBloco.Total = parseInt(ng.e1_qtdCadeiaBlocosPorBloco);
@@ -2166,7 +2170,7 @@
                             Id: 0,
                             Total: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
                             Resto: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
-                            SelectedItens: []
+                            Blocos: []
                         });
                     }
 
@@ -2855,6 +2859,68 @@
             e2_itemVisualizarModal(id);
         };
 
+        ng.e3_callModalAddBlocosCaderno = e3_callModalAddBlocosCaderno;
+        function e3_callModalAddBlocosCaderno(caderno) {
+            ng.cadernoSelecionado = caderno;
+            ng.listaBlocosSelecionadosCadernoModal = ng.cadernoSelecionado.Blocos;
+            e3_selecionarBlocosCadernoAtual();
+            angular.element("#modalAddBlocos").modal({ backdrop: 'static' });
+        };
+
+        ng.e3_selecionarBlocosCadernoAtual = e3_selecionarBlocosCadernoAtual;
+        function e3_selecionarBlocosCadernoAtual() {
+            ng.cadeiaBlocos.forEach(function (element) {
+                const filtro = ng.listaBlocosSelecionadosCadernoModal.filter(b => b == element.Id);
+                element.check = filtro != undefined && filtro.length > 0;               
+            });
+        };
+
+        ng.e3_selecionarBlocosModal = e3_selecionarBlocosModal;
+        function e3_selecionarBlocosModal(bloco) {
+            if (bloco.check) {
+                if (ng.listaBlocosSelecionadosCadernoModal.length >= ng.e1_qtdCadeiaBlocosPorBloco) {
+                    e3_selecionarBlocosCadernoAtual();
+                    $notification.alert('O total máximo de blocos já foi atingido');
+                } else
+                    ng.listaBlocosSelecionadosCadernoModal.push(bloco.Id);
+            } else {
+                const index = ng.listaBlocosSelecionadosCadernoModal.findIndex(obj => obj === bloco.Id);
+                if (index >= 0) {
+                    ng.listaBlocosSelecionadosCadernoModal.splice(index, 1);
+                    e3_selecionarBlocosCadernoAtual();
+                }
+            }
+        };
+
+        ng.e3_salvarBlocosCaderno = e3_salvarBlocosCaderno;
+        function e3_salvarBlocosCaderno() {
+            ng.cadernosComBlocos.forEach(function (caderno) {
+                if (caderno.Description == ng.cadernoSelecionado.Description) {
+                    caderno.Blocos = ng.listaBlocosSelecionadosCadernoModal;
+                    caderno.BlocosCount = caderno.Blocos.length;
+                    caderno.Resto = caderno.Total - caderno.BlocosCount;
+                }
+            });
+            ng.cadernoSelecionado.Test_Id = ng.provaId;
+            ng.cadernoSelecionado.Blocos = ng.listaBlocosSelecionadosCadernoModal;
+            ng.cadernoSelecionado.BlockChainBlocks = ng.listaBlocosSelecionadosCadernoModal.map(x => {
+                return {
+                    Block_Id: ng.cadernoSelecionado.Id,
+                    BlockChain_Id: x
+                }
+            });
+            self.etapa3.salvar(ng.cadernoSelecionado, e3_blocosCadernoSalvo);
+        };
+
+        function e3_blocosCadernoSalvo(r) {
+            if (r.success) {
+                cadernosComBlocosCarregar();
+            } else {
+                $notification.error('Erro ao salvar');
+            }
+        };
+
+
         /**
          * @function Callback para visualizar
          * @private
@@ -3052,19 +3118,6 @@
             }
 
             angular.element("#modal").modal({ backdrop: 'static' });
-        };
-
-        /**
-        * @function Tratamento para dados do caderno
-        * @private
-        * @param id = qual id deve ser chamado
-        */
-        ng.e3_callModal = e3_callModal;
-        function e3_callModal(id, caderno) {
-            initModalAdicaoEtapa3();
-
-            ng.e3_Navegacao = id;
-            ng.e3_blockChainBlockAtual = caderno;
         };
 
         ng.e2_cadernoExcluido = e2_cadernoExcluido;
@@ -4230,6 +4283,8 @@
         function initEtapa3() {
             ng.escondeModal = false;
             ng.e3_Navegacao = 1;
+            ng.cadernoSelecionado = {};
+            ng.listaBlocosSelecionadosCadernoModal = [];
 
             if (ng.ehCadeiaBlocos)
                 cadernosComBlocosCarregar();
@@ -4798,7 +4853,6 @@
         ng.changeVersionItem = function changeVersionItem(itens, versoes) {
             if (ng.ehCadeiaBlocos) {
                 TestModel.saveChangeBlockChainItem({ item: versoes, testId: ng.provaId, itemIdAntigo: itens.Id, blockChainId: ng.e2_blockChainAtual.Id }, function (result) {
-                    console.log(result, "result");
 
                     if (result.success) {
                         $notification.success(result.message);
@@ -4824,7 +4878,6 @@
             }
             else {
                 TestModel.saveChangeItem({ item: versoes, test_id: ng.provaId, itemIdAntigo: itens.Id, blockId: ng.e2_blockAtual.Id }, function (result) {
-                    console.log(result, "result");
 
                     if (result.success) {
                         $notification.success(result.message);
