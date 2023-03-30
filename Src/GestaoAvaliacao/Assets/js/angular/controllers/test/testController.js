@@ -263,7 +263,9 @@
         * @param
         */
         function initEtapa1() {
-            if (ng.editMode) ng.etapaAtual = 2;
+            if (ng.editMode)
+                ng.etapaAtual = 2;
+
             self.etapa1.alterou = false;
             //Padrao para preload
             ng.e1_listaTipoProva = [];
@@ -465,8 +467,10 @@
                     }
                 }
             }
+
             periodoCarregar(ng.e1_cbTipoProva.Id);
             loadFrequencyApplication();
+
             if (ng.mostrarTela)
                 ng.alterouEtapaAtual = self.etapa1.alterou = true;
         };
@@ -572,7 +576,6 @@
 
         ng.e1_GrupoSubgrupoMudou = e1_GrupoSubgrupoMudou;
         function e1_GrupoSubgrupoMudou() {
-
             if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa1.alterou = true;
 
             if (!ng.e1_grupoSubgrupo)
@@ -587,7 +590,6 @@
 
         ng.e1_nItensTestTAIMudou = e1_nItensTestTAIMudou;
         function e1_nItensTestTAIMudou() {
-
             if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa1.alterou = true;
 
             if (!ng.e1_nItensTestTAI)
@@ -596,7 +598,6 @@
 
         ng.e1_TempoDeProvaMudou = e1_TempoDeProvaMudou;
         function e1_TempoDeProvaMudou() {
-
             if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa1.alterou = true;
 
             if (!ng.e1_tempoDeProva)
@@ -938,7 +939,6 @@
 
             if (ng.mostrarTela)
                 ng.alterouEtapaAtual = self.etapa1.alterou = true;
-
         };
 
         /**
@@ -5080,14 +5080,14 @@
 
         ng.e2_ComponenteCurricularMudou = e2_ComponenteCurricularMudou;
         function e2_ComponenteCurricularMudou() {
-
             ng.e2_matrizAvaliacaoList = [];
             if (!ng.e2_cbComponenteCurricular)
                 return;
 
             carregaMatrizAvaliacao();
 
-            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa2.alterou = true;
+            if (ng.mostrarTela)
+                ng.alterouEtapaAtual = self.etapa2.alterou = true;
         };
 
         function e2_ComponenteCurricularCarregar(tipoNivelEnsino) {

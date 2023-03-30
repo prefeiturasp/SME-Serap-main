@@ -798,7 +798,7 @@
                                             <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0}}</th>
                                             <th class="table-parameter-centralize ">
                                                 <i ng-class="{ true:'material-icons check-success pull-left', false:'some-icon' }
-                                                        [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
+                                                            [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
                                             </th>
 
                                             <th class="table-parameter-centralize">
@@ -823,138 +823,139 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 
-                    @* Etapa 3 *@ @* Lista de cadernos *@
-                    <div class="form-group" ng-show="(mostrarTela && navigation===3)">
-                        <!-- Montagem dos cadernos -->
-                        @{
-                            Html.RenderPartial("_BlockChainBlock");
-                        }
-                    </div>
+                @* Etapa 3 *@ @* Lista de cadernos *@
+                <div class="form-group" ng-show="mostrarTela && navigation===3">
+                    <!-- Montagem dos cadernos -->
+                    @{
+                        Html.RenderPartial("_BlockChainBlock");
+                    }
+                </div>
 
-                    @* Etapa 4 *@ @* Gera Prova *@
-                    <div class="form-group" ng-show="mostrarTela && navigation===ultimo">
-                        <div class="row">
-                            <div class="col-md-12 ">
-                                <div class="cards">
-                                    <h4 class="padding"><strong>{{ e1_testDescription}}</strong></h4>
-                                    <table class="table table-hover">
-                                        <colgroup>
-                                            <col width="5%" ng-hide="true">
-                                            <col width="5%">
-                                            <col width="30%">
-                                            <col width="15%">
-                                            <col width="10%">
-                                            <col width="5%">
-                                            <col width="10%">
-                                            <col width="5%">
-                                            <col width="10%">
-                                            <col width="5%">
+                @* Etapa 4 *@ @* Gera Prova *@
+                <div class="form-group" ng-show="mostrarTela && navigation===ultimo">
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            <div class="cards">
+                                <h4 class="padding"><strong>{{ e1_testDescription}}</strong></h4>
+                                <table class="table table-hover">
+                                    <colgroup>
+                                        <col width="5%" ng-hide="true">
+                                        <col width="5%">
+                                        <col width="30%">
+                                        <col width="15%">
+                                        <col width="10%">
+                                        <col width="5%">
+                                        <col width="10%">
+                                        <col width="5%">
+                                        <col width="10%">
+                                        <col width="5%">
 
-                                        </colgroup>
-                                        <thead>
-                                        <tr>
-                                            <th class="table-parameter-centralize" ng-hide="true">Gerar</th>
-                                            <th class="">Código</th>
-                                            <th class="">Prova</th>
-                                            <th class="table-parameter-centralize">Permitir download do Gabarito</th>
-                                            <th class="table-parameter-centralize">Gerar Folha de Resposta</th>
-                                            <th class="table-parameter-centralize">Exportar doc</th>
-                                            <th class="table-parameter-centralize">Gerar Prova</th>
-                                            <th class="table-parameter-centralize">Salvar</th>
-                                            <th class="table-parameter-centralize">Última Geração</th>
-                                            <th class="table-parameter-centralize">Baixar</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr ng-repeat="p in Provas" ng-click="selecionaItem($index)">
-                                            @* CHECK *@
-                                            <th class="table-parameter-centralize" ng-hide="true">
-                                                <div class="checkbox checkbox-primary check-parameter">
-                                                    <input id="{{p.label}}" type="checkbox" ng-model="p.gerar">
-                                                    <label for="{{p.label}}" class="gerar-prova label-top"></label>
-                                                </div>
-                                            </th>
-                                            @* CÓDIGO *@
-                                            <th class="table-parameter-centralize">
-                                                <div>{{p.Description}}</div>
-                                            </th>
-                                            @* DESCRIÇÃO *@
-                                            <th class="">
-                                                <div>
-                                                    <span ng-repeat="itens in p.Blocks" class="gerar-prova span-padding">{{itens.Description}}</span>
-                                                </div>
-                                            </th>
-                                            @* DOWNLOAD DO GABARITO*@
-                                            <th class="table-parameter-centralize">
-                                                <div class="campoLabel" style="position: relative;">
-                                                    <div class="switch" ng-model="publicFeedback" ng-click="selectedFeedback(p.Registered);" ng-class="{'off': !publicFeedback }"><input type="button"/></div>
-                                                </div>
-                                            </th>
-                                            @* GERAR FOLHA DE RESPOSTA *@
-                                            <th class="table-parameter-centralize">
-                                                <div class="campoLabel" ng-show="e1_folhaRespLock" style="position: relative;"
-                                                     data-title="A folha de resposta não pode ser gerada pois o tipo de prova escolhido não tem um tipo de item definido." bs-tooltip>
-                                                    <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
-                                                         ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button"/></div>
-                                                </div>
-                                                <div class="campoLabel" ng-show="!e1_folhaRespLock" style="position: relative;">
-                                                    <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
-                                                         ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button"/></div>
-                                                </div>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <div>
-                                                    <a class="btn" ng-click="provaExportDocIndex($index)">
-                                                        <i type="button" class="material-icons">description</i>
-                                                    </a>
-                                                </div>
-                                            </th>
-                                            @* VISUALIZAR *@
-                                            <th class="table-parameter-centralize">
-                                                <div>
-                                                    <a class="btn" ng-click="visualizarProva($index)" ng-disabled="p.Registered">
-                                                        <i type="button" class="material-icons">remove_red_eye</i>
-                                                    </a>
-                                                </div>
-                                            </th>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th class="table-parameter-centralize" ng-hide="true">Gerar</th>
+                                        <th class="">Código</th>
+                                        <th class="">Prova</th>
+                                        <th class="table-parameter-centralize">Permitir download do Gabarito</th>
+                                        <th class="table-parameter-centralize">Gerar Folha de Resposta</th>
+                                        <th class="table-parameter-centralize">Exportar doc</th>
+                                        <th class="table-parameter-centralize">Gerar Prova</th>
+                                        <th class="table-parameter-centralize">Salvar</th>
+                                        <th class="table-parameter-centralize">Última Geração</th>
+                                        <th class="table-parameter-centralize">Baixar</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="p in Provas" ng-click="selecionaItem($index)">
+                                        @* CHECK *@
+                                        <th class="table-parameter-centralize" ng-hide="true">
+                                            <div class="checkbox checkbox-primary check-parameter">
+                                                <input id="{{p.label}}" type="checkbox" ng-model="p.gerar">
+                                                <label for="{{p.label}}" class="gerar-prova label-top"></label>
+                                            </div>
+                                        </th>
+                                        @* CÓDIGO *@
+                                        <th class="table-parameter-centralize">
+                                            <div>{{p.Description}}</div>
+                                        </th>
+                                        @* DESCRIÇÃO *@
+                                        <th class="">
+                                            <div>
+                                                <span ng-repeat="itens in p.Blocks" class="gerar-prova span-padding">{{itens.Description}}</span>
+                                            </div>
+                                        </th>
+                                        @* DOWNLOAD DO GABARITO*@
+                                        <th class="table-parameter-centralize">
+                                            <div class="campoLabel" style="position: relative;">
+                                                <div class="switch" ng-model="publicFeedback" ng-click="selectedFeedback(p.Registered);" ng-class="{'off': !publicFeedback }"><input type="button"/></div>
+                                            </div>
+                                        </th>
+                                        @* GERAR FOLHA DE RESPOSTA *@
+                                        <th class="table-parameter-centralize">
+                                            <div class="campoLabel" ng-show="e1_folhaRespLock" style="position: relative;"
+                                                 data-title="A folha de resposta não pode ser gerada pois o tipo de prova escolhido não tem um tipo de item definido." bs-tooltip>
+                                                <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
+                                                     ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button"/></div>
+                                            </div>
+                                            <div class="campoLabel" ng-show="!e1_folhaRespLock" style="position: relative;">
+                                                <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
+                                                     ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button"/></div>
+                                            </div>
+                                        </th>
+                                        <th class="table-parameter-centralize">
+                                            <div>
+                                                <a class="btn" ng-click="provaExportDocIndex($index)">
+                                                    <i type="button" class="material-icons">description</i>
+                                                </a>
+                                            </div>
+                                        </th>
+                                        @* VISUALIZAR *@
+                                        <th class="table-parameter-centralize">
+                                            <div>
+                                                <a class="btn" ng-click="visualizarProva($index)" ng-disabled="p.Registered">
+                                                    <i type="button" class="material-icons">remove_red_eye</i>
+                                                </a>
+                                            </div>
+                                        </th>
 
-                                            @* SALVAR *@
-                                            <th class="table-parameter-centralize">
-                                                <button type="button"
-                                                        ng-disabled="BtnSaveDisabled"
-                                                        class="btn btn-primary"
-                                                        ng-hide="navigation===2 || navigation===3"
-                                                        ng-click="salvar()" style="background-color: #5a94d6">
-                                                    Salvar
-                                                </button>
-                                            </th>
-                                            @* DATA DE GERAÇÃO *@
-                                            <th class="table-parameter-centralize">
-                                                <div>{{p.currentDate}}</div>
-                                            </th>
-                                            @* BAIXAR *@
-                                            <th class="table-parameter-centralize">
-                                                <div>
-                                                    <a class="btn" ng-click="baixarProva($index)" ng-disabled="p.Download">
-                                                        <i type="button" class="material-icons">file_download</i>
-                                                    </a>
-                                                </div>
-                                            </th>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        @* SALVAR *@
+                                        <th class="table-parameter-centralize">
+                                            <button type="button"
+                                                    ng-disabled="BtnSaveDisabled"
+                                                    class="btn btn-primary"
+                                                    ng-hide="navigation===2 || navigation===3"
+                                                    ng-click="salvar()" style="background-color: #5a94d6">
+                                                Salvar
+                                            </button>
+                                        </th>
+                                        @* DATA DE GERAÇÃO *@
+                                        <th class="table-parameter-centralize">
+                                            <div>{{p.currentDate}}</div>
+                                        </th>
+                                        @* BAIXAR *@
+                                        <th class="table-parameter-centralize">
+                                            <div>
+                                                <a class="btn" ng-click="baixarProva($index)" ng-disabled="p.Download">
+                                                    <i type="button" class="material-icons">file_download</i>
+                                                </a>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="row" ng-hide="true">
-                            <div class="col-md-12 gerar-prova margin-left">
-                                <a class="hand-logo gerar-prova none-decoration" ng-click="gerarSelecionadas()">GERAR SELECIONADAS</a>&nbsp &nbsp &nbsp
-                                <a class="hand-logo gerar-prova none-decoration" ng-click="baixarSelecioandas()"><i type="button" class="material-icons">file_download</i>BAIXAR SELECIOANDAS</a>
-                            </div>
+                    </div>
+                    <div class="row" ng-hide="true">
+                        <div class="col-md-12 gerar-prova margin-left">
+                            <a class="hand-logo gerar-prova none-decoration" ng-click="gerarSelecionadas()">GERAR SELECIONADAS</a>&nbsp &nbsp &nbsp
+                            <a class="hand-logo gerar-prova none-decoration" ng-click="baixarSelecioandas()"><i type="button" class="material-icons">file_download</i>BAIXAR SELECIOANDAS</a>
                         </div>
                     </div>
                 </div>
+
                 @* Footer *@
                 <div class="footerCustom semPadding">
                     @* Botões *@
