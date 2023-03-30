@@ -2142,7 +2142,7 @@
                         Id: 0,
                         Total: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
                         Resto: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
-                        SelectedItens: []
+                        Blocos: []
                     });
                 }
 
@@ -2154,7 +2154,6 @@
                 ng.cadernosComBlocos = angular.copy(r);
 
                 var cadernoComCadeiaBloco;
-
                 for (var q = 0; q < ng.cadernosComBlocos.length; q++) {
                     cadernoComCadeiaBloco = ng.cadernosComBlocos[q];
                     cadernoComCadeiaBloco.Total = parseInt(ng.e1_qtdCadeiaBlocosPorBloco);
@@ -2171,7 +2170,7 @@
                             Id: 0,
                             Total: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
                             Resto: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
-                            SelectedItens: []
+                            Blocos: []
                         });
                     }
 
@@ -2860,11 +2859,10 @@
             e2_itemVisualizarModal(id);
         };
 
-        ng.cadernoSelecionado = {};
-        ng.listaBlocosSelecionadosCadernoModal = [];
-
         ng.e3_callModalAddBlocosCaderno = e3_callModalAddBlocosCaderno;
-        function e3_callModalAddBlocosCaderno() {
+        function e3_callModalAddBlocosCaderno(caderno) {
+            ng.cadernoSelecionado = caderno;
+            ng.listaBlocosSelecionadosCadernoModal = ng.cadernoSelecionado.Blocos;
             e3_selecionarBlocosCadernoAtual();
             angular.element("#modalAddBlocos").modal({ backdrop: 'static' });
         };
@@ -2872,16 +2870,13 @@
         ng.e3_selecionarBlocosCadernoAtual = e3_selecionarBlocosCadernoAtual;
         function e3_selecionarBlocosCadernoAtual() {
             ng.cadeiaBlocos.forEach(function (element) {
-                ng.listaBlocosSelecionadosCadernoModal.map(b => {
-                    element.check = b == element.Id;
-                });
+                const filtro = ng.listaBlocosSelecionadosCadernoModal.filter(b => b == element.Id);
+                element.check = filtro != undefined && filtro.length > 0;               
             });
         };
 
         ng.e3_selecionarBlocosModal = e3_selecionarBlocosModal;
         function e3_selecionarBlocosModal(bloco) {
-            console.log(bloco);
-            console.log(ng.listaBlocosSelecionadosCadernoModal);
             if (bloco.check) {
                 if (ng.listaBlocosSelecionadosCadernoModal.length >= ng.e1_qtdCadeiaBlocosPorBloco) {
                     e3_selecionarBlocosCadernoAtual();
@@ -2899,7 +2894,30 @@
 
         ng.e3_salvarBlocosCaderno = e3_salvarBlocosCaderno;
         function e3_salvarBlocosCaderno() {
-            console.log(ng.listaBlocosSelecionadosCadernoModal);
+            ng.cadernosComBlocos.forEach(function (caderno) {
+                if (caderno.Description == ng.cadernoSelecionado.Description) {
+                    caderno.Blocos = ng.listaBlocosSelecionadosCadernoModal;
+                    caderno.BlocosCount = caderno.Blocos.length;
+                    caderno.Resto = caderno.Total - caderno.BlocosCount;
+                }
+            });
+            ng.cadernoSelecionado.Test_Id = ng.provaId;
+            ng.cadernoSelecionado.Blocos = ng.listaBlocosSelecionadosCadernoModal;
+            ng.cadernoSelecionado.BlockChainBlocks = ng.listaBlocosSelecionadosCadernoModal.map(x => {
+                return {
+                    Block_Id: ng.cadernoSelecionado.Id,
+                    BlockChain_Id: x
+                }
+            });
+            self.etapa3.salvar(ng.cadernoSelecionado, e3_blocosCadernoSalvo);
+        };
+
+        function e3_blocosCadernoSalvo(r) {
+            if (r.success) {
+                cadernosComBlocosCarregar();
+            } else {
+                $notification.error('Erro ao salvar');
+            }
         };
 
 
@@ -4278,6 +4296,8 @@
         function initEtapa3() {
             ng.escondeModal = false;
             ng.e3_Navegacao = 1;
+            ng.cadernoSelecionado = {};
+            ng.listaBlocosSelecionadosCadernoModal = [];
 
             if (ng.ehCadeiaBlocos)
                 cadernosComBlocosCarregar();
@@ -4846,7 +4866,6 @@
         ng.changeVersionItem = function changeVersionItem(itens, versoes) {
             if (ng.ehCadeiaBlocos) {
                 TestModel.saveChangeBlockChainItem({ item: versoes, testId: ng.provaId, itemIdAntigo: itens.Id, blockChainId: ng.e2_blockChainAtual.Id }, function (result) {
-                    console.log(result, "result");
 
                     if (result.success) {
                         $notification.success(result.message);
@@ -4872,7 +4891,6 @@
             }
             else {
                 TestModel.saveChangeItem({ item: versoes, test_id: ng.provaId, itemIdAntigo: itens.Id, blockId: ng.e2_blockAtual.Id }, function (result) {
-                    console.log(result, "result");
 
                     if (result.success) {
                         $notification.success(result.message);

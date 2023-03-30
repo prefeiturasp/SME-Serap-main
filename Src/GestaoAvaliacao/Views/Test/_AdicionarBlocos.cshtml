@@ -18,13 +18,6 @@
                 <div class="campoLabel">
                     <div ng-repeat="bloco in cadeiaBlocos">
                         <div class="checkbox checkbox-primary checkbox-inline">
-                            @*<input id="b_{{bloco.Id}}"
-                                type="checkbox"
-                                ng-click="e3_contBlocos(bloco, this.checked)"
-                                ng-change="e3_blocosCadernoModalMudou()"
-                                checklist-model="listaBlocosSelecionadosCadernoModal"
-                                checklist-value="bloco">*@
-
                             <input id="b_{{bloco.Id}}"
                                    type="checkbox"
                                    ng-click="e3_selecionarBlocosModal(bloco)"
@@ -46,4 +39,3 @@
         </div>
     </div>
 </div>
-<button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true" ng-click="e3_callModalAddBlocosCaderno()">teste modal add blocos</button>
