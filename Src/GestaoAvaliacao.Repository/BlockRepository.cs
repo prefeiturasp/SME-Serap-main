@@ -8,7 +8,6 @@ using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -740,154 +739,202 @@ namespace GestaoAvaliacao.Repository
 
         public void Update(Block block)
         {
-            using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                DateTime dateNow = DateTime.Now;
-                Block _entity = gestaoAvaliacaoContext.Block.Include("Test").Include("BlockItems").Include("BlockKnowledgeAreas").FirstOrDefault(x => x.Id == block.Id && x.State == (Byte)EnumState.ativo);
+                var dateNow = DateTime.Now;
 
-                block.Test_Id = _entity.Test_Id;
-                block.Booklet_Id = _entity.Booklet_Id;
+                var entity = gestaoAvaliacaoContext.Block
+                    .Include("Test")
+                    .Include("BlockItems")
+                    .Include("BlockKnowledgeAreas")
+                    .Include("BlockChainBlocks")
+                    .FirstOrDefault(x => x.Id == block.Id && x.State == (byte)EnumState.ativo);
 
-                gestaoAvaliacaoContext.Entry(_entity).CurrentValues.SetValues(block);
-                _entity.UpdateDate = dateNow;
-                _entity.Test.TestSituation = EnumTestSituation.Pending;
+                if (entity == null)
+                    return;
 
-                #region BlockItem
+                block.Test_Id = entity.Test_Id;
+                block.Booklet_Id = entity.Booklet_Id;
 
-                List<BlockItem> blockItems = new List<BlockItem>();
+                gestaoAvaliacaoContext.Entry(entity).CurrentValues.SetValues(block);
+                entity.UpdateDate = dateNow;
+                entity.Test.TestSituation = EnumTestSituation.Pending;
+
+                #region BlockItems
+
+                var blockItems = new List<BlockItem>();
 
                 var blockItemsFront = block.BlockItems.Select(s => s.Item_Id);
-                var blockItemsDatabase = _entity.BlockItems.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.Item_Id);
-                if (blockItemsFront != null && blockItemsDatabase != null)
+                var blockItemsDatabase = entity.BlockItems.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.Item_Id);
+
+                var blockItemsToExclude = blockItemsDatabase.Except(blockItemsFront).ToList();
+
+                if (blockItemsToExclude.Any())
                 {
-                    var blockItemsToExclude = blockItemsDatabase.Except(blockItemsFront);
-                    if (blockItemsToExclude != null && blockItemsToExclude.Any())
+                    foreach (var blockItem in entity.BlockItems.Where(s => s.State == (byte)EnumState.ativo && blockItemsToExclude.Contains(s.Item_Id)))
                     {
-                        foreach (var blockItem in _entity.BlockItems.Where(s => s.State == (byte)EnumState.ativo && blockItemsToExclude.Contains(s.Item_Id)))
-                        {
-                            if (blockItem != null)
-                            {
-                                blockItem.State = Convert.ToByte(EnumState.excluido);
-                                blockItem.UpdateDate = dateNow;
-                                blockItems.Add(blockItem);
-                            }
-                        }
-                    }
-
-                    foreach (BlockItem blockItemFront in block.BlockItems)
-                    {
-                        if (blockItemFront != null)
-                        {
-                            BlockItem blockItemDB = _entity.BlockItems.FirstOrDefault(e => e.Item_Id.Equals(blockItemFront.Item_Id) && e.Block_Id.Equals(blockItemFront.Block_Id) && e.State.Equals((Byte)EnumState.ativo));
-
-                            if (blockItemDB != null)
-                            {
-                                blockItemDB.Order = blockItemFront.Order;
-                                blockItemDB.UpdateDate = DateTime.Now;
-                                gestaoAvaliacaoContext.Entry(blockItemDB).State = System.Data.Entity.EntityState.Modified;
-
-                                blockItems.Add(blockItemDB);
-                            }
-                            else
-                                blockItems.Add(blockItemFront);
-                        }
+                        blockItem.State = Convert.ToByte(EnumState.excluido);
+                        blockItem.UpdateDate = dateNow;
+                        blockItems.Add(blockItem);
                     }
                 }
 
-                if (blockItems != null && blockItems.Count > 0)
-                    _entity.BlockItems.AddRange(blockItems);
+                foreach (var blockItemFront in block.BlockItems)
+                {
+                    if (blockItemFront == null) 
+                        continue;
+
+                    var blockItemDb = entity.BlockItems.FirstOrDefault(e =>
+                        e.Item_Id.Equals(blockItemFront.Item_Id) &&
+                        e.Block_Id.Equals(blockItemFront.Block_Id) && e.State.Equals((byte)EnumState.ativo));
+
+                    if (blockItemDb != null)
+                    {
+                        blockItemDb.Order = blockItemFront.Order;
+                        blockItemDb.UpdateDate = DateTime.Now;
+                        gestaoAvaliacaoContext.Entry(blockItemDb).State = System.Data.Entity.EntityState.Modified;
+
+                        blockItems.Add(blockItemDb);
+                    }
+                    else
+                        blockItems.Add(blockItemFront);
+                }
+
+                if (blockItems.Count > 0)
+                    entity.BlockItems.AddRange(blockItems);
 
                 #endregion
 
                 #region BlockKnowledgeAreas
 
-                List<BlockKnowledgeArea> blockKnowledgeAreasBD = _entity.BlockKnowledgeAreas;
+                var blockKnowledgeAreasBd = entity.BlockKnowledgeAreas;
 
-                List<long> listKnowledgeArea = new List<long>();
-                List<long> itens = blockItems.Where(q => q.State == (byte)EnumState.ativo).Select(p => p.Item_Id).ToList();
-                foreach (long idItem in itens)
+                var listKnowledgeArea = new List<long>();
+                var itens = blockItems.Where(q => q.State == (byte)EnumState.ativo).Select(p => p.Item_Id).ToList();
+
+                foreach (var idItem in itens)
                 {
-                    Item item = gestaoAvaliacaoContext.Item.Where(p => p.Id == idItem).FirstOrDefault();
-                    if (item.KnowledgeArea_Id.HasValue && !listKnowledgeArea.Exists(p => p == item.KnowledgeArea_Id))
-                    {
+                    var item = gestaoAvaliacaoContext.Item.FirstOrDefault(p => p.Id == idItem);
+
+                    if (item?.KnowledgeArea_Id != null && !listKnowledgeArea.Exists(p => p == item.KnowledgeArea_Id))
                         listKnowledgeArea.Add(item.KnowledgeArea_Id.Value);
-                    }
                 }
 
-                List<BlockKnowledgeArea> blockKnowledgeAreas = blockKnowledgeAreasBD.FindAll(p => p.State == (byte)EnumState.ativo && listKnowledgeArea.Any(q => q == p.KnowledgeArea_Id));
-                int maxOrder = 0;
-                if (blockKnowledgeAreas != null && blockKnowledgeAreas.Count > 0)
+                var blockKnowledgeAreas = blockKnowledgeAreasBd.FindAll(p =>
+                    p.State == (byte)EnumState.ativo && listKnowledgeArea.Any(q => q == p.KnowledgeArea_Id));
+
+                var maxOrder = 0;
+
+                if (blockKnowledgeAreas.Count > 0)
                 {
                     maxOrder = blockKnowledgeAreas.Max(p => p.Order + 1);
                 }
 
-                foreach (long idKnowledgeArea in listKnowledgeArea)
+                foreach (var idKnowledgeArea in listKnowledgeArea)
                 {
-                    if (!blockKnowledgeAreas.Exists(p => p.KnowledgeArea_Id == idKnowledgeArea))
+                    if (blockKnowledgeAreas.Exists(p => p.KnowledgeArea_Id == idKnowledgeArea)) 
+                        continue;
+
+                    var blockKnowledgeArea = new BlockKnowledgeArea
                     {
-                        BlockKnowledgeArea blockKnowledgeArea = new BlockKnowledgeArea
-                        {
-                            Block_Id = block.Id,
-                            KnowledgeArea_Id = idKnowledgeArea,
-                            Order = maxOrder,
-                            State = (byte)EnumState.ativo,
-                            CreateDate = dateNow,
-                            UpdateDate = dateNow
-                        };
-                        blockKnowledgeAreas.Add(blockKnowledgeArea);
-                        maxOrder++;
-                    }
+                        Block_Id = block.Id,
+                        KnowledgeArea_Id = idKnowledgeArea,
+                        Order = maxOrder,
+                        State = (byte)EnumState.ativo,
+                        CreateDate = dateNow,
+                        UpdateDate = dateNow
+                    };
+
+                    blockKnowledgeAreas.Add(blockKnowledgeArea);
+                    maxOrder++;
                 }
 
                 block.BlockKnowledgeAreas = blockKnowledgeAreas;
                 blockKnowledgeAreas = new List<BlockKnowledgeArea>();
 
                 var blockKnowledgeAreasFront = block.BlockKnowledgeAreas.Select(s => s.KnowledgeArea_Id);
-                var blockKnowledgeAreasDatabase = _entity.BlockKnowledgeAreas.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.KnowledgeArea_Id);
-                if (blockKnowledgeAreasFront != null && blockKnowledgeAreasDatabase != null)
+                var blockKnowledgeAreasDatabase = entity.BlockKnowledgeAreas.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.KnowledgeArea_Id);
+                var blockKnowledgeAreaToExclude = blockKnowledgeAreasDatabase.Except(blockKnowledgeAreasFront).ToList();
+
+                if (blockKnowledgeAreaToExclude.Any())
                 {
-                    var blockKnowledgeAreaToExclude = blockKnowledgeAreasDatabase.Except(blockKnowledgeAreasFront);
-                    if (blockKnowledgeAreaToExclude != null && blockKnowledgeAreaToExclude.Any())
+                    foreach (var blockKnowledgeArea in entity.BlockKnowledgeAreas.Where(s => s.State == (byte)EnumState.ativo && blockKnowledgeAreaToExclude.Contains(s.KnowledgeArea_Id)))
                     {
-                        foreach (var blockKnowledgeArea in _entity.BlockKnowledgeAreas.Where(s => s.State == (byte)EnumState.ativo && blockKnowledgeAreaToExclude.Contains(s.KnowledgeArea_Id)))
-                        {
-                            if (blockKnowledgeArea != null)
-                            {
-                                blockKnowledgeArea.State = Convert.ToByte(EnumState.excluido);
-                                blockKnowledgeArea.UpdateDate = dateNow;
-                                blockKnowledgeAreas.Add(blockKnowledgeArea);
-                            }
-                        }
-                    }
-
-                    foreach (BlockKnowledgeArea blockKnowledgeAreaFront in block.BlockKnowledgeAreas)
-                    {
-                        if (blockKnowledgeAreaFront != null)
-                        {
-                            BlockKnowledgeArea blockKnowledgeAreaDB = _entity.BlockKnowledgeAreas.FirstOrDefault(e => e.KnowledgeArea_Id.Equals(blockKnowledgeAreaFront.KnowledgeArea_Id) && e.Block_Id.Equals(blockKnowledgeAreaFront.Block_Id) && e.State.Equals((Byte)EnumState.ativo));
-
-                            if (blockKnowledgeAreaDB != null)
-                            {
-                                blockKnowledgeAreaDB.Order = blockKnowledgeAreaFront.Order;
-                                blockKnowledgeAreaDB.UpdateDate = DateTime.Now;
-                                gestaoAvaliacaoContext.Entry(blockKnowledgeAreaDB).State = System.Data.Entity.EntityState.Modified;
-
-                                blockKnowledgeAreas.Add(blockKnowledgeAreaDB);
-                            }
-                            else
-                                blockKnowledgeAreas.Add(blockKnowledgeAreaFront);
-                        }
+                        blockKnowledgeArea.State = Convert.ToByte(EnumState.excluido);
+                        blockKnowledgeArea.UpdateDate = dateNow;
+                        blockKnowledgeAreas.Add(blockKnowledgeArea);
                     }
                 }
 
-                if (blockKnowledgeAreas != null && blockKnowledgeAreas.Count > 0)
-                    _entity.BlockKnowledgeAreas.AddRange(blockKnowledgeAreas);
+                foreach (var blockKnowledgeAreaFront in block.BlockKnowledgeAreas)
+                {
+                    var blockKnowledgeAreaDb = entity.BlockKnowledgeAreas.FirstOrDefault(e =>
+                        e.KnowledgeArea_Id.Equals(blockKnowledgeAreaFront.KnowledgeArea_Id) &&
+                        e.Block_Id.Equals(blockKnowledgeAreaFront.Block_Id) && e.State.Equals((byte)EnumState.ativo));
+
+                    if (blockKnowledgeAreaDb != null)
+                    {
+                        blockKnowledgeAreaDb.Order = blockKnowledgeAreaFront.Order;
+                        blockKnowledgeAreaDb.UpdateDate = DateTime.Now;
+                        gestaoAvaliacaoContext.Entry(blockKnowledgeAreaDb).State = System.Data.Entity.EntityState.Modified;
+
+                        blockKnowledgeAreas.Add(blockKnowledgeAreaDb);
+                    }
+                    else
+                        blockKnowledgeAreas.Add(blockKnowledgeAreaFront);
+                }
+
+                if (blockKnowledgeAreas.Count > 0)
+                    entity.BlockKnowledgeAreas.AddRange(blockKnowledgeAreas);
 
                 #endregion
 
-                _entity.Test.UpdateDate = dateNow;
+                #region BlockChainBlocks
 
-                gestaoAvaliacaoContext.Entry(_entity).State = System.Data.Entity.EntityState.Modified;
+                var blockChainBlocks = new List<BlockChainBlock>();
+
+                var blockChainBlocksFront = block.BlockChainBlocks.Select(s => s.Id);
+                var blockChainBlocksDatabase = entity.BlockChainBlocks.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.Id);
+                var blockChainBlocksToExclude = blockChainBlocksDatabase.Except(blockChainBlocksFront).ToList();
+
+                if (blockChainBlocksToExclude.Any())
+                {
+                    foreach (var blockChainBlock in entity.BlockChainBlocks.Where(s => s.State == (byte)EnumState.ativo && blockChainBlocksToExclude.Contains(s.Id)))
+                    {
+                        blockChainBlock.State = Convert.ToByte(EnumState.excluido);
+                        blockChainBlock.UpdateDate = dateNow;
+                        blockChainBlocks.Add(blockChainBlock);
+                    }
+                }
+
+                foreach (var blockChainBlockFront in block.BlockChainBlocks)
+                {
+                    if (blockChainBlockFront == null)
+                        continue;
+
+                    var blockChainBlockDb = entity.BlockChainBlocks.FirstOrDefault(e =>
+                        e.BlockChain_Id.Equals(blockChainBlockFront.Block_Id) &&
+                        e.Block_Id.Equals(blockChainBlockFront.Block_Id) && e.State.Equals((byte)EnumState.ativo));
+
+                    if (blockChainBlockDb != null)
+                    {
+                        blockChainBlockDb.UpdateDate = DateTime.Now;
+                        gestaoAvaliacaoContext.Entry(blockChainBlockDb).State = System.Data.Entity.EntityState.Modified;
+
+                        blockChainBlocks.Add(blockChainBlockDb);
+                    }
+                    else
+                        blockChainBlocks.Add(blockChainBlockFront);
+                }
+
+                if (blockChainBlocks.Count > 0)
+                    entity.BlockChainBlocks.AddRange(blockChainBlocks);
+
+                #endregion
+
+                entity.Test.UpdateDate = dateNow;
+
+                gestaoAvaliacaoContext.Entry(entity).State = System.Data.Entity.EntityState.Modified;
                 gestaoAvaliacaoContext.SaveChanges();
             }
         }

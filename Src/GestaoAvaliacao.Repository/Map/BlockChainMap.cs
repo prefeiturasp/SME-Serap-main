@@ -14,7 +14,7 @@ namespace GestaoAvaliacao.Repository.Map
                 .HasMaxLength(10)
                 .HasColumnType("varchar");
 
-            HasRequired(p => p.Test)
+            HasOptional(p => p.Test)
                 .WithMany(p => p.BlockChains)
                 .HasForeignKey(p => p.Test_Id);
         }
