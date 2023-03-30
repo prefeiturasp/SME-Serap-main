@@ -3102,19 +3102,6 @@
             angular.element("#modal").modal({ backdrop: 'static' });
         };
 
-        /**
-        * @function Tratamento para dados do caderno
-        * @private
-        * @param id = qual id deve ser chamado
-        */
-        ng.e3_callModal = e3_callModal;
-        function e3_callModal(id, caderno) {
-            initModalAdicaoEtapa3();
-
-            ng.e3_Navegacao = id;
-            ng.e3_blockChainBlockAtual = caderno;
-        };
-
         ng.e2_cadernoExcluido = e2_cadernoExcluido;
         function e2_cadernoExcluido(r) {
             if (r.success) {
@@ -4277,7 +4264,6 @@
 
         function initEtapa3() {
             ng.escondeModal = false;
-            ng.e3_Navegacao = 1;
 
             if (ng.ehCadeiaBlocos)
                 cadernosComBlocosCarregar();
