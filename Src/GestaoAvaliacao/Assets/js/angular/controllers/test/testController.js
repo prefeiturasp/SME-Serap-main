@@ -2861,10 +2861,17 @@
 
         ng.e3_callModalAddBlocosCaderno = e3_callModalAddBlocosCaderno;
         function e3_callModalAddBlocosCaderno(caderno) {
-            ng.cadernoSelecionado = caderno;
-            ng.listaBlocosSelecionadosCadernoModal = ng.cadernoSelecionado.Blocos;
+            ng.cadernoSelecionado = angular.copy(caderno);
+            ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos);
             e3_selecionarBlocosCadernoAtual();
             angular.element("#modalAddBlocos").modal({ backdrop: 'static' });
+        };
+
+        ng.e3_cancelarModalAddBlocosCaderno = e3_cancelarModalAddBlocosCaderno;
+        function e3_cancelarModalAddBlocosCaderno() {
+            ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos);            
+            e3_selecionarBlocosCadernoAtual();
+            angular.element('#modalAddBlocos').modal('hide');
         };
 
         ng.e3_selecionarBlocosCadernoAtual = e3_selecionarBlocosCadernoAtual;
