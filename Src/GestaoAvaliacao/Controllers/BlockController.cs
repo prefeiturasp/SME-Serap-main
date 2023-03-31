@@ -317,7 +317,6 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-
                 if (entity.Id > 0)
                 {
                     blockBusiness.Update(entity, SessionFacade.UsuarioLogado.Usuario.usu_id,
