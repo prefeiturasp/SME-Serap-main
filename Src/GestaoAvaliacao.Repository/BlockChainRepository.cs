@@ -34,6 +34,7 @@ namespace GestaoAvaliacao.Repository
                 var entity = gestaoAvaliacaoContext.BlockChains
                     .Include("Test")
                     .Include("BlockChainItems")
+                    .Include("BlockChainBlocks")
                     .FirstOrDefault(x => x.Id == blockChain.Id && x.State == (byte)EnumState.ativo);
 
                 if (entity == null)
@@ -337,16 +338,18 @@ namespace GestaoAvaliacao.Repository
         {
             using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                var blockChains = gestaoAvaliacaoContext.BlockChains.Where(i => i.Test_Id == testId).ToList();
+                var blockChains = gestaoAvaliacaoContext.BlockChains
+                    .Include("BlockChainItems")
+                    .Include("BlockChainBlocks")
+                    .Where(i => i.Test_Id == testId).ToList();
 
                 blockChains.ForEach(i =>
                 {
-                    var blockChainItems = i.BlockChainItems.Where(c => c.BlockChain_Id == i.Id);
+                    var blockChainItems = i.BlockChainItems.Where(c => c.BlockChain_Id == i.Id).ToList();
+                    var blockChainBlocks = i.BlockChainBlocks.Where(c => c.BlockChain_Id == i.Id).ToList();
 
-                    foreach (var blockChainItem in blockChainItems)
-                    {
-                        gestaoAvaliacaoContext.BlockChainItems.Remove(blockChainItem);
-                    }
+                    gestaoAvaliacaoContext.BlockChainItems.RemoveRange(blockChainItems);
+                    gestaoAvaliacaoContext.BlockChainBlocks.RemoveRange(blockChainBlocks);
 
                     gestaoAvaliacaoContext.BlockChains.Remove(i);
                 });

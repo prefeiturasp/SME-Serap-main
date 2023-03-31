@@ -58,6 +58,7 @@
     <Compile Include="IAnswerSheetBatchBusiness.cs" />
     <Compile Include="IAnswerSheetBatchQueueBusiness.cs" />
     <Compile Include="IAnswerSheetLotBusiness.cs" />
+    <Compile Include="IBlockChainBlockBusiness.cs" />
     <Compile Include="IBlockChainBusiness.cs" />
     <Compile Include="ICorrectionBusiness.cs" />
     <Compile Include="ICorrectionResultsBusiness.cs" />
