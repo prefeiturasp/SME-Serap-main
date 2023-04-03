@@ -4,7 +4,9 @@ using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -298,6 +300,23 @@ namespace GestaoAvaliacao.API.Controllers
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, lista);
+        }
+
+        [Route("api/Item")]
+        [HttpGet]
+        [ResponseType(typeof(List<ItemApiDto>))]
+        public HttpResponseMessage GetItem(int areaConhecimentoId, long? matrizId = null)
+        {
+            try
+            {
+                var items = itemBusiness.GetApi(areaConhecimentoId, matrizId);
+                return Request.CreateResponse(HttpStatusCode.OK, items);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveBasicError(ex.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError);
+            }
         }
     }
 }

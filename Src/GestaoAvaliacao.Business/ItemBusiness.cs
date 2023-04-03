@@ -12,6 +12,7 @@ using GestaoEscolar.Entities;
 using GestaoEscolar.IBusiness;
 using GestaoEscolar.IRepository;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,6 +43,8 @@ namespace GestaoAvaliacao.Business
         private readonly IItemLevelRepository itemLevelRepository;
         private readonly IVideoConverter videoConverter;
         private readonly IACA_TipoNivelEnsinoRepository levelEducationRepository;
+        private readonly IItemFileBusiness itemFileBusiness;
+        private readonly IItemAudioBusiness itemAudioBusiness;
 
         const string RESPOSTA_CONSTRUIDA = "Resposta construída";
 
@@ -67,7 +70,9 @@ namespace GestaoAvaliacao.Business
                             IFileBusiness fileBusiness,
                             IItemLevelRepository itemLevelRepository,
                             IVideoConverter videoConverter,
-                            IACA_TipoNivelEnsinoRepository levelEducationRepository
+                            IACA_TipoNivelEnsinoRepository levelEducationRepository,
+                            IItemFileBusiness itemFileBusiness,
+                            IItemAudioBusiness itemAudioBusiness
             )
         {
             this.itemRepository = itemRepository;
@@ -91,6 +96,8 @@ namespace GestaoAvaliacao.Business
             this.itemLevelRepository = itemLevelRepository;
             this.videoConverter = videoConverter;
             this.levelEducationRepository = levelEducationRepository;
+            this.itemFileBusiness = itemFileBusiness;
+            this.itemAudioBusiness = itemAudioBusiness;
         }
 
         #region Custom
@@ -1592,6 +1599,94 @@ namespace GestaoAvaliacao.Business
             }
 
             return result;
+        }
+
+        public List<ItemApiDto> GetApi(int areaConhecimentoId, long? matrizId)
+        {
+            try
+            {
+                var result = new List<ItemApiDto>();
+                var items = itemRepository.GetItemsApi(areaConhecimentoId, matrizId);
+
+                foreach (Item item in items)
+                {
+                    var itemFiles = itemFileBusiness.GetVideosByItemId(item.Id).ToList();
+                    var videos = new List<VideoDto>();
+                    if (itemFiles != null && itemFiles.Any())
+                        videos = itemFiles.Select(x => new VideoDto
+                        {
+                            Tamanho = 0,
+                            TipoConteudo = x.ConvertedFileType,
+                            Base64 = "",
+                            NomeArquivo = x.Name,
+                            MiniaturaTamanho = 0,
+                            MiniaturaTipoConteudo = "",
+                            MiniaturaBase64 = "",
+                            MiniaturaNomeArquivo = ""
+                        }).ToList();
+
+                    var itemAudios = itemAudioBusiness.GetAudiosByItemId(item.Id).ToList();
+                    var audios = new List<AudioDto>();
+                    if (itemAudios != null && itemAudios.Any())
+                    {
+                        audios = itemAudios.Select(x => new AudioDto
+                        {
+                            Tamanho = 0,
+                            TipoConteudo = "",
+                            Base64 = "",
+                            NomeArquivo = x.Name
+                        }).ToList();
+                    }
+
+                    ItemApiDto itemApiDto = new ItemApiDto()
+                    {
+                        Enunciado = item.Statement,
+                        Proficiencia = item.proficiency,
+                        MatrizId = item.EvaluationMatrix_Id,
+                        PalavrasChave = item.Keywords,
+                        Observacao = item.Tips,
+                        TRIAcertoCasual = item.TRICasualSetting,
+                        TRIDificuldade = item.TRIDifficulty,
+                        TRIDiscrimicacao = item.TRIDiscrimination,
+                        TextoBase = item.BaseText?.Description,
+                        Fonte = item.BaseText?.Source,
+                        //item.ItemSituation_Id = 1, // -> Situação 1 = Aceito
+                        TipoItemId = item.ItemType_Id,
+                        Dificuldade = (Dificuldade)item.ItemLevel_Id,
+                        //item.ItemLevel_Id = (long)Dificuldade,
+                        CodigoItem = item.ItemCode,
+                        TipoGradeCurricularId = item.ItemCurriculumGrades.FirstOrDefault().TypeCurriculumGradeId,
+                        //item.ItemCurriculumGrades = new List<ItemCurriculumGrade>()
+                        //{
+                        //    new ItemCurriculumGrade() {
+                        //        TypeCurriculumGradeId = TipoGradeCurricularId
+                        //    }
+                        //},
+                        //item.ItemSkills = new List<ItemSkill>(),
+                        Alternativas = item.Alternatives != null ? item.Alternatives.Select(t => new AlternativeDto()
+                        {
+                            Descricao = t.Description,
+                            Correta = t.Correct,
+                            Ordem = t.Order,
+                            Justificativa = t.Justificative,
+                            Numeracao = t.Numeration
+
+                        }).ToList() : new List<AlternativeDto>(),
+                        Sigiloso = item.IsRestrict,
+                        AreaConhecimentoId = item.KnowledgeArea_Id ?? 0,
+                        SubassuntoId = item.SubSubject_Id ?? 0,
+                        Videos = videos,
+                        Audios = audios,
+                    };
+                    result.Add(itemApiDto);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         private string UploadPictureTagImg(EnumFileType type, List<EntityFile> files, PictureDto picture)

@@ -429,6 +429,37 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
+        public IEnumerable<Item> GetItemsApi(int areaConhecimentoId, long? matrizId)
+        {
+            var transactionOptions = new System.Transactions.TransactionOptions
+            {
+                IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+            };
+
+            using (new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Required, transactionOptions))
+            {
+                using (GestaoAvaliacaoContext ctx = new GestaoAvaliacaoContext())
+                {
+                    var query = ctx.Item.AsNoTracking()
+                        .Include("ItemLevel")
+                        .Include("ItemType")
+                        .Include("Alternatives")
+                        .Include("ItemSituation")
+                        .Include("ItemSkills.Skill.ModelSkillLevel")
+                        .Include("ItemSkills.Skill.Parent")
+                        .Include("ItemCurriculumGrades")
+                        .Include("Subsubject")
+                        .Where(i => i.State == (Byte)EnumState.ativo
+                        && i.ItemSituation_Id == 1
+                        && i.KnowledgeArea_Id == areaConhecimentoId
+                        && ((matrizId != null && i.EvaluationMatrix_Id == matrizId) || matrizId == null)
+                        ).AsQueryable();
+
+                    return query.Take(20).ToList();
+                }
+            }
+        }
+
         public Item Get(long id)
         {
             using (IDbConnection cn = Connection)
