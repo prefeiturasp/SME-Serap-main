@@ -5,11 +5,12 @@
                 <h4 class="padding"><strong>{{ e1_testDescription }}</strong></h4>
                 <table class="table table-hover">
                     <colgroup>
-                        <col width="20%" />
-                        <col width="20%" />
-                        <col width="20%" />
-                        <col width="20%" />
-                        <col width="20%" />
+                        <col width="17%" />
+                        <col width="17%" />
+                        <col width="17%" />
+                        <col width="17%" />
+                        <col width="16%" />
+                        <col width="16%" />
                     </colgroup>
                     <thead>
                         <tr>
@@ -17,6 +18,7 @@
                             <th class="table-parameter-centralize">Blocos selecionados</th>
                             <th class="table-parameter-centralize" colspan="2">Não selecionados</th>
                             <th class="table-parameter-centralize">Adicionar blocos</th>
+                            <th class="table-parameter-centralize">Visualizar itens</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,6 +40,10 @@
 
                             <th class="table-parameter-centralize">
                                 <a ng-click="e3_callModalAddBlocosCaderno(caderno)"><i type="button" class="material-icons">add_box</i></a>
+                            </th>
+
+                            <th class="table-parameter-centralize">
+                                <a ng-click="e3_callModalViewItensCaderno(caderno)"><i type="button" class="material-icons">visibility</i></a>
                             </th>
                         </tr>
                     </tbody>
