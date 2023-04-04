@@ -1601,44 +1601,50 @@ namespace GestaoAvaliacao.Business
             return result;
         }
 
-        public List<ItemApiDto> GetApi(int areaConhecimentoId, long? matrizId)
+        public List<ItemConsultaApiDto> GetApi(int areaConhecimentoId, long? matrizId)
         {
             try
             {
-                var result = new List<ItemApiDto>();
+                var result = new List<ItemConsultaApiDto>();
                 var items = itemRepository.GetItemsApi(areaConhecimentoId, matrizId);
 
                 foreach (Item item in items)
                 {
-                    var itemFiles = itemFileBusiness.GetVideosByItemId(item.Id).ToList();
-                    var videos = new List<VideoDto>();
-                    if (itemFiles != null && itemFiles.Any())
-                        videos = itemFiles.Select(x => new VideoDto
-                        {
-                            Tamanho = 0,
-                            TipoConteudo = x.ConvertedFileType,
-                            Base64 = "",
-                            NomeArquivo = x.Name,
-                            MiniaturaTamanho = 0,
-                            MiniaturaTipoConteudo = "",
-                            MiniaturaBase64 = "",
-                            MiniaturaNomeArquivo = ""
-                        }).ToList();
 
-                    var itemAudios = itemAudioBusiness.GetAudiosByItemId(item.Id).ToList();
-                    var audios = new List<AudioDto>();
-                    if (itemAudios != null && itemAudios.Any())
+                    List<EntityFile> itemImagens = fileRepository._GetFilesByParent(item.Id);
+                    var imagens = new List<ArquivoConsultaDto>();
+                    if (itemImagens != null && itemImagens.Any())
                     {
-                        audios = itemAudios.Select(x => new AudioDto
+                        imagens = itemImagens.Select(x => new ArquivoConsultaDto
                         {
-                            Tamanho = 0,
-                            TipoConteudo = "",
-                            Base64 = "",
-                            NomeArquivo = x.Name
+                            Id = x.Id,
+                            NomeArquivo = x.Name,
                         }).ToList();
                     }
 
-                    ItemApiDto itemApiDto = new ItemApiDto()
+                    var itemVideos = itemFileBusiness.GetVideosByItemId(item.Id).ToList();
+                    var videos = new List<ArquivoConsultaDto>();
+                    if (itemVideos != null && itemVideos.Any())
+                    {
+                        videos = itemVideos.Select(x => new ArquivoConsultaDto
+                        {
+                            Id = x.Id,
+                            NomeArquivo = x.Name,                            
+                        }).ToList();
+                    }
+
+                    var itemAudios = itemAudioBusiness.GetAudiosByItemId(item.Id).ToList();
+                    var audios = new List<ArquivoConsultaDto>();
+                    if (itemAudios != null && itemAudios.Any())
+                    {
+                        audios = itemAudios.Select(x => new ArquivoConsultaDto
+                        {
+                            Id = x.Id,
+                            NomeArquivo = x.Name,
+                        }).ToList();
+                    }
+
+                    ItemConsultaApiDto itemApiDto = new ItemConsultaApiDto()
                     {
                         Enunciado = item.Statement,
                         Proficiencia = item.proficiency,
@@ -1650,19 +1656,11 @@ namespace GestaoAvaliacao.Business
                         TRIDiscrimicacao = item.TRIDiscrimination,
                         TextoBase = item.BaseText?.Description,
                         Fonte = item.BaseText?.Source,
-                        //item.ItemSituation_Id = 1, // -> Situação 1 = Aceito
                         TipoItemId = item.ItemType_Id,
                         Dificuldade = (Dificuldade)item.ItemLevel_Id,
-                        //item.ItemLevel_Id = (long)Dificuldade,
                         CodigoItem = item.ItemCode,
-                        TipoGradeCurricularId = item.ItemCurriculumGrades.FirstOrDefault().TypeCurriculumGradeId,
-                        //item.ItemCurriculumGrades = new List<ItemCurriculumGrade>()
-                        //{
-                        //    new ItemCurriculumGrade() {
-                        //        TypeCurriculumGradeId = TipoGradeCurricularId
-                        //    }
-                        //},
-                        //item.ItemSkills = new List<ItemSkill>(),
+                        TipoGradeCurricularId = item.ItemCurriculumGrades.Any() ? item.ItemCurriculumGrades.FirstOrDefault().TypeCurriculumGradeId : 0,
+                        HabilidadeId = item.ItemSkills.Any() ? (int)item.ItemSkills.FirstOrDefault().Skill.Id : 0,
                         Alternativas = item.Alternatives != null ? item.Alternatives.Select(t => new AlternativeDto()
                         {
                             Descricao = t.Description,
@@ -1675,6 +1673,7 @@ namespace GestaoAvaliacao.Business
                         Sigiloso = item.IsRestrict,
                         AreaConhecimentoId = item.KnowledgeArea_Id ?? 0,
                         SubassuntoId = item.SubSubject_Id ?? 0,
+                        Imagens = imagens,
                         Videos = videos,
                         Audios = audios,
                     };

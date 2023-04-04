@@ -304,7 +304,7 @@ namespace GestaoAvaliacao.API.Controllers
 
         [Route("api/Item")]
         [HttpGet]
-        [ResponseType(typeof(List<ItemApiDto>))]
+        [ResponseType(typeof(List<ItemConsultaApiDto>))]
         public HttpResponseMessage GetItem(int areaConhecimentoId, long? matrizId = null)
         {
             try

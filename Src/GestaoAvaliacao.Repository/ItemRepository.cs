@@ -449,6 +449,7 @@ namespace GestaoAvaliacao.Repository
                         .Include("ItemSkills.Skill.Parent")
                         .Include("ItemCurriculumGrades")
                         .Include("Subsubject")
+                        .Include("BaseText")
                         .Where(i => i.State == (Byte)EnumState.ativo
                         && i.ItemSituation_Id == 1
                         && i.KnowledgeArea_Id == areaConhecimentoId
