@@ -304,12 +304,12 @@ namespace GestaoAvaliacao.API.Controllers
 
         [Route("api/Item")]
         [HttpGet]
-        [ResponseType(typeof(List<ItemConsultaApiDto>))]
-        public HttpResponseMessage GetItem(int areaConhecimentoId, long? matrizId = null)
+        [ResponseType(typeof(ItemConsultaApiPaginadoDto))]
+        public HttpResponseMessage GetItem(int pagina, int qtdePorPagina, int areaConhecimentoId, long? matrizId = null)
         {
             try
             {
-                var items = itemBusiness.GetApi(areaConhecimentoId, matrizId);
+                var items = itemBusiness.GetApi(pagina, qtdePorPagina, areaConhecimentoId, matrizId);
                 return Request.CreateResponse(HttpStatusCode.OK, items);
             }
             catch (Exception ex)

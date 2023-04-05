@@ -4,6 +4,7 @@ using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 using GestaoAvaliacao.Util;
+using MSTech.CoreSSO.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -429,7 +430,7 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public IEnumerable<Item> GetItemsApi(int areaConhecimentoId, long? matrizId)
+        public IEnumerable<Item> GetItemsApi(List<long> ItemIds)
         {
             var transactionOptions = new System.Transactions.TransactionOptions
             {
@@ -450,13 +451,27 @@ namespace GestaoAvaliacao.Repository
                         .Include("ItemCurriculumGrades")
                         .Include("Subsubject")
                         .Include("BaseText")
-                        .Where(i => i.State == (Byte)EnumState.ativo
-                        && i.ItemSituation_Id == 1
-                        && i.KnowledgeArea_Id == areaConhecimentoId
-                        && ((matrizId != null && i.EvaluationMatrix_Id == matrizId) || matrizId == null)
-                        ).AsQueryable();
+                        .Where(x => ItemIds.Contains(x.Id));
 
-                    return query.Take(20).ToList();
+                    return query.ToList();
+                }
+            }
+        }
+
+        public IEnumerable<long> GetIdsItemsApi(ref Pager pager, int areaConhecimentoId, long? matrizId = null)
+        {
+            var transactionOptions = new System.Transactions.TransactionOptions
+            {
+                IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+            };
+
+            using (new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Required, transactionOptions))
+            {
+                using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+                {
+                    return pager.Paginate(gestaoAvaliacaoContext.Item.Where(x => x.State == (Byte)EnumState.ativo
+                                    && x.KnowledgeArea_Id == areaConhecimentoId
+                                    && (x.EvaluationMatrix_Id == matrizId || matrizId == null)).OrderBy(x => x.Id).Select(x => x.Id));
                 }
             }
         }

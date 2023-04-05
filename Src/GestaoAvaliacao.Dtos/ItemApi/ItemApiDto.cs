@@ -41,6 +41,15 @@ namespace GestaoAvaliacao.Dtos.ItemApi
         public List<AudioDto> Audios { get; set; }
     }
 
+    public class ItemConsultaApiPaginadoDto
+    {
+        public int Pagina { get; set; }
+        public int QtdePorPagina { get; set; }
+        public int TotalPaginas { get; set; }
+        public int TotalItems { get; set; }
+        public List<ItemConsultaApiDto> Items { get; set; }
+    }
+
     public class ItemConsultaApiDto
     {
         public long Id { get; set; }

@@ -22,7 +22,8 @@ namespace GestaoAvaliacao.IRepository
         Item _GetGradeByItem(long Id);
 		Item _GetAddItemInfos(long Id);
 		IEnumerable<Item> GetItems(List<long> ItemIds);
-		IEnumerable<Item> GetItemsApi(int areaConhecimentoId, long? matrizId);
+		IEnumerable<Item> GetItemsApi(List<long> ItemIds);
+		IEnumerable<long> GetIdsItemsApi(ref Pager pager, int areaConhecimentoId, long? matrizId = null);
 
         IEnumerable<Item> _GetItemsByBaseText(long baseTextId);
 		IEnumerable<ItemGroupBaseText> _GetItemGroupBaseTexts(bool? lastVersion = null, params long[] baseTextId);

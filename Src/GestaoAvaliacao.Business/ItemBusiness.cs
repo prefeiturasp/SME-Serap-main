@@ -1601,25 +1601,61 @@ namespace GestaoAvaliacao.Business
             return result;
         }
 
-        public List<ItemConsultaApiDto> GetApi(int areaConhecimentoId, long? matrizId)
+        public ItemConsultaApiPaginadoDto GetApi(int pagina, int qtdePorPagina, int areaConhecimentoId, long? matrizId)
         {
             try
             {
                 var result = new List<ItemConsultaApiDto>();
-                var items = itemRepository.GetItemsApi(areaConhecimentoId, matrizId);
+                var retorno = new ItemConsultaApiPaginadoDto();
+                var pager = new Pager();
+                pager.CurrentPage = pagina > 0 ? pagina-- : pagina;
+                pager.PageSize = qtdePorPagina == 0 ? 10 : qtdePorPagina;
+                var ids = itemRepository.GetIdsItemsApi(ref pager, areaConhecimentoId, matrizId);
+                var items = itemRepository.GetItemsApi(ids.ToList());
+
+                retorno.Pagina = pager.CurrentPage + 1;
+                retorno.QtdePorPagina = pager.PageSize;
+                retorno.TotalPaginas = pager.TotalPages;
+                retorno.TotalItems = pager.RecordsCount;
 
                 foreach (Item item in items)
                 {
-
-                    List<EntityFile> itemImagens = fileRepository._GetFilesByParent(item.Id);
                     var imagens = new List<ArquivoConsultaDto>();
-                    if (itemImagens != null && itemImagens.Any())
+
+                    if (item.BaseText != null)
                     {
-                        imagens = itemImagens.Select(x => new ArquivoConsultaDto
+                        var imgTextoBase = fileBusiness.GetFilesByOwner(item.BaseText.Id, item.Id, EnumFileType.BaseText);
+                        if (imgTextoBase != null && imgTextoBase.Any())
+                        {
+                            imagens.AddRange(imgTextoBase.Select(x => new ArquivoConsultaDto
+                            {
+                                Id = x.Id,
+                                NomeArquivo = x.Name,
+                            }).ToList());
+                        }
+                    }                    
+
+                    var imgEnunciado = fileBusiness.GetFilesByOwner(item.Id, item.Id, EnumFileType.Statement);
+                    if (imgEnunciado != null && imgEnunciado.Any())
+                    {
+                        imagens.AddRange(imgEnunciado.Select(x => new ArquivoConsultaDto
                         {
                             Id = x.Id,
                             NomeArquivo = x.Name,
-                        }).ToList();
+                        }).ToList());
+                    }
+
+                    foreach (var a in item.Alternatives)
+                    {
+                        var imgAlternativa = fileBusiness.GetFilesByOwner(a.Id, item.Id, EnumFileType.Alternative);
+                        if (imgAlternativa != null && imgAlternativa.Any())
+                        {
+                            imagens.AddRange(imgAlternativa.Select(x => new ArquivoConsultaDto
+                            {
+                                Id = x.Id,
+                                NomeArquivo = x.Name,
+                            }).ToList());
+                        }
                     }
 
                     var itemVideos = itemFileBusiness.GetVideosByItemId(item.Id).ToList();
@@ -1628,8 +1664,8 @@ namespace GestaoAvaliacao.Business
                     {
                         videos = itemVideos.Select(x => new ArquivoConsultaDto
                         {
-                            Id = x.Id,
-                            NomeArquivo = x.Name,                            
+                            Id = x.ItemFileId,
+                            NomeArquivo = x.Name,
                         }).ToList();
                     }
 
@@ -1639,13 +1675,14 @@ namespace GestaoAvaliacao.Business
                     {
                         audios = itemAudios.Select(x => new ArquivoConsultaDto
                         {
-                            Id = x.Id,
+                            Id = x.ItemFileId,
                             NomeArquivo = x.Name,
                         }).ToList();
                     }
 
                     ItemConsultaApiDto itemApiDto = new ItemConsultaApiDto()
                     {
+                        Id = item.Id,
                         Enunciado = item.Statement,
                         Proficiencia = item.proficiency,
                         MatrizId = item.EvaluationMatrix_Id,
@@ -1660,7 +1697,8 @@ namespace GestaoAvaliacao.Business
                         Dificuldade = (Dificuldade)item.ItemLevel_Id,
                         CodigoItem = item.ItemCode,
                         TipoGradeCurricularId = item.ItemCurriculumGrades.Any() ? item.ItemCurriculumGrades.FirstOrDefault().TypeCurriculumGradeId : 0,
-                        HabilidadeId = item.ItemSkills.Any() ? (int)item.ItemSkills.FirstOrDefault().Skill.Id : 0,
+                        CompetenciaId = item.ItemSkills.Any() ? (int)item.ItemSkills.Where(x => x.Skill?.Parent == null).FirstOrDefault().Skill.Id : 0,
+                        HabilidadeId = item.ItemSkills.Any() ? (int)item.ItemSkills.Where(x => x.Skill?.Parent != null).FirstOrDefault().Skill.Id : 0,
                         Alternativas = item.Alternatives != null ? item.Alternatives.Select(t => new AlternativeDto()
                         {
                             Descricao = t.Description,
@@ -1680,7 +1718,8 @@ namespace GestaoAvaliacao.Business
                     result.Add(itemApiDto);
                 }
 
-                return result;
+                retorno.Items = result;
+                return retorno;
             }
             catch (Exception ex)
             {
