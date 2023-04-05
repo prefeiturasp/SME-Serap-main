@@ -2867,6 +2867,12 @@
             angular.element("#modalAddBlocos").modal({ backdrop: 'static' });
         };
 
+        ng.e3_callModalViewItensCaderno = e3_callModalViewItensCaderno;
+        function e3_callModalViewItensCaderno(caderno) {
+            ng.cadernoSelecionado = angular.copy(caderno);
+            angular.element("#modalViewItensCaderno").modal({ backdrop: 'static' });
+        }
+
         ng.e3_cancelarModalAddBlocosCaderno = e3_cancelarModalAddBlocosCaderno;
         function e3_cancelarModalAddBlocosCaderno() {
             ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos);            
