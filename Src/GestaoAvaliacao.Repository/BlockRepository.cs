@@ -129,7 +129,7 @@ namespace GestaoAvaliacao.Repository
 
                 const string sql = @"WITH ItensPage AS
                                     (
-                                        SELECT ROW_NUMBER() OVER (ORDER BY BI.[Order]) AS RowNum, 
+                                        SELECT ROW_NUMBER() OVER (ORDER BY ISNULL(Bka.[Order], 0), BI.[Order]) AS RowNum, 
                                             I.Id, 
                                             I.ItemCode, 
                                             I.ItemVersion, 
@@ -142,17 +142,13 @@ namespace GestaoAvaliacao.Repository
                                                 ISNULL(Bka.[Order], 0) 
                                             ELSE 
                                                 0 
-                                            END AS KnowledgeArea_Order,
-                                            BCB.BlockChain_Id,
-                                            BC.Description AS BlockChain_Description
+                                            END AS KnowledgeArea_Order
                                         FROM Item I WITH (NOLOCK) 
                                             INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id 
                                             INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
                                             INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
                                             LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state 
                                             LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = K.Id AND B.Id = Bka.Block_Id AND Bka.State = @state 
-                                            LEFT JOIN BlockChainBlock BCB WITH (NOLOCK) ON BCB.Block_Id = B.Id AND BCB.State = @state
-                                            LEFT JOIN BlockChain BC WITH (NOLOCK) ON BC.Id = BCB.BlockChain_Id AND BC.State = @state
                                         WHERE BI.Block_Id = @id 
                                         AND BI.State = @state 
                                         AND I.State = @state 
@@ -199,12 +195,22 @@ namespace GestaoAvaliacao.Repository
 									         AND I.State = @state AND BI.State = @state 
 
 									         SELECT D.Id, D.Description 
-									         FROM Item I 
+									         FROM Item I WITH (NOLOCK) 
 									         INNER JOIN EvaluationMatrix EM WITH (NOLOCK)ON EM.Id = I.EvaluationMatrix_Id 
 									         INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
 									         WHERE I.State = @state 
 									         AND D.State = @state 
-									         AND I.Id = @id";
+									         AND I.Id = @id
+
+                                             SELECT BC.Id, BC.Description
+                                             FROM BlockChain BC WITH (NOLOCK) 
+                                             INNER JOIN BlockChainItem BCI WITH (NOLOCK) ON BCI.BlockChain_Id = BC.Id 
+                                                AND BCI.State = @state
+                                             INNER JOIN BlockChainBlock BCB WITH (NOLOCK) ON BCB.BlockChain_Id = BCI.BlockChain_Id 
+                                                AND BCB.Block_Id = @blockId
+                                                AND BCB.State = @state
+                                             WHERE BC.State = @state
+                                             AND BCI.Item_Id = @id";
 
                     var multi = cn.QueryMultiple(sqlMulti, new { id = itemId, blockId = Id, state = (byte)EnumState.ativo });
 
@@ -213,6 +219,7 @@ namespace GestaoAvaliacao.Repository
                     var listItemCurriculumGrade = multi.Read<ItemCurriculumGrade>();
                     var listBlockItems = multi.Read<BlockItem>();
                     var discipline = multi.Read<Discipline>();
+                    var listBlockChain = multi.Read<BlockChain>().ToList();
 
                     item.BaseText = listBaseText.FirstOrDefault();
                     item.ItemLevel = listItemLevel.FirstOrDefault();
@@ -223,6 +230,9 @@ namespace GestaoAvaliacao.Repository
                     {
                         Discipline = discipline.FirstOrDefault()
                     };
+
+                    item.BlockChain_Id = listBlockChain.Select(c => c.Id).FirstOrDefault();
+                    item.BlockChain_Description = listBlockChain.Select(c => c.Description).FirstOrDefault();
                 }
 
                 return listItems;
