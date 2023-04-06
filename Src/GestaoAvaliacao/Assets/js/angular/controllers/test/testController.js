@@ -148,7 +148,8 @@
             //Chamadas utilizada na Etapa 3
             self.etapa3 = {
                 salvar: TestModel.saveBlock,
-                cadernosComBlocos: TestModel.loadBlockChainBlocks
+                cadernosComBlocos: TestModel.loadBlockChainBlocks,
+                itensCaderno: TestModel.visualizar,
             };
 
             //Chamadas utilizada na Etapa 4
@@ -1850,12 +1851,8 @@
             ng.paginate.indexPage(0);
         }
 
-        function initModalAdicaoEtapa3() {
-            ng.e3_blockChainBlockAtual;
-
-            ng.esconderNivelEnsinoModalidade;
-            ng.keyWords = [];
-            self.etapa3.selecionados = [];
+        function initModalVisualizacao() {
+            ng.e3_ListaItemsVisualizar = [];
         }
 
         /**
@@ -1907,7 +1904,8 @@
 
         ng.e2_matrizAvaliacaoMudou = e2_matrizAvaliacaoMudou;
         function e2_matrizAvaliacaoMudou() {
-            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa2.alterou = true;
+            if (ng.mostrarTela)
+                ng.alterouEtapaAtual = self.etapa2.alterou = true;
 
             if (!ng.e2_matrizAvaliacao)
                 return;
@@ -1915,7 +1913,6 @@
 
         ng.e2_anoItensAmostraTaiMudou = e2_anoItensAmostraTaiMudou;
         function e2_anoItensAmostraTaiMudou() {
-
             if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa2.alterou = true;
 
             if (!ng.e2_dadosModalAnoItensAmostraTai.Ano)
@@ -2869,7 +2866,9 @@
 
         ng.e3_callModalViewItensCaderno = e3_callModalViewItensCaderno;
         function e3_callModalViewItensCaderno(caderno) {
+            initModalVisualizacao();
             ng.cadernoSelecionado = angular.copy(caderno);
+            e3_itensCarregar();
             angular.element("#modalViewItensCaderno").modal({ backdrop: 'static' });
         }
 
@@ -2879,6 +2878,11 @@
             e3_selecionarBlocosCadernoAtual();
             angular.element('#modalAddBlocos').modal('hide');
         };
+
+        ng.e3_voltarModalViewItensCaderno = e3_voltarModalViewItensCaderno;
+        function e3_voltarModalViewItensCaderno() {
+            angular.element('#modalViewItensCaderno').modal('hide');
+        }
 
         ng.e3_selecionarBlocosCadernoAtual = e3_selecionarBlocosCadernoAtual;
         function e3_selecionarBlocosCadernoAtual() {
@@ -2933,6 +2937,56 @@
             }
         };
 
+        function e3_itensCarregar() {
+            addEventkeyUp();
+
+            var id = ng.cadernoSelecionado.Id;
+
+            if (id) {
+                inicarCarregamentoDosItensCadernoPaginados();
+            }
+        }
+
+        function inicarCarregamentoDosItensCadernoPaginados() {
+            page = 0;
+            pageItens = 10;
+            itensCache = [];
+            carregarItensCadernoPorPagina();
+        };
+
+        function carregarItensCadernoPorPagina() {
+            self.etapa3.itensCaderno({ Id: ng.cadernoSelecionado.Id, page, pageItens }, validarResultadoItensCaderno);
+        }
+
+        function validarResultadoItensCaderno(result) {
+            if (!result || !result.success) {
+                $notification.alert('Não há itens carregados');
+                return;
+            }
+
+            if (result.lista instanceof Array) {
+                if (result.lista <= 0) {
+                    e3_itensCarregado(itensCache);
+                }
+                else {
+                    itensCache = itensCache.concat(result.lista);
+                    page++;
+                    carregarItensCadernoPorPagina();
+                }
+            }
+            else {
+                e3_itensCarregado(itensCache);
+            }
+        };
+
+        function e3_itensCarregado(lista) {
+            if (lista instanceof Array && lista.length > 0) {
+                ng.e3_ListaItemsVisualizar = angular.copy(lista);
+            }
+            else {
+                ng.e3_ListaItemsVisualizar = [];
+            }
+        };
 
         /**
          * @function Callback para visualizar
@@ -3206,7 +3260,6 @@
             }
             else if (ng.e2_Navegacao > 1)
                 ng.e2_Navegacao--;
-
         };
 
         function addEventkeyUp() {
@@ -4295,7 +4348,6 @@
 
         function initEtapa3() {
             ng.escondeModal = false;
-            ng.e3_Navegacao = 1;
             ng.cadernoSelecionado = {};
             ng.listaBlocosSelecionadosCadernoModal = [];
 
