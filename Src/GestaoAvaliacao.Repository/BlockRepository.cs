@@ -724,13 +724,8 @@ namespace GestaoAvaliacao.Repository
                 var idsBlockChain = block.BlockChainBlocks.Select(c => c.BlockChain_Id).Distinct().ToList();
                 var ehCadeiaBlocos = idsBlockChain.Count > 0;
 
-                var itemsBlockChain = new List<BlockChainItem>();
-
                 if (ehCadeiaBlocos)
                 {
-                    itemsBlockChain.AddRange(gestaoAvaliacaoContext.BlockChainItems.Where(c =>
-                        idsBlockChain.Contains(c.BlockChain_Id) && c.State == (byte)EnumState.ativo));
-
                     idsItems.AddRange(gestaoAvaliacaoContext.BlockChainItems.Include("Item")
                         .Where(c => idsBlockChain.Contains(c.BlockChain_Id) && c.State == (byte)EnumState.ativo)
                         .Select(c => c.Item.Id).Distinct());
@@ -774,9 +769,25 @@ namespace GestaoAvaliacao.Repository
                     var blockChainBlocks = idsBlockChain.Select(idBlockChain =>
                         new BlockChainBlock { BlockChain_Id = idBlockChain, Block_Id = block.Id }).ToList();
 
-                    var blockItems = itemsBlockChain.Select(itemBlockChain => new BlockItem
-                            { Block_Id = block.Id, Item_Id = itemBlockChain.Item_Id, Order = itemBlockChain.Order })
-                        .ToList();
+                    var itemsBlockChain = new List<BlockChainItem>();
+
+                    itemsBlockChain.AddRange(gestaoAvaliacaoContext.BlockChainItems.Where(c =>
+                        idsBlockChain.Contains(c.BlockChain_Id) && c.State == (byte)EnumState.ativo));
+
+                    var blockItems = new List<BlockItem>();
+                    maxOrder = 0;
+
+                    foreach (var itemBlockChain in itemsBlockChain)
+                    {
+                        blockItems.Add(new BlockItem
+                        {
+                            Block_Id = block.Id,
+                            Item_Id = itemBlockChain.Item_Id,
+                            Order = maxOrder
+                        });
+
+                        maxOrder++;
+                    }
 
                     block.BlockChainBlocks = blockChainBlocks;
                     block.BlockItems = blockItems;
