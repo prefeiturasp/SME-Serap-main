@@ -728,6 +728,7 @@ namespace GestaoAvaliacao.Repository
                 {
                     idsItems.AddRange(gestaoAvaliacaoContext.BlockChainItems.Include("Item")
                         .Where(c => idsBlockChain.Contains(c.BlockChain_Id) && c.State == (byte)EnumState.ativo)
+                        .OrderBy(c => c.BlockChain_Id).ThenBy(c => c.Order)
                         .Select(c => c.Item.Id).Distinct());
                 }
                 else
@@ -772,7 +773,8 @@ namespace GestaoAvaliacao.Repository
                     var itemsBlockChain = new List<BlockChainItem>();
 
                     itemsBlockChain.AddRange(gestaoAvaliacaoContext.BlockChainItems.Where(c =>
-                        idsBlockChain.Contains(c.BlockChain_Id) && c.State == (byte)EnumState.ativo));
+                        idsBlockChain.Contains(c.BlockChain_Id) && c.State == (byte)EnumState.ativo)
+                        .OrderBy(c => c.BlockChain_Id).ThenBy(c => c.Order));
 
                     var blockItems = new List<BlockItem>();
                     maxOrder = 0;
@@ -840,7 +842,8 @@ namespace GestaoAvaliacao.Repository
                 if (ehCadeiaBlocos)
                 {
                     itemsBlockChain.AddRange(gestaoAvaliacaoContext.BlockChainItems.Include("Item")
-                        .Where(c => idsBlockChain.Contains(c.BlockChain_Id) && c.State == (byte)EnumState.ativo));
+                        .Where(c => idsBlockChain.Contains(c.BlockChain_Id) && c.State == (byte)EnumState.ativo)
+                        .OrderBy(c => c.BlockChain_Id).ThenBy(c => c.Order));
 
                     idsItemsFront.AddRange(itemsBlockChain.Select(c => c.Item.Id).Distinct());
 
