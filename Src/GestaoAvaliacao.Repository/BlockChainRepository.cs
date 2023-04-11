@@ -188,6 +188,7 @@ namespace GestaoAvaliacao.Repository
 								AND bc.State = @state
 								AND bcb.State = @state
 								AND b.State = @state
+                                ORDER BY b.Description
 
 								SELECT T.Id
 								FROM Test T WITH(NOLOCK)

@@ -824,6 +824,8 @@ namespace GestaoAvaliacao.Repository
                 entity.UpdateDate = dateNow;
                 entity.Test.TestSituation = EnumTestSituation.Pending;
 
+                var maxOrder = 0;
+
                 #region BlockItems
 
                 var blockItems = new List<BlockItem>();
@@ -842,8 +844,17 @@ namespace GestaoAvaliacao.Repository
 
                     idsItemsFront.AddRange(itemsBlockChain.Select(c => c.Item.Id).Distinct());
 
-                    blockItemsFront.AddRange(itemsBlockChain.Select(itemblockChain => new BlockItem
-                        { Block_Id = block.Id, Item_Id = itemblockChain.Item_Id, Order = itemblockChain.Order }));
+                    foreach (var itemblockChain in itemsBlockChain)
+                    {
+                        blockItemsFront.Add(new BlockItem
+                        {
+                            Block_Id = block.Id,
+                            Item_Id = itemblockChain.Item_Id,
+                            Order = maxOrder
+                        });
+
+                        maxOrder++;
+                    }
                 }
                 else
                 {
@@ -910,7 +921,7 @@ namespace GestaoAvaliacao.Repository
                 var blockKnowledgeAreas = blockKnowledgeAreasBd.FindAll(p =>
                     p.State == (byte)EnumState.ativo && listKnowledgeArea.Any(q => q == p.KnowledgeArea_Id));
 
-                var maxOrder = 0;
+                maxOrder = 0;
 
                 if (blockKnowledgeAreas.Count > 0)
                 {
