@@ -261,18 +261,18 @@ namespace GestaoAvaliacao.Repository
             const string sqlMulti = @"SELECT B.Id, B.Description, B.Source 
                                         FROM Item I WITH (NOLOCK) 
                                         INNER JOIN BaseText B WITH (NOLOCK) ON B.Id = I.BaseText_Id
-                                        WHERE I.Id = @blockChainId 
+                                        WHERE I.Id = @itemId 
                                         AND I.State = @state AND B.State = @state 
 
                                         SELECT L.Description, L.Value 
                                         FROM Item I WITH (NOLOCK) 
                                         INNER JOIN ItemLevel L WITH (NOLOCK) ON L.Id = I.ItemLevel_Id 
-                                        WHERE I.Id = @blockChainId
+                                        WHERE I.Id = @itemId
                                         AND I.State = @state AND L.State = @state 
 
                                         SELECT TypeCurriculumGradeId 
                                         FROM ItemCurriculumGrade WITH (NOLOCK) 
-                                        WHERE Item_Id = @blockChainId
+                                        WHERE Item_Id = @itemId
                                         AND State = @state 
 
                                         SELECT BCI.Id, BCI.BlockChain_Id, BCI.Item_Id, BCI.[Order]  
@@ -289,7 +289,7 @@ namespace GestaoAvaliacao.Repository
                                         INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
                                         WHERE I.State = @state 
                                         AND D.State = @state 
-                                        AND I.Id = @blockChainId ";
+                                        AND I.Id = @itemId ";
 
             using (var cn = Connection)
             {
