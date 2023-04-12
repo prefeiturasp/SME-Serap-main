@@ -1507,8 +1507,8 @@ namespace GestaoAvaliacao.Repository
                 if (test == null)
                     return entity;
 
-                test.RemoveBlockChain = entity.BlockChainNumber < test.BlockChainNumber;
-                test.RemoveBlockChainBlock = entity.NumberBlock < test.NumberBlock;
+                test.RemoveBlockChain = entity.BlockChainNumber < test.BlockChainNumber || entity.BlockChainItems < test.BlockChainItems;
+                test.RemoveBlockChainBlock = entity.NumberBlock < test.NumberBlock || entity.BlockChainItems < test.BlockChainItems;
 
                 test.TestSituation = entity.TestSituation;
 

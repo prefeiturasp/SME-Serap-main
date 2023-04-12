@@ -35,12 +35,14 @@ namespace GestaoAvaliacao.Repository
                     .Include("Test")
                     .Include("BlockChainItems")
                     .Include("BlockChainBlocks")
+                    .Include("BlockChainBlocks.Block")
                     .FirstOrDefault(x => x.Id == blockChain.Id && x.State == (byte)EnumState.ativo);
 
                 if (entity == null)
                     throw new ArgumentNullException("O bloco não foi localizado.");
 
                 blockChain.Test_Id = entity.Test_Id;
+                blockChain.BlockChainBlocks.AddRange(entity.BlockChainBlocks.Where(c => c.State == (byte)EnumState.ativo));
 
                 gestaoAvaliacaoContext.Entry(entity).CurrentValues.SetValues(blockChain);
                 entity.UpdateDate = dateNow;
@@ -342,12 +344,22 @@ namespace GestaoAvaliacao.Repository
                 var blockChains = gestaoAvaliacaoContext.BlockChains
                     .Include("BlockChainItems")
                     .Include("BlockChainBlocks")
+                    .Include("BlockChainBlocks.Block")
+                    .Include("BlockChainBlocks.Block.BlockItems")
                     .Where(i => i.Test_Id == testId).ToList();
 
                 blockChains.ForEach(i =>
                 {
                     var blockChainItems = i.BlockChainItems.Where(c => c.BlockChain_Id == i.Id).ToList();
                     var blockChainBlocks = i.BlockChainBlocks.Where(c => c.BlockChain_Id == i.Id).ToList();
+
+                    blockChainBlocks.ForEach(x =>
+                    {
+                        var blockItems = x.Block.BlockItems.Where(c => c.Block_Id == x.Block_Id).ToList();
+
+                        gestaoAvaliacaoContext.BlockItem.RemoveRange(blockItems);
+                        gestaoAvaliacaoContext.Block.Remove(x.Block);
+                    });
 
                     gestaoAvaliacaoContext.BlockChainItems.RemoveRange(blockChainItems);
                     gestaoAvaliacaoContext.BlockChainBlocks.RemoveRange(blockChainBlocks);
