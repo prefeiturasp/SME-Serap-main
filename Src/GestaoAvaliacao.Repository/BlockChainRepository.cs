@@ -35,14 +35,12 @@ namespace GestaoAvaliacao.Repository
                     .Include("Test")
                     .Include("BlockChainItems")
                     .Include("BlockChainBlocks")
-                    .Include("BlockChainBlocks.Block")
                     .FirstOrDefault(x => x.Id == blockChain.Id && x.State == (byte)EnumState.ativo);
 
                 if (entity == null)
                     throw new ArgumentNullException("O bloco não foi localizado.");
 
                 blockChain.Test_Id = entity.Test_Id;
-                blockChain.BlockChainBlocks.AddRange(entity.BlockChainBlocks.Where(c => c.State == (byte)EnumState.ativo));
 
                 gestaoAvaliacaoContext.Entry(entity).CurrentValues.SetValues(blockChain);
                 entity.UpdateDate = dateNow;
@@ -58,7 +56,8 @@ namespace GestaoAvaliacao.Repository
 
                 if (blockChainItemsToExclude.Any())
                 {
-                    foreach (var blockChainItem in entity.BlockChainItems.Where(s => s.State == (byte)EnumState.ativo && blockChainItemsToExclude.Contains(s.Item_Id)))
+                    foreach (var blockChainItem in entity.BlockChainItems.Where(s =>
+                                 s.State == (byte)EnumState.ativo && blockChainItemsToExclude.Contains(s.Item_Id)))
                     {
                         blockChainItem.State = Convert.ToByte(EnumState.excluido);
                         blockChainItem.UpdateDate = dateNow;
@@ -73,7 +72,10 @@ namespace GestaoAvaliacao.Repository
                         continue;
 
                     var blockChainItemDb = entity.BlockChainItems
-                        .FirstOrDefault(e => e.Item_Id.Equals(blockChainItemFront.Item_Id) && e.BlockChain_Id.Equals(blockChainItemFront.BlockChain_Id) && e.State.Equals((byte)EnumState.ativo));
+                        .FirstOrDefault(e =>
+                            e.Item_Id.Equals(blockChainItemFront.Item_Id) &&
+                            e.BlockChain_Id.Equals(blockChainItemFront.BlockChain_Id) &&
+                            e.State.Equals((byte)EnumState.ativo));
 
                     if (blockChainItemDb != null)
                     {
