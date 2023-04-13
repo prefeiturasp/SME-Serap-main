@@ -34,7 +34,7 @@ namespace GestaoAvaliacao.Repository
                 var entity = gestaoAvaliacaoContext.BlockChains
                     .Include("Test")
                     .Include("BlockChainItems")
-                    .Include("BlockChainBlocks")
+                    .Include("BlockChainBlocks.Block.BlockItems")
                     .FirstOrDefault(x => x.Id == blockChain.Id && x.State == (byte)EnumState.ativo);
 
                 if (entity == null)
@@ -49,10 +49,17 @@ namespace GestaoAvaliacao.Repository
                 #region BlockChainItem
 
                 var blockChainItems = new List<BlockChainItem>();
+                var blockItems = new List<BlockItem>();
 
                 var blockChainItemsFront = blockChain.BlockChainItems.Select(s => s.Item_Id);
                 var blockChainItemsDatabase = entity.BlockChainItems.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.Item_Id);
                 var blockChainItemsToExclude = blockChainItemsDatabase.Except(blockChainItemsFront).ToList();
+
+                var entityBlocks = new List<Block>();
+                var entityBlockItems = new List<BlockItem>();
+
+                entityBlocks.AddRange(entity.BlockChainBlocks.Where(c => c.BlockChain_Id == blockChain.Id).Select(c => c.Block));
+                entityBlockItems.AddRange(entityBlocks.SelectMany(c => c.BlockItems));
 
                 if (blockChainItemsToExclude.Any())
                 {
@@ -63,6 +70,15 @@ namespace GestaoAvaliacao.Repository
                         blockChainItem.UpdateDate = dateNow;
 
                         blockChainItems.Add(blockChainItem);
+                    }
+
+                    foreach (var blockItem in entityBlockItems.Where(s =>
+                                 s.State == (byte)EnumState.ativo && blockChainItemsToExclude.Contains(s.Item_Id)))
+                    {
+                        blockItem.State = Convert.ToByte(EnumState.excluido);
+                        blockItem.UpdateDate = dateNow;
+
+                        blockItems.Add(blockItem);
                     }
                 }
 
@@ -80,17 +96,68 @@ namespace GestaoAvaliacao.Repository
                     if (blockChainItemDb != null)
                     {
                         blockChainItemDb.Order = blockChainItemFront.Order;
-                        blockChainItemDb.UpdateDate = DateTime.Now;
+                        blockChainItemDb.UpdateDate = dateNow;
                         gestaoAvaliacaoContext.Entry(blockChainItemDb).State = System.Data.Entity.EntityState.Modified;
 
                         blockChainItems.Add(blockChainItemDb);
                     }
                     else
                         blockChainItems.Add(blockChainItemFront);
+
+                    foreach (var block in entityBlocks)
+                    {
+                        var blockItemDb = entityBlockItems.FirstOrDefault(e =>
+                            e.Item_Id.Equals(blockChainItemFront.Item_Id) &&
+                            e.Block_Id.Equals(block.Id) &&
+                            e.State.Equals((byte)EnumState.ativo));
+
+                        if (blockItemDb != null)
+                        {
+                            blockItemDb.Order = blockChainItemFront.Order;
+                            blockItemDb.UpdateDate = dateNow;
+                            gestaoAvaliacaoContext.Entry(blockItemDb).State = System.Data.Entity.EntityState.Modified;
+
+                            blockItems.Add(blockItemDb);
+                        }
+                        else
+                        {
+                            blockItems.Add(new BlockItem
+                            {
+                                Block_Id = block.Id,
+                                Item_Id = blockChainItemFront.Item_Id,
+                                Order = blockChainItemFront.Order
+                            });
+                        }
+                    }
                 }
 
                 if (blockChainItems.Count > 0)
                     entity.BlockChainItems.AddRange(blockChainItems);
+
+                if (blockItems.Count > 0)
+                {
+                    var idsBlock = entityBlocks.Where(c => c.State == (byte)EnumState.ativo).OrderBy(c => c.Description)
+                        .Select(c => c.Id).Distinct();
+
+                    foreach (var idBlock in idsBlock)
+                    {
+                        var blockItemsBlockId = blockItems
+                            .Where(c => c.Block_Id == idBlock && c.State == (byte)EnumState.ativo).ToList();
+
+                        var maxOrder = 0;
+
+                        foreach (var blockItem in blockItemsBlockId)
+                        {
+                            blockItem.Order = maxOrder;
+                            maxOrder++;
+                        }
+
+                        var blockChainBlock = entity.BlockChainBlocks.FirstOrDefault(c =>
+                            c.BlockChain_Id == blockChain.Id && c.Block_Id == idBlock);
+
+                        blockChainBlock?.Block.BlockItems.AddRange(blockItemsBlockId);
+                    }
+                }
 
                 #endregion
 

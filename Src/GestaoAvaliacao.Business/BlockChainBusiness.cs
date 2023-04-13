@@ -13,14 +13,11 @@ namespace GestaoAvaliacao.Business
     {
         private readonly IBlockChainRepository blockChainRepository;
         private readonly ITestRepository testRepository;
-        private readonly IBlockChainBlockRepository blockChainBlockRepository;
 
-        public BlockChainBusiness(IBlockChainRepository blockChainRepository, ITestRepository testRepository,
-            IBlockChainBlockRepository blockChainBlockRepository)
+        public BlockChainBusiness(IBlockChainRepository blockChainRepository, ITestRepository testRepository)
         {
             this.blockChainRepository = blockChainRepository;
             this.testRepository = testRepository;
-            this.blockChainBlockRepository = blockChainBlockRepository;
         }
 
         #region Custom
@@ -98,8 +95,6 @@ namespace GestaoAvaliacao.Business
 
             blockChainRepository.Update(blockChain);
             blockChain.Validate.Type = ValidateType.Update.ToString();
-
-            blockChainBlockRepository.DeleteByBlockChainId(blockChain.Id);
 
             return blockChain;
         }
