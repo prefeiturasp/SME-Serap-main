@@ -827,16 +827,14 @@ namespace GestaoAvaliacao.Repository
                 entity.Test.TestSituation = EnumTestSituation.Pending;
 
                 var maxOrder = 0;
+                var idsBlockChain = block.BlockChainBlocks.Select(c => c.BlockChain_Id).Distinct().ToList();
+                var ehCadeiaBlocos = idsBlockChain.Count > 0;
 
                 #region BlockItems
 
                 var blockItems = new List<BlockItem>();
                 var idsItemsFront = new List<long>();
                 var blockItemsFront = new List<BlockItem>();
-
-                var idsBlockChain = block.BlockChainBlocks.Select(c => c.BlockChain_Id).Distinct().ToList();
-                var ehCadeiaBlocos = idsBlockChain.Count > 0;
-
                 var itemsBlockChain = new List<BlockChainItem>();
 
                 if (ehCadeiaBlocos)
@@ -1037,6 +1035,12 @@ namespace GestaoAvaliacao.Repository
                     entity.BlockChainBlocks.AddRange(blockChainBlocks);
 
                 #endregion
+
+                if (blockChainBlocks.All(c => c.State == Convert.ToByte(EnumState.excluido)))
+                {
+                    entity.State = Convert.ToByte(EnumState.excluido);
+                    entity.UpdateDate = dateNow;
+                }
 
                 entity.Test.UpdateDate = dateNow;
 

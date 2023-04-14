@@ -34,7 +34,7 @@ namespace GestaoAvaliacao.Repository
                 var entity = gestaoAvaliacaoContext.BlockChains
                     .Include("Test")
                     .Include("BlockChainItems")
-                    .Include("BlockChainBlocks")
+                    .Include("BlockChainBlocks.Block.BlockItems")
                     .FirstOrDefault(x => x.Id == blockChain.Id && x.State == (byte)EnumState.ativo);
 
                 if (entity == null)
@@ -49,44 +49,122 @@ namespace GestaoAvaliacao.Repository
                 #region BlockChainItem
 
                 var blockChainItems = new List<BlockChainItem>();
+                var blockItems = new List<BlockItem>();
 
-                var blockChainItemsFront = blockChain.BlockChainItems.Select(s => s.Item_Id);
-                var blockChainItemsDatabase = entity.BlockChainItems.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.Item_Id);
-                var blockChainItemsToExclude = blockChainItemsDatabase.Except(blockChainItemsFront).ToList();
+                var blockChainBlocksDatabase = entity.BlockChainBlocks.Where(c => c.BlockChain_Id == blockChain.Id && c.State == (byte)EnumState.ativo).ToList();
+                var blocksDatabase = blockChainBlocksDatabase.Select(c => c.Block).Where(c => c.State == (byte)EnumState.ativo).ToList();
+                var blockChainItemsDatabase = entity.BlockChainItems.Where(c => c.State == (byte)EnumState.ativo).ToList();
 
-                if (blockChainItemsToExclude.Any())
+                var blockChainItemsFront = blockChain.BlockChainItems;
+                var idsItemsFront = blockChainItemsFront.Select(s => s.Item_Id);
+                var idsItemsDatabase = blockChainItemsDatabase.Select(s => s.Item_Id);
+                var idsItemsToExclude = idsItemsDatabase.Except(idsItemsFront).ToList();
+
+                if (idsItemsToExclude.Any())
                 {
-                    foreach (var blockChainItem in entity.BlockChainItems.Where(s => s.State == (byte)EnumState.ativo && blockChainItemsToExclude.Contains(s.Item_Id)))
+                    //-> BlockChainItem
+                    foreach (var blockChainItem in blockChainItemsDatabase.Where(s => idsItemsToExclude.Contains(s.Item_Id)))
                     {
                         blockChainItem.State = Convert.ToByte(EnumState.excluido);
                         blockChainItem.UpdateDate = dateNow;
 
                         blockChainItems.Add(blockChainItem);
                     }
+
+                    //-> Block
+                    foreach (var block in blocksDatabase)
+                    {
+                        var blockItemsToExclude = block.BlockItems.Where(s =>
+                            idsItemsToExclude.Contains(s.Item_Id) && s.State == (byte)EnumState.ativo);
+
+                        foreach (var blockItem in blockItemsToExclude)
+                        {
+                            blockItem.State = Convert.ToByte(EnumState.excluido);
+                            blockItem.UpdateDate = dateNow;
+
+                            blockItems.Add(blockItem);
+                        }
+                    }
                 }
 
-                foreach (var blockChainItemFront in blockChain.BlockChainItems)
+                foreach (var blockChainItemFront in blockChainItemsFront)
                 {
                     if (blockChainItemFront == null)
                         continue;
 
-                    var blockChainItemDb = entity.BlockChainItems
-                        .FirstOrDefault(e => e.Item_Id.Equals(blockChainItemFront.Item_Id) && e.BlockChain_Id.Equals(blockChainItemFront.BlockChain_Id) && e.State.Equals((byte)EnumState.ativo));
+                    //-> BlockChainItem
+                    var blockChainItemDb = blockChainItemsDatabase
+                        .FirstOrDefault(e =>
+                            e.Item_Id.Equals(blockChainItemFront.Item_Id) &&
+                            e.BlockChain_Id.Equals(blockChainItemFront.BlockChain_Id));
 
                     if (blockChainItemDb != null)
                     {
                         blockChainItemDb.Order = blockChainItemFront.Order;
-                        blockChainItemDb.UpdateDate = DateTime.Now;
+                        blockChainItemDb.UpdateDate = dateNow;
                         gestaoAvaliacaoContext.Entry(blockChainItemDb).State = System.Data.Entity.EntityState.Modified;
 
                         blockChainItems.Add(blockChainItemDb);
                     }
                     else
                         blockChainItems.Add(blockChainItemFront);
+
+                    //-> Block
+                    foreach (var blockDb in blocksDatabase)
+                    {
+                        var blockItemDb = blockDb.BlockItems.FirstOrDefault(c =>
+                            c.Item_Id == blockChainItemFront.Item_Id && c.Block_Id == blockDb.Id &&
+                            c.State == (byte)EnumState.ativo);
+
+                        if (blockItemDb != null)
+                        {
+                            blockItemDb.Order = blockChainItemFront.Order;
+                            blockItemDb.UpdateDate = dateNow;
+                            gestaoAvaliacaoContext.Entry(blockItemDb).State = System.Data.Entity.EntityState.Modified;
+
+                            blockItems.Add(blockItemDb);
+                        }
+                        else
+                        {
+                            blockItems.Add(new BlockItem
+                            {
+                                Block_Id = blockDb.Id,
+                                Item_Id = blockChainItemFront.Item_Id,
+                                Order = blockChainItemFront.Order
+                            });
+                        }
+                    }
                 }
 
+                //-> BlockChainItem
                 if (blockChainItems.Count > 0)
                     entity.BlockChainItems.AddRange(blockChainItems);
+
+                //-> BlockItem
+                if (blockItems.Count > 0)
+                {
+                    //-> Ordenar
+                    var idsBlocksDb = blocksDatabase.OrderBy(c => c.Description).Select(c => c.Id).Distinct();
+
+                    foreach (var idBlockDb in idsBlocksDb)
+                    {
+                        var maxOrder = 0;
+
+                        foreach (var blockItem in blockItems.Where(c => c.Block_Id == idBlockDb))
+                        {
+                            blockItem.Order = maxOrder;
+                            maxOrder++;
+                        }
+                    }
+
+                    //-> Atualizar
+                    foreach (var blockChainBlock in entity.BlockChainBlocks.Where(c =>
+                                 c.BlockChain_Id == blockChain.Id && c.State == (byte)EnumState.ativo))
+                    {
+                        blockChainBlock.Block.BlockItems.AddRange(blockItems.Where(c =>
+                            c.Block_Id == blockChainBlock.Block_Id));
+                    }
+                }
 
                 #endregion
 
@@ -342,12 +420,22 @@ namespace GestaoAvaliacao.Repository
                 var blockChains = gestaoAvaliacaoContext.BlockChains
                     .Include("BlockChainItems")
                     .Include("BlockChainBlocks")
+                    .Include("BlockChainBlocks.Block")
+                    .Include("BlockChainBlocks.Block.BlockItems")
                     .Where(i => i.Test_Id == testId).ToList();
 
                 blockChains.ForEach(i =>
                 {
                     var blockChainItems = i.BlockChainItems.Where(c => c.BlockChain_Id == i.Id).ToList();
                     var blockChainBlocks = i.BlockChainBlocks.Where(c => c.BlockChain_Id == i.Id).ToList();
+
+                    blockChainBlocks.ForEach(x =>
+                    {
+                        var blockItems = x.Block.BlockItems.Where(c => c.Block_Id == x.Block_Id).ToList();
+
+                        gestaoAvaliacaoContext.BlockItem.RemoveRange(blockItems);
+                        gestaoAvaliacaoContext.Block.Remove(x.Block);
+                    });
 
                     gestaoAvaliacaoContext.BlockChainItems.RemoveRange(blockChainItems);
                     gestaoAvaliacaoContext.BlockChainBlocks.RemoveRange(blockChainBlocks);
