@@ -10,10 +10,14 @@ namespace GestaoAvaliacao.Repository
         {
             using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                var blockChainBlocks = gestaoAvaliacaoContext.BlockChainBlocks.Where(i => i.Block_Id == blockId).ToList();
+                var blockChainBlocks = gestaoAvaliacaoContext.BlockChainBlocks.Include("Block")
+                    .Include("Block.BlockItems").Where(i => i.Block_Id == blockId).ToList();
 
                 blockChainBlocks.ForEach(i =>
                 {
+                    var blockItems = i.Block.BlockItems.Where(c => c.Block_Id == i.Block_Id).ToList();
+                    gestaoAvaliacaoContext.BlockItem.RemoveRange(blockItems);
+
                     gestaoAvaliacaoContext.BlockChainBlocks.Remove(i);
                 });
 
