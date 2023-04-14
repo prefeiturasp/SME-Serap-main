@@ -1608,7 +1608,7 @@ namespace GestaoAvaliacao.Business
                 var result = new List<ItemConsultaApiDto>();
                 var retorno = new ItemConsultaApiPaginadoDto();
                 var pager = new Pager();
-                pager.CurrentPage = pagina > 0 ? pagina-- : pagina;
+                pager.CurrentPage = pagina > 0 ? pagina - 1 : pagina;
                 pager.PageSize = qtdePorPagina == 0 ? 10 : qtdePorPagina;
                 var ids = itemRepository.GetIdsItemsApi(ref pager, areaConhecimentoId, matrizId);
                 var items = itemRepository.GetItemsApi(ids.ToList());
