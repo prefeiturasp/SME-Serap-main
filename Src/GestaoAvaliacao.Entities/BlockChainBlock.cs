@@ -8,5 +8,6 @@ namespace GestaoAvaliacao.Entities
         public long Block_Id { get; set; }
         public virtual BlockChain BlockChain { get; set; }
         public long BlockChain_Id { get; set; }
+        public int Order { get; set; }
     }
 }

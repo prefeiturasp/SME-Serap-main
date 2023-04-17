@@ -139,7 +139,7 @@
                 cadeiaBlocos: TestModel.loadBlockChains,
                 itensBloco: TestModel.visualizar,
                 itensCadeiaBloco: TestModel.visualizarItensCadeiaBloco,
-                cadernosComBlocos: TestModel.obterCadernosComBlocos,
+                cadernosComBlocos: TestModel.loadBlockChainBlocks,
                 blockKnowledgeAreas: TestModel.getBlockKnowledgeAreas,
                 itensVersoes: TestModel.GetItemVersions,
                 salvarCadeiaBloco: TestModel.saveBlockChain
@@ -2139,7 +2139,7 @@
                         Id: 0,
                         Total: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
                         Resto: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
-                        Blocos: []
+                        Blocos: {}
                     });
                 }
 
@@ -2167,7 +2167,7 @@
                             Id: 0,
                             Total: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
                             Resto: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
-                            Blocos: []
+                            Blocos: {}
                         });
                     }
 
@@ -2887,7 +2887,7 @@
         ng.e3_selecionarBlocosCadernoAtual = e3_selecionarBlocosCadernoAtual;
         function e3_selecionarBlocosCadernoAtual() {
             ng.cadeiaBlocos.forEach(function (element) {
-                const filtro = ng.listaBlocosSelecionadosCadernoModal.filter(b => b == element.Id);
+                const filtro = ng.listaBlocosSelecionadosCadernoModal.filter(b => b.Id === element.Id);
                 element.check = filtro != undefined && filtro.length > 0;               
             });
         };
@@ -2899,9 +2899,9 @@
                     e3_selecionarBlocosCadernoAtual();
                     $notification.alert('O total máximo de blocos já foi atingido');
                 } else
-                    ng.listaBlocosSelecionadosCadernoModal.push(bloco.Id);
+                    ng.listaBlocosSelecionadosCadernoModal.push(bloco);
             } else {
-                const index = ng.listaBlocosSelecionadosCadernoModal.findIndex(obj => obj === bloco.Id);
+                const index = ng.listaBlocosSelecionadosCadernoModal.findIndex(obj => obj.Id === bloco.Id);
                 if (index >= 0) {
                     ng.listaBlocosSelecionadosCadernoModal.splice(index, 1);
                     e3_selecionarBlocosCadernoAtual();
@@ -2920,10 +2920,11 @@
             });
             ng.cadernoSelecionado.Test_Id = ng.provaId;
             ng.cadernoSelecionado.Blocos = ng.listaBlocosSelecionadosCadernoModal;
-            ng.cadernoSelecionado.BlockChainBlocks = ng.listaBlocosSelecionadosCadernoModal.map(x => {
+            ng.cadernoSelecionado.BlockChainBlocks = ng.listaBlocosSelecionadosCadernoModal.map((x, index) => {
                 return {
                     Block_Id: ng.cadernoSelecionado.Id,
-                    BlockChain_Id: x
+                    BlockChain_Id: x.Id,
+                    Order: index
                 }
             });
             self.etapa3.salvar(ng.cadernoSelecionado, e3_blocosCadernoSalvo);
@@ -4349,7 +4350,7 @@
         function initEtapa3() {
             ng.escondeModal = false;
             ng.cadernoSelecionado = {};
-            ng.listaBlocosSelecionadosCadernoModal = [];
+            ng.listaBlocosSelecionadosCadernoModal = {};
 
             if (ng.ehCadeiaBlocos)
                 cadernosComBlocosCarregar();

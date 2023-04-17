@@ -123,7 +123,7 @@ namespace GestaoAvaliacao.Controllers
                     x.Id,
                     x.Description,
                     Test_Id = testId,
-                    BlocosCount = x.Blocos.Distinct().Count(),
+                    BlocosCount = x.Blocos.Select(c => c.Id).Distinct().Count(),
                     Blocos = x.Blocos.Distinct()
                 }).ToList();
 
