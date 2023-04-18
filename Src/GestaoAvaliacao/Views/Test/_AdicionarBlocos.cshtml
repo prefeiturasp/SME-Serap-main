@@ -27,6 +27,27 @@
                         </div>
                     </div>
                 </div>
+
+                <hr class="margin" />
+                
+                <table class="table ordem">
+                    <colgroup>
+                        <col style="width: 50%" />
+                        <col style="width: 50%" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="table-parameter-centralize">Ordem</th>
+                            <th class="table-parameter-centralize">Bloco</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="($indexItem, ordem) in [].constructor(e1_qtdCadeiaBlocosPorBloco) track by $indexItem">
+                            <td class="table-parameter-centralize">{{ $indexItem+1 }}</td>
+                            <td class="table-parameter-centralize">{{ listaBlocosSelecionadosCadernoModal[$indexItem].Description }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             @*FOOTER*@
