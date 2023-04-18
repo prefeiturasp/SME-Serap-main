@@ -204,13 +204,17 @@ namespace GestaoAvaliacao.Repository
 
                                              SELECT BC.Id, BC.Description
                                              FROM BlockChain BC WITH (NOLOCK) 
-                                             INNER JOIN BlockChainItem BCI WITH (NOLOCK) ON BCI.BlockChain_Id = BC.Id 
-                                                AND BCI.State = @state
-                                             INNER JOIN BlockChainBlock BCB WITH (NOLOCK) ON BCB.BlockChain_Id = BCI.BlockChain_Id 
-                                                AND BCB.Block_Id = @blockId
-                                                AND BCB.State = @state
                                              WHERE BC.State = @state
-                                             AND BCI.Item_Id = @id";
+                                             AND EXISTS (SELECT BCI.Id 
+                                                         FROM BlockChainItem BCI WITH (NOLOCK)
+                                                         WHERE BCI.BlockChain_Id = BC.Id
+                                                         AND BCI.State = @state
+                                                         AND BCI.Item_Id = @id)
+                                             AND EXISTS (SELECT BCB.Id 
+                                                         FROM BlockChainBlock BCB WITH (NOLOCK)
+                                                         WHERE BCB.BlockChain_Id = BC.Id
+                                                         AND BCB.Block_Id = @blockId
+                                                         AND BCB.State = @state)";
 
                     var multi = cn.QueryMultiple(sqlMulti, new { id = itemId, blockId = Id, state = (byte)EnumState.ativo });
 
