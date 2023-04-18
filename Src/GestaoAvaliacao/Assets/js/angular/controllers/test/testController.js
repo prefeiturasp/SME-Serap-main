@@ -2859,7 +2859,7 @@
         ng.e3_callModalAddBlocosCaderno = e3_callModalAddBlocosCaderno;
         function e3_callModalAddBlocosCaderno(caderno) {
             ng.cadernoSelecionado = angular.copy(caderno);
-            ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos);
+            ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos, []);
             e3_selecionarBlocosCadernoAtual();
             angular.element("#modalAddBlocos").modal({ backdrop: 'static' });
         };
@@ -2874,7 +2874,7 @@
 
         ng.e3_cancelarModalAddBlocosCaderno = e3_cancelarModalAddBlocosCaderno;
         function e3_cancelarModalAddBlocosCaderno() {
-            ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos);            
+            ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos, []);            
             e3_selecionarBlocosCadernoAtual();
             angular.element('#modalAddBlocos').modal('hide');
         };
@@ -2888,7 +2888,7 @@
         function e3_selecionarBlocosCadernoAtual() {
             ng.cadeiaBlocos.forEach(function (element) {
                 const filtro = ng.listaBlocosSelecionadosCadernoModal.filter(b => b.Id === element.Id);
-                element.check = filtro != undefined && filtro.length > 0;               
+                element.check = filtro != undefined && filtro.length > 0;
             });
         };
 
@@ -4350,7 +4350,7 @@
         function initEtapa3() {
             ng.escondeModal = false;
             ng.cadernoSelecionado = {};
-            ng.listaBlocosSelecionadosCadernoModal = {};
+            ng.listaBlocosSelecionadosCadernoModal = [];
 
             if (ng.ehCadeiaBlocos)
                 cadernosComBlocosCarregar();
