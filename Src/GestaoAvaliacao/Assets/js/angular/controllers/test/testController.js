@@ -1571,7 +1571,7 @@
                 return false;
             }
 
-            if (ng.temBIB && ng.ehCadeiaBlocos && parseInt(ng.e1e1_qtdCadeiaBlocosPorBloco) < 1) {
+            if (ng.temBIB && ng.ehCadeiaBlocos && parseInt(ng.e1_qtdCadeiaBlocosPorBloco) < 1) {
                 $notification.alert('O campo "' + ng.labels.quantidadeCadeiaBlocosPorBloco + '" não pode ser menor ou igual a 0.');
                 return false;
             }
