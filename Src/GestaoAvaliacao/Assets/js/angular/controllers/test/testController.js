@@ -2139,7 +2139,7 @@
                         Id: 0,
                         Total: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
                         Resto: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
-                        Blocos: {}
+                        Blocos: []
                     });
                 }
 
@@ -2167,7 +2167,7 @@
                             Id: 0,
                             Total: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
                             Resto: parseInt(ng.e1_qtdCadeiaBlocosPorBloco),
-                            Blocos: {}
+                            Blocos: []
                         });
                     }
 
