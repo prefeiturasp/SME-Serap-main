@@ -190,13 +190,6 @@
                 method: 'DELETE',
                 url: base_url('BlockChain/DeleteBlockChainItems')
             },
-
-            'obterCadernosComBlocos': {
-                method: 'GET',
-                url: base_url('BlockChain/GetCadernosProva')
-            },
-
-
             // CHAMADAS PARA CADERNOS COM CADEIA DE BLOCOS
             'loadBlockChainBlocks': {
                 method: 'GET',

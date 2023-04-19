@@ -123,7 +123,7 @@ namespace GestaoAvaliacao.Controllers
                     x.Id,
                     x.Description,
                     Test_Id = testId,
-                    BlocosCount = x.Blocos.Distinct().Count(),
+                    BlocosCount = x.Blocos.Select(c => c.Id).Distinct().Count(),
                     Blocos = x.Blocos.Distinct()
                 }).ToList();
 
@@ -183,7 +183,7 @@ namespace GestaoAvaliacao.Controllers
                     x.ItemCodeVersion,
                     x.BlockChain_Id,
                     x.BlockChain_Description
-                }).OrderBy(x => x.KnowledgeArea_Order).ThenBy(x => x.BlockChain_Id).ThenBy(x => x.Order).ToList();
+                }).OrderBy(x => x.KnowledgeArea_Order).ThenBy(x => x.Order).ToList();
 
                 return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
             }
