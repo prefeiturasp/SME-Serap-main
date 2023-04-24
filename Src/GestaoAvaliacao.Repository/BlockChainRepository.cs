@@ -118,7 +118,6 @@ namespace GestaoAvaliacao.Repository
 
                         if (blockItemDb != null)
                         {
-                            blockItemDb.Order = blockChainItemFront.Order;
                             blockItemDb.UpdateDate = dateNow;
                             gestaoAvaliacaoContext.Entry(blockItemDb).State = System.Data.Entity.EntityState.Modified;
 
@@ -130,7 +129,7 @@ namespace GestaoAvaliacao.Repository
                             {
                                 Block_Id = blockDb.Id,
                                 Item_Id = blockChainItemFront.Item_Id,
-                                Order = blockChainItemFront.Order
+                                Order = blockItems.Max(c => c.Order) + 1
                             });
                         }
                     }
@@ -144,14 +143,22 @@ namespace GestaoAvaliacao.Repository
                 if (blockItems.Count > 0)
                 {
                     //-> Ordenar
-                    var idsBlocksDb = blocksDatabase.OrderBy(c => c.Description).Select(c => c.Id).Distinct();
-
-                    foreach (var idBlockDb in idsBlocksDb)
+                    foreach (var blockDb in blocksDatabase.OrderBy(c => c.Description))
                     {
                         var maxOrder = 0;
 
-                        foreach (var blockItem in blockItems.Where(c => c.Block_Id == idBlockDb))
+                        foreach (var blockItem in blockItems.Where(c => c.Block_Id == blockDb.Id))
                         {
+                            var blockItemDb = blockDb.BlockItems.FirstOrDefault(c =>
+                                c.Item_Id == blockItem.Item_Id && c.Block_Id == blockDb.Id &&
+                                c.State == (byte)EnumState.ativo);
+
+                            if (blockItemDb == null)
+                                continue;
+
+                            if (maxOrder == 0)
+                                maxOrder = blockItemDb.Order;
+
                             blockItem.Order = maxOrder;
                             maxOrder++;
                         }
