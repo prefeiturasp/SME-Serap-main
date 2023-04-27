@@ -67,5 +67,7 @@ namespace GestaoAvaliacao.Entities
 
         public bool AllAdhered { get; set; }
         public bool ShowOnSerapEstudantes { get; set; }
+
+		public bool HasAdhered { get; set; }
     }
 }

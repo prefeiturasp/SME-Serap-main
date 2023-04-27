@@ -1394,6 +1394,29 @@ namespace GestaoAvaliacao.Repository
                 return result.ToList().Count > 0;
             }
         }
+        public bool ExistsAdherenceByTestId(long test_id)
+        {
+            StringBuilder sql = new StringBuilder(@" SELECT top(1) 
+                                                            CASE WHEN A.id IS NOT NULL OR  t.AllAdhered = 1 
+                                                            THEN 1 
+		                                                      ELSE 0 END as TemAderencia  
+                                                       FROM
+                                                        Test AS T WITH(NOLOCK)
+	                                                    LEFT JOIN Adherence AS A WITH(NOLOCK)
+		                                                      ON T.Id = A.Test_Id
+                                                              AND A.[State] = 1
+                                                        WHERE 
+                                                         T.Id = @TestId");
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                var result = cn.Query<bool>(sql.ToString(), new { TestId = test_id }).First();
+
+                return result;
+            }
+        }
 
         public async Task<Test> SearchInfoTestAsync(long test_id)
         {
