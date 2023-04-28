@@ -16,6 +16,7 @@ using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.Business
@@ -1631,6 +1632,7 @@ namespace GestaoAvaliacao.Business
                             {
                                 Id = x.Id,
                                 NomeArquivo = x.Name,
+                                Base64 = ObterBase64Arquivo(x.Id),
                             }).ToList());
                         }
                     }                    
@@ -1642,6 +1644,7 @@ namespace GestaoAvaliacao.Business
                         {
                             Id = x.Id,
                             NomeArquivo = x.Name,
+                            Base64 = ObterBase64Arquivo(x.Id),
                         }).ToList());
                     }
 
@@ -1654,6 +1657,7 @@ namespace GestaoAvaliacao.Business
                             {
                                 Id = x.Id,
                                 NomeArquivo = x.Name,
+                                Base64 = ObterBase64Arquivo(x.Id),
                             }).ToList());
                         }
                     }
@@ -1666,6 +1670,7 @@ namespace GestaoAvaliacao.Business
                         {
                             Id = x.ItemFileId,
                             NomeArquivo = x.Name,
+                            Base64 = ObterBase64Arquivo(x.Id),
                         }).ToList();
                     }
 
@@ -1677,6 +1682,7 @@ namespace GestaoAvaliacao.Business
                         {
                             Id = x.ItemFileId,
                             NomeArquivo = x.Name,
+                            Base64 = ObterBase64Arquivo(x.Id),
                         }).ToList();
                     }
 
@@ -1725,6 +1731,30 @@ namespace GestaoAvaliacao.Business
             {
                 throw ex;
             }
+        }
+
+        private string ObterBase64Arquivo(long id)
+        {
+            EntityFile file = fileRepository.Get(id);
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
+
+            if (file != null)
+            {
+                string filePath = new Uri(file.Path).AbsolutePath.Replace("Files/", string.Empty);
+                string physicalPath = string.Concat(physicalDirectory, filePath.Replace("/", "\\"));
+                string decodedUrl = HttpUtility.UrlDecode(physicalPath);
+
+                if (System.IO.File.Exists(decodedUrl))
+                {
+                    FileStream fs = System.IO.File.Open(decodedUrl, FileMode.Open);
+                    byte[] btFile = new byte[fs.Length];
+                    var base64Arquivo = Convert.ToBase64String(btFile);
+                    fs.Close();
+                    return base64Arquivo;
+                }
+            }
+            return null;
         }
 
         private string UploadPictureTagImg(EnumFileType type, List<EntityFile> files, PictureDto picture)

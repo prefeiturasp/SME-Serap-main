@@ -130,6 +130,7 @@ namespace GestaoAvaliacao.Dtos.ItemApi
     public class ArquivoConsultaDto
     {
         public long Id { get; set; }
+        public string Base64 { get; set; }
         public string NomeArquivo { get; set; }
     }
 
