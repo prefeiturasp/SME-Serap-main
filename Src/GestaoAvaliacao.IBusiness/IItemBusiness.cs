@@ -54,6 +54,7 @@ namespace GestaoAvaliacao.IBusiness
         List<ItemTypeDto> FindForTestType();
         List<CurriculumGradeDto> LoadCurriculumGradesByMatrix(int evaluationMatrixId);
         List<ItemApiResult> SaveApi(List<ItemApiDto> items);
+        ItemConsultaApiPaginadoDto GetApi(int pagina, int qtdePorPagina, int areaConhecimentoId, long? matrizId);
         List<ItemLevelDto> LoadAllItemLevel();
     }
 }
