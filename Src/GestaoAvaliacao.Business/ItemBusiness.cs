@@ -1670,7 +1670,7 @@ namespace GestaoAvaliacao.Business
                         {
                             Id = x.ItemFileId,
                             NomeArquivo = x.Name,
-                            Base64 = ObterBase64Arquivo(x.Id),
+                            Base64 = ObterBase64Arquivo(x.FileId),
                         }).ToList();
                     }
 
@@ -1682,7 +1682,7 @@ namespace GestaoAvaliacao.Business
                         {
                             Id = x.ItemFileId,
                             NomeArquivo = x.Name,
-                            Base64 = ObterBase64Arquivo(x.Id),
+                            Base64 = ObterBase64Arquivo(x.FileId),
                         }).ToList();
                     }
 
@@ -1742,15 +1742,13 @@ namespace GestaoAvaliacao.Business
             if (file != null)
             {
                 string filePath = new Uri(file.Path).AbsolutePath.Replace("Files/", string.Empty);
-                string physicalPath = string.Concat(physicalDirectory, filePath.Replace("/", "\\"));
+                string physicalPath = string.Concat(physicalDirectory.Value, filePath.Replace("/", "\\"));
                 string decodedUrl = HttpUtility.UrlDecode(physicalPath);
 
                 if (System.IO.File.Exists(decodedUrl))
                 {
-                    FileStream fs = System.IO.File.Open(decodedUrl, FileMode.Open);
-                    byte[] btFile = new byte[fs.Length];
-                    var base64Arquivo = Convert.ToBase64String(btFile);
-                    fs.Close();
+                    Byte[] bytes = System.IO.File.ReadAllBytes(decodedUrl);
+                    String base64Arquivo = Convert.ToBase64String(bytes);
                     return base64Arquivo;
                 }
             }
