@@ -1635,7 +1635,7 @@ namespace GestaoAvaliacao.Business
                                 Base64 = ObterBase64Arquivo(x.Id),
                             }).ToList());
                         }
-                    }                    
+                    }
 
                     var imgEnunciado = fileBusiness.GetFilesByOwner(item.Id, item.Id, EnumFileType.Statement);
                     if (imgEnunciado != null && imgEnunciado.Any())
@@ -1726,6 +1726,92 @@ namespace GestaoAvaliacao.Business
 
                 retorno.Items = result;
                 return retorno;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public ArquivosItemConsultaApiDto ObterArquivosItemApi(long itemId)
+        {
+            try
+            {
+                var arquivosItem = new ArquivosItemConsultaApiDto();
+                var item = itemRepository.GetItemsApi(new List<long> { itemId })?.FirstOrDefault();
+
+                if (item == null) throw new Exception("Item não encontrado.");
+
+                var imagens = new List<ArquivoConsultaDto>();
+                if (item.BaseText != null)
+                {
+                    var imgTextoBase = fileBusiness.GetFilesByOwner(item.BaseText.Id, item.Id, EnumFileType.BaseText);
+                    if (imgTextoBase != null && imgTextoBase.Any())
+                    {
+                        imagens.AddRange(imgTextoBase.Select(x => new ArquivoConsultaDto
+                        {
+                            Id = x.Id,
+                            NomeArquivo = x.Name,
+                            Base64 = ObterBase64Arquivo(x.Id),
+                        }).ToList());
+                    }
+                }
+
+                var imgEnunciado = fileBusiness.GetFilesByOwner(item.Id, item.Id, EnumFileType.Statement);
+                if (imgEnunciado != null && imgEnunciado.Any())
+                {
+                    imagens.AddRange(imgEnunciado.Select(x => new ArquivoConsultaDto
+                    {
+                        Id = x.Id,
+                        NomeArquivo = x.Name,
+                        Base64 = ObterBase64Arquivo(x.Id),
+                    }).ToList());
+                }
+
+                foreach (var a in item.Alternatives)
+                {
+                    var imgAlternativa = fileBusiness.GetFilesByOwner(a.Id, item.Id, EnumFileType.Alternative);
+                    if (imgAlternativa != null && imgAlternativa.Any())
+                    {
+                        imagens.AddRange(imgAlternativa.Select(x => new ArquivoConsultaDto
+                        {
+                            Id = x.Id,
+                            NomeArquivo = x.Name,
+                            Base64 = ObterBase64Arquivo(x.Id),
+                        }).ToList());
+                    }
+                }
+
+                var itemVideos = itemFileBusiness.GetVideosByItemId(item.Id).ToList();
+                var videos = new List<ArquivoConsultaDto>();
+                if (itemVideos != null && itemVideos.Any())
+                {
+                    videos = itemVideos.Select(x => new ArquivoConsultaDto
+                    {
+                        Id = x.ItemFileId,
+                        NomeArquivo = x.Name,
+                        Base64 = ObterBase64Arquivo(x.FileId),
+                    }).ToList();
+                }
+
+                var itemAudios = itemAudioBusiness.GetAudiosByItemId(item.Id).ToList();
+                var audios = new List<ArquivoConsultaDto>();
+                if (itemAudios != null && itemAudios.Any())
+                {
+                    audios = itemAudios.Select(x => new ArquivoConsultaDto
+                    {
+                        Id = x.ItemFileId,
+                        NomeArquivo = x.Name,
+                        Base64 = ObterBase64Arquivo(x.FileId),
+                    }).ToList();
+                }
+
+                arquivosItem.Imagens = imagens;
+                arquivosItem.Audios = audios;
+                arquivosItem.Videos = videos;
+
+                return arquivosItem;
+
             }
             catch (Exception ex)
             {
