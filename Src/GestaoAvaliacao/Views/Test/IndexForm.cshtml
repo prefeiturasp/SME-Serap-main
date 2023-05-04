@@ -992,7 +992,7 @@
                             @* Salvar *@
                             <button type="button"
                                     class="btnPadrao2 pull-right"
-                                    ng-hide="(navigation===2 && !showTestTAI) || navigation===3 || navigation===ultimo"
+                                    ng-hide="(navigation===2 && !showTestTAI) || navigation===3 || (navigation===ultimo && !showTestTAI)"
                                     ng-click="salvar()">
                                 Salvar
                             </button>
