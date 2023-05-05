@@ -56,8 +56,8 @@
                 arr.push(self.wizardsBlockChain[0]);
                 arr.push(self.wizardsBlockChain[1]);
                 arr.push(self.wizardsBlockChain[2]);
-                arr.push(self.wizardsBlockChain[3]);
-                ng.ultimo = 4;
+                //arr.push(self.wizardsBlockChain[3]);
+                ng.ultimo = 3;
             }
             else if (ng.showTestTAI) {
                 arr.push(self.wizardsTai[0]);
@@ -173,7 +173,7 @@
                 { Number: 1, Description: 'Cadastro de Prova' },
                 { Number: 2, Description: 'Montagem dos blocos' },
                 { Number: 3, Description: 'Montagem dos cadernos' },
-                { Number: 4, Description: 'Gerar provas' },
+                //{ Number: 4, Description: 'Gerar provas' },
             ]
             ng.labels = {
                 tipo: 'Tipo de prova',
@@ -2874,7 +2874,7 @@
 
         ng.e3_cancelarModalAddBlocosCaderno = e3_cancelarModalAddBlocosCaderno;
         function e3_cancelarModalAddBlocosCaderno() {
-            ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos, []);            
+            ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos, []);
             e3_selecionarBlocosCadernoAtual();
             angular.element('#modalAddBlocos').modal('hide');
         };
@@ -4811,6 +4811,10 @@
                 }
 
                 ng.BtnSaveDisabled = true;
+
+                var adesao = verificaAdesaoProva();
+                if (!adesao)
+                    angular.element("#modalSugestaoAdesao").modal({ backdrop: 'static' });
             }
 
             let listaWizardCount = ng.listaWizards.length;
@@ -4823,6 +4827,32 @@
             if (ng.navigation < listaWizardCount)
                 ng.navigation++;
         };
+
+        ng.redirecionarGrupoProva = redirecionarGrupoProva;
+        function redirecionarGrupoProva() {
+            //window.location.href = base_url("Test/SearchTests");
+        }
+
+        ng.redirecionarAdesaoProva = redirecionarAdesaoProva;
+        function redirecionarAdesaoProva() {
+            window.location.href = base_url("Adherence/Index?test_id=" + ng.provaId);
+        }
+
+        function verificaAdesaoProva() {
+            try {
+                TestModel.checkExistsAdherenceByTestId({ Id: ng.provaId }, function (result) {
+                    if (result.success) {
+                        return result.existeAdesao;
+                    }
+                    else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
+            }
+            catch (error) {
+                $notification.error("Erro ao verificar a adesão da prova.");
+            }
+        }
 
         /**
         * @function Dispara salvar para a Etapa atual
