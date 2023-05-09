@@ -103,6 +103,26 @@ namespace GestaoAvaliacao.Controllers
             return View();
         }
 
+        public ActionResult IndexFilterGroupTest(long test_id)
+        {
+            try
+            {
+                var entity = testBusiness.GetTestById(test_id);
+                ViewBag.GroupFilter = new
+                {
+                    TestGroupId = entity.TestSubGroup != null ? entity.TestSubGroup.TestGroup.Id : (long?)null,
+                    TestSubGroupId = entity.TestSubGroup != null ? entity.TestSubGroup.Id : (long?)null,
+                    getGroup = false,
+                };
+                return View();
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return View();
+            }
+        }
+
         #region Read
 
         [HttpGet]

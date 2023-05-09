@@ -4811,10 +4811,6 @@
                 }
 
                 ng.BtnSaveDisabled = true;
-
-                var adesao = verificaAdesaoProva();
-                if (!adesao)
-                    angular.element("#modalSugestaoAdesao").modal({ backdrop: 'static' });
             }
 
             let listaWizardCount = ng.listaWizards.length;
@@ -4828,9 +4824,35 @@
                 ng.navigation++;
         };
 
+        ng.validaFinalizarBib = validaFinalizarBib;
+        function validaFinalizarBib() {
+            const msgBlocos = 'A quantidade total de blocos ainda não foi atingida.';
+
+            let blocosCadernos = 0;
+
+            if (ng.cadernosComBlocos.length) {
+                ng.cadernosComBlocos.forEach(c => {
+                    blocosCadernos += c.BlocosCount;
+                });
+            }
+
+            if (blocosCadernos === (parseInt(ng.e1_qtdCadeiaBlocosPorBloco) * parseInt(ng.e1_qtdBlocos))) {
+                ng.mostrarAvisoQtdBlocosCadernoNaoAtingida = false;
+            } else {
+                ng.mostrarAvisoQtdBlocosCadernoNaoAtingida = true;
+                return $notification.alert(msgBlocos);
+            }
+
+            ng.BtnSaveDisabled = true;
+
+            var adesao = verificaAdesaoProva();
+            if (!adesao)
+                angular.element("#modalSugestaoAdesao").modal({ backdrop: 'static' });
+        }
+
         ng.redirecionarGrupoProva = redirecionarGrupoProva;
-        function redirecionarGrupoProva() {
-            //window.location.href = base_url("Test/SearchTests");
+        function redirecionarGrupoProva() {            
+            window.location.href = base_url("Test");
         }
 
         ng.redirecionarAdesaoProva = redirecionarAdesaoProva;
