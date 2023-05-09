@@ -780,40 +780,40 @@
                                             <col width="15%" />
                                         </colgroup>
                                         <thead>
-                                        <tr>
-                                            <th class="table-parameter-centralize">Caderno</th>
-                                            <th class="table-parameter-centralize">Itens selecionados</th>
-                                            <th class="table-parameter-centralize">Não selecionados</th>
-                                            <th class="table-parameter-centralize"> @* Imagem *@ </th>
-                                            <th class="table-parameter-centralize">Editar</th>
-                                            <th>Adicionar</th>
-                                            <th class="table-parameter-centralize">Ordenar área de conhecimento</th>
-                                            <th class="table-parameter-centralize">Limpar itens selecionados</th>
-                                        </tr>
+                                            <tr>
+                                                <th class="table-parameter-centralize">Caderno</th>
+                                                <th class="table-parameter-centralize">Itens selecionados</th>
+                                                <th class="table-parameter-centralize">Não selecionados</th>
+                                                <th class="table-parameter-centralize"> @* Imagem *@ </th>
+                                                <th class="table-parameter-centralize">Editar</th>
+                                                <th>Adicionar</th>
+                                                <th class="table-parameter-centralize">Ordenar área de conhecimento</th>
+                                                <th class="table-parameter-centralize">Limpar itens selecionados</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        <tr ng-repeat="bloco in cadernos">
-                                            <th class="table-parameter-centralize">{{ bloco.Description}}</th>
-                                            <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
-                                            <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0}}</th>
-                                            <th class="table-parameter-centralize ">
-                                                <i ng-class="{ true:'material-icons check-success pull-left', false:'some-icon' }
+                                            <tr ng-repeat="bloco in cadernos">
+                                                <th class="table-parameter-centralize">{{ bloco.Description}}</th>
+                                                <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
+                                                <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0}}</th>
+                                                <th class="table-parameter-centralize ">
+                                                    <i ng-class="{ true:'material-icons check-success pull-left', false:'some-icon' }
                                                             [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
-                                            </th>
+                                                </th>
 
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModal(2, bloco)"><i type="button" class="material-icons">format_list_bulleted</i></a>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModal(1,bloco)"><i type="button" class="material-icons">add_box</i></a>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModal(7, bloco)"><i type="button" class="material-icons">swap_vert</i></a>
-                                            </th>
-                                            <th class="table-parameter-centralize">
-                                                <a ng-click="e2_callModalRemoverItensSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
-                                            </th>
-                                        </tr>
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModal(2, bloco)"><i type="button" class="material-icons">format_list_bulleted</i></a>
+                                                </th>
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModal(1,bloco)"><i type="button" class="material-icons">add_box</i></a>
+                                                </th>
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModal(7, bloco)"><i type="button" class="material-icons">swap_vert</i></a>
+                                                </th>
+                                                <th class="table-parameter-centralize">
+                                                    <a ng-click="e2_callModalRemoverItensSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
+                                                </th>
+                                            </tr>
                                         </tbody>
                                     </table>
                                     <div ng-show="!temBIB" class="panel-body">
@@ -824,7 +824,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 @* Etapa 3 *@ @* Lista de cadernos *@
                 <div class="form-group" ng-show="mostrarTela && navigation===3">
                     <!-- Montagem dos cadernos -->
@@ -854,95 +854,95 @@
 
                                     </colgroup>
                                     <thead>
-                                    <tr>
-                                        <th class="table-parameter-centralize" ng-hide="true">Gerar</th>
-                                        <th class="">Código</th>
-                                        <th class="">Prova</th>
-                                        <th class="table-parameter-centralize">Permitir download do Gabarito</th>
-                                        <th class="table-parameter-centralize">Gerar Folha de Resposta</th>
-                                        <th class="table-parameter-centralize">Exportar doc</th>
-                                        <th class="table-parameter-centralize">Gerar Prova</th>
-                                        <th class="table-parameter-centralize">Salvar</th>
-                                        <th class="table-parameter-centralize">Última Geração</th>
-                                        <th class="table-parameter-centralize">Baixar</th>
-                                    </tr>
+                                        <tr>
+                                            <th class="table-parameter-centralize" ng-hide="true">Gerar</th>
+                                            <th class="">Código</th>
+                                            <th class="">Prova</th>
+                                            <th class="table-parameter-centralize">Permitir download do Gabarito</th>
+                                            <th class="table-parameter-centralize">Gerar Folha de Resposta</th>
+                                            <th class="table-parameter-centralize">Exportar doc</th>
+                                            <th class="table-parameter-centralize">Gerar Prova</th>
+                                            <th class="table-parameter-centralize">Salvar</th>
+                                            <th class="table-parameter-centralize">Última Geração</th>
+                                            <th class="table-parameter-centralize">Baixar</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    <tr ng-repeat="p in Provas" ng-click="selecionaItem($index)">
-                                        @* CHECK *@
-                                        <th class="table-parameter-centralize" ng-hide="true">
-                                            <div class="checkbox checkbox-primary check-parameter">
-                                                <input id="{{p.label}}" type="checkbox" ng-model="p.gerar">
-                                                <label for="{{p.label}}" class="gerar-prova label-top"></label>
-                                            </div>
-                                        </th>
-                                        @* CÓDIGO *@
-                                        <th class="table-parameter-centralize">
-                                            <div>{{p.Description}}</div>
-                                        </th>
-                                        @* DESCRIÇÃO *@
-                                        <th class="">
-                                            <div>
-                                                <span ng-repeat="itens in p.Blocks" class="gerar-prova span-padding">{{itens.Description}}</span>
-                                            </div>
-                                        </th>
-                                        @* DOWNLOAD DO GABARITO*@
-                                        <th class="table-parameter-centralize">
-                                            <div class="campoLabel" style="position: relative;">
-                                                <div class="switch" ng-model="publicFeedback" ng-click="selectedFeedback(p.Registered);" ng-class="{'off': !publicFeedback }"><input type="button"/></div>
-                                            </div>
-                                        </th>
-                                        @* GERAR FOLHA DE RESPOSTA *@
-                                        <th class="table-parameter-centralize">
-                                            <div class="campoLabel" ng-show="e1_folhaRespLock" style="position: relative;"
-                                                 data-title="A folha de resposta não pode ser gerada pois o tipo de prova escolhido não tem um tipo de item definido." bs-tooltip>
-                                                <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
-                                                     ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button"/></div>
-                                            </div>
-                                            <div class="campoLabel" ng-show="!e1_folhaRespLock" style="position: relative;">
-                                                <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
-                                                     ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button"/></div>
-                                            </div>
-                                        </th>
-                                        <th class="table-parameter-centralize">
-                                            <div>
-                                                <a class="btn" ng-click="provaExportDocIndex($index)">
-                                                    <i type="button" class="material-icons">description</i>
-                                                </a>
-                                            </div>
-                                        </th>
-                                        @* VISUALIZAR *@
-                                        <th class="table-parameter-centralize">
-                                            <div>
-                                                <a class="btn" ng-click="visualizarProva($index)" ng-disabled="p.Registered">
-                                                    <i type="button" class="material-icons">remove_red_eye</i>
-                                                </a>
-                                            </div>
-                                        </th>
+                                        <tr ng-repeat="p in Provas" ng-click="selecionaItem($index)">
+                                            @* CHECK *@
+                                            <th class="table-parameter-centralize" ng-hide="true">
+                                                <div class="checkbox checkbox-primary check-parameter">
+                                                    <input id="{{p.label}}" type="checkbox" ng-model="p.gerar">
+                                                    <label for="{{p.label}}" class="gerar-prova label-top"></label>
+                                                </div>
+                                            </th>
+                                            @* CÓDIGO *@
+                                            <th class="table-parameter-centralize">
+                                                <div>{{p.Description}}</div>
+                                            </th>
+                                            @* DESCRIÇÃO *@
+                                            <th class="">
+                                                <div>
+                                                    <span ng-repeat="itens in p.Blocks" class="gerar-prova span-padding">{{itens.Description}}</span>
+                                                </div>
+                                            </th>
+                                            @* DOWNLOAD DO GABARITO*@
+                                            <th class="table-parameter-centralize">
+                                                <div class="campoLabel" style="position: relative;">
+                                                    <div class="switch" ng-model="publicFeedback" ng-click="selectedFeedback(p.Registered);" ng-class="{'off': !publicFeedback }"><input type="button" /></div>
+                                                </div>
+                                            </th>
+                                            @* GERAR FOLHA DE RESPOSTA *@
+                                            <th class="table-parameter-centralize">
+                                                <div class="campoLabel" ng-show="e1_folhaRespLock" style="position: relative;"
+                                                     data-title="A folha de resposta não pode ser gerada pois o tipo de prova escolhido não tem um tipo de item definido." bs-tooltip>
+                                                    <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
+                                                         ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button" /></div>
+                                                </div>
+                                                <div class="campoLabel" ng-show="!e1_folhaRespLock" style="position: relative;">
+                                                    <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
+                                                         ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button" /></div>
+                                                </div>
+                                            </th>
+                                            <th class="table-parameter-centralize">
+                                                <div>
+                                                    <a class="btn" ng-click="provaExportDocIndex($index)">
+                                                        <i type="button" class="material-icons">description</i>
+                                                    </a>
+                                                </div>
+                                            </th>
+                                            @* VISUALIZAR *@
+                                            <th class="table-parameter-centralize">
+                                                <div>
+                                                    <a class="btn" ng-click="visualizarProva($index)" ng-disabled="p.Registered">
+                                                        <i type="button" class="material-icons">remove_red_eye</i>
+                                                    </a>
+                                                </div>
+                                            </th>
 
-                                        @* SALVAR *@
-                                        <th class="table-parameter-centralize">
-                                            <button type="button"
-                                                    ng-disabled="BtnSaveDisabled"
-                                                    class="btn btn-primary"
-                                                    ng-hide="navigation===2 || navigation===3"
-                                                    ng-click="salvar()" style="background-color: #5a94d6">
-                                                Salvar
-                                            </button>
-                                        </th>
-                                        @* DATA DE GERAÇÃO *@
-                                        <th class="table-parameter-centralize">
-                                            <div>{{p.currentDate}}</div>
-                                        </th>
-                                        @* BAIXAR *@
-                                        <th class="table-parameter-centralize">
-                                            <div>
-                                                <a class="btn" ng-click="baixarProva($index)" ng-disabled="p.Download">
-                                                    <i type="button" class="material-icons">file_download</i>
-                                                </a>
-                                            </div>
-                                        </th>
-                                    </tr>
+                                            @* SALVAR *@
+                                            <th class="table-parameter-centralize">
+                                                <button type="button"
+                                                        ng-disabled="BtnSaveDisabled"
+                                                        class="btn btn-primary"
+                                                        ng-hide="navigation===2 || navigation===3"
+                                                        ng-click="salvar()" style="background-color: #5a94d6">
+                                                    Salvar
+                                                </button>
+                                            </th>
+                                            @* DATA DE GERAÇÃO *@
+                                            <th class="table-parameter-centralize">
+                                                <div>{{p.currentDate}}</div>
+                                            </th>
+                                            @* BAIXAR *@
+                                            <th class="table-parameter-centralize">
+                                                <div>
+                                                    <a class="btn" ng-click="baixarProva($index)" ng-disabled="p.Download">
+                                                        <i type="button" class="material-icons">file_download</i>
+                                                    </a>
+                                                </div>
+                                            </th>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -968,6 +968,11 @@
                                     ng-click="voltar()">
                                 Voltar
                             </button>
+                            <div class="col-md-3">
+                                <div class="campoLabel">
+                                    <button type="button" class="btnPadrao pull-left" style="margin-right: 15px;" ng-click="callModalNovaImportacao()">Nova importação</button>
+                                </div>
+                            </div>
                             @* Avançar *@
                             <button type="button"
                                     class="btnPadrao2 pull-right"
@@ -1290,7 +1295,7 @@
 
                             <!-- Titulo -->
                             <div class="panel-heading">Texto base:</div>
-                            
+
                             <!--Texto -->
                             <div class="well well-sm centralizarMargin10">
                                 <div class="imgResponsive allMaxWidth100" alt="Responsive image" ng-bind-html="abstract.textbase"></div>
@@ -1940,7 +1945,7 @@
         @{
             Html.RenderPartial("_AdicionarBlocos");
         }
-    
+
         @{
             Html.RenderPartial("_VisualizarItensCaderno");
         }
@@ -1980,6 +1985,57 @@
                 </div>
             </div>
         </div>
+
+        @*modalImportarCsvBlocos*@
+        <div class="modal fade" id="modalImportarCsvBlocos" tabindex="-1" role="dialog" aria-labelledby="modalImportarCsvBlocos" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content ">
+
+                    @*HEADER*@
+                    <div class="modal-header">
+                        <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                        <h4 class="modal-title">
+                            <strong>Importação de montagem de blocos</strong>
+                        </h4>
+                    </div>
+                    @*BODY*@
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div style="margin-bottom: 20px;" class="campoLabel">
+                                <label>Arquivo*: </label>
+                                <div>
+                                    <div class="upload-group">
+                                        <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">
+                                        <span class="input-group-btn fake-upload">
+                                            <i class="material-icons">file_upload</i>
+                                            <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
+                                        </span>
+                                    </div>
+                                    <p style="font-size: 11px;" class="textoDescricao pull-left">(Número do Bloco; CodItem)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>(
+
+                    @*FOOTER*@
+                    <div class="modal-footer footerCustom ">
+                        <div class="container-fluid row-fluid">
+                          
+                            <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="limparDados()" aria-hidden="true">Cancelar</button>
+                            <button type="button"
+                                    class="btn btn-primary" data-dismiss="modal"
+                                    ng-click="salvarImportacao()"
+                                 >
+                                Salvar
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
 
     </div>
     <script src="~/Assets/js/vendor/contextoProva/scriptContexoProva.js"></script>
