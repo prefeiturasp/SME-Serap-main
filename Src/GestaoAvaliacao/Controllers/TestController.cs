@@ -1351,6 +1351,7 @@ namespace GestaoAvaliacao.Controllers
         }
 
 
+                  testBusiness.ImportarCvsBlocos( file);
 
         #endregion
     }
