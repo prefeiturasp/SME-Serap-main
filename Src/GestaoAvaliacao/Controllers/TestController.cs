@@ -36,7 +36,7 @@ namespace GestaoAvaliacao.Controllers
         private readonly ITestPermissionBusiness testPermissionBusiness;
         private readonly ITestContextBusiness testContextBusiness;
         private readonly IBlockChainBusiness blockChainBusiness;
-        private readonly IBlockChainBlockBusiness blockChainBlockBusiness;
+        private readonly IBlockChainBlockBusiness blockChainBlockBusiness ;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
             IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
