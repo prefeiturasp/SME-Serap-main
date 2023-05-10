@@ -2052,7 +2052,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>(
+                    </div>
 
                     @*FOOTER*@
                     <div class="modal-footer footerCustom ">
@@ -2071,6 +2071,58 @@
             </div>
         </div>
 
+        @*modalResultadoImportarCsvBlocos*@
+        <div class="modal fade" id="modalResultadoImportarCsvBlocos" tabindex="-1" role="dialog" aria-labelledby="modalResultadoImportarCsvBlocos" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content ">
+
+                    @*HEADER*@
+                    <div class="modal-header">
+                        <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                        <h4 class="modal-title">
+                            <strong>Nova importação finalizada</strong>
+                        </h4>
+                    </div>
+                    @*BODY*@
+                    <div class="modal-body">
+                        <div class="col-md-12 text-center">
+                            <div class="text-left">
+                                <b>{{resultImportarCsvBlocos.qtdeSucesso}} linhas processadas com sucesso</b><br />
+                                <b>{{resultImportarCsvBlocos.qtdeErros}} linhas processadas com erro</b>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <table class="table table-hover">
+                                <colgroup>
+                                    <col width="10%" />
+                                    <col width="90%" />
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th class="table-parameter-centralize">Linha</th>
+                                        <th class="table-parameter-centralize">Erro</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="linha in resultImportarCsvBlocos.erros">
+                                        <th class="table-parameter-centralize">{{ linha.numLinha}}</th>
+                                        <th class="table-parameter-centralize">{{ linha.erro }}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    @*FOOTER*@
+                    <div class="modal-footer footerCustom ">
+                        <div class="container-fluid row-fluid">
+                            <button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true">Fechar</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
 
     </div>

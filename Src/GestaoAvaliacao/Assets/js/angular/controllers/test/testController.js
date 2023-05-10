@@ -352,6 +352,7 @@
             ng.e1_qtdCadeiaBlocos = null;
             ng.e1_qtdItensCadeiaBlocos = null;
             ng.e1_qtdCadeiaBlocosPorBloco = null;
+            ng.resultImportarCsvBlocos = null;
 
             ng.params = {
                 Id: ng.params
@@ -4440,6 +4441,11 @@
         ng.callModalNovaImportacao = function __callModalNovaImportacao() {
            // $scope.limparDados();
             angular.element("#modalImportarCsvBlocos").modal({ backdrop: 'static' });
+        };
+
+        ng.salvarImportacao = function __salvarImportacao() {
+            ng.resultImportarCsvBlocos = { qtdeSucesso: 5, qtdeErros: 3, erros: [{ numLinha: 1, erro: 'Bloco inválido' }, { numLinha: 2, erro: 'Quantidade de item do bloco exedida' }, { numLinha: 3, erro: 'Cód do item inválido' }] };
+            angular.element("#modalResultadoImportarCsvBlocos").modal({ backdrop: 'static' });
         };
 
         /**
