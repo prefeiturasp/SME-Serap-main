@@ -56,8 +56,8 @@
                 arr.push(self.wizardsBlockChain[0]);
                 arr.push(self.wizardsBlockChain[1]);
                 arr.push(self.wizardsBlockChain[2]);
-                arr.push(self.wizardsBlockChain[3]);
-                ng.ultimo = 4;
+                //arr.push(self.wizardsBlockChain[3]);
+                ng.ultimo = 3;
             }
             else if (ng.showTestTAI) {
                 arr.push(self.wizardsTai[0]);
@@ -173,7 +173,6 @@
                 { Number: 1, Description: 'Cadastro de Prova' },
                 { Number: 2, Description: 'Montagem dos blocos' },
                 { Number: 3, Description: 'Montagem dos cadernos' },
-                { Number: 4, Description: 'Gerar provas' },
             ]
             ng.labels = {
                 tipo: 'Tipo de prova',
@@ -2019,7 +2018,7 @@
 
             contarItensSelecionadosCadernos();
 
-            if (ng.navigation === ng.ultimo)
+            if (ng.navigation === ng.ultimo && !ng.ehCadeiaBlocos && !ng.temBIB)
                 initEtapa4();
             else
                 ng.mostrarTela = true;
@@ -2115,10 +2114,7 @@
                 }
             }
 
-            if (ng.navigation === ng.ultimo)
-                initEtapa4();
-            else
-                ng.mostrarTela = true;
+            ng.mostrarTela = true;
         };
 
 
@@ -2194,7 +2190,7 @@
                 }
             }
 
-            if (ng.navigation === ng.ultimo)
+            if (ng.navigation === ng.ultimo && !ng.ehCadeiaBlocos && !ng.temBIB)
                 initEtapa4();
             else
                 ng.mostrarTela = true;
@@ -2874,7 +2870,7 @@
 
         ng.e3_cancelarModalAddBlocosCaderno = e3_cancelarModalAddBlocosCaderno;
         function e3_cancelarModalAddBlocosCaderno() {
-            ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos, []);            
+            ng.listaBlocosSelecionadosCadernoModal = angular.copy(ng.cadernoSelecionado.Blocos, []);
             e3_selecionarBlocosCadernoAtual();
             angular.element('#modalAddBlocos').modal('hide');
         };
@@ -4804,7 +4800,8 @@
 
                 if (blocosCadernos === (parseInt(ng.e1_qtdCadeiaBlocosPorBloco) * parseInt(ng.e1_qtdBlocos))) {
                     ng.mostrarAvisoQtdBlocosCadernoNaoAtingida = false;
-                    initEtapa4();
+                    if (!ng.ehCadeiaBlocos && !ng.temBIB)
+                        initEtapa4();
                 } else {
                     ng.mostrarAvisoQtdBlocosCadernoNaoAtingida = true;
                     return $notification.alert(msgBlocos);
@@ -4823,6 +4820,58 @@
             if (ng.navigation < listaWizardCount)
                 ng.navigation++;
         };
+
+        ng.validaFinalizarBib = validaFinalizarBib;
+        function validaFinalizarBib() {
+            const msgBlocos = 'A quantidade total de blocos ainda não foi atingida.';
+
+            let blocosCadernos = 0;
+
+            if (ng.cadernosComBlocos.length) {
+                ng.cadernosComBlocos.forEach(c => {
+                    blocosCadernos += c.BlocosCount;
+                });
+            }
+
+            if (blocosCadernos === (parseInt(ng.e1_qtdCadeiaBlocosPorBloco) * parseInt(ng.e1_qtdBlocos))) {
+                ng.mostrarAvisoQtdBlocosCadernoNaoAtingida = false;
+            } else {
+                ng.mostrarAvisoQtdBlocosCadernoNaoAtingida = true;
+                return $notification.alert(msgBlocos);
+            }
+
+            ng.BtnSaveDisabled = true;
+
+            var adesao = verificaAdesaoProva();
+            if (!adesao)
+                angular.element("#modalSugestaoAdesao").modal({ backdrop: 'static' });
+        }
+
+        ng.redirecionarGrupoProva = redirecionarGrupoProva;
+        function redirecionarGrupoProva() {
+            window.location.href = base_url("Test");
+        }
+
+        ng.redirecionarAdesaoProva = redirecionarAdesaoProva;
+        function redirecionarAdesaoProva() {
+            window.location.href = base_url("Adherence/Index?test_id=" + ng.provaId);
+        }
+
+        function verificaAdesaoProva() {
+            try {
+                TestModel.checkExistsAdherenceByTestId({ Id: ng.provaId }, function (result) {
+                    if (result.success) {
+                        return result.existeAdesao;
+                    }
+                    else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });
+            }
+            catch (error) {
+                $notification.error("Erro ao verificar a adesão da prova.");
+            }
+        }
 
         /**
         * @function Dispara salvar para a Etapa atual

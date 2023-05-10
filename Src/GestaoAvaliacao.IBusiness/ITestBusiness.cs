@@ -69,5 +69,6 @@ namespace GestaoAvaliacao.IBusiness
 
 		void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> entity);
 		List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId);
-	}
+        bool ExistsAdherenceByTestId(long test_id);
+    }
 }
