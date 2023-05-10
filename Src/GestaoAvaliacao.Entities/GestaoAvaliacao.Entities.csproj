@@ -60,6 +60,7 @@
     <Compile Include="BlockChain.cs" />
     <Compile Include="BlockChainBlock.cs" />
     <Compile Include="BlockChainItem.cs" />
+    <Compile Include="DTO\BlockCsv\blockCsvDto.cs" />
     <Compile Include="ResultadoPsp\ArquivoResultadoPsp.cs" />
     <Compile Include="BaseText.cs" />
     <Compile Include="Base\EntityBase.cs" />

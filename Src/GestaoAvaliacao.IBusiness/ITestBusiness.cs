@@ -6,6 +6,7 @@ using MSTech.CoreSSO.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace GestaoAvaliacao.IBusiness
 {
@@ -70,5 +71,9 @@ namespace GestaoAvaliacao.IBusiness
 		void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> entity);
 		List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId);
         bool ExistsAdherenceByTestId(long test_id);
+    }
+
+		void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision);
+
     }
 }

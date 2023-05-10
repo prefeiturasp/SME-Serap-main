@@ -4436,6 +4436,12 @@
             }
         };
 
+
+        ng.callModalNovaImportacao = function __callModalNovaImportacao() {
+           // $scope.limparDados();
+            angular.element("#modalImportarCsvBlocos").modal({ backdrop: 'static' });
+        };
+
         /**
         * @function Baixar Selecionadas
         * @private
