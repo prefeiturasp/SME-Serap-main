@@ -173,7 +173,6 @@
                 { Number: 1, Description: 'Cadastro de Prova' },
                 { Number: 2, Description: 'Montagem dos blocos' },
                 { Number: 3, Description: 'Montagem dos cadernos' },
-                //{ Number: 4, Description: 'Gerar provas' },
             ]
             ng.labels = {
                 tipo: 'Tipo de prova',
@@ -2019,7 +2018,7 @@
 
             contarItensSelecionadosCadernos();
 
-            if (ng.navigation === ng.ultimo)
+            if (ng.navigation === ng.ultimo && !ng.ehCadeiaBlocos && !ng.temBIB)
                 initEtapa4();
             else
                 ng.mostrarTela = true;
@@ -2115,10 +2114,7 @@
                 }
             }
 
-            if (ng.navigation === ng.ultimo)
-                initEtapa4();
-            else
-                ng.mostrarTela = true;
+            ng.mostrarTela = true;
         };
 
 
@@ -2194,7 +2190,7 @@
                 }
             }
 
-            if (ng.navigation === ng.ultimo)
+            if (ng.navigation === ng.ultimo && !ng.ehCadeiaBlocos && !ng.temBIB)
                 initEtapa4();
             else
                 ng.mostrarTela = true;
@@ -4804,7 +4800,8 @@
 
                 if (blocosCadernos === (parseInt(ng.e1_qtdCadeiaBlocosPorBloco) * parseInt(ng.e1_qtdBlocos))) {
                     ng.mostrarAvisoQtdBlocosCadernoNaoAtingida = false;
-                    initEtapa4();
+                    if (!ng.ehCadeiaBlocos && !ng.temBIB)
+                        initEtapa4();
                 } else {
                     ng.mostrarAvisoQtdBlocosCadernoNaoAtingida = true;
                     return $notification.alert(msgBlocos);
@@ -4851,7 +4848,7 @@
         }
 
         ng.redirecionarGrupoProva = redirecionarGrupoProva;
-        function redirecionarGrupoProva() {            
+        function redirecionarGrupoProva() {
             window.location.href = base_url("Test");
         }
 
