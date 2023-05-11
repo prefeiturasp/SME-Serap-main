@@ -1768,6 +1768,7 @@
     <Content Include="Views\Test\_BlockChainBlock.cshtml" />
     <Content Include="Views\Test\_AdicionarBlocos.cshtml" />
     <Content Include="Views\Test\_VisualizarItensCaderno.cshtml" />
+    <Content Include="Views\Test\_ModalResultadoImportarCsvBlocos.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
