@@ -2,7 +2,6 @@
 using CsvHelper.Configuration;
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
-using GestaoAvaliacao.Entities.DTO.BlockCsv;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IFileServer;
@@ -21,6 +20,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using GestaoAvaliacao.Business.DTO;
 using EntityFile = GestaoAvaliacao.Entities.File;
 using Validate = GestaoAvaliacao.Util.Validate;
 
@@ -47,8 +47,6 @@ namespace GestaoAvaliacao.Business
         private readonly ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository;
         private readonly IItemRepository itemRepository;
         private readonly IBlockChainBusiness blockChainBusiness;
-
-
 
         public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
             ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
@@ -1228,8 +1226,7 @@ namespace GestaoAvaliacao.Business
                 {
                     using (var csv = new CsvReader(leitorAquivo, config))
                     {
-                        var blocosItensCsv = new blockCsvDto();
-                        var blocosItens = csv.GetRecords<blockCsvDto>().ToList();
+                        var blocosItens = csv.GetRecords<BlockCsvDTO>().ToList();
                         var blocos = blocosItens.GroupBy(x => x.NumeroBloco).ToList();
 
                         foreach (var bloco in blocos)
