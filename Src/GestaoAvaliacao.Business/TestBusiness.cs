@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.DTO.BlockCsv;
@@ -73,6 +74,7 @@ namespace GestaoAvaliacao.Business
             this.numberItemTestTaiRepository = numberItemTestTaiRepository;
             this.testTaiCurriculumGradeRepository = testTaiCurriculumGradeRepository;
             this.itemRepository = itemRepository;
+            this.blockChainBusiness = blockChainBusiness;
         }
 
         #region Custom
@@ -1197,59 +1199,67 @@ namespace GestaoAvaliacao.Business
         }
 
 
+        private static CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+            Delimiter = ";",
+            MissingFieldFound = null,
+            IgnoreBlankLines = true,
+            ShouldSkipRecord = records =>
+            {
+                var linha = records.Row.Parser.RawRecord.Replace(Environment.NewLine, string.Empty);
+                linha = linha.Trim().Replace("\r", string.Empty);
+                linha = linha.Trim().Replace("\n", string.Empty);
+                linha = linha.Trim().Replace("\0", string.Empty);
+
+                var arrayLinha = records.Row.Parser.Record;
+                return string.IsNullOrEmpty(linha) || arrayLinha == null || arrayLinha.Length == 0 ||
+                       (arrayLinha.Length > 0 && string.IsNullOrEmpty(arrayLinha[0]));
+            }
+        };
+
         public void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision)
         {
             try
             {
+                blockChainBusiness.DeleteByTestId(testId);
 
-                using (var leitorAquivo = new StreamReader(arquivo.InputStream))
+                using (var leitorAquivo = new StreamReader(arquivo.InputStream, encoding: Encoding.UTF8))
                 {
-                    using (var csv = new CsvReader(leitorAquivo, CultureInfo.InvariantCulture))
+                    using (var csv = new CsvReader(leitorAquivo, config))
                     {
                         var blocosItensCsv = new blockCsvDto();
-                        var blocosItens = csv.EnumerateRecords(blocosItensCsv);
+                        var blocosItens = csv.GetRecords<blockCsvDto>().ToList();
+                        var blocos = blocosItens.GroupBy(x => x.NumeroBloco).ToList();
 
-                        //  var blocos =  blocosItens.GroupBy(x => x.NumeroBloco);
-                        var blockChain = new BlockChain();
-                   
-                        blockChain.CreateDate = DateTime.Now.Date;
-                        blockChain.Test_Id = testId;
-
-                        foreach (var blocoItem in blocosItens)
+                        foreach (var bloco in blocos)
                         {
-                            blockChain.Description = blocoItem.NumeroBloco;
+                            var blockChain = new BlockChain();
 
+                            blockChain.CreateDate = DateTime.Now.Date;
+                            blockChain.Test_Id = testId;
 
-                            var items = itemRepository.GetItemByItemCode(blocoItem.CodigoItem);
-
-                            var blockChainItem = new BlockChainItem()
+                            foreach (var blocoItem in bloco)
                             {
-                                Item_Id = items.Id
-                          
-                                 
-                            };
+                                blockChain.Description = blocoItem.NumeroBloco;
+                                var item = itemRepository.GetItemByItemCode(blocoItem.CodigoItem);
 
-                            blockChain.BlockChainItems.Add(blockChainItem);
+                                var blockChainItem = new BlockChainItem()
+                                {
+                                    Item_Id = item.Id
+                                };
 
-                            var bloco = blocoItem.NumeroBloco;
-                            var item = blocoItem.CodigoItem;
+                                blockChain.BlockChainItems.Add(blockChainItem);
+                            }
 
-                        
+                            blockChainBusiness.Save(blockChain, usuId, vision);
                         }
-
-                        blockChainBusiness.Save(blockChain, usuId, vision);
                     }
-
-                    // (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
-                    //     SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()));
-                    //entity = blockChainBusiness.Save(entity, SessionFacade.UsuarioLogado.Usuario.usu_id,
-                    // (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
-                    //     SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()));
-
                 }
             }
             catch (Exception ex)
             {
+                throw ex;
             }
         }
     }
