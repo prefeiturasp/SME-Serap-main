@@ -1374,7 +1374,7 @@ namespace GestaoAvaliacao.Controllers
                 
 
 
-                return Json(new { success = "", message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, message = "Importação dos blocos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

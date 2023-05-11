@@ -158,7 +158,7 @@
             'deleteBlockItems': {
                 method: 'POST',
                 url: base_url('Block/DeleteBlockItems')
-            },            
+            },
 
             'saveKnowLedgeAreaOrder': {
                 method: 'POST',
@@ -190,6 +190,12 @@
                 method: 'DELETE',
                 url: base_url('BlockChain/DeleteBlockChainItems')
             },
+            //CHAMADA PARA IMPORTAR BLOCOS 
+            'importarBlocosCsv': {
+                method: 'POST',
+                url: base_url('Test/ImportarArquivoCsvBlocos')
+            },
+
             // CHAMADAS PARA CADERNOS COM CADEIA DE BLOCOS
             'loadBlockChainBlocks': {
                 method: 'GET',
