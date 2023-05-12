@@ -4447,7 +4447,7 @@
 
         ng.salvarImportacao = function __salvarImportacao() {
             ng.resultImportarCsvBlocos = { qtdeSucesso: 5, qtdeErros: 3, erros: [{ numLinha: 1, erro: 'Bloco inválido' }, { numLinha: 2, erro: 'Quantidade de item do bloco exedida' }, { numLinha: 3, erro: 'Cód do item inválido' }] };
-            angular.element("#modalResultadoImportarCsvBlocos").modal({ backdrop: 'static' });
+            angular.element("#modalResultadoImportarCsvBlocos").modal({ backdrop: 'static' });            
         };
 
         /**
@@ -5399,27 +5399,22 @@
 
         ng.salvarImportacao = salvarImportacao;
         function salvarImportacao() {
-
-
             if (ng.arquivoBlocoCsvSelecionado === null || ng.arquivoBlocoCsvSelecionado === undefined) {
                 ng.callModalNovaImportacao();
                 $notification['error']("Selecione um arquivo!");
                 return false;
             }
 
-            //   ng.validacoesArquivo();
-            console.log(ng.arquivoBlocoCsvSelecionado);
             var form = new FormData();
             form.append('file', ng.arquivoSelecionado);
             form.append('testId', ng.provaId);
 
-            //self.etapa2.importarBlocosCsv(form);
-
-            //   ng.exibirLoading(true);
+            ng.exibirLoading(true);
 
             ng.UploadFile().then(function (data) {
                 if (data.success) {
                     ng.limparDados();
+                    cadeiaBlocosCarregar();
                     ng.exibirLoading(false);
                     $notification.success("Arquivo importado com sucesso!");
                 }
@@ -5433,7 +5428,6 @@
                 ng.exibirLoading(false);
                 $notification.error(e);
             });
-
         }
 
         ng.UploadFile = UploadFile;
