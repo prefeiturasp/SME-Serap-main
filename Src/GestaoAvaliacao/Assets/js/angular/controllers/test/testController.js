@@ -4842,9 +4842,7 @@
 
             ng.BtnSaveDisabled = true;
 
-            var adesao = verificaAdesaoProva();
-            if (!adesao)
-                angular.element("#modalSugestaoAdesao").modal({ backdrop: 'static' });
+            ng.verificaAdesaoProva();
         }
 
         ng.redirecionarGrupoProva = redirecionarGrupoProva;
@@ -4857,11 +4855,15 @@
             window.location.href = base_url("Adherence/Index?test_id=" + ng.provaId);
         }
 
+        ng.verificaAdesaoProva = verificaAdesaoProva;
         function verificaAdesaoProva() {
             try {
                 TestModel.checkExistsAdherenceByTestId({ Id: ng.provaId }, function (result) {
                     if (result.success) {
-                        return result.existeAdesao;
+                        if (result != null && result.existeAdesao == false)
+                            angular.element("#modalSugestaoAdesao").modal({ backdrop: 'static' });
+                        else
+                            ng.redirecionarGrupoProva();
                     }
                     else {
                         $notification[result.type ? result.type : 'error'](result.message);
