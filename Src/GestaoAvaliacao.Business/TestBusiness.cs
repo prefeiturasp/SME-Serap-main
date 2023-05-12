@@ -23,6 +23,8 @@ using System.Web;
 using GestaoAvaliacao.Business.DTO;
 using EntityFile = GestaoAvaliacao.Entities.File;
 using Validate = GestaoAvaliacao.Util.Validate;
+using GestaoAvaliacao.Entities.DTO.Tests;
+using System.Drawing;
 
 namespace GestaoAvaliacao.Business
 {
@@ -1222,6 +1224,8 @@ namespace GestaoAvaliacao.Business
 
             try
             {
+                var numbersBlockChainTest = blockChainBusiness.GetNumbersBlockChainByTestId(testId);
+                string Erro = "";
                 using (var leitorAquivo = new StreamReader(arquivo.InputStream, encoding: Encoding.UTF8))
                 {
                     using (var csv = new CsvReader(leitorAquivo, config))
@@ -1231,9 +1235,27 @@ namespace GestaoAvaliacao.Business
                         var blocos = blocosItens.GroupBy(x => x.NumeroBloco).ToList();
                         var erros = new List<ErrorCsvBlockImportDTO>();
 
+                        // buscar quamtidade de blocos da prova 
+
                         foreach (var bloco in blocos)
                         {
+                            int numeroBloco = 0;
+                            bool ehNumero = Int32.TryParse(bloco.Key, out numeroBloco);
+                            if (!ehNumero)
+                            {
+                                Erro = $"{Erro} Bloco {Convert.ToInt64(bloco.Key)} Inválido";
+                                continue;
+                            }
+
+                            if (Convert.ToInt64(bloco.Key) > numbersBlockChainTest.BlockChainNumber)
+                            {
+                                Erro = $"{Erro} Bloco {Convert.ToInt64(bloco.Key)} Inválido";
+                                continue;
+                            }
+
                             var blockChain = blockChains.FirstOrDefault(c => c.Description == bloco.Key);
+
+
 
                             if (blockChain == null)
                             {

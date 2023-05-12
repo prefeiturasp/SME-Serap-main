@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dapper;
 using GestaoAvaliacao.Entities.Enumerator;
+using GestaoAvaliacao.Entities.DTO.Tests;
 
 namespace GestaoAvaliacao.Repository
 {
@@ -321,7 +322,7 @@ namespace GestaoAvaliacao.Repository
                     caderno.Test = listaProva.FirstOrDefault(p => p.Id == caderno.Test_Id);
                     var blocosCaderno = listaBlockChainBlock.Where(x => x.Block_Id == caderno.Id).ToList();
 
-                    if (!blocosCaderno.Any()) 
+                    if (!blocosCaderno.Any())
                         continue;
 
                     foreach (var bloco in blocosCaderno)
@@ -463,6 +464,19 @@ namespace GestaoAvaliacao.Repository
                 });
 
                 gestaoAvaliacaoContext.SaveChanges();
+            }
+        }
+
+        public NumbersBlockChainTestDto GetNumbersBlockChainByTestId(long testId)
+        {
+            const string sql = @"SELECT  BlockChainNumber, BlockChainItems 
+                                       FROM TEST
+                                     WHERE  id = @testId";
+            using (var cn = Connection)
+            {
+                cn.Open();
+                return cn.Query<NumbersBlockChainTestDto>(sql, new { testId }).FirstOrDefault();
+
             }
         }
     }

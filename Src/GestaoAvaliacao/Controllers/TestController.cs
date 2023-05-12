@@ -36,7 +36,7 @@ namespace GestaoAvaliacao.Controllers
         private readonly ITestPermissionBusiness testPermissionBusiness;
         private readonly ITestContextBusiness testContextBusiness;
         private readonly IBlockChainBusiness blockChainBusiness;
-        private readonly IBlockChainBlockBusiness blockChainBlockBusiness ;
+        private readonly IBlockChainBlockBusiness blockChainBlockBusiness;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
             IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
@@ -1406,6 +1406,7 @@ namespace GestaoAvaliacao.Controllers
                 testBusiness.ImportarCvsBlocos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
                     (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
                         SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);
+
 
                 return Json(new { success = true, retorno, message = "Importação dos blocos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
             }
