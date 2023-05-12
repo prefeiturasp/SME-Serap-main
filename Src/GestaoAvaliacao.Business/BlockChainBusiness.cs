@@ -137,7 +137,7 @@ namespace GestaoAvaliacao.Business
         }
 
 
-        public NumbersBlockChainTestDto GetNumbersBlockChainByTestId(long testId)
+        public NumbersBlockChainDTO GetNumbersBlockChainByTestId(long testId)
         {
             return blockChainRepository.GetNumbersBlockChainByTestId(testId);
 

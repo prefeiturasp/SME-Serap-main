@@ -62,9 +62,7 @@
     <Compile Include="BlockChainItem.cs" />
     <Compile Include="DTO\CsvBlockImportDTO.cs" />
     <Compile Include="DTO\ErrorCsvBlockImportDTO.cs" />
-    <Compile Include="DTO\Tests\ErrosImportacaoCsvBlocosDto.cs" />
-    <Compile Include="DTO\Tests\ImportarCsvBlocosDto.cs" />
-    <Compile Include="DTO\Tests\NumbersBlockChainTestDto.cs" />
+    <Compile Include="DTO\Tests\NumbersBlockChainDTO.cs" />
     <Compile Include="ResultadoPsp\ArquivoResultadoPsp.cs" />
     <Compile Include="BaseText.cs" />
     <Compile Include="Base\EntityBase.cs" />

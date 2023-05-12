@@ -5439,14 +5439,11 @@
                     transformRequest: angular.identity
                 })
                 .success(function (d) {
-                  var retorno  =   defer.resolve(d);
+                   defer.resolve(d);
                 })
                 .error(function (e) {
                     $notification.error(e);
                 });
-
-            ng.resultImportarCsvBlocos = retorno; //{ qtdeSucesso: 5, qtdeErros: 3, erros: [{ numLinha: 1, erro: 'Bloco inválido' }, { numLinha: 2, erro: 'Quantidade de item do bloco exedida' }, { numLinha: 3, erro: 'Cód do item inválido' }] };
-            angular.element("#modalResultadoImportarCsvBlocos").modal({ backdrop: 'static' });     
 
             return defer.promise;
         }

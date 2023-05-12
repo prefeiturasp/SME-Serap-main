@@ -467,7 +467,7 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public NumbersBlockChainTestDto GetNumbersBlockChainByTestId(long testId)
+        public NumbersBlockChainDTO GetNumbersBlockChainByTestId(long testId)
         {
             const string sql = @"SELECT  BlockChainNumber, BlockChainItems 
                                        FROM TEST
@@ -475,7 +475,7 @@ namespace GestaoAvaliacao.Repository
             using (var cn = Connection)
             {
                 cn.Open();
-                return cn.Query<NumbersBlockChainTestDto>(sql, new { testId }).FirstOrDefault();
+                return cn.Query<NumbersBlockChainDTO>(sql, new { testId }).FirstOrDefault();
 
             }
         }
