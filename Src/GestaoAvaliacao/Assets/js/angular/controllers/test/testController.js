@@ -142,8 +142,7 @@
                 cadernosComBlocos: TestModel.loadBlockChainBlocks,
                 blockKnowledgeAreas: TestModel.getBlockKnowledgeAreas,
                 itensVersoes: TestModel.GetItemVersions,
-                salvarCadeiaBloco: TestModel.saveBlockChain,
-                importarBlocosCsv: TestModel.importarBlocosCsv
+                salvarCadeiaBloco: TestModel.saveBlockChain
             };
 
             //Chamadas utilizada na Etapa 3
@@ -4439,15 +4438,9 @@
             }
         };
 
-
         ng.callModalNovaImportacao = function __callModalNovaImportacao() {
             // $scope.limparDados();
             angular.element("#modalImportarCsvBlocos").modal({ backdrop: 'static' });
-        };
-
-        ng.salvarImportacao = function __salvarImportacao() {
-            ng.resultImportarCsvBlocos = { qtdeSucesso: 5, qtdeErros: 3, erros: [{ numLinha: 1, erro: 'Bloco inválido' }, { numLinha: 2, erro: 'Quantidade de item do bloco exedida' }, { numLinha: 3, erro: 'Cód do item inválido' }] };
-            angular.element("#modalResultadoImportarCsvBlocos").modal({ backdrop: 'static' });            
         };
 
         /**
@@ -5416,7 +5409,8 @@
                     ng.limparDados();
                     cadeiaBlocosCarregar();
                     ng.exibirLoading(false);
-                    $notification.success("Arquivo importado com sucesso!");
+                    ng.resultImportarCsvBlocos = data.retorno;
+                    angular.element("#modalResultadoImportarCsvBlocos").modal({ backdrop: 'static' });            
                 }
                 else {
                     ng.limparDados();
@@ -5432,7 +5426,6 @@
 
         ng.UploadFile = UploadFile;
         function UploadFile() {
-
             var form = new FormData();
             form.append('file', ng.arquivoSelecionado);
             form.append('testId', ng.provaId);

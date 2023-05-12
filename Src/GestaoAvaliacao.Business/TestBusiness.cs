@@ -1216,7 +1216,7 @@ namespace GestaoAvaliacao.Business
             }
         };
 
-        public void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision)
+        public void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno)
         {
             var dateTimeNow = DateTime.Now;
 
@@ -1229,6 +1229,7 @@ namespace GestaoAvaliacao.Business
                         var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
                         var blocosItens = csv.GetRecords<BlockCsvDTO>().ToList();
                         var blocos = blocosItens.GroupBy(x => x.NumeroBloco).ToList();
+                        var erros = new List<ErrorCsvBlockImportDTO>();
 
                         foreach (var bloco in blocos)
                         {
@@ -1262,6 +1263,17 @@ namespace GestaoAvaliacao.Business
                             {
                                 var item = itemRepository.GetItemByItemCode(blocoItem.CodigoItem);
 
+                                if (item == null)
+                                {
+                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    {
+                                        Linha = blocosItens.FindIndex(c => c.CodigoItem == blocoItem.CodigoItem && c.NumeroBloco == blocoItem.NumeroBloco) + 1,
+                                        Erro = "Código do item inválido"
+                                    });
+
+                                    continue;
+                                }
+
                                 var blockChainItem = new BlockChainItem
                                 {
                                     BlockChain_Id = blockChainId,
@@ -1281,6 +1293,14 @@ namespace GestaoAvaliacao.Business
                             else
                                 blockChainBusiness.Update(blockChain, usuId, vision);
                         }
+
+                        retorno = new CsvBlockImportDTO
+                        {
+                            QtdeSucesso = blocosItens.Count - erros.Count,
+                            QtdeErros = erros.Count
+                        };
+
+                        retorno.Erros.AddRange(erros);
                     }
                 }
             }

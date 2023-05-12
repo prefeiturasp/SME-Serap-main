@@ -1403,19 +1403,18 @@ namespace GestaoAvaliacao.Controllers
 
             try
             {
-                  testBusiness.ImportarCvsBlocos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
-                        (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
-                            SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()));
+                testBusiness.ImportarCvsBlocos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                        SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);
 
-                return Json(new { success = true, message = "Importação dos blocos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, retorno, message = "Importação dos blocos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Json(new { success = false, message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, retorno = "", message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
             }
         }
-
 
         #endregion
     }

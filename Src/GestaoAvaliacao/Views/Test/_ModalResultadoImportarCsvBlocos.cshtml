@@ -76,8 +76,8 @@
             <div class="modal-body">
                 <div class="col-md-12 flex-container">
                     <div style="text-align:left;">
-                        <b class="info">{{resultImportarCsvBlocos.qtdeSucesso}} linhas processadas com sucesso</b><br />
-                        <b class="info">{{resultImportarCsvBlocos.qtdeErros}} linhas processadas com erro</b>
+                        <b class="info">{{resultImportarCsvBlocos.QtdeSucesso}} linhas processadas com sucesso</b><br />
+                        <b class="info">{{resultImportarCsvBlocos.QtdeErros}} linhas processadas com erro</b>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -90,9 +90,9 @@
                                 </tr>
                             </thead>
                             <tbody class="body-half-screen">
-                                <tr ng-repeat="linha in resultImportarCsvBlocos.erros">
-                                    <td>{{ linha.numLinha}}</td>
-                                    <td>{{ linha.erro }}</td>
+                                <tr ng-repeat="linha in resultImportarCsvBlocos.Erros">
+                                    <td>{{ linha.Linha}}</td>
+                                    <td>{{ linha.Erro }}</td>
                                 </tr>
                             </tbody>
                         </table>
