@@ -1218,38 +1218,68 @@ namespace GestaoAvaliacao.Business
 
         public void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision)
         {
+            var dateTimeNow = DateTime.Now;
+
             try
             {
-                blockChainBusiness.DeleteByTestId(testId);
-
                 using (var leitorAquivo = new StreamReader(arquivo.InputStream, encoding: Encoding.UTF8))
                 {
                     using (var csv = new CsvReader(leitorAquivo, config))
                     {
+                        var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
                         var blocosItens = csv.GetRecords<BlockCsvDTO>().ToList();
                         var blocos = blocosItens.GroupBy(x => x.NumeroBloco).ToList();
 
                         foreach (var bloco in blocos)
                         {
-                            var blockChain = new BlockChain();
+                            var blockChain = blockChains.FirstOrDefault(c => c.Description == bloco.Key);
 
-                            blockChain.CreateDate = DateTime.Now.Date;
-                            blockChain.Test_Id = testId;
+                            if (blockChain == null)
+                            {
+                                blockChain = new BlockChain
+                                {
+                                    Description = bloco.Key,
+                                    CreateDate = dateTimeNow,
+                                    UpdateDate = dateTimeNow,
+                                    State = Convert.ToByte(EnumState.ativo),
+                                    Test_Id = testId
+                                };
+                            }
+                            else
+                            {
+                                blockChain = blockChainBusiness.DeleteBlockChainItems(blockChain.Id);
+
+                                blockChain.Description = bloco.Key;
+                                blockChain.UpdateDate = dateTimeNow;
+                                blockChain.Test_Id = testId;
+                                blockChain.State = Convert.ToByte(EnumState.ativo);
+                            }
+
+                            var blockChainId = blockChain.Id;
+                            var maxOrder = 0;
 
                             foreach (var blocoItem in bloco)
                             {
-                                blockChain.Description = blocoItem.NumeroBloco;
                                 var item = itemRepository.GetItemByItemCode(blocoItem.CodigoItem);
 
-                                var blockChainItem = new BlockChainItem()
+                                var blockChainItem = new BlockChainItem
                                 {
-                                    Item_Id = item.Id
+                                    BlockChain_Id = blockChainId,
+                                    Item_Id = item.Id,
+                                    Order = maxOrder,
+                                    State = Convert.ToByte(EnumState.ativo),
+                                    CreateDate = dateTimeNow,
+                                    UpdateDate = dateTimeNow
                                 };
 
                                 blockChain.BlockChainItems.Add(blockChainItem);
+                                maxOrder++;
                             }
 
-                            blockChainBusiness.Save(blockChain, usuId, vision);
+                            if (blockChainId == 0)
+                                blockChainBusiness.Save(blockChain, usuId, vision);
+                            else
+                                blockChainBusiness.Update(blockChain, usuId, vision);
                         }
                     }
                 }
