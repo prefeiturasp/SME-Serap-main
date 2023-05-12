@@ -1,13 +1,8 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GestaoAvaliacao.Entities.DTO.BlockCsv
+namespace GestaoAvaliacao.Business.DTO
 {
-    public class blockCsvDto
+    internal class BlockCsvDTO
     {
         [Name("NumeroBloco")]
         public string NumeroBloco { get; set; }
