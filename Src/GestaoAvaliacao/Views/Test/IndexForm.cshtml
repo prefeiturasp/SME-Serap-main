@@ -9,6 +9,7 @@
 @*ng-controller="TestController"*@
 
 <alert></alert>
+<div id="div_loading" class="loading-box" style="display:none; width:100%; height:100%; position:fixed; background:rgba(255,255,255,.3); top:0; z-index:99999"><label id="preloading">Carregando...</label></div>
 <div data-ng-controller="TestController" ng-init="editar(@Model.Id);">
     @* Prova *@
     <div class="wellCustom">
