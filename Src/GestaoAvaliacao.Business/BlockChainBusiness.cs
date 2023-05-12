@@ -57,7 +57,6 @@ namespace GestaoAvaliacao.Business
 
         #endregion
 
-
         public BlockChain Save(BlockChain blockChain, Guid usuId, EnumSYS_Visao vision)
         {
             if (blockChain.Test_Id != null)

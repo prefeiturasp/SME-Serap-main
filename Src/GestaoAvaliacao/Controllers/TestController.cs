@@ -1406,8 +1406,6 @@ namespace GestaoAvaliacao.Controllers
                   testBusiness.ImportarCvsBlocos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
                         (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
                             SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()));
-                
-
 
                 return Json(new { success = true, message = "Importação dos blocos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
             }
