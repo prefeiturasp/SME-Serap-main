@@ -158,7 +158,7 @@
             'deleteBlockItems': {
                 method: 'POST',
                 url: base_url('Block/DeleteBlockItems')
-            },            
+            },
 
             'saveKnowLedgeAreaOrder': {
                 method: 'POST',

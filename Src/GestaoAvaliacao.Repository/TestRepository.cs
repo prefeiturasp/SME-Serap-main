@@ -38,7 +38,8 @@ namespace GestaoAvaliacao.Repository
 
                 var sql = new StringBuilder("SELECT Id, Description, Bib, NumberItemsBlock, NumberBlock, NumberItem, ApplicationStartDate, ApplicationEndDate, ");
                 sql.Append("CorrectionStartDate, CorrectionEndDate, UsuId, FrequencyApplication, TestSituation, CreateDate, UpdateDate, State, Discipline_Id, ");
-                sql.Append("FormatType_Id, TestType_Id, AllAdhered, ProcessedCorrectionDate, KnowledgeAreaBlock, Multidiscipline, ShowVideoFiles, ShowAudioFiles ");
+                sql.Append("FormatType_Id, TestType_Id, AllAdhered, ProcessedCorrectionDate, KnowledgeAreaBlock, Multidiscipline, ShowVideoFiles, ShowAudioFiles, ");
+                sql.Append("BlockChain, BlockChainNumber, BlockChainItems, BlockChainForBlock ");
                 sql.Append("FROM Test WITH (NOLOCK) ");
                 sql.Append("WHERE Id = @id");
 

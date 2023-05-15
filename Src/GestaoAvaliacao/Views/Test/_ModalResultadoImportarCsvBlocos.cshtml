@@ -1,0 +1,112 @@
+﻿<style>
+    .table-scroll {
+        width: 100%;
+        empty-cells: show;
+        border-spacing: 0;
+        margin-bottom: 10px;
+    }
+
+        .table-scroll thead {
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+
+        .table-scroll tbody {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 100px;
+            overflow-y: scroll;
+        }
+
+            .table-scroll tbody tr {
+                border-bottom: solid 1px #e6e6e6;
+            }
+
+        .table-scroll thead tr {
+            border-bottom: solid 1px #e6e6e6;
+        }
+
+        .table-scroll tr {
+            width: 100%;
+            display: flex;
+        }
+
+        .table-scroll td, .table-scroll th {
+            flex-basis: 100%;
+            flex-grow: 2;
+            display: block;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .table-scroll.small-first-col td:first-child,
+        .table-scroll.small-first-col th:first-child {
+            flex-basis: 30%;
+            flex-grow: 1;
+        }
+
+    .flex-container {
+        display: flex;
+        /*this centers the text horizontally*/
+        justify-content: center;
+        /*this centers the text vertically*/
+        align-items: center;        
+    }
+
+    .info {
+        font-weight: bolder !important;
+        color: #000000 !important;
+    }
+</style>
+
+<div class="modal fade" id="modalResultadoImportarCsvBlocos" tabindex="-1" role="dialog" aria-labelledby="modalResultadoImportarCsvBlocos" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content ">
+
+            @*HEADER*@
+            <div class="modal-header">
+                <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                <h4 class="modal-title">
+                    <strong>Nova importação finalizada</strong>
+                </h4>
+            </div>
+            @*BODY*@
+            <div class="modal-body">
+                <div class="col-md-12 flex-container">
+                    <div style="text-align:left;">
+                        <b class="info">{{resultImportarCsvBlocos.QtdeSucesso}} linhas processadas com sucesso</b><br />
+                        <b class="info">{{resultImportarCsvBlocos.QtdeErros}} linhas processadas com erro</b>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-12 text-center">
+                        <table class="table-scroll small-first-col">
+                            <thead>
+                                <tr>
+                                    <th>Linha</th>
+                                    <th>Erro</th>
+                                </tr>
+                            </thead>
+                            <tbody class="body-half-screen">
+                                <tr ng-repeat="linha in resultImportarCsvBlocos.Erros">
+                                    <td>{{ linha.Linha}}</td>
+                                    <td>{{ linha.Erro }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            @*FOOTER*@
+            <div class="modal-footer footerCustom ">
+                <div class="container-fluid row-fluid">
+                    <button type="button" class="btn btnCancelar2" data-dismiss="modal" aria-hidden="true">Fechar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

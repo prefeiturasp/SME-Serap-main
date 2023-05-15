@@ -1386,6 +1386,36 @@ namespace GestaoAvaliacao.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult ImportarArquivoCsvBlocos(HttpPostedFileBase file, int testId)
+        {
+            var b = new BinaryReader(file.InputStream);
+            var binData = b.ReadBytes(file.ContentLength);
+            var result = System.Text.Encoding.UTF8.GetString(binData);
+
+            var splitRowResult = result.Substring(0, StringHelper.PositionOfNewLine(result)).Trim()
+                .Replace("\"", string.Empty).Split(';');
+
+            if (string.IsNullOrEmpty(splitRowResult.ToString()))
+                return Json(new { success = false, message = "Erro ao importar blocos." }, JsonRequestBehavior.AllowGet);
+
+            b.BaseStream.Position = 0;
+
+            try
+            {
+                testBusiness.ImportarCvsBlocos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                        SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);
+
+
+                return Json(new { success = true, retorno, message = "Importação dos blocos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, retorno = "", message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         #endregion
     }
