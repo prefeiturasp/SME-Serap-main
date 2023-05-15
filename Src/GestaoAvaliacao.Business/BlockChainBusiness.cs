@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using GestaoAvaliacao.Entities;
-using GestaoAvaliacao.Entities.DTO.Tests;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
@@ -134,13 +132,6 @@ namespace GestaoAvaliacao.Business
         public void DeleteByTestId(long testId)
         {
             blockChainRepository.DeleteByTestId(testId);
-        }
-
-
-        public NumbersBlockChainDTO GetNumbersBlockChainByTestId(long testId)
-        {
-            return blockChainRepository.GetNumbersBlockChainByTestId(testId);
-
         }
     }
 }

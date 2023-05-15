@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Dapper;
 using GestaoAvaliacao.Entities.Enumerator;
-using GestaoAvaliacao.Entities.DTO.Tests;
 
 namespace GestaoAvaliacao.Repository
 {
@@ -464,19 +463,6 @@ namespace GestaoAvaliacao.Repository
                 });
 
                 gestaoAvaliacaoContext.SaveChanges();
-            }
-        }
-
-        public NumbersBlockChainDTO GetNumbersBlockChainByTestId(long testId)
-        {
-            const string sql = @"SELECT  BlockChainNumber, BlockChainItems 
-                                       FROM TEST
-                                     WHERE  id = @testId";
-            using (var cn = Connection)
-            {
-                cn.Open();
-                return cn.Query<NumbersBlockChainDTO>(sql, new { testId }).FirstOrDefault();
-
             }
         }
     }

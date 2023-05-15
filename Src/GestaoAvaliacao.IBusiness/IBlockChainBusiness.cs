@@ -2,7 +2,6 @@
 using System;
 using GestaoAvaliacao.Util;
 using System.Collections.Generic;
-using GestaoAvaliacao.Entities.DTO.Tests;
 
 namespace GestaoAvaliacao.IBusiness
 {
@@ -16,6 +15,5 @@ namespace GestaoAvaliacao.IBusiness
         IEnumerable<Block> ObterCadernosPorProva(long testId);
         IEnumerable<Item> GetBlockChainItems(long blockChainId, int page, int pageItems);
         void DeleteByTestId(long testId);
-        NumbersBlockChainDTO GetNumbersBlockChainByTestId(long testId);
     }
 }
