@@ -129,7 +129,7 @@ namespace GestaoAvaliacao.Repository
                             {
                                 Block_Id = blockDb.Id,
                                 Item_Id = blockChainItemFront.Item_Id,
-                                Order = blockItems.Max(c => c.Order) + 1
+                                Order = blockItems.Any() ? blockItems.Max(c => c.Order) + 1 : 0
                             });
                         }
                     }
