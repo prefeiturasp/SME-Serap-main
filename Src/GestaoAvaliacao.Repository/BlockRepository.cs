@@ -142,13 +142,15 @@ namespace GestaoAvaliacao.Repository
                                                 ISNULL(Bka.[Order], 0) 
                                             ELSE 
                                                 0 
-                                            END AS KnowledgeArea_Order
+                                            END AS KnowledgeArea_Order,
+                                            BCB.BlockChain_Id
                                         FROM Item I WITH (NOLOCK) 
                                             INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id 
                                             INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
                                             INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
                                             LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state 
                                             LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = K.Id AND B.Id = Bka.Block_Id AND Bka.State = @state 
+                                            LEFT JOIN BlockChainBlock BCB WITH (NOLOCK) ON BCB.Block_Id = B.Id AND BCB.State = @state 
                                         WHERE BI.Block_Id = @id 
                                         AND BI.State = @state 
                                         AND I.State = @state 
@@ -235,8 +237,18 @@ namespace GestaoAvaliacao.Repository
                         Discipline = discipline.FirstOrDefault()
                     };
 
-                    item.BlockChain_Id = listBlockChain.Select(c => c.Id).FirstOrDefault();
-                    item.BlockChain_Description = listBlockChain.Select(c => c.Description).FirstOrDefault();
+                    var blockChain = listBlockChain.FirstOrDefault(c => c.Id == item.BlockChain_Id);
+
+                    if (blockChain != null)
+                    {
+                        item.BlockChain_Id = blockChain.Id;
+                        item.BlockChain_Description = blockChain.Description;
+                    }
+                    else
+                    {
+                        item.BlockChain_Id = listBlockChain.Select(c => c.Id).FirstOrDefault();
+                        item.BlockChain_Description = listBlockChain.Select(c => c.Description).FirstOrDefault();
+                    }
                 }
 
                 return listItems;

@@ -1205,6 +1205,7 @@ namespace GestaoAvaliacao.Business
             Delimiter = ";",
             MissingFieldFound = null,
             IgnoreBlankLines = true,
+            TrimOptions = TrimOptions.Trim,
             ShouldSkipRecord = records =>
             {
                 var linha = records.Row.Parser.RawRecord.Replace(Environment.NewLine, string.Empty);
@@ -1235,6 +1236,8 @@ namespace GestaoAvaliacao.Business
 
                         foreach (var bloco in blocos)
                         {
+                            var possuiErrosBloco = false;
+
                             var ehNumero = int.TryParse(bloco.Key, out _);
                             var blockChain = blockChains.FirstOrDefault(c => c.Description == bloco.Key);
 
@@ -1267,7 +1270,7 @@ namespace GestaoAvaliacao.Business
 
                             foreach (var blocoItem in bloco)
                             {
-                                var linha = blocosItens.FindIndex(c => c.CodigoItem == blocoItem.CodigoItem && c.NumeroBloco == blocoItem.NumeroBloco) + 1;
+                                var linha = blocosItens.FindIndex(c => c.CodigoItem == blocoItem.CodigoItem && c.NumeroBloco == blocoItem.NumeroBloco) + 2;
 
                                 if (!ehNumero || Convert.ToInt64(bloco.Key) > test.BlockChainNumber)
                                 {
@@ -1277,7 +1280,7 @@ namespace GestaoAvaliacao.Business
                                         Erro = "Bloco inválido"
                                     });
 
-                                    continue;
+                                    possuiErrosBloco = true;
                                 }
 
                                 var item = itemRepository.GetItemByItemCode(blocoItem.CodigoItem);
@@ -1290,32 +1293,35 @@ namespace GestaoAvaliacao.Business
                                         Erro = "Código do item inválido"
                                     });
 
-                                    continue;
+                                    possuiErrosBloco = true;
                                 }
 
-                                if (blockChain.BlockChainItems.Count < test.BlockChainItems)
-                                {
-                                    var blockChainItem = new BlockChainItem
-                                    {
-                                        BlockChain_Id = blockChainId,
-                                        Item_Id = item.Id,
-                                        Order = maxOrder,
-                                        State = Convert.ToByte(EnumState.ativo),
-                                        CreateDate = dateTimeNow,
-                                        UpdateDate = dateTimeNow
-                                    };
-
-                                    blockChain.BlockChainItems.Add(blockChainItem);
-                                    maxOrder++;
-                                }
-                                else
+                                if (!(blockChain.BlockChainItems.Count < test.BlockChainItems))
                                 {
                                     erros.Add(new ErrorCsvBlockImportDTO
                                     {
                                         Linha = linha,
                                         Erro = "Quantidade de item do bloco excedida"
                                     });
+
+                                    possuiErrosBloco = true;
                                 }
+
+                                if (possuiErrosBloco)
+                                    continue;
+
+                                var blockChainItem = new BlockChainItem
+                                {
+                                    BlockChain_Id = blockChainId,
+                                    Item_Id = item.Id,
+                                    Order = maxOrder,
+                                    State = Convert.ToByte(EnumState.ativo),
+                                    CreateDate = dateTimeNow,
+                                    UpdateDate = dateTimeNow
+                                };
+
+                                blockChain.BlockChainItems.Add(blockChainItem);
+                                maxOrder++;
                             }
 
                             if (!ehNumero || long.Parse(blockChain.Description) > test.BlockChainNumber) 

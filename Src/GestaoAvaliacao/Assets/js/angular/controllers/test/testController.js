@@ -5412,15 +5412,17 @@
                     cadeiaBlocosCarregar();
                     ng.exibirLoading(false);
                     ng.resultImportarCsvBlocos = data.retorno;
-                    angular.element("#modalResultadoImportarCsvBlocos").modal({ backdrop: 'static' });            
+
+                    if (ng.resultImportarCsvBlocos.QtdeErros > 0)
+                        angular.element("#modalResultadoImportarCsvBlocos").modal({ backdrop: 'static' });
+                    else
+                        $notification.success("Importação realizada com sucesso.");   
                 }
                 else {
                     ng.limparDados();
                     ng.exibirLoading(false);
                     $notification[data.type ? data.type : 'error'](data.message);
                 }
-        
-
             }, function (e) {
                 ng.limparDados();
                 ng.exibirLoading(false);
