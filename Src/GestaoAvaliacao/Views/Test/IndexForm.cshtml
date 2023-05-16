@@ -1012,7 +1012,7 @@
 
                             <button type="button"
                                     class="btnPadrao2 pull-right"
-                                    ng-hide="navigation!==2 || !temBIB"
+                                    ng-hide="navigation!==2 || !temBIB || !ehCadeiaBlocos"
                                     ng-click="callModalNovaImportacao()">
                                 Nova importação
                             </button>
@@ -2033,7 +2033,7 @@
                     <div class="modal-header">
                         <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
                         <h4 class="modal-title">
-                            <strong>Importação de montagem de blocos</strong>
+                            <strong>Importação de montagem dos blocos</strong>
                         </h4>
                     </div>
                     @*BODY*@
@@ -2049,7 +2049,7 @@
                                             <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
                                         </span>
                                     </div>
-                                    <p style="font-size: 11px;" class="textoDescricao pull-left">(Número do Bloco; CodItem)</p>
+                                    <p style="font-size: 11px;" class="textoDescricao pull-left">(NumeroBloco;CodigoItem)</p>
                                 </div>
                             </div>
                         </div>

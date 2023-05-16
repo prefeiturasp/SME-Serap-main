@@ -149,7 +149,7 @@
             self.etapa3 = {
                 salvar: TestModel.saveBlock,
                 cadernosComBlocos: TestModel.loadBlockChainBlocks,
-                itensCaderno: TestModel.visualizar,
+                itensCaderno: TestModel.visualizarComCadeiaBlocos,
             };
 
             //Chamadas utilizada na Etapa 4
