@@ -1315,6 +1315,7 @@
                 "BackToPreviousItem": ng.backToPreviousItem
             };
 
+            ng.consideraCadeiaBlocosAoEditar = true;
             self.etapa1.save(model, etapa1Salvou);
         };
 
@@ -1675,7 +1676,7 @@
 
                     // BIB
                     ng.temBIB = r.Bib;
-                    ng.showFlagBIB = r.Bib;
+                    ng.showFlagBIB = r.Bib || !r.ShowTestTAI;
                     ng.e1_cbTipoProva.Block = r.BlockItem > 0 || r.NumberBlock;
                     ng.e1_cbTipoProva.BlockItem = r.BlockItem || r.NumberItemsBlock;
 
@@ -3289,6 +3290,8 @@
             ng.alterouEtapaAtual = (false);
             ng.modalAnterior = null;
 
+            ng.e2_ListaItemSelecionados = self.etapa2.selecionados;
+
             if (ng.ehCadeiaBlocos)
                 atualizarCadeiaBloco();
             else
@@ -3296,7 +3299,6 @@
 
             ng.e2_ResultadoBusca = [];
             self.etapa2.selecionados = [];
-            ng.e2_ListaItemSelecionados = [];
             ng.e2_ListaItemCheckedCache = [];
             ng.e2_ListaKnowledgeAreaSelecionadas = [];
             self.etapa2.knowledgeAreasSelecionadas = [];
