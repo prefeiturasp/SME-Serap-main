@@ -25,6 +25,7 @@ using EntityFile = GestaoAvaliacao.Entities.File;
 using Validate = GestaoAvaliacao.Util.Validate;
 using GestaoAvaliacao.Entities.DTO.Tests;
 using System.Drawing;
+using System.Net.Http;
 
 namespace GestaoAvaliacao.Business
 {
@@ -49,12 +50,13 @@ namespace GestaoAvaliacao.Business
         private readonly ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository;
         private readonly IItemRepository itemRepository;
         private readonly IBlockChainBusiness blockChainBusiness;
+        private readonly IResultadoPspBusiness resultadoPspBusiness;
 
         public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
             ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
             IBlockRepository blockRepository, IParameterBusiness parameterBusiness, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
             IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository, INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository,
-            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository, IItemRepository itemRepository, IBlockChainBusiness blockChainBusiness)
+            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository, IItemRepository itemRepository, IBlockChainBusiness blockChainBusiness, IResultadoPspBusiness resultadoPspBusiness)
         {
             this.testRepository = testRepository;
             this.fileRepository = fileRepository;
@@ -75,6 +77,7 @@ namespace GestaoAvaliacao.Business
             this.testTaiCurriculumGradeRepository = testTaiCurriculumGradeRepository;
             this.itemRepository = itemRepository;
             this.blockChainBusiness = blockChainBusiness;
+            this.resultadoPspBusiness = resultadoPspBusiness;
         }
 
         #region Custom
@@ -263,15 +266,45 @@ namespace GestaoAvaliacao.Business
                      filter.vis_id == EnumSYS_Visao.Individual)
                 testList = testRepository._SearchTestsUser(filter, ref pager);
 
-            if (filter.TestGroupId != null)
+            if (filter.TestGroupId != null || filter.TestId != null)
+            {
                 foreach (var test in testList)
                     test.HasAdhered = ExistsAdherenceByTestId(test.TestId);
 
+                var lastSyncDate = GetLastDateSynchronizationSerapStudents();
+                if (lastSyncDate != null)
+                {
+                    var testsSerapStudents = testList.Where(t => t.ShowOnSerapEstudantes).ToList();
+                    var tests = testList.Where(t => !t.ShowOnSerapEstudantes).ToList();
+                    foreach (TestResult test in testsSerapStudents)
+                        test.SynchronizedInSerapStudents = !string.IsNullOrEmpty(test.UpdateDate) ? (Convert.ToDateTime(test.UpdateDate) < lastSyncDate) : false;
+                    testList = testsSerapStudents.Concat(tests).AsEnumerable();
+                }
+            }
             return testList;
-
         }
 
+        private DateTime? GetLastDateSynchronizationSerapStudents()
+        {
+            try
+            {
+                var client = resultadoPspBusiness.ObterHttpClient();
+                HttpResponseMessage response = client.GetAsync("admin/provas/data-ticks-ultima-sincronizacao").GetAwaiter().GetResult();
+                if (!response.IsSuccessStatusCode)
+                    throw new ArgumentException($"Erro ao consultar última data sincronização provas Serap Estudantes.");
 
+                string stringContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                if (!string.IsNullOrEmpty(stringContent))
+                    return new DateTime(long.Parse(stringContent));
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
 
 
@@ -1324,7 +1357,7 @@ namespace GestaoAvaliacao.Business
                                 maxOrder++;
                             }
 
-                            if (!ehNumero || long.Parse(blockChain.Description) > test.BlockChainNumber) 
+                            if (!ehNumero || long.Parse(blockChain.Description) > test.BlockChainNumber)
                                 continue;
 
                             if (blockChainId == 0)

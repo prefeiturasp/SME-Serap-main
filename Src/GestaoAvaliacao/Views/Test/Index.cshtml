@@ -327,6 +327,19 @@
                                             <span class="icone-pendente material-icons" aria-hidden="true">remove_circle_outline</span>
                                         </span>
                                     </td>
+
+                                    <td ng-if="item.Test.ShowOnSerapEstudantes" class="tr_statusAdesao">
+                                        <strong>
+                                            Sincronização:
+                                        </strong>
+                                        <span ng-if="item.Test.SynchronizedInSerapStudents" data-trigger="hover" data-type="success" data-title="OK" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-aplicar material-icons" aria-hidden="true">check_circle</span>
+                                        </span>
+                                        <span ng-if="!item.Test.SynchronizedInSerapStudents" data-trigger="hover" data-type="success" data-title="Pendente" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-pendente material-icons" aria-hidden="true">remove_circle_outline</span>
+                                        </span>
+                                    </td>
+
                                     <td>Criação: {{item.Test.CreateDate}}</td>
                                     <td class="sub-item">
                                         <ul class="nav nav-tabs" role="tablist">
