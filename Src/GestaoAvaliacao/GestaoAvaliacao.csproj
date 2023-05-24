@@ -528,6 +528,7 @@
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\listCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\electronicTestResult\indexElectronicTestResultController.js" />
     <Content Include="Assets\js\angular\controllers\importarResultadosPSP\importarResultadosPSPController.js" />
+    <Content Include="Assets\js\angular\controllers\simuladorSerapEstudantesController\simuladorSerapEstudantesController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsResultController.js" />
     <Content Include="Assets\js\angular\controllers\correction\correctionResultController.js" />
@@ -1783,6 +1784,7 @@
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
     <Compile Include="Controllers\ImportarResultadosPSPController.cs" />
     <Compile Include="Controllers\NumberItemsAplicationTaiController.cs" />
+    <Compile Include="Controllers\SimuladorSerapEstudantesController.cs" />
     <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
     <Compile Include="Controllers\StudentResultsController.cs" />
     <Compile Include="Controllers\ProvaSPController.cs" />
@@ -1950,6 +1952,7 @@
     <Folder Include="Assets\tests\unit\services\" />
     <Folder Include="Views\BlockChain\" />
     <Folder Include="Views\NumberItemsAplicationTai\" />
+    <Folder Include="Views\SimuladorSerapEstudantes\" />
     <Folder Include="Views\TesteCI\" />
   </ItemGroup>
   <ItemGroup>

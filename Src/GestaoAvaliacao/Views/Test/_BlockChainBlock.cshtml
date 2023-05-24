@@ -5,12 +5,13 @@
                 <h4 class="padding"><strong>{{ e1_testDescription }}</strong></h4>
                 <table class="table table-hover">
                     <colgroup>
-                        <col width="17%" />
-                        <col width="17%" />
-                        <col width="17%" />
-                        <col width="17%" />
-                        <col width="16%" />
-                        <col width="16%" />
+                        <col width="14%" />
+                        <col width="14%" />
+                        <col width="14%" />
+                        <col width="14%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="14%" />
                     </colgroup>
                     <thead>
                         <tr>
@@ -19,32 +20,44 @@
                             <th class="table-parameter-centralize" colspan="2">Não selecionados</th>
                             <th class="table-parameter-centralize">Adicionar blocos</th>
                             <th class="table-parameter-centralize">Visualizar itens</th>
+                            <th class="table-parameter-centralize">Simulador</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="caderno in cadernosComBlocos">
-                            <th class="table-parameter-centralize">{{ caderno.Description }}</th>
-                            <th class="table-parameter-centralize">{{ caderno.BlocosCount }}</th>
-                            <th class="table-parameter-centralize">
+                        <tr ng-init="rowDisabled=e3_disableButtonSimulator(caderno)" ng-repeat="caderno in cadernosComBlocos">
+                            <td class="table-parameter-centralize">{{ caderno.Description }}</td>
+                            <td class="table-parameter-centralize">{{ caderno.BlocosCount }}</td>
+                            <td class="table-parameter-centralize">
                                 <div style="text-align: right">
                                     {{ caderno.Resto >-1? caderno.Resto:0 }}
                                 </div>
-                            </th>
+                            </td>
 
-                            <th class="table-parameter-centralize ">
+                            <td class="table-parameter-centralize ">
                                 <i title="{{ (caderno.Total === caderno.BlocosCount && caderno.BlocosCount !== 0) ? '' : 'Selecione blocos para este caderno' }}" ng-class="{ true:'material-icons check-success pull-left', false:'material-icons status-Error pull-left' }
                                     [ caderno.Total === caderno.BlocosCount && caderno.BlocosCount !== 0 ]">
                                     {{ (caderno.Total === caderno.BlocosCount && caderno.BlocosCount !== 0) ? 'done' : mostrarAvisoQtdBlocosCadernoNaoAtingida ? 'error' : '' }}
                                 </i>
-                            </th>
+                            </td>
 
-                            <th class="table-parameter-centralize">
+                            <td class="table-parameter-centralize">
                                 <a ng-click="e3_callModalAddBlocosCaderno(caderno)"><i type="button" class="material-icons">add_box</i></a>
-                            </th>
+                            </td>
 
-                            <th class="table-parameter-centralize">
+                            <td class="table-parameter-centralize">
                                 <a ng-click="e3_callModalViewItensCaderno(caderno)"><i type="button" class="material-icons">visibility</i></a>
-                            </th>
+                            </td>
+
+                            <!--
+                            <td class="table-parameter-centralize">
+                                <button type="button" class="btn-link" ng-disabled="rowDisabled" ng-click="e3_callSimulatorCaderno(caderno)">
+                                    <i type="button" class="material-icons">input</i>
+                                </button>
+                            </td>
+                            -->
+                            <td class="table-parameter-centralize">
+                                <a ng-if="!rowDisabled" ng-click="e3_callSimulatorCaderno(caderno)" target="_blank"><i class="material-icons">input</i></a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
