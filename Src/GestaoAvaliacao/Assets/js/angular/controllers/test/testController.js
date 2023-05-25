@@ -2873,7 +2873,7 @@
 
         ng.e3_callSimulatorCaderno = e3_callSimulatorCaderno;
         function e3_callSimulatorCaderno(caderno) {
-            $window.open(base_url("SimuladorSerapEstudantes/Index?blockId=" + caderno.Id));
+            $window.open(base_url("SimuladorSerapEstudantes/Index?blockId=" + caderno.Id), '_blank', 'noreferrer');
         }
 
         ng.e3_disableButtonSimulator = e3_disableButtonSimulator;

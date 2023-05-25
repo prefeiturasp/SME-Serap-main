@@ -48,15 +48,10 @@
                                 <a ng-click="e3_callModalViewItensCaderno(caderno)"><i type="button" class="material-icons">visibility</i></a>
                             </td>
 
-                            <!--
                             <td class="table-parameter-centralize">
-                                <button type="button" class="btn-link" ng-disabled="rowDisabled" ng-click="e3_callSimulatorCaderno(caderno)">
-                                    <i type="button" class="material-icons">input</i>
-                                </button>
-                            </td>
-                            -->
-                            <td class="table-parameter-centralize">
-                                <a ng-if="!rowDisabled" ng-click="e3_callSimulatorCaderno(caderno)" target="_blank"><i class="material-icons">input</i></a>
+                                <a ng-if="!rowDisabled" ng-click="e3_callSimulatorCaderno(caderno)" target="_blank" rel="noreferrer" >
+                                    <i title="Visualizar caderno no Simulador do SERAp Estudantes" class="material-icons">input</i>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
