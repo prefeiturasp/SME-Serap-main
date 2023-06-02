@@ -1,8 +1,13 @@
-﻿using System;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace ImportarImagensRedacao
 {
@@ -10,28 +15,42 @@ namespace ImportarImagensRedacao
     {
         static void Main(string[] args)
         {
+            var importacaoRedacao2022 = new ImportacaoRedacao2022();
+            Console.WriteLine("Iniciar importação");
+            Console.ReadKey();
+            importacaoRedacao2022.Importacao2022();
+            
+          
+
+
+
+            //Importacao2022();
+        }
+
+        private static void Importacao2021()
+        {
             // Variaveis 
 
             // Caminhos Prod
 
-            var listaCodigoEscolas = new List<string>();
-            // Z:\SERAP_PRD\Files\Imagens\2021\RD
-            string caminhoOrigemFotos = @"D:\imagens_2021 - Copy";
-            string caminhoDestinoFotos = @"Z:\SERAP_PRD\Files\Imagens\2021\RD\";
-            // string caminhoTeste = @"Z:\SERAP_PRD\Files\Imagens\2021\teste";
-            string caminhoInscricaoNaoAchada = @"Z:\SERAP_PRD\Files\Imagens\2021\InscricaoNaoAchada\";
-            string caminhoInsertComErro = @"Z:\SERAP_PRD\Files\Imagens\2021\caminhoInsertComErro\";
-            string caminhoIncricaoNaoLiberada = @"Z:\SERAP_PRD\Files\Imagens\2021\caminhoIncricaoNaoLiberada\";
-
-            // local
             //var listaCodigoEscolas = new List<string>();
-            //// Z:\SERAP_PRD\Files\Imagens\2021\RD
-            //string caminhoOrigemFotos = @"C:\Users\Convex\Documents\SERAP\Imagens";
-            //string caminhoDestinoFotos = @"C:\Users\Convex\Documents\SERAP\RD\";
-            //// string caminhoTeste = @"Z:\SERAP_PRD\Files\Imagens\2021\teste";
-            //string caminhoInscricaoNaoAchada = @"C:\Users\Convex\Documents\SERAP\InscricaoNaoAchada\";
-            //string caminhoInsertComErro = @"C:\Users\Convex\Documents\SERAP\caminhoInsertComErro\";
-            //string caminhoIncricaoNaoLiberada = @"C:\Users\Convex\Documents\SERAP\caminhoIncricaoNaoLiberada\";
+            // Z:\SERAP_PRD\Files\Imagens\2021\RD
+            //string caminhoOrigemFotos = @"D:\imagens_2021 - Copy";
+            //string caminhoDestinoFotos = @"Z:\SERAP_PRD\Files\Imagens\2021\RD\";
+            // string caminhoTeste = @"Z:\SERAP_PRD\Files\Imagens\2021\teste";
+            //string caminhoInscricaoNaoAchada = @"Z:\SERAP_PRD\Files\Imagens\2021\InscricaoNaoAchada\";
+            //string caminhoInsertComErro = @"Z:\SERAP_PRD\Files\Imagens\2021\caminhoInsertComErro\";
+            //string caminhoIncricaoNaoLiberada = @"Z:\SERAP_PRD\Files\Imagens\2021\caminhoIncricaoNaoLiberada\";
+
+          //  local
+           var listaCodigoEscolas = new List<string>();
+            // Z:\SERAP_PRD\Files\Imagens\2021\RD
+            string caminhoOrigemFotos = @"C:\Users\Convex\Documents\RedacaoPSP2022\";
+            string caminhoDestinoFotos = @"C:\Users\Convex\Documents\SERAP\RD\";
+            // string caminhoTeste = @"Z:\SERAP_PRD\Files\Imagens\2021\teste";
+            string caminhoInscricaoNaoAchada = @"C:\Users\Convex\Documents\SERAP\InscricaoNaoAchada\";
+            string caminhoInsertComErro = @"C:\Users\Convex\Documents\SERAP\caminhoInsertComErro\";
+            string caminhoIncricaoNaoLiberada = @"C:\Users\Convex\Documents\SERAP\caminhoIncricaoNaoLiberada\";
 
 
             int imagensMovidasComSucesso = 0;
@@ -116,7 +135,7 @@ namespace ImportarImagensRedacao
 
                                 else
                                 {
-                                  
+
                                     string caminhoDestinoBanco = "Imagens" + "/" + "2021" + "/" + "RD" + "/" + esc_codigo + "/" + nomeArquivoCompleto;
                                     string caminhoDestinoCompleto = caminhoDestinoFotos + esc_codigo + "\\" + nomeArquivoCompleto;
                                     File.Move(caminhoImagem, caminhoDestinoCompleto);
@@ -125,7 +144,7 @@ namespace ImportarImagensRedacao
                                     if (File.Exists(caminhoDestinoCompleto))
                                     {
                                         imagensMovidasComSucesso = imagensMovidasComSucesso + 1;
-                                        if(imagensMovidasComSucesso == contadorDeCentenas)
+                                        if (imagensMovidasComSucesso == contadorDeCentenas)
                                         {
                                             Console.WriteLine("Imagens movidas com sucesso:" + imagensMovidasComSucesso);
                                             contadorDeCentenas = contadorDeCentenas + 100;
@@ -149,14 +168,18 @@ namespace ImportarImagensRedacao
 
                                             var ret = commandInsert.ExecuteNonQuery();
                                             connection.Close();
+
+                                            insertComSucesso = insertComSucesso + 1;
+
                                         }
                                         catch (Exception ex)
                                         {
-                                            Console.WriteLine("Insert com erro:", insertComErro = insertComErro + 1);
+                                            Console.WriteLine("Insert com erro: {0}", insertComErro = insertComErro + 1);
                                             Console.WriteLine("ERRO INSERT " + ex.Message);
                                             listaInsetComErro.Add(alu_matricula);
                                             File.Move(caminhoDestinoCompleto, caminhoInsertComErro + nomeArquivoCompleto);
                                             connection.Close();
+                                            
                                         }
                                     }
 
@@ -360,18 +383,35 @@ namespace ImportarImagensRedacao
            and _Inscricao_ = " + incricao.ToString() + @" order by esc_codigo, alu_nome";
         }
 
+        private static CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+            Delimiter = ";",
+            MissingFieldFound = null,
+            IgnoreBlankLines = true,
+            ShouldSkipRecord = records =>
+            {
+                var linha = records.Row.Parser.RawRecord.Replace(Environment.NewLine, string.Empty);
+                linha = linha.Trim().Replace("\r", string.Empty);
+                linha = linha.Trim().Replace("\n", string.Empty);
+                linha = linha.Trim().Replace("\0", string.Empty);
+
+                var arrayLinha = records.Row.Parser.Record;
+                return string.IsNullOrEmpty(linha) || arrayLinha == null || arrayLinha.Length == 0 ||
+                       (arrayLinha.Length > 0 && string.IsNullOrEmpty(arrayLinha[0]));
+            }
+        };
+
+
+        public static CsvReader ObterArquivoCSV(string caminhoCsv, string nomeArquivo)
+        {
+            string path = $"caminhoCsv/{nomeArquivo}";
+            var reader = new StreamReader(path, encoding: Encoding.UTF8);
+            return new CsvReader(reader, config);
+        }
+
     }
-
-    public class ImagemAluno
-    {
-        public string Edicao { get; set; }
-        public int AreaConhecimentoID { get; set; }
-        public string CodigoEscola { get; set; }
-        public string AluMatricula { get; set; }
-
-        public string Questao { get; set; }
-
-    }
+  
 }
 
 
