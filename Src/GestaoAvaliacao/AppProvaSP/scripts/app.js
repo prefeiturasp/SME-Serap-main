@@ -4620,6 +4620,7 @@ function definirEventHandlers() {
                 reguaProficiencia["7"] = [200, 250, 300]; //7° Ano
                 reguaProficiencia["8"] = [210, 275, 325]; //8° Ano
                 reguaProficiencia["9"] = [225, 300, 350]; //9° Ano
+                reguaProficiencia["9"] = [225, 300, 350]; //1ª série do EM
             }
             else if (areaConhecimentoId == "2" || areaConhecimentoId == "5") {//Língua Portuguesa
                 reguaProficiencia["c1"] = [125, 175, 225]; //Básico
@@ -4649,6 +4650,7 @@ function definirEventHandlers() {
                 reguaProficiencia["7"] = [200, 250, 300]; //7° Ano
                 reguaProficiencia["8"] = [210, 275, 325]; //8° Ano
                 reguaProficiencia["9"] = [225, 300, 350]; //9° Ano
+                reguaProficiencia["9"] = [225, 300, 350]; //1ª série do EM
             }
             else if (areaConhecimentoId == "4") {//Redação
                 var proficienciaMaxima = 100;
@@ -4664,6 +4666,7 @@ function definirEventHandlers() {
                 reguaProficiencia["7"] = [50, 65, 90]; //7° Ano
                 reguaProficiencia["8"] = [50, 65, 90]; //8° Ano
                 reguaProficiencia["9"] = [50, 65, 90]; //9° Ano
+                reguaProficiencia["9"] = [50, 65, 90]; //1ª série do EM
             }
 
             /**
