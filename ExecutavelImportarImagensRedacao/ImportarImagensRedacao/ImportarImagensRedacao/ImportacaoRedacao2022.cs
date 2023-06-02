@@ -390,13 +390,13 @@ namespace ImportarImagensRedacao
                                 group by esc.esc_codigo";
 
         private static string ConnectionString =
-           "Data Source=10.49.16.23;Initial Catalog=GestaoAvaliacao;User Id=Caique.Santos;Password=Antares2014;";
+           "Data SourceXXXXX;Initial Catalog=GestaoAvaliacao;User Id=XXXXX;Password=XXXXX";
 
         private static string ConnectionStringHMl =
-           "Data Source=10.49.19.159;Initial Catalog=GestaoAvaliacao;User Id=Caique.Santos;Password=Antares2014;";
+           "Data Source=XXXXXXX;Initial Catalog=GestaoAvaliacao;User Id=XXXXXX;Password=XXXXX;";
 
         private static string ConnectionStringProd =
-          @"Data Source=XXXXXXX ;Initial Catalog=GestaoAvaliacao;User Id=Caique.Santos;Password=Antares2014;";
+          @"Data Source=XXXXXXX ;Initial Catalog=GestaoAvaliacao;User Id=XXXXXX;Password=XXXXX;";
 
         private static string QueryBuscaInformacoesAluno(string inscricao, string codEolAluno)
         {
