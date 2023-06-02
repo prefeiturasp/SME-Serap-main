@@ -26,7 +26,7 @@ var provaSP_configuracoes = {
         PossuiPerfilEdicaoAtual: false
     }
 };
-var areasConhecimento = ["Ciências da Natureza", "Língua Portuguesa", "Matemática", "Redação"];
+var areasConhecimento = ["Ciências da Natureza", "Língua Portuguesa", "Matemática", "Redação", "Ciências Humanas"];
 var cicloTotalAlunos = {};
 var modeloCiclos = { Ciclo1: [-1, 2, 3], Ciclo2: [4, 5, 6], Ciclo3: [7, 8, 9] };
 //MSTECH - Objeto para salvar os dados de agração de Série Histórica - Ano atual e Ano anterior
@@ -4621,7 +4621,7 @@ function definirEventHandlers() {
                 reguaProficiencia["8"] = [210, 275, 325]; //8° Ano
                 reguaProficiencia["9"] = [225, 300, 350]; //9° Ano
             }
-            else if (areaConhecimentoId == "2") {//Língua Portuguesa
+            else if (areaConhecimentoId == "2" || areaConhecimentoId == "5") {//Língua Portuguesa
                 reguaProficiencia["c1"] = [125, 175, 225]; //Básico
                 reguaProficiencia["c2"] = [150, 200, 250]; //Interdisciplinas
                 reguaProficiencia["c3"] = [185, 250, 300]; //Autoral
@@ -4634,6 +4634,7 @@ function definirEventHandlers() {
                 reguaProficiencia["7"] = [175, 225, 275]; //7° Ano
                 reguaProficiencia["8"] = [185, 250, 300]; //8° Ano
                 reguaProficiencia["9"] = [200, 275, 325]; //9° Ano
+                reguaProficiencia["10"] = [200, 275, 325]; //1ª série do EM
             }
             else if (areaConhecimentoId == "3") {//Matemática
                 reguaProficiencia["c1"] = [150, 200, 250]; //Básico
@@ -4895,8 +4896,10 @@ function definirEventHandlers() {
                     proficienciaMaxima - reguaProficiencia[anoAplicacaoProva][2]
                 ];
 
-                $(".lblResultadoTituloEscalaSaeb_1").html("Régua do " + anoAplicacaoProva + "º ano");
-                $(".lblResultadoTituloEscalaSaeb_2").html("Régua do " + ano + "º ano");
+                var desc1 = anoAplicacaoProva > 9 ? "Régua da " + (anoAplicacaoProva - 9) + "ª série do EM" : "Régua do " + anoAplicacaoProva + "º ano";
+                var desc2 = ano > 9 ? "Régua da " + (ano - 9) + "ª série do EM" : "Régua do " + ano + "º ano";
+                $(".lblResultadoTituloEscalaSaeb_1").html(desc1);
+                $(".lblResultadoTituloEscalaSaeb_2").html(desc2);
 
                 //CONFIGURA 2 RÉGUAS
                 document.getElementById('divChartResultadoDetalhe').style.overflow = 'auto';
@@ -5116,7 +5119,8 @@ function definirEventHandlers() {
                                     NivelProficienciaID_ENTURMACAO = 4;
 
                                 if (ciclo == "") {
-                                    return "Régua do " + anoRef + "º ano: " + tituloNivel[NivelProficienciaID_ENTURMACAO];
+                                    var desc = anoRef > 9 ? "Régua da " + (anoRef - 9) + "ª série do EM:" : "Régua do " + anoRef + "º ano:";
+                                    return desc + tituloNivel[NivelProficienciaID_ENTURMACAO];
                                 }
                                 else {
                                     return "Régua do ciclo de " + labelsCiclos["ciclo" + ciclo];
@@ -5209,6 +5213,7 @@ function definirEventHandlers() {
                     if (edicao == "ENTURMACAO_ATUAL")
                         chartResultadoDetalhe.data.datasets[1].data.push(item.Valor);
 
+                    var desc = anoAplicacaoProva > 9 ? "Régua da " + (anoAplicacaoProva - 9) + "ª série do EM" : "Régua do " + anoAplicacaoProva + "º ano";
                     var NivelProficienciaID_ENTURMACAO;
                     if (ciclo == "") {
                         if (item.Valor < reguaProficiencia[ano][0])
@@ -5219,7 +5224,7 @@ function definirEventHandlers() {
                             NivelProficienciaID_ENTURMACAO = 3;
                         else if (item.Valor >= reguaProficiencia[ano][2])
                             NivelProficienciaID_ENTURMACAO = 4;
-                        chartResultadoDetalhe.data.datasets[0].label = "Régua do " + anoAplicacaoProva + "º ano";
+                        chartResultadoDetalhe.data.datasets[0].label = desc;
                     }
                     else {
                         if (item.Valor < reguaProficiencia["c" + ciclo][0])
@@ -5241,7 +5246,8 @@ function definirEventHandlers() {
                     */
                     if (edicao == "ENTURMACAO_ATUAL") {
                         chartResultadoDetalhe.data.datasets[1].backgroundColor.push(hashtableProficienciaId_enturmacao_cor[NivelProficienciaID_ENTURMACAO]);
-                        chartResultadoDetalhe.data.datasets[1].label = "Régua do " + ano + "º ano";
+                        var desc = ano > 9 ? "Régua da " + ano - 9 + "ª série do EM" : "Régua do " + ano + "º ano"
+                        chartResultadoDetalhe.data.datasets[1].label = desc;
                     }
                 }
             }
@@ -5314,6 +5320,9 @@ function definirEventHandlers() {
             console.log(error);
         }
     }
+    /*FIM MÉTODO #resultadoApresentar#*/
+
+
 
     /**
     -----MSTECH-----
