@@ -5,5 +5,6 @@ namespace GestaoAvaliacao.IBusiness
     public interface ISerapEstudantesBusiness
     {
         AdminAutenticacaoRespostaDTO AdminAutenticacao(AdminAutenticacaoDTO adminAutenticacaoDTO);
+        SimuladorAutenticacaoRespostaDTO SimuladorAutenticacao(SimuladorAutenticacaoDTO simuladorAutenticacao);
     }
 }

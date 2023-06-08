@@ -2,11 +2,20 @@
 using System.Web.Configuration;
 using System;
 using System.Web.Mvc;
+using GestaoAvaliacao.Entities.DTO.SerapEstudantes;
+using GestaoAvaliacao.IBusiness;
 
 namespace GestaoAvaliacao.Controllers
 {
     public class SimuladorSerapEstudantesController : Controller
     {
+        private readonly ISerapEstudantesBusiness serapEstudantesBusiness;
+
+        public SimuladorSerapEstudantesController(ISerapEstudantesBusiness serapEstudantesBusiness)
+        {
+            this.serapEstudantesBusiness = serapEstudantesBusiness;
+        }
+
         [Authorize]
         public ActionResult Index(long blockId)
         {
@@ -14,6 +23,12 @@ namespace GestaoAvaliacao.Controllers
             {
                 if (!SessionFacade.UsuarioLogadoIsValid)
                     throw new NotImplementedException();
+
+                var user = SessionFacade.UsuarioLogado;
+                var resposta = serapEstudantesBusiness.SimuladorAutenticacao(new SimuladorAutenticacaoDTO(user.Usuario.usu_login, user.Grupo.gru_id));
+
+                if (string.IsNullOrEmpty(resposta.Codigo))
+                    throw new ApplicationException("Usuário não autorizado.");
 
                 var urlSimuladorSerapEstudantes = WebConfigurationManager.AppSettings["URL_SIMULADOR_SERAP_ESTUDANTES"];
 
