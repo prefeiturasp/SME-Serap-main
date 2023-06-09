@@ -1381,6 +1381,136 @@ namespace GestaoAvaliacao.Business
                 throw ex;
             }
         }
+
+        public void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno)
+        {
+            var dateTimeNow = DateTime.Now;
+
+            try
+            {
+                using (var leitorAquivo = new StreamReader(arquivo.InputStream, encoding: Encoding.UTF8))
+                {
+                    using (var csv = new CsvReader(leitorAquivo, config))
+                    {
+                        var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
+                        var blocosItens = csv.GetRecords<CadernoCsvDTO>().ToList();
+                        var blocos = blocosItens.GroupBy(x => x.NumeroBloco).ToList();
+                        var erros = new List<ErrorCsvBlockImportDTO>();
+
+                        foreach (var bloco in blocos)
+                        {
+                            var possuiErrosBloco = false;
+
+                            var ehNumero = int.TryParse(bloco.Key, out _);
+                            var blockChain = blockChains.FirstOrDefault(c => c.Description == bloco.Key);
+
+                            if (blockChain == null)
+                            {
+                                blockChain = new BlockChain
+                                {
+                                    Description = bloco.Key,
+                                    CreateDate = dateTimeNow,
+                                    UpdateDate = dateTimeNow,
+                                    State = Convert.ToByte(EnumState.ativo),
+                                    Test_Id = testId,
+                                    Test = testRepository.GetObject(testId)
+                                };
+                            }
+                            else
+                            {
+                                blockChain = blockChainBusiness.DeleteBlockChainItems(blockChain.Id);
+
+                                blockChain.Description = bloco.Key;
+                                blockChain.UpdateDate = dateTimeNow;
+                                blockChain.Test_Id = testId;
+                                blockChain.Test = testRepository.GetObject(testId);
+                                blockChain.State = Convert.ToByte(EnumState.ativo);
+                            }
+
+                            var test = blockChain.Test;
+                            var blockChainId = blockChain.Id;
+                            var maxOrder = 0;
+
+                            foreach (var blocoItem in bloco)
+                            {
+                                //var linha = blocosItens.FindIndex(c => c.CodigoItem == blocoItem.CodigoItem && c.NumeroBloco == blocoItem.NumeroBloco) + 2;
+
+                                //if (!ehNumero || Convert.ToInt64(bloco.Key) > test.BlockChainNumber)
+                                //{
+                                //    erros.Add(new ErrorCsvBlockImportDTO
+                                //    {
+                                //        Linha = linha,
+                                //        Erro = "Bloco inválido"
+                                //    });
+
+                                //    possuiErrosBloco = true;
+                                //}
+
+                                //var item = itemRepository.GetItemByItemCode(blocoItem.CodigoItem);
+
+                                //if (item == null)
+                                //{
+                                //    erros.Add(new ErrorCsvBlockImportDTO
+                                //    {
+                                //        Linha = linha,
+                                //        Erro = "Código do item inválido"
+                                //    });
+
+                                //    possuiErrosBloco = true;
+                                //}
+
+                                //if (!(blockChain.BlockChainItems.Count < test.BlockChainItems))
+                                //{
+                                //    erros.Add(new ErrorCsvBlockImportDTO
+                                //    {
+                                //        Linha = linha,
+                                //        Erro = "Quantidade de item do bloco excedida"
+                                //    });
+
+                                //    possuiErrosBloco = true;
+                                //}
+
+                                //if (possuiErrosBloco)
+                                //    continue;
+
+                                //var blockChainItem = new BlockChainItem
+                                //{
+                                //    BlockChain_Id = blockChainId,
+                                //    Item_Id = item.Id,
+                                //    Order = maxOrder,
+                                //    State = Convert.ToByte(EnumState.ativo),
+                                //    CreateDate = dateTimeNow,
+                                //    UpdateDate = dateTimeNow
+                                //};
+
+                                //blockChain.BlockChainItems.Add(blockChainItem);
+                                //maxOrder++;
+                            }
+
+                            if (!ehNumero || long.Parse(blockChain.Description) > test.BlockChainNumber)
+                                continue;
+
+                            if (blockChainId == 0)
+                                blockChainBusiness.Save(blockChain, usuId, vision);
+                            else
+                                blockChainBusiness.Update(blockChain, usuId, vision);
+                        }
+
+                        retorno = new CsvBlockImportDTO
+                        {
+                            QtdeSucesso = blocosItens.Count - erros.Count,
+                            QtdeErros = erros.Count
+                        };
+
+                        retorno.Erros.AddRange(erros);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
 

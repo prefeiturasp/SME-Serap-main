@@ -256,6 +256,7 @@
             ng.testContexts = [];
             ng.anosItensAmostraProvaTai = [];
             ng.arquivoBlocoCsvSelecionado = null;
+            ng.arquivoCsvCadernosSelecionado = null;
             //Funções para configurar Etapas
             nivelDesempenhoCarregar();
             initEtapa1();
@@ -4455,6 +4456,10 @@
             angular.element("#modalImportarCsvBlocos").modal({ backdrop: 'static' });
         };
 
+        ng.callModalNovaImportacaoCsvCadernos = function __callModalNovaImportacaoCsvCadernos() {
+            angular.element("#modalImportarCsvCadernos").modal({ backdrop: 'static' });
+        };
+
         /**
         * @function Baixar Selecionadas
         * @private
@@ -5364,10 +5369,12 @@
         ng.selecionarArquivo = selecionarArquivo
         function selecionarArquivo(element) {
             ng.arquivoBlocoCsvSelecionado = element.files[0];
-            console.log("Arquivo", element.files[0])
-            // validacoesArquivo
         }
 
+        ng.selecionarArquivoCsvCadernos = selecionarArquivoCsvCadernos
+        function selecionarArquivoCsvCadernos(element) {
+            ng.arquivoCsvCadernosSelecionado = element.files[0];
+        }
 
 
 
@@ -5463,6 +5470,68 @@
 
             return defer.promise;
         }
+
+
+        ng.salvarImportacaoCsvCadernos = salvarImportacaoCsvCadernos;
+        function salvarImportacaoCsvCadernos() {
+            if (ng.arquivoCsvCadernosSelecionado === null || ng.arquivoCsvCadernosSelecionado === undefined) {
+                ng.callModalNovaImportacaoCsvCadernos();
+                $notification['error']("Selecione um arquivo!");
+                return false;
+            }
+
+            var form = new FormData();
+            form.append('file', ng.arquivoSelecionado);
+            form.append('testId', ng.provaId);
+
+            ng.exibirLoading(true);
+
+            ng.UploadFileCsvCadernos().then(function (data) {
+                if (data.success) {
+                    ng.limparDados();
+                    cadernosComBlocosCarregar();
+                    ng.exibirLoading(false);
+                    ng.resultImportarCsvBlocos = data.retorno;
+
+                    if (ng.resultImportarCsvBlocos.QtdeErros > 0)
+                        angular.element("#modalResultadoImportarCsvBlocos").modal({ backdrop: 'static' });
+                    else
+                        $notification.success("Importação realizada com sucesso.");
+                }
+                else {
+                    ng.limparDados();
+                    ng.exibirLoading(false);
+                    $notification[data.type ? data.type : 'error'](data.message);
+                }
+            }, function (e) {
+                ng.limparDados();
+                ng.exibirLoading(false);
+                $notification.error(e);
+            });
+        }
+
+        ng.UploadFileCsvCadernos = UploadFileCsvCadernos;
+        function UploadFileCsvCadernos() {
+            var form = new FormData();
+            form.append('file', ng.arquivoSelecionado);
+            form.append('testId', ng.provaId);
+
+            var defer = $q.defer();
+            $http.post("/Test/ImportarArquivoCsvCadernos", form,
+                {
+                    headers: { 'Content-Type': undefined },
+                    transformRequest: angular.identity
+                })
+                .success(function (d) {
+                    defer.resolve(d);
+                })
+                .error(function (e) {
+                    $notification.error(e);
+                });
+
+            return defer.promise;
+        }
+
 
 
 

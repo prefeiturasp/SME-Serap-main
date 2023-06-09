@@ -129,6 +129,7 @@
     <Compile Include="CorrectionBusiness.cs" />
     <Compile Include="CorrectionResultsBusiness.cs" />
     <Compile Include="DTO\BlockCsvDTO.cs" />
+    <Compile Include="DTO\CadernoCsvDTO.cs" />
     <Compile Include="ExportAnalysisBusiness.cs" />
     <Compile Include="GenerateHtmlBusiness.cs" />
     <Compile Include="ItemAudioBusiness.cs" />
