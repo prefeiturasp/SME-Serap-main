@@ -11,7 +11,7 @@ namespace GestaoAvaliacao.Business
     public class SerapEstudantesBusiness : ISerapEstudantesBusiness
     {
         private const string ENDPOINT_ADMIN_AUTENTICACAO = "admin/autenticacao";
-        private const string ENDPOINT_SIMULADOR_AUTENTICACAO = "simulador/autenticacao";
+        private const string ENDPOINT_SIMULADOR_AUTENTICACAO = "autenticacao";
 
         private readonly string baseUrlApiSerapEstudantes;
         private readonly string chaveSerapProvaApi;
