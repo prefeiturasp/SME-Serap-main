@@ -1436,22 +1436,9 @@ namespace GestaoAvaliacao.Controllers
 
             try
             {
-                //testBusiness.ImportarCvsCadernos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
-                //    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
-                //        SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);
-
-                var retorno = new CsvBlockImportDTO
-                {
-                    QtdeSucesso = 10,
-                    QtdeErros = 1
-                };
-
-                retorno.Erros.Add(
-                    new ErrorCsvBlockImportDTO
-                    {
-                        Linha = 2,
-                        Erro = "Quantidade de item do bloco excedida"
-                    });
+                testBusiness.ImportarCvsCadernos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                        SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);                
 
                 return Json(new { success = true, retorno, message = "Importação dos cadernos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
             }

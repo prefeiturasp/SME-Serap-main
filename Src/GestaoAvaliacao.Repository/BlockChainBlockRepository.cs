@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 
@@ -22,6 +24,17 @@ namespace GestaoAvaliacao.Repository
                 });
 
                 gestaoAvaliacaoContext.SaveChanges();
+            }
+        }
+
+        public List<BlockChainBlock> GetByTestId(long testId)
+        {
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                return gestaoAvaliacaoContext.BlockChainBlocks.Include("Block")
+                    .Include("Block.BlockItems")
+                    .Include("BlockChain")
+                    .Where(i => i.Block.Test_Id == testId).ToList();
             }
         }
     }

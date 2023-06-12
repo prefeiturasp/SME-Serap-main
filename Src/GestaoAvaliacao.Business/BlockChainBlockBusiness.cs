@@ -1,5 +1,7 @@
-﻿using GestaoAvaliacao.IBusiness;
+﻿using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
+using System.Collections.Generic;
 
 namespace GestaoAvaliacao.Business
 {
@@ -15,6 +17,11 @@ namespace GestaoAvaliacao.Business
         public void DeleteByBlockId(long blockId)
         {
             blockChainBlockRepository.DeleteByBlockId(blockId);
+        }
+
+        public List<BlockChainBlock> GetByTestId(long testId)
+        {
+            return blockChainBlockRepository.GetByTestId(testId);
         }
     }
 }

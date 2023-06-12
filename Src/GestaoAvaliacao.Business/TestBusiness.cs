@@ -51,12 +51,15 @@ namespace GestaoAvaliacao.Business
         private readonly IItemRepository itemRepository;
         private readonly IBlockChainBusiness blockChainBusiness;
         private readonly IResultadoPspBusiness resultadoPspBusiness;
+        private readonly IBlockChainBlockBusiness blockChainBlockBusiness;
+        private readonly IBlockBusiness blockBusiness;
 
         public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
             ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
             IBlockRepository blockRepository, IParameterBusiness parameterBusiness, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
             IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository, INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository,
-            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository, IItemRepository itemRepository, IBlockChainBusiness blockChainBusiness, IResultadoPspBusiness resultadoPspBusiness)
+            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository, IItemRepository itemRepository, IBlockChainBusiness blockChainBusiness, 
+            IResultadoPspBusiness resultadoPspBusiness, IBlockChainBlockBusiness blockChainBlockBusiness, IBlockBusiness blockBusiness)
         {
             this.testRepository = testRepository;
             this.fileRepository = fileRepository;
@@ -78,6 +81,8 @@ namespace GestaoAvaliacao.Business
             this.itemRepository = itemRepository;
             this.blockChainBusiness = blockChainBusiness;
             this.resultadoPspBusiness = resultadoPspBusiness;
+            this.blockChainBlockBusiness = blockChainBlockBusiness;            this.blockBusiness = blockBusiness;
+
         }
 
         #region Custom
@@ -1392,47 +1397,94 @@ namespace GestaoAvaliacao.Business
                 {
                     using (var csv = new CsvReader(leitorAquivo, config))
                     {
+                        // cadernos da prova
+                        var blocksTest = blockBusiness.GetTestBlocks(testId);
+                        // blocos da prova
                         var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
-                        var blocosItens = csv.GetRecords<CadernoCsvDTO>().ToList();
-                        var blocos = blocosItens.GroupBy(x => x.NumeroBloco).ToList();
+                        var blockChainBlocksTest = blockChainBlockBusiness.GetByTestId(testId);
+
+                        var cadernosBlocos = csv.GetRecords<CadernoCsvDTO>().ToList();
+                        var cadernos = cadernosBlocos.Select(x => x.NumeroCaderno).Distinct();
                         var erros = new List<ErrorCsvBlockImportDTO>();
 
+                        foreach (var caderno in cadernos)
+                        {
+                            var linha = cadernosBlocos.FindIndex(c => c.NumeroCaderno == caderno) + 2;
+
+                            var block = blocksTest.Where(x => x.Description == caderno.Trim()).FirstOrDefault();
+                            if(block == null)
+                            {
+                                erros.Add(new ErrorCsvBlockImportDTO
+                                {
+                                    Linha = linha,
+                                    Erro = "Caderno inválido"
+                                });
+                            }
+                            if (erros.Count() > 0) continue;
+
+                            var blocosCsv = cadernosBlocos.Where(x => x.NumeroCaderno == caderno).Select(b => b.NumeroBloco).Distinct();
+                            var blocosCadernoInserir = new List<BlockChainBlock>();
+                            foreach (var bloco in blocosCsv)
+                            {
+                                linha = cadernosBlocos.FindIndex(c => c.NumeroCaderno == caderno && c.NumeroBloco == bloco) + 2;
+
+                                var blockChain = blockChains.FirstOrDefault(x => x.Description == bloco.Trim());
+                                if (blockChain == null)
+                                {
+                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    {
+                                        Linha = linha,
+                                        Erro = "Bloco inválido"
+                                    });
+                                }
+                                else
+                                    blocosCadernoInserir.Add(new BlockChainBlock { Block_Id = block.Id, BlockChain_Id = blockChain.Id});
+                            }
+
+                            block.BlockChainBlocks = blocosCadernoInserir;
+                            blockBusiness.Update(block, usuId, vision);
+                            //blockChainBlockBusiness.DeleteByBlockId(block.Id);
+                        }
+
+
+                        // ----- remover
+                        var blocos = blocksTest;
                         foreach (var bloco in blocos)
                         {
-                            var possuiErrosBloco = false;
+                            //var possuiErrosBloco = false;
 
-                            var ehNumero = int.TryParse(bloco.Key, out _);
-                            var blockChain = blockChains.FirstOrDefault(c => c.Description == bloco.Key);
+                            //var ehNumero = int.TryParse(bloco.Key, out _);
+                            //var blockChain = blockChains.FirstOrDefault(c => c.Description == bloco.Key);
 
-                            if (blockChain == null)
-                            {
-                                blockChain = new BlockChain
-                                {
-                                    Description = bloco.Key,
-                                    CreateDate = dateTimeNow,
-                                    UpdateDate = dateTimeNow,
-                                    State = Convert.ToByte(EnumState.ativo),
-                                    Test_Id = testId,
-                                    Test = testRepository.GetObject(testId)
-                                };
-                            }
-                            else
-                            {
-                                blockChain = blockChainBusiness.DeleteBlockChainItems(blockChain.Id);
+                            //if (blockChain == null)
+                            //{
+                            //    blockChain = new BlockChain
+                            //    {
+                            //        Description = bloco.Key,
+                            //        CreateDate = dateTimeNow,
+                            //        UpdateDate = dateTimeNow,
+                            //        State = Convert.ToByte(EnumState.ativo),
+                            //        Test_Id = testId,
+                            //        Test = testRepository.GetObject(testId)
+                            //    };
+                            //}
+                            //else
+                            //{
+                            //    blockChain = blockChainBusiness.DeleteBlockChainItems(blockChain.Id);
 
-                                blockChain.Description = bloco.Key;
-                                blockChain.UpdateDate = dateTimeNow;
-                                blockChain.Test_Id = testId;
-                                blockChain.Test = testRepository.GetObject(testId);
-                                blockChain.State = Convert.ToByte(EnumState.ativo);
-                            }
+                            //    blockChain.Description = bloco.Key;
+                            //    blockChain.UpdateDate = dateTimeNow;
+                            //    blockChain.Test_Id = testId;
+                            //    blockChain.Test = testRepository.GetObject(testId);
+                            //    blockChain.State = Convert.ToByte(EnumState.ativo);
+                            //}
 
-                            var test = blockChain.Test;
-                            var blockChainId = blockChain.Id;
-                            var maxOrder = 0;
+                            //var test = blockChain.Test;
+                            //var blockChainId = blockChain.Id;
+                            //var maxOrder = 0;
 
-                            foreach (var blocoItem in bloco)
-                            {
+                            //foreach (var blocoItem in bloco)
+                            //{
                                 //var linha = blocosItens.FindIndex(c => c.CodigoItem == blocoItem.CodigoItem && c.NumeroBloco == blocoItem.NumeroBloco) + 2;
 
                                 //if (!ehNumero || Convert.ToInt64(bloco.Key) > test.BlockChainNumber)
@@ -1485,20 +1537,20 @@ namespace GestaoAvaliacao.Business
 
                                 //blockChain.BlockChainItems.Add(blockChainItem);
                                 //maxOrder++;
-                            }
+                            //}
 
-                            if (!ehNumero || long.Parse(blockChain.Description) > test.BlockChainNumber)
-                                continue;
+                            //if (!ehNumero || long.Parse(blockChain.Description) > test.BlockChainNumber)
+                            //    continue;
 
-                            if (blockChainId == 0)
-                                blockChainBusiness.Save(blockChain, usuId, vision);
-                            else
-                                blockChainBusiness.Update(blockChain, usuId, vision);
+                            //if (blockChainId == 0)
+                            //    blockChainBusiness.Save(blockChain, usuId, vision);
+                            //else
+                            //    blockChainBusiness.Update(blockChain, usuId, vision);
                         }
 
                         retorno = new CsvBlockImportDTO
                         {
-                            QtdeSucesso = blocosItens.Count - erros.Count,
+                            QtdeSucesso = cadernosBlocos.Count - erros.Count,
                             QtdeErros = erros.Count
                         };
 
