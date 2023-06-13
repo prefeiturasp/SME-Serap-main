@@ -15,10 +15,10 @@ namespace ImportarImagensRedacao
     {
         static void Main(string[] args)
         {
-            var importacaoRedacao2022 = new ImportacaoRedacao2022();
+            var importacaoRedacao2022 = new ImportacaoRespostasConstruidas();
             Console.WriteLine("Iniciar importação");
             Console.ReadKey();
-            importacaoRedacao2022.Importacao2022();
+            importacaoRedacao2022.Importacao2022RespostaConstruida();
             
           
 
