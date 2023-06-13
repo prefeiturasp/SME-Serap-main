@@ -1269,7 +1269,6 @@ namespace GestaoAvaliacao.Business
 
                         foreach (var bloco in blocos)
                         {
-                            var possuiErrosBloco = false;
 
                             var ehNumero = int.TryParse(bloco.Key, out _);
                             var blockChain = blockChains.FirstOrDefault(c => c.Description == bloco.Key);
@@ -1313,7 +1312,7 @@ namespace GestaoAvaliacao.Business
                                         Erro = "Bloco inválido"
                                     });
 
-                                    possuiErrosBloco = true;
+                                    continue;
                                 }
 
                                 var item = itemRepository.GetItemByItemCode(blocoItem.CodigoItem);
@@ -1326,7 +1325,7 @@ namespace GestaoAvaliacao.Business
                                         Erro = "Código do item inválido"
                                     });
 
-                                    possuiErrosBloco = true;
+                                    continue;
                                 }
 
                                 if (!(blockChain.BlockChainItems.Count < test.BlockChainItems))
@@ -1337,11 +1336,10 @@ namespace GestaoAvaliacao.Business
                                         Erro = "Quantidade de item do bloco excedida"
                                     });
 
-                                    possuiErrosBloco = true;
+                                    continue;
                                 }
 
-                                if (possuiErrosBloco)
-                                    continue;
+                            
 
                                 var blockChainItem = new BlockChainItem
                                 {
