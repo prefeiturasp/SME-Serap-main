@@ -1004,8 +1004,10 @@
         };
 
         ng.calcularQuantidadeItemsPorBloco = function () {
+            let qtdCadeiaBlocosPorBloco = parseInt(ng.e1_qtdCadeiaBlocosPorBloco) || 0;
+            let qtdCadeiaBlocos = parseInt(ng.e1_qtdCadeiaBlocos) || 0;
 
-            if (ng.e1_qtdCadeiaBlocosPorBloco > ng.e1_qtdCadeiaBlocos) {
+            if (qtdCadeiaBlocosPorBloco > qtdCadeiaBlocos) {
                 $notification.alert("A quantidade de blocos por caderno não pode ser maior que a quantidade de blocos.");
                 ng.e1_qtdCadeiaBlocosPorBloco = null;
             }
