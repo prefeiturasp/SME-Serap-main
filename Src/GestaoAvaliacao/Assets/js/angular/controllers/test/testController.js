@@ -5407,6 +5407,8 @@
         function limparDados() {
 
             ng.arquivoSelecionado = null;
+            ng.arquivoBlocoCsvSelecionado = null;
+            ng.arquivoCsvCadernosSelecionado = null;
             angular.element("input[type='file']").val(null);
         }
 
@@ -5474,9 +5476,9 @@
 
         ng.salvarImportacaoCsvCadernos = salvarImportacaoCsvCadernos;
         function salvarImportacaoCsvCadernos() {
-            if (ng.arquivoCsvCadernosSelecionado === null || ng.arquivoCsvCadernosSelecionado === undefined) {
-                ng.callModalNovaImportacaoCsvCadernos();
+            if (ng.arquivoCsvCadernosSelecionado === null || ng.arquivoCsvCadernosSelecionado === undefined) {                
                 $notification['error']("Selecione um arquivo!");
+                ng.callModalNovaImportacaoCsvCadernos();
                 return false;
             }
 
