@@ -13,7 +13,6 @@ using GestaoEscolar.IBusiness;
 using MSTech.CoreSSO.Entities;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -22,8 +21,14 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using GestaoAvaliacao.Business.DTO;
 using EntityFile = GestaoAvaliacao.Entities.File;
 using Validate = GestaoAvaliacao.Util.Validate;
+using GestaoAvaliacao.Entities.DTO.Tests;
+using System.Drawing;
+using System.Net.Http;
+using System.Drawing;
+using System.Net.Http;
 
 namespace GestaoAvaliacao.Business
 {
@@ -1273,7 +1278,6 @@ namespace GestaoAvaliacao.Business
 
                         foreach (var bloco in blocos)
                         {
-                            var possuiErrosBloco = false;
 
                             var ehNumero = int.TryParse(bloco.Key, out _);
                             var blockChain = blockChains.FirstOrDefault(c => c.Description == bloco.Key);
@@ -1317,7 +1321,7 @@ namespace GestaoAvaliacao.Business
                                         Erro = "Bloco inválido"
                                     });
 
-                                    possuiErrosBloco = true;
+                                    continue;
                                 }
 
                                 var item = itemRepository.GetItemByItemCode(blocoItem.CodigoItem);
@@ -1330,7 +1334,7 @@ namespace GestaoAvaliacao.Business
                                         Erro = "Código do item inválido"
                                     });
 
-                                    possuiErrosBloco = true;
+                                    continue;
                                 }
 
                                 if (!(blockChain.BlockChainItems.Count < test.BlockChainItems))
@@ -1341,11 +1345,10 @@ namespace GestaoAvaliacao.Business
                                         Erro = "Quantidade de item do bloco excedida"
                                     });
 
-                                    possuiErrosBloco = true;
+                                    continue;
                                 }
 
-                                if (possuiErrosBloco)
-                                    continue;
+                            
 
                                 var blockChainItem = new BlockChainItem
                                 {
@@ -1369,6 +1372,8 @@ namespace GestaoAvaliacao.Business
                             else
                                 blockChainBusiness.Update(blockChain, usuId, vision);
                         }
+
+                        blockChainBusiness.UpdateBlockByTestId(testId);
 
                         retorno = new CsvBlockImportDTO
                         {

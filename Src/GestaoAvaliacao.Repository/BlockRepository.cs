@@ -84,37 +84,46 @@ namespace GestaoAvaliacao.Repository
 
         public IEnumerable<Block> GetTestBlocks(Int64 TestId)
         {
-            using (IDbConnection cn = Connection)
+            using (var cn = Connection)
             {
                 cn.Open();
-                var sql = @"SELECT Id, Description, Test_Id " +
-                           "FROM Block WITH (NOLOCK) " +
-                           "WHERE Test_Id = @TestId " +
-                           "AND State = @state " +
+                const string sql = @"SELECT Id, Description, Test_Id " +
+                                   "FROM Block WITH (NOLOCK) " +
+                                   "WHERE Test_Id = @TestId " +
+                                   "AND State = @state " +
 
-                           "SELECT T.Id, T.KnowledgeAreaBlock " +
-                           "FROM Test T WITH(NOLOCK)" +
-                           "WHERE Id = @TestId " +
+                                   "SELECT T.Id, T.KnowledgeAreaBlock " +
+                                   "FROM Test T WITH(NOLOCK)" +
+                                   "WHERE Id = @TestId " +
 
-                           "SELECT BI.Id, BI.Block_Id, BI.Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS [Order], I.KnowledgeArea_Id " +
-                           "FROM BlockItem BI WITH (NOLOCK) " +
-                           "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
-                           "INNER JOIN Item I WITH(NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3 " +
-                           "INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] " +
-                           "LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state " +
-                           "WHERE B.Test_Id = @TestId " +
-                           "AND BI.State = @state AND B.State = @state";
+                                   "SELECT BI.Id, BI.Block_Id, BI.Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS [Order], I.KnowledgeArea_Id " +
+                                   "FROM BlockItem BI WITH (NOLOCK) " +
+                                   "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
+                                   "INNER JOIN Item I WITH(NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3 " +
+                                   "INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] " +
+                                   "LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state " +
+                                   "WHERE B.Test_Id = @TestId " +
+                                   "AND BI.State = @state AND B.State = @state " +
 
-                var multi = cn.QueryMultiple(sql, new { TestId = TestId, state = (Byte)EnumState.ativo });
+                                   "SELECT * from BlockChainBlock bcb WITH (NOLOCK) " +
+                                   "inner join BlockChain bc WITH(NOLOCK) on bc.Id = bcb.BlockChain_Id " +
+                                   "WHERE bc.Test_Id = @TestId " +
+                                   "AND bc.State = @state " +
+                                   "AND bcb.State = @state " +
+                                   "ORDER by bcb.Block_Id, bcb.[Order] ";
 
-                var listBlock = multi.Read<Block>();
-                var listTest = multi.Read<Test>();
-                var listBlockItem = multi.Read<BlockItem>();
+                var multi = cn.QueryMultiple(sql, new { TestId, state = (byte)EnumState.ativo });
+
+                var listBlock = multi.Read<Block>().ToList();
+                var listTest = multi.Read<Test>().ToList();
+                var listBlockItem = multi.Read<BlockItem>().ToList();
+                var listBlockChainBlock = multi.Read<BlockChainBlock>().ToList();
 
                 foreach (var block in listBlock)
                 {
                     block.Test = listTest.FirstOrDefault(p => p.Id == block.Test_Id);
                     block.BlockItems.AddRange(listBlockItem.Where(i => i.Block_Id.Equals(block.Id)));
+                    block.BlockChainBlocks.AddRange(listBlockChainBlock.Where(c => c.Block_Id.Equals(block.Id)));
                 }
 
                 return listBlock;
