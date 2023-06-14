@@ -12,7 +12,6 @@ using GestaoEscolar.IBusiness;
 using MSTech.CoreSSO.Entities;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -23,8 +22,6 @@ using System.Web;
 using GestaoAvaliacao.Business.DTO;
 using EntityFile = GestaoAvaliacao.Entities.File;
 using Validate = GestaoAvaliacao.Util.Validate;
-using GestaoAvaliacao.Entities.DTO.Tests;
-using System.Drawing;
 using System.Net.Http;
 
 namespace GestaoAvaliacao.Business
@@ -1365,6 +1362,8 @@ namespace GestaoAvaliacao.Business
                             else
                                 blockChainBusiness.Update(blockChain, usuId, vision);
                         }
+
+                        blockChainBusiness.UpdateBlockByTestId(testId);
 
                         retorno = new CsvBlockImportDTO
                         {
