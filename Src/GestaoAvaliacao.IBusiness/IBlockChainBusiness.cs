@@ -15,5 +15,6 @@ namespace GestaoAvaliacao.IBusiness
         IEnumerable<Block> ObterCadernosPorProva(long testId);
         IEnumerable<Item> GetBlockChainItems(long blockChainId, int page, int pageItems);
         void DeleteByTestId(long testId);
+        void UpdateBlockByTestId(long testId);
     }
 }

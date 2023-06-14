@@ -125,11 +125,31 @@ namespace GestaoAvaliacao.Repository
                         }
                         else
                         {
+                            var ordem = blockItems.Max(c => c.Order) + 1;
+
+                            if (blockItems.Any())
+                            {
+                                var ordens = blockItems.Select(c => c.Order).ToList();
+                                var ordemMaxima = ordens.Max();
+                                var intervaloEncontrado = -1;
+
+                                if (ordemMaxima >= 0)
+                                {
+                                    intervaloEncontrado = Enumerable.Range(-1, ordens.Count).Except(ordens)
+                                        .FirstOrDefault();
+
+                                    if (intervaloEncontrado == -1)
+                                        intervaloEncontrado = 0;
+                                }
+
+                                ordem = intervaloEncontrado >= 0 ? intervaloEncontrado : ordemMaxima + 1;
+                            }
+
                             blockItems.Add(new BlockItem
                             {
                                 Block_Id = blockDb.Id,
                                 Item_Id = blockChainItemFront.Item_Id,
-                                Order = blockItems.Any() ? blockItems.Max(c => c.Order) + 1 : 0
+                                Order = ordem
                             });
                         }
                     }
@@ -138,40 +158,6 @@ namespace GestaoAvaliacao.Repository
                 //-> BlockChainItem
                 if (blockChainItems.Count > 0)
                     entity.BlockChainItems.AddRange(blockChainItems);
-
-                //-> BlockItem
-                if (blockItems.Count > 0)
-                {
-                    //-> Ordenar
-                    foreach (var blockDb in blocksDatabase.OrderBy(c => c.Description))
-                    {
-                        var maxOrder = 0;
-
-                        foreach (var blockItem in blockItems.Where(c => c.Block_Id == blockDb.Id))
-                        {
-                            var blockItemDb = blockDb.BlockItems.FirstOrDefault(c =>
-                                c.Item_Id == blockItem.Item_Id && c.Block_Id == blockDb.Id &&
-                                c.State == (byte)EnumState.ativo);
-
-                            if (blockItemDb == null)
-                                continue;
-
-                            if (maxOrder == 0)
-                                maxOrder = blockItemDb.Order;
-
-                            blockItem.Order = maxOrder;
-                            maxOrder++;
-                        }
-                    }
-
-                    //-> Atualizar
-                    foreach (var blockChainBlock in entity.BlockChainBlocks.Where(c =>
-                                 c.BlockChain_Id == blockChain.Id && c.State == (byte)EnumState.ativo))
-                    {
-                        blockChainBlock.Block.BlockItems.AddRange(blockItems.Where(c =>
-                            c.Block_Id == blockChainBlock.Block_Id));
-                    }
-                }
 
                 #endregion
 
