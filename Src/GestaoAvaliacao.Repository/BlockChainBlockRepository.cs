@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Dapper;
 using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 
