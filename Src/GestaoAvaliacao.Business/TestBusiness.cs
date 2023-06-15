@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using GestaoAvaliacao.Business.DTO;
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.Enumerator;
@@ -16,12 +17,17 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using GestaoAvaliacao.Business.DTO;
 using EntityFile = GestaoAvaliacao.Entities.File;
 using Validate = GestaoAvaliacao.Util.Validate;
+using GestaoAvaliacao.Entities.DTO.Tests;
+using System.Drawing;
+using System.Net.Http;
+using System.Drawing;
 using System.Net.Http;
 
 namespace GestaoAvaliacao.Business
@@ -48,12 +54,16 @@ namespace GestaoAvaliacao.Business
         private readonly IItemRepository itemRepository;
         private readonly IBlockChainBusiness blockChainBusiness;
         private readonly IResultadoPspBusiness resultadoPspBusiness;
+        private readonly IBlockChainBlockBusiness blockChainBlockBusiness;
+        private readonly IBlockBusiness blockBusiness;
+        private readonly IBlockChainBlockRepository blockChainBlockRepository;
 
         public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
             ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
             IBlockRepository blockRepository, IParameterBusiness parameterBusiness, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
             IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository, INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository,
-            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository, IItemRepository itemRepository, IBlockChainBusiness blockChainBusiness, IResultadoPspBusiness resultadoPspBusiness)
+            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository, IItemRepository itemRepository, IBlockChainBusiness blockChainBusiness, 
+            IResultadoPspBusiness resultadoPspBusiness, IBlockChainBlockBusiness blockChainBlockBusiness, IBlockBusiness blockBusiness, IBlockChainBlockRepository blockChainBlockRepository)
         {
             this.testRepository = testRepository;
             this.fileRepository = fileRepository;
@@ -75,6 +85,8 @@ namespace GestaoAvaliacao.Business
             this.itemRepository = itemRepository;
             this.blockChainBusiness = blockChainBusiness;
             this.resultadoPspBusiness = resultadoPspBusiness;
+            this.blockChainBlockBusiness = blockChainBlockBusiness;            this.blockBusiness = blockBusiness;
+            this.blockChainBlockRepository = blockChainBlockRepository;
         }
 
         #region Custom
@@ -1366,6 +1378,117 @@ namespace GestaoAvaliacao.Business
                         retorno = new CsvBlockImportDTO
                         {
                             QtdeSucesso = blocosItens.Count - erros.Count,
+                            QtdeErros = erros.Count
+                        };
+
+                        retorno.Erros.AddRange(erros);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno)
+        {
+
+            try
+            {
+                var test = testRepository.GetObject(testId);
+
+                using (var leitorAquivo = new StreamReader(arquivo.InputStream, encoding: Encoding.UTF8))
+                {
+                    using (var csv = new CsvReader(leitorAquivo, config))
+                    {
+                        var blocksTest = blockBusiness.GetTestBlocks(testId);
+                        var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
+
+                        var cadernosBlocos = csv.GetRecords<CadernoCsvDTO>().ToList();
+                        var cadernos = cadernosBlocos.Select(x => x.NumeroCaderno).Distinct();
+                        var erros = new List<ErrorCsvBlockImportDTO>();
+
+                        foreach (var caderno in cadernos)
+                        {
+                            var linha = cadernosBlocos.FindIndex(c => c.NumeroCaderno == caderno) + 2;
+
+                            var block = blocksTest.Where(x => x.Description == caderno.Trim()).FirstOrDefault();
+                            if(block == null)
+                            {
+                                erros.Add(new ErrorCsvBlockImportDTO
+                                {
+                                    Linha = linha,
+                                    Erro = "Caderno inválido"
+                                });
+                                continue;
+                            }                            
+
+                            var blocosCsv = cadernosBlocos.Where(x => x.NumeroCaderno == caderno).Select(b => b.NumeroBloco).Distinct();
+                            var blocosCadernoInserir = new List<BlockChainBlock>();
+
+                            var blockItems = new List<BlockItem>();
+                            var maxOrder = 0;
+
+                            foreach (var bloco in blocosCsv)
+                            {
+                                linha = cadernosBlocos.FindIndex(c => c.NumeroCaderno == caderno && c.NumeroBloco == bloco) + 2;
+
+                                var blockChain = blockChains.FirstOrDefault(x => x.Description == bloco.Trim());                                
+
+                                if (blockChain == null)
+                                {
+                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    {
+                                        Linha = linha,
+                                        Erro = "Bloco inválido"
+                                    });
+                                }
+                                else
+                                {
+
+                                    if (blocosCadernoInserir.Count() < test.BlockChainForBlock)
+                                    {
+                                        blocosCadernoInserir.Add(new BlockChainBlock
+                                        {
+                                            Block_Id = block.Id,
+                                            BlockChain_Id = blockChain.Id,
+                                            Order = blocosCadernoInserir.Any() ? blocosCadernoInserir.Count : 0,
+                                        });
+
+                                        var blockChainItems = blockChain.BlockChainItems;
+                                        foreach (var itemBlockChain in blockChainItems)
+                                        {
+                                            blockItems.Add(new BlockItem
+                                            {
+                                                Block_Id = block.Id,
+                                                Item_Id = itemBlockChain.Item_Id,
+                                                Order = maxOrder
+                                            });
+                                            maxOrder++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        erros.Add(new ErrorCsvBlockImportDTO
+                                        {
+                                            Linha = linha,
+                                            Erro = $"caderno {block.Description} já possui a qtde limite de blocos"
+                                        });
+                                    }
+                                }                                    
+                            }                                                       
+
+                            blockChainBlockBusiness.DeleteByBlockId(block.Id);
+                            block.BlockItems.Clear();
+                            block.BlockItems.AddRange(blockItems);
+                            block.BlockChainBlocks = blocosCadernoInserir;
+                            blockBusiness.Update(block, usuId, vision);
+                        }
+
+                        retorno = new CsvBlockImportDTO
+                        {
+                            QtdeSucesso = cadernosBlocos.Count - erros.Count,
                             QtdeErros = erros.Count
                         };
 

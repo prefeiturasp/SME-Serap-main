@@ -72,5 +72,6 @@ namespace GestaoAvaliacao.IBusiness
 		List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId);
         bool ExistsAdherenceByTestId(long test_id);
         void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno);
+        void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno);
     }
 }

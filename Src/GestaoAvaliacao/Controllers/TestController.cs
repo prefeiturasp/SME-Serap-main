@@ -1,5 +1,6 @@
 ﻿using GestaoAvaliacao.App_Start;
 using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Models;
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using static IdentityModel.Client.OAuth2Constants;
 using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.Controllers
@@ -1409,6 +1411,36 @@ namespace GestaoAvaliacao.Controllers
 
 
                 return Json(new { success = true, retorno, message = "Importação dos blocos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, retorno = "", message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ImportarArquivoCsvCadernos(HttpPostedFileBase file, int testId)
+        {
+            var b = new BinaryReader(file.InputStream);
+            var binData = b.ReadBytes(file.ContentLength);
+            var result = System.Text.Encoding.UTF8.GetString(binData);
+
+            var splitRowResult = result.Substring(0, StringHelper.PositionOfNewLine(result)).Trim()
+                .Replace("\"", string.Empty).Split(';');
+
+            if (string.IsNullOrEmpty(splitRowResult.ToString()))
+                return Json(new { success = false, message = "Erro ao importar cadernos." }, JsonRequestBehavior.AllowGet);
+
+            b.BaseStream.Position = 0;
+
+            try
+            {
+                testBusiness.ImportarCvsCadernos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                        SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);                
+
+                return Json(new { success = true, retorno, message = "Importação dos cadernos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
