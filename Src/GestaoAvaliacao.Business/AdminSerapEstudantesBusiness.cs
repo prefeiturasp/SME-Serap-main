@@ -15,14 +15,14 @@ namespace GestaoAvaliacao.Business
 
         private readonly string baseUrlApiSerapEstudantes;
         private readonly string chaveSerapProvaApi;
-        private readonly string baseUrlSimuladorSerapEstudantes;
+        private readonly string baseUrlApiSimuladorSerapEstudantes;
         private readonly string chaveSimuladorProvaApi;
 
         public SerapEstudantesBusiness()
         {
             baseUrlApiSerapEstudantes = BuscarConfiguracaoObrigatoria("URL_API_SERAP_ESTUDANTES");
             chaveSerapProvaApi = BuscarConfiguracaoObrigatoria("ChaveSerapProvaApi");
-            baseUrlSimuladorSerapEstudantes = BuscarConfiguracaoObrigatoria("URL_SIMULADOR_SERAP_ESTUDANTES");
+            baseUrlApiSimuladorSerapEstudantes = BuscarConfiguracaoObrigatoria("URL_API_SIMULADOR_SERAP_ESTUDANTES");
             chaveSimuladorProvaApi = BuscarConfiguracaoObrigatoria("ChaveSimuladorProvaApi");
         }
 
@@ -68,7 +68,7 @@ namespace GestaoAvaliacao.Business
 
         public SimuladorAutenticacaoRespostaDTO SimuladorAutenticacao(SimuladorAutenticacaoDTO simuladorAutenticacao)
         {
-            using (var client = ObterClientConfigurado(baseUrlSimuladorSerapEstudantes))
+            using (var client = ObterClientConfigurado(baseUrlApiSimuladorSerapEstudantes))
             {
                 simuladorAutenticacao.ChaveApi = chaveSimuladorProvaApi;
                 var response = client.PostAsJsonAsync(ENDPOINT_SIMULADOR_AUTENTICACAO, simuladorAutenticacao).Result;
