@@ -62,7 +62,7 @@ namespace GestaoAvaliacao.Business
             ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
             IBlockRepository blockRepository, IParameterBusiness parameterBusiness, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
             IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository, INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository,
-            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository, IItemRepository itemRepository, IBlockChainBusiness blockChainBusiness, 
+            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository, IItemRepository itemRepository, IBlockChainBusiness blockChainBusiness,
             IResultadoPspBusiness resultadoPspBusiness, IBlockChainBlockBusiness blockChainBlockBusiness, IBlockBusiness blockBusiness, IBlockChainBlockRepository blockChainBlockRepository)
         {
             this.testRepository = testRepository;
@@ -1348,7 +1348,7 @@ namespace GestaoAvaliacao.Business
                                     continue;
                                 }
 
-                            
+
 
                                 var blockChainItem = new BlockChainItem
                                 {
@@ -1404,86 +1404,106 @@ namespace GestaoAvaliacao.Business
                     {
                         var blocksTest = blockBusiness.GetTestBlocks(testId);
                         var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
-
                         var cadernosBlocos = csv.GetRecords<CadernoCsvDTO>().ToList();
-                        var cadernos = cadernosBlocos.Select(x => x.NumeroCaderno).Distinct();
                         var erros = new List<ErrorCsvBlockImportDTO>();
+                        var cadernosInserirAlterar = new List<Block>();
+                        var linha = 0;
 
-                        foreach (var caderno in cadernos)
+                        foreach (var cb in cadernosBlocos)
                         {
-                            var linha = cadernosBlocos.FindIndex(c => c.NumeroCaderno == caderno) + 2;
+                            var caderno = cb.NumeroCaderno;
+                            var bloco = cb.NumeroBloco;
+                            linha++;
 
-                            var block = blocksTest.Where(x => x.Description == caderno.Trim()).FirstOrDefault();
-                            if(block == null)
+                            var block = cadernosInserirAlterar.Where(x => x.Description == caderno.Trim()).FirstOrDefault();
+                            if (block == null && blocksTest.Any(x => x.Description == caderno.Trim()))
                             {
-                                erros.Add(new ErrorCsvBlockImportDTO
-                                {
-                                    Linha = linha,
-                                    Erro = "Caderno inválido"
-                                });
-                                continue;
+                                block = blocksTest.Where(x => x.Description == caderno.Trim()).FirstOrDefault();
+                                block.BlockItems.Clear();
+                                block.BlockChainBlocks.Clear();
                             }                            
 
-                            var blocosCsv = cadernosBlocos.Where(x => x.NumeroCaderno == caderno).Select(b => b.NumeroBloco).Distinct();
-                            var blocosCadernoInserir = new List<BlockChainBlock>();
-
-                            var blockItems = new List<BlockItem>();
-                            var maxOrder = 0;
-
-                            foreach (var bloco in blocosCsv)
+                            if (block == null)
                             {
-                                linha = cadernosBlocos.FindIndex(c => c.NumeroCaderno == caderno && c.NumeroBloco == bloco) + 2;
-
-                                var blockChain = blockChains.FirstOrDefault(x => x.Description == bloco.Trim());                                
-
-                                if (blockChain == null)
+                                var numCaderno = Convert.ToInt16(caderno.Trim());
+                                if (numCaderno < 1 || numCaderno > test.NumberBlock)
                                 {
                                     erros.Add(new ErrorCsvBlockImportDTO
                                     {
                                         Linha = linha,
-                                        Erro = "Bloco inválido"
+                                        Erro = $"{caderno} - Caderno inválido"
                                     });
+                                    continue;
                                 }
-                                else
+                                block = new Block
                                 {
+                                    Description = caderno,
+                                    Test_Id = test.Id,
+                                };
+                            }
 
-                                    if (blocosCadernoInserir.Count() < test.BlockChainForBlock)
-                                    {
-                                        blocosCadernoInserir.Add(new BlockChainBlock
-                                        {
-                                            Block_Id = block.Id,
-                                            BlockChain_Id = blockChain.Id,
-                                            Order = blocosCadernoInserir.Any() ? blocosCadernoInserir.Count : 0,
-                                        });
+                            var blockChain = blockChains.FirstOrDefault(x => x.Description == bloco.Trim());
+                            if (blockChain == null)
+                            {
+                                erros.Add(new ErrorCsvBlockImportDTO
+                                {
+                                    Linha = linha,
+                                    Erro = $"{bloco} - Bloco inválido"
+                                });
+                                continue;
+                            }
+                            else
+                            {
 
-                                        var blockChainItems = blockChain.BlockChainItems;
-                                        foreach (var itemBlockChain in blockChainItems)
-                                        {
-                                            blockItems.Add(new BlockItem
-                                            {
-                                                Block_Id = block.Id,
-                                                Item_Id = itemBlockChain.Item_Id,
-                                                Order = maxOrder
-                                            });
-                                            maxOrder++;
-                                        }
-                                    }
-                                    else
+                                if (block.BlockChainBlocks.Count() < test.BlockChainForBlock)
+                                {
+                                    if (block.BlockChainBlocks.Any(x => x.BlockChain_Id == blockChain.Id))
                                     {
                                         erros.Add(new ErrorCsvBlockImportDTO
                                         {
                                             Linha = linha,
-                                            Erro = $"caderno {block.Description} já possui a qtde limite de blocos"
+                                            Erro = $"bloco {bloco} já foi inserido no caderno {caderno}"
                                         });
+                                        continue;
                                     }
-                                }                                    
-                            }                                                       
+                                    else
+                                    {
+                                        block.BlockChainBlocks.Add(new BlockChainBlock
+                                        {
+                                            Block_Id = block.Id,
+                                            BlockChain_Id = blockChain.Id,
+                                            Order = block.BlockChainBlocks.Any() ? block.BlockChainBlocks.Count : 0,
+                                        });
 
-                            blockChainBlockBusiness.DeleteByBlockId(block.Id);
-                            block.BlockItems.Clear();
-                            block.BlockItems.AddRange(blockItems);
-                            block.BlockChainBlocks = blocosCadernoInserir;
-                            blockBusiness.Update(block, usuId, vision);
+                                        var blockChainItems = blockChain.BlockChainItems.OrderBy(x => x.Order);
+                                        foreach (var itemBlockChain in blockChainItems)
+                                        {
+                                            var ordem = block.BlockItems.Any() ? block.BlockItems.Select(x => x.Order).Max() + 1 : 0;
+                                            block.BlockItems.Add(new BlockItem
+                                            {
+                                                Block_Id = block.Id,
+                                                Item_Id = itemBlockChain.Item_Id,
+                                                Order = ordem,
+                                            });
+                                        }
+                                    }                                    
+                                }
+                                else
+                                {
+                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    {
+                                        Linha = linha,
+                                        Erro = $"caderno {block.Description} já atingiu o limite de blocos"
+                                    });
+                                    continue;
+                                }
+                            }
+
+                            var indexCaderno = cadernosInserirAlterar.FindIndex(x => x.Description == caderno);
+                            if (indexCaderno < 0)
+                                cadernosInserirAlterar.Add(block);
+                            else
+                                cadernosInserirAlterar[indexCaderno] = block;
                         }
 
                         retorno = new CsvBlockImportDTO
@@ -1491,8 +1511,18 @@ namespace GestaoAvaliacao.Business
                             QtdeSucesso = cadernosBlocos.Count - erros.Count,
                             QtdeErros = erros.Count
                         };
-
                         retorno.Erros.AddRange(erros);
+
+                        foreach (var block in cadernosInserirAlterar)
+                        {                            
+                            if (block.Id > 0)
+                            {
+                                blockChainBlockBusiness.DeleteByBlockId(block.Id);
+                                blockBusiness.Update(block, usuId, vision);
+                            }                                
+                            else
+                                blockBusiness.Save(block, usuId, vision);
+                        }
                     }
                 }
             }
