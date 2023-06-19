@@ -4,10 +4,10 @@ namespace GestaoAvaliacao.Business.DTO
 {
     internal class CadernoCsvDTO
     {
-        [Name("NumeroCaderno")]
+        [Name("Numero do caderno")]
         public string NumeroCaderno { get; set; }
 
-        [Name("NumeroBloco")]
+        [Name("Numero do bloco")]
         public string NumeroBloco { get; set; }
     }
 }
