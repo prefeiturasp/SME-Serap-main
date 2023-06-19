@@ -1407,7 +1407,7 @@ namespace GestaoAvaliacao.Business
                         var cadernosBlocos = csv.GetRecords<CadernoCsvDTO>().ToList();
                         var erros = new List<ErrorCsvBlockImportDTO>();
                         var cadernosInserirAlterar = new List<Block>();
-                        var linha = 0;
+                        var linha = 1;
 
                         foreach (var cb in cadernosBlocos)
                         {
@@ -1462,7 +1462,7 @@ namespace GestaoAvaliacao.Business
                                         erros.Add(new ErrorCsvBlockImportDTO
                                         {
                                             Linha = linha,
-                                            Erro = $"Bloco {bloco} já foi inserido no caderno {caderno}"
+                                            Erro = $"Bloco {bloco} em duplicidade no caderno {caderno}"
                                         });
                                         continue;
                                     }
