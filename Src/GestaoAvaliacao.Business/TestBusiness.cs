@@ -1407,7 +1407,7 @@ namespace GestaoAvaliacao.Business
                         var cadernosBlocos = csv.GetRecords<CadernoCsvDTO>().ToList();
                         var erros = new List<ErrorCsvBlockImportDTO>();
                         var cadernosInserirAlterar = new List<Block>();
-                        var linha = 0;
+                        var linha = 1;
 
                         foreach (var cb in cadernosBlocos)
                         {
@@ -1431,7 +1431,7 @@ namespace GestaoAvaliacao.Business
                                     erros.Add(new ErrorCsvBlockImportDTO
                                     {
                                         Linha = linha,
-                                        Erro = $"{caderno} - Caderno inválido"
+                                        Erro = "Caderno inválido"
                                     });
                                     continue;
                                 }
@@ -1448,7 +1448,7 @@ namespace GestaoAvaliacao.Business
                                 erros.Add(new ErrorCsvBlockImportDTO
                                 {
                                     Linha = linha,
-                                    Erro = $"{bloco} - Bloco inválido"
+                                    Erro = "Bloco inválido"
                                 });
                                 continue;
                             }
@@ -1462,7 +1462,7 @@ namespace GestaoAvaliacao.Business
                                         erros.Add(new ErrorCsvBlockImportDTO
                                         {
                                             Linha = linha,
-                                            Erro = $"bloco {bloco} já foi inserido no caderno {caderno}"
+                                            Erro = $"Bloco {bloco} em duplicidade no caderno {caderno}"
                                         });
                                         continue;
                                     }
@@ -1493,7 +1493,7 @@ namespace GestaoAvaliacao.Business
                                     erros.Add(new ErrorCsvBlockImportDTO
                                     {
                                         Linha = linha,
-                                        Erro = $"caderno {block.Description} já atingiu o limite de blocos"
+                                        Erro = "Quantidade de blocos do caderno excedida"
                                     });
                                     continue;
                                 }
