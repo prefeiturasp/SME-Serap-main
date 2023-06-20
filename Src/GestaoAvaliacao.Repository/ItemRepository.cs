@@ -1624,6 +1624,14 @@ namespace GestaoAvaliacao.Repository
                 gestaoAvaliacaoContext.Entry(blockChainItem).State = System.Data.Entity.EntityState.Added;
 
                 gestaoAvaliacaoContext.SaveChanges();
+
+                var blockChainBlock = gestaoAvaliacaoContext.BlockChainBlocks.FirstOrDefault(c =>
+                    c.BlockChain_Id == blockChainId && c.State == (int)EnumState.ativo);
+
+                if (blockChainBlock == null)
+                    return;
+
+                SaveChangeItem(item, testId, itemIdAntigo, blockChainBlock.Block_Id);
             }
         }
 

@@ -38,7 +38,7 @@ namespace GestaoAvaliacao.Controllers
                 if (blockId <= 0)
                     throw new ApplicationException("É necessário informar o ID do caderno.");
 
-                var urlSimulador = $"{urlSimuladorSerapEstudantes}{blockId}";
+                var urlSimulador = $"{urlSimuladorSerapEstudantes}{resposta.Codigo}/{blockId}";
 
                 return Redirect(urlSimulador);
             }
