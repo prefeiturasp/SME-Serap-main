@@ -143,7 +143,7 @@ namespace GestaoAvaliacao.Controllers
                     x.ItemCodeVersion,
                     x.BlockChain_Id,
                     x.BlockChain_Description
-                }).OrderBy(x => x.KnowledgeArea_Order).ThenBy(x => x.BlockChain_Id).ThenBy(x => x.Order).ToList();
+                }).OrderBy(x => x.KnowledgeArea_Order).ThenBy(x => x.Order).ToList();
 
                 return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
             }

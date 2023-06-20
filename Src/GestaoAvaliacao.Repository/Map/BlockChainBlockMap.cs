@@ -16,6 +16,9 @@ namespace GestaoAvaliacao.Repository.Map
             HasRequired(p => p.BlockChain)
                 .WithMany(p => p.BlockChainBlocks)
                 .HasForeignKey(p => p.BlockChain_Id);
+
+            Property(p => p.Order)
+                .IsRequired();
         }
     }
 }

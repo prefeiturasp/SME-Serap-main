@@ -1,5 +1,6 @@
 ﻿using GestaoAvaliacao.Entities.Base;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GestaoAvaliacao.Entities
 {
@@ -9,7 +10,7 @@ namespace GestaoAvaliacao.Entities
         {
             BlockItems = new List<BlockItem>();
             BlockChainBlocks = new List<BlockChainBlock>();
-            Blocos = new List<long>();
+            Blocos = new List<BlockChain>();
         }
 
         public string Description { get; set; }
@@ -20,6 +21,8 @@ namespace GestaoAvaliacao.Entities
         public virtual List<BlockItem> BlockItems { get; set; }
         public virtual List<BlockKnowledgeArea> BlockKnowledgeAreas { get; set; }
         public virtual List<BlockChainBlock> BlockChainBlocks { get; set; }
-        public virtual List<long> Blocos { get; set; }
+
+        [NotMapped]
+        public virtual List<BlockChain> Blocos { get; set; }
     }
 }

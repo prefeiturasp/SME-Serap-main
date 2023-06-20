@@ -118,7 +118,6 @@ namespace GestaoAvaliacao.Repository
 
                         if (blockItemDb != null)
                         {
-                            blockItemDb.Order = blockChainItemFront.Order;
                             blockItemDb.UpdateDate = dateNow;
                             gestaoAvaliacaoContext.Entry(blockItemDb).State = System.Data.Entity.EntityState.Modified;
 
@@ -130,7 +129,7 @@ namespace GestaoAvaliacao.Repository
                             {
                                 Block_Id = blockDb.Id,
                                 Item_Id = blockChainItemFront.Item_Id,
-                                Order = blockChainItemFront.Order
+                                Order = blockItems.Max(c => c.Order) + 1
                             });
                         }
                     }
@@ -144,14 +143,22 @@ namespace GestaoAvaliacao.Repository
                 if (blockItems.Count > 0)
                 {
                     //-> Ordenar
-                    var idsBlocksDb = blocksDatabase.OrderBy(c => c.Description).Select(c => c.Id).Distinct();
-
-                    foreach (var idBlockDb in idsBlocksDb)
+                    foreach (var blockDb in blocksDatabase.OrderBy(c => c.Description))
                     {
                         var maxOrder = 0;
 
-                        foreach (var blockItem in blockItems.Where(c => c.Block_Id == idBlockDb))
+                        foreach (var blockItem in blockItems.Where(c => c.Block_Id == blockDb.Id))
                         {
+                            var blockItemDb = blockDb.BlockItems.FirstOrDefault(c =>
+                                c.Item_Id == blockItem.Item_Id && c.Block_Id == blockDb.Id &&
+                                c.State == (byte)EnumState.ativo);
+
+                            if (blockItemDb == null)
+                                continue;
+
+                            if (maxOrder == 0)
+                                maxOrder = blockItemDb.Order;
+
                             blockItem.Order = maxOrder;
                             maxOrder++;
                         }
@@ -258,37 +265,45 @@ namespace GestaoAvaliacao.Repository
 
         public IEnumerable<Block> ObterCadernosPorProva(long testId)
         {
-            const string sql = @"SELECT distinct b.Id, b.Description, b.Test_Id
-								FROM BlockChain bc WITH (NOLOCK)
-								inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
-								inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
-								WHERE bc.Test_Id = @testId
-								AND bc.State = @state
-								AND bcb.State = @state
+            const string sql = @"SELECT b.Id, b.Description, b.Test_Id
+								FROM Block b WITH (NOLOCK)
+								WHERE b.Test_Id = @testId
 								AND b.State = @state
+								AND EXISTS(SELECT bcb.Id 
+  										   FROM BlockChainBlock bcb WITH (NOLOCK)
+  										   INNER JOIN BlockChain bc WITH (NOLOCK) ON (bc.Id = bcb.BlockChain_Id 
+  										                                          AND bc.State = @state)
+										   WHERE bcb.Block_Id = b.Id 
+										   AND bcb.State = @state)
                                 ORDER BY b.Description
 
 								SELECT T.Id
 								FROM Test T WITH(NOLOCK)
-								WHERE Id = @testId
+								WHERE T.Id = @testId
+                                AND T.State = @state
 
 								SELECT bcb.BlockChain_Id, bcb.Block_Id
-								FROM BlockChain bc WITH (NOLOCK)
-								inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
-								inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
+								FROM BlockChainBlock bcb WITH (NOLOCK)
+								INNER JOIN BlockChain bc WITH (NOLOCK) ON (bc.Id = bcb.BlockChain_Id 
+ 									                                   AND bc.State = @state)
+								INNER JOIN Block b WITH (NOLOCK) ON (b.Id = bcb.Block_Id
+								                                 AND b.State = @state
+                                                                 AND b.Test_Id = @testId)
 								WHERE bc.Test_Id = @testId
-								AND bc.State = @state
 								AND bcb.State = @state
-								AND b.State = @state
+								ORDER BY bcb.[Order], bcb.Block_Id, bcb.BlockChain_Id 
 
 								SELECT bc.Id, bc.Description
 								FROM BlockChain bc WITH (NOLOCK)
-								inner join [dbo].[BlockChainBlock] bcb WITH (NOLOCK) on bcb.BlockChain_Id = bc.Id
-								inner join [dbo].[Block] b WITH (NOLOCK) on bcb.Block_Id = b.Id
 								WHERE bc.Test_Id = @testId
 								AND bc.State = @state
-								AND bcb.State = @state
-								AND b.State = @state";
+								AND EXISTS(SELECT bcb.Id 
+  										   FROM BlockChainBlock bcb WITH (NOLOCK)
+  										   INNER JOIN Block b WITH (NOLOCK) ON (b.Id = bcb.Block_Id 
+  										                                    AND bc.State = @state
+                                                                            AND b.Test_Id = @testId)
+										   WHERE bcb.BlockChain_Id = bc.Id  
+										   AND bcb.State = @state)";
 
             using (var cn = Connection)
             {
@@ -296,20 +311,24 @@ namespace GestaoAvaliacao.Repository
 
                 var multi = cn.QueryMultiple(sql, new { testId, state = (byte)EnumState.ativo });
 
-                var listaBlocos = multi.Read<Block>().ToList();
+                var listaCaderno = multi.Read<Block>().ToList();
                 var listaProva = multi.Read<Test>().ToList();
                 var listaBlockChainBlock = multi.Read<BlockChainBlock>().ToList();
                 var listaBlockChain = multi.Read<BlockChain>().ToList();
 
-                foreach (var bloco in listaBlocos)
+                foreach (var caderno in listaCaderno)
                 {
-                    bloco.Test = listaProva.FirstOrDefault(p => p.Id == bloco.Test_Id);
-                    var blocosCaderno = listaBlockChainBlock.Where(x => x.Block_Id == bloco.Id);
-                    if (blocosCaderno != null && blocosCaderno.Any())
-                        bloco.Blocos.AddRange(listaBlockChain.Where(bc => blocosCaderno.Any(x => x.BlockChain_Id == bc.Id)).Select(x => x.Id));
+                    caderno.Test = listaProva.FirstOrDefault(p => p.Id == caderno.Test_Id);
+                    var blocosCaderno = listaBlockChainBlock.Where(x => x.Block_Id == caderno.Id).ToList();
+
+                    if (!blocosCaderno.Any()) 
+                        continue;
+
+                    foreach (var bloco in blocosCaderno)
+                        caderno.Blocos.Add(listaBlockChain.FirstOrDefault(c => c.Id == bloco.BlockChain_Id));
                 }
 
-                return listaBlocos;
+                return listaCaderno;
             }
         }
 
