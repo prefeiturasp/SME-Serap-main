@@ -1961,7 +1961,7 @@
                     if (!ng.temBIB)
                         bloco.Total = ng.itensTotais;
                     else
-                        bloco.Total = ng.e1_itensBlocos;
+                        bloco.Total = parseInt(ng.e1_itensBlocos);
 
                     bloco.Resto = bloco.Total - bloco.ItensCount;
                 }
@@ -2032,8 +2032,8 @@
                         Description: b,
                         ItensCount: 0,
                         Id: 0,
-                        Total: ng.e1_qtdItensCadeiaBlocos,
-                        Resto: ng.e1_qtdItensCadeiaBlocos,
+                        Total: parseInt(ng.e1_qtdItensCadeiaBlocos),
+                        Resto: parseInt(ng.e1_qtdItensCadeiaBlocos),
                         SelectedItens: []
                     });
                 }
@@ -2049,7 +2049,7 @@
 
                 for (var q = 0; q < ng.cadeiaBlocos.length; q++) {
                     cadeiaBloco = ng.cadeiaBlocos[q];
-                    cadeiaBloco.Total = ng.e1_qtdItensCadeiaBlocos;
+                    cadeiaBloco.Total = parseInt(ng.e1_qtdItensCadeiaBlocos);
                     cadeiaBloco.Resto = cadeiaBloco.Total - cadeiaBloco.ItensCount;
                 }
 
@@ -2061,8 +2061,8 @@
                             Description: String(b),
                             ItensCount: 0,
                             Id: 0,
-                            Total: ng.e1_qtdItensCadeiaBlocos,
-                            Resto: ng.e1_qtdItensCadeiaBlocos,
+                            Total: parseInt(ng.e1_qtdItensCadeiaBlocos),
+                            Resto: parseInt(ng.e1_qtdItensCadeiaBlocos),
                             SelectedItens: []
                         });
                     }
