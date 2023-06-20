@@ -1004,8 +1004,10 @@
         };
 
         ng.calcularQuantidadeItemsPorBloco = function () {
+            let qtdCadeiaBlocosPorBloco = parseInt(ng.e1_qtdCadeiaBlocosPorBloco) || 0;
+            let qtdCadeiaBlocos = parseInt(ng.e1_qtdCadeiaBlocos) || 0;
 
-            if (ng.e1_qtdCadeiaBlocosPorBloco > ng.e1_qtdCadeiaBlocos) {
+            if (qtdCadeiaBlocosPorBloco > qtdCadeiaBlocos) {
                 $notification.alert("A quantidade de blocos por caderno não pode ser maior que a quantidade de blocos.");
                 ng.e1_qtdCadeiaBlocosPorBloco = null;
             }
@@ -2869,6 +2871,16 @@
             ng.cadernoSelecionado = angular.copy(caderno);
             e3_itensCarregar();
             angular.element("#modalViewItensCaderno").modal({ backdrop: 'static' });
+        }
+
+        ng.e3_callSimulatorCaderno = e3_callSimulatorCaderno;
+        function e3_callSimulatorCaderno(caderno) {
+            $window.open(base_url("SimuladorSerapEstudantes/Index?blockId=" + caderno.Id), '_blank', 'noreferrer');
+        }
+
+        ng.e3_disableButtonSimulator = e3_disableButtonSimulator;
+        function e3_disableButtonSimulator(caderno) {
+            return (caderno.Total !== caderno.BlocosCount || caderno.BlocosCount === 0);
         }
 
         ng.e3_cancelarModalAddBlocosCaderno = e3_cancelarModalAddBlocosCaderno;
