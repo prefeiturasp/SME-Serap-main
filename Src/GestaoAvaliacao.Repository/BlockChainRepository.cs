@@ -274,5 +274,27 @@ namespace GestaoAvaliacao.Repository
                 return listItems;
             }
         }
+
+        public void DeleteByTestId(long testId)
+        {
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                var blockChains = gestaoAvaliacaoContext.BlockChains.Where(i => i.Test_Id == testId).ToList();
+
+                blockChains.ForEach(i =>
+                {
+                    var blockChainItems = i.BlockChainItems.Where(c => c.BlockChain_Id == i.Id);
+
+                    foreach (var blockChainItem in blockChainItems)
+                    {
+                        gestaoAvaliacaoContext.BlockChainItems.Remove(blockChainItem);
+                    }
+
+                    gestaoAvaliacaoContext.BlockChains.Remove(i);
+                });
+
+                gestaoAvaliacaoContext.SaveChanges();
+            }
+        }
     }
 }
