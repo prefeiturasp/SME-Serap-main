@@ -119,6 +119,7 @@
     <Compile Include="AnswerSheetLotBusiness.cs" />
     <Compile Include="BaseTextBusiness.cs" />
     <Compile Include="BlockBusiness.cs" />
+    <Compile Include="BlockChainBusiness.cs" />
     <Compile Include="BookletBusiness.cs" />
     <Compile Include="CognitiveCompetenceBusiness.cs" />
     <Compile Include="AnswerSheetBatchBusiness.cs" />

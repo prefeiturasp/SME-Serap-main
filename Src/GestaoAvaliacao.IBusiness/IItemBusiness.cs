@@ -40,6 +40,7 @@ namespace GestaoAvaliacao.IBusiness
         byte[] GetItemPreviewByBaseText(long id, string url, List<Parameter> parameters);
         Item RevokeItem(long Item_Id, bool Revoked);
         Item SaveChangeItem(Item item, long TestId, long itemIdAntigo, long blockId);
+        Item SaveChangeBlockChainItem(Item item, long testId, long itemIdAntigo, long blockChainId);
 
         //NewApi
         List<BaseDto> LoadAllKnowledgeAreaActive();
