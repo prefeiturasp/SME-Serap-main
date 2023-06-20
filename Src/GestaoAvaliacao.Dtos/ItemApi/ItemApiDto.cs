@@ -79,6 +79,13 @@ namespace GestaoAvaliacao.Dtos.ItemApi
         public List<ArquivoConsultaDto> Audios { get; set; }
     }
 
+    public class ArquivosItemConsultaApiDto
+    {
+        public List<ArquivoConsultaDto> Imagens { get; set; }
+        public List<ArquivoConsultaDto> Videos { get; set; }
+        public List<ArquivoConsultaDto> Audios { get; set; }
+    }
+
     public class AlternativeDto
     {
         public string Descricao { get; set; }
@@ -130,6 +137,7 @@ namespace GestaoAvaliacao.Dtos.ItemApi
     public class ArquivoConsultaDto
     {
         public long Id { get; set; }
+        public string Base64 { get; set; }
         public string NomeArquivo { get; set; }
     }
 

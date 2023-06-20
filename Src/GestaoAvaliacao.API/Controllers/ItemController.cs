@@ -318,5 +318,22 @@ namespace GestaoAvaliacao.API.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError);
             }
         }
+
+        [Route("api/Item/Arquivos")]
+        [HttpGet]
+        [ResponseType(typeof(ArquivosItemConsultaApiDto))]
+        public HttpResponseMessage ObterArquivosItem(long itemId)
+        {
+            try
+            {
+                var arquivosItem = itemBusiness.ObterArquivosItemApi(itemId);
+                return Request.CreateResponse(HttpStatusCode.OK, arquivosItem);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveBasicError(ex.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
