@@ -4640,7 +4640,7 @@
 
         ng.changeVersionItem = function changeVersionItem(itens, versoes) {
             if (ng.ehCadeiaBlocos) {
-                TestModel.saveChangeBlockChainItem({ item: versoes, testId: ng.params, itemIdAntigo: itens.Id, blockChainId: ng.e2_blockChainAtual.Id }, function (result) {
+                TestModel.saveChangeBlockChainItem({ item: versoes, testId: ng.provaId, itemIdAntigo: itens.Id, blockChainId: ng.e2_blockChainAtual.Id }, function (result) {
                     console.log(result, "result");
 
                     if (result.success) {
@@ -4666,7 +4666,7 @@
                 });
             }
             else {
-                TestModel.saveChangeItem({ item: versoes, test_id: ng.params, itemIdAntigo: itens.Id, blockId: ng.e2_blockAtual.Id }, function (result) {
+                TestModel.saveChangeItem({ item: versoes, test_id: ng.provaId, itemIdAntigo: itens.Id, blockId: ng.e2_blockAtual.Id }, function (result) {
                     console.log(result, "result");
 
                     if (result.success) {
