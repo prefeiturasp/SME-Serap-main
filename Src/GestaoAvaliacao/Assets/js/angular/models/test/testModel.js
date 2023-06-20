@@ -242,6 +242,10 @@
             'checkFilesExists': {
                 method: 'GET',
                 url: base_url('Booklet/CheckFilesExists')
+            },
+            'checkExistsAdherenceByTestId': {
+                method: 'GET',
+                url: base_url('Test/CheckExistsAdherenceByTestId')
             }
         };
 

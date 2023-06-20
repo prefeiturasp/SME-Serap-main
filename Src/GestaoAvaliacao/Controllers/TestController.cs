@@ -41,7 +41,7 @@ namespace GestaoAvaliacao.Controllers
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
             IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
             IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness,
-            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness, IBlockChainBusiness blockChainBusiness, 
+            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness, IBlockChainBusiness blockChainBusiness,
             IBlockChainBlockBusiness blockChainBlockBusiness)
         {
             this.testBusiness = testBusiness;
@@ -101,6 +101,26 @@ namespace GestaoAvaliacao.Controllers
         public ActionResult IndexPermission()
         {
             return View();
+        }
+
+        public ActionResult IndexFilterGroupTest(long test_id)
+        {
+            try
+            {
+                var entity = testBusiness.GetTestById(test_id);
+                ViewBag.GroupFilter = new
+                {
+                    TestGroupId = entity.TestSubGroup != null ? entity.TestSubGroup.TestGroup.Id : (long?)null,
+                    TestSubGroupId = entity.TestSubGroup != null ? entity.TestSubGroup.Id : (long?)null,
+                    getGroup = false,
+                };
+                return View();
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return View();
+            }
         }
 
         #region Read
@@ -236,7 +256,7 @@ namespace GestaoAvaliacao.Controllers
                         }).ToList(),
                         BlockChains = entity.BlockChains.Where(c => c.State == (byte)EnumState.ativo).Select(c => new
                         {
-                            c.Id, 
+                            c.Id,
                             c.Description
                         }).ToList(),
                         Blocks = entity.Blocks.Where(c => c.State == (byte)EnumState.ativo).Select(c => new
@@ -280,6 +300,21 @@ namespace GestaoAvaliacao.Controllers
             {
                 LogFacade.SaveError(ex);
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult CheckExistsAdherenceByTestId(long Id)
+        {
+            try
+            {
+                var existeAdesao = testBusiness.ExistsAdherenceByTestId(Id);
+                return Json(new { success = true, existeAdesao }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao verificar a adesão da prova." }, JsonRequestBehavior.AllowGet);
             }
         }
 
