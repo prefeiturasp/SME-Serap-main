@@ -9,6 +9,7 @@
 @*ng-controller="TestController"*@
 
 <alert></alert>
+<div id="div_loading" class="loading-box" style="display:none; width:100%; height:100%; position:fixed; background:rgba(255,255,255,.3); top:0; z-index:99999"><label id="preloading">Carregando...</label></div>
 <div data-ng-controller="TestController" ng-init="editar(@Model.Id);">
     @* Prova *@
     <div class="wellCustom">
@@ -19,18 +20,21 @@
         @* BreadComb das etapas *@
         <div ng-show="mostrarTela" class="wizard">
             <div class="maxWidth">
-                <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="!showTestTAI">
-                    <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
+                <a ng-repeat="wizard in listaWizards" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="!showTestTAI && !ehCadeiaBlocos">
+                    <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{ wizard.Number }}</span>{{ wizard.Description }}
                 </a>
                 <a ng-repeat="wizard in listaWizardTAI" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="showTestTAI">
-                    <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{wizard.Number}}</span>{{wizard.Description}}
+                    <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{ wizard.Number }}</span>{{ wizard.Description }}
+                </a>
+                <a ng-repeat="wizard in listaWizardBlockChains" ng-class="{ true:'current', false:'' }[ navigation === wizard.Number ]" ng-show="ehCadeiaBlocos">
+                    <i class="material-icons">chevron_right</i><span ng-class="{ true:'badge', false:'badge badge-inverse' }[ navigation === wizard.Number ]">{{ wizard.Number }}</span>{{ wizard.Description }}
                 </a>
             </div>
         </div>
         <div class="maxWidth" ng-show="mostrarTela && situacao" style="padding: 5px 0; text-align: right;">
             <span ng-class="situacao.Style">{{situacao.Icon}}</span>{{situacao.Description}}
         </div>
-        <div class="well well-large itens">
+        <div class="well well-lg itens">
             <div class="container-fluid semPadding">
                 <div class="form-group" ng-show="mostrarTela && navigation===1">
                     <div class="row">
@@ -103,12 +107,11 @@
                                          ng-class="{'off': !isMultidiscipline}" style="position: absolute; margin: 4px 206px;"><input type="button" /></div>
                                 </div>
 
-
-                                @* Componente Curricuar *@
+                                @* Componente Curricular *@
                                 <div class="campoLabel" ng-show="e1_listaComponenteCurricular && !isMultidiscipline">
                                     <label> {{labels.componente}}*: </label>
                                     <div>
-                                        <select id="testType" class="form-control"
+                                        <select id="testCompnent" class="form-control"
                                                 ng-change="e1_ComponenteCurricularMudou();"
                                                 ng-model="e1_cbComponenteCurricular"
                                                 ng-options="componenteCurricular as componenteCurricular.Description for componenteCurricular in e1_listaComponenteCurricular"
@@ -167,7 +170,7 @@
                                 <div class="campoLabel col-md-12">
                                     <label for="tempoDeProva">{{labels.tempoDeProva}}*: </label>
                                     <div>
-                                        <select id="groupSubgroup" class="form-control" title="{{ e1_tempoDeProva.Description }}"
+                                        <select id="examTime" class="form-control" title="{{ e1_tempoDeProva.Description }}"
                                                 ng-change="e1_TempoDeProvaMudou();"
                                                 ng-model="e1_tempoDeProva"
                                                 ng-options="tempoDeProva as tempoDeProva.Description for tempoDeProva in tempoDeProvaList"
@@ -250,7 +253,6 @@
                                     <div class="switch" ng-click="selectShowTestTAI();" ng-class="{'off': !showTestTAI}" style="position: absolute; margin: 4px 255px;"><input type="button" /></div>
                                 </div>
 
-
                                 <div class="campoLabel">
                                     <label class="label-pos-inline">  {{labels.ProvaComProficiencia}}: </label>
                                     <div class="switch" ng-click="selecionaProvaComProficiencia();" ng-class="{'off': !ProvaComProficiencia}" style="position: absolute; margin: 4px 255px;"><input type="button" /></div>
@@ -298,7 +300,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-md-12">
                             @* Cronograma *@
@@ -572,30 +573,13 @@
                         </div>
                     </div>
                     @* BIB *@
-                    <div class="row" ng-show="temBIB">
+                    <div class="row" ng-show="temBIB && !ehCadeiaBlocos">
                         <div class="col-md-12">
                             <div class="cards">
-                                @*<div class="campoLabel">
-                                        <label> {{labels.bib}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
-                                        <div>
-                                            <select id="testType" class="form-control"
-                                                    ng-change="e1_BibMudou();"
-                                                    ng-model="e1_cbBIB"
-                                                    ng-options="bib as bib.Description for bib in e1_listaBIB"
-                                                    ng-disabled="!temBIB"
-                                                    ng-title="e1_listaBIB"
-                                                    ng-title-propertie="Description"
-                                                    ng-title-index="1"
-                                                    ng-title-selected>
-                                                <option value="">--Selecione--</option>
-                                            </select>
-                                        </div>
-                                    </div>*@
                                 <div class="campoLabel">
                                     <label> {{labels.quantidadeBlocos}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_qtdBlocos');validarBlocos('value')"
-                                           @*ng-disabled="temBIB&&!e1_cbBIB.Value"*@
                                            ng-model="e1_qtdBlocos"
                                            class="col-md-5 form-control2"
                                            maxlength="3"
@@ -607,7 +591,6 @@
                                     <label> {{labels.e1_itensBlocos}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_itensBlocos');validarItensBlocos('value')"
-                                           @*ng-disabled="temBIB&&!e1_cbBIB.Value"*@
                                            ng-model="e1_itensBlocos"
                                            class="col-md-5 form-control2"
                                            maxlength="3"
@@ -617,17 +600,78 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row" ng-show="temBIB && ehCadeiaBlocos">
+                        <div class="col-md-12">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label style="max-width:230px;"> {{labels.quantidadeBlocos}}<span>*</span>: </label>
+                                    <input type="text"
+                                           ng-change="validarTotalItens('e1_qtdBlocos');validarBlocos('value')"
+                                           ng-model="e1_qtdBlocos"
+                                           class="col-md-5 form-control2"
+                                           maxlength="3"
+                                           size="2"
+                                           placeholder="{{labels.quantidadeBlocos}}" />
+                                </div>
+
+                                <div class="campoLabel">
+                                    <label style="max-width:230px;"> {{labels.quantidadeCadeiaBlocos}}<span>*</span>: </label>
+                                    <input type="text"
+                                           ng-change="validarTotalItens('e1_qtdCadeiaBlocos');validarBlocos('value')"
+                                           ng-model="e1_qtdCadeiaBlocos"
+                                           class="col-md-5 form-control2"
+                                           maxlength="3"
+                                           size="2"
+                                           placeholder="{{labels.quantidadeCadeiaBlocos}}" />
+                                </div>
+
+                                <div class="campoLabel">
+                                    <label style="max-width:230px;"> {{labels.quantidadeItensCadeiaBlocos}}<span>*</span>: </label>
+                                    <input type="text"
+                                           ng-change="validarTotalItens('e1_qtdItensCadeiaBlocos');validarBlocos('value');calcularQuantidadeItemsPorBloco()"
+                                           ng-model="e1_qtdItensCadeiaBlocos"
+                                           class="col-md-5 form-control2"
+                                           maxlength="3"
+                                           size="2"
+                                           placeholder="{{labels.quantidadeItensCadeiaBlocos}}" />
+                                </div>
+
+                                <div class="campoLabel">
+                                    <label style="max-width:230px;"> {{labels.quantidadeCadeiaBlocosPorBloco}}<span>*</span>: </label>
+                                    <input type="text"
+                                           ng-change="validarTotalItens('e1_qtdCadeiaBlocosPorBloco');validarBlocos('value');calcularQuantidadeItemsPorBloco()"
+                                           ng-model="e1_qtdCadeiaBlocosPorBloco"
+                                           class="col-md-5 form-control2"
+                                           maxlength="3"
+                                           size="2"
+                                           placeholder="{{labels.quantidadeCadeiaBlocosPorBloco}}" />
+                                </div>
+
+                                <div class="campoLabel">
+                                    <label style="max-width:230px;"> {{labels.e1_itensBlocos}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
+                                    <input type="text"
+                                           ng-change="validarTotalItens('e1_itensBlocos');validarItensBlocos('value')"
+                                           ng-model="e1_itensBlocos"
+                                           class="col-md-5 form-control2"
+                                           maxlength="3"
+                                           size="2"
+                                           placeholder="Quantidade de itens" disabled />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 @* Etapa 2 *@ @* Lista de itens *@
-                <div class="form-group" ng-show="navigation===2 && mostrarTela">
-
+                <div class="form-group" ng-show="mostrarTela && navigation===2">
+                    <!-- TAI -->
                     <div class="row" ng-show="showTestTAI">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="cards">
 
-                                    @* Componente Curricuar *@
+                                    @* Componente Curricular *@
                                     <div class="campoLabel">
                                         <label> {{labels.componente}}*: </label>
                                         <div ng-show="!e2_blockComponenteMatrixTai">
@@ -663,8 +707,8 @@
                                         <div ng-show="e2_blockComponenteMatrixTai">
                                             <input ng-click="e2_avisoBlockMatrizTai();" readonly class="form-control" id="labelMatrizTai" style="background-color: rgba(0,0,0,.15)" ng-model="e2_matrizAvaliacao.Description" />
                                         </div>
-                                    </div>                                    
-                                   
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -714,7 +758,12 @@
                         </div>
                     </div>
 
-                    <div class="row" ng-show="!showTestTAI">
+                    <!-- Montagem dos blocos -->
+                    @{
+                        Html.RenderPartial("_BlockChain");
+                    }
+
+                    <div class="row" ng-show="!showTestTAI && !ehCadeiaBlocos">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="cards">
@@ -750,7 +799,7 @@
                                                 <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0}}</th>
                                                 <th class="table-parameter-centralize ">
                                                     <i ng-class="{ true:'material-icons check-success pull-left', false:'some-icon' }
-                                                [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
+                                                            [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
                                                 </th>
 
                                                 <th class="table-parameter-centralize">
@@ -775,130 +824,139 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    @* Etapa 4 *@ @* Gera Prova *@
-                    <div class="form-group" ng-show="navigation===3 && mostrarTela">
-                        <div class="row">
-                            <div class="col-md-12 ">
-                                <div class="cards">
-                                    <h4 class="padding"><strong>{{ e1_testDescription}}</strong></h4>
-                                    <table class="table table-hover">
-                                        <colgroup>
-                                            <col width="5%" ng-hide="true">
-                                            <col width="5%">
-                                            <col width="30%">
-                                            <col width="15%">
-                                            <col width="10%">
-                                            <col width="5%">
-                                            <col width="10%">
-                                            <col width="5%">
-                                            <col width="10%">
-                                            <col width="5%">
+                @* Etapa 3 *@ @* Lista de cadernos *@
+                <div class="form-group" ng-show="mostrarTela && navigation===3">
+                    <!-- Montagem dos cadernos -->
+                    @{
+                        Html.RenderPartial("_BlockChainBlock");
+                    }
+                </div>
 
-                                        </colgroup>
-                                        <thead>
-                                            <tr>
-                                                <th class="table-parameter-centralize" ng-hide="true">Gerar</th>
-                                                <th class="">Código</th>
-                                                <th class="">Prova</th>
-                                                <th class="table-parameter-centralize">Permitir download do Gabarito</th>
-                                                <th class="table-parameter-centralize">Gerar Folha de Resposta</th>
-                                                <th class="table-parameter-centralize">Exportar doc</th>
-                                                <th class="table-parameter-centralize">Gerar Prova</th>
-                                                <th class="table-parameter-centralize">Salvar</th>
-                                                <th class="table-parameter-centralize">Última Geração</th>
-                                                <th class="table-parameter-centralize">Baixar</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="p in Provas" ng-click="selecionaItem($index)">
-                                                @* CHECK *@
-                                                <th class="table-parameter-centralize" ng-hide="true">
-                                                    <div class="checkbox checkbox-primary check-parameter">
-                                                        <input id="{{p.label}}" type="checkbox" ng-model="p.gerar">
-                                                        <label for="{{p.label}}" class="gerar-prova label-top"></label>
-                                                    </div>
-                                                </th>
-                                                @* CÓDIGO *@
-                                                <th class="table-parameter-centralize">
-                                                    <div>{{p.Description}}</div>
-                                                </th>
-                                                @* DESCRIÇÃO *@
-                                                <th class="">
-                                                    <div>
-                                                        <span ng-repeat="itens in p.Blocks" class="gerar-prova span-padding">{{itens.Description}}</span>
-                                                    </div>
-                                                </th>
-                                                @* DOWNLOAD DO GABARITO*@
-                                                <th class="table-parameter-centralize">
-                                                    <div class="campoLabel" style="position:relative;">
-                                                        <div class="switch" ng-model="publicFeedback" ng-click="selectedFeedback(p.Registered);" ng-class="{'off': !publicFeedback }"><input type="button" /></div>
-                                                    </div>
-                                                </th>
-                                                @* GERAR FOLHA DE RESPOSTA *@
-                                                <th class="table-parameter-centralize">
-                                                    <div class="campoLabel" ng-show="e1_folhaRespLock" style="position:relative;"
-                                                         data-title="A folha de resposta não pode ser gerada pois o tipo de prova escolhido não tem um tipo de item definido." bs-tooltip>
-                                                        <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
-                                                             ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button" /></div>
-                                                    </div>
-                                                    <div class="campoLabel" ng-show="!e1_folhaRespLock" style="position:relative;">
-                                                        <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
-                                                             ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button" /></div>
-                                                    </div>
-                                                </th>
-                                                <th class="table-parameter-centralize">
-                                                    <div>
-                                                        <a class="btn" ng-click="provaExportDocIndex($index)">
-                                                            <i type="button" class="material-icons">description</i>
-                                                        </a>
-                                                    </div>
-                                                </th>
-                                                @* VISUALIZAR *@
-                                                <th class="table-parameter-centralize">
-                                                    <div>
-                                                        <a class="btn" ng-click="visualizarProva($index)" ng-disabled="p.Registered">
-                                                            <i type="button" class="material-icons">remove_red_eye</i>
-                                                        </a>
-                                                    </div>
-                                                </th>
+                @* Etapa 4 *@ @* Gera Prova *@
+                <div class="form-group" ng-show="mostrarTela && navigation===ultimo && !temBIB && !showTestTAI && !ehCadeiaBlocos">
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            <div class="cards">
+                                <h4 class="padding"><strong>{{ e1_testDescription}}</strong></h4>
+                                <table class="table table-hover">
+                                    <colgroup>
+                                        <col width="5%" ng-hide="true">
+                                        <col width="5%">
+                                        <col width="30%">
+                                        <col width="15%">
+                                        <col width="10%">
+                                        <col width="5%">
+                                        <col width="10%">
+                                        <col width="5%">
+                                        <col width="10%">
+                                        <col width="5%">
 
-                                                @* SALVAR *@
-                                                <th class="table-parameter-centralize">
-                                                    <button type="button"
-                                                            ng-disabled="BtnSaveDisabled"
-                                                            class="btn btn-primary"
-                                                            ng-hide="navigation===2"
-                                                            ng-click="salvar()" style="background-color:#5a94d6">
-                                                        Salvar
-                                                    </button>
-                                                </th>
-                                                @* DATA DE GERAÇÃO *@
-                                                <th class="table-parameter-centralize">
-                                                    <div>{{p.currentDate}}</div>
-                                                </th>
-                                                @* BAIXAR *@
-                                                <th class="table-parameter-centralize">
-                                                    <div>
-                                                        <a class="btn" ng-click="baixarProva($index)" ng-disabled="p.Download">
-                                                            <i type="button" class="material-icons">file_download</i>
-                                                        </a>
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" ng-hide="true">
-                            <div class="col-md-12 gerar-prova margin-left">
-                                <a class="hand-logo gerar-prova none-decoration" ng-click="gerarSelecionadas()">GERAR SELECIONADAS</a>&nbsp &nbsp &nbsp
-                                <a class="hand-logo gerar-prova none-decoration" ng-click="baixarSelecioandas()"><i type="button" class="material-icons">file_download</i>BAIXAR SELECIOANDAS</a>
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th class="table-parameter-centralize" ng-hide="true">Gerar</th>
+                                            <th class="">Código</th>
+                                            <th class="">Prova</th>
+                                            <th class="table-parameter-centralize">Permitir download do Gabarito</th>
+                                            <th class="table-parameter-centralize">Gerar Folha de Resposta</th>
+                                            <th class="table-parameter-centralize">Exportar doc</th>
+                                            <th class="table-parameter-centralize">Gerar Prova</th>
+                                            <th class="table-parameter-centralize">Salvar</th>
+                                            <th class="table-parameter-centralize">Última Geração</th>
+                                            <th class="table-parameter-centralize">Baixar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="p in Provas" ng-click="selecionaItem($index)">
+                                            @* CHECK *@
+                                            <th class="table-parameter-centralize" ng-hide="true">
+                                                <div class="checkbox checkbox-primary check-parameter">
+                                                    <input id="{{p.label}}" type="checkbox" ng-model="p.gerar">
+                                                    <label for="{{p.label}}" class="gerar-prova label-top"></label>
+                                                </div>
+                                            </th>
+                                            @* CÓDIGO *@
+                                            <th class="table-parameter-centralize">
+                                                <div>{{p.Description}}</div>
+                                            </th>
+                                            @* DESCRIÇÃO *@
+                                            <th class="">
+                                                <div>
+                                                    <span ng-repeat="itens in p.Blocks" class="gerar-prova span-padding">{{itens.Description}}</span>
+                                                </div>
+                                            </th>
+                                            @* DOWNLOAD DO GABARITO*@
+                                            <th class="table-parameter-centralize">
+                                                <div class="campoLabel" style="position: relative;">
+                                                    <div class="switch" ng-model="publicFeedback" ng-click="selectedFeedback(p.Registered);" ng-class="{'off': !publicFeedback }"><input type="button" /></div>
+                                                </div>
+                                            </th>
+                                            @* GERAR FOLHA DE RESPOSTA *@
+                                            <th class="table-parameter-centralize">
+                                                <div class="campoLabel" ng-show="e1_folhaRespLock" style="position: relative;"
+                                                     data-title="A folha de resposta não pode ser gerada pois o tipo de prova escolhido não tem um tipo de item definido." bs-tooltip>
+                                                    <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
+                                                         ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button" /></div>
+                                                </div>
+                                                <div class="campoLabel" ng-show="!e1_folhaRespLock" style="position: relative;">
+                                                    <div class="switch" ng-click="selectedFolhaResposta(p.Registered);"
+                                                         ng-class="{'off': !gerarFolhaResposta || p.Registered}"><input type="button" /></div>
+                                                </div>
+                                            </th>
+                                            <th class="table-parameter-centralize">
+                                                <div>
+                                                    <a class="btn" ng-click="provaExportDocIndex($index)">
+                                                        <i type="button" class="material-icons">description</i>
+                                                    </a>
+                                                </div>
+                                            </th>
+                                            @* VISUALIZAR *@
+                                            <th class="table-parameter-centralize">
+                                                <div>
+                                                    <a class="btn" ng-click="visualizarProva($index)" ng-disabled="p.Registered">
+                                                        <i type="button" class="material-icons">remove_red_eye</i>
+                                                    </a>
+                                                </div>
+                                            </th>
+
+                                            @* SALVAR *@
+                                            <th class="table-parameter-centralize">
+                                                <button type="button"
+                                                        ng-disabled="BtnSaveDisabled"
+                                                        class="btn btn-primary"
+                                                        ng-hide="navigation===2 || navigation===3"
+                                                        ng-click="salvar()" style="background-color: #5a94d6">
+                                                    Salvar
+                                                </button>
+                                            </th>
+                                            @* DATA DE GERAÇÃO *@
+                                            <th class="table-parameter-centralize">
+                                                <div>{{p.currentDate}}</div>
+                                            </th>
+                                            @* BAIXAR *@
+                                            <th class="table-parameter-centralize">
+                                                <div>
+                                                    <a class="btn" ng-click="baixarProva($index)" ng-disabled="p.Download">
+                                                        <i type="button" class="material-icons">file_download</i>
+                                                    </a>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
+                    <div class="row" ng-hide="true">
+                        <div class="col-md-12 gerar-prova margin-left">
+                            <a class="hand-logo gerar-prova none-decoration" ng-click="gerarSelecionadas()">GERAR SELECIONADAS</a>&nbsp &nbsp &nbsp
+                            <a class="hand-logo gerar-prova none-decoration" ng-click="baixarSelecioandas()"><i type="button" class="material-icons">file_download</i>BAIXAR SELECIOANDAS</a>
+                        </div>
+                    </div>
                 </div>
+
                 @* Footer *@
                 <div class="footerCustom semPadding">
                     @* Botões *@
@@ -911,39 +969,88 @@
                                     ng-click="voltar()">
                                 Voltar
                             </button>
+
                             @* Avançar *@
                             <button type="button"
                                     class="btnPadrao2 pull-right"
-                                    ng-hide="navigation===3 || (showTestTAI && navigation===2)"
+                                    ng-hide="navigation===ultimo"
                                     ng-disabled="provaId===0"
                                     ng-click="avancar()">
                                 Avançar
                             </button>
+
+                            @* Finalizar BIB *@
+                            <button type="button"
+                                    class="btnPadrao2 pull-right"
+                                    ng-hide="navigation!==ultimo || !temBIB"
+                                    ng-click="validaFinalizarBib()">
+                                Finalizar
+                            </button>
+
                             @* Finalizar *@
                             <button type="button"
                                     class="btnPadrao2 pull-right"
-                                    ng-hide="(navigation!==ultimo && !showTestTAI) || (showTestTAI && navigation!==2)"
+                                    ng-hide="navigation!==ultimo || temBIB"
                                     ng-click="finalizar()">
                                 Finalizar
                             </button>
+
                             @* Cancelar *@
                             <button type="button"
                                     class="btnCancelar pull-right"
                                     ng-click="cancelar()">
                                 Cancelar
                             </button>
+
                             @* Salvar *@
                             <button type="button"
                                     class="btnPadrao2 pull-right"
-                                    ng-hide="(navigation===2 && !showTestTAI) || navigation===3"
+                                    ng-hide="(navigation===2 && !showTestTAI) || navigation===3 || (navigation===ultimo && !showTestTAI)"
                                     ng-click="salvar()">
                                 Salvar
                             </button>
+
+                            <button type="button"
+                                    class="btnPadrao2 pull-right"
+                                    ng-hide="navigation!==2 || !temBIB || !ehCadeiaBlocos"
+                                    ng-click="callModalNovaImportacao()">
+                                Nova importação
+                            </button>
+
+                            <button type="button"
+                                    class="btnPadrao2 pull-right"
+                                    ng-hide="navigation!==3 || !temBIB || !ehCadeiaBlocos"
+                                    ng-click="callModalNovaImportacaoCsvCadernos()">
+                                Nova importação
+                            </button>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        @* Modal sugestao de adesão *@
+        <div class="modal fade" id="modalSugestaoAdesao" role="dialog" aria-labelledby="modalSugestaoAdesao" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                        <h4 class="modal-title" id="modalSugestaoAdesaoLabel">
+                            <strong>Atenção</strong>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <span>A prova ainda não tem adesão. Deseja realizar agora?</span>
+                    </div>
+                    <div class="modal-footer footerCustom">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="redirecionarAdesaoProva()">SIM</button>
+                        <button type="button" class="btnCancelar2" data-dismiss="modal" ng-click="redirecionarGrupoProva()">NÃO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @* Modal que exibetodo o texto do select *@
         <modal id="modalDescription" modal-title="{{textSelected.Description}}">
             <div class="container-fluid">
@@ -966,6 +1073,7 @@
                         <h4 class="modal-title padding-6" id="modal1Label">
                             <strong ng-show="e2_Navegacao===1">Lista de itens disponíveis</strong>
                             <strong ng-show="e2_Navegacao===2">Lista de itens selecionados</strong>
+                            <strong ng-show="e2_Navegacao===3">Lista de itens selecionados no bloco</strong>
                             <strong ng-show="e2_Navegacao===5">Resumo do Item</strong>
                             <strong ng-show="e2_Navegacao===6">Versões do item</strong>
                             <strong ng-show="e2_Navegacao===7">Lista de áreas de conhecimento</strong>
@@ -995,7 +1103,7 @@
                                 <label>{{e1_cbComponenteCurricular.Description}} </label>
                             </div>
 
-                            @* Componente Curricuar *@
+                            @* Componente Curricular *@
                             <div class="campoLabel" ng-show="isMultidiscipline">
                                 <label><strong> {{labels.componente}} </strong></label>
                                 <div>
@@ -1011,7 +1119,6 @@
                                     </select>
                                 </div>
                             </div>
-
 
                             <div class="campoLabel" ng-repeat="(cbIndex, cb)  in e2_ListaComboBox">
                                 @* Lista de ComboBox's *@
@@ -1085,7 +1192,7 @@
                                 <label><b>Tipo do item</b></label>
                                 @*<label ng-if="TestTypeItemType != null" style="max-width: 100%;">{{ItemType.Description}}</label>*@
                                 <div>
-                                    <select id="modality" class="form-control"
+                                    <select id="itemType" class="form-control"
                                             ng-model="ItemType"
                                             ng-options="itemType as itemType.Description for itemType in ItemTypeList"
                                             ng-title="ItemTypeList"
@@ -1108,7 +1215,7 @@
                                 <div class="checkbox-colunas">
                                     <div class="checkbox checkbox-primary lista-item" ng-repeat="dificuldade in e2_ListaDificuldade">
                                         <input id="d{{dificuldade.Description}}" type="checkbox" ng-model="e2_ListaDificuldadeChecked[$index]" />
-                                        <label for="d{{dificuldade.Description}}" lista-item margin-left" ">{{ dificuldade.Description }}</label>
+                                        <label for="d{{dificuldade.Description}}" lista-item margin-left>{{ dificuldade.Description }}</label>
                                     </div>
                                 </div>
                             </div>
@@ -1119,7 +1226,8 @@
                         </div>
                         <!-- <h6 class="row centralizar"><strong>ATENÇÃO: Sugerimos que salve antes de mudar de página.</strong> </h6> -->
                         <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && !temBIB"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{ itensTotais }} </strong></h5>
-                        <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && temBIB"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{e1_itensBlocos}} </strong></h5>
+                        <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && temBIB && !ehCadeiaBlocos"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{e1_itensBlocos}} </strong></h5>
+                        <h5 class="centralizar" ng-show="e2_ResultadoBusca != null && e2_ResultadoBusca.length > 0 && temBIB && ehCadeiaBlocos"><strong> Total de itens selecionados: {{e2_ListaItemSelecionados.length}} de {{e1_qtdItensCadeiaBlocos}} </strong></h5>
                         @* Resultado das busca *@
                         <div class="campoCodigo hr">
                             <div class="campoLabel">
@@ -1224,7 +1332,6 @@
                         </div>
                     </div>
 
-
                     @*MODAL DETALHES DO ITEM*@
                     <div class="modal-body" ng-show="e2_Navegacao===5">
 
@@ -1233,7 +1340,7 @@
 
                             <!-- Titulo -->
                             <div class="panel-heading">Texto base:</div>
-                            
+
                             <!--Texto -->
                             <div class="well well-sm centralizarMargin10">
                                 <div class="imgResponsive allMaxWidth100" alt="Responsive image" ng-bind-html="abstract.textbase"></div>
@@ -1301,7 +1408,6 @@
                             </div>
                         </div>
                     </div>
-
 
                     @*MODAL LISTA DE ITENS*@
                     @* Julio Silva - 23/10/2015 *@
@@ -1504,6 +1610,10 @@
                             <span>Nenhum item foi selecionado.</span>
                         </div>
                     </div>
+
+                    @{
+                        Html.RenderPartial("_EditBlockChain");
+                    }
 
                     @*MODAL LISTA DE ÁREAS DE CONHECIMENTO*@
                     <div class="modal-body" ng-show="e2_Navegacao===7">
@@ -1873,6 +1983,18 @@
             </div>
         </div>
 
+        @{
+            Html.RenderPartial("_ClearSelectedItemsBlockChain");
+        }
+
+        @{
+            Html.RenderPartial("_AdicionarBlocos");
+        }
+
+        @{
+            Html.RenderPartial("_VisualizarItensCaderno");
+        }
+
         @*modalDeleteItemTestContex*@
         <div class="modal fade" id="modalDeleteItemTestContex" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -1909,5 +2031,105 @@
             </div>
         </div>
 
+        @*modalImportarCsvBlocos*@
+        <div class="modal fade" id="modalImportarCsvBlocos" tabindex="-1" role="dialog" aria-labelledby="modalImportarCsvBlocos" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content ">
+
+                    @*HEADER*@
+                    <div class="modal-header">
+                        <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons" ng-click="limparDados()">close</i></a>
+                        <h4 class="modal-title">
+                            <strong>Importação de montagem dos blocos</strong>
+                        </h4>
+                    </div>
+                    @*BODY*@
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div style="margin-bottom: 20px;" class="campoLabel">
+                                <label>Arquivo*: </label>
+                                <div>
+                                    <div class="upload-group">
+                                        <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">
+                                        <span class="input-group-btn fake-upload">
+                                            <i class="material-icons">file_upload</i>
+                                            <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
+                                        </span>
+                                    </div>
+                                    <p style="font-size: 11px;" class="textoDescricao pull-left">(NumeroBloco;CodigoItem)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*FOOTER*@
+                    <div class="modal-footer footerCustom ">
+                        <div class="container-fluid row-fluid">
+
+                            <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="limparDados()" aria-hidden="true">Cancelar</button>
+                            <button type="button"
+                                    class="btn btn-primary" data-dismiss="modal"
+                                    ng-click="salvarImportacao()">
+                                Salvar
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        @*modalImportarCsvCadernos*@
+        <div class="modal fade" id="modalImportarCsvCadernos" tabindex="-1" role="dialog" aria-labelledby="modalImportarCsvCadernos" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content ">
+
+                    @*HEADER*@
+                    <div class="modal-header">
+                        <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons" ng-click="limparDados()">close</i></a>
+                        <h4 class="modal-title">
+                            <strong>Importação da montagem dos cadernos</strong>
+                        </h4>
+                    </div>
+                    @*BODY*@
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div style="margin-bottom: 20px;" class="campoLabel">
+                                <label>Arquivo*: </label>
+                                <div>
+                                    <div class="upload-group">
+                                        <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">
+                                        <span class="input-group-btn fake-upload">
+                                            <i class="material-icons">file_upload</i>
+                                            <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivoCsvCadernos(this)" ng-disabled="false" />
+                                        </span>
+                                    </div>
+                                    <p style="font-size: 11px;" class="textoDescricao pull-left">(Numero do caderno;Numero do bloco)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*FOOTER*@
+                    <div class="modal-footer footerCustom ">
+                        <div class="container-fluid row-fluid">
+
+                            <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="limparDados()" aria-hidden="true">Cancelar</button>
+                            <button type="button"
+                                    class="btn btn-primary" data-dismiss="modal"
+                                    ng-click="salvarImportacaoCsvCadernos()">
+                                Salvar
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        @{
+            Html.RenderPartial("_ModalResultadoImportarCsvBlocos");
+        }
     </div>
     <script src="~/Assets/js/vendor/contextoProva/scriptContexoProva.js"></script>
+</div>

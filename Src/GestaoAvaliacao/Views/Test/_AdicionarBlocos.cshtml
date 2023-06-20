@@ -1,0 +1,62 @@
+﻿@* Modal para adicionar blocos nos cadernos' *@
+
+<div class="modal fade" id="modalAddBlocos" tabindex="-1" role="dialog" aria-labelledby="modalAddBlocos" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content ">
+
+            @*HEADER*@
+            <div class="modal-header">
+                <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                <h4 class="modal-title" id="modalAddBlocosLabel">
+                    <strong>Selecionar blocos</strong>
+                </h4>
+                <span>Selecione {{cadernoSelecionado.Total}} bloco(s)</span>
+            </div>
+
+            @*BODY*@
+            <div class="modal-body">
+                <div class="linhaQuebra" style="display: grid; grid-template-columns: repeat(3, auto); grid-auto-rows: 40px; justify-content: stretch; ">
+                    <div ng-repeat="bloco in cadeiaBlocos">
+                        <div class="checkbox checkbox-primary checkbox-inline">
+                            <input id="b_{{bloco.Id}}"
+                                   type="checkbox"
+                                   ng-click="e3_selecionarBlocosModal(bloco)"
+                                   ng-model="bloco.check">
+
+                            <label for="b_{{bloco.Id}}"> Bloco {{bloco.Description}}</label>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="margin" />
+                
+                <table class="table ordem">
+                    <colgroup>
+                        <col style="width: 50%" />
+                        <col style="width: 50%" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="table-parameter-centralize">Ordem</th>
+                            <th class="table-parameter-centralize">Bloco</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="($indexItem, ordem) in [].constructor(cadernoSelecionado.Total) track by $indexItem">
+                            <td class="table-parameter-centralize">{{ $indexItem+1 }}</td>
+                            <td class="table-parameter-centralize">{{ listaBlocosSelecionadosCadernoModal[$indexItem].Description }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            @*FOOTER*@
+            <div class="modal-footer footerCustom ">
+                <div class="container-fluid row-fluid">
+                    <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e3_cancelarModalAddBlocosCaderno()">Cancelar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="e3_salvarBlocosCaderno()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

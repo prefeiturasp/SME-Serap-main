@@ -89,6 +89,11 @@ namespace GestaoAvaliacao.Business
             return blockRepository.GetBlockItens(Id, page, pageItens);
         }
 
+        public IEnumerable<Item> GetBlockItensWithBlockChain(long Id, int page, int pageItens)
+        {
+            return blockRepository.GetBlockItensWithBlockChain(Id, page, pageItens);
+        }
+
         public IEnumerable<BlockKnowledgeArea> GetBlockKnowledgeAreas(long Id)
         {
             return blockRepository.GetBlockKnowledgeAreas(Id);

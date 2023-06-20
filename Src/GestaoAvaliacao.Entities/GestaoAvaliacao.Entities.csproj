@@ -57,6 +57,13 @@
     <Compile Include="Alternative.cs" />
     <Compile Include="AnswerSheetBatchQueue.cs" />
     <Compile Include="AnswerSheetLot.cs" />
+    <Compile Include="BlockChain.cs" />
+    <Compile Include="BlockChainBlock.cs" />
+    <Compile Include="BlockChainItem.cs" />
+    <Compile Include="DTO\CsvBlockImportDTO.cs" />
+    <Compile Include="DTO\ErrorCsvBlockImportDTO.cs" />
+    <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoDTO.cs" />
+    <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoRespostaDTO.cs" />
     <Compile Include="ResultadoPsp\ArquivoResultadoPsp.cs" />
     <Compile Include="BaseText.cs" />
     <Compile Include="Base\EntityBase.cs" />
@@ -208,7 +215,9 @@
       <Name>GestaoAvaliacao.Util</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DTO\BlockChain\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

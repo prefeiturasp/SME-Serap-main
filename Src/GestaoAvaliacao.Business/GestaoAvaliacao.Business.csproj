@@ -119,6 +119,8 @@
     <Compile Include="AnswerSheetLotBusiness.cs" />
     <Compile Include="BaseTextBusiness.cs" />
     <Compile Include="BlockBusiness.cs" />
+    <Compile Include="BlockChainBlockBusiness.cs" />
+    <Compile Include="BlockChainBusiness.cs" />
     <Compile Include="BookletBusiness.cs" />
     <Compile Include="CognitiveCompetenceBusiness.cs" />
     <Compile Include="AnswerSheetBatchBusiness.cs" />
@@ -126,6 +128,8 @@
     <Compile Include="AnswerSheetBatchLogBusiness.cs" />
     <Compile Include="CorrectionBusiness.cs" />
     <Compile Include="CorrectionResultsBusiness.cs" />
+    <Compile Include="DTO\BlockCsvDTO.cs" />
+    <Compile Include="DTO\CadernoCsvDTO.cs" />
     <Compile Include="ExportAnalysisBusiness.cs" />
     <Compile Include="GenerateHtmlBusiness.cs" />
     <Compile Include="ItemAudioBusiness.cs" />

@@ -38,7 +38,8 @@ namespace GestaoAvaliacao.Repository
 
                 var sql = new StringBuilder("SELECT Id, Description, Bib, NumberItemsBlock, NumberBlock, NumberItem, ApplicationStartDate, ApplicationEndDate, ");
                 sql.Append("CorrectionStartDate, CorrectionEndDate, UsuId, FrequencyApplication, TestSituation, CreateDate, UpdateDate, State, Discipline_Id, ");
-                sql.Append("FormatType_Id, TestType_Id, AllAdhered, ProcessedCorrectionDate, KnowledgeAreaBlock, Multidiscipline, ShowVideoFiles, ShowAudioFiles ");
+                sql.Append("FormatType_Id, TestType_Id, AllAdhered, ProcessedCorrectionDate, KnowledgeAreaBlock, Multidiscipline, ShowVideoFiles, ShowAudioFiles, ");
+                sql.Append("BlockChain, BlockChainNumber, BlockChainItems, BlockChainForBlock ");
                 sql.Append("FROM Test WITH (NOLOCK) ");
                 sql.Append("WHERE Id = @id");
 
@@ -197,6 +198,8 @@ namespace GestaoAvaliacao.Repository
                         .Include("TestSubGroup")
                         .Include("TestTime")
                         .Include("TestContexts")
+                        .Include("BlockChains")
+                        .Include("Blocks")
                         .FirstOrDefault(i => i.Id == Id && i.State == (Byte)EnumState.ativo);
 
                     return query;
@@ -1392,6 +1395,29 @@ namespace GestaoAvaliacao.Repository
                 return result.ToList().Count > 0;
             }
         }
+        public bool ExistsAdherenceByTestId(long test_id)
+        {
+            StringBuilder sql = new StringBuilder(@" SELECT top(1) 
+                                                            CASE WHEN A.id IS NOT NULL OR  t.AllAdhered = 1 
+                                                            THEN 1 
+		                                                      ELSE 0 END as TemAderencia  
+                                                       FROM
+                                                        Test AS T WITH(NOLOCK)
+	                                                    LEFT JOIN Adherence AS A WITH(NOLOCK)
+		                                                      ON T.Id = A.Test_Id
+                                                              AND A.[State] = 1
+                                                        WHERE 
+                                                         T.Id = @TestId");
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                var result = cn.Query<bool>(sql.ToString(), new { TestId = test_id }).First();
+
+                return result;
+            }
+        }
 
         public async Task<Test> SearchInfoTestAsync(long test_id)
         {
@@ -1492,11 +1518,21 @@ namespace GestaoAvaliacao.Repository
 
         public Test Update(long Id, Test entity)
         {
-            using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                DateTime dateNow = DateTime.Now;
+                var dateNow = DateTime.Now;
 
-                Test test = GestaoAvaliacaoContext.Test.Include("Discipline").Include("TestCurriculumGrades").Include("TestPerformanceLevels").Include("TestPerformanceLevels.PerformanceLevel").Include("TestItemLevels").Include("TestItemLevels.ItemLevel").Include("TestType").Include("TestSubGroup").FirstOrDefault(a => a.Id == entity.Id);
+                var test = gestaoAvaliacaoContext.Test.Include("Discipline").Include("TestCurriculumGrades")
+                    .Include("TestPerformanceLevels").Include("TestPerformanceLevels.PerformanceLevel")
+                    .Include("TestItemLevels").Include("TestItemLevels.ItemLevel").Include("TestType")
+                    .Include("TestSubGroup").Include("BlockChains").Include("Blocks")
+                    .FirstOrDefault(a => a.Id == entity.Id);
+
+                if (test == null)
+                    return entity;
+
+                test.RemoveBlockChain = entity.BlockChainNumber < test.BlockChainNumber || entity.BlockChainItems < test.BlockChainItems;
+                test.RemoveBlockChainBlock = entity.NumberBlock < test.NumberBlock || entity.BlockChainItems < test.BlockChainItems;
 
                 test.TestSituation = entity.TestSituation;
 
@@ -1513,25 +1549,19 @@ namespace GestaoAvaliacao.Repository
                 test.Password = entity.Password;
 
                 if (entity.Discipline != null)
-                    test.Discipline = GestaoAvaliacaoContext.Discipline.FirstOrDefault(s => s.Id == entity.Discipline.Id);
+                    test.Discipline = gestaoAvaliacaoContext.Discipline.FirstOrDefault(s => s.Id == entity.Discipline.Id);
                 else if (entity.Discipline == null && entity.Multidiscipline)
                     test.Discipline = null;
 
-
                 if (entity.FormatType != null)
-                    test.FormatType = GestaoAvaliacaoContext.FormatType.FirstOrDefault(s => s.Id == entity.FormatType.Id);
+                    test.FormatType = gestaoAvaliacaoContext.FormatType.FirstOrDefault(s => s.Id == entity.FormatType.Id);
 
-                test.TestType = GestaoAvaliacaoContext.TestType.FirstOrDefault(l => l.Id == entity.TestType.Id);
-                test.TestTime = GestaoAvaliacaoContext.TestTime.FirstOrDefault(l => l.Id == entity.TestTime.Id);
+                test.TestType = gestaoAvaliacaoContext.TestType.FirstOrDefault(l => l.Id == entity.TestType.Id);
+                test.TestTime = gestaoAvaliacaoContext.TestTime.FirstOrDefault(l => l.Id == entity.TestTime.Id);
 
-                if (entity.TestSubGroup != null)
-                {
-                    test.TestSubGroup = GestaoAvaliacaoContext.TestSubGroup.FirstOrDefault(l => l.Id == entity.TestSubGroup.Id);
-                }
-                else
-                {
-                    test.TestSubGroup = null;
-                }
+                test.TestSubGroup = entity.TestSubGroup != null
+                    ? gestaoAvaliacaoContext.TestSubGroup.FirstOrDefault(l => l.Id == entity.TestSubGroup.Id)
+                    : null;
 
                 test.NumberBlock = entity.NumberBlock;
                 test.NumberItem = entity.NumberItem;
@@ -1554,6 +1584,7 @@ namespace GestaoAvaliacao.Repository
                         testCurriculumGrade.UpdateDate = dateNow;
                         testCurriculumGrades.Add(testCurriculumGrade);
                     }
+
                     entity.TestCurriculumGrades.RemoveAll(p => p.TypeCurriculumGradeId == testCurriculumGrade.TypeCurriculumGradeId);
                 }
 
@@ -1583,12 +1614,13 @@ namespace GestaoAvaliacao.Repository
                         testitemlevel.UpdateDate = dateNow;
                         itemlevels.Add(testitemlevel);
                     }
+
                     entity.TestItemLevels.RemoveAll(p => p.ItemLevel.Id == testitemlevel.ItemLevel.Id);
                 }
 
                 foreach (var t in entity.TestItemLevels)
                 {
-                    t.ItemLevel = GestaoAvaliacaoContext.ItemLevel.FirstOrDefault(f => f.Id == t.ItemLevel.Id);
+                    t.ItemLevel = gestaoAvaliacaoContext.ItemLevel.FirstOrDefault(f => f.Id == t.ItemLevel.Id);
                 }
 
                 itemlevels.AddRange(entity.TestItemLevels);
@@ -1617,12 +1649,13 @@ namespace GestaoAvaliacao.Repository
                         testperformancelevel.UpdateDate = dateNow;
                         performancelevels.Add(testperformancelevel);
                     }
+
                     entity.TestPerformanceLevels.RemoveAll(p => p.PerformanceLevel.Id == testperformancelevel.PerformanceLevel.Id);
                 }
 
                 foreach (var t in entity.TestPerformanceLevels)
                 {
-                    t.PerformanceLevel = GestaoAvaliacaoContext.PerformanceLevel.FirstOrDefault(f => f.Id == t.PerformanceLevel.Id);
+                    t.PerformanceLevel = gestaoAvaliacaoContext.PerformanceLevel.FirstOrDefault(f => f.Id == t.PerformanceLevel.Id);
                 }
 
                 performancelevels.AddRange(entity.TestPerformanceLevels);
@@ -1648,8 +1681,13 @@ namespace GestaoAvaliacao.Repository
 
                 test.UpdateDate = DateTime.Now;
 
-                GestaoAvaliacaoContext.Entry(test).State = System.Data.Entity.EntityState.Modified;
-                GestaoAvaliacaoContext.SaveChanges();
+                test.BlockChain = entity.BlockChain;
+                test.BlockChainNumber = entity.BlockChainNumber;
+                test.BlockChainItems = entity.BlockChainItems;
+                test.BlockChainForBlock = entity.BlockChainForBlock;
+
+                gestaoAvaliacaoContext.Entry(test).State = EntityState.Modified;
+                gestaoAvaliacaoContext.SaveChanges();
                 LimparCache_GetObject(Id);
 
                 return test;

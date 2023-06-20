@@ -8,7 +8,6 @@ using GestaoAvaliacao.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -85,109 +84,134 @@ namespace GestaoAvaliacao.Repository
 
         public IEnumerable<Block> GetTestBlocks(Int64 TestId)
         {
-            using (IDbConnection cn = Connection)
+            using (var cn = Connection)
             {
                 cn.Open();
-                var sql = @"SELECT Id, Description, Test_Id " +
-                           "FROM Block WITH (NOLOCK) " +
-                           "WHERE Test_Id = @TestId " +
-                           "AND State = @state " +
+                const string sql = @"SELECT Id, Description, Test_Id " +
+                                   "FROM Block WITH (NOLOCK) " +
+                                   "WHERE Test_Id = @TestId " +
+                                   "AND State = @state " +
 
-                           "SELECT T.Id, T.KnowledgeAreaBlock " +
-                           "FROM Test T WITH(NOLOCK)" +
-                           "WHERE Id = @TestId " +
+                                   "SELECT T.Id, T.KnowledgeAreaBlock " +
+                                   "FROM Test T WITH(NOLOCK)" +
+                                   "WHERE Id = @TestId " +
 
-                           "SELECT BI.Id, BI.Block_Id, BI.Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS [Order], I.KnowledgeArea_Id " +
-                           "FROM BlockItem BI WITH (NOLOCK) " +
-                           "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
-                           "INNER JOIN Item I WITH(NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3 " +
-                           "INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] " +
-                           "LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state " +
-                           "WHERE B.Test_Id = @TestId " +
-                           "AND BI.State = @state AND B.State = @state";
+                                   "SELECT BI.Id, BI.Block_Id, BI.Item_Id, (DENSE_RANK() OVER(ORDER BY CASE WHEN (t.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) END, bi.[Order]) - 1) AS [Order], I.KnowledgeArea_Id " +
+                                   "FROM BlockItem BI WITH (NOLOCK) " +
+                                   "INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id " +
+                                   "INNER JOIN Item I WITH(NOLOCK) ON BI.Item_Id = I.Id AND I.State <> 3 " +
+                                   "INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] " +
+                                   "LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = I.KnowledgeArea_Id AND B.Id = Bka.Block_Id AND Bka.State = @state " +
+                                   "WHERE B.Test_Id = @TestId " +
+                                   "AND BI.State = @state AND B.State = @state " +
 
-                var multi = cn.QueryMultiple(sql, new { TestId = TestId, state = (Byte)EnumState.ativo });
+                                   "SELECT * from BlockChainBlock bcb WITH (NOLOCK) " +
+                                   "inner join BlockChain bc WITH(NOLOCK) on bc.Id = bcb.BlockChain_Id " +
+                                   "WHERE bc.Test_Id = @TestId " +
+                                   "AND bc.State = @state " +
+                                   "AND bcb.State = @state " +
+                                   "ORDER by bcb.Block_Id, bcb.[Order] ";
 
-                var listBlock = multi.Read<Block>();
-                var listTest = multi.Read<Test>();
-                var listBlockItem = multi.Read<BlockItem>();
+                var multi = cn.QueryMultiple(sql, new { TestId, state = (byte)EnumState.ativo });
+
+                var listBlock = multi.Read<Block>().ToList();
+                var listTest = multi.Read<Test>().ToList();
+                var listBlockItem = multi.Read<BlockItem>().ToList();
+                var listBlockChainBlock = multi.Read<BlockChainBlock>().ToList();
 
                 foreach (var block in listBlock)
                 {
                     block.Test = listTest.FirstOrDefault(p => p.Id == block.Test_Id);
                     block.BlockItems.AddRange(listBlockItem.Where(i => i.Block_Id.Equals(block.Id)));
+                    block.BlockChainBlocks.AddRange(listBlockChainBlock.Where(c => c.Block_Id.Equals(block.Id)));
                 }
 
                 return listBlock;
             }
         }
 
-        public IEnumerable<Item> GetBlockItens(Int64 Id, int page, int pageItens)
+        public IEnumerable<Item> GetBlockItens(long Id, int page, int pageItens)
         {
-            using (IDbConnection cn = Connection)
+            using (var cn = Connection)
             {
                 cn.Open();
 
-                var sql = @"WITH ItensPage AS
-                            (
-                                SELECT ROW_NUMBER() OVER (ORDER BY BI.[Order]) AS RowNum, I.Id, I.ItemCode, I.ItemVersion, I.Statement, I.Revoked, I.KnowledgeArea_Id, I.ItemCodeVersion, K.Description AS KnowledgeArea_Description, CASE WHEN (T.KnowledgeAreaBlock = 1) THEN ISNULL(Bka.[Order], 0) ELSE 0 END AS KnowledgeArea_Order 
-                                FROM Item I WITH (NOLOCK) 
-                                INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id 
-                                INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
-                                INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
-                                LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state 
-                                LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = K.Id AND B.Id = Bka.Block_Id AND Bka.State = @state 
-                                WHERE BI.Block_Id = @id 
-                                AND BI.State = @state AND I.State = @state 
-                            )
+                const string sql = @"WITH ItensPage AS
+                                    (
+                                        SELECT ROW_NUMBER() OVER (ORDER BY ISNULL(Bka.[Order], 0), BI.[Order]) AS RowNum, 
+                                            I.Id, 
+                                            I.ItemCode, 
+                                            I.ItemVersion, 
+                                            I.Statement, 
+                                            I.Revoked, 
+                                            I.KnowledgeArea_Id, 
+                                            I.ItemCodeVersion, 
+                                            K.Description AS KnowledgeArea_Description, 
+                                            CASE WHEN (T.KnowledgeAreaBlock = 1) THEN 
+                                                ISNULL(Bka.[Order], 0) 
+                                            ELSE 
+                                                0 
+                                            END AS KnowledgeArea_Order
+                                        FROM Item I WITH (NOLOCK) 
+                                            INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id 
+                                            INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
+                                            INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
+                                            LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state 
+                                            LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = K.Id AND B.Id = Bka.Block_Id AND Bka.State = @state 
+                                        WHERE BI.Block_Id = @id 
+                                        AND BI.State = @state 
+                                        AND I.State = @state 
+                                    )
+                                    SELECT * FROM ItensPage
+                                    WHERE RowNum BETWEEN @initialPageItem AND @finalPageItem;";
 
-                            SELECT
-                                *
-                            FROM ItensPage
-                            WHERE RowNum BETWEEN @initialPageItem AND @finalPageItem;";
+                var initialPageItem = page * pageItens + 1;
 
-                var initialPageItem = (page * pageItens) + 1;
-                var listItems = cn.Query<Item>(sql, new { id = Id, state = (Byte)EnumState.ativo, initialPageItem, finalPageItem = initialPageItem + pageItens - 1 });
+                var listItems = cn.Query<Item>(sql,
+                    new
+                    {
+                        id = Id, state = (byte)EnumState.ativo, initialPageItem,
+                        finalPageItem = initialPageItem + pageItens - 1
+                    }).ToList();
 
                 foreach (var item in listItems)
                 {
                     var itemId = item.Id;
 
-                    var sqlMulti = @"SELECT B.Id, B.Description, B.Source 
-									 FROM Item I WITH (NOLOCK) 
-									 INNER JOIN BaseText B WITH (NOLOCK) ON B.Id = I.BaseText_Id
-									 WHERE I.Id = @id 
-									 AND I.State = @state AND B.State = @state 
+                    const string sqlMulti = @"SELECT B.Id, B.Description, B.Source 
+									         FROM Item I WITH (NOLOCK) 
+									         INNER JOIN BaseText B WITH (NOLOCK) ON B.Id = I.BaseText_Id
+									         WHERE I.Id = @id 
+									         AND I.State = @state AND B.State = @state 
 
-									 SELECT L.Description, L.Value 
-									 FROM Item I WITH (NOLOCK) 
-									 INNER JOIN ItemLevel L WITH (NOLOCK) ON L.Id = I.ItemLevel_Id 
-									 WHERE I.Id = @id 
-									 AND I.State = @state AND L.State = @state 
-									 
-									 SELECT TypeCurriculumGradeId 
-									 FROM ItemCurriculumGrade WITH (NOLOCK) 
-									 WHERE Item_Id = @id 
-									 AND State = @state 
-									 
-									 SELECT BI.Id, BI.Block_Id, BI.Item_Id, bi.[Order]  
-									 FROM BlockItem BI WITH (NOLOCK) 
-                                     INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
-									 INNER JOIN Item I WITH (NOLOCK) ON I.Id = BI.Item_Id 
-                                     INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
-                                     WHERE BI.Item_Id = @id AND BI.Block_Id = @blockId 
-									 AND I.State = @state AND BI.State = @state 
+									         SELECT L.Description, L.Value 
+									         FROM Item I WITH (NOLOCK) 
+									         INNER JOIN ItemLevel L WITH (NOLOCK) ON L.Id = I.ItemLevel_Id 
+									         WHERE I.Id = @id 
+									         AND I.State = @state AND L.State = @state 
+									         
+									         SELECT TypeCurriculumGradeId 
+									         FROM ItemCurriculumGrade WITH (NOLOCK) 
+									         WHERE Item_Id = @id 
+									         AND State = @state 
+									         
+									         SELECT BI.Id, BI.Block_Id, BI.Item_Id, bi.[Order]  
+									         FROM BlockItem BI WITH (NOLOCK) 
+                                             INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
+									         INNER JOIN Item I WITH (NOLOCK) ON I.Id = BI.Item_Id 
+                                             INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
+                                             WHERE BI.Item_Id = @id AND BI.Block_Id = @blockId 
+									         AND I.State = @state AND BI.State = @state 
 
-									 SELECT D.Id, D.Description 
-									 FROM Item I 
-									 INNER JOIN EvaluationMatrix EM WITH (NOLOCK)ON EM.Id = I.EvaluationMatrix_Id 
-									 INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
-									 WHERE I.State = @state 
-									 AND D.State = @state 
-									 AND I.Id = @id "
-                                   ;
+									         SELECT D.Id, D.Description 
+									         FROM Item I WITH (NOLOCK) 
+									         INNER JOIN EvaluationMatrix EM WITH (NOLOCK)ON EM.Id = I.EvaluationMatrix_Id 
+									         INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
+									         WHERE I.State = @state 
+									         AND D.State = @state 
+									         AND I.Id = @id";
 
-                    var multi = cn.QueryMultiple(sqlMulti, new { id = itemId, blockId = Id, state = (Byte)EnumState.ativo });
+                    var multi = cn.QueryMultiple(sqlMulti, new { id = itemId, blockId = Id, state = (byte)EnumState.ativo });
 
                     var listBaseText = multi.Read<BaseText>();
                     var listItemLevel = multi.Read<ItemLevel>();
@@ -199,14 +223,157 @@ namespace GestaoAvaliacao.Repository
                     item.ItemLevel = listItemLevel.FirstOrDefault();
                     item.ItemCurriculumGrades.AddRange(listItemCurriculumGrade);
                     item.BlockItems.AddRange(listBlockItems);
-                    item.EvaluationMatrix = new EvaluationMatrix();
-                    item.EvaluationMatrix.Discipline = discipline.FirstOrDefault();
 
+                    item.EvaluationMatrix = new EvaluationMatrix
+                    {
+                        Discipline = discipline.FirstOrDefault()
+                    };
                 }
 
                 return listItems;
             }
         }
+
+        public IEnumerable<Item> GetBlockItensWithBlockChain(long Id, int page, int pageItens)
+        {
+            using (var cn = Connection)
+            {
+                cn.Open();
+
+                const string sql = @"WITH ItensPage AS
+                                    (
+                                        SELECT ROW_NUMBER() OVER (ORDER BY ISNULL(Bka.[Order], 0), BI.[Order]) AS RowNum, 
+                                            I.Id, 
+                                            I.ItemCode, 
+                                            I.ItemVersion, 
+                                            I.Statement, 
+                                            I.Revoked, 
+                                            I.KnowledgeArea_Id, 
+                                            I.ItemCodeVersion, 
+                                            K.Description AS KnowledgeArea_Description, 
+                                            CASE WHEN (T.KnowledgeAreaBlock = 1) THEN 
+                                                ISNULL(Bka.[Order], 0) 
+                                            ELSE 
+                                                0 
+                                            END AS KnowledgeArea_Order,
+                                            BCI.BlockChain_Id
+                                        FROM Item I WITH (NOLOCK) 
+                                            INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id 
+                                            INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
+                                            INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
+                                            LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state 
+                                            LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = K.Id AND B.Id = Bka.Block_Id AND Bka.State = @state 
+                                            INNER JOIN BlockChainBlock BCB WITH (NOLOCK) ON BCB.Block_Id = B.Id AND BCB.State = @state 
+                                            INNER JOIN BlockChain BC WITH (NOLOCK) ON BC.Id = BCB.BlockChain_Id AND BC.State = @state
+                                            INNER JOIN BlockChainItem BCI WITH (NOLOCK) ON BCI.BlockChain_Id = BC.Id
+                                                AND BCI.Item_Id = I.Id
+                                            	AND BCI.State = @state
+                                        WHERE BI.Block_Id = @id 
+                                        AND BI.State = @state 
+                                        AND I.State = @state 
+                                    )
+                                    SELECT * FROM ItensPage
+                                    WHERE RowNum BETWEEN @initialPageItem AND @finalPageItem;";
+
+                var initialPageItem = page * pageItens + 1;
+
+                var listItems = cn.Query<Item>(sql,
+                    new
+                    {
+                        id = Id,
+                        state = (byte)EnumState.ativo,
+                        initialPageItem,
+                        finalPageItem = initialPageItem + pageItens - 1
+                    }).ToList();
+
+                foreach (var item in listItems)
+                {
+                    var itemId = item.Id;
+
+                    const string sqlMulti = @"SELECT B.Id, B.Description, B.Source 
+									         FROM Item I WITH (NOLOCK) 
+									         INNER JOIN BaseText B WITH (NOLOCK) ON B.Id = I.BaseText_Id
+									         WHERE I.Id = @id 
+									         AND I.State = @state AND B.State = @state 
+
+									         SELECT L.Description, L.Value 
+									         FROM Item I WITH (NOLOCK) 
+									         INNER JOIN ItemLevel L WITH (NOLOCK) ON L.Id = I.ItemLevel_Id 
+									         WHERE I.Id = @id 
+									         AND I.State = @state AND L.State = @state 
+									         
+									         SELECT TypeCurriculumGradeId 
+									         FROM ItemCurriculumGrade WITH (NOLOCK) 
+									         WHERE Item_Id = @id 
+									         AND State = @state 
+									         
+									         SELECT BI.Id, BI.Block_Id, BI.Item_Id, bi.[Order]  
+									         FROM BlockItem BI WITH (NOLOCK) 
+                                             INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
+									         INNER JOIN Item I WITH (NOLOCK) ON I.Id = BI.Item_Id 
+                                             INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
+                                             WHERE BI.Item_Id = @id AND BI.Block_Id = @blockId 
+									         AND I.State = @state AND BI.State = @state 
+
+									         SELECT D.Id, D.Description 
+									         FROM Item I WITH (NOLOCK) 
+									         INNER JOIN EvaluationMatrix EM WITH (NOLOCK)ON EM.Id = I.EvaluationMatrix_Id 
+									         INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
+									         WHERE I.State = @state 
+									         AND D.State = @state 
+									         AND I.Id = @id
+
+                                             SELECT BC.Id, BC.Description
+                                             FROM BlockChain BC WITH (NOLOCK) 
+                                             WHERE BC.State = @state
+                                             AND EXISTS (SELECT BCI.Id 
+                                                         FROM BlockChainItem BCI WITH (NOLOCK)
+                                                         WHERE BCI.BlockChain_Id = BC.Id
+                                                         AND BCI.State = @state
+                                                         AND BCI.Item_Id = @id)
+                                             AND EXISTS (SELECT BCB.Id 
+                                                         FROM BlockChainBlock BCB WITH (NOLOCK)
+                                                         WHERE BCB.BlockChain_Id = BC.Id
+                                                         AND BCB.Block_Id = @blockId
+                                                         AND BCB.State = @state)";
+
+                    var multi = cn.QueryMultiple(sqlMulti, new { id = itemId, blockId = Id, state = (byte)EnumState.ativo });
+
+                    var listBaseText = multi.Read<BaseText>();
+                    var listItemLevel = multi.Read<ItemLevel>();
+                    var listItemCurriculumGrade = multi.Read<ItemCurriculumGrade>();
+                    var listBlockItems = multi.Read<BlockItem>();
+                    var discipline = multi.Read<Discipline>();
+                    var listBlockChain = multi.Read<BlockChain>().ToList();
+
+                    item.BaseText = listBaseText.FirstOrDefault();
+                    item.ItemLevel = listItemLevel.FirstOrDefault();
+                    item.ItemCurriculumGrades.AddRange(listItemCurriculumGrade);
+                    item.BlockItems.AddRange(listBlockItems);
+
+                    item.EvaluationMatrix = new EvaluationMatrix
+                    {
+                        Discipline = discipline.FirstOrDefault()
+                    };
+
+                    var blockChain = listBlockChain.FirstOrDefault(c => c.Id == item.BlockChain_Id);
+
+                    if (blockChain != null)
+                    {
+                        item.BlockChain_Id = blockChain.Id;
+                        item.BlockChain_Description = blockChain.Description;
+                    }
+                    else
+                    {
+                        item.BlockChain_Id = listBlockChain.Select(c => c.Id).FirstOrDefault();
+                        item.BlockChain_Description = listBlockChain.Select(c => c.Description).FirstOrDefault();
+                    }
+                }
+
+                return listItems;
+            }
+        }
+
         public IEnumerable<BlockKnowledgeArea> GetBlockKnowledgeAreas(long Id)
         {
             using (IDbConnection cn = Connection)
@@ -657,26 +824,25 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-
         #endregion
 
         #region Write
 
         public Block Save(Block block)
         {
-            using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                DateTime datenow = DateTime.Now;
+                var dateNow = DateTime.Now;
 
                 if (!block.Test.Bib)
                 {
-                    Booklet booklet = new Booklet
+                    var booklet = new Booklet
                     {
                         Order = 1,
-                        CreateDate = datenow,
-                        UpdateDate = datenow,
+                        CreateDate = dateNow,
+                        UpdateDate = dateNow,
                         Test_Id = block.Test_Id,
-                        State = (Byte)EnumState.ativo
+                        State = (byte)EnumState.ativo
                     };
 
                     gestaoAvaliacaoContext.Booklet.Add(booklet);
@@ -687,30 +853,93 @@ namespace GestaoAvaliacao.Repository
 
                 block.Test = null;
 
-                List<BlockKnowledgeArea> blockKnowledgeAreas = new List<BlockKnowledgeArea>();
-                List<long> itens = block.BlockItems.Where(q => q.State == (byte)EnumState.ativo).Select(p => p.Item_Id).ToList();
-                int maxOrder = 0;
-                foreach (long idItem in itens)
-                {
-                    Item item = gestaoAvaliacaoContext.Item.Where(p => p.Id == idItem).FirstOrDefault();
+                var idsItems = new List<long>();
+                var blockKnowledgeAreas = new List<BlockKnowledgeArea>();
 
-                    if (item.KnowledgeArea_Id.HasValue && !blockKnowledgeAreas.Exists(p => p.KnowledgeArea_Id == item.KnowledgeArea_Id))
+                var blockChainBlocksFront = block.BlockChainBlocks.OrderBy(c => c.Order).ToList();
+                var idsBlockChainsFront = blockChainBlocksFront.Select(c => c.BlockChain_Id).Distinct().ToList();
+                var ehCadeiaBlocos = idsBlockChainsFront.Count > 0;
+
+                if (ehCadeiaBlocos)
+                {
+                    foreach (var idBlockChainFront in idsBlockChainsFront)
                     {
-                        BlockKnowledgeArea blockKnowledgeArea = new BlockKnowledgeArea
-                        {
-                            Block_Id = block.Id,
-                            KnowledgeArea_Id = item.KnowledgeArea_Id.Value,
-                            Order = maxOrder,
-                            State = (byte)EnumState.ativo,
-                            CreateDate = datenow,
-                            UpdateDate = datenow
-                        };
-                        blockKnowledgeAreas.Add(blockKnowledgeArea);
-                        maxOrder++;
+                        idsItems.AddRange(gestaoAvaliacaoContext.BlockChainItems.Include("Item")
+                            .Where(c => c.BlockChain_Id == idBlockChainFront && c.State == (byte)EnumState.ativo)
+                            .OrderBy(c => c.Order)
+                            .Select(c => c.Item_Id));
                     }
+                }
+                else
+                {
+                    idsItems.AddRange(block.BlockItems.Where(q => q.State == (byte)EnumState.ativo).Select(p => p.Item_Id)
+                        .Distinct());
+                }
+
+                var maxOrder = 0;
+
+                foreach (var idItem in idsItems)
+                {
+                    var item = gestaoAvaliacaoContext.Item.FirstOrDefault(p => p.Id == idItem);
+
+                    if (item?.KnowledgeArea_Id == null ||
+                        blockKnowledgeAreas.Exists(p => p.KnowledgeArea_Id == item.KnowledgeArea_Id))
+                    {
+                        continue;
+                    }
+
+                    var blockKnowledgeArea = new BlockKnowledgeArea
+                    {
+                        Block_Id = block.Id,
+                        KnowledgeArea_Id = item.KnowledgeArea_Id.Value,
+                        Order = maxOrder,
+                        State = (byte)EnumState.ativo,
+                        CreateDate = dateNow,
+                        UpdateDate = dateNow
+                    };
+
+                    blockKnowledgeAreas.Add(blockKnowledgeArea);
+                    maxOrder++;
                 }
 
                 block.BlockKnowledgeAreas = blockKnowledgeAreas;
+
+                if (ehCadeiaBlocos)
+                {
+                    var blockChainBlocks = blockChainBlocksFront.Select(blockChainBlockFront =>
+                        new BlockChainBlock
+                        {
+                            BlockChain_Id = blockChainBlockFront.BlockChain_Id, Block_Id = block.Id,
+                            Order = blockChainBlockFront.Order
+                        }).ToList();
+
+                    var itemsBlockChain = new List<BlockChainItem>();
+
+                    foreach (var idBlockChainFront in idsBlockChainsFront)
+                    {
+                        itemsBlockChain.AddRange(gestaoAvaliacaoContext.BlockChainItems
+                            .Where(c => c.BlockChain_Id == idBlockChainFront && c.State == (byte)EnumState.ativo)
+                            .OrderBy(c => c.Order));
+                    }
+
+                    var blockItems = new List<BlockItem>();
+                    maxOrder = 0;
+
+                    foreach (var itemBlockChain in itemsBlockChain)
+                    {
+                        blockItems.Add(new BlockItem
+                        {
+                            Block_Id = block.Id,
+                            Item_Id = itemBlockChain.Item_Id,
+                            Order = maxOrder
+                        });
+
+                        maxOrder++;
+                    }
+
+                    block.BlockChainBlocks = blockChainBlocks;
+                    block.BlockItems = blockItems;
+                }
 
                 gestaoAvaliacaoContext.Block.Add(block);
                 gestaoAvaliacaoContext.SaveChanges();
@@ -721,154 +950,252 @@ namespace GestaoAvaliacao.Repository
 
         public void Update(Block block)
         {
-            using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                DateTime dateNow = DateTime.Now;
-                Block _entity = gestaoAvaliacaoContext.Block.Include("Test").Include("BlockItems").Include("BlockKnowledgeAreas").FirstOrDefault(x => x.Id == block.Id && x.State == (Byte)EnumState.ativo);
+                var dateNow = DateTime.Now;
 
-                block.Test_Id = _entity.Test_Id;
-                block.Booklet_Id = _entity.Booklet_Id;
+                var entity = gestaoAvaliacaoContext.Block
+                    .Include("Test")
+                    .Include("BlockItems")
+                    .Include("BlockKnowledgeAreas")
+                    .Include("BlockChainBlocks")
+                    .FirstOrDefault(x => x.Id == block.Id && x.State == (byte)EnumState.ativo);
 
-                gestaoAvaliacaoContext.Entry(_entity).CurrentValues.SetValues(block);
-                _entity.UpdateDate = dateNow;
-                _entity.Test.TestSituation = EnumTestSituation.Pending;
+                if (entity == null)
+                    return;
 
-                #region BlockItem
+                block.Test_Id = entity.Test_Id;
+                block.Booklet_Id = entity.Booklet_Id;
 
-                List<BlockItem> blockItems = new List<BlockItem>();
+                gestaoAvaliacaoContext.Entry(entity).CurrentValues.SetValues(block);
 
-                var blockItemsFront = block.BlockItems.Select(s => s.Item_Id);
-                var blockItemsDatabase = _entity.BlockItems.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.Item_Id);
-                if (blockItemsFront != null && blockItemsDatabase != null)
+                entity.UpdateDate = dateNow;
+                entity.Test.TestSituation = EnumTestSituation.Pending;
+
+                var maxOrder = 0;
+
+                var blockChainBlocksFront = block.BlockChainBlocks.OrderBy(c => c.Order).ToList();
+                var idsBlockChainBlocksFront = blockChainBlocksFront.Select(s => s.BlockChain_Id).Distinct().ToList();
+                var ehCadeiaBlocos = idsBlockChainBlocksFront.Count > 0;
+
+                #region BlockItems
+
+                var blockItems = new List<BlockItem>();
+                var idsItemsFront = new List<long>();
+                var blockItemsFront = new List<BlockItem>();
+                var itemsBlockChain = new List<BlockChainItem>();
+
+                if (ehCadeiaBlocos)
                 {
-                    var blockItemsToExclude = blockItemsDatabase.Except(blockItemsFront);
-                    if (blockItemsToExclude != null && blockItemsToExclude.Any())
+                    foreach (var idBlockChainBlockFront in idsBlockChainBlocksFront)
                     {
-                        foreach (var blockItem in _entity.BlockItems.Where(s => s.State == (byte)EnumState.ativo && blockItemsToExclude.Contains(s.Item_Id)))
-                        {
-                            if (blockItem != null)
-                            {
-                                blockItem.State = Convert.ToByte(EnumState.excluido);
-                                blockItem.UpdateDate = dateNow;
-                                blockItems.Add(blockItem);
-                            }
-                        }
+                        itemsBlockChain.AddRange(gestaoAvaliacaoContext.BlockChainItems.Include("Item")
+                            .Where(c => c.BlockChain_Id == idBlockChainBlockFront && c.State == (byte)EnumState.ativo)
+                            .OrderBy(c => c.Order));
                     }
 
-                    foreach (BlockItem blockItemFront in block.BlockItems)
+                    idsItemsFront.AddRange(itemsBlockChain.Select(c => c.Item.Id).Distinct());
+
+                    foreach (var itemblockChain in itemsBlockChain)
                     {
-                        if (blockItemFront != null)
+                        blockItemsFront.Add(new BlockItem
                         {
-                            BlockItem blockItemDB = _entity.BlockItems.FirstOrDefault(e => e.Item_Id.Equals(blockItemFront.Item_Id) && e.Block_Id.Equals(blockItemFront.Block_Id) && e.State.Equals((Byte)EnumState.ativo));
+                            Block_Id = block.Id,
+                            Item_Id = itemblockChain.Item_Id,
+                            Order = maxOrder
+                        });
 
-                            if (blockItemDB != null)
-                            {
-                                blockItemDB.Order = blockItemFront.Order;
-                                blockItemDB.UpdateDate = DateTime.Now;
-                                gestaoAvaliacaoContext.Entry(blockItemDB).State = System.Data.Entity.EntityState.Modified;
+                        maxOrder++;
+                    }
+                }
+                else
+                {
+                    idsItemsFront.AddRange(block.BlockItems.Select(c => c.Item_Id));
+                    blockItemsFront.AddRange(block.BlockItems);
+                }
 
-                                blockItems.Add(blockItemDB);
-                            }
-                            else
-                                blockItems.Add(blockItemFront);
-                        }
+                var blockItemsDatabase = entity.BlockItems.Where(s => s.State == (byte)EnumState.ativo)
+                    .Select(s => s.Item_Id);
+
+                var blockItemsToExclude = blockItemsDatabase.Except(idsItemsFront).ToList();
+
+                if (blockItemsToExclude.Any())
+                {
+                    foreach (var blockItem in entity.BlockItems.Where(s => s.State == (byte)EnumState.ativo && blockItemsToExclude.Contains(s.Item_Id)))
+                    {
+                        blockItem.State = Convert.ToByte(EnumState.excluido);
+                        blockItem.UpdateDate = dateNow;
+                        blockItems.Add(blockItem);
                     }
                 }
 
-                if (blockItems != null && blockItems.Count > 0)
-                    _entity.BlockItems.AddRange(blockItems);
+                foreach (var blockItemFront in blockItemsFront)
+                {
+                    if (blockItemFront == null) 
+                        continue;
+
+                    var blockItemDb = entity.BlockItems.FirstOrDefault(e =>
+                        e.Item_Id.Equals(blockItemFront.Item_Id) &&
+                        e.Block_Id.Equals(blockItemFront.Block_Id) && e.State.Equals((byte)EnumState.ativo));
+
+                    if (blockItemDb != null)
+                    {
+                        blockItemDb.Order = blockItemFront.Order;
+                        blockItemDb.UpdateDate = DateTime.Now;
+                        gestaoAvaliacaoContext.Entry(blockItemDb).State = System.Data.Entity.EntityState.Modified;
+
+                        blockItems.Add(blockItemDb);
+                    }
+                    else
+                        blockItems.Add(blockItemFront);
+                }
+
+                if (blockItems.Count > 0)
+                    entity.BlockItems.AddRange(blockItems);
 
                 #endregion
 
                 #region BlockKnowledgeAreas
 
-                List<BlockKnowledgeArea> blockKnowledgeAreasBD = _entity.BlockKnowledgeAreas;
+                var blockKnowledgeAreasBd = entity.BlockKnowledgeAreas;
 
-                List<long> listKnowledgeArea = new List<long>();
-                List<long> itens = blockItems.Where(q => q.State == (byte)EnumState.ativo).Select(p => p.Item_Id).ToList();
-                foreach (long idItem in itens)
+                var listKnowledgeArea = new List<long>();
+                var itens = blockItems.Where(q => q.State == (byte)EnumState.ativo).Select(p => p.Item_Id).ToList();
+
+                foreach (var idItem in itens)
                 {
-                    Item item = gestaoAvaliacaoContext.Item.Where(p => p.Id == idItem).FirstOrDefault();
-                    if (item.KnowledgeArea_Id.HasValue && !listKnowledgeArea.Exists(p => p == item.KnowledgeArea_Id))
-                    {
+                    var item = gestaoAvaliacaoContext.Item.FirstOrDefault(p => p.Id == idItem);
+
+                    if (item?.KnowledgeArea_Id != null && !listKnowledgeArea.Exists(p => p == item.KnowledgeArea_Id))
                         listKnowledgeArea.Add(item.KnowledgeArea_Id.Value);
-                    }
                 }
 
-                List<BlockKnowledgeArea> blockKnowledgeAreas = blockKnowledgeAreasBD.FindAll(p => p.State == (byte)EnumState.ativo && listKnowledgeArea.Any(q => q == p.KnowledgeArea_Id));
-                int maxOrder = 0;
-                if (blockKnowledgeAreas != null && blockKnowledgeAreas.Count > 0)
+                var blockKnowledgeAreas = blockKnowledgeAreasBd.FindAll(p =>
+                    p.State == (byte)EnumState.ativo && listKnowledgeArea.Any(q => q == p.KnowledgeArea_Id));
+
+                maxOrder = 0;
+
+                if (blockKnowledgeAreas.Count > 0)
                 {
                     maxOrder = blockKnowledgeAreas.Max(p => p.Order + 1);
                 }
 
-                foreach (long idKnowledgeArea in listKnowledgeArea)
+                foreach (var idKnowledgeArea in listKnowledgeArea)
                 {
-                    if (!blockKnowledgeAreas.Exists(p => p.KnowledgeArea_Id == idKnowledgeArea))
+                    if (blockKnowledgeAreas.Exists(p => p.KnowledgeArea_Id == idKnowledgeArea)) 
+                        continue;
+
+                    var blockKnowledgeArea = new BlockKnowledgeArea
                     {
-                        BlockKnowledgeArea blockKnowledgeArea = new BlockKnowledgeArea
-                        {
-                            Block_Id = block.Id,
-                            KnowledgeArea_Id = idKnowledgeArea,
-                            Order = maxOrder,
-                            State = (byte)EnumState.ativo,
-                            CreateDate = dateNow,
-                            UpdateDate = dateNow
-                        };
-                        blockKnowledgeAreas.Add(blockKnowledgeArea);
-                        maxOrder++;
-                    }
+                        Block_Id = block.Id,
+                        KnowledgeArea_Id = idKnowledgeArea,
+                        Order = maxOrder,
+                        State = (byte)EnumState.ativo,
+                        CreateDate = dateNow,
+                        UpdateDate = dateNow
+                    };
+
+                    blockKnowledgeAreas.Add(blockKnowledgeArea);
+                    maxOrder++;
                 }
 
                 block.BlockKnowledgeAreas = blockKnowledgeAreas;
                 blockKnowledgeAreas = new List<BlockKnowledgeArea>();
 
                 var blockKnowledgeAreasFront = block.BlockKnowledgeAreas.Select(s => s.KnowledgeArea_Id);
-                var blockKnowledgeAreasDatabase = _entity.BlockKnowledgeAreas.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.KnowledgeArea_Id);
-                if (blockKnowledgeAreasFront != null && blockKnowledgeAreasDatabase != null)
+                var blockKnowledgeAreasDatabase = entity.BlockKnowledgeAreas.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.KnowledgeArea_Id);
+                var blockKnowledgeAreaToExclude = blockKnowledgeAreasDatabase.Except(blockKnowledgeAreasFront).ToList();
+
+                if (blockKnowledgeAreaToExclude.Any())
                 {
-                    var blockKnowledgeAreaToExclude = blockKnowledgeAreasDatabase.Except(blockKnowledgeAreasFront);
-                    if (blockKnowledgeAreaToExclude != null && blockKnowledgeAreaToExclude.Any())
+                    foreach (var blockKnowledgeArea in entity.BlockKnowledgeAreas.Where(s => s.State == (byte)EnumState.ativo && blockKnowledgeAreaToExclude.Contains(s.KnowledgeArea_Id)))
                     {
-                        foreach (var blockKnowledgeArea in _entity.BlockKnowledgeAreas.Where(s => s.State == (byte)EnumState.ativo && blockKnowledgeAreaToExclude.Contains(s.KnowledgeArea_Id)))
-                        {
-                            if (blockKnowledgeArea != null)
-                            {
-                                blockKnowledgeArea.State = Convert.ToByte(EnumState.excluido);
-                                blockKnowledgeArea.UpdateDate = dateNow;
-                                blockKnowledgeAreas.Add(blockKnowledgeArea);
-                            }
-                        }
-                    }
-
-                    foreach (BlockKnowledgeArea blockKnowledgeAreaFront in block.BlockKnowledgeAreas)
-                    {
-                        if (blockKnowledgeAreaFront != null)
-                        {
-                            BlockKnowledgeArea blockKnowledgeAreaDB = _entity.BlockKnowledgeAreas.FirstOrDefault(e => e.KnowledgeArea_Id.Equals(blockKnowledgeAreaFront.KnowledgeArea_Id) && e.Block_Id.Equals(blockKnowledgeAreaFront.Block_Id) && e.State.Equals((Byte)EnumState.ativo));
-
-                            if (blockKnowledgeAreaDB != null)
-                            {
-                                blockKnowledgeAreaDB.Order = blockKnowledgeAreaFront.Order;
-                                blockKnowledgeAreaDB.UpdateDate = DateTime.Now;
-                                gestaoAvaliacaoContext.Entry(blockKnowledgeAreaDB).State = System.Data.Entity.EntityState.Modified;
-
-                                blockKnowledgeAreas.Add(blockKnowledgeAreaDB);
-                            }
-                            else
-                                blockKnowledgeAreas.Add(blockKnowledgeAreaFront);
-                        }
+                        blockKnowledgeArea.State = Convert.ToByte(EnumState.excluido);
+                        blockKnowledgeArea.UpdateDate = dateNow;
+                        blockKnowledgeAreas.Add(blockKnowledgeArea);
                     }
                 }
 
-                if (blockKnowledgeAreas != null && blockKnowledgeAreas.Count > 0)
-                    _entity.BlockKnowledgeAreas.AddRange(blockKnowledgeAreas);
+                foreach (var blockKnowledgeAreaFront in block.BlockKnowledgeAreas)
+                {
+                    var blockKnowledgeAreaDb = entity.BlockKnowledgeAreas.FirstOrDefault(e =>
+                        e.KnowledgeArea_Id.Equals(blockKnowledgeAreaFront.KnowledgeArea_Id) &&
+                        e.Block_Id.Equals(blockKnowledgeAreaFront.Block_Id) && e.State.Equals((byte)EnumState.ativo));
+
+                    if (blockKnowledgeAreaDb != null)
+                    {
+                        blockKnowledgeAreaDb.Order = blockKnowledgeAreaFront.Order;
+                        blockKnowledgeAreaDb.UpdateDate = DateTime.Now;
+                        gestaoAvaliacaoContext.Entry(blockKnowledgeAreaDb).State = System.Data.Entity.EntityState.Modified;
+
+                        blockKnowledgeAreas.Add(blockKnowledgeAreaDb);
+                    }
+                    else
+                        blockKnowledgeAreas.Add(blockKnowledgeAreaFront);
+                }
+
+                if (blockKnowledgeAreas.Count > 0)
+                    entity.BlockKnowledgeAreas.AddRange(blockKnowledgeAreas);
 
                 #endregion
 
-                _entity.Test.UpdateDate = dateNow;
+                #region BlockChainBlocks
 
-                gestaoAvaliacaoContext.Entry(_entity).State = System.Data.Entity.EntityState.Modified;
+                var blockChainBlocks = new List<BlockChainBlock>();
+
+                var blockChainBlocksDatabase = entity.BlockChainBlocks.Where(s => s.State == (byte)EnumState.ativo).Select(s => s.BlockChain_Id);
+                var idsBlockChainBlocksToExclude = blockChainBlocksDatabase.Where(x => idsBlockChainBlocksFront.All(f => x != f)).ToList();
+
+                if (idsBlockChainBlocksToExclude.Any())
+                {
+                    foreach (var blockChainBlock in entity.BlockChainBlocks.Where(s =>
+                                 s.State == (byte)EnumState.ativo &&
+                                 idsBlockChainBlocksToExclude.Any(x => x == s.BlockChain_Id && s.Block_Id == block.Id)))
+                    {
+                        blockChainBlock.State = Convert.ToByte(EnumState.excluido);
+                        blockChainBlock.UpdateDate = dateNow;
+                        blockChainBlocks.Add(blockChainBlock);
+                    }
+                }
+
+                foreach (var blockChainBlockFront in blockChainBlocksFront)
+                {
+                    if (blockChainBlockFront == null)
+                        continue;
+
+                    var blockChainBlockDb = entity.BlockChainBlocks.FirstOrDefault(e =>
+                        e.BlockChain_Id.Equals(blockChainBlockFront.BlockChain_Id) &&
+                        e.Block_Id.Equals(block.Id) && e.State.Equals((byte)EnumState.ativo));
+
+                    if (blockChainBlockDb != null)
+                    {
+                        blockChainBlockDb.UpdateDate = DateTime.Now;
+                        blockChainBlockDb.Order = blockChainBlockFront.Order;
+                        gestaoAvaliacaoContext.Entry(blockChainBlockDb).State = System.Data.Entity.EntityState.Modified;
+
+                        blockChainBlocks.Add(blockChainBlockDb);
+                    }
+                    else
+                    {
+                        blockChainBlockFront.Block_Id = block.Id;
+                        blockChainBlocks.Add(blockChainBlockFront);
+                    }   
+                }
+
+                if (blockChainBlocks.Count > 0)
+                    entity.BlockChainBlocks.AddRange(blockChainBlocks);
+
+                #endregion
+
+                if (blockChainBlocks.All(c => c.State == Convert.ToByte(EnumState.excluido)))
+                {
+                    entity.State = Convert.ToByte(EnumState.excluido);
+                    entity.UpdateDate = dateNow;
+                }
+
+                entity.Test.UpdateDate = dateNow;
+
+                gestaoAvaliacaoContext.Entry(entity).State = System.Data.Entity.EntityState.Modified;
                 gestaoAvaliacaoContext.SaveChanges();
             }
         }
@@ -964,7 +1291,6 @@ namespace GestaoAvaliacao.Repository
 
         public void Delete(long id)
         {
-
             using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
                 Block block = GestaoAvaliacaoContext.Block.FirstOrDefault(a => a.Id == id);
@@ -987,12 +1313,10 @@ namespace GestaoAvaliacao.Repository
                     GestaoAvaliacaoContext.Entry(block).State = System.Data.Entity.EntityState.Modified;
                 }
             }
-
         }
 
         public void DeleteItems(long id)
         {
-
             using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
                 Block block = GestaoAvaliacaoContext.Block.FirstOrDefault(a => a.Id == id);
@@ -1014,7 +1338,6 @@ namespace GestaoAvaliacao.Repository
                     GestaoAvaliacaoContext.Entry(block).State = System.Data.Entity.EntityState.Modified;
                 }
             }
-
         }
 
         #endregion

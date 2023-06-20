@@ -377,6 +377,15 @@ namespace GestaoAvaliacao.MappingDependence
                 .WithService.AllInterfaces()
                 .SetLifestyle(LifestylePerWebRequest));
 
+            container.Register(Classes.FromAssemblyContaining<BlockChainRepository>()
+                .BasedOn(typeof(IBlockChainRepository))
+                .WithService.AllInterfaces()
+                .SetLifestyle(LifestylePerWebRequest));
+
+            container.Register(Classes.FromAssemblyContaining<BlockChainBlockRepository>()
+                .BasedOn(typeof(IBlockChainBlockRepository))
+                .WithService.AllInterfaces()
+                .SetLifestyle(LifestylePerWebRequest));
 
             #region GestaoEscolar
 

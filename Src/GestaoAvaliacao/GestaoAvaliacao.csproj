@@ -528,6 +528,7 @@
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\listCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\electronicTestResult\indexElectronicTestResultController.js" />
     <Content Include="Assets\js\angular\controllers\importarResultadosPSP\importarResultadosPSPController.js" />
+    <Content Include="Assets\js\angular\controllers\simuladorSerapEstudantesController\simuladorSerapEstudantesController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsResultController.js" />
     <Content Include="Assets\js\angular\controllers\correction\correctionResultController.js" />
@@ -1762,6 +1763,13 @@
     <Content Include="Views\ElectronicTestResult\Index.cshtml" />
     <Content Include="Views\AdminSerapEstudantes\Index.cshtml" />
     <Content Include="Views\ImportarResultadosPSP\Index.cshtml" />
+    <Content Include="Views\Test\_BlockChain.cshtml" />
+    <Content Include="Views\Test\_EditBlockChain.cshtml" />
+    <Content Include="Views\Test\_ClearSelectedItemsBlockChain.cshtml" />
+    <Content Include="Views\Test\_BlockChainBlock.cshtml" />
+    <Content Include="Views\Test\_AdicionarBlocos.cshtml" />
+    <Content Include="Views\Test\_VisualizarItensCaderno.cshtml" />
+    <Content Include="Views\Test\_ModalResultadoImportarCsvBlocos.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1772,9 +1780,11 @@
   <ItemGroup>
     <Compile Include="Controllers\AdminAcompanhamentoProvasController.cs" />
     <Compile Include="Controllers\AdminSerapEstudantesController.cs" />
+    <Compile Include="Controllers\BlockChainController.cs" />
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
     <Compile Include="Controllers\ImportarResultadosPSPController.cs" />
     <Compile Include="Controllers\NumberItemsAplicationTaiController.cs" />
+    <Compile Include="Controllers\SimuladorSerapEstudantesController.cs" />
     <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
     <Compile Include="Controllers\StudentResultsController.cs" />
     <Compile Include="Controllers\ProvaSPController.cs" />
@@ -1940,7 +1950,9 @@
     <Folder Include="Assets\tests\unit\filters\" />
     <Folder Include="Assets\tests\unit\models\" />
     <Folder Include="Assets\tests\unit\services\" />
+    <Folder Include="Views\BlockChain\" />
     <Folder Include="Views\NumberItemsAplicationTai\" />
+    <Folder Include="Views\SimuladorSerapEstudantes\" />
     <Folder Include="Views\TesteCI\" />
   </ItemGroup>
   <ItemGroup>

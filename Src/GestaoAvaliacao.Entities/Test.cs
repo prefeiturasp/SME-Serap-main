@@ -17,6 +17,8 @@ namespace GestaoAvaliacao.Entities
             TestItemLevels = new List<TestItemLevel>();
             Visible = true;
             TestContexts = new List<TestContext>();
+            BlockChains = new List<BlockChain>();
+            Blocks = new List<Block>();
         }
 
 		public string Description { get; set; }
@@ -69,7 +71,8 @@ namespace GestaoAvaliacao.Entities
 		public virtual List<TestItemLevel> TestItemLevels { get; set; }
 
         public virtual List<TestContext> TestContexts { get; set; }
-        
+        public virtual List<BlockChain> BlockChains { get; set; }
+        public virtual List<Block> Blocks { get; set; }
 
         public bool AllAdhered { get; set; }
 
@@ -125,8 +128,15 @@ namespace GestaoAvaliacao.Entities
         public bool BackToPreviousItem { get; set; }
         [NotMapped]
         public NumberItemsAplicationTai NumberItemsAplicationTai { get; set; }
-
+        [NotMapped]
+        public bool RemoveBlockChain { get; set; }
+        [NotMapped]
+        public bool RemoveBlockChainBlock { get; set; }
 
         public DateTime? DownloadStartDate { get; set; }
+        public bool? BlockChain { get; set; }
+        public int? BlockChainNumber { get; set; }
+        public int? BlockChainItems { get; set; }
+        public int? BlockChainForBlock { get; set; }
     }
 }

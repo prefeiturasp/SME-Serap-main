@@ -1,5 +1,6 @@
 ﻿using GestaoAvaliacao.App_Start;
 using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Models;
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using static IdentityModel.Client.OAuth2Constants;
 using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.Controllers
@@ -35,11 +37,14 @@ namespace GestaoAvaliacao.Controllers
         private readonly ITestCurriculumGradeBusiness testCurriculumGradeBusiness;
         private readonly ITestPermissionBusiness testPermissionBusiness;
         private readonly ITestContextBusiness testContextBusiness;
+        private readonly IBlockChainBusiness blockChainBusiness;
+        private readonly IBlockChainBlockBusiness blockChainBlockBusiness;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
             IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
             IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness,
-            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness)
+            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness, IBlockChainBusiness blockChainBusiness,
+            IBlockChainBlockBusiness blockChainBlockBusiness)
         {
             this.testBusiness = testBusiness;
             this.testFilesBusiness = testFilesBusiness;
@@ -53,7 +58,8 @@ namespace GestaoAvaliacao.Controllers
             this.testCurriculumGradeBusiness = testCurriculumGradeBusiness;
             this.testPermissionBusiness = testPermissionBusiness;
             this.testContextBusiness = testContextBusiness;
-
+            this.blockChainBusiness = blockChainBusiness;
+            this.blockChainBlockBusiness = blockChainBlockBusiness;
         }
 
         public ActionResult Index() => View();
@@ -97,6 +103,26 @@ namespace GestaoAvaliacao.Controllers
         public ActionResult IndexPermission()
         {
             return View();
+        }
+
+        public ActionResult IndexFilterGroupTest(long test_id)
+        {
+            try
+            {
+                var entity = testBusiness.GetTestById(test_id);
+                ViewBag.GroupFilter = new
+                {
+                    TestGroupId = entity.TestSubGroup != null ? entity.TestSubGroup.TestGroup.Id : (long?)null,
+                    TestSubGroupId = entity.TestSubGroup != null ? entity.TestSubGroup.Id : (long?)null,
+                    getGroup = false,
+                };
+                return View();
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return View();
+            }
         }
 
         #region Read
@@ -230,6 +256,16 @@ namespace GestaoAvaliacao.Controllers
                             text = tc.Text,
                             title = tc.Title
                         }).ToList(),
+                        BlockChains = entity.BlockChains.Where(c => c.State == (byte)EnumState.ativo).Select(c => new
+                        {
+                            c.Id,
+                            c.Description
+                        }).ToList(),
+                        Blocks = entity.Blocks.Where(c => c.State == (byte)EnumState.ativo).Select(c => new
+                        {
+                            c.Id,
+                            c.Description
+                        }).ToList(),
                         TestSituation = entity.TestSituation,
                         PublicFeedback = entity.PublicFeedback,
                         Multidiscipline = entity.Multidiscipline,
@@ -249,9 +285,11 @@ namespace GestaoAvaliacao.Controllers
                         ApresentarResultadosPorItem = entity.ApresentarResultadosPorItem,
                         NumberItemsAplicationTai = entity.NumberItemsAplicationTai != null ? new { entity.NumberItemsAplicationTai.Id, entity.NumberItemsAplicationTai.Name, entity.NumberItemsAplicationTai.Value, entity.NumberItemsAplicationTai.AdvanceWithoutAnswering, entity.NumberItemsAplicationTai.BackToPreviousItem } : null,
                         AdvanceWithoutAnswering = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.AdvanceWithoutAnswering : false,
-                        BackToPreviousItem = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.BackToPreviousItem : false
-
-
+                        BackToPreviousItem = entity.NumberItemsAplicationTai != null ? entity.NumberItemsAplicationTai.BackToPreviousItem : false,
+                        entity.BlockChain,
+                        BlockChainNumber = entity.BlockChainNumber.GetValueOrDefault(),
+                        BlockChainItems = entity.BlockChainItems.GetValueOrDefault(),
+                        BlockChainForBlock = entity.BlockChainForBlock.GetValueOrDefault()
                     };
 
                     return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
@@ -264,6 +302,21 @@ namespace GestaoAvaliacao.Controllers
             {
                 LogFacade.SaveError(ex);
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar prova pesquisada." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult CheckExistsAdherenceByTestId(long Id)
+        {
+            try
+            {
+                var existeAdesao = testBusiness.ExistsAdherenceByTestId(Id);
+                return Json(new { success = true, existeAdesao }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao verificar a adesão da prova." }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -530,6 +583,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar itens pesquisados." }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         [Paginate]
         public JsonResult GetSectionAdministrate(long test_id, int esc_id, int ttn_id, string dre_id, int crp_ordem, string statusCorrection)
@@ -806,14 +860,13 @@ namespace GestaoAvaliacao.Controllers
             {
                 foreach (var testContext in entity.TestContexts)
                 {
-                    EnumPosition position = ObterPosicionamento(testContext.ImagePositionDescription);
+                    var position = ObterPosicionamento(testContext.ImagePositionDescription);
 
                     testContext.ImagePosition = position;
                 }
 
                 if (entity.Id > 0)
                 {
-
                     entity = testBusiness.Update(entity.Id, entity, SessionFacade.UsuarioLogado.Usuario.usu_id,
                             (EnumSYS_Visao.Administracao == (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
                                 SessionFacade.UsuarioLogado.Grupo.vis_id.ToString())));
@@ -821,14 +874,24 @@ namespace GestaoAvaliacao.Controllers
                     if (entity.TestContexts.Any())
                     {
                         testContextBusiness.DeleteByTestId(entity.Id);
+
                         foreach (var testContext in entity.TestContexts)
                         {
-                            EnumPosition position = ObterPosicionamento(testContext.ImagePositionDescription);
+                            var position = ObterPosicionamento(testContext.ImagePositionDescription);
 
                             testContext.ImagePosition = position;
                             testContext.Test_Id = entity.Id;
                             testContextBusiness.Save(testContext);
                         }
+                    }
+
+                    if (entity.RemoveBlockChain && entity.BlockChains.Any())
+                        blockChainBusiness.DeleteByTestId(entity.Id);
+
+                    if (entity.RemoveBlockChainBlock && entity.Blocks.Any())
+                    {
+                        foreach (var block in entity.Blocks)
+                            blockChainBlockBusiness.DeleteByBlockId(block.Id);
                     }
                 }
                 else
@@ -841,9 +904,6 @@ namespace GestaoAvaliacao.Controllers
                 {
                     entity.TestSituation = testBusiness.TestSituation(entity);
                 }
-
-
-
             }
             catch (Exception ex)
             {
@@ -864,7 +924,6 @@ namespace GestaoAvaliacao.Controllers
 
             if (EnumPosition.Right.GetDescription() == imagePositionDescription)
                 return EnumPosition.Right;
-
 
             return EnumPosition.Left;
         }
@@ -1329,6 +1388,66 @@ namespace GestaoAvaliacao.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult ImportarArquivoCsvBlocos(HttpPostedFileBase file, int testId)
+        {
+            var b = new BinaryReader(file.InputStream);
+            var binData = b.ReadBytes(file.ContentLength);
+            var result = System.Text.Encoding.UTF8.GetString(binData);
+
+            var splitRowResult = result.Substring(0, StringHelper.PositionOfNewLine(result)).Trim()
+                .Replace("\"", string.Empty).Split(';');
+
+            if (string.IsNullOrEmpty(splitRowResult.ToString()))
+                return Json(new { success = false, message = "Erro ao importar blocos." }, JsonRequestBehavior.AllowGet);
+
+            b.BaseStream.Position = 0;
+
+            try
+            {
+                testBusiness.ImportarCvsBlocos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                        SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);
+
+
+                return Json(new { success = true, retorno, message = "Importação dos blocos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, retorno = "", message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ImportarArquivoCsvCadernos(HttpPostedFileBase file, int testId)
+        {
+            var b = new BinaryReader(file.InputStream);
+            var binData = b.ReadBytes(file.ContentLength);
+            var result = System.Text.Encoding.UTF8.GetString(binData);
+
+            var splitRowResult = result.Substring(0, StringHelper.PositionOfNewLine(result)).Trim()
+                .Replace("\"", string.Empty).Split(';');
+
+            if (string.IsNullOrEmpty(splitRowResult.ToString()))
+                return Json(new { success = false, message = "Erro ao importar cadernos." }, JsonRequestBehavior.AllowGet);
+
+            b.BaseStream.Position = 0;
+
+            try
+            {
+                testBusiness.ImportarCvsCadernos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                        SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);                
+
+                return Json(new { success = true, retorno, message = "Importação dos cadernos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, retorno = "", message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         #endregion
     }

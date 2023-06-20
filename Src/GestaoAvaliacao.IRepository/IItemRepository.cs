@@ -22,7 +22,10 @@ namespace GestaoAvaliacao.IRepository
         Item _GetGradeByItem(long Id);
 		Item _GetAddItemInfos(long Id);
 		IEnumerable<Item> GetItems(List<long> ItemIds);
-		IEnumerable<Item> _GetItemsByBaseText(long baseTextId);
+		IEnumerable<Item> GetItemsApi(List<long> ItemIds);
+		IEnumerable<long> GetIdsItemsApi(ref Pager pager, int areaConhecimentoId, long? matrizId = null);
+
+        IEnumerable<Item> _GetItemsByBaseText(long baseTextId);
 		IEnumerable<ItemGroupBaseText> _GetItemGroupBaseTexts(bool? lastVersion = null, params long[] baseTextId);
 		IEnumerable<ItemBlockResult> _BlockSearchItem(BlockItemFilter filter, ref Pager pager);
         IEnumerable<Item> _GetItemVersions(int itemCodeVersion);
@@ -44,6 +47,6 @@ namespace GestaoAvaliacao.IRepository
 		List<ItemReportItemSituation> _GetItemSituation(int id, string inicio, string fim, Guid EntityId, long typeLevelEducation);
         Item RevokeItem(Item Item);
         void SaveChangeItem(Item item, long TestId, long itemIdAntigo, long blockId);
-
+        void SaveChangeBlockChainItem(Item item, long testId, long itemIdAntigo, long blockChainId);
     }
 }

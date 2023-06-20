@@ -57,6 +57,8 @@
     <Compile Include="IAnswerSheetBatchQueueRepository.cs" />
     <Compile Include="IAnswerSheetBatchRepository.cs" />
     <Compile Include="IAnswerSheetLotRepository.cs" />
+    <Compile Include="IBlockChainBlockRepository.cs" />
+    <Compile Include="IBlockChainRepository.cs" />
     <Compile Include="IConnectionMultiplexerSME.cs" />
     <Compile Include="ICorrectionRepository.cs" />
     <Compile Include="ICorrectionResultsRepository.cs" />

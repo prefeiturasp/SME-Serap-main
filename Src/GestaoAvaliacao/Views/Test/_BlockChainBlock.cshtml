@@ -1,0 +1,62 @@
+﻿<div class="row" ng-show="ehCadeiaBlocos">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="cards">
+                <h4 class="padding"><strong>{{ e1_testDescription }}</strong></h4>
+                <table class="table table-hover">
+                    <colgroup>
+                        <col width="14%" />
+                        <col width="14%" />
+                        <col width="14%" />
+                        <col width="14%" />
+                        <col width="15%" />
+                        <col width="15%" />
+                        <col width="14%" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="table-parameter-centralize">Cadernos</th>
+                            <th class="table-parameter-centralize">Blocos selecionados</th>
+                            <th class="table-parameter-centralize" colspan="2">Não selecionados</th>
+                            <th class="table-parameter-centralize">Adicionar blocos</th>
+                            <th class="table-parameter-centralize">Visualizar itens</th>
+                            <th class="table-parameter-centralize">Simulador</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-init="rowDisabled=e3_disableButtonSimulator(caderno)" ng-repeat="caderno in cadernosComBlocos">
+                            <td class="table-parameter-centralize">{{ caderno.Description }}</td>
+                            <td class="table-parameter-centralize">{{ caderno.BlocosCount }}</td>
+                            <td class="table-parameter-centralize">
+                                <div style="text-align: right">
+                                    {{ caderno.Resto >-1? caderno.Resto:0 }}
+                                </div>
+                            </td>
+
+                            <td class="table-parameter-centralize ">
+                                <i title="{{ (caderno.Total === caderno.BlocosCount && caderno.BlocosCount !== 0) ? '' : 'Selecione blocos para este caderno' }}" ng-class="{ true:'material-icons check-success pull-left', false:'material-icons status-Error pull-left' }
+                                    [ caderno.Total === caderno.BlocosCount && caderno.BlocosCount !== 0 ]">
+                                    {{ (caderno.Total === caderno.BlocosCount && caderno.BlocosCount !== 0) ? 'done' : mostrarAvisoQtdBlocosCadernoNaoAtingida ? 'error' : '' }}
+                                </i>
+                            </td>
+
+                            <td class="table-parameter-centralize">
+                                <a ng-click="e3_callModalAddBlocosCaderno(caderno)"><i type="button" class="material-icons">add_box</i></a>
+                            </td>
+
+                            <td class="table-parameter-centralize">
+                                <a ng-click="e3_callModalViewItensCaderno(caderno)"><i type="button" class="material-icons">visibility</i></a>
+                            </td>
+
+                            <td class="table-parameter-centralize">
+                                <a ng-if="!rowDisabled" ng-click="e3_callSimulatorCaderno(caderno)" target="_blank" rel="noreferrer" >
+                                    <i title="Visualizar caderno no Simulador do SERAp Estudantes" class="material-icons">open_in_new</i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

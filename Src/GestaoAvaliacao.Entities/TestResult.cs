@@ -14,8 +14,9 @@ namespace GestaoAvaliacao.Entities
 		public virtual bool Global { get; set; }
 
 		public virtual string CreateDate { get; set; }
+        public virtual string UpdateDate { get; set; }
 
-		public virtual string Discipline { get; set; }
+        public virtual string Discipline { get; set; }
 
 		public virtual int TestFrequencyApplication { get; set; }
 		public virtual int TestTypeFrequencyApplication { get; set; }
@@ -67,5 +68,8 @@ namespace GestaoAvaliacao.Entities
 
         public bool AllAdhered { get; set; }
         public bool ShowOnSerapEstudantes { get; set; }
+		public bool SynchronizedInSerapStudents { get; set; }
+
+        public bool HasAdhered { get; set; }
     }
 }

@@ -4,11 +4,11 @@ using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 using GestaoAvaliacao.Util;
+using MSTech.CoreSSO.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -426,6 +426,52 @@ namespace GestaoAvaliacao.Repository
                 using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
                 {
                     return gestaoAvaliacaoContext.Item.AsNoTracking().Where(x => ItemIds.Contains(x.Id)).AsQueryable();
+                }
+            }
+        }
+
+        public IEnumerable<Item> GetItemsApi(List<long> ItemIds)
+        {
+            var transactionOptions = new System.Transactions.TransactionOptions
+            {
+                IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+            };
+
+            using (new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Required, transactionOptions))
+            {
+                using (GestaoAvaliacaoContext ctx = new GestaoAvaliacaoContext())
+                {
+                    var query = ctx.Item.AsNoTracking()
+                        .Include("ItemLevel")
+                        .Include("ItemType")
+                        .Include("Alternatives")
+                        .Include("ItemSituation")
+                        .Include("ItemSkills.Skill.ModelSkillLevel")
+                        .Include("ItemSkills.Skill.Parent")
+                        .Include("ItemCurriculumGrades")
+                        .Include("Subsubject")
+                        .Include("BaseText")
+                        .Where(x => ItemIds.Contains(x.Id));
+
+                    return query.ToList();
+                }
+            }
+        }
+
+        public IEnumerable<long> GetIdsItemsApi(ref Pager pager, int areaConhecimentoId, long? matrizId = null)
+        {
+            var transactionOptions = new System.Transactions.TransactionOptions
+            {
+                IsolationLevel = System.Transactions.IsolationLevel.ReadUncommitted
+            };
+
+            using (new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Required, transactionOptions))
+            {
+                using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+                {
+                    return pager.Paginate(gestaoAvaliacaoContext.Item.Where(x => x.State == (Byte)EnumState.ativo
+                                    && x.KnowledgeArea_Id == areaConhecimentoId
+                                    && (x.EvaluationMatrix_Id == matrizId || matrizId == null)).OrderBy(x => x.Id).Select(x => x.Id));
                 }
             }
         }
@@ -1535,6 +1581,57 @@ namespace GestaoAvaliacao.Repository
                 GestaoAvaliacaoContext.Entry(blockItem).State = System.Data.Entity.EntityState.Added;
 
                 GestaoAvaliacaoContext.SaveChanges();
+            }
+        }
+
+        public void SaveChangeBlockChainItem(Item item, long testId, long itemIdAntigo, long blockChainId)
+        {
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                var test = gestaoAvaliacaoContext.Test.Find(testId);
+
+                if (test == null)
+                    return;
+
+                var blockChain = gestaoAvaliacaoContext.BlockChains.Include("BlockChainItems")
+                    .FirstOrDefault(p => p.Test_Id == testId && p.Id == blockChainId);
+
+                var blockChainItemAntigo = blockChain?.BlockChainItems.FirstOrDefault(p =>
+                    p.Item_Id == itemIdAntigo && p.State == (byte)EnumState.ativo);
+
+                if (blockChainItemAntigo == null)
+                    return;
+
+                var datetimenow = DateTime.Now;
+
+                blockChainItemAntigo.State = Convert.ToByte(EnumState.excluido);
+                blockChainItemAntigo.UpdateDate = datetimenow;
+
+                var blockChainItem = new BlockChainItem
+                {
+                    BlockChain_Id = blockChainItemAntigo.BlockChain_Id,
+                    Item_Id = item.Id,
+                    Order = blockChainItemAntigo.Order,
+                    State = Convert.ToByte(EnumState.ativo),
+                    CreateDate = datetimenow,
+                    UpdateDate = datetimenow
+                };
+
+                blockChain.UpdateDate = datetimenow;
+                test.UpdateDate = datetimenow;
+
+                gestaoAvaliacaoContext.Entry(blockChainItemAntigo).State = System.Data.Entity.EntityState.Modified;
+                gestaoAvaliacaoContext.Entry(blockChainItem).State = System.Data.Entity.EntityState.Added;
+
+                gestaoAvaliacaoContext.SaveChanges();
+
+                var blockChainBlock = gestaoAvaliacaoContext.BlockChainBlocks.FirstOrDefault(c =>
+                    c.BlockChain_Id == blockChainId && c.State == (int)EnumState.ativo);
+
+                if (blockChainBlock == null)
+                    return;
+
+                SaveChangeItem(item, testId, itemIdAntigo, blockChainBlock.Block_Id);
             }
         }
 

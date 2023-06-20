@@ -12,9 +12,11 @@ using GestaoEscolar.Entities;
 using GestaoEscolar.IBusiness;
 using GestaoEscolar.IRepository;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.Business
@@ -42,6 +44,8 @@ namespace GestaoAvaliacao.Business
         private readonly IItemLevelRepository itemLevelRepository;
         private readonly IVideoConverter videoConverter;
         private readonly IACA_TipoNivelEnsinoRepository levelEducationRepository;
+        private readonly IItemFileBusiness itemFileBusiness;
+        private readonly IItemAudioBusiness itemAudioBusiness;
 
         const string RESPOSTA_CONSTRUIDA = "Resposta construída";
 
@@ -67,7 +71,9 @@ namespace GestaoAvaliacao.Business
                             IFileBusiness fileBusiness,
                             IItemLevelRepository itemLevelRepository,
                             IVideoConverter videoConverter,
-                            IACA_TipoNivelEnsinoRepository levelEducationRepository
+                            IACA_TipoNivelEnsinoRepository levelEducationRepository,
+                            IItemFileBusiness itemFileBusiness,
+                            IItemAudioBusiness itemAudioBusiness
             )
         {
             this.itemRepository = itemRepository;
@@ -91,6 +97,8 @@ namespace GestaoAvaliacao.Business
             this.itemLevelRepository = itemLevelRepository;
             this.videoConverter = videoConverter;
             this.levelEducationRepository = levelEducationRepository;
+            this.itemFileBusiness = itemFileBusiness;
+            this.itemAudioBusiness = itemAudioBusiness;
         }
 
         #region Custom
@@ -960,6 +968,21 @@ namespace GestaoAvaliacao.Business
             return entity;
         }
 
+        public Item SaveChangeBlockChainItem(Item item, long testId, long itemIdAntigo, long blockChainId)
+        {
+            var entity = new Item { Id = item.Id };
+
+            if (!entity.Validate.IsValid)
+                return entity;
+
+            itemRepository.SaveChangeBlockChainItem(item, testId, itemIdAntigo, blockChainId);
+
+            entity.Validate.Type = ValidateType.Delete.ToString();
+            entity.Validate.Message = "Versão do item do bloco alterada com sucesso.";
+
+            return entity;
+        }
+
         public EntityFile Upload(Uploader file, string VirtualDirectory, string PhysicalDirectory)
         {
             EntityFile entityFile = new EntityFile();
@@ -1078,6 +1101,16 @@ namespace GestaoAvaliacao.Business
             }).ToList();
         }
 
+        public List<BaseDto> ObterAssuntosPorDisciplina(long DisciplinaId)
+        {
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            return subjectRepository.ObterAssuntosPorDisciplinaId(new Guid(entidade.Value), DisciplinaId).Select(s => new BaseDto
+            {
+                Id = long.Parse(s.id),
+                Descricao = s.text
+            }).ToList();
+        }
+
         public List<BaseDto> LoadSubsubjectBySubject(string idSubjects)
         {
             var entidade = parambusiness.GetByKey("ENTIDADE");
@@ -1117,6 +1150,19 @@ namespace GestaoAvaliacao.Business
                 return query;
             }
             return default;
+        }
+
+        public List<ItemLevelDto> LoadAllItemLevel()
+        {
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var list = itemLevelRepository.LoadLevels(new Guid(entidade.Value)).Select(i => new ItemLevelDto()
+            {
+                Id = i.Id,
+                Descricao = i.Description,
+                Ordem = i.Value
+            }).ToList();
+
+            return list;
         }
 
         private void ValidateApi(ItemApiDto model, ItemApiResult itemResult)
@@ -1554,6 +1600,245 @@ namespace GestaoAvaliacao.Business
             }
 
             return result;
+        }
+
+        public ItemConsultaApiPaginadoDto GetApi(int pagina, int qtdePorPagina, int areaConhecimentoId, long? matrizId)
+        {
+            try
+            {
+                var result = new List<ItemConsultaApiDto>();
+                var retorno = new ItemConsultaApiPaginadoDto();
+                var pager = new Pager();
+                pager.CurrentPage = pagina > 0 ? pagina - 1 : pagina;
+                pager.PageSize = qtdePorPagina == 0 ? 10 : qtdePorPagina;
+                var ids = itemRepository.GetIdsItemsApi(ref pager, areaConhecimentoId, matrizId);
+                var items = itemRepository.GetItemsApi(ids.ToList());
+
+                retorno.Pagina = pager.CurrentPage + 1;
+                retorno.QtdePorPagina = pager.PageSize;
+                retorno.TotalPaginas = pager.TotalPages;
+                retorno.TotalItems = pager.RecordsCount;
+
+                foreach (Item item in items)
+                {
+                    var imagens = new List<ArquivoConsultaDto>();
+
+                    if (item.BaseText != null)
+                    {
+                        var imgTextoBase = fileBusiness.GetFilesByOwner(item.BaseText.Id, item.Id, EnumFileType.BaseText);
+                        if (imgTextoBase != null && imgTextoBase.Any())
+                        {
+                            imagens.AddRange(imgTextoBase.Select(x => new ArquivoConsultaDto
+                            {
+                                Id = x.Id,
+                                NomeArquivo = x.Name,
+                                Base64 = ObterBase64Arquivo(x.Id),
+                            }).ToList());
+                        }
+                    }
+
+                    var imgEnunciado = fileBusiness.GetFilesByOwner(item.Id, item.Id, EnumFileType.Statement);
+                    if (imgEnunciado != null && imgEnunciado.Any())
+                    {
+                        imagens.AddRange(imgEnunciado.Select(x => new ArquivoConsultaDto
+                        {
+                            Id = x.Id,
+                            NomeArquivo = x.Name,
+                            Base64 = ObterBase64Arquivo(x.Id),
+                        }).ToList());
+                    }
+
+                    foreach (var a in item.Alternatives)
+                    {
+                        var imgAlternativa = fileBusiness.GetFilesByOwner(a.Id, item.Id, EnumFileType.Alternative);
+                        if (imgAlternativa != null && imgAlternativa.Any())
+                        {
+                            imagens.AddRange(imgAlternativa.Select(x => new ArquivoConsultaDto
+                            {
+                                Id = x.Id,
+                                NomeArquivo = x.Name,
+                                Base64 = ObterBase64Arquivo(x.Id),
+                            }).ToList());
+                        }
+                    }
+
+                    var itemVideos = itemFileBusiness.GetVideosByItemId(item.Id).ToList();
+                    var videos = new List<ArquivoConsultaDto>();
+                    if (itemVideos != null && itemVideos.Any())
+                    {
+                        videos = itemVideos.Select(x => new ArquivoConsultaDto
+                        {
+                            Id = x.ItemFileId,
+                            NomeArquivo = x.Name,
+                            Base64 = ObterBase64Arquivo(x.FileId),
+                        }).ToList();
+                    }
+
+                    var itemAudios = itemAudioBusiness.GetAudiosByItemId(item.Id).ToList();
+                    var audios = new List<ArquivoConsultaDto>();
+                    if (itemAudios != null && itemAudios.Any())
+                    {
+                        audios = itemAudios.Select(x => new ArquivoConsultaDto
+                        {
+                            Id = x.ItemFileId,
+                            NomeArquivo = x.Name,
+                            Base64 = ObterBase64Arquivo(x.FileId),
+                        }).ToList();
+                    }
+
+                    ItemConsultaApiDto itemApiDto = new ItemConsultaApiDto()
+                    {
+                        Id = item.Id,
+                        Enunciado = item.Statement,
+                        Proficiencia = item.proficiency,
+                        MatrizId = item.EvaluationMatrix_Id,
+                        PalavrasChave = item.Keywords,
+                        Observacao = item.Tips,
+                        TRIAcertoCasual = item.TRICasualSetting,
+                        TRIDificuldade = item.TRIDifficulty,
+                        TRIDiscrimicacao = item.TRIDiscrimination,
+                        TextoBase = item.BaseText?.Description,
+                        Fonte = item.BaseText?.Source,
+                        TipoItemId = item.ItemType_Id,
+                        Dificuldade = (Dificuldade)item.ItemLevel_Id,
+                        CodigoItem = item.ItemCode,
+                        TipoGradeCurricularId = item.ItemCurriculumGrades.Any() ? item.ItemCurriculumGrades.FirstOrDefault().TypeCurriculumGradeId : 0,
+                        CompetenciaId = item.ItemSkills.Any() ? (int)item.ItemSkills.Where(x => x.Skill?.Parent == null).FirstOrDefault().Skill.Id : 0,
+                        HabilidadeId = item.ItemSkills.Any() ? (int)item.ItemSkills.Where(x => x.Skill?.Parent != null).FirstOrDefault().Skill.Id : 0,
+                        Alternativas = item.Alternatives != null ? item.Alternatives.Select(t => new AlternativeDto()
+                        {
+                            Descricao = t.Description,
+                            Correta = t.Correct,
+                            Ordem = t.Order,
+                            Justificativa = t.Justificative,
+                            Numeracao = t.Numeration
+
+                        }).ToList() : new List<AlternativeDto>(),
+                        Sigiloso = item.IsRestrict,
+                        AreaConhecimentoId = item.KnowledgeArea_Id ?? 0,
+                        SubassuntoId = item.SubSubject_Id ?? 0,
+                        Imagens = imagens,
+                        Videos = videos,
+                        Audios = audios,
+                    };
+                    result.Add(itemApiDto);
+                }
+
+                retorno.Items = result;
+                return retorno;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public ArquivosItemConsultaApiDto ObterArquivosItemApi(long itemId)
+        {
+            try
+            {
+                var arquivosItem = new ArquivosItemConsultaApiDto();
+                var item = itemRepository.GetItemsApi(new List<long> { itemId })?.FirstOrDefault();
+
+                if (item == null) throw new Exception("Item não encontrado.");
+
+                var imagens = new List<ArquivoConsultaDto>();
+                if (item.BaseText != null)
+                {
+                    var imgTextoBase = fileBusiness.GetFilesByOwner(item.BaseText.Id, item.Id, EnumFileType.BaseText);
+                    if (imgTextoBase != null && imgTextoBase.Any())
+                    {
+                        imagens.AddRange(imgTextoBase.Select(x => new ArquivoConsultaDto
+                        {
+                            Id = x.Id,
+                            NomeArquivo = x.Name,
+                            Base64 = ObterBase64Arquivo(x.Id),
+                        }).ToList());
+                    }
+                }
+
+                var imgEnunciado = fileBusiness.GetFilesByOwner(item.Id, item.Id, EnumFileType.Statement);
+                if (imgEnunciado != null && imgEnunciado.Any())
+                {
+                    imagens.AddRange(imgEnunciado.Select(x => new ArquivoConsultaDto
+                    {
+                        Id = x.Id,
+                        NomeArquivo = x.Name,
+                        Base64 = ObterBase64Arquivo(x.Id),
+                    }).ToList());
+                }
+
+                foreach (var a in item.Alternatives)
+                {
+                    var imgAlternativa = fileBusiness.GetFilesByOwner(a.Id, item.Id, EnumFileType.Alternative);
+                    if (imgAlternativa != null && imgAlternativa.Any())
+                    {
+                        imagens.AddRange(imgAlternativa.Select(x => new ArquivoConsultaDto
+                        {
+                            Id = x.Id,
+                            NomeArquivo = x.Name,
+                            Base64 = ObterBase64Arquivo(x.Id),
+                        }).ToList());
+                    }
+                }
+
+                var itemVideos = itemFileBusiness.GetVideosByItemId(item.Id).ToList();
+                var videos = new List<ArquivoConsultaDto>();
+                if (itemVideos != null && itemVideos.Any())
+                {
+                    videos = itemVideos.Select(x => new ArquivoConsultaDto
+                    {
+                        Id = x.ItemFileId,
+                        NomeArquivo = x.Name,
+                        Base64 = ObterBase64Arquivo(x.FileId),
+                    }).ToList();
+                }
+
+                var itemAudios = itemAudioBusiness.GetAudiosByItemId(item.Id).ToList();
+                var audios = new List<ArquivoConsultaDto>();
+                if (itemAudios != null && itemAudios.Any())
+                {
+                    audios = itemAudios.Select(x => new ArquivoConsultaDto
+                    {
+                        Id = x.ItemFileId,
+                        NomeArquivo = x.Name,
+                        Base64 = ObterBase64Arquivo(x.FileId),
+                    }).ToList();
+                }
+
+                arquivosItem.Imagens = imagens;
+                arquivosItem.Audios = audios;
+                arquivosItem.Videos = videos;
+
+                return arquivosItem;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private string ObterBase64Arquivo(long id)
+        {
+            EntityFile file = fileRepository.Get(id);
+            var entidade = parambusiness.GetByKey("ENTIDADE");
+            var physicalDirectory = parambusiness.GetByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), new Guid(entidade.Value));
+
+            if (file != null)
+            {
+                string filePath = new Uri(file.Path).AbsolutePath.Replace("Files/", string.Empty);
+                string physicalPath = string.Concat(physicalDirectory.Value, filePath.Replace("/", "\\"));
+                string decodedUrl = HttpUtility.UrlDecode(physicalPath);
+
+                if (System.IO.File.Exists(decodedUrl))
+                {
+                    Byte[] bytes = System.IO.File.ReadAllBytes(decodedUrl);
+                    String base64Arquivo = Convert.ToBase64String(bytes);
+                    return base64Arquivo;
+                }
+            }
+            return null;
         }
 
         private string UploadPictureTagImg(EnumFileType type, List<EntityFile> files, PictureDto picture)

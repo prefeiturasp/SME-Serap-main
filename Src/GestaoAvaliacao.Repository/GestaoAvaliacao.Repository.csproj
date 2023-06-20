@@ -78,6 +78,9 @@
     <Compile Include="AnswerSheetBatchQueueRepository.cs" />
     <Compile Include="AnswerSheetLotRepository.cs" />
     <Compile Include="BaseTextRepository.cs" />
+    <Compile Include="BlockChainBlockRepository.cs" />
+    <Compile Include="Map\BlockChainBlockMap.cs" />
+    <Compile Include="BlockChainRepository.cs" />
     <Compile Include="BlockRepository.cs" />
     <Compile Include="BookletRepository.cs" />
     <Compile Include="CognitiveCompetenceRepository.cs" />
@@ -95,6 +98,8 @@
     <Compile Include="KnowledgeAreaRepository.cs" />
     <Compile Include="Map\AdministrativeUnitTypeMap.cs" />
     <Compile Include="Map\ArquivoResultadoPspMap.cs" />
+    <Compile Include="Map\BlockChainItemMap.cs" />
+    <Compile Include="Map\BlockChainMap.cs" />
     <Compile Include="Map\DadosArquivoResultadoPspMap.cs" />
     <Compile Include="Map\ItemAudioMap.cs" />
     <Compile Include="Map\ItemFileMap.cs" />

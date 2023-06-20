@@ -1960,6 +1960,24 @@ namespace GestaoAvaliacao.App_Start
 
             #endregion
 
+            #region SimuladorSerapEstudantes
+
+            bundles.Add(
+                new ScriptBundle("~/bundles/SimuladorSerapEstudantes_js")
+                    .Include("~/Assets/js/angular/directives/_bundle/page/page.js")
+                    .Include("~/Assets/js/angular/services/_bundle/pager/services.js")
+                    .Include("~/Assets/js/angular/directives/_bundle/modal/modal.js")
+                    .Include("~/Assets/js/angular/services/_bundle/util/util.js")
+                    .Include("~/Assets/js/angular/controllers/simuladorSerapEstudantes/simuladorSerapEstudantesController.js")
+            );
+
+            bundles.Add(
+                new StyleBundle("~/bundles/SimuladorSerapEstudantes_css")
+                    .Include("~/Assets/js/angular/directives/_bundle/page/page.css")
+            );
+
+            #endregion
+
             #endregion
 
             #region ImportarResultadosPSP
