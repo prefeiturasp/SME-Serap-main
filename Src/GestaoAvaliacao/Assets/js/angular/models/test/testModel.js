@@ -115,6 +115,10 @@
                 method: 'GET',
                 url: base_url('Block/GetBlockItens')
             },
+            'visualizarComCadeiaBlocos': {
+                method: 'GET',
+                url: base_url('Block/GetBlockItensWithBlockChain')
+            },
             'getBlockKnowledgeAreas': {
                 method: 'GET',
                 url: base_url('Block/GetBlockKnowledgeAreas')

@@ -200,6 +200,118 @@ namespace GestaoAvaliacao.Repository
 									         INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
 									         WHERE I.State = @state 
 									         AND D.State = @state 
+									         AND I.Id = @id";
+
+                    var multi = cn.QueryMultiple(sqlMulti, new { id = itemId, blockId = Id, state = (byte)EnumState.ativo });
+
+                    var listBaseText = multi.Read<BaseText>();
+                    var listItemLevel = multi.Read<ItemLevel>();
+                    var listItemCurriculumGrade = multi.Read<ItemCurriculumGrade>();
+                    var listBlockItems = multi.Read<BlockItem>();
+                    var discipline = multi.Read<Discipline>();
+
+                    item.BaseText = listBaseText.FirstOrDefault();
+                    item.ItemLevel = listItemLevel.FirstOrDefault();
+                    item.ItemCurriculumGrades.AddRange(listItemCurriculumGrade);
+                    item.BlockItems.AddRange(listBlockItems);
+
+                    item.EvaluationMatrix = new EvaluationMatrix
+                    {
+                        Discipline = discipline.FirstOrDefault()
+                    };
+                }
+
+                return listItems;
+            }
+        }
+
+        public IEnumerable<Item> GetBlockItensWithBlockChain(long Id, int page, int pageItens)
+        {
+            using (var cn = Connection)
+            {
+                cn.Open();
+
+                const string sql = @"WITH ItensPage AS
+                                    (
+                                        SELECT ROW_NUMBER() OVER (ORDER BY ISNULL(Bka.[Order], 0), BI.[Order]) AS RowNum, 
+                                            I.Id, 
+                                            I.ItemCode, 
+                                            I.ItemVersion, 
+                                            I.Statement, 
+                                            I.Revoked, 
+                                            I.KnowledgeArea_Id, 
+                                            I.ItemCodeVersion, 
+                                            K.Description AS KnowledgeArea_Description, 
+                                            CASE WHEN (T.KnowledgeAreaBlock = 1) THEN 
+                                                ISNULL(Bka.[Order], 0) 
+                                            ELSE 
+                                                0 
+                                            END AS KnowledgeArea_Order,
+                                            BCI.BlockChain_Id
+                                        FROM Item I WITH (NOLOCK) 
+                                            INNER JOIN BlockItem BI WITH (NOLOCK) ON BI.Item_Id = I.Id 
+                                            INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
+                                            INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
+                                            LEFT JOIN KnowledgeArea K WITH (NOLOCK) ON I.KnowledgeArea_Id = K.Id AND K.State = @state 
+                                            LEFT JOIN BlockKnowledgeArea Bka WITH (NOLOCK) ON Bka.KnowledgeArea_Id = K.Id AND B.Id = Bka.Block_Id AND Bka.State = @state 
+                                            INNER JOIN BlockChainBlock BCB WITH (NOLOCK) ON BCB.Block_Id = B.Id AND BCB.State = @state 
+                                            INNER JOIN BlockChain BC WITH (NOLOCK) ON BC.Id = BCB.BlockChain_Id AND BC.State = @state
+                                            INNER JOIN BlockChainItem BCI WITH (NOLOCK) ON BCI.BlockChain_Id = BC.Id
+                                                AND BCI.Item_Id = I.Id
+                                            	AND BCI.State = @state
+                                        WHERE BI.Block_Id = @id 
+                                        AND BI.State = @state 
+                                        AND I.State = @state 
+                                    )
+                                    SELECT * FROM ItensPage
+                                    WHERE RowNum BETWEEN @initialPageItem AND @finalPageItem;";
+
+                var initialPageItem = page * pageItens + 1;
+
+                var listItems = cn.Query<Item>(sql,
+                    new
+                    {
+                        id = Id,
+                        state = (byte)EnumState.ativo,
+                        initialPageItem,
+                        finalPageItem = initialPageItem + pageItens - 1
+                    }).ToList();
+
+                foreach (var item in listItems)
+                {
+                    var itemId = item.Id;
+
+                    const string sqlMulti = @"SELECT B.Id, B.Description, B.Source 
+									         FROM Item I WITH (NOLOCK) 
+									         INNER JOIN BaseText B WITH (NOLOCK) ON B.Id = I.BaseText_Id
+									         WHERE I.Id = @id 
+									         AND I.State = @state AND B.State = @state 
+
+									         SELECT L.Description, L.Value 
+									         FROM Item I WITH (NOLOCK) 
+									         INNER JOIN ItemLevel L WITH (NOLOCK) ON L.Id = I.ItemLevel_Id 
+									         WHERE I.Id = @id 
+									         AND I.State = @state AND L.State = @state 
+									         
+									         SELECT TypeCurriculumGradeId 
+									         FROM ItemCurriculumGrade WITH (NOLOCK) 
+									         WHERE Item_Id = @id 
+									         AND State = @state 
+									         
+									         SELECT BI.Id, BI.Block_Id, BI.Item_Id, bi.[Order]  
+									         FROM BlockItem BI WITH (NOLOCK) 
+                                             INNER JOIN Block B WITH (NOLOCK) ON B.Id = BI.Block_Id 
+									         INNER JOIN Item I WITH (NOLOCK) ON I.Id = BI.Item_Id 
+                                             INNER JOIN Test T WITH(NOLOCK) ON T.Id = B.[Test_Id] 
+                                             WHERE BI.Item_Id = @id AND BI.Block_Id = @blockId 
+									         AND I.State = @state AND BI.State = @state 
+
+									         SELECT D.Id, D.Description 
+									         FROM Item I WITH (NOLOCK) 
+									         INNER JOIN EvaluationMatrix EM WITH (NOLOCK)ON EM.Id = I.EvaluationMatrix_Id 
+									         INNER JOIN Discipline D WITH(NOLOCK) ON EM.Discipline_Id = D.Id 
+									         WHERE I.State = @state 
+									         AND D.State = @state 
 									         AND I.Id = @id
 
                                              SELECT BC.Id, BC.Description
@@ -235,8 +347,18 @@ namespace GestaoAvaliacao.Repository
                         Discipline = discipline.FirstOrDefault()
                     };
 
-                    item.BlockChain_Id = listBlockChain.Select(c => c.Id).FirstOrDefault();
-                    item.BlockChain_Description = listBlockChain.Select(c => c.Description).FirstOrDefault();
+                    var blockChain = listBlockChain.FirstOrDefault(c => c.Id == item.BlockChain_Id);
+
+                    if (blockChain != null)
+                    {
+                        item.BlockChain_Id = blockChain.Id;
+                        item.BlockChain_Description = blockChain.Description;
+                    }
+                    else
+                    {
+                        item.BlockChain_Id = listBlockChain.Select(c => c.Id).FirstOrDefault();
+                        item.BlockChain_Description = listBlockChain.Select(c => c.Description).FirstOrDefault();
+                    }
                 }
 
                 return listItems;
