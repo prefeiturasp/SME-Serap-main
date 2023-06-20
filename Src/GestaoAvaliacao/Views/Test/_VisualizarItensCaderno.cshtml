@@ -1,0 +1,75 @@
+﻿<div class="modal fade" id="modalViewItensCaderno">
+    <div class="modal-dialog modal-lg" style="width: 90%">
+        <div class="modal-content">
+            @*HEADER*@
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalViewItensCadernoLabel">
+                    <strong>Lista de itens selecionados</strong>
+                </h4>
+            </div>
+
+            @*BODY*@
+            <div class="modal-body">
+                <div class="row" style="overflow-x: auto;">
+                    @*TABELA*@
+                    <table class="table ordem">
+                        <colgroup>
+                            <col style="width: 6%" />
+                            <col style="width: 6%" />
+                            <col style="width: 6%" />
+                            <col style="width: 6%" />
+                            <col style="width: 30%" />
+                            <col style="width: 30%" />
+                            <col style="width: 10%" />
+                            <col style="width: 6%" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th class="table-parameter-centralize">Ordem</th>
+                                <th class="table-parameter-centralize">Bloco</th>
+                                <th class="table-parameter-centralize">Cód.</th>
+                                <th class="table-parameter-centralize">Versão</th>
+                                <th class="table-parameter-centralize">Texto Base</th>
+                                <th class="table-parameter-centralize">Enunciado</th>
+                                <th class="table-parameter-centralize">Disciplina</th>
+                                <th class="table-parameter-centralize">Ano</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="($indexItem, item) in e3_ListaItemsVisualizar track by $indexItem">
+                                <td class="table-parameter-centralize">{{ $indexItem+1 }}</td>
+                                <td class="table-parameter-centralize">{{ item.BlockChain_Description }}</td>
+                                <td class="table-parameter-centralize">{{ item.Code }}</td>
+                                <td class="table-parameter-centralize">{{ item.ItemVersion }}</td>
+
+                                <td class="table-parameter-centralize">
+                                    <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{ item.BaseTextDescription }}"
+                                       data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                        {{ (item.BaseTextDescription | tagToString:true) | minimize: 22 }}
+                                    </a>
+                                </td>
+
+                                <td class="table-parameter-centralize">
+                                    <a href="javascript:void(0)" data-trigger="hover" data-type="success" data-title="{{ item.Statement }}"
+                                       data-animation="am-fade" data-placement="top" data-container="body" data-bs-tooltip>
+                                        {{ (item.Statement | tagToString) | minimize: 22 }}
+                                    </a>
+                                </td>
+
+                                <td class="table-parameter-centralize">{{ item.DisciplineDescription }}</td>
+                                <td class="table-parameter-centralize">{{ item.Periodo }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @*FOOTER*@
+            <div class="modal-footer footerCustom ">
+                <div class="container-fluid row-fluid">
+                    <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e3_voltarModalViewItensCaderno()">Voltar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

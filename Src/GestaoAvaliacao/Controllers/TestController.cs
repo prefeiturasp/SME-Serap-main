@@ -36,11 +36,13 @@ namespace GestaoAvaliacao.Controllers
         private readonly ITestPermissionBusiness testPermissionBusiness;
         private readonly ITestContextBusiness testContextBusiness;
         private readonly IBlockChainBusiness blockChainBusiness;
+        private readonly IBlockChainBlockBusiness blockChainBlockBusiness;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
             IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
             IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness,
-            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness, IBlockChainBusiness blockChainBusiness)
+            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness, IBlockChainBusiness blockChainBusiness, 
+            IBlockChainBlockBusiness blockChainBlockBusiness)
         {
             this.testBusiness = testBusiness;
             this.testFilesBusiness = testFilesBusiness;
@@ -55,6 +57,7 @@ namespace GestaoAvaliacao.Controllers
             this.testPermissionBusiness = testPermissionBusiness;
             this.testContextBusiness = testContextBusiness;
             this.blockChainBusiness = blockChainBusiness;
+            this.blockChainBlockBusiness = blockChainBlockBusiness;
         }
 
         public ActionResult Index() => View();
@@ -234,6 +237,11 @@ namespace GestaoAvaliacao.Controllers
                         BlockChains = entity.BlockChains.Where(c => c.State == (byte)EnumState.ativo).Select(c => new
                         {
                             c.Id, 
+                            c.Description
+                        }).ToList(),
+                        Blocks = entity.Blocks.Where(c => c.State == (byte)EnumState.ativo).Select(c => new
+                        {
+                            c.Id,
                             c.Description
                         }).ToList(),
                         TestSituation = entity.TestSituation,
@@ -842,6 +850,12 @@ namespace GestaoAvaliacao.Controllers
 
                     if (entity.RemoveBlockChain && entity.BlockChains.Any())
                         blockChainBusiness.DeleteByTestId(entity.Id);
+
+                    if (entity.RemoveBlockChainBlock && entity.Blocks.Any())
+                    {
+                        foreach (var block in entity.Blocks)
+                            blockChainBlockBusiness.DeleteByBlockId(block.Id);
+                    }
                 }
                 else
                 {

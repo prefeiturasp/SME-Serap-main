@@ -603,7 +603,9 @@ namespace GestaoAvaliacao.Business
                 var test = testRepository.Update(Id, entity);
 
                 entity.BlockChains.AddRange(test.BlockChains);
+                entity.Blocks.AddRange(test.Blocks);
                 entity.RemoveBlockChain = test.RemoveBlockChain;
+                entity.RemoveBlockChainBlock = test.RemoveBlockChainBlock;
                 entity.Validate.Type = ValidateType.Update.ToString();
                 entity.Validate.Message = "Prova alterada com sucesso.";
             }

@@ -198,6 +198,7 @@ namespace GestaoAvaliacao.Repository
                         .Include("TestTime")
                         .Include("TestContexts")
                         .Include("BlockChains")
+                        .Include("Blocks")
                         .FirstOrDefault(i => i.Id == Id && i.State == (Byte)EnumState.ativo);
 
                     return query;
@@ -1495,17 +1496,19 @@ namespace GestaoAvaliacao.Repository
         {
             using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                DateTime dateNow = DateTime.Now;
+                var dateNow = DateTime.Now;
 
-                Test test = gestaoAvaliacaoContext.Test.Include("Discipline").Include("TestCurriculumGrades")
+                var test = gestaoAvaliacaoContext.Test.Include("Discipline").Include("TestCurriculumGrades")
                     .Include("TestPerformanceLevels").Include("TestPerformanceLevels.PerformanceLevel")
                     .Include("TestItemLevels").Include("TestItemLevels.ItemLevel").Include("TestType")
-                    .Include("TestSubGroup").Include("BlockChains").FirstOrDefault(a => a.Id == entity.Id);
+                    .Include("TestSubGroup").Include("BlockChains").Include("Blocks")
+                    .FirstOrDefault(a => a.Id == entity.Id);
 
                 if (test == null)
                     return entity;
 
-                test.RemoveBlockChain = entity.BlockChainNumber < test.BlockChainNumber;
+                test.RemoveBlockChain = entity.BlockChainNumber < test.BlockChainNumber || entity.BlockChainItems < test.BlockChainItems;
+                test.RemoveBlockChainBlock = entity.NumberBlock < test.NumberBlock || entity.BlockChainItems < test.BlockChainItems;
 
                 test.TestSituation = entity.TestSituation;
 
@@ -1532,14 +1535,9 @@ namespace GestaoAvaliacao.Repository
                 test.TestType = gestaoAvaliacaoContext.TestType.FirstOrDefault(l => l.Id == entity.TestType.Id);
                 test.TestTime = gestaoAvaliacaoContext.TestTime.FirstOrDefault(l => l.Id == entity.TestTime.Id);
 
-                if (entity.TestSubGroup != null)
-                {
-                    test.TestSubGroup = gestaoAvaliacaoContext.TestSubGroup.FirstOrDefault(l => l.Id == entity.TestSubGroup.Id);
-                }
-                else
-                {
-                    test.TestSubGroup = null;
-                }
+                test.TestSubGroup = entity.TestSubGroup != null
+                    ? gestaoAvaliacaoContext.TestSubGroup.FirstOrDefault(l => l.Id == entity.TestSubGroup.Id)
+                    : null;
 
                 test.NumberBlock = entity.NumberBlock;
                 test.NumberItem = entity.NumberItem;

@@ -834,7 +834,7 @@
                 </div>
 
                 @* Etapa 4 *@ @* Gera Prova *@
-                <div class="form-group" ng-show="mostrarTela && navigation===ultimo">
+                <div class="form-group" ng-show="mostrarTela && navigation===ultimo && !temBIB">
                     <div class="row">
                         <div class="col-md-12 ">
                             <div class="cards">
@@ -1939,6 +1939,10 @@
 
         @{
             Html.RenderPartial("_AdicionarBlocos");
+        }
+    
+        @{
+            Html.RenderPartial("_VisualizarItensCaderno");
         }
 
         @*modalDeleteItemTestContex*@
