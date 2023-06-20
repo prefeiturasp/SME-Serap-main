@@ -321,7 +321,7 @@ namespace GestaoAvaliacao.Repository
                     caderno.Test = listaProva.FirstOrDefault(p => p.Id == caderno.Test_Id);
                     var blocosCaderno = listaBlockChainBlock.Where(x => x.Block_Id == caderno.Id).ToList();
 
-                    if (!blocosCaderno.Any()) 
+                    if (!blocosCaderno.Any())
                         continue;
 
                     foreach (var bloco in blocosCaderno)

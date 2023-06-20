@@ -13,7 +13,7 @@
         .module('appMain')
         .controller("TestController", TestController);
 
-    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', 'NumberItemsAplicationTaiModel', '$window', 'EvaluationMatrixModel', '$sce'];
+    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', 'NumberItemsAplicationTaiModel', '$window', 'EvaluationMatrixModel', '$sce', '$http', '$q' ];
 
     /**
      * @function Controller para criação de prova
@@ -26,7 +26,7 @@
      * @param {Object} TestTypeModel
      * @returns
      */
-    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, NumberItemsAplicationTaiModel, $window, EvaluationMatrixModel, $sce) {
+    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, NumberItemsAplicationTaiModel, $window, EvaluationMatrixModel, $sce, $http, $q) {
 
         ng.params = $util.getUrlParams();
         var self = this;
@@ -255,6 +255,7 @@
             ng.showTestContext = false;
             ng.testContexts = [];
             ng.anosItensAmostraProvaTai = [];
+            ng.arquivoBlocoCsvSelecionado = null;
             //Funções para configurar Etapas
             nivelDesempenhoCarregar();
             initEtapa1();
@@ -352,6 +353,7 @@
             ng.e1_qtdCadeiaBlocos = null;
             ng.e1_qtdItensCadeiaBlocos = null;
             ng.e1_qtdCadeiaBlocosPorBloco = null;
+            ng.resultImportarCsvBlocos = null;
 
             ng.params = {
                 Id: ng.params
@@ -4436,6 +4438,11 @@
             }
         };
 
+        ng.callModalNovaImportacao = function __callModalNovaImportacao() {
+            // $scope.limparDados();
+            angular.element("#modalImportarCsvBlocos").modal({ backdrop: 'static' });
+        };
+
         /**
         * @function Baixar Selecionadas
         * @private
@@ -5340,6 +5347,110 @@
                 ng.anosItensAmostraProvaTai.push(item);
             };
         }
+
+
+        ng.selecionarArquivo = selecionarArquivo
+        function selecionarArquivo(element) {
+            ng.arquivoBlocoCsvSelecionado = element.files[0];
+            console.log("Arquivo", element.files[0])
+            // validacoesArquivo
+        }
+
+
+
+
+        //$scope.validacoesArquivo = function __validacoesArquivo() {
+        //    var tamanhoArquivo = parseInt($scope.arquivoSelecionado.size);
+        //    var fileSize = kmgtbytes(tamanhoArquivo);
+        //    if (fileSize[1] == 'GB' || fileSize[1] == 'TR' || (fileSize[1] == 'MB' && fileSize[0] > 10)) {
+        //        $scope.arquivoSelecionado = null;
+        //        angular.element("input[type='file']").val(null);
+        //        $notification['alert']("Tamanho do arquivo excede o permitido (10 MB)!");
+        //        return false;
+        //    }
+        //    if ($scope.arquivoSelecionado.type !== 'text/csv') {
+        //        $scope.arquivoSelecionado = null;
+        //        angular.element("input[type='file']").val(null);
+        //        $notification['error']("Selecione um arquivo .CSV");
+        //        return false;
+        //    }
+        //}
+
+        ng.exibirLoading = exibirLoading
+        function exibirLoading(exibir) {
+            if (exibir)
+                angular.element('#div_loading').css('display', 'block');
+            else
+                angular.element('#div_loading').css('display', 'none');
+        }
+
+        ng.limparDados = limparDados;
+        function limparDados() {
+
+            ng.arquivoSelecionado = null;
+            angular.element("input[type='file']").val(null);
+        }
+
+
+        ng.salvarImportacao = salvarImportacao;
+        function salvarImportacao() {
+            if (ng.arquivoBlocoCsvSelecionado === null || ng.arquivoBlocoCsvSelecionado === undefined) {
+                ng.callModalNovaImportacao();
+                $notification['error']("Selecione um arquivo!");
+                return false;
+            }
+
+            var form = new FormData();
+            form.append('file', ng.arquivoSelecionado);
+            form.append('testId', ng.provaId);
+
+            ng.exibirLoading(true);
+
+            ng.UploadFile().then(function (data) {
+                if (data.success) {
+                    ng.limparDados();
+                    cadeiaBlocosCarregar();
+                    ng.exibirLoading(false);
+                    ng.resultImportarCsvBlocos = data.retorno;
+                    angular.element("#modalResultadoImportarCsvBlocos").modal({ backdrop: 'static' });            
+                }
+                else {
+                    ng.limparDados();
+                    ng.exibirLoading(false);
+                    $notification[data.type ? data.type : 'error'](data.message);
+                }
+        
+
+            }, function (e) {
+                ng.limparDados();
+                ng.exibirLoading(false);
+                $notification.error(e);
+            });
+        }
+
+        ng.UploadFile = UploadFile;
+        function UploadFile() {
+            var form = new FormData();
+            form.append('file', ng.arquivoSelecionado);
+            form.append('testId', ng.provaId);
+
+            var defer = $q.defer();
+            $http.post("/Test/ImportarArquivoCsvBlocos", form,
+                {
+                    headers: { 'Content-Type': undefined },
+                    transformRequest: angular.identity
+                })
+                .success(function (d) {
+                   defer.resolve(d);
+                })
+                .error(function (e) {
+                    $notification.error(e);
+                });
+
+            return defer.promise;
+        }
+
+
 
         function configuraEtapa2Tai() {
             if (ng.provaId && ng.provaId > 0) {
