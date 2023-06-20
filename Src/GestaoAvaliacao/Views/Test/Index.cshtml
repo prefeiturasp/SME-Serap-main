@@ -50,7 +50,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-seach" data-side-filters >
+        <div class="col-seach" data-side-filters>
             <div data-side-filters>
                 <label data-side-filters>Grupos</label>
                 <select class="form-control"
@@ -283,80 +283,91 @@
                     <span><i class="material-icons">view_module</i> Exibição: <select ng-model="tipoVisualizacao" ng-change="alterarVisualizacao(tipoVisualizacao);"><option value="1">Blocos</option><option value="0">Lista</option></select></span>
                 </div>
 
-				<div ng-if="(searchResult && !getGroup && tipoVisualizacao == '1')" class="modelo-bloco">
-					<h4 class="margin pull-left">{{labels.headerBoxTable}}</h4>
-					<br clear="all" />
+                <div ng-if="(searchResult && !getGroup && tipoVisualizacao == '1')" class="modelo-bloco">
+                    <h4 class="margin pull-left">{{labels.headerBoxTable}}</h4>
+                    <br clear="all" />
 
-					<div class="table-responsive">
-						<table class="table table-hover">
-							<tbody>
-								<tr ng-repeat-start="($indexItem, item) in searchResult"
-									ng-class="{'revoked': profile == visAdmin && !item.Test.Visible}"
-									ng-if="profile == visAdmin || item.Test.Visible"
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr ng-repeat-start="($indexItem, item) in searchResult"
+                                    ng-class="{'revoked': profile == visAdmin && !item.Test.Visible}"
+                                    ng-if="profile == visAdmin || item.Test.Visible"
                                     id="{{item.Test.TestId}}" droppable drop="handleDrop" draggable target="item" item="item">
-									<td class="text-center tipo">
-										{{item.Test.TestDescription}}
-										<span ng-if="item.Test.Global">({{labelTermGlobal}})</span>
-										<span ng-if="!item.Test.Global">({{labelTermLocal}})</span>
-									</td>
-									<td><strong>{{item.Test.Discipline}}</strong></td>
-									<td><strong>Código {{item.Test.TestId}}</strong></td>
-									<td class="tr_situacao">
-										Situação:
-										<span ng-if="item.Test.TestSituation == 2" data-trigger="hover" data-type="success" data-title="Cadastrada" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
-											<span class="icone-cadastrar material-icons" aria-hidden="true">radio_button_unchecked</span>
-										</span>
-										<span ng-if="item.Test.TestSituation == 4" data-trigger="hover" data-type="success" data-title="Aplicada" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
-											<span class="icone-aplicar material-icons" aria-hidden="true">check_circle</span>
-										</span>
-										<span ng-if="item.Test.TestSituation == 3" data-trigger="hover" data-type="success" data-title="Em andamento" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
-											<span class="icone-andamento material-icons" aria-hidden="true">timelapse</span>
-										</span>
-										<span ng-if="item.Test.TestSituation == 1" data-trigger="hover" data-type="success" data-title="Pendente" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
-											<span class="icone-pendente material-icons" aria-hidden="true">remove_circle_outline</span>
-										</span>
-									</td>
-									<td>Criação: {{item.Test.CreateDate}}</td>
-									<td class="sub-item">
-										<ul class="nav nav-tabs" role="tablist">
-											<li role="presentation"><a ng-click="verMaisTest(item.Test.TestId)" role="tab" data-toggle="tab"><i class="material-icons">expand_more</i></a></li>
-											<li role="presentation"><a ng-click="acaoTest(item)" role="tab" data-toggle="tab"><i class="material-icons">view_list</i></a></li>
-										</ul>
-										<div class="tab-content">
-											<div role="tabpanel" class="tab-pane" id="mais_{{item.Test.TestId}}">
-												<div class="container-fluid">
-													<div class="row text-center">
-														<div class="col-md-12">
-															<label>Nv. desempenho: </label>
-															<span ng-if="item.Test.Desempenho==true">sim</span>
-															<span ng-if="item.Test.Desempenho==false">não</span>
-														</div>
-														<div class="col-md-12">
-															<label>Período de aplicação: </label>
-															<span>{{item.Test.ApplicationStartDate}} até {{item.Test.ApplicationEndDate}}</span>
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-md-12">
-															<label>Frequência de aplicação: </label>
-															<span>{{item.Test.FrequencyApplicationDescription}}</span>
-														</div>
-														<div class="col-md-12">
-															<label>Período de correção: </label>
-															<span>{{item.Test.CorrectionStartDate}} até {{item.Test.CorrectionEndDate}}</span>
-														</div>
-													</div>
-													<div class="row">
-														<div class="col-md-12" ng-if="item.Test.Bib">
-															<label>BIB: </label>
-															<span ng-if="item.Test.Bib==true">sim</span>
-															<span ng-if="item.Test.Bib==false">não</span>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div role="tabpanel" class="tab-pane" id="acao_{{item.Test.TestId}}">
-												<ul class="listaPopover">
+                                    <td class="text-center tipo">
+                                        {{item.Test.TestDescription}}
+                                        <span ng-if="item.Test.Global">({{labelTermGlobal}})</span>
+                                        <span ng-if="!item.Test.Global">({{labelTermLocal}})</span>
+                                    </td>
+                                    <td><strong>{{item.Test.Discipline}}</strong></td>
+                                    <td><strong>Código {{item.Test.TestId}}</strong></td>
+                                    <td class="tr_situacao">
+                                        Situação:
+                                        <span ng-if="item.Test.TestSituation == 2" data-trigger="hover" data-type="success" data-title="Cadastrada" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-cadastrar material-icons" aria-hidden="true">radio_button_unchecked</span>
+                                        </span>
+                                        <span ng-if="item.Test.TestSituation == 4" data-trigger="hover" data-type="success" data-title="Aplicada" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-aplicar material-icons" aria-hidden="true">check_circle</span>
+                                        </span>
+                                        <span ng-if="item.Test.TestSituation == 3" data-trigger="hover" data-type="success" data-title="Em andamento" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-andamento material-icons" aria-hidden="true">timelapse</span>
+                                        </span>
+                                        <span ng-if="item.Test.TestSituation == 1" data-trigger="hover" data-type="success" data-title="Pendente" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-pendente material-icons" aria-hidden="true">remove_circle_outline</span>
+                                        </span>
+                                    </td>
+                                    <td class="tr_statusAdesao">
+                                        <strong>
+                                            Adesão:
+                                        </strong>
+                                        <span ng-if="item.Test.HasAdhered" data-trigger="hover" data-type="success" data-title="Cadastrada" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-aplicar material-icons" aria-hidden="true">check_circle</span>
+                                        </span>
+                                        <span ng-if="!item.Test.HasAdhered" data-trigger="hover" data-type="success" data-title="Pendente" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-pendente material-icons" aria-hidden="true">remove_circle_outline</span>
+                                        </span>
+                                    </td>
+                                    <td>Criação: {{item.Test.CreateDate}}</td>
+                                    <td class="sub-item">
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li role="presentation"><a ng-click="verMaisTest(item.Test.TestId)" role="tab" data-toggle="tab"><i class="material-icons">expand_more</i></a></li>
+                                            <li role="presentation"><a ng-click="acaoTest(item)" role="tab" data-toggle="tab"><i class="material-icons">view_list</i></a></li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div role="tabpanel" class="tab-pane" id="mais_{{item.Test.TestId}}">
+                                                <div class="container-fluid">
+                                                    <div class="row text-center">
+                                                        <div class="col-md-12">
+                                                            <label>Nv. desempenho: </label>
+                                                            <span ng-if="item.Test.Desempenho==true">sim</span>
+                                                            <span ng-if="item.Test.Desempenho==false">não</span>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <label>Período de aplicação: </label>
+                                                            <span>{{item.Test.ApplicationStartDate}} até {{item.Test.ApplicationEndDate}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <label>Frequência de aplicação: </label>
+                                                            <span>{{item.Test.FrequencyApplicationDescription}}</span>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <label>Período de correção: </label>
+                                                            <span>{{item.Test.CorrectionStartDate}} até {{item.Test.CorrectionEndDate}}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12" ng-if="item.Test.Bib">
+                                                            <label>BIB: </label>
+                                                            <span ng-if="item.Test.Bib==true">sim</span>
+                                                            <span ng-if="item.Test.Bib==false">não</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div role="tabpanel" class="tab-pane" id="acao_{{item.Test.TestId}}">
+                                                <ul class="listaPopover">
                                                     <li ng-click="popovermenu.baixar(); $hide();">
                                                         <i class="material-icons">file_download</i>
                                                         <a href="javascript:void(0)">Anexos da prova</a>
@@ -393,126 +404,126 @@
                                                         <i class="material-icons">visibility_off</i>
                                                         <a href="javascript:void(0)">Permiss&ocirc;es</a>
                                                     </li>
-												</ul>
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr ng-repeat-end=""
-									ng-if="item.Test.expanded && (profile == visAdmin || item.Test.Visible)">
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat-end=""
+                                    ng-if="item.Test.expanded && (profile == visAdmin || item.Test.Visible)">
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-				<div ng-if="searchResult && !getGroup && tipoVisualizacao == '0'" class="modelo-lista">
-					<h4 class="margin pull-left">{{labels.headerBoxTable}}</h4>
-					<br clear="all" />
-					<div class="table-responsive">
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th></th>
-									<th>Código</th>
-									<th>Tipo de prova</th>
-									<th>Prova</th>
-									<th>Criação</th>
-									<th>Componente</th>
-									<th class="tr_situacao">Situação</th>
-									<th>Ação</th>
-									<th ng-show="countFilter == 0 && codItem == '' && profile == visAdmin">Ordenação</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr ng-repeat-start="($indexItem, item) in searchResult"
-									ng-class="{'revoked': profile == visAdmin && !item.Test.Visible}"
-									ng-if="profile == visAdmin || item.Test.Visible">
-									<td class="text-center" ng-click="collapse($index)">
-										<a class="material-icons" ng-if="!item.Test.expanded" ng-click="item.Test.expanded = true">expand_more</a>
-										<a class="material-icons" ng-if="item.Test.expanded" ng-click="item.Test.expanded = false">expand_less</a>
-									</td>
-									<td>{{item.Test.TestId}}</td>
-									<td class="text-center">
-										{{item.Test.TestTypeDescription}}
-										<div style="color: black; font-size:12px" ng-if="item.Test.Global"><strong>({{labelTermGlobal}})</strong></div>
-										<div style="color: black; font-size: 12px" ng-if="!item.Test.Global">({{labelTermLocal}})</div>
-									</td>
-									<td>{{item.Test.TestDescription}}</td>
-									<td>{{item.Test.CreateDate}}</td>
-									<td>{{item.Test.Discipline}}</td>
-									<td class="tr_situacao">
-										<span ng-if="item.Test.TestSituation == 2" data-trigger="hover" data-type="success" data-title="Cadastrada" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
-											<span class="icone-cadastrar material-icons" aria-hidden="true">radio_button_unchecked</span>
-										</span>
-										<span ng-if="item.Test.TestSituation == 4" data-trigger="hover" data-type="success" data-title="Aplicada" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
-											<span class="icone-aplicar material-icons" aria-hidden="true">check_circle</span>
-										</span>
-										<span ng-if="item.Test.TestSituation == 3" data-trigger="hover" data-type="success" data-title="Em andamento" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
-											<span class="icone-andamento material-icons" aria-hidden="true">timelapse</span>
-										</span>
-										<span ng-if="item.Test.TestSituation == 1" data-trigger="hover" data-type="success" data-title="Pendente" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
-											<span class="icone-pendente material-icons" aria-hidden="true">remove_circle_outline</span>
-										</span>
-									</td>
-									<td>
-										<button class="btnMais"
-												data-ng-click="changeTest(item)"
-												data-placement="left"
-												data-trigger="focus"
-												data-custom-class="itemListPopover"
-												data-template="Assets/js/angular/controllers/test/testListMenu.html"
-												data-animation="popover-fade"
-												data-container="body"
-												data-bs-popover="popovermenu">
-											<i class="material-icons">view_list</i>
-										</button>
-									</td>
-									<td ng-show="countFilter == 0 && codItem == '' && profile == visAdmin">
-										<a class="btnSeta" ng-show="(paginate.currentPage() != (pages - 1)) || (($index + 1) != (totalItens - ((pages - 1) * paginate.getPageSize())))" ng-click="moverProvaBaixo(item)"><i class="material-icons btnSeta">arrow_drop_down</i></a>
-										<a class="btnSeta" ng-show="($index != 0 && paginate.currentPage() == 0) || paginate.currentPage() != 0" ng-click="moverProvaCima(item)"><i class="material-icons btnSeta">arrow_drop_up</i></a>
-									</td>
-								</tr>
-								<tr ng-repeat-end=""
-									ng-if="item.Test.expanded && (profile == visAdmin || item.Test.Visible)">
-									<td class="boxConteudo"></td>
-									<td colspan="7" class="boxConteudo">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-md-6">
-													<i class="material-icons">chevron_right</i><label>Nv. desempenho: </label>
-													<span ng-if="item.Test.Desempenho==true">sim</span>
-													<span ng-if="item.Test.Desempenho==false">não</span>
-												</div>
-												<div class="col-md-6">
-													<i class="material-icons">chevron_right</i><label>Período de aplicação: </label>
-													<span>{{item.Test.ApplicationStartDate}} até {{item.Test.ApplicationEndDate}}</span>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<i class="material-icons">chevron_right</i><label>Frequência de aplicação: </label>
-													<span>{{item.Test.FrequencyApplicationDescription}}</span>
-												</div>
-												<div class="col-md-6">
-													<i class="material-icons">chevron_right</i><label>Período de correção: </label>
-													<span>{{item.Test.CorrectionStartDate}} até {{item.Test.CorrectionEndDate}}</span>
-												</div>
-											</div>
-											<div class="row">
-												<div class="col-md-3" ng-if="item.Test.Bib">
-													<i class="material-icons">chevron_right</i><label>BIB: </label>
-													<span ng-if="item.Test.Bib==true">sim</span>
-													<span ng-if="item.Test.Bib==false">não</span>
-												</div>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
+                <div ng-if="searchResult && !getGroup && tipoVisualizacao == '0'" class="modelo-lista">
+                    <h4 class="margin pull-left">{{labels.headerBoxTable}}</h4>
+                    <br clear="all" />
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Código</th>
+                                    <th>Tipo de prova</th>
+                                    <th>Prova</th>
+                                    <th>Criação</th>
+                                    <th>Componente</th>
+                                    <th class="tr_situacao">Situação</th>
+                                    <th>Ação</th>
+                                    <th ng-show="countFilter == 0 && codItem == '' && profile == visAdmin">Ordenação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat-start="($indexItem, item) in searchResult"
+                                    ng-class="{'revoked': profile == visAdmin && !item.Test.Visible}"
+                                    ng-if="profile == visAdmin || item.Test.Visible">
+                                    <td class="text-center" ng-click="collapse($index)">
+                                        <a class="material-icons" ng-if="!item.Test.expanded" ng-click="item.Test.expanded = true">expand_more</a>
+                                        <a class="material-icons" ng-if="item.Test.expanded" ng-click="item.Test.expanded = false">expand_less</a>
+                                    </td>
+                                    <td>{{item.Test.TestId}}</td>
+                                    <td class="text-center">
+                                        {{item.Test.TestTypeDescription}}
+                                        <div style="color: black; font-size:12px" ng-if="item.Test.Global"><strong>({{labelTermGlobal}})</strong></div>
+                                        <div style="color: black; font-size: 12px" ng-if="!item.Test.Global">({{labelTermLocal}})</div>
+                                    </td>
+                                    <td>{{item.Test.TestDescription}}</td>
+                                    <td>{{item.Test.CreateDate}}</td>
+                                    <td>{{item.Test.Discipline}}</td>
+                                    <td class="tr_situacao">
+                                        <span ng-if="item.Test.TestSituation == 2" data-trigger="hover" data-type="success" data-title="Cadastrada" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-cadastrar material-icons" aria-hidden="true">radio_button_unchecked</span>
+                                        </span>
+                                        <span ng-if="item.Test.TestSituation == 4" data-trigger="hover" data-type="success" data-title="Aplicada" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-aplicar material-icons" aria-hidden="true">check_circle</span>
+                                        </span>
+                                        <span ng-if="item.Test.TestSituation == 3" data-trigger="hover" data-type="success" data-title="Em andamento" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-andamento material-icons" aria-hidden="true">timelapse</span>
+                                        </span>
+                                        <span ng-if="item.Test.TestSituation == 1" data-trigger="hover" data-type="success" data-title="Pendente" data-placement="top" data-animation="am-fade" data-container="body" bs-tooltip>
+                                            <span class="icone-pendente material-icons" aria-hidden="true">remove_circle_outline</span>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btnMais"
+                                                data-ng-click="changeTest(item)"
+                                                data-placement="left"
+                                                data-trigger="focus"
+                                                data-custom-class="itemListPopover"
+                                                data-template="Assets/js/angular/controllers/test/testListMenu.html"
+                                                data-animation="popover-fade"
+                                                data-container="body"
+                                                data-bs-popover="popovermenu">
+                                            <i class="material-icons">view_list</i>
+                                        </button>
+                                    </td>
+                                    <td ng-show="countFilter == 0 && codItem == '' && profile == visAdmin">
+                                        <a class="btnSeta" ng-show="(paginate.currentPage() != (pages - 1)) || (($index + 1) != (totalItens - ((pages - 1) * paginate.getPageSize())))" ng-click="moverProvaBaixo(item)"><i class="material-icons btnSeta">arrow_drop_down</i></a>
+                                        <a class="btnSeta" ng-show="($index != 0 && paginate.currentPage() == 0) || paginate.currentPage() != 0" ng-click="moverProvaCima(item)"><i class="material-icons btnSeta">arrow_drop_up</i></a>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat-end=""
+                                    ng-if="item.Test.expanded && (profile == visAdmin || item.Test.Visible)">
+                                    <td class="boxConteudo"></td>
+                                    <td colspan="7" class="boxConteudo">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <i class="material-icons">chevron_right</i><label>Nv. desempenho: </label>
+                                                    <span ng-if="item.Test.Desempenho==true">sim</span>
+                                                    <span ng-if="item.Test.Desempenho==false">não</span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <i class="material-icons">chevron_right</i><label>Período de aplicação: </label>
+                                                    <span>{{item.Test.ApplicationStartDate}} até {{item.Test.ApplicationEndDate}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <i class="material-icons">chevron_right</i><label>Frequência de aplicação: </label>
+                                                    <span>{{item.Test.FrequencyApplicationDescription}}</span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <i class="material-icons">chevron_right</i><label>Período de correção: </label>
+                                                    <span>{{item.Test.CorrectionStartDate}} até {{item.Test.CorrectionEndDate}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3" ng-if="item.Test.Bib">
+                                                    <i class="material-icons">chevron_right</i><label>BIB: </label>
+                                                    <span ng-if="item.Test.Bib==true">sim</span>
+                                                    <span ng-if="item.Test.Bib==false">não</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
                 <br />
                 @* paginação *@

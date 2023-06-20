@@ -49,6 +49,7 @@ namespace GestaoAvaliacao.IRepository
         Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id);
         Task<Test> SearchInfoTestAsync(long test_id);
         bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id);
+		bool ExistsAdherenceByTestId(long test_id);
         IEnumerable<TestResult> GetTestsBySubGroupTcpId(long Id, long tcp_id);
         Task<IEnumerable<Guid>> GetStudentDeficiencies(Guid pes_id);
         TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
