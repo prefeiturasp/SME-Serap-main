@@ -572,30 +572,13 @@
                         </div>
                     </div>
                     @* BIB *@
-                    <div class="row" ng-show="temBIB">
+                    <div class="row" ng-show="temBIB && !cadeiaBlocos">
                         <div class="col-md-12">
                             <div class="cards">
-                                @*<div class="campoLabel">
-                                        <label> {{labels.bib}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
-                                        <div>
-                                            <select id="testType" class="form-control"
-                                                    ng-change="e1_BibMudou();"
-                                                    ng-model="e1_cbBIB"
-                                                    ng-options="bib as bib.Description for bib in e1_listaBIB"
-                                                    ng-disabled="!temBIB"
-                                                    ng-title="e1_listaBIB"
-                                                    ng-title-propertie="Description"
-                                                    ng-title-index="1"
-                                                    ng-title-selected>
-                                                <option value="">--Selecione--</option>
-                                            </select>
-                                        </div>
-                                    </div>*@
                                 <div class="campoLabel">
                                     <label> {{labels.quantidadeBlocos}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_qtdBlocos');validarBlocos('value')"
-                                           @*ng-disabled="temBIB&&!e1_cbBIB.Value"*@
                                            ng-model="e1_qtdBlocos"
                                            class="col-md-5 form-control2"
                                            maxlength="3"
@@ -607,12 +590,72 @@
                                     <label> {{labels.e1_itensBlocos}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
                                     <input type="text"
                                            ng-change="validarTotalItens('e1_itensBlocos');validarItensBlocos('value')"
-                                           @*ng-disabled="temBIB&&!e1_cbBIB.Value"*@
                                            ng-model="e1_itensBlocos"
                                            class="col-md-5 form-control2"
                                            maxlength="3"
                                            size="2"
                                            placeholder="Quantidade de itens" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-show="temBIB && cadeiaBlocos">
+                        <div class="col-md-12">
+                            <div class="cards">
+                                <div class="campoLabel">
+                                    <label style="max-width:230px;"> {{labels.quantidadeBlocos}}<span>*</span>: </label>
+                                    <input type="text"
+                                           ng-change="validarTotalItens('e1_qtdBlocos');validarBlocos('value')"
+                                           ng-model="e1_qtdBlocos"
+                                           class="col-md-5 form-control2"
+                                           maxlength="3"
+                                           size="2"
+                                           placeholder="{{labels.quantidadeBlocos}}" />
+                                </div>
+
+                                <div class="campoLabel">
+                                    <label style="max-width:230px;"> {{labels.quantidadeCadeiaBlocos}}<span>*</span>: </label>
+                                    <input type="text"
+                                           ng-change="validarTotalItens('e1_qtdCadeiaBlocos');validarBlocos('value')"
+                                           ng-model="e1_qtdCadeiaBlocos"
+                                           class="col-md-5 form-control2"
+                                           maxlength="3"
+                                           size="2"
+                                           placeholder="{{labels.quantidadeCadeiaBlocos}}" />
+                                </div>
+
+                                <div class="campoLabel">
+                                    <label style="max-width:230px;"> {{labels.quantidadeItensCadeiaBlocos}}<span>*</span>: </label>
+                                    <input type="text"
+                                           ng-change="validarTotalItens('e1_qtdItensCadeiaBlocos');validarBlocos('value');calcularQuantidadeItemsPorBloco()"
+                                           ng-model="e1_qtdItensCadeiaBlocos"
+                                           class="col-md-5 form-control2"
+                                           maxlength="3"
+                                           size="2"
+                                           placeholder="{{labels.quantidadeItensCadeiaBlocos}}" />
+                                </div>
+
+                                <div class="campoLabel">
+                                    <label style="max-width:230px;"> {{labels.quantidadeCadeiaBlocosPorBloco}}<span>*</span>: </label>
+                                    <input type="text"
+                                           ng-change="validarTotalItens('e1_qtdCadeiaBlocosPorBloco');validarBlocos('value');calcularQuantidadeItemsPorBloco()"
+                                           ng-model="e1_qtdCadeiaBlocosPorBloco"
+                                           class="col-md-5 form-control2"
+                                           maxlength="3"
+                                           size="2"
+                                           placeholder="{{labels.quantidadeCadeiaBlocosPorBloco}}" />
+                                </div>
+
+                                <div class="campoLabel">
+                                    <label style="max-width:230px;"> {{labels.e1_itensBlocos}}<span ng-show="e1_cbBIB.Value">*</span>: </label>
+                                    <input type="text"
+                                           ng-change="validarTotalItens('e1_itensBlocos');validarItensBlocos('value')"
+                                           ng-model="e1_itensBlocos"
+                                           class="col-md-5 form-control2"
+                                           maxlength="3"
+                                           size="2"
+                                           placeholder="Quantidade de itens" disabled />
                                 </div>
                             </div>
                         </div>
@@ -663,8 +706,8 @@
                                         <div ng-show="e2_blockComponenteMatrixTai">
                                             <input ng-click="e2_avisoBlockMatrizTai();" readonly class="form-control" id="labelMatrizTai" style="background-color: rgba(0,0,0,.15)" ng-model="e2_matrizAvaliacao.Description" />
                                         </div>
-                                    </div>                                    
-                                   
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

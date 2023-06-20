@@ -1496,7 +1496,10 @@ namespace GestaoAvaliacao.Repository
             {
                 DateTime dateNow = DateTime.Now;
 
-                Test test = GestaoAvaliacaoContext.Test.Include("Discipline").Include("TestCurriculumGrades").Include("TestPerformanceLevels").Include("TestPerformanceLevels.PerformanceLevel").Include("TestItemLevels").Include("TestItemLevels.ItemLevel").Include("TestType").Include("TestSubGroup").FirstOrDefault(a => a.Id == entity.Id);
+                Test test = GestaoAvaliacaoContext.Test.Include("Discipline").Include("TestCurriculumGrades")
+                    .Include("TestPerformanceLevels").Include("TestPerformanceLevels.PerformanceLevel")
+                    .Include("TestItemLevels").Include("TestItemLevels.ItemLevel").Include("TestType")
+                    .Include("TestSubGroup").FirstOrDefault(a => a.Id == entity.Id);
 
                 test.TestSituation = entity.TestSituation;
 
@@ -1647,6 +1650,11 @@ namespace GestaoAvaliacao.Repository
                 test.ApresentarResultadosPorItem = entity.ApresentarResultadosPorItem;
 
                 test.UpdateDate = DateTime.Now;
+
+                test.BlockChain = entity.BlockChain;
+                test.BlockChainNumber = entity.BlockChainNumber;
+                test.BlockChainItems = entity.BlockChainItems;
+                test.BlockChainForBlock = entity.BlockChainForBlock;
 
                 GestaoAvaliacaoContext.Entry(test).State = System.Data.Entity.EntityState.Modified;
                 GestaoAvaliacaoContext.SaveChanges();
