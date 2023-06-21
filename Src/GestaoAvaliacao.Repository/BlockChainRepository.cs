@@ -125,7 +125,7 @@ namespace GestaoAvaliacao.Repository
                         }
                         else
                         {
-                            var ordem = blockItems.Max(c => c.Order) + 1;
+                            var ordem = blockItems.Any() ? blockItems.Max(c => c.Order) + 1 : 1;
 
                             if (blockItems.Any())
                             {
