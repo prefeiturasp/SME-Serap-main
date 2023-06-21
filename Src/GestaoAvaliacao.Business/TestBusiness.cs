@@ -1303,15 +1303,19 @@ namespace GestaoAvaliacao.Business
                                 blockChain.Test_Id = testId;
                                 blockChain.Test = testRepository.GetObject(testId);
                                 blockChain.State = Convert.ToByte(EnumState.ativo);
+                                blockChain.BlockChainItems.Clear();
                             }
 
                             var test = blockChain.Test;
                             var blockChainId = blockChain.Id;
                             var maxOrder = 0;
 
-                            foreach (var blocoItem in bloco)
+                            #region blocoItem
+                            var linha = 1;
+                            foreach (var blocoItem in blocosItens)
                             {
-                                var linha = blocosItens.FindIndex(c => c.CodigoItem == blocoItem.CodigoItem && c.NumeroBloco == blocoItem.NumeroBloco) + 2;
+                                linha++;
+                                if (blocoItem.NumeroBloco != bloco.Key) continue;
 
                                 if (!ehNumero || Convert.ToInt64(bloco.Key) > test.BlockChainNumber)
                                 {
@@ -1348,7 +1352,15 @@ namespace GestaoAvaliacao.Business
                                     continue;
                                 }
 
-
+                                if (blockChain.BlockChainItems.Any(i => i.Item_Id == item.Id))
+                                {
+                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    {
+                                        Linha = linha,
+                                        Erro = $"Item {blocoItem.CodigoItem} em duplicidade no bloco {bloco.Key}."
+                                    });
+                                    continue;
+                                }
 
                                 var blockChainItem = new BlockChainItem
                                 {
@@ -1362,7 +1374,8 @@ namespace GestaoAvaliacao.Business
 
                                 blockChain.BlockChainItems.Add(blockChainItem);
                                 maxOrder++;
-                            }
+                            }                            
+                            #endregion
 
                             if (!ehNumero || long.Parse(blockChain.Description) > test.BlockChainNumber)
                                 continue;
