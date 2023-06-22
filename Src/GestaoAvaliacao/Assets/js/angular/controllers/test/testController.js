@@ -2921,6 +2921,42 @@
             }
         };
 
+        ng.e3_listaBlocosSelecionadosCadernoModalOrdenar = e3_listaBlocosSelecionadosCadernoModalOrdenar;
+        function e3_listaBlocosSelecionadosCadernoModalOrdenar(direction, index) {            
+            var arr = moveArrayElement(angular.copy(ng.listaBlocosSelecionadosCadernoModal), index, direction);
+            ng.listaBlocosSelecionadosCadernoModal = arr;
+        }
+
+        function moveArrayElement(array, index, direction) {
+            if (index < 0 || index >= array.length) {
+                throw new Error('Índice inválido');
+            }
+
+            if (direction === 'next') {
+                if (index === array.length - 1) {
+                    return array;
+                }
+
+                const newArray = [...array];
+                const element = newArray.splice(index, 1)[0];
+                newArray.splice(index + 1, 0, element);
+                return newArray;
+            }
+
+            if (direction === 'previous') {
+                if (index === 0) {
+                    return array;
+                }
+
+                const newArray = [...array];
+                const element = newArray.splice(index, 1)[0];
+                newArray.splice(index - 1, 0, element);
+                return newArray;
+            }
+
+            throw new Error('Direção inválida');
+        }
+
         ng.e3_salvarBlocosCaderno = e3_salvarBlocosCaderno;
         function e3_salvarBlocosCaderno() {
             ng.cadernosComBlocos.forEach(function (caderno) {
