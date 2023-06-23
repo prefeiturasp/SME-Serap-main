@@ -2922,7 +2922,8 @@
         };
 
         ng.e3_listaBlocosSelecionadosCadernoModalOrdenar = e3_listaBlocosSelecionadosCadernoModalOrdenar;
-        function e3_listaBlocosSelecionadosCadernoModalOrdenar(direction, index) {            
+        function e3_listaBlocosSelecionadosCadernoModalOrdenar(direction, index) {
+            console.log('index', index);
             var arr = moveArrayElement(angular.copy(ng.listaBlocosSelecionadosCadernoModal), index, direction);
             ng.listaBlocosSelecionadosCadernoModal = arr;
         }
