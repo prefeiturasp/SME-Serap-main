@@ -22,10 +22,11 @@ namespace GestaoAvaliacao.WebProject.Facade
 		private const string MODULOS_GRUPOS_PERMISSOES = "MODULOS_GRUPOS_PERMISSOES";
 		private const string PARAMETERS = "PARAMETERS";
 		private const string PARAMETERKEYS = "PARAMETERKEYS";
+        private const string SME_ENT_ID = "6CF424DC-8EC3-E011-9B36-00155D033206";
 
-		#region Constructor
+        #region Constructor
 
-		static ApplicationFacade()
+        static ApplicationFacade()
 		{
 			// Armazena a URL do SSO definido nos parâmetros do CoreSSO.
 			UrlCoreSso = SYS_ParametroBO.ParametroValor(SYS_ParametroBO.eChave.URL_ADMINISTRATIVO);
@@ -203,7 +204,31 @@ namespace GestaoAvaliacao.WebProject.Facade
 			}
 		}
 
-		public static string ProjectVirtualDirectory
+        public static string PhysicalDirectorySme
+        {
+            get
+            {
+                var parameterBusiness = container.Resolve<IParameterBusiness>();
+                var paramPath = parameterBusiness.GetParamByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), Guid.Parse(SME_ENT_ID));
+                var physicalPath = paramPath != null ? paramPath.Value : HttpContext.Current.Request.PhysicalApplicationPath;
+
+                return physicalPath;
+            }
+        }
+
+        public static string VirtualDirectorySme
+        {
+            get
+            {
+                var parameterBusiness = container.Resolve<IParameterBusiness>();
+                var paramPath = parameterBusiness.GetParamByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), Guid.Parse(SME_ENT_ID));
+                var virtualPath = paramPath != null ? paramPath.Value : (BaseURL + HttpContext.Current.Request.ApplicationPath);
+
+                return virtualPath;
+            }
+        }
+
+        public static string ProjectVirtualDirectory
 		{
 			get
 			{
