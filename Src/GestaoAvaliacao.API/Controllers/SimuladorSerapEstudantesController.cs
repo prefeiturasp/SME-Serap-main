@@ -53,7 +53,7 @@ namespace GestaoAvaliacao.API.Controllers
                 entity.Validate.IsValid = false;
                 entity.Validate.Type = ValidateType.error.ToString();
                 entity.Validate.Message = "Erro ao realizar o upload da imagem.";
-                LogFacade.SaveError(ex);
+                LogFacade.SaveErrorSme(ex);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, new ResponseUploadArquivoDto
