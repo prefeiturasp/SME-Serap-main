@@ -402,9 +402,10 @@ namespace GestaoAvaliacao.Controllers
                 {
                     Id = a.alu_id,
                     Description = a.alu_nome,
-                    Status = a.TypeSelection.Value,
-                    Selected = a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.NotSelected && a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.Blocked,
-                    Open = false
+                    Status = a.TypeSelection,
+                    Selected = a.TypeSelection != null && a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.NotSelected && a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.Blocked,
+                    Open = false,
+					a.Alu_Matricula
                 });
 
                 return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
@@ -426,15 +427,25 @@ namespace GestaoAvaliacao.Controllers
                 var retorno = alunos.Select(a => new
                 {
                     Id = a.alu_id,
-                    Description = a.alu_nome + (a.TypeSelection.Value == Entities.Enumerator.EnumAdherenceSelection.Blocked ? " (Bloqueado)" : ""),
-                    Status = a.TypeSelection.Value,
-                    Selected = a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.NotSelected && a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.Blocked
-                });
-                if (retorno.Count() > 0)
-                    return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
-                else
-                    return Json(new { success = true, type = ValidateType.alert.ToString(), message = "Não foram encontrados alunos aderidos." }, JsonRequestBehavior.AllowGet);
+                    Description = a.alu_nome +
+                                  (a.TypeSelection != null && a.TypeSelection.Value == Entities.Enumerator.EnumAdherenceSelection.Blocked
+                                      ? " (Bloqueado)"
+                                      : ""),
+                    Status = a.TypeSelection,
+                    Selected = a.TypeSelection != null && a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.NotSelected &&
+                               a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.Blocked,
+                    a.Alu_Matricula
+                }).ToList();
 
+                return retorno.Any()
+                    ? Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet)
+                    : Json(
+                        new
+                        {
+                            success = true,
+                            type = ValidateType.alert.ToString(),
+                            message = "Não foram encontrados alunos aderidos."
+                        }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
