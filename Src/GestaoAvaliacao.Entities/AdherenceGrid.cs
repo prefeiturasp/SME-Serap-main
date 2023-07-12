@@ -14,5 +14,6 @@ namespace GestaoAvaliacao.Entities
         public string alu_nome { get; set; }
         public bool existAdherence { get; set; }
         public Guid pes_id { get; set; }
+        public string Alu_Matricula { get; set; }
     }
 }

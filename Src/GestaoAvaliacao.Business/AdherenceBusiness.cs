@@ -304,7 +304,7 @@ namespace GestaoAvaliacao.Business
 
 		public IEnumerable<AdherenceGrid> LoadSelectedStudent(long tur_id, long test_id)
 		{
-			Test test = testRepository.GetObject(test_id);
+			var test = testRepository.GetObject(test_id);
 			return adherenceRepository.LoadSelectedStudent(tur_id, test.Id, test.AllAdhered, test.ApplicationStartDate);
 		}
 
