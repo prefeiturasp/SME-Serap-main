@@ -235,7 +235,7 @@
                                 <div ng-if="school.Open && team.Open" class="subAdesaoDiv" >
                                     <table class="table tableAdesao">
                                         <tr ng-repeat="($indexStudent, student) in team.Students track by $indexStudent" class="subSubAdesao">
-                                            <td>
+                                            <td colspan="2">
                                                 <div class="checkbox checkbox-primary" ng-if="testInformation.TestOwner">
                                                     <input ng-disabled="isBlocked(student.Status)" ng-class="{'blocked':isBlocked(student.Status)}" id="student_{{student.Id}}" type="checkbox" ng-model="student.Selected"
                                                             ng-change="selectStudent($indexSchool, $indexTeam, $indexStudent, student.Selected);">
