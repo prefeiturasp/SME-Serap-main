@@ -1770,6 +1770,7 @@
     <Content Include="Views\Test\_AdicionarBlocos.cshtml" />
     <Content Include="Views\Test\_VisualizarItensCaderno.cshtml" />
     <Content Include="Views\Test\_ModalResultadoImportarCsvBlocos.cshtml" />
+    <Content Include="Views\Test\_Block.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

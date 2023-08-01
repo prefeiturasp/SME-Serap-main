@@ -56,7 +56,6 @@
                 arr.push(self.wizardsBlockChain[0]);
                 arr.push(self.wizardsBlockChain[1]);
                 arr.push(self.wizardsBlockChain[2]);
-                //arr.push(self.wizardsBlockChain[3]);
                 ng.ultimo = 3;
             }
             else if (ng.showTestTAI) {
@@ -2881,7 +2880,10 @@
 
         ng.e3_disableButtonSimulator = e3_disableButtonSimulator;
         function e3_disableButtonSimulator(caderno) {
-            return (caderno.Total !== caderno.BlocosCount || caderno.BlocosCount === 0);
+            if (ng.temBIB)
+                return (caderno.Total !== caderno.BlocosCount || caderno.BlocosCount === 0);
+            else
+                return (caderno.Total !== caderno.ItensCount || caderno.ItensCount === 0);
         }
 
         ng.e3_cancelarModalAddBlocosCaderno = e3_cancelarModalAddBlocosCaderno;
@@ -3566,6 +3568,7 @@
                     ng.situacao = procurarElementoEm([{ Id: r.TestSituation }], self.situacaoList)[0];
                     ng.alterouEtapaAtual = (false);
                     atualizarBloco();
+                    blocosCarregar();
                     ng.etapaAtual = 3;
                     e2_tratarExibirProximoBlocoAposSalvar();
                     ng.cadernos = [...ng.cadernos];
