@@ -762,68 +762,11 @@
                     @{
                         Html.RenderPartial("_BlockChain");
                     }
-
-                    <div class="row" ng-show="!showTestTAI && !ehCadeiaBlocos">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="cards">
-                                    <h4 class="padding"><strong>{{ e1_testDescription}} </strong></h4>
-                                    <table class="table table-hover">
-                                        <colgroup>
-                                            <col width="15%" />
-                                            <col width="15%" />
-                                            <col width="15%" />
-
-                                            <col width="24%" />
-
-                                            <col width="8%" />
-                                            <col width="8%" />
-                                            <col width="15%" />
-                                        </colgroup>
-                                        <thead>
-                                            <tr>
-                                                <th class="table-parameter-centralize">Caderno</th>
-                                                <th class="table-parameter-centralize">Itens selecionados</th>
-                                                <th class="table-parameter-centralize">Não selecionados</th>
-                                                <th class="table-parameter-centralize"> @* Imagem *@ </th>
-                                                <th class="table-parameter-centralize">Editar</th>
-                                                <th>Adicionar</th>
-                                                <th class="table-parameter-centralize">Ordenar área de conhecimento</th>
-                                                <th class="table-parameter-centralize">Limpar itens selecionados</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="bloco in cadernos">
-                                                <th class="table-parameter-centralize">{{ bloco.Description}}</th>
-                                                <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
-                                                <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0}}</th>
-                                                <th class="table-parameter-centralize ">
-                                                    <i ng-class="{ true:'material-icons check-success pull-left', false:'some-icon' }
-                                                            [ bloco.Total === bloco.ItensCount && bloco.ItensCount !== 0 ]">done</i>
-                                                </th>
-
-                                                <th class="table-parameter-centralize">
-                                                    <a ng-click="e2_callModal(2, bloco)"><i type="button" class="material-icons">format_list_bulleted</i></a>
-                                                </th>
-                                                <th class="table-parameter-centralize">
-                                                    <a ng-click="e2_callModal(1,bloco)"><i type="button" class="material-icons">add_box</i></a>
-                                                </th>
-                                                <th class="table-parameter-centralize">
-                                                    <a ng-click="e2_callModal(7, bloco)"><i type="button" class="material-icons">swap_vert</i></a>
-                                                </th>
-                                                <th class="table-parameter-centralize">
-                                                    <a ng-click="e2_callModalRemoverItensSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
-                                                </th>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div ng-show="!temBIB" class="panel-body">
-                                        <span><strong>Total de itens: {{e2_ItensAtuais}} de {{ itensTotais }}</strong></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
+                    <!-- Montagem dos cadernos -->
+                    @{
+                        Html.RenderPartial("_Block");
+                    }
                 </div>
 
                 @* Etapa 3 *@ @* Lista de cadernos *@

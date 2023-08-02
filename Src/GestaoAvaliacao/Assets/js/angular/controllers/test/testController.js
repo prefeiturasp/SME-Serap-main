@@ -56,7 +56,6 @@
                 arr.push(self.wizardsBlockChain[0]);
                 arr.push(self.wizardsBlockChain[1]);
                 arr.push(self.wizardsBlockChain[2]);
-                //arr.push(self.wizardsBlockChain[3]);
                 ng.ultimo = 3;
             }
             else if (ng.showTestTAI) {
@@ -1924,6 +1923,11 @@
                 return;
         };
 
+        ng.e2_disableButtonSimulator = e2_disableButtonSimulator;
+        function e2_disableButtonSimulator(caderno) {
+            return (caderno.Total !== caderno.ItensCount || caderno.ItensCount === 0);
+        }
+
         /**
         * @function Carrega caderno com blocos
         * @private
@@ -2371,15 +2375,16 @@
         function contarItensSelecionadosCadernos() {
             var i = 0, bloco, e;
 
-            if (ng.cadernos)
+            if (ng.cadernos) {
                 for (var q = 0; q < ng.cadernos.length; q++) {
                     bloco = ng.cadernos[q];
                     i += (bloco.ItensCount);
                 }
+            }
 
             if (ng.temBIB) {
-
                 let cadMaiorItens = 0;
+
                 if (ng.cadernos.length) {
                     ng.cadernos.forEach(cad => {
                         if (cad.ItensCount > cadMaiorItens) {
@@ -2874,8 +2879,8 @@
             angular.element("#modalViewItensCaderno").modal({ backdrop: 'static' });
         }
 
-        ng.e3_callSimulatorCaderno = e3_callSimulatorCaderno;
-        function e3_callSimulatorCaderno(caderno) {
+        ng.callSimulatorCaderno = callSimulatorCaderno;
+        function callSimulatorCaderno(caderno) {
             $window.open(base_url("SimuladorSerapEstudantes/Index?blockId=" + caderno.Id), '_blank', 'noreferrer');
         }
 
@@ -3554,9 +3559,9 @@
                     ng.cadeiaBlocos = [...ng.cadeiaBlocos];
                 }
                 else {
-                    if (!ng.e2_blockAtual.Id) {
+                    if (!ng.e2_blockAtual.Id)
                         ng.e2_blockAtual.Id = r.TestID || r.blockid;
-                    }
+
                     if (ng.temBIB) {
                         self.etapa2.selecionados = [];
                     } else {
@@ -3565,6 +3570,7 @@
 
                     ng.situacao = procurarElementoEm([{ Id: r.TestSituation }], self.situacaoList)[0];
                     ng.alterouEtapaAtual = (false);
+                    blocosCarregar();
                     atualizarBloco();
                     ng.etapaAtual = 3;
                     e2_tratarExibirProximoBlocoAposSalvar();
