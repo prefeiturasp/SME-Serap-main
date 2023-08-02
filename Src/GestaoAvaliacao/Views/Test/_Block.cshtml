@@ -28,7 +28,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-init="rowDisabled=e3_disableButtonSimulator(bloco)" ng-repeat="bloco in cadernos">
+                        <tr ng-init="rowDisabled=e2_disableButtonSimulator(bloco)" ng-repeat="bloco in cadernos">
                             <th class="table-parameter-centralize">{{ bloco.Description }}</th>
                             <th class="table-parameter-centralize">{{ bloco.ItensCount }}</th>
                             <th class="table-parameter-centralize">{{ bloco.Resto >-1? bloco.Resto:0 }}</th>
@@ -50,7 +50,7 @@
                                 <a ng-click="e2_callModalRemoverItensSelecionados(bloco)"><i type="button" class="material-icons">delete</i></a>
                             </th>
                             <td class="table-parameter-centralize">
-                                <a ng-if="!rowDisabled" ng-click="e3_callSimulatorCaderno(bloco)" target="_blank" rel="noreferrer">
+                                <a ng-if="!rowDisabled" ng-click="callSimulatorCaderno(bloco)" target="_blank" rel="noreferrer">
                                     <i title="Visualizar caderno no Simulador do SERAp Estudantes" class="material-icons">open_in_new</i>
                                 </a>
                             </td>

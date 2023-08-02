@@ -954,12 +954,30 @@ namespace GestaoAvaliacao.Repository
             {
                 var dateNow = DateTime.Now;
 
-                var entity = gestaoAvaliacaoContext.Block
-                    .Include("Test")
-                    .Include("BlockItems")
-                    .Include("BlockKnowledgeAreas")
-                    .Include("BlockChainBlocks")
-                    .FirstOrDefault(x => x.Id == block.Id && x.State == (byte)EnumState.ativo);
+                Block entity;
+
+                if (block.Test.Bib)
+                {
+                    entity = gestaoAvaliacaoContext.Block
+                        .Include("Test")
+                        .Include("BlockItems")
+                        .Include("BlockKnowledgeAreas")
+                        .Include("BlockChainBlocks")
+                        .FirstOrDefault(x => x.Id == block.Id && x.State == (byte)EnumState.ativo) ??
+                        gestaoAvaliacaoContext.Block
+                        .Include("Test")
+                        .Include("BlockItems")
+                        .Include("BlockKnowledgeAreas")
+                        .FirstOrDefault(x => x.Id == block.Id && x.State == (byte)EnumState.ativo);
+                }
+                else
+                {
+                    entity = gestaoAvaliacaoContext.Block
+                        .Include("Test")
+                        .Include("BlockItems")
+                        .Include("BlockKnowledgeAreas")
+                        .FirstOrDefault(x => x.Id == block.Id && x.State == (byte)EnumState.ativo);
+                }
 
                 if (entity == null)
                     return;
@@ -1187,7 +1205,7 @@ namespace GestaoAvaliacao.Repository
 
                 #endregion
 
-                if (blockChainBlocks.All(c => c.State == Convert.ToByte(EnumState.excluido)))
+                if (blockChainBlocks.Count > 0 && blockChainBlocks.All(c => c.State == Convert.ToByte(EnumState.excluido)))
                 {
                     entity.State = Convert.ToByte(EnumState.excluido);
                     entity.UpdateDate = dateNow;
