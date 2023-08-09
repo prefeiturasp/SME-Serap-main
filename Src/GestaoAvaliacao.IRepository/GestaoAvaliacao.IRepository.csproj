@@ -72,6 +72,7 @@
     <Compile Include="IPageConfigurationRepository.cs" />
     <Compile Include="IPerformanceItemRepository.cs" />
     <Compile Include="IReportItemPerformanceRepository.cs" />
+    <Compile Include="IReportStudiesRepository.cs" />
     <Compile Include="IRepositoryCache.cs" />
     <Compile Include="IRequestRevokeRepository.cs" />
     <Compile Include="IResponseChangeLogMongoRepository.cs" />

@@ -64,6 +64,7 @@
     <Compile Include="DTO\ErrorCsvBlockImportDTO.cs" />
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoDTO.cs" />
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoRespostaDTO.cs" />
+    <Compile Include="ReportStudies.cs" />
     <Compile Include="ResultadoPsp\ArquivoResultadoPsp.cs" />
     <Compile Include="BaseText.cs" />
     <Compile Include="Base\EntityBase.cs" />

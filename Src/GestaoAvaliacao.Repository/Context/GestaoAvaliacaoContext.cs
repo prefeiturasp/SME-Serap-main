@@ -4,6 +4,7 @@ using GestaoAvaliacao.Entities.StudentTestAccoplishments;
 using GestaoAvaliacao.Repository.Map;
 using GestaoAvaliacao.Repository.Migrations;
 using System.Data.Entity;
+using System.Data.Entity.Core.Common;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace GestaoAvaliacao.Repository.Context
@@ -104,6 +105,7 @@ namespace GestaoAvaliacao.Repository.Context
             modelBuilder.Configurations.Add(new BlockChainMap());
             modelBuilder.Configurations.Add(new BlockChainItemMap());
             modelBuilder.Configurations.Add(new BlockChainBlockMap());
+			modelBuilder.Configurations.Add(new ReportsStudiesMap());
 
             modelBuilder.Entity<Subject>()
                 .HasMany<Discipline>(s => s.Disciplines)
@@ -201,5 +203,7 @@ namespace GestaoAvaliacao.Repository.Context
 		public DbSet<BlockChain> BlockChains { get; set; }
 		public DbSet<BlockChainItem> BlockChainItems { get; set; }
 		public DbSet<BlockChainBlock> BlockChainBlocks { get; set; }
+		public DbSet<ReportStudies> ReportStudies { get; set;}
+
     }
 }
