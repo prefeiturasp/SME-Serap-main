@@ -1,0 +1,186 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<div id="div_loading" class="loading-box" style="display:none; width:100%; height:100%; position:fixed; background:rgba(255,255,255,.3); top:0; z-index:99999"><label id="preloading">Carregando...</label></div>
+<alert></alert>
+
+<div class="wellCustom" ng-controller="ReportStudiesController">
+
+    <div class="headerCustom">
+        <h4>{{title}}<span>Importar resultados PSP</span></h4>
+    </div>
+
+    <div class="pesquisa-upload row">
+        <div class="col-md-8">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" class="form-pesquisa cinza ng-pristine ng-valid" name="myText" placeholder="Nome do arquivo, Grupo, Destinatário" ng-model="campoPesquisa" maxlength="50">
+                </div>
+                <button class="btn-pesquisar" ng-click="pesquisarArquivo(true)" title="Pesquisar"><i class="material-icons">search</i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="well well-large">
+
+        <div class="container-fluid semPadding">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="campoLabel">
+                            <button type="button" class="btnPadrao pull-left" style="margin-right: 15px;" ng-click="callModalNovaImportacao()">Nova importação</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <table class="table table-hover" ng-show="listaImportacoes.length != null" style=" margin-top: 0px;">
+            <colgroup>
+                <col width="12%" />
+                <col width="16%" />
+                <col width="12%" />
+                <col width="12%" />
+                <col width="12%" />
+                <col width="12%" />
+                <col width="12%" />
+                <col width="12%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="center">Cod</th>
+                    <th class="center">Nome do arquivo</th>
+                    <th class="center">Grupo</th>
+                    <th class="center">Destinatário</th>
+                    <th class="center">Data de upload</th>
+                    <th class="center">Link</th>
+                    <th class="center">Editar</th>
+                    <th class="center">Excluir</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="arquivo in listaImportacoes">
+                    <td class="center">{{arquivo.Cod }}</td>
+                    <td class="center">{{arquivo.NomeArquivo }}</td>
+                    <td class="center">{{arquivo.Grupo }}</td>
+                    <td class="center">{{arquivo.Destinatario }}</td>
+                    <td class="center">{{arquivo.DataUpload }}</td>
+                    <td class="center">
+                        <a ng-click="abrirLink(arquivo.Link)" target="_blank" rel="noreferrer">
+                            <i title="Visualizar arquivo" class="material-icons">open_in_new</i>
+                        </a>
+                    </td>
+                    <td class="center">
+                        <a><i type="button" class="material-icons">edit</i></a>
+                    </td>
+                    <td class="center">
+                        <a ng-click=""><i type="button" class="material-icons" ng-click="confirmarDeletar(arquivo)">delete</i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <page method="carregaImportacoesPaginado('paginate')" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" ng-show="listaImportacoes != null" data-arr-page-size="[10,20,30,40,50,100]"></page>
+        <p class="nresultados" ng-show="listaImportacoes == null">Nenhum arquivo adicionado.</p>
+
+    </div>
+
+
+    @* Modal para importar novo arquivo de resultados *@
+    <div class="modal fade" id="modalNovaImportacao" tabindex="-1" role="dialog" aria-labelledby="modalNovaImportacao" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content ">
+
+                @*HEADER*@
+                <div class="modal-header">
+                    <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
+                    <h4 class="modal-title">
+                        <strong>Nova importação de resultados</strong>
+                    </h4>
+                </div>
+                @*BODY*@
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div style="margin-bottom: 20px;" class="campoLabel">
+                            <label>Arquivo*: </label>
+                            <div>
+                                <div class="upload-group">
+                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">
+                                    <span class="input-group-btn fake-upload">
+                                        <i class="material-icons">file_upload</i>
+                                        <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
+                                    </span>
+                                </div>
+                                <p style="font-size: 11px;" class="textoDescricao pull-left">Tamanho máximo de 10MB</p>
+                            </div>
+                        </div>
+                        <div class="campoLabel">
+                            <label>Grupo: </label>
+                            <div>
+                                <select id="grupo" class="form-control" title="{{ grupo.Nome }}"
+                                        ng-model="grupo"
+                                        ng-options="g as g.Nome for g in listaGrupos"
+                                        ng-title="listaGrupos"
+                                        ng-title-propertie="Nome"
+                                        ng-title-index="1">
+                                    <option value="">--Selecione uma opção--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="campoLabel">
+                            <label>Destinatário: </label>
+                            <div>
+                                <select id="grupo" class="form-control" title="{{ destinatario.Nome }}"
+                                        ng-model="destinatario"
+                                        ng-options="dest as dest.Nome for dest in listaDestinatarios"
+                                        ng-title="listaDestinatarios"
+                                        ng-title-propertie="Nome"
+                                        ng-title-index="1">
+                                    <option value="">--Selecione uma opção--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*FOOTER*@
+                <div class="modal-footer footerCustom ">
+                    <div class="container-fluid row-fluid">
+                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="limparDados()" aria-hidden="true">Cancelar</button>
+                        <button type="button"
+                                class="btn btn-primary" data-dismiss="modal"
+                                ng-click="salvarImportacao()"
+                                ng-disabled="!arquivoSelecionado.name">
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    @*modalDelete*@
+    <div class="modal fade" id="modalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <span>Você tem certeza que deseja excluir este registro?</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btnPadrao" data-ng-click="deletar()">Excluir</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
