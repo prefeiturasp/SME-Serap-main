@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 using GestaoAvaliacao.Util;
@@ -55,8 +56,10 @@ namespace GestaoAvaliacao.Repository
                     rs.CreateDate,
                     rs.UpdateDate,
                     rs.[State],
+                    rs.[Link],
                     ROW_NUMBER() OVER (ORDER BY rs.CreateDate DESC) AS RowNumber
                 FROM ReportsStudies rs
+                where rs.[State] = @state
             )
             SELECT
                 Id,
@@ -65,18 +68,20 @@ namespace GestaoAvaliacao.Repository
                 Addressee,
                 CreateDate,
                 UpdateDate,
+                Link,
                 [State]
             FROM PaginatedReports
             WHERE RowNumber > (@pageSize * @page)
             AND RowNumber <= ((@page + 1) * @pageSize)
             SELECT COUNT(rs.Id) AS TotalItems
             FROM ReportsStudies rs
+            where rs.[State] = @state
         ");
 
                 cn.Open();
 
                 var query = cn.QueryMultiple(sql.ToString(),
-                    new { pageSize = pager.PageSize, page = pager.CurrentPage });
+                    new { pageSize = pager.PageSize, page = pager.CurrentPage, state = (int)EnumState.ativo });
 
                 var result = query.Read<ReportStudies>();
                 var totalItems = query.Read<int>().FirstOrDefault();
@@ -99,11 +104,11 @@ namespace GestaoAvaliacao.Repository
                     int id = 0;
                     if (int.TryParse(searchFilter, out id))
                     {
-                        whereClause = $" AND rs.Id = {id} ";
+                        whereClause = $" AND rs.Id = {id} and rs.[State] = 1 ";
                     }
                     else
                     {
-                        whereClause = $" AND (rs.Name LIKE '%{searchFilter}%' OR rs.Addressee LIKE '%{searchFilter}%') ";
+                        whereClause = $" AND (rs.Name LIKE '%{searchFilter}%' OR rs.Addressee LIKE '%{searchFilter}%') and rs.[State] = 1 ";
                     }
                 }
 
@@ -117,6 +122,7 @@ namespace GestaoAvaliacao.Repository
                     rs.CreateDate,
                     rs.UpdateDate,
                     rs.[State],
+                    rs.[Link],
                     ROW_NUMBER() OVER (ORDER BY rs.CreateDate DESC) AS RowNumber
                 FROM ReportsStudies rs
                 WHERE 1=1
@@ -129,6 +135,7 @@ namespace GestaoAvaliacao.Repository
                 Addressee,
                 CreateDate,
                 UpdateDate,
+                Link,
                 [State]
             FROM FilteredReports
         ");

@@ -9,7 +9,7 @@
 
 			'carregaImportacoes': {
 				method: 'GET',
-				url: base_url('ReportStudies/ObterImportacoes')
+				url: base_url('ReportStudies/ListReportStudies')
 			},			
 			'importarArquivoResultado': {
 				method: 'POST',

@@ -10,10 +10,10 @@
         .module('appMain')
         .controller("ReportStudiesController", ReportStudiesController);
 
-    ReportStudiesController.$inject = ['$scope', 'ReportStudiesModel', '$notification', '$pager', '$util', '$http', '$q'];
+    ReportStudiesController.$inject = ['$scope', 'ReportStudiesModel', '$notification', '$pager', '$util', '$http', '$q', '$window'];
 
 
-    function ReportStudiesController($scope, ReportStudiesModel, $notification, $pager, $util, $http, $q) {
+    function ReportStudiesController($scope, ReportStudiesModel, $notification, $pager, $util, $http, $q, $window) {
 
         var self = this;
         var params = $util.getUrlParams();
@@ -32,6 +32,8 @@
             self.chamadasBack = {};
             $notification.clear();
             $scope.carregaImportacoesPaginado(null);
+            $scope.carregaGrupos();
+            $scope.carregaDestinatarios();
         };
 
         $scope.pesquisarArquivo = function _pesquisarArquivo() {
@@ -47,7 +49,7 @@
 
         $scope.carregaImportacoes = function __Importacoes(campoPesquisa) {
             $scope.listaImportacoes = [];
-            ReportStudiesModel.carregaImportacoes({ campoPesquisa: campoPesquisa },
+            ReportStudiesModel.carregaImportacoes({ searchFilter: campoPesquisa },
                 function (result) {
                     if (result.success) {
                         if (result.lista.length > 0) {
@@ -62,6 +64,24 @@
                         $notification[result.type ? result.type : 'error'](result.message);
                     }
                 });
+        }
+
+        $scope.carregaGrupos = function __carregaGrupos() {
+            $scope.listaGrupos = [
+                { Codigo: 1, Nome: 'UE' },
+                { Codigo: 2, Nome: 'DRE' },
+                { Codigo: 3, Nome: 'SME' },
+                { Codigo: 4, Nome: 'Geral' },
+                { Codigo: 4, Nome: 'Público' }
+            ];
+        }
+
+        $scope.carregaDestinatarios = function __carregaDestinatarios() {
+            $scope.listaDestinatarios = [
+                { Codigo: 1, Nome: 'BT - Butanta' },
+                { Codigo: 2, Nome: 'Geral' },
+                { Codigo: 3, Nome: '191 - Alipio' }
+            ];
         }
 
         $scope.carregaImportacoesPaginado = function __ImportacoesPaginado(paginate) {
@@ -100,16 +120,10 @@
         $scope.validacoesArquivo = function __validacoesArquivo() {
             var tamanhoArquivo = parseInt($scope.arquivoSelecionado.size);
             var fileSize = kmgtbytes(tamanhoArquivo);
-            if (fileSize[1] == 'GB' || fileSize[1] == 'TR' || (fileSize[1] == 'MB' && fileSize[0] > 10)) {
+            if ($scope.arquivoSelecionado.type !== 'text/html') {
                 $scope.arquivoSelecionado = null;
                 angular.element("input[type='file']").val(null);
-                $notification['alert']("Tamanho do arquivo excede o permitido (10 MB)!");
-                return false;
-            }
-            if ($scope.arquivoSelecionado.type !== 'text/csv') {
-                $scope.arquivoSelecionado = null;
-                angular.element("input[type='file']").val(null);
-                $notification['error']("Selecione um arquivo .CSV");
+                $notification['error']("Selecione um arquivo HTML");
                 return false;
             }
         }
@@ -137,8 +151,8 @@
             $window.open(link, '_blank', 'noreferrer');
         };
         
-        $scope.deletar = function __deletar(item) {
-            ReportStudiesModel.delete({ itemParaDeletar: $scope.itemParaDeletar }, function (result) {
+        $scope.deletar = function __deletar() {
+            ReportStudiesModel.delete({ id: $scope.itemParaDeletar.Codigo }, function (result) {
                 if (result.success) {
                     $notification.success('Registro excluido com sucesso!');
                     $scope.load();
@@ -185,12 +199,15 @@
         $scope.UploadFile = function () {
 
             var form = new FormData();
+
             form.append('file', $scope.arquivoSelecionado);
-            form.append('codigoGrupo', $scope.grupo.Codigo);
-            form.append('codigoDestinatario', $scope.destinatario.Codigo);
+            form.append('Name', $scope.arquivoSelecionado.FileName);
+            form.append('TypeGroup', $scope.grupo.Codigo);
+            form.append('Addressee', $scope.destinatario.Nome);
+            form.append('Link', '');
 
             var defer = $q.defer();
-            $http.post("/ReportStudies/ImportarArquivo", form,
+            $http.post("/ReportStudies/Save", form,
                 {
                     headers: { 'Content-Type': undefined },
                     transformRequest: angular.identity

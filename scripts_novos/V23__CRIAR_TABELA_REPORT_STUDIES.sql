@@ -8,5 +8,5 @@ CREATE TABLE ReportsStudies (
     Link VARCHAR(500),
     CreateDate DATETIME,
 	UpdateDate DATETIME,   
-    Status TinyInt
+    State TinyInt
 );

@@ -3,10 +3,8 @@ using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
-using ProvaSP.Model.Entidades;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -27,10 +25,18 @@ public class ReportStudiesController : Controller
     }
 
     [HttpPost]
-    public JsonResult Save(HttpPostedFileBase file, ReportStudies entity)
+    public JsonResult Save(HttpPostedFileBase file, string Name, int TypeGroup, string Addressee, string Link)
     {
         try
         {
+            var entity = new ReportStudies
+            {
+                Name = file?.FileName,
+                TypeGroup = TypeGroup,
+                Addressee = Addressee,
+                Link = Link
+            };
+
             if (entity == null)
                 throw new Exception("Entidade não pode ser nula");
             var ret = reportStudiesBusiness.Save(entity);
@@ -80,7 +86,7 @@ public class ReportStudiesController : Controller
         }
     }
 
-    [HttpDelete]
+    [HttpPost]
     public JsonResult Delete(long id)
     {
         try

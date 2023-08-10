@@ -8,17 +8,12 @@
 <div class="wellCustom" ng-controller="ReportStudiesController">
 
     <div class="headerCustom">
-        <h4>{{title}}<span>Importar resultados PSP</span></h4>
+        <h4><span>Relatório e Estudos</span></h4>
     </div>
 
     <div class="pesquisa-upload row">
         <div class="col-md-8">
-            <form class="form-inline">
-                <div class="form-group">
-                    <input type="text" class="form-pesquisa cinza ng-pristine ng-valid" name="myText" placeholder="Nome do arquivo, Grupo, Destinatário" ng-model="campoPesquisa" maxlength="50">
-                </div>
-                <button class="btn-pesquisar" ng-click="pesquisarArquivo(true)" title="Pesquisar"><i class="material-icons">search</i></button>
-            </form>
+
         </div>
     </div>
 
@@ -27,17 +22,24 @@
         <div class="container-fluid semPadding">
             <div class="form-group">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-6 pull-left">
+                        <form class="form-inline" style="margin-left: 50px; margin-top:20px;">
+                            <div class="form-group">
+                                <input type="text" class="form-pesquisa ng-pristine ng-valid" style="font-size: 14.2px !important; margin-left: 5px;" name="myText" placeholder="Nome do arquivo, Grupo, Destinatário" ng-model="campoPesquisa" maxlength="50">
+                            </div>
+                            <button class="btn-pesquisar" ng-click="pesquisarArquivo(true)" title="Pesquisar"><i class="material-icons">search</i></button>
+                        </form>
+                    </div>
+                    <div class="col-md-3 pull-right">
                         <div class="campoLabel">
-                            <button type="button" class="btnPadrao pull-left" style="margin-right: 15px;" ng-click="callModalNovaImportacao()">Nova importação</button>
+                            <button type="button" class="btnPadrao pull-right" style="margin-right: 15px;" ng-click="callModalNovaImportacao()">Adicionar</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
-        <table class="table table-hover" ng-show="listaImportacoes.length != null" style=" margin-top: 0px;">
+        <table class="table table-hover" ng-show="listaImportacoes != null && listaImportacoes.length > 0" style=" margin-top: 0px;">
             <colgroup>
                 <col width="12%" />
                 <col width="16%" />
@@ -62,7 +64,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="arquivo in listaImportacoes">
-                    <td class="center">{{arquivo.Cod }}</td>
+                    <td class="center">{{arquivo.Codigo }}</td>
                     <td class="center">{{arquivo.NomeArquivo }}</td>
                     <td class="center">{{arquivo.Grupo }}</td>
                     <td class="center">{{arquivo.Destinatario }}</td>
@@ -82,7 +84,7 @@
             </tbody>
         </table>
         <page method="carregaImportacoesPaginado('paginate')" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" ng-show="listaImportacoes != null" data-arr-page-size="[10,20,30,40,50,100]"></page>
-        <p class="nresultados" ng-show="listaImportacoes == null">Nenhum arquivo adicionado.</p>
+        <p class="nresultados" ng-show="listaImportacoes == null || listaImportacoes.length == 0">Nenhum arquivo adicionado.</p>
 
     </div>
 
@@ -96,23 +98,21 @@
                 <div class="modal-header">
                     <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
                     <h4 class="modal-title">
-                        <strong>Nova importação de resultados</strong>
+                        <strong></strong>
                     </h4>
                 </div>
                 @*BODY*@
                 <div class="modal-body">
                     <div class="col-md-12">
                         <div style="margin-bottom: 20px;" class="campoLabel">
-                            <label>Arquivo*: </label>
                             <div>
                                 <div class="upload-group">
                                     <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">
                                     <span class="input-group-btn fake-upload">
                                         <i class="material-icons">file_upload</i>
-                                        <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
+                                        <input type="file" accept=".htm,.html" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
                                     </span>
                                 </div>
-                                <p style="font-size: 11px;" class="textoDescricao pull-left">Tamanho máximo de 10MB</p>
                             </div>
                         </div>
                         <div class="campoLabel">
