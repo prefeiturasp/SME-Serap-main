@@ -2,11 +2,7 @@
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Business
 {
@@ -19,7 +15,7 @@ namespace GestaoAvaliacao.Business
                 this.reportStudiesRepository = reportStudiesRepository;
             }
 
-        private Validate Validate(ReportStudies entity, long evaluationMatrixId, ValidateAction action, Validate valid)
+        public Validate Validate(ReportStudies entity, long evaluationMatrixId, ValidateAction action, Validate valid)
         {
             valid.Message = null;
 
@@ -62,7 +58,7 @@ namespace GestaoAvaliacao.Business
 
             return valid;
         }
-        public ReportStudies Save(ReportStudies entity)
+        public bool Save(ReportStudies entity)
         {
             return reportStudiesRepository.Save(entity);
         }
@@ -72,9 +68,19 @@ namespace GestaoAvaliacao.Business
             return reportStudiesRepository.ListAll();
         }
 
+        public IEnumerable<ReportStudies> ListPaginated(ref Pager pager, string searchFilter)
+        {
+            if (!string.IsNullOrEmpty(searchFilter))
+                return reportStudiesRepository.ListWithFilter(searchFilter);
+            return reportStudiesRepository.ListPaginated(ref pager);
+        }
         public void Delete(long id)
         {
             reportStudiesRepository.Delete(id);
+        }
+        public bool DeleteById(long id)
+        {
+           return reportStudiesRepository.DeleteById(id);
         }
     }
 }

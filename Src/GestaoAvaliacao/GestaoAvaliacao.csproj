@@ -1785,6 +1785,7 @@
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
     <Compile Include="Controllers\ImportarResultadosPSPController.cs" />
     <Compile Include="Controllers\NumberItemsAplicationTaiController.cs" />
+    <Compile Include="Controllers\ReportStudiesController.cs" />
     <Compile Include="Controllers\SimuladorSerapEstudantesController.cs" />
     <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
     <Compile Include="Controllers\StudentResultsController.cs" />
