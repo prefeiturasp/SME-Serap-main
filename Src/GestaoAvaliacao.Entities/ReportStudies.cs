@@ -16,5 +16,6 @@ namespace GestaoAvaliacao.Entities
         public virtual string Addressee { get; set; }
 
         public virtual string Link { get; set; }
+
     }
 }
