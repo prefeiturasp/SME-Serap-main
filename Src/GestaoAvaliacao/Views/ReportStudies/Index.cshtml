@@ -8,7 +8,7 @@
 <div class="wellCustom" ng-controller="ReportStudiesController">
 
     <div class="headerCustom">
-        <h4><span>Relatório e Estudos</span></h4>
+        <h4>Relatório e Estudos<span>Listagem</span></h4>
     </div>
 
     <div class="pesquisa-upload row">
@@ -25,7 +25,7 @@
                     <div class="col-md-6 pull-left">
                         <form class="form-inline" style="margin-left: 50px; margin-top:20px;">
                             <div class="form-group">
-                                <input type="text" class="form-pesquisa ng-pristine ng-valid" style="font-size: 14.2px !important; margin-left: 5px;" name="myText" placeholder="Nome do arquivo, Grupo, Destinatário" ng-model="campoPesquisa" maxlength="50">
+                                <input type="text" class="form-pesquisa ng-pristine ng-valid" style="font-size: 14.2px !important; margin-left: 5px;" name="myText" placeholder="Cod, Nome do arquivo" ng-model="campoPesquisa" maxlength="50">
                             </div>
                             <button class="btn-pesquisar" ng-click="pesquisarArquivo(true)" title="Pesquisar"><i class="material-icons">search</i></button>
                         </form>
@@ -45,7 +45,7 @@
                 <col width="16%" />
                 <col width="12%" />
                 <col width="12%" />
-                <col width="12%" />
+                <col width="16%" />
                 <col width="12%" />
                 <col width="12%" />
                 <col width="12%" />
@@ -105,6 +105,7 @@
                 <div class="modal-body">
                     <div class="col-md-12">
                         <div style="margin-bottom: 20px;" class="campoLabel">
+                            <label>Arquivo: </label>
                             <div>
                                 <div class="upload-group">
                                     <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">

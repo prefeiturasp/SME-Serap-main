@@ -81,7 +81,7 @@ public class ReportStudiesController : Controller
                     NomeArquivo = entity.Name,
                     Grupo =  ((EnumTypeGroup)entity.TypeGroup).GetDescription(),
                     Destinatario = entity.Addressee,
-                    DataUpload = entity.CreateDate.ToShortDateString(),
+                    DataUpload = entity.CreateDate.ToString(),
                     Link = entity.Link
                 });
 
