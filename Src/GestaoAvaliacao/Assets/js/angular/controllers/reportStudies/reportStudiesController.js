@@ -197,13 +197,19 @@
         }
 
         $scope.UploadFile = function () {
+           
 
             var form = new FormData();
 
+            if ($scope.grupo !== null && $scope.grupo !== undefined) {
+                form.append('TypeGroup', $scope.grupo.Codigo);
+            }
+
+            if ($scope.destinatario !== null && $scope.destinatario !== undefined) {
+                form.append('Addressee', $scope.destinatario.Nome);
+            }
             form.append('file', $scope.arquivoSelecionado);
             form.append('Name', $scope.arquivoSelecionado.FileName);
-            form.append('TypeGroup', $scope.grupo.Codigo);
-            form.append('Addressee', $scope.destinatario.Nome);
             form.append('Link', '');
 
             var defer = $q.defer();
