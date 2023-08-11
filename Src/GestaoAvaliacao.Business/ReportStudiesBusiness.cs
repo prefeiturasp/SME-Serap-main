@@ -3,16 +3,18 @@ using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
 using System.Collections.Generic;
+using System.Web;
 
 namespace GestaoAvaliacao.Business
 {
         public class ReportStudiesBusiness : IReportStudiesBusiness
         {
             private readonly IReportStudiesRepository reportStudiesRepository;
-
-            public ReportStudiesBusiness(IReportStudiesRepository reportStudiesRepository)
+        private readonly IFileBusiness fileBusiness;
+        public ReportStudiesBusiness(IReportStudiesRepository reportStudiesRepository, IFileBusiness fileBusiness)
             {
                 this.reportStudiesRepository = reportStudiesRepository;
+            this.fileBusiness = fileBusiness;
             }
 
         public Validate Validate(ReportStudies entity, long evaluationMatrixId, ValidateAction action, Validate valid)
@@ -58,9 +60,19 @@ namespace GestaoAvaliacao.Business
 
             return valid;
         }
-        public bool Save(ReportStudies entity)
+        public bool Save(ReportStudies entity, UploadModel upload)
         {
-            return reportStudiesRepository.Save(entity);
+            try
+            {
+                var file = fileBusiness.Upload(upload);
+                entity.Link = file.Path;
+                return reportStudiesRepository.Save(entity);
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+            
         }
 
         public IEnumerable<ReportStudies> ListAll()

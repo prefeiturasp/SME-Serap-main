@@ -1,5 +1,6 @@
 ﻿using GestaoAvaliacao.App_Start;
 using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
@@ -37,11 +38,23 @@ public class ReportStudiesController : Controller
                 Link = Link
             };
 
+            UploadModel upload = new UploadModel
+            {
+                ContentLength = file.ContentLength,
+                ContentType = file.ContentType,
+                InputStream = null,
+                Stream = file.InputStream,
+                FileName = file.FileName,
+                VirtualDirectory = ApplicationFacade.VirtualDirectory,
+                PhysicalDirectory = ApplicationFacade.PhysicalDirectory,
+                FileType = EnumFileType.File,
+                UsuId = SessionFacade.UsuarioLogado.Usuario.usu_id
+            };
+
             if (entity == null)
                 throw new Exception("Entidade não pode ser nula");
-            var ret = reportStudiesBusiness.Save(entity);
-
-
+            var ret = reportStudiesBusiness.Save(entity, upload);
+        
             return Json(new { success = ret, message = ret ? null : "Erro ao salvar arquivo." }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
@@ -66,7 +79,7 @@ public class ReportStudiesController : Controller
                 {
                     Codigo = entity.Id,
                     NomeArquivo = entity.Name,
-                    Grupo = entity.TypeGroup,
+                    Grupo =  ((EnumTypeGroup)entity.TypeGroup).GetDescription(),
                     Destinatario = entity.Addressee,
                     DataUpload = entity.CreateDate.ToShortDateString(),
                     Link = entity.Link
