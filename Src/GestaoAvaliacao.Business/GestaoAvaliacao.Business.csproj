@@ -142,6 +142,7 @@
     <Compile Include="ReportItemChoiceBusiness.cs" />
     <Compile Include="ReportStudentPerformanceBusiness.cs" />
     <Compile Include="ReportItemPerformanceBusiness.cs" />
+    <Compile Include="ReportStudiesBusiness.cs" />
     <Compile Include="RequestRevokeBusiness.cs" />
     <Compile Include="ResponseChangeLogBusiness.cs" />
     <Compile Include="ResultadoPspBusiness.cs" />
