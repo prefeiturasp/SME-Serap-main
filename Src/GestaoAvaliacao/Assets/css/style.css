@@ -6105,4 +6105,18 @@ h3.label-menu {
     box-shadow: 0 2px 7px #c7c7c7;
 }
 
+.icon-container {
+    display: flex;
+    align-items: center;
+}
+
+    .icon-container .material-icons {
+        margin-right: 5px;
+    }
+
+.icon-inline {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 
