@@ -6,7 +6,7 @@ namespace GestaoAvaliacao.Entities
     {
         public virtual string Name { get; set; }
 
-        public virtual int TypeGroup { get; set; }
+        public virtual int? TypeGroup { get; set; }
 
         public virtual string Addressee { get; set; }
 

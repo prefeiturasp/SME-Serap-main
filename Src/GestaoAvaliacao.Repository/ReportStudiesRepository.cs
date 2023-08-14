@@ -30,6 +30,7 @@ namespace GestaoAvaliacao.Repository
                 gestaoAvaliacaoContext.SaveChanges();
             }
             return true;
+            
         }
 
         public IEnumerable<ReportStudies> ListAll()

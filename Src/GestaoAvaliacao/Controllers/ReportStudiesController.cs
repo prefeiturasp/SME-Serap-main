@@ -26,7 +26,7 @@ public class ReportStudiesController : Controller
     }
 
     [HttpPost]
-    public JsonResult Save(HttpPostedFileBase file, string Name, int TypeGroup, string Addressee, string Link)
+    public JsonResult Save(HttpPostedFileBase file, string Name, int?TypeGroup, string Addressee, string Link)
     {
         try
         {
@@ -79,7 +79,7 @@ public class ReportStudiesController : Controller
                 {
                     Codigo = entity.Id,
                     NomeArquivo = entity.Name,
-                    Grupo =  ((EnumTypeGroup)entity.TypeGroup).GetDescription(),
+                    Grupo = entity.TypeGroup!= null? ((EnumTypeGroup)entity.TypeGroup).GetDescription() : "",
                     Destinatario = entity.Addressee,
                     DataUpload = entity.CreateDate.ToString(),
                     Link = entity.Link

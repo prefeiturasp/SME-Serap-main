@@ -19,11 +19,10 @@ namespace GestaoAvaliacao.Repository.Map
                 .HasMaxLength(255)
                 .HasColumnType("varchar");
 
-            Property(p => p.TypeGroup)
-                .IsRequired();
+            Property(p => p.TypeGroup);
+         
 
             Property(p => p.Addressee)
-                .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnType("varchar");
 
