@@ -18,8 +18,12 @@ namespace GestaoAvaliacao.API.Controllers
 	[ApiExplorerSettings(IgnoreApi = true)]
 	public class AdherenceController : ApiController
 	{
+        #region Propriedades
+        public long test_id => long.Parse(this.UserData().Split('_')[0]);
 
-		readonly IAdherenceBusiness adherenceBusiness;
+        #endregion
+
+        readonly IAdherenceBusiness adherenceBusiness;
 
 		public AdherenceController(IAdherenceBusiness adherenceBusiness)
 		{
@@ -34,7 +38,7 @@ namespace GestaoAvaliacao.API.Controllers
 			Adherence entity;
 			try
 			{
-				entity = adherenceBusiness.Select(long.Parse(this.UserData()), this.UserId(), model.idEntity, model.typeEntity, 
+				entity = adherenceBusiness.Select(test_id, this.UserId(), model.idEntity, model.typeEntity, 
 					model.typeSelection, this.PesId(), this.EntityId(), this.VisId(), model.ttn_id, model.year, model.parentId);
 
 				var result = new AdherenceResult()
@@ -70,7 +74,7 @@ namespace GestaoAvaliacao.API.Controllers
 			List<Adherence> entities;
 			try
 			{
-				entities = adherenceBusiness.Select(long.Parse(this.UserData()), this.UserId(), model.entityList,
+				entities = adherenceBusiness.Select(test_id, this.UserId(), model.entityList,
 					model.typeSelection, this.PesId(), this.EntityId(), this.VisId(), model.ttn_id, model.year);
 
 				var result = entities.Where(e => !e.Validate.IsValid).Select(e => new AdherenceResult()
