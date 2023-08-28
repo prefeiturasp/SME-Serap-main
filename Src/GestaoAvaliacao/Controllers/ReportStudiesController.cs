@@ -6,6 +6,7 @@ using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -114,4 +115,35 @@ public class ReportStudiesController : Controller
         }
    
     }
+
+    [HttpPost]
+    public JsonResult ImportCsv(HttpPostedFileBase file)
+    {
+        var b = new BinaryReader(file.InputStream);
+        var binData = b.ReadBytes(file.ContentLength);
+        var result = System.Text.Encoding.UTF8.GetString(binData);
+
+        var splitRowResult = result.Substring(0, StringHelper.PositionOfNewLine(result)).Trim()
+            .Replace("\"", string.Empty).Split(';');
+
+        if (string.IsNullOrEmpty(splitRowResult.ToString()))
+            return Json(new { success = false, message = "Erro ao importar csv." }, JsonRequestBehavior.AllowGet);
+
+        b.BaseStream.Position = 0;
+
+        try
+        {
+             
+            reportStudiesBusiness.ImportCsv(file, SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, out var retorno);
+            return Json(new { success = true, retorno, message = "Importação realizada com sucesso!." }, JsonRequestBehavior.AllowGet);
+        }
+        catch (Exception ex)
+        {
+            LogFacade.SaveError(ex);
+            return Json(new { success = false, retorno = "", message = ex.Message}, JsonRequestBehavior.AllowGet);
+        }
+    }
+
+
+
 }

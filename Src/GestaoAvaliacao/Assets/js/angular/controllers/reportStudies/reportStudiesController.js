@@ -25,6 +25,8 @@
         $scope.listaImportacoes = null;
         $scope.campoPesquisa = "";
         $scope.arquivoSelecionado = null;
+        $scope.arquivoSelecionadoCsv = null;
+        $scope.resultImportarCsv = null;
         $scope.paginate = $pager(ReportStudiesModel.carregaImportacoes);
         $scope.pageSize = 10;
 
@@ -72,7 +74,7 @@
                 { Codigo: 2, Nome: 'DRE' },
                 { Codigo: 3, Nome: 'SME' },
                 { Codigo: 4, Nome: 'Geral' },
-                { Codigo: 4, Nome: 'Público' }
+                { Codigo: 5, Nome: 'Público' }
             ];
         }
 
@@ -112,9 +114,20 @@
             angular.element("#modalNovaImportacao").modal({ backdrop: 'static' });
         };
 
+        $scope.callModalImportarCsvEdicaoLote = function __callModalImportarCsvEdicaoLote() {
+            angular.element("#modalImportarCsvEdicaoLote").modal({ backdrop: 'static' });
+        };
+
+
         $scope.selecionarArquivo = function __selecionarArquivo(element) {
             $scope.arquivoSelecionado = element.files[0];
             $scope.validacoesArquivo();
+        }
+
+
+        $scope.selecionarArquivoCsv = function __selecionarArquivoCsv(element) {
+            $scope.arquivoSelecionadoCsv = element.files[0];
+            $scope.validacoesArquivoCsv();
         }
 
         $scope.validacoesArquivo = function __validacoesArquivo() {
@@ -124,6 +137,18 @@
                 $scope.arquivoSelecionado = null;
                 angular.element("input[type='file']").val(null);
                 $notification['error']("Selecione um arquivo HTML");
+                return false;
+            }
+        }
+
+
+        $scope.validacoesArquivoCsv = function __validacoesArquivoCsv() {
+            var tamanhoArquivo = parseInt($scope.arquivoSelecionadoCsv.size);
+            var fileSize = kmgtbytes(tamanhoArquivo);
+            if ($scope.arquivoSelecionadoCsv.type !== 'text/csv') {
+                $scope.arquivoSelecionadoCsv = null;
+                angular.element("input[type='file']").val(null);
+                $notification['error']("Selecione um arquivo CSV.");
                 return false;
             }
         }
@@ -139,6 +164,11 @@
             $scope.grupo = null;
             $scope.destinatario = null;
             $scope.arquivoSelecionado = null;
+            angular.element("input[type='file']").val(null);
+        }
+
+        $scope.limparDadosCsv = function __limparCsv() {
+            $scope.arquivoSelecionadoCsv = null;
             angular.element("input[type='file']").val(null);
         }
         
@@ -173,9 +203,7 @@
             }
 
             $scope.validacoesArquivo();
-
             $scope.exibirLoading(true);
-
             $scope.UploadFile().then(function (data) {
                 if (data.success) {
                     $scope.limparDados();
@@ -193,14 +221,10 @@
                 $scope.exibirLoading(false);
                 $notification.error(e);
             });
-
         }
 
         $scope.UploadFile = function () {
-           
-
             var form = new FormData();
-
             if ($scope.grupo !== null && $scope.grupo !== undefined) {
                 form.append('TypeGroup', $scope.grupo.Codigo);
             }
@@ -240,6 +264,62 @@
         };        
 
         $scope.load();
+
+
+        $scope.salvarImportacaoCsv = function __salvarImportacaoCsv() {
+
+            if ($scope.arquivoSelecionadoCsv === null || $scope.arquivoSelecionadoCsv === undefined) {
+                $scope.callModalImportarCsvEdicaoLote();
+                $notification['error']("Selecione um arquivo!");
+                return false;
+            }
+            $scope.validacoesArquivoCsv();
+            $scope.exibirLoading(true);
+            $scope.UploadFileCsv().then(function (data) {
+                if (data.success) {
+                    $scope.limparDadosCsv();
+                    $scope.carregaImportacoesPaginado();
+                    $scope.exibirLoading(false);
+                    $scope.resultImportarCsv = data.retorno;
+
+                    if ($scope.resultImportarCsv.QtdeErros > 0)
+                        angular.element("#modalResultadoImportarCsv").modal({ backdrop: 'static' });
+                    else
+                        $notification.success("Importação realizada com sucesso.");
+                  
+                }
+                else {
+                    $scope.limparDadosCsv();
+                    $scope.exibirLoading(false);
+                    $notification[data.type ? data.type : 'error'](data.message);
+                }
+            }, function (e) {
+                $scope.limparDadosCsv();
+                $scope.exibirLoading(false);
+                $notification.error(e);
+            });
+
+        }
+
+        $scope.UploadFileCsv = function () {
+            var form = new FormData();
+            form.append('file', $scope.arquivoSelecionadoCsv);
+
+            var defer = $q.defer();
+            $http.post("/ReportStudies/ImportCsv", form,
+                {
+                    headers: { 'Content-Type': undefined },
+                    transformRequest: angular.identity
+                })
+                .success(function (d) {
+                    defer.resolve(d);
+                })
+                .error(function (e) {
+                    $notification.error(e);
+                });
+
+            return defer.promise;
+        }
 
     };
 

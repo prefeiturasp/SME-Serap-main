@@ -1,5 +1,7 @@
 ﻿using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Util;
+using MSTech.CoreSSO.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +19,6 @@ namespace GestaoAvaliacao.IBusiness
         void Delete(long id);
         bool DeleteById(long id);
         Validate Validate(ReportStudies entity, long evaluationMatrixId, ValidateAction action, Validate valid);
+        void ImportCsv(HttpPostedFileBase arquivo, SYS_Usuario usuario, SYS_Grupo sysGrupo, out CsvImportDTO retornoCsv);
     }
 }

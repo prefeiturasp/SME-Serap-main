@@ -56,7 +56,6 @@ namespace GestaoAvaliacao.IBusiness
 		void ChangeOrderTestUp(long Id, long order);
 		void ChangeOrderTestDown(long Id, long order);
 		IEnumerable<TestResult> GetTestsBySubGroup(long id);
-
 		TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
 		Task<List<ElectronicTestDTO>> SearchEletronicTests();
 		Task<Test> SearchInfoTestAsync(long test_id);
@@ -71,7 +70,7 @@ namespace GestaoAvaliacao.IBusiness
 		void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> entity);
 		List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId);
         bool ExistsAdherenceByTestId(long test_id);
-        void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno);
-        void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno);
+        void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno);
+        void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno);
     }
 }

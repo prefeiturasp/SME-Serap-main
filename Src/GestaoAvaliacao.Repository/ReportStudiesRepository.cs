@@ -8,6 +8,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -30,7 +31,7 @@ namespace GestaoAvaliacao.Repository
                 gestaoAvaliacaoContext.SaveChanges();
             }
             return true;
-            
+
         }
 
         public IEnumerable<ReportStudies> ListAll()
@@ -176,6 +177,59 @@ namespace GestaoAvaliacao.Repository
 
                     gestaoAvaliacaoContext.SaveChanges();
                 }
+            }
+        }
+        public ReportStudies GetById(long id)
+        {
+
+            var sql = new StringBuilder(@"SELECT 
+                                       Id,
+                                       Name,
+                                       TypeGroup,
+                                       Addressee,
+                                       CreateDate,
+                                       UpdateDate,
+                                       [State],
+                                       [Link]
+                                       FROM ReportsStudies
+                                       Where  Id = @id");
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                return cn.Query<ReportStudies>(sql.ToString(),
+                    new
+                    {
+                        id = id,
+                    }).FirstOrDefault();
+            }
+        }
+
+        public bool Update(ReportStudies entity)
+        {
+            using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                var Id = entity.Id;
+                var typeGroup = entity.TypeGroup;
+                var addresse = entity.Addressee;
+                var updateDate = DateTime.Now;
+
+                var sql = new StringBuilder("UPDATE ReportsStudies SET TypeGroup  =  @typeGroup, Addressee = @addresse, UpdateDate = @updateDate  WHERE Id = @id");
+                using (IDbConnection cn = Connection)
+                {
+                    cn.Open();
+
+                    cn.Execute(sql.ToString(),
+                        new
+                        {
+                            id = Id,
+                            typeGroup = typeGroup,
+                            addresse = addresse,
+                            updateDate = updateDate,
+                        });
+                }
+                return true;
             }
         }
     }
