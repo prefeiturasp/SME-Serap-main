@@ -88,6 +88,11 @@ namespace GestaoEscolar.Business
             return escolaRepository.GetSchoolAndDRENames(esc_id);
         }
 
+		public IEnumerable<string> LoadAllSchoolCodesActive()
+		{
+			return escolaRepository.LoadAllSchoolCodesActive();
+		}
+
         #endregion
 
     }

@@ -2,15 +2,15 @@
 
 namespace GestaoAvaliacao.Entities.DTO
 {
-    public class CsvBlockImportDTO
+    public class CsvImportDTO
     {
-        public CsvBlockImportDTO()
+        public CsvImportDTO()
         {
-            Erros = new List<ErrorCsvBlockImportDTO>();
+            Erros = new List<ErrosImportacaoCSV>();
         }
 
         public int QtdeSucesso { get; set; }
         public int QtdeErros { get; set; }
-        public List<ErrorCsvBlockImportDTO> Erros { get; set; }
+        public List<ErrosImportacaoCSV> Erros { get; set; }
     }
 }

@@ -1261,7 +1261,7 @@ namespace GestaoAvaliacao.Business
             }
         };
 
-        public void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno)
+        public void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno)
         {
             var dateTimeNow = DateTime.Now;
 
@@ -1274,7 +1274,7 @@ namespace GestaoAvaliacao.Business
                         var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
                         var blocosItens = csv.GetRecords<BlockCsvDTO>().ToList();
                         var blocos = blocosItens.GroupBy(x => x.NumeroBloco).ToList();
-                        var erros = new List<ErrorCsvBlockImportDTO>();
+                        var erros = new List<ErrosImportacaoCSV>();
 
                         foreach (var bloco in blocos)
                         {
@@ -1319,7 +1319,7 @@ namespace GestaoAvaliacao.Business
 
                                 if (!ehNumero || Convert.ToInt64(bloco.Key) > test.BlockChainNumber)
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = "Bloco inválido"
@@ -1332,7 +1332,7 @@ namespace GestaoAvaliacao.Business
 
                                 if (item == null)
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = "Código do item inválido"
@@ -1343,7 +1343,7 @@ namespace GestaoAvaliacao.Business
 
                                 if (!(blockChain.BlockChainItems.Count < test.BlockChainItems))
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = "Quantidade de item do bloco excedida"
@@ -1354,7 +1354,7 @@ namespace GestaoAvaliacao.Business
 
                                 if (blockChain.BlockChainItems.Any(i => i.Item_Id == item.Id))
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = $"Item {blocoItem.CodigoItem} em duplicidade no bloco {bloco.Key}."
@@ -1388,7 +1388,7 @@ namespace GestaoAvaliacao.Business
 
                         blockChainBusiness.UpdateBlockByTestId(testId);
 
-                        retorno = new CsvBlockImportDTO
+                        retorno = new CsvImportDTO
                         {
                             QtdeSucesso = blocosItens.Count - erros.Count,
                             QtdeErros = erros.Count
@@ -1404,7 +1404,7 @@ namespace GestaoAvaliacao.Business
             }
         }
 
-        public void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno)
+        public void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno)
         {
 
             try
@@ -1418,7 +1418,7 @@ namespace GestaoAvaliacao.Business
                         var blocksTest = blockBusiness.GetTestBlocks(testId);
                         var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
                         var cadernosBlocos = csv.GetRecords<CadernoCsvDTO>().ToList();
-                        var erros = new List<ErrorCsvBlockImportDTO>();
+                        var erros = new List<ErrosImportacaoCSV>();
                         var cadernosInserirAlterar = new List<Block>();
                         var linha = 1;
 
@@ -1441,7 +1441,7 @@ namespace GestaoAvaliacao.Business
                                 var numCaderno = Convert.ToInt16(caderno.Trim());
                                 if (numCaderno < 1 || numCaderno > test.NumberBlock)
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = "Caderno inválido"
@@ -1458,7 +1458,7 @@ namespace GestaoAvaliacao.Business
                             var blockChain = blockChains.FirstOrDefault(x => x.Description == bloco.Trim());
                             if (blockChain == null)
                             {
-                                erros.Add(new ErrorCsvBlockImportDTO
+                                erros.Add(new ErrosImportacaoCSV
                                 {
                                     Linha = linha,
                                     Erro = "Bloco inválido"
@@ -1472,7 +1472,7 @@ namespace GestaoAvaliacao.Business
                                 {
                                     if (block.BlockChainBlocks.Any(x => x.BlockChain_Id == blockChain.Id))
                                     {
-                                        erros.Add(new ErrorCsvBlockImportDTO
+                                        erros.Add(new ErrosImportacaoCSV
                                         {
                                             Linha = linha,
                                             Erro = $"Bloco {bloco} em duplicidade no caderno {caderno}"
@@ -1503,7 +1503,7 @@ namespace GestaoAvaliacao.Business
                                 }
                                 else
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = "Quantidade de blocos do caderno excedida"
@@ -1519,7 +1519,7 @@ namespace GestaoAvaliacao.Business
                                 cadernosInserirAlterar[indexCaderno] = block;
                         }
 
-                        retorno = new CsvBlockImportDTO
+                        retorno = new CsvImportDTO
                         {
                             QtdeSucesso = cadernosBlocos.Count - erros.Count,
                             QtdeErros = erros.Count

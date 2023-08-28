@@ -19,5 +19,8 @@ namespace GestaoEscolar.IRepository
         /// <param name="esc_id">Id da escola</param>
         /// <returns>Projection com o nome da DRE e da escola</returns>
         SchoolAndDRENamesProjection GetSchoolAndDRENames(int esc_id);
+
+        IEnumerable<string> LoadAllSchoolCodesActive();
     }
+
 }

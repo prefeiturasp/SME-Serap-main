@@ -147,8 +147,23 @@ namespace GestaoEscolar.Repository
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
-
                 return cn.Query<SchoolAndDRENamesProjection>(sql.ToString(), new { esc_id = esc_id }).FirstOrDefault();
+            }
+        }
+
+
+       public IEnumerable<string> LoadAllSchoolCodesActive()
+        {
+
+            var sql = new StringBuilder("SELECT esc_codigo  ")
+                                        .AppendLine("FROM ESC_Escola  ")
+                                        .AppendLine("WHERE esc_situacao = 1");
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                return cn.Query<string>(sql.ToString()).ToList();
             }
         }
     }

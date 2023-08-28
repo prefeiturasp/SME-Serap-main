@@ -1774,6 +1774,7 @@
     <Content Include="Views\Test\_ModalResultadoImportarCsvBlocos.cshtml" />
     <Content Include="Views\Test\_Block.cshtml" />
     <Content Include="Views\ReportStudies\Index.cshtml" />
+    <Content Include="Views\ReportStudies\_ModalResultadoCsv.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
