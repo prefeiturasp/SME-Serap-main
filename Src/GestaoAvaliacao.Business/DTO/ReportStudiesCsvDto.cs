@@ -5,11 +5,11 @@ namespace GestaoAvaliacao.Business.DTO
 
     internal class ReportStudiesCsvDto
     {
-        [Name("Codigo")]
+        [Name("cod")]
         public long Codigo { get; set; }
-        [Name("TipoGrupo")]
+        [Name("grupo")]
         public string TipoGrupo { get; set; }
-        [Name("Destinatario")]
+        [Name("destinatario")]
         public string Destinatario { get; set; }
     }
 }

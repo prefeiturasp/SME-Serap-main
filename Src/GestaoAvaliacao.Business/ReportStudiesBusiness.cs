@@ -129,19 +129,10 @@ namespace GestaoAvaliacao.Business
 
                             if (Enum.TryParse(item.TipoGrupo, out EnumTypeGroup enumTypeGroup))
                                 entity.TypeGroup = (int)enumTypeGroup;
+                           
+                            destinatario = TrataDestinatario(listaEscolas, listaDres, item, destinatario, entity);
 
-                            if (entity.TypeGroup == (int)EnumTypeGroup.DRE)
-                            {
-                                var dre = listaDres.Where(x => x.uad_sigla == item.Destinatario).FirstOrDefault();
-                                destinatario = $"{dre.uad_sigla} - {dre.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")}";
-                            }
-                            if (entity.TypeGroup == (int)EnumTypeGroup.UE)
-                            {
-                                var ue = listaEscolas.Where(x => x.EscCodigo == item.Destinatario).FirstOrDefault();
-                                destinatario = $"{ue.EscCodigo} - {ue.EscNome}";
-                            }
-
-                                entity.Addressee = destinatario;
+                            entity.Addressee = destinatario;
                             codigosAtualizados.Add(item.Codigo);
 
                             reportStudiesRepository.Update(entity);
@@ -162,6 +153,22 @@ namespace GestaoAvaliacao.Business
             {
                 throw ex;
             }
+        }
+
+        private static string TrataDestinatario(IEnumerable<EscolaDto> listaEscolas, IEnumerable<GestaoEscolar.Entities.SYS_UnidadeAdministrativa> listaDres, ReportStudiesCsvDto item, string destinatario, ReportStudies entity)
+        {
+            if (entity.TypeGroup == (int)EnumTypeGroup.DRE)
+            {
+                var dre = listaDres.Where(x => x.uad_sigla == item.Destinatario).FirstOrDefault();
+                destinatario = $"{dre.uad_sigla} - {dre.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")}";
+            }
+            if (entity.TypeGroup == (int)EnumTypeGroup.UE)
+            {
+                var ue = listaEscolas.Where(x => x.EscCodigo == item.Destinatario).FirstOrDefault();
+                destinatario = $"{ue.EscCodigo} - {ue.EscNome}";
+            }
+
+            return destinatario;
         }
 
         private static void ValidacaItemsImportacao(List<ErrosImportacaoCSV> listaErros, int linha, List<long> codigosAtualizados, IEnumerable<EscolaDto> listaEscolas, List<string> listaAbreviacaoDres, List<string> listaGrupos, ReportStudiesCsvDto item, ReportStudies entity)
