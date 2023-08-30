@@ -1235,6 +1235,29 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
+        public async Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId)
+        {
+            var sql = new StringBuilder(@"select ttcg.Discipline_Id as DisciplineId,
+	                                            ttcg.EvaluationMatrix_Id as MatrixId,
+	                                            em.Description as MatrixDescription,
+	                                            ttcg.TypeCurriculumGradeId,
+	                                            ttcg.Percentage,
+	                                            ttcg.Test_Id as TestId
+                                            from TestTaiCurriculumGrade ttcg
+                                            inner join EvaluationMatrix em on em.Id = ttcg.EvaluationMatrix_Id
+	                                            and em.State = @state
+                                            where ttcg.Test_Id = @testId
+                                            and ttcg.State = @state");
+
+            using (var cn = Connection)
+            {
+                cn.Open();
+
+                return (await cn.QueryAsync<TestTaiCurriculumGradeDTO>(sql.ToString(),
+                    new { testId, State = (byte)EnumState.ativo })).ToList();
+            }
+        }
+
 
         public async Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id)
         {

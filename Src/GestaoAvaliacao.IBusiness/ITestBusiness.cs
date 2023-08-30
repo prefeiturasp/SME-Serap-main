@@ -68,7 +68,8 @@ namespace GestaoAvaliacao.IBusiness
 		Task<List<ElectronicTestDTO>> GetTestsByPesId(Guid pes_id);
 
 		void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> entity);
-		List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId);
+        List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId);
+        Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId);
         bool ExistsAdherenceByTestId(long test_id);
         void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno);
         void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno);

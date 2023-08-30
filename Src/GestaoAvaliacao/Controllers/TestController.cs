@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using static IdentityModel.Client.OAuth2Constants;
@@ -1091,19 +1092,17 @@ namespace GestaoAvaliacao.Controllers
             }
 
             //GetListTestTaiCurriculumGrade
-
-
         }
+
         [HttpGet]
-        public JsonResult GetListTestTaiCurriculumGrade(long testId)
+        public async Task<JsonResult> GetListTestTaiCurriculumGrade(long testId)
         {
             try
             {
-                var list = testBusiness.GetListTestTaiCurriculumGrade(testId);
+                var list = await testBusiness.GetListTestTaiCurriculumGradeByTestId(testId);
 
                 if (list != null && list.Any())
                     return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
-
 
                 return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
             }

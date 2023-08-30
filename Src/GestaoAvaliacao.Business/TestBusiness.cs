@@ -614,6 +614,9 @@ namespace GestaoAvaliacao.Business
 
         public bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id) => testRepository.ExistsAdherenceByAluIdTestId(alu_id, test_id);
 
+        public async Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId) =>
+            await testRepository.GetListTestTaiCurriculumGradeByTestId(testId);
+
         public bool ExistsAdherenceByTestId(long test_id) => testRepository.ExistsAdherenceByTestId(test_id);
         #endregion
 

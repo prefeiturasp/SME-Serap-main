@@ -64,6 +64,7 @@
     <Compile Include="DTO\ErrosImportacaoCSV.cs" />
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoDTO.cs" />
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoRespostaDTO.cs" />
+    <Compile Include="DTO\TestTaiCurriculumGradeDTO.cs" />
     <Compile Include="Enumerator\TypeGroup.cs" />
     <Compile Include="ReportStudies.cs" />
     <Compile Include="ResultadoPsp\ArquivoResultadoPsp.cs" />
