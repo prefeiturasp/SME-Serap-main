@@ -43,7 +43,7 @@ namespace GestaoAvaliacao.Business
                 if (entity == null || string.IsNullOrEmpty(entity.Name) || string.IsNullOrEmpty(entity.Addressee))
                     valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
 
-              
+
             }
 
 
@@ -115,6 +115,7 @@ namespace GestaoAvaliacao.Business
                         var codigosAtualizados = new List<long>();
                         var listaEscolas = _schoolBusiness.LoadAllSchoollsActiveDto();
                         var listaDres = _uadBusiness.LoadDRESimple(usuario, sysGrupo);
+                        var listaCodigosDre = listaDres.Select(x => x.uad_sigla).ToList();
                         var listaGrupos = CarregaGrupos();
                         foreach (var item in listaArquivoEstudoCsvDto)
                         {
@@ -122,14 +123,22 @@ namespace GestaoAvaliacao.Business
 
                             linha++;
                             var entity = reportStudiesRepository.GetById(item.Codigo);
-                            ValidacaItemsImportacao(listaErros, linha, codigosAtualizados, listaEscolas, listaDres.Select(x => x.uad_sigla).ToList(), listaGrupos, item, entity);
 
-                            if (listaErros.Count > 0)
-                                continue;
+                            if (ExisteErroItemCsv(listaErros,
+                                                      linha,
+                                         codigosAtualizados,
+                                               listaEscolas,
+                                            listaCodigosDre,
+                                                listaGrupos,
+                                                       item,
+                                                     entity))
+                            { continue; }
 
-                            if (Enum.TryParse(item.TipoGrupo, out EnumTypeGroup enumTypeGroup))
+
+
+                            if (Enum.TryParse(RemoveAcentos(item.TipoGrupo.ToUpper()), out EnumTypeGroup enumTypeGroup))
                                 entity.TypeGroup = (int)enumTypeGroup;
-                           
+
                             destinatario = TrataDestinatario(listaEscolas, listaDres, item, destinatario, entity);
 
                             entity.Addressee = destinatario;
@@ -143,9 +152,9 @@ namespace GestaoAvaliacao.Business
                             QtdeSucesso = codigosAtualizados.Count(),
                             QtdeErros = listaErros.Count
                         };
-                        
+
                         retornoCsv.Erros.AddRange(listaErros);
-                       
+
                     }
                 }
             }
@@ -171,8 +180,9 @@ namespace GestaoAvaliacao.Business
             return destinatario;
         }
 
-        private static void ValidacaItemsImportacao(List<ErrosImportacaoCSV> listaErros, int linha, List<long> codigosAtualizados, IEnumerable<EscolaDto> listaEscolas, List<string> listaAbreviacaoDres, List<string> listaGrupos, ReportStudiesCsvDto item, ReportStudies entity)
+        private static bool ExisteErroItemCsv(List<ErrosImportacaoCSV> listaErros, int linha, List<long> codigosAtualizados, IEnumerable<EscolaDto> listaEscolas, List<string> listaAbreviacaoDres, List<string> listaGrupos, ReportStudiesCsvDto item, ReportStudies entity)
         {
+            var contemErro = false;
             if (entity == null)
             {
                 listaErros.Add(new ErrosImportacaoCSV
@@ -180,34 +190,38 @@ namespace GestaoAvaliacao.Business
                     Linha = linha,
                     Erro = "Código inválido"
                 });
+                contemErro = true;
             }
 
-            if (!listaGrupos.Contains(item.TipoGrupo))
+            if (!listaGrupos.Contains(RemoveAcentos(item.TipoGrupo.ToUpper())))
             {
                 listaErros.Add(new ErrosImportacaoCSV
                 {
                     Linha = linha,
                     Erro = "Grupo inválido."
                 });
+                contemErro = true;
             }
 
-            if (item.TipoGrupo == "DRE" && !listaAbreviacaoDres.Contains(item.Destinatario))
+            if (item.TipoGrupo.ToUpper() == "DRE" && !listaAbreviacaoDres.Contains(item.Destinatario))
             {
                 listaErros.Add(new ErrosImportacaoCSV
                 {
                     Linha = linha,
                     Erro = "Destinatário inválido."
                 });
+                contemErro = true;
 
             }
 
-            if (item.TipoGrupo == "UE" && !listaEscolas.Select(x => x.EscCodigo).Contains(item.Destinatario))
+            if (item.TipoGrupo.ToUpper() == "UE" && !listaEscolas.Select(x => x.EscCodigo).Contains(item.Destinatario))
             {
                 listaErros.Add(new ErrosImportacaoCSV
                 {
                     Linha = linha,
                     Erro = "Destinatário inválido."
                 });
+                contemErro = true;
             }
 
             if (codigosAtualizados.Contains(item.Codigo))
@@ -218,7 +232,10 @@ namespace GestaoAvaliacao.Business
                     Linha = linha,
                     Erro = "Código em duplicidade"
                 });
+                contemErro = true;
             }
+
+            return contemErro;
         }
 
         private List<string> CarregaGrupos()
@@ -227,9 +244,9 @@ namespace GestaoAvaliacao.Business
             {
                 "UE",
                 "DRE",
-                "Geral",
+                "GERAL",
                 "SME",
-                "Público"
+                "PUBLICO"
             };
 
             return listaGrupo;
@@ -254,5 +271,19 @@ namespace GestaoAvaliacao.Business
                        (arrayLinha.Length > 0 && string.IsNullOrEmpty(arrayLinha[0]));
             }
         };
+
+
+        private static string RemoveAcentos(string valor)
+        {
+            StringBuilder result = new StringBuilder();
+
+            foreach (char c in valor.Normalize(NormalizationForm.FormD))
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                    result.Append(c);
+            }
+
+            return result.ToString();
+        }
     }
 }

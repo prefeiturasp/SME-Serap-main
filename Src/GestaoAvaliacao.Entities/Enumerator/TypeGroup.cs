@@ -15,9 +15,9 @@ namespace GestaoAvaliacao.Entities.Enumerator
         DRE = 2,
         [Description("SME")]
         SME = 3,
-        [Description("Geral")]
-        Geral = 4,
-        [Description("Público")]
-        Público = 5
+        [Description("GERAL")]
+        GERAL = 4,
+        [Description("PÚBLICO")]
+        PUBLICO = 5
     }
 }
