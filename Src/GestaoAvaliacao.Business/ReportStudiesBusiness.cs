@@ -67,18 +67,10 @@ namespace GestaoAvaliacao.Business
             return valid;
         }
         public bool Save(ReportStudies entity, UploadModel upload)
-        {
-            try
-            {
+        {         
                 var file = fileBusiness.Upload(upload);
                 entity.Link = file.Path;
                 return reportStudiesRepository.Save(entity);
-            }
-            catch (System.Exception ex)
-            {
-                throw ex;
-            }
-
         }
 
         public IEnumerable<ReportStudies> ListAll()
@@ -103,64 +95,58 @@ namespace GestaoAvaliacao.Business
 
         public void ImportCsv(HttpPostedFileBase arquivo, SYS_Usuario usuario, SYS_Grupo sysGrupo, out CsvImportDTO retornoCsv)
         {
-            try
+
+            using (var leitorAquivo = new StreamReader(arquivo.InputStream, encoding: Encoding.UTF8))
             {
-                using (var leitorAquivo = new StreamReader(arquivo.InputStream, encoding: Encoding.UTF8))
+                using (var csv = new CsvReader(leitorAquivo, config))
                 {
-                    using (var csv = new CsvReader(leitorAquivo, config))
+                    var listaArquivoEstudoCsvDto = csv.GetRecords<ReportStudiesCsvDto>().ToList();
+                    var listaErros = new List<ErrosImportacaoCSV>();
+                    var linha = 1;
+                    var codigosAtualizados = new List<long>();
+                    var listaEscolas = _schoolBusiness.LoadAllSchoollsActiveDto();
+                    var listaDres = _uadBusiness.LoadDRESimple(usuario, sysGrupo);
+                    var listaCodigosDre = listaDres.Select(x => x.uad_sigla).ToList();
+                    var listaGrupos = CarregaGrupos();
+                    foreach (var item in listaArquivoEstudoCsvDto)
                     {
-                        var listaArquivoEstudoCsvDto = csv.GetRecords<ReportStudiesCsvDto>().ToList();
-                        var listaErros = new List<ErrosImportacaoCSV>();
-                        var linha = 1;
-                        var codigosAtualizados = new List<long>();
-                        var listaEscolas = _schoolBusiness.LoadAllSchoollsActiveDto();
-                        var listaDres = _uadBusiness.LoadDRESimple(usuario, sysGrupo);
-                        var listaCodigosDre = listaDres.Select(x => x.uad_sigla).ToList();
-                        var listaGrupos = CarregaGrupos();
-                        foreach (var item in listaArquivoEstudoCsvDto)
-                        {
-                            var destinatario = string.Empty;
+                        var destinatario = string.Empty;
 
-                            linha++;
-                            var entity = reportStudiesRepository.GetById(item.Codigo);
+                        linha++;
+                        var entity = reportStudiesRepository.GetById(item.Codigo);
 
-                            if (ExisteErroItemCsv(listaErros,
-                                                      linha,
-                                         codigosAtualizados,
-                                               listaEscolas,
-                                            listaCodigosDre,
-                                                listaGrupos,
-                                                       item,
-                                                     entity))
-                            { continue; }
+                        if (ExisteErroItemCsv(listaErros,
+                                                  linha,
+                                     codigosAtualizados,
+                                           listaEscolas,
+                                        listaCodigosDre,
+                                            listaGrupos,
+                                                   item,
+                                                 entity))
+                        { continue; }
 
 
 
-                            if (Enum.TryParse(RemoveAcentos(item.TipoGrupo.ToUpper()), out EnumTypeGroup enumTypeGroup))
-                                entity.TypeGroup = (int)enumTypeGroup;
+                        if (Enum.TryParse(RemoveAcentos(item.TipoGrupo.ToUpper()), out EnumTypeGroup enumTypeGroup))
+                            entity.TypeGroup = (int)enumTypeGroup;
 
-                            destinatario = TrataDestinatario(listaEscolas, listaDres, item, destinatario, entity);
+                        destinatario = TrataDestinatario(listaEscolas, listaDres, item, destinatario, entity);
 
-                            entity.Addressee = destinatario;
-                            codigosAtualizados.Add(item.Codigo);
+                        entity.Addressee = destinatario;
+                        codigosAtualizados.Add(item.Codigo);
 
-                            reportStudiesRepository.Update(entity);
-
-                        }
-                        retornoCsv = new CsvImportDTO
-                        {
-                            QtdeSucesso = codigosAtualizados.Count(),
-                            QtdeErros = listaErros.Count
-                        };
-
-                        retornoCsv.Erros.AddRange(listaErros);
+                        reportStudiesRepository.Update(entity);
 
                     }
+                    retornoCsv = new CsvImportDTO
+                    {
+                        QtdeSucesso = codigosAtualizados.Count(),
+                        QtdeErros = listaErros.Count
+                    };
+
+                    retornoCsv.Erros.AddRange(listaErros);
+
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
 
