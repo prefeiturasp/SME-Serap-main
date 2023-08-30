@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using GestaoAvaliacao.Business.DTO;
 using GestaoEscolar.Entities;
 using GestaoEscolar.Entities.Projections;
 using GestaoEscolar.IRepository;
@@ -152,10 +153,10 @@ namespace GestaoEscolar.Repository
         }
 
 
-       public IEnumerable<string> LoadAllSchoolCodesActive()
+       public IEnumerable<EscolaDto> LoadAllSchoollsActiveDto()
         {
 
-            var sql = new StringBuilder("SELECT esc_codigo  ")
+            var sql = new StringBuilder("SELECT esc_codigo as EscCodigo , esc_nome as EscNome  ")
                                         .AppendLine("FROM ESC_Escola  ")
                                         .AppendLine("WHERE esc_situacao = 1");
 
@@ -163,7 +164,7 @@ namespace GestaoEscolar.Repository
             {
                 cn.Open();
 
-                return cn.Query<string>(sql.ToString()).ToList();
+                return cn.Query<EscolaDto>(sql.ToString()).ToList();
             }
         }
     }

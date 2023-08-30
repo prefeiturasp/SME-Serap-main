@@ -43,20 +43,9 @@ namespace GestaoAvaliacao.Business
                 if (entity == null || string.IsNullOrEmpty(entity.Name) || string.IsNullOrEmpty(entity.Addressee))
                     valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
 
-                // Adicione outras validações específicas para a entidade ReportStudies, se necessário.
+              
             }
 
-            //if (action == ValidateAction.Delete)
-            //{
-            //    ReportStudies ent = Get(entity.Id);
-            //    if (ent == null)
-            //    {
-            //        valid.Message = "Não foi encontrado o registro a ser excluído.";
-            //        valid.Code = 404;
-            //    }
-
-            //    // Adicione as condições de validação para a ação de exclusão.
-            //}
 
             if (!string.IsNullOrEmpty(valid.Message))
             {
@@ -124,69 +113,35 @@ namespace GestaoAvaliacao.Business
                         var listaErros = new List<ErrosImportacaoCSV>();
                         var linha = 1;
                         var codigosAtualizados = new List<long>();
-                        var listaCodEscolas = _schoolBusiness.LoadAllSchoolCodesActive();
-                        var listaAbreviacaoDres = _uadBusiness.LoadDRESimple(usuario, sysGrupo).Select(x => x.uad_sigla).ToList();
+                        var listaEscolas = _schoolBusiness.LoadAllSchoollsActiveDto();
+                        var listaDres = _uadBusiness.LoadDRESimple(usuario, sysGrupo);
                         var listaGrupos = CarregaGrupos();
                         foreach (var item in listaArquivoEstudoCsvDto)
                         {
+                            var destinatario = string.Empty;
+
                             linha++;
                             var entity = reportStudiesRepository.GetById(item.Codigo);
-                            if (entity == null)
-                            {
-                                listaErros.Add(new ErrosImportacaoCSV
-                                {
-                                    Linha = linha,
-                                    Erro = "Código inválido"
-                                });
-                            }
-
-                            if (!listaGrupos.Contains(item.TipoGrupo))
-                            {
-                                listaErros.Add(new ErrosImportacaoCSV
-                                {
-                                    Linha = linha,
-                                    Erro = "Grupo inválido."
-                                });
-                            }
-
-                            if (item.TipoGrupo == "DRE" && !listaAbreviacaoDres.Contains(item.Destinatario))
-                            {
-                                listaErros.Add(new ErrosImportacaoCSV
-                                {
-                                    Linha = linha,
-                                    Erro = "Destinatário inválido."
-                                });
-
-                            }
-
-                            if (item.TipoGrupo == "UE" && !listaCodEscolas.Contains(item.Destinatario))
-                            {
-                                listaErros.Add(new ErrosImportacaoCSV
-                                {
-                                    Linha = linha,
-                                    Erro = "Destinatário inválido."
-                                });
-
-                            
-                            }
-
-                            if (codigosAtualizados.Contains(item.Codigo))
-
-                            {
-                                listaErros.Add(new ErrosImportacaoCSV
-                                {
-                                    Linha = linha,
-                                    Erro = "Código em duplicidade"
-                                });
-
-                            }
+                            ValidacaItemsImportacao(listaErros, linha, codigosAtualizados, listaEscolas, listaDres.Select(x => x.uad_sigla).ToList(), listaGrupos, item, entity);
 
                             if (listaErros.Count > 0)
-                                continue; 
+                                continue;
 
                             if (Enum.TryParse(item.TipoGrupo, out EnumTypeGroup enumTypeGroup))
                                 entity.TypeGroup = (int)enumTypeGroup;
-                            entity.Addressee = item.Destinatario.ToString();
+
+                            if (entity.TypeGroup == (int)EnumTypeGroup.DRE)
+                            {
+                                var dre = listaDres.Where(x => x.uad_sigla == item.Destinatario).FirstOrDefault();
+                                destinatario = $"{dre.uad_sigla} - {dre.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")}";
+                            }
+                            if (entity.TypeGroup == (int)EnumTypeGroup.UE)
+                            {
+                                var ue = listaEscolas.Where(x => x.EscCodigo == item.Destinatario).FirstOrDefault();
+                                destinatario = $"{ue.EscCodigo} - {ue.EscNome}";
+                            }
+
+                                entity.Addressee = destinatario;
                             codigosAtualizados.Add(item.Codigo);
 
                             reportStudiesRepository.Update(entity);
@@ -206,6 +161,56 @@ namespace GestaoAvaliacao.Business
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        private static void ValidacaItemsImportacao(List<ErrosImportacaoCSV> listaErros, int linha, List<long> codigosAtualizados, IEnumerable<EscolaDto> listaEscolas, List<string> listaAbreviacaoDres, List<string> listaGrupos, ReportStudiesCsvDto item, ReportStudies entity)
+        {
+            if (entity == null)
+            {
+                listaErros.Add(new ErrosImportacaoCSV
+                {
+                    Linha = linha,
+                    Erro = "Código inválido"
+                });
+            }
+
+            if (!listaGrupos.Contains(item.TipoGrupo))
+            {
+                listaErros.Add(new ErrosImportacaoCSV
+                {
+                    Linha = linha,
+                    Erro = "Grupo inválido."
+                });
+            }
+
+            if (item.TipoGrupo == "DRE" && !listaAbreviacaoDres.Contains(item.Destinatario))
+            {
+                listaErros.Add(new ErrosImportacaoCSV
+                {
+                    Linha = linha,
+                    Erro = "Destinatário inválido."
+                });
+
+            }
+
+            if (item.TipoGrupo == "UE" && !listaEscolas.Select(x => x.EscCodigo).Contains(item.Destinatario))
+            {
+                listaErros.Add(new ErrosImportacaoCSV
+                {
+                    Linha = linha,
+                    Erro = "Destinatário inválido."
+                });
+            }
+
+            if (codigosAtualizados.Contains(item.Codigo))
+
+            {
+                listaErros.Add(new ErrosImportacaoCSV
+                {
+                    Linha = linha,
+                    Erro = "Código em duplicidade"
+                });
             }
         }
 

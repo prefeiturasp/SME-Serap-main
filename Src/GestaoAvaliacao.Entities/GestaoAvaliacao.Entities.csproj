@@ -62,6 +62,7 @@
     <Compile Include="BlockChainItem.cs" />
     <Compile Include="DTO\CsvImportDTO.cs" />
     <Compile Include="DTO\ErrosImportacaoCSV.cs" />
+    <Compile Include="DTO\EscolaDto.cs" />
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoDTO.cs" />
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoRespostaDTO.cs" />
     <Compile Include="Enumerator\TypeGroup.cs" />

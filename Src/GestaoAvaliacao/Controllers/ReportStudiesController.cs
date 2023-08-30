@@ -119,7 +119,7 @@ public class ReportStudiesController : Controller
     [HttpPost]
     public JsonResult ImportCsv(HttpPostedFileBase file)
     {
-        var b = new BinaryReader(file.InputStream);
+            var b = new BinaryReader(file.InputStream);
         var binData = b.ReadBytes(file.ContentLength);
         var result = System.Text.Encoding.UTF8.GetString(binData);
 

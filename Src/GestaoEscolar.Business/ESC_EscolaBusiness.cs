@@ -1,4 +1,5 @@
-﻿using GestaoAvaliacao.Util;
+﻿using GestaoAvaliacao.Business.DTO;
+using GestaoAvaliacao.Util;
 using GestaoEscolar.Entities;
 using GestaoEscolar.Entities.Projections;
 using GestaoEscolar.IBusiness;
@@ -88,9 +89,9 @@ namespace GestaoEscolar.Business
             return escolaRepository.GetSchoolAndDRENames(esc_id);
         }
 
-		public IEnumerable<string> LoadAllSchoolCodesActive()
-		{
-			return escolaRepository.LoadAllSchoolCodesActive();
+        public IEnumerable<EscolaDto> LoadAllSchoollsActiveDto()
+        {
+			return escolaRepository.LoadAllSchoollsActiveDto();
 		}
 
         #endregion
