@@ -3508,6 +3508,9 @@
         function callModalAnoItensAmostraTai() {
             ng.e2_matrizAvaliacao = null;
 
+            if (ng.e2_dadosModalAnoItensAmostraTai === null)
+                e2_criarObjetoDadosModalAnoItensAmostraTai();
+
             if (ng.anosItensAmostraProvaTai.length > 0) {
                 var ultimaMatriz = ng.anosItensAmostraProvaTai[ng.anosItensAmostraProvaTai.length - 1].Matriz;
 
