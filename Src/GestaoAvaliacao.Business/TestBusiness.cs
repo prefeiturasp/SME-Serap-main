@@ -1169,7 +1169,12 @@ namespace GestaoAvaliacao.Business
         {
             try
             {
-                var testId = listEntity.FirstOrDefault().TestId;
+                var test = listEntity.FirstOrDefault();
+
+                if (test == null)
+                    throw new Exception("Prova não localizada.");
+
+                var testId = test.TestId;
 
                 if (testId <= 0)
                     throw new Exception("TestId é obrigatório");
@@ -1185,18 +1190,21 @@ namespace GestaoAvaliacao.Business
                 }
                 else
                 {
+                    var testTaiCurriculumGradeNew = listEntity.Where(x => !listTestTaiCurriculumGrade.Any(entity =>
+                        x.DisciplineId == entity.DisciplineId
+                        && x.MatrixId == entity.MatrixId
+                        && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
 
-                    var testTaiCurriculumGradeNew = listEntity.Where(x => !listTestTaiCurriculumGrade.Any(entity => x.DisciplineId == entity.DisciplineId
-                                                                                                                 && x.MatrixId == entity.MatrixId
-                                                                                                                 && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+                    var testTaiCurriculumGradeExists = listTestTaiCurriculumGrade.Where(x => listEntity.Any(entity =>
+                        x.DisciplineId == entity.DisciplineId
+                        && x.MatrixId == entity.MatrixId
+                        && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
 
-                    var testTaiCurriculumGradeExists = listTestTaiCurriculumGrade.Where(x => listEntity.Any(entity => x.DisciplineId == entity.DisciplineId
-                                                                                                                   && x.MatrixId == entity.MatrixId
-                                                                                                                   && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+                    var testTaiCurriculumGradeNotExists = listTestTaiCurriculumGrade.Where(x => !listEntity.Any(entity =>
+                        x.DisciplineId == entity.DisciplineId
+                        && x.MatrixId == entity.MatrixId
+                        && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
 
-                    var testTaiCurriculumGradeNotExists = listTestTaiCurriculumGrade.Where(x => !listEntity.Any(entity => x.DisciplineId == entity.DisciplineId
-                                                                                                                      && x.MatrixId == entity.MatrixId
-                                                                                                                      && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
                     //Inserir
                     foreach (var entity in testTaiCurriculumGradeNew)
                     {
@@ -1206,15 +1214,17 @@ namespace GestaoAvaliacao.Business
                     //Alterar
                     foreach (var entity in testTaiCurriculumGradeExists)
                     {
-                        var testTaiCurriculumGrade = listEntity.FirstOrDefault(x => x.DisciplineId == entity.DisciplineId
-                                                                                    && x.MatrixId == entity.MatrixId
-                                                                                    && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId);
-                        if (entity.Percentage != testTaiCurriculumGrade.Percentage)
-                        {
-                            entity.Percentage = testTaiCurriculumGrade.Percentage;
-                            entity.UpdateDate = DateTime.Now;
-                            testTaiCurriculumGradeRepository.Update(entity);
-                        }
+                        var testTaiCurriculumGrade = listEntity.FirstOrDefault(x =>
+                            x.DisciplineId == entity.DisciplineId
+                            && x.MatrixId == entity.MatrixId
+                            && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId);
+
+                        if (testTaiCurriculumGrade == null || entity.Percentage == testTaiCurriculumGrade.Percentage)
+                            continue;
+
+                        entity.Percentage = testTaiCurriculumGrade.Percentage;
+                        entity.UpdateDate = DateTime.Now;
+                        testTaiCurriculumGradeRepository.Update(entity);
                     }
 
                     //Excluir
@@ -1224,15 +1234,12 @@ namespace GestaoAvaliacao.Business
                         entity.UpdateDate = DateTime.Now;
                         testTaiCurriculumGradeRepository.Update(entity);
                     }
-
                 }
-
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-
         }
 
         public List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId)
