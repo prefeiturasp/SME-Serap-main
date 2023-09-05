@@ -345,6 +345,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar opções de situação da correção." }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         public JsonResult GetInfoTestReport(long Test_id)
         {
@@ -419,6 +420,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         public JsonResult GetInfoEscReport(long Test_id, Guid uad_id, long esc_id)
         {
@@ -439,6 +441,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         public JsonResult GetInfoTurReport(long Test_id, Guid uad_id, long esc_id, long tur_id)
         {
@@ -848,6 +851,29 @@ namespace GestaoAvaliacao.Controllers
 
             if (!redirect && Request.UrlReferrer != null && !string.IsNullOrEmpty(Request.UrlReferrer.PathAndQuery))
                 Response.Redirect(Request.UrlReferrer.PathAndQuery, false);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> VerificarNumeroItensAmostraProvaTai(long provaId, long matrizId, int tipoCurriculoGradeId)
+        {
+            var dadosDaAmostraTai = await testBusiness.ObterDadosAmostraProvaTai(provaId);
+
+            if (dadosDaAmostraTai == null)
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = $"Os dados da amostra tai não foram cadastrados para a prova {provaId}." }, JsonRequestBehavior.AllowGet);
+
+            var itensAmostra = await testBusiness.ObterItensAmostraTai(matrizId, tipoCurriculoGradeId);
+
+            if (itensAmostra == null || itensAmostra.Count() < dadosDaAmostraTai.NumeroItensAmostra)
+            {
+                return Json(
+                    new
+                    {
+                        success = false, type = ValidateType.error.ToString(),
+                        message = $"A quantidade de itens configurados com TRI é menor do que o número de itens para a prova {provaId}, matriz {matrizId} e ano {tipoCurriculoGradeId}"
+                    }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
         #endregion

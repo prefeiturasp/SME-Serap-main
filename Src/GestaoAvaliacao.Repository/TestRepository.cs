@@ -1243,8 +1243,8 @@ namespace GestaoAvaliacao.Repository
 	                                            ttcg.TypeCurriculumGradeId,
 	                                            ttcg.Percentage,
 	                                            ttcg.Test_Id as TestId
-                                            from TestTaiCurriculumGrade ttcg
-                                            inner join EvaluationMatrix em on em.Id = ttcg.EvaluationMatrix_Id
+                                            from TestTaiCurriculumGrade ttcg WITH(NOLOCK)
+                                            inner join EvaluationMatrix em WITH(NOLOCK) on em.Id = ttcg.EvaluationMatrix_Id
 	                                            and em.State = @state
                                             where ttcg.Test_Id = @testId
                                             and ttcg.State = @state");
@@ -1258,6 +1258,83 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
+        public async Task<AmostraProvaTaiDTO> ObterDadosAmostraProvaTai(long provaId)
+        {
+            const string query = @"with DisciplinaMatriz as(
+											select top 1 tcg.Discipline_Id DisciplinaId,
+												tcg.EvaluationMatrix_Id MatrizId,
+												tcg.Test_Id
+											from TestTaiCurriculumGrade tcg WITH(NOLOCK)
+											where tcg.[State] = @state
+											and tcg.Test_Id = @provaId
+										)
+										select nit.TestId ProvaLegadoId,
+											dm.DisciplinaId,
+											dm.MatrizId,
+											niat.[Value] NumeroItensAmostra,
+											nit.AdvanceWithoutAnswering AvancarSemResponder,
+											nit.BackToPreviousItem VoltarAoItemAnterior
+										from NumberItemTestTai nit WITH(NOLOCK)
+										inner join NumberItemsAplicationTai niat WITH(NOLOCK) on nit.ItemAplicationTaiId = niat.Id
+										inner join DisciplinaMatriz dm WITH(NOLOCK) on dm.Test_Id = nit.TestId
+										where nit.[State] = @state
+										and niat.[State] = @state
+										and nit.TestId = @provaId
+										order by nit.Id desc";
+
+            using (var cn = Connection)
+            {
+                return (await cn.QueryAsync<AmostraProvaTaiDTO>(query, new { provaId, state = (int)EnumState.ativo })).FirstOrDefault();
+            }
+        }
+
+        public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long matrizId, int tipoCurriculoGradeId)
+        {
+            var query = $@"select
+						    i.Id ItemId,
+						    i.ItemCode ItemCodigo,
+                            i.Statement as Enunciado, 
+						    icg.TypeCurriculumGradeId TipoCurriculoGradeId,
+						    s.Id HabilidadeId,
+						    s.[Description] HabilidadeNome,
+						    s.Code HabilidadeCodigo,
+						    sub.Id AssuntoId,
+						    sub.[Description] AssuntoNome,
+						    ss.Id SubAssuntoId,
+						    ss.[Description] SubAssuntoNome,
+						    i.TRIDiscrimination Discriminacao,
+						    i.TRIDifficulty ProporcaoAcertos,
+						    i.TRICasualSetting AcertoCasual,
+						    IT.QuantityAlternative QuantidadeAlternativas,
+						    case when IT.QuantityAlternative > 0 then 
+							    1 
+						    else 
+							    2 
+						    end TipoItem,
+						    bt.Description as TextoBase
+					    from Item i WITH(NOLOCK)
+						    inner join ITemType it WITH(NOLOCK) on i.ItemType_Id = it.id and it.State = @state
+						    inner join ItemCurriculumGrade icg WITH(NOLOCK) on i.Id = icg.Item_id and icg.State = @state
+						    inner join ItemSkill its WITH(NOLOCK) on i.Id = its.Item_Id and its.State = @state
+						    inner join Skill s WITH(NOLOCK) on its.Skill_Id = s.Id and s.State = @state
+						    inner join SubSubject ss WITH(NOLOCK) on i.SubSubject_Id = ss.Id and ss.State = @state
+						    inner join [Subject] sub WITH(NOLOCK) on ss.Subject_Id = sub.Id and sub.State = @state
+						    inner join BaseText bt WITH(NOLOCK) on bt.Id = I.BaseText_Id and bt.State = @state
+					    where i.[State] = @state
+						    and s.Parent_Id is not null
+						    and i.EvaluationMatrix_Id = @matrizId
+						    and i.TRIDiscrimination is not null
+						    and i.TRIDifficulty is not null
+						    and i.TRICasualSetting is not null
+						    and icg.TypeCurriculumGradeId = @tipoCurriculoGradeId)
+						    and i.ItemVersion = (select max(i2.ItemVersion) from Item i2 where i2.Id = i.Id)";
+
+            using (var cn = Connection)
+            {
+                cn.Open();
+                return await cn.QueryAsync<ItemAmostraTaiDTO>(query, new { matrizId, tipoCurriculoGradeId, state = (int)EnumState.ativo });
+            }
+        }
 
         public async Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id)
         {

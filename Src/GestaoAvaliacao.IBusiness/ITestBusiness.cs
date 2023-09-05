@@ -70,6 +70,8 @@ namespace GestaoAvaliacao.IBusiness
 		void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> entity);
         List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId);
         Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId);
+        Task<AmostraProvaTaiDTO> ObterDadosAmostraProvaTai(long provaId);
+        Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long matrizId, int tipoCurriculoGradeId);
         bool ExistsAdherenceByTestId(long test_id);
         void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno);
         void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno);
