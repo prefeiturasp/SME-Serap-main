@@ -859,7 +859,14 @@ namespace GestaoAvaliacao.Controllers
             var dadosDaAmostraTai = await testBusiness.ObterDadosAmostraProvaTai(provaId);
 
             if (dadosDaAmostraTai == null)
-                return Json(new { success = false, type = ValidateType.error.ToString(), message = $"Os dados da amostra tai não foram cadastrados para a prova {provaId}." }, JsonRequestBehavior.AllowGet);
+            {
+                return Json(
+                    new
+                    {
+                        success = false, type = ValidateType.error.ToString(),
+                        message = $"Os dados da amostra tai não foram cadastrados para a prova {provaId}."
+                    }, JsonRequestBehavior.AllowGet);
+            }
 
             var itensAmostra = await testBusiness.ObterItensAmostraTai(matrizId, tipoCurriculoGradeId);
 
