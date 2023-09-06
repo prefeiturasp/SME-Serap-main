@@ -1912,20 +1912,21 @@
             if (ng.mostrarTela)
                 ng.alterouEtapaAtual = self.etapa2.alterou = true;
 
+            infoPorcentagemMaximaItensAmostraTaiCarregar();
+
             if (!ng.e2_matrizAvaliacao)
                 return;
-
-            infoPorcentagemMaximaItensAmostraTaiCarregar();
         };
 
         ng.e2_anoItensAmostraTaiMudou = e2_anoItensAmostraTaiMudou;
         function e2_anoItensAmostraTaiMudou() {
-            if (ng.mostrarTela) ng.alterouEtapaAtual = self.etapa2.alterou = true;
-
-            if (!ng.e2_dadosModalAnoItensAmostraTai.Ano)
-                return;
+            if (ng.mostrarTela)
+                ng.alterouEtapaAtual = self.etapa2.alterou = true;
 
             infoPorcentagemMaximaItensAmostraTaiCarregar();
+
+            if (!ng.e2_dadosModalAnoItensAmostraTai.Ano)
+                return;            
         };
 
         ng.e2_disableButtonSimulator = e2_disableButtonSimulator;
@@ -5192,8 +5193,8 @@
         function e2_criarObjetoDadosModalAnoItensAmostraTai() {
             ng.e2_dadosModalAnoItensAmostraTai = {
                 id: 0,
-                Matriz: { Value: 0, Description: '' },
-                Ano: { Value: 0, Description: '' },
+                Matriz: { Id: 0, Description: '' },
+                Ano: { Id: 0, Description: '' },
                 Porcentagem: '',
             };
         };
@@ -5636,32 +5637,39 @@
         };
 
         ng.infoPorcentagemMaximaItensAmostraTai = infoPorcentagemMaximaItensAmostraTaiCarregar;
+        ng.labelInfoPorcentagemMaximaItensAmostraTai;
         function infoPorcentagemMaximaItensAmostraTaiCarregar() {
+            ng.labelInfoPorcentagemMaximaItensAmostraTai = "";
+
+            if (!ng.e2_dadosModalAnoItensAmostraTai.Matriz || !ng.e2_dadosModalAnoItensAmostraTai.Ano)
+                return
+
             var provaId = parseInt(ng.provaId);
-            var matrizId = parseInt(ng.e2_dadosModalAnoItensAmostraTai.Matriz.Id);
-            var tipoCurriculoGradeId = parseInt(ng.e2_dadosModalAnoItensAmostraTai.Ano.Id);
+
+            var matrizId = 0;
+            if (ng.e2_dadosModalAnoItensAmostraTai.Matriz)
+                matrizId = parseInt(ng.e2_dadosModalAnoItensAmostraTai.Matriz.Id);
+
+            var tipoCurriculoGradeId = 0;
+            if (ng.e2_dadosModalAnoItensAmostraTai.Ano)
+                tipoCurriculoGradeId = parseInt(ng.e2_dadosModalAnoItensAmostraTai.Ano.Id);
 
             if (provaId <= 0 || matrizId <= 0 || tipoCurriculoGradeId <= 0)
-            {
-                return "";
-            }
+                return;
 
-            var retorno = self.etapa2.obterPorcentagemMaximaItensAmostraProvaTai({
+            self.etapa2.obterPorcentagemMaximaItensAmostraProvaTai({
                 provaId: ng.provaId, matrizId: matrizId, tipoCurriculoGradeId: tipoCurriculoGradeId
             }, infoPorcentagemMaximaItensAmostraTaiCarregado);
-
-            return retorno;
         }
 
         function infoPorcentagemMaximaItensAmostraTaiCarregado(r) {
             if (r.success) {
                 var porcentagemMaxima = angular.copy(r.porcentagemMaxima);
-                return `O percentual máximo para os itens da amostra é de: ${porcentagemMaxima}%.`
+                ng.labelInfoPorcentagemMaximaItensAmostraTai = `Valor % máximo: ${porcentagemMaxima}.`;
+                return
             } else {
                 if (r.type && r.message)
                     $notification[r.type ? r.type : 'error'](r.message);
-
-                return "";
             }
         }
     };
