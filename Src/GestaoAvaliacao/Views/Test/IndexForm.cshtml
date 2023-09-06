@@ -1875,9 +1875,9 @@
                             <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="e2_limparDadosModalAnoItensAmostraTai()" aria-hidden="true">Cancelar</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal"
                                     ng-click="e2_addDadosModalAnoItensAmostraTai()"
-                                    ng-disabled="!e2_dadosModalAnoItensAmostraTai.Ano ||
-                                             !e2_dadosModalAnoItensAmostraTai.Porcentagem ||
-                                             !e2_dadosModalAnoItensAmostraTai.Matriz">
+                                    ng-disabled="!e2_dadosModalAnoItensAmostraTai.Ano || e2_dadosModalAnoItensAmostraTai.Ano.Id === 0 ||
+                                             !e2_dadosModalAnoItensAmostraTai.Porcentagem || parseInt(e2_dadosModalAnoItensAmostraTai.Porcentagem) === 0 ||
+                                             !e2_dadosModalAnoItensAmostraTai.Matriz || e2_dadosModalAnoItensAmostraTai.Matriz === 0">
                                 Adicionar
                             </button>
                         </div>
