@@ -141,7 +141,8 @@
                 cadernosComBlocos: TestModel.loadBlockChainBlocks,
                 blockKnowledgeAreas: TestModel.getBlockKnowledgeAreas,
                 itensVersoes: TestModel.GetItemVersions,
-                salvarCadeiaBloco: TestModel.saveBlockChain
+                salvarCadeiaBloco: TestModel.saveBlockChain,
+                obterPorcentagemMaximaItensAmostraProvaTai: TestModel.obterPorcentagemMaximaItensAmostraProvaTai
             };
 
             //Chamadas utilizada na Etapa 3
@@ -1913,6 +1914,8 @@
 
             if (!ng.e2_matrizAvaliacao)
                 return;
+
+            infoPorcentagemMaximaItensAmostraTaiCarregar();
         };
 
         ng.e2_anoItensAmostraTaiMudou = e2_anoItensAmostraTaiMudou;
@@ -1921,6 +1924,8 @@
 
             if (!ng.e2_dadosModalAnoItensAmostraTai.Ano)
                 return;
+
+            infoPorcentagemMaximaItensAmostraTaiCarregar();
         };
 
         ng.e2_disableButtonSimulator = e2_disableButtonSimulator;
@@ -5630,6 +5635,35 @@
             ng.e2_dadosModalAnoItensAmostraTai.Porcentagem = porcentagem.replace(/[^0-9]/g, "");
         };
 
+        ng.infoPorcentagemMaximaItensAmostraTai = infoPorcentagemMaximaItensAmostraTaiCarregar;
+        function infoPorcentagemMaximaItensAmostraTaiCarregar() {
+            var provaId = parseInt(ng.provaId);
+            var matrizId = parseInt(ng.e2_dadosModalAnoItensAmostraTai.Matriz.Id);
+            var tipoCurriculoGradeId = parseInt(ng.e2_dadosModalAnoItensAmostraTai.Ano.Id);
+
+            if (provaId <= 0 || matrizId <= 0 || tipoCurriculoGradeId <= 0)
+            {
+                return "";
+            }
+
+            var retorno = self.etapa2.obterPorcentagemMaximaItensAmostraProvaTai({
+                provaId: ng.provaId, matrizId: matrizId, tipoCurriculoGradeId: tipoCurriculoGradeId
+            }, infoPorcentagemMaximaItensAmostraTaiCarregado);
+
+            return retorno;
+        }
+
+        function infoPorcentagemMaximaItensAmostraTaiCarregado(r) {
+            if (r.success) {
+                var porcentagemMaxima = angular.copy(r.porcentagemMaxima);
+                return `O percentual máximo para os itens da amostra é de: ${porcentagemMaxima}%.`
+            } else {
+                if (r.type && r.message)
+                    $notification[r.type ? r.type : 'error'](r.message);
+
+                return "";
+            }
+        }
     };
 
 })(angular, jQuery);

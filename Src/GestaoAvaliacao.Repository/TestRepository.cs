@@ -1258,33 +1258,26 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public async Task<AmostraProvaTaiDTO> ObterDadosAmostraProvaTai(long provaId)
+        public async Task<DadosProvaTaiDTO> ObterDadosProvaTai(long provaId)
         {
-            const string query = @"with DisciplinaMatriz as(
-											select top 1 tcg.Discipline_Id DisciplinaId,
-												tcg.EvaluationMatrix_Id MatrizId,
-												tcg.Test_Id
-											from TestTaiCurriculumGrade tcg WITH(NOLOCK)
-											where tcg.[State] = @state
-											and tcg.Test_Id = @provaId
-										)
-										select nit.TestId ProvaLegadoId,
-											dm.DisciplinaId,
-											dm.MatrizId,
-											niat.[Value] NumeroItensAmostra,
-											nit.AdvanceWithoutAnswering AvancarSemResponder,
-											nit.BackToPreviousItem VoltarAoItemAnterior
-										from NumberItemTestTai nit WITH(NOLOCK)
-										inner join NumberItemsAplicationTai niat WITH(NOLOCK) on nit.ItemAplicationTaiId = niat.Id
-										inner join DisciplinaMatriz dm WITH(NOLOCK) on dm.Test_Id = nit.TestId
-										where nit.[State] = @state
-										and niat.[State] = @state
-										and nit.TestId = @provaId
-										order by nit.Id desc";
+            const string query = @"select nitt.TestId as ProvaId,
+                                        t.Discipline_Id as DisciplinaId,
+                                        niat.Value as NumeroItensAmostra,
+                                        nitt.AdvanceWithoutAnswering as AvancarSemResponder,
+                                        nitt.BackToPreviousItem as VoltarAoItemAnterior
+                                    from NumberItemTestTai nitt with (NOLOCK)
+                                    inner join NumberItemsAplicationTai niat with (NOLOCK) on niat.Id = nitt.ItemAplicationTaiId
+	                                    and niat.State = @state
+                                    inner join Test t with (NOLOCK) on t.Id = nitt.TestId 
+	                                    and t.State = @state
+	                                    and t.TestTai = 1
+                                    where nitt.TestId = @provaId
+                                    and nitt.State = @state";
 
             using (var cn = Connection)
             {
-                return (await cn.QueryAsync<AmostraProvaTaiDTO>(query, new { provaId, state = (int)EnumState.ativo })).FirstOrDefault();
+                return (await cn.QueryAsync<DadosProvaTaiDTO>(query,
+                    new { provaId, state = (int)EnumState.ativo })).FirstOrDefault();
             }
         }
 
@@ -1326,7 +1319,7 @@ namespace GestaoAvaliacao.Repository
 						    and i.TRIDiscrimination is not null
 						    and i.TRIDifficulty is not null
 						    and i.TRICasualSetting is not null
-						    and icg.TypeCurriculumGradeId = @tipoCurriculoGradeId)
+						    and icg.TypeCurriculumGradeId = @tipoCurriculoGradeId
 						    and i.ItemVersion = (select max(i2.ItemVersion) from Item i2 where i2.Id = i.Id)";
 
             using (var cn = Connection)

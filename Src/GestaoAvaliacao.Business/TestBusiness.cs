@@ -617,8 +617,8 @@ namespace GestaoAvaliacao.Business
         public async Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId) =>
             await testRepository.GetListTestTaiCurriculumGradeByTestId(testId);
 
-        public async Task<AmostraProvaTaiDTO> ObterDadosAmostraProvaTai(long provaId) =>
-            await testRepository.ObterDadosAmostraProvaTai(provaId);
+        public async Task<DadosProvaTaiDTO> ObterDadosProvaTai(long provaId) => 
+            await testRepository.ObterDadosProvaTai(provaId);
 
         public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long matrizId, int tipoCurriculoGradeId) =>
             await testRepository.ObterItensAmostraTai(matrizId, tipoCurriculoGradeId);

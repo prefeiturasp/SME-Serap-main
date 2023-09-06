@@ -1866,6 +1866,10 @@
                                            placeholder="Digite a Porcentagem(%)"/>
                                 </div>
                             </div>
+                            
+                            <div class="campoLabel" ng-hide="!e2_dadosModalAnoItensAmostraTai.Ano || e2_dadosModalAnoItensAmostraTai.Ano.Id <== 0 || !e2_dadosModalAnoItensAmostraTai.Matriz || e2_dadosModalAnoItensAmostraTai.Matriz.Id <== 0">
+                                <label style="color:red">{{ infoPorcentagemMaximaItensAmostraTai }}</label>
+                            </div>
                         </div>
                     </div>
 

@@ -854,33 +854,60 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> VerificarNumeroItensAmostraProvaTai(long provaId, long matrizId, int tipoCurriculoGradeId)
+        public async Task<JsonResult> ObterPorcentagemMaximaItensAmostraProvaTai(long provaId, long matrizId,
+            int tipoCurriculoGradeId)
         {
-            var dadosDaAmostraTai = await testBusiness.ObterDadosAmostraProvaTai(provaId);
+            var dadosProvaTai = await testBusiness.ObterDadosProvaTai(provaId);
 
-            if (dadosDaAmostraTai == null)
+            if (dadosProvaTai == null)
+            {
+                return Json(
+                    new
+                    {
+                        success = false,
+                        type = ValidateType.error.ToString(),
+                        message = $"Os dados não foram cadastrados para a prova {provaId}."
+                    }, JsonRequestBehavior.AllowGet);
+            }
+
+            var numeroItensAmostraTai = dadosProvaTai.NumeroItensAmostra;
+            var numeroItensAmostraMatrizAnoTai = (await testBusiness.ObterItensAmostraTai(matrizId, tipoCurriculoGradeId)).Take(numeroItensAmostraTai).Count();
+            var porcentagemMaxima = numeroItensAmostraMatrizAnoTai * 100 / numeroItensAmostraTai;
+
+            return Json(new { success = true, porcentagemMaxima }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> ObterPorcentagemItensAmostraProvaTai(long provaId, long matrizId, int tipoCurriculoGradeId, int porcentagemInformada)
+        {
+            var dadosProvaTai = await testBusiness.ObterDadosProvaTai(provaId);
+
+            if (dadosProvaTai == null)
             {
                 return Json(
                     new
                     {
                         success = false, type = ValidateType.error.ToString(),
-                        message = $"Os dados da amostra tai não foram cadastrados para a prova {provaId}."
+                        message = $"Os dados não foram cadastrados para a prova {provaId}."
                     }, JsonRequestBehavior.AllowGet);
             }
 
-            var itensAmostra = await testBusiness.ObterItensAmostraTai(matrizId, tipoCurriculoGradeId);
+            var numeroItensAmostraTai = dadosProvaTai.NumeroItensAmostra;
+            var numeroItensAmostraMatrizAnoTai = (await testBusiness.ObterItensAmostraTai(matrizId, tipoCurriculoGradeId)).Take(numeroItensAmostraTai).Count();
+            var porcentagemMaxima = numeroItensAmostraMatrizAnoTai * 100 / numeroItensAmostraTai;
+            var porcentagemUtilizada = porcentagemInformada;
 
-            if (itensAmostra == null || itensAmostra.Count() < dadosDaAmostraTai.NumeroItensAmostra)
+            if (porcentagemUtilizada > porcentagemMaxima)
+                porcentagemUtilizada = porcentagemMaxima;
+
+            var dados = new
             {
-                return Json(
-                    new
-                    {
-                        success = false, type = ValidateType.error.ToString(),
-                        message = $"A quantidade de itens configurados com TRI é menor do que o número de itens para a prova {provaId}, matriz {matrizId} e ano {tipoCurriculoGradeId}"
-                    }, JsonRequestBehavior.AllowGet);
-            }
+                PorcentagemInformada = porcentagemUtilizada,
+                PorcentagemUtilizada = porcentagemUtilizada,
+                PorcentagemMaxima = porcentagemMaxima,
+            };
 
-            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
         }
 
         #endregion
