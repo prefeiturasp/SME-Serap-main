@@ -1869,7 +1869,7 @@
             ng.e2_matrizAvaliacao = null;
             ng.e2_matrizAvaliacaoList = [];
             ng.e2_listAnoItensTai = [];
-            ng.e2_dadosModalAnoItensAmostraTai = null;
+            e2_criarObjetoDadosModalAnoItensAmostraTai();
             ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = '';
             ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
 
@@ -3422,9 +3422,6 @@
             if (ng.showTestTAI) {
                 if (!ng.e2_cbComponenteCurricular)
                     return $notification.alert('Selecione um componente curricular.');
-
-                if (!ng.e2_matrizAvaliacao)
-                    return $notification.alert('Selecione uma matriz de avaliação.');
 
                 if (!ng.anosItensAmostraProvaTai || ng.anosItensAmostraProvaTai.length == 0)
                     return $notification.alert('Selecione o(s) ano(s) dos itens da amostra.');
@@ -5187,8 +5184,8 @@
         function e2_criarObjetoDadosModalAnoItensAmostraTai() {
             ng.e2_dadosModalAnoItensAmostraTai = {
                 id: 0,
-                Matriz: { Value: 0, Description: '' },
-                Ano: { Value: 0, Description: '' },
+                Matriz: { Id: 0, Description: '' },
+                Ano: { Id: 0, Description: '' },
                 Porcentagem: '',
             };
         };
@@ -5276,7 +5273,7 @@
 
         ng.e2_limparDadosModalAnoItensAmostraTai = e2_limparDadosModalAnoItensAmostraTai;
         function e2_limparDadosModalAnoItensAmostraTai() {
-            ng.e2_dadosModalAnoItensAmostraTai = null;
+            e2_criarObjetoDadosModalAnoItensAmostraTai();
             ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
         }
 
