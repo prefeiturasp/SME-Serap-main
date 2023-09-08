@@ -854,7 +854,7 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> ObterPorcentagemMaximaItensAmostraProvaTai(long provaId, long matrizId,
+        public async Task<JsonResult> ObterDadosAmostraProvaTai(long provaId, long matrizId,
             int tipoCurriculoGradeId)
         {
             var dadosProvaTai = await testBusiness.ObterDadosProvaTai(provaId);
@@ -874,37 +874,10 @@ namespace GestaoAvaliacao.Controllers
             var numeroItensAmostraMatrizAnoTai = (await testBusiness.ObterItensAmostraTai(matrizId, tipoCurriculoGradeId)).Take(numeroItensAmostraTai).Count();
             var porcentagemMaxima = numeroItensAmostraMatrizAnoTai * 100 / numeroItensAmostraTai;
 
-            return Json(new { success = true, porcentagemMaxima }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> ObterPorcentagemItensAmostraProvaTai(long provaId, long matrizId, int tipoCurriculoGradeId, int porcentagemInformada)
-        {
-            var dadosProvaTai = await testBusiness.ObterDadosProvaTai(provaId);
-
-            if (dadosProvaTai == null)
-            {
-                return Json(
-                    new
-                    {
-                        success = false, type = ValidateType.error.ToString(),
-                        message = $"Os dados não foram cadastrados para a prova {provaId}."
-                    }, JsonRequestBehavior.AllowGet);
-            }
-
-            var numeroItensAmostraTai = dadosProvaTai.NumeroItensAmostra;
-            var numeroItensAmostraMatrizAnoTai = (await testBusiness.ObterItensAmostraTai(matrizId, tipoCurriculoGradeId)).Take(numeroItensAmostraTai).Count();
-            var porcentagemMaxima = numeroItensAmostraMatrizAnoTai * 100 / numeroItensAmostraTai;
-            var porcentagemUtilizada = porcentagemInformada;
-
-            if (porcentagemUtilizada > porcentagemMaxima)
-                porcentagemUtilizada = porcentagemMaxima;
-
             var dados = new
             {
-                PorcentagemInformada = porcentagemUtilizada,
-                PorcentagemUtilizada = porcentagemUtilizada,
-                PorcentagemMaxima = porcentagemMaxima,
+                porcentagemMaxima,
+                numeroItensAmostraMatrizAno = numeroItensAmostraMatrizAnoTai
             };
 
             return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);

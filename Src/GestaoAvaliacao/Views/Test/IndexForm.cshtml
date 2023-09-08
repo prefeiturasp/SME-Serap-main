@@ -682,7 +682,8 @@
                                                     ng-title="e2_listaComponenteCurricular"
                                                     ng-title-propertie="Description"
                                                     ng-title-selected
-                                                    ng-title-index="1">
+                                                    ng-title-index="1"
+                                                    ng-disabled="anosItensAmostraProvaTai.Length > 0">
                                                 <option value="">--Selecione--</option>
                                             </select>
                                         </div>
@@ -1866,18 +1867,9 @@
                                                ng-change="validarPorcentagemInteiro();"
                                                placeholder="Digite a Porcentagem(%)" />
                                     </div>
-                                    <p style="color: red;" class="textoDescricao pull-left">{{ labelInfoPorcentagemMaximaItensAmostraTai }}</p>
+                                    <p style="color: red;" class="textoDescricao pull-left">{{ e2_dadosModalAnoItensAmostraTai.DadosAmostra.LabelInfoPorcentagemMaximaItensAmostra }}</p>
                                 </div>
                             </div>
-                            
-                            <!--
-                            <div class="campoLabel semPadding" ng-hide="!labelInfoPorcentagemMaximaItensAmostraTai">
-                                <label></label>
-                                <div>
-                                    <label style="color:red">{{ labelInfoPorcentagemMaximaItensAmostraTai }}</label>
-                                </div>
-                            </div>
-                            -->
                         </div>
                     </div>
 

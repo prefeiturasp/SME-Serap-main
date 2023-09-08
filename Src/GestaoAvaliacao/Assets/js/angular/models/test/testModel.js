@@ -78,9 +78,9 @@
                 url: base_url('Test/GetListTestTaiCurriculumGrade')
             },
 
-            'obterPorcentagemMaximaItensAmostraProvaTai': {
-                methos: 'GET',
-                url: base_url("Test/ObterPorcentagemMaximaItensAmostraProvaTai")
+            'ObterDadosAmostraProvaTai': {
+                method: 'GET',
+                url: base_url('Test/ObterDadosAmostraProvaTai')
             },
 
             'carregaAreaConhecimento': {

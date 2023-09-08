@@ -1283,44 +1283,45 @@ namespace GestaoAvaliacao.Repository
 
         public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long matrizId, int tipoCurriculoGradeId)
         {
-            var query = $@"select
-						    i.Id ItemId,
-						    i.ItemCode ItemCodigo,
-                            i.Statement as Enunciado, 
-						    icg.TypeCurriculumGradeId TipoCurriculoGradeId,
-						    s.Id HabilidadeId,
-						    s.[Description] HabilidadeNome,
-						    s.Code HabilidadeCodigo,
-						    sub.Id AssuntoId,
-						    sub.[Description] AssuntoNome,
-						    ss.Id SubAssuntoId,
-						    ss.[Description] SubAssuntoNome,
-						    i.TRIDiscrimination Discriminacao,
-						    i.TRIDifficulty ProporcaoAcertos,
-						    i.TRICasualSetting AcertoCasual,
-						    IT.QuantityAlternative QuantidadeAlternativas,
-						    case when IT.QuantityAlternative > 0 then 
-							    1 
-						    else 
-							    2 
-						    end TipoItem,
-						    bt.Description as TextoBase
-					    from Item i WITH(NOLOCK)
-						    inner join ITemType it WITH(NOLOCK) on i.ItemType_Id = it.id and it.State = @state
-						    inner join ItemCurriculumGrade icg WITH(NOLOCK) on i.Id = icg.Item_id and icg.State = @state
-						    inner join ItemSkill its WITH(NOLOCK) on i.Id = its.Item_Id and its.State = @state
-						    inner join Skill s WITH(NOLOCK) on its.Skill_Id = s.Id and s.State = @state
-						    inner join SubSubject ss WITH(NOLOCK) on i.SubSubject_Id = ss.Id and ss.State = @state
-						    inner join [Subject] sub WITH(NOLOCK) on ss.Subject_Id = sub.Id and sub.State = @state
-						    inner join BaseText bt WITH(NOLOCK) on bt.Id = I.BaseText_Id and bt.State = @state
-					    where i.[State] = @state
-						    and s.Parent_Id is not null
-						    and i.EvaluationMatrix_Id = @matrizId
-						    and i.TRIDiscrimination is not null
-						    and i.TRIDifficulty is not null
-						    and i.TRICasualSetting is not null
-						    and icg.TypeCurriculumGradeId = @tipoCurriculoGradeId
-						    and i.ItemVersion = (select max(i2.ItemVersion) from Item i2 where i2.Id = i.Id)";
+            const string query = @"select
+						                i.Id ItemId,
+						                i.ItemCode ItemCodigo,
+                                        i.Statement as Enunciado, 
+                                        i.EvaluationMatrix_Id as MatrizId,
+						                icg.TypeCurriculumGradeId TipoCurriculoGradeId,                
+						                s.Id HabilidadeId,
+						                s.[Description] HabilidadeNome,
+						                s.Code HabilidadeCodigo,
+						                sub.Id AssuntoId,
+						                sub.[Description] AssuntoNome,
+						                ss.Id SubAssuntoId,
+						                ss.[Description] SubAssuntoNome,
+						                i.TRIDiscrimination Discriminacao,
+						                i.TRIDifficulty ProporcaoAcertos,
+						                i.TRICasualSetting AcertoCasual,
+						                IT.QuantityAlternative QuantidadeAlternativas,
+						                case when IT.QuantityAlternative > 0 then 
+							                1 
+						                else 
+							                2 
+						                end TipoItem,
+						                bt.Description as TextoBase
+					                from Item i WITH(NOLOCK)
+						                inner join ITemType it WITH(NOLOCK) on i.ItemType_Id = it.id and it.State = @state
+						                inner join ItemCurriculumGrade icg WITH(NOLOCK) on i.Id = icg.Item_id and icg.State = @state
+						                inner join ItemSkill its WITH(NOLOCK) on i.Id = its.Item_Id and its.State = @state
+						                inner join Skill s WITH(NOLOCK) on its.Skill_Id = s.Id and s.State = @state
+						                inner join SubSubject ss WITH(NOLOCK) on i.SubSubject_Id = ss.Id and ss.State = @state
+						                inner join [Subject] sub WITH(NOLOCK) on ss.Subject_Id = sub.Id and sub.State = @state
+						                inner join BaseText bt WITH(NOLOCK) on bt.Id = I.BaseText_Id and bt.State = @state
+					                where i.[State] = @state
+						                and s.Parent_Id is not null
+						                and i.EvaluationMatrix_Id = @matrizId
+						                and i.TRIDiscrimination is not null
+						                and i.TRIDifficulty is not null
+						                and i.TRICasualSetting is not null
+						                and icg.TypeCurriculumGradeId = @tipoCurriculoGradeId
+						                and i.ItemVersion = (select max(i2.ItemVersion) from Item i2 where i2.Id = i.Id)";
 
             using (var cn = Connection)
             {

@@ -5,6 +5,7 @@
         public long ItemId { get; set; }
         public string Enunciado { get; set; }
         public string ItemCodigo { get; set; }
+        public long MatrizId { get; set; }
         public long TipoCurriculoGradeId { get; set; }
         public long HabilidadeId { get; set; }
         public string HabilidadeNome { get; set; }
