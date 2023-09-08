@@ -1871,7 +1871,7 @@
             ng.e2_matrizAvaliacao = null;
             ng.e2_matrizAvaliacaoList = [];
             ng.e2_listAnoItensTai = [];
-            e2_criarObjetoDadosModalAnoItensAmostraTai()
+            e2_criarObjetoDadosModalAnoItensAmostraTai();
             ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = '';
             ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
 
@@ -5293,7 +5293,7 @@
 
         ng.e2_limparDadosModalAnoItensAmostraTai = e2_limparDadosModalAnoItensAmostraTai;
         function e2_limparDadosModalAnoItensAmostraTai() {
-            e2_criarObjetoDadosModalAnoItensAmostraTai()
+            e2_criarObjetoDadosModalAnoItensAmostraTai();
             ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
         }
 
