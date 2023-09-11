@@ -59,6 +59,6 @@ namespace GestaoAvaliacao.IRepository
 		Task<List<ElectronicTestDTO>> GetTestsByPesId(Guid pes_id);
         Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId);
         Task<DadosProvaTaiDTO> ObterDadosProvaTai(long provaId);
-        Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long matrizId, int tipoCurriculoGradeId);
+        Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizId, int[] tipoCurriculoGradeId);
     }
 }

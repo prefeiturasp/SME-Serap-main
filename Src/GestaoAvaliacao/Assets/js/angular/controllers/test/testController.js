@@ -142,7 +142,8 @@
                 blockKnowledgeAreas: TestModel.getBlockKnowledgeAreas,
                 itensVersoes: TestModel.GetItemVersions,
                 salvarCadeiaBloco: TestModel.saveBlockChain,
-                obterDadosAmostraProvaTai: TestModel.ObterDadosAmostraProvaTai
+                obterDadosAmostraProvaTai: TestModel.ObterDadosAmostraProvaTai,
+                obterDadosAmostraProvaTaiPorProvaId: TestModel.ObterDadosAmostraProvaTaiPorProvaId
             };
 
             //Chamadas utilizada na Etapa 3
@@ -1870,6 +1871,7 @@
             ng.escondeModal = false;
             ng.e2_matrizAvaliacao = null;
             ng.e2_matrizAvaliacaoList = [];
+            ng.e2_dadosAmostraTaiList = [];
             ng.e2_listAnoItensTai = [];
             e2_criarObjetoDadosModalAnoItensAmostraTai();
             ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = '';
@@ -1913,7 +1915,7 @@
             if (ng.mostrarTela)
                 ng.alterouEtapaAtual = self.etapa2.alterou = true;
 
-            infoPorcentagemMaximaItensAmostraTaiCarregar();
+            obterDadosAmostraTai();
 
             if (!ng.e2_matrizAvaliacao)
                 return;
@@ -1924,7 +1926,7 @@
             if (ng.mostrarTela)
                 ng.alterouEtapaAtual = self.etapa2.alterou = true;
 
-            infoPorcentagemMaximaItensAmostraTaiCarregar();
+            obterDadosAmostraTai();
 
             if (!ng.e2_dadosModalAnoItensAmostraTai.Ano)
                 return;            
@@ -4980,7 +4982,6 @@
 
             if (ng.navigation === 3) {
                 ng.BtnSaveDisabled = true;
-                // todo: e3_Salvar();
             }
 
             //Gerar prova
@@ -5193,14 +5194,14 @@
                 Matriz: { Id: 0, Description: '' },
                 Ano: { Id: 0, Description: '' },
                 Porcentagem: '',
-                DadosAmostra: { PorcentagemMaxima: 0, NumeroItensAmostraMatrizAno: 0, LabelInfoPorcentagemMaximaItensAmostra: '' }
+                DadosAmostra: { PorcentagemMaximaMatrizAno: 0, NumeroItensAmostraMatrizAno: 0, LabelInfoPorcentagemMaximaMatrizAno: '' }
             };
         };
 
         ng.e2_addDadosModalAnoItensAmostraTai = e2_addDadosModalAnoItensAmostraTai;
         function e2_addDadosModalAnoItensAmostraTai() {
             var porcentagem = parseInt(ng.e2_dadosModalAnoItensAmostraTai.Porcentagem);
-            var porcentagemMaxima = parseInt(ng.e2_dadosModalAnoItensAmostraTai.DadosAmostra.PorcentagemMaxima);
+            var porcentagemMaxima = parseInt(ng.e2_dadosModalAnoItensAmostraTai.DadosAmostra.PorcentagemMaximaMatrizAno);
 
             if (porcentagem === 0) {
                 $notification.alert('A porcentagem deve ser maior que Zero.');
@@ -5267,10 +5268,13 @@
         ng.e2_editarModalAnoItensAmostraTai = e2_editarModalAnoItensAmostraTai;
         function e2_editarModalAnoItensAmostraTai(item) {
             e2_criarObjetoDadosModalAnoItensAmostraTai();
+
             ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = item;
+
             ng.e2_dadosModalAnoItensAmostraTai = {
                 ...item
             };
+
             angular.element('#modalAnoItensAmostraTai').modal({ backdrop: 'static' });
         };
 
@@ -5322,7 +5326,7 @@
                     if (result.success) {
                         ng.e2_matrizAvaliacaoList = result.lista;
 
-                        popularAnosItensAmostraProvaTai(ng.e2_listTestTaiCurriculumGrade);                        
+                        popularAnosItensAmostraProvaTai(ng.e2_listTestTaiCurriculumGrade);
 
                         if (ng.e2_matrizAvaliacao)
                             ng.e2_matrizAvaliacao = procurarElementoEm([ng.e2_matrizAvaliacao], ng.e2_matrizAvaliacaoList)[0];                            
@@ -5346,7 +5350,6 @@
 
                 if (ng.e2_cbComponenteCurricular) {
                     ng.e2_cbComponenteCurricular = procurarElementoEm([ng.e2_cbComponenteCurricular], ng.e2_listaComponenteCurricular)[0];
-                    carregaMatrizAvaliacao();
                 }
             } else {
                 if (r.type && r.message)
@@ -5420,6 +5423,7 @@
                             ng.e2_cbComponenteCurricular = { Id: componenteMatriz.DisciplineId };
                             ng.e2_matrizAvaliacao = { Id: componenteMatriz.MatrixId };
 
+                            obterDadosAmostraProvaTaiPorProvaIdCarregar();
                             carregaMatrizAvaliacao();
                         }
 
@@ -5440,14 +5444,34 @@
 
             for (var i = 0; i < lista.length; i++) {
                 var itemLista = lista[i];
+
                 var anoEscolar = procurarElementoEm([{ Id: itemLista.TypeCurriculumGradeId }], ng.e2_listAnoItensTai)[0];
                 var matriz = procurarElementoEm([{ Id: itemLista.MatrixId }], ng.e2_matrizAvaliacaoList)[0];
+
+                var dadosAmostra = {
+                    PorcentagemMaximaMatrizAno: 0,
+                    NumeroItensAmostraMatrizAno: 0,
+                    LabelInfoPorcentagemMaximaMatrizAno: `Valor % máximo: ${0}.`
+                } 
+
+                if (ng.e2_dadosAmostraTaiList.length > 0) {
+                    for (var k = 0; k < ng.e2_dadosAmostraTaiList.length; k++) {
+                        if (ng.e2_dadosAmostraTaiList[k].MatrizId === matriz.Id && ng.e2_dadosAmostraTaiList[k].TipoCurriculoGradeId === anoEscolar.Id) {
+                            var itemDadosAmostra = ng.e2_dadosAmostraTaiList[k];
+                            dadosAmostra.PorcentagemMaximaMatrizAno = itemDadosAmostra.porcentagemMaximaMatrizAno;
+                            dadosAmostra.NumeroItensAmostraMatrizAno = itemDadosAmostra.numeroItensAmostraMatrizAno;
+                            dadosAmostra.LabelInfoPorcentagemMaximaMatrizAno = itemDadosAmostra.labelInfoPorcentagemMaximaMatrizAno;
+                            break;
+                        }
+                    };
+                }
 
                 var item = {
                     id: 0,
                     Matriz: matriz,
                     Ano: anoEscolar,
                     Porcentagem: itemLista.Percentage,
+                    DadosAmostra: dadosAmostra
                 };
 
                 ng.anosItensAmostraProvaTai.push(item);
@@ -5643,8 +5667,7 @@
             ng.e2_dadosModalAnoItensAmostraTai.Porcentagem = porcentagem.replace(/[^0-9]/g, "");
         };
 
-        ng.infoPorcentagemMaximaItensAmostraTai = infoPorcentagemMaximaItensAmostraTaiCarregar;
-        function infoPorcentagemMaximaItensAmostraTaiCarregar() {
+        function obterDadosAmostraTai() {
             if (!ng.e2_dadosModalAnoItensAmostraTai.Matriz || !ng.e2_dadosModalAnoItensAmostraTai.Ano)
                 return
 
@@ -5661,18 +5684,34 @@
             if (provaId <= 0 || matrizId <= 0 || tipoCurriculoGradeId <= 0)
                 return;
 
-            self.etapa2.obterDadosAmostraProvaTai({
-                provaId: ng.provaId, matrizId: matrizId, tipoCurriculoGradeId: tipoCurriculoGradeId
-            }, infoPorcentagemMaximaItensAmostraTaiCarregado);
+            obterDadosAmostraTaiCarregar(matrizId, tipoCurriculoGradeId)
         }
 
-        function infoPorcentagemMaximaItensAmostraTaiCarregado(r) {
+        function obterDadosAmostraTaiCarregar(matrizId, tipoCurriculoGradeId) {
+            self.etapa2.obterDadosAmostraProvaTai({
+                provaId: ng.provaId, matrizId: matrizId, tipoCurriculoGradeId: tipoCurriculoGradeId
+            }, obterDadosAmostraTaiCarregado);
+        }
+
+        function obterDadosAmostraTaiCarregado(r) {
             if (r.success) {
                 var dados = angular.copy(r.dados)
-                ng.e2_dadosModalAnoItensAmostraTai.DadosAmostra.PorcentagemMaxima = dados.porcentagemMaxima;
+                ng.e2_dadosModalAnoItensAmostraTai.DadosAmostra.PorcentagemMaximaMatrizAno = dados.porcentagemMaximaMatrizAno;
                 ng.e2_dadosModalAnoItensAmostraTai.DadosAmostra.NumeroItensAmostraMatrizAno = dados.numeroItensAmostraMatrizAno;
-                ng.e2_dadosModalAnoItensAmostraTai.DadosAmostra.LabelInfoPorcentagemMaximaItensAmostra = `Valor % máximo: ${dados.porcentagemMaxima}.`;
-                return
+                ng.e2_dadosModalAnoItensAmostraTai.DadosAmostra.LabelInfoPorcentagemMaximaMatrizAno = dados.labelInfoPorcentagemMaximaMatrizAno;
+            } else {
+                if (r.type && r.message)
+                    $notification[r.type ? r.type : 'error'](r.message);
+            }
+        }
+
+        function obterDadosAmostraProvaTaiPorProvaIdCarregar() {
+            self.etapa2.obterDadosAmostraProvaTaiPorProvaId({ provaId: ng.provaId }, obterDadosAmostraProvaTaiPorProvaIdCarregado);
+        }
+
+        function obterDadosAmostraProvaTaiPorProvaIdCarregado(r) {
+            if (r.success) {
+                ng.e2_dadosAmostraTaiList = angular.copy(r.dados)
             } else {
                 if (r.type && r.message)
                     $notification[r.type ? r.type : 'error'](r.message);

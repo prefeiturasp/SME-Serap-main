@@ -83,6 +83,11 @@
                 url: base_url('Test/ObterDadosAmostraProvaTai')
             },
 
+            'ObterDadosAmostraProvaTaiPorProvaId': {
+                method: 'GET',
+                url: base_url('Test/ObterDadosAmostraProvaTaiPorProvaId')
+            },
+
             'carregaAreaConhecimento': {
                 method: 'GET',
                 url: base_url('Item/loadallknowledgeareaactive')
