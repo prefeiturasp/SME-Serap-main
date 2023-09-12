@@ -938,7 +938,7 @@ namespace GestaoAvaliacao.Controllers
                     item.Key.MatrizId,
                     item.Key.TipoCurriculoGradeId,
                     porcentagemMaximaMatrizAno = porcentagemMaxima,
-                    numeroItensAmostraMatrizAno = numeroItensAmostraMatrizAnoTai,
+                    numeroItensAmostraMatrizAno = item.Count(),
                     labelInfoPorcentagemMaximaMatrizAno = $"Valor % máximo: {porcentagemMaxima}."
                 });
             }
