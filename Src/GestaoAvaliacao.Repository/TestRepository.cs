@@ -1619,7 +1619,7 @@ namespace GestaoAvaliacao.Repository
                 var test = gestaoAvaliacaoContext.Test.Include("Discipline").Include("TestCurriculumGrades")
                     .Include("TestPerformanceLevels").Include("TestPerformanceLevels.PerformanceLevel")
                     .Include("TestItemLevels").Include("TestItemLevels.ItemLevel").Include("TestType")
-                    .Include("TestSubGroup").Include("BlockChains").Include("Blocks")
+                    .Include("TestSubGroup").Include("BlockChains").Include("Blocks").Include("NumberItemsTestTai")
                     .FirstOrDefault(a => a.Id == entity.Id);
 
                 if (test == null)
@@ -1627,6 +1627,15 @@ namespace GestaoAvaliacao.Repository
 
                 test.RemoveBlockChain = entity.BlockChainNumber < test.BlockChainNumber || entity.BlockChainItems < test.BlockChainItems;
                 test.RemoveBlockChainBlock = entity.NumberBlock < test.NumberBlock || entity.BlockChainItems < test.BlockChainItems;
+                test.RemoveTaiCurriculumGrade = entity.TestTai;
+
+                if (entity.TestTai)
+                {
+                    var numberItemTestTaiAtual = test.NumberItemsTestTai.FirstOrDefault();
+
+                    if (numberItemTestTaiAtual != null)
+                        test.RemoveTaiCurriculumGrade = entity.NumberItemsAplicationTai.Id != numberItemTestTaiAtual.ItemAplicationTaiId;
+                }
 
                 test.TestSituation = entity.TestSituation;
 

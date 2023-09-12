@@ -3374,7 +3374,6 @@
         */
         ng.e2_LimparKnowLedgeArea = e2_LimparKnowLedgeArea
         function e2_LimparKnowLedgeArea() {
-
             removeEventkeyUp();
             ng.alterouEtapaAtual = (false);
             ng.modalAnterior = null;
@@ -3432,7 +3431,6 @@
 
                 if (!ng.anosItensAmostraProvaTai || ng.anosItensAmostraProvaTai.length == 0)
                     return $notification.alert('Selecione o(s) ano(s) dos itens da amostra.');
-
 
                 if (!dadosAmostraTaiEhValido()) {
                     return $notification.alert('Amostra insuficiente para a prova. Verifique a matriz ou ano selecionado.');

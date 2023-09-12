@@ -22,18 +22,25 @@ namespace GestaoAvaliacao.Repository
 
         public void DeleteByTestId(long testId)
         {
-            using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                NumberItemTestTai numberItemTestTai = GestaoAvaliacaoContext.NumberItemTestTai.FirstOrDefault(a => a.TestId == testId && a.State == 1);
+                var listNumberItemTestTai = gestaoAvaliacaoContext
+                    .NumberItemTestTai
+                    .Where(a => a.TestId == testId && a.State == 1)
+                    .ToList();
 
-                if (numberItemTestTai != null)
+                if (!listNumberItemTestTai.Any()) 
+                    return;
+
+                foreach (var numberItemTestTai in listNumberItemTestTai)
                 {
                     numberItemTestTai.State = Convert.ToByte(EnumState.excluido);
                     numberItemTestTai.UpdateDate = DateTime.Now;
 
-                    GestaoAvaliacaoContext.Entry(numberItemTestTai).State = System.Data.Entity.EntityState.Modified;
-                    GestaoAvaliacaoContext.SaveChanges();
+                    gestaoAvaliacaoContext.Entry(numberItemTestTai).State = System.Data.Entity.EntityState.Modified;
                 }
+
+                gestaoAvaliacaoContext.SaveChanges();
             }
         }
 
