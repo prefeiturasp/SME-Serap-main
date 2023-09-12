@@ -629,8 +629,8 @@ namespace GestaoAvaliacao.Business
         public async Task<DadosProvaTaiDTO> ObterDadosProvaTai(long provaId) => 
             await testRepository.ObterDadosProvaTai(provaId);
 
-        public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizId, int[] tipoCurriculoGradeId) =>
-            await testRepository.ObterItensAmostraTai(matrizId, tipoCurriculoGradeId);
+        public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizesIds, int[] tiposCurriculosGradesIds) =>
+            await testRepository.ObterItensAmostraTai(matrizesIds, tiposCurriculosGradesIds);
 
         public bool ExistsAdherenceByTestId(long test_id) => testRepository.ExistsAdherenceByTestId(test_id);
         #endregion

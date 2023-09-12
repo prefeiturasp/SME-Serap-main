@@ -1281,7 +1281,7 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizId, int[] tipoCurriculoGradeId)
+        public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizesIds, int[] tiposCurriculosGradesIds)
         {
             var query = $@"select
 						        i.Id ItemId,
@@ -1316,17 +1316,17 @@ namespace GestaoAvaliacao.Repository
 						        inner join BaseText bt WITH(NOLOCK) on bt.Id = I.BaseText_Id and bt.State = @state
 					        where i.[State] = @state
 						        and s.Parent_Id is not null
-						        and i.EvaluationMatrix_Id in ({string.Join(",", matrizId)})
+						        and i.EvaluationMatrix_Id in ({string.Join(",", matrizesIds)})
 						        and i.TRIDiscrimination is not null
 						        and i.TRIDifficulty is not null
 						        and i.TRICasualSetting is not null
-						        and icg.TypeCurriculumGradeId in ({string.Join(",", tipoCurriculoGradeId)})
+						        and icg.TypeCurriculumGradeId in ({string.Join(",", tiposCurriculosGradesIds)})
 						        and i.ItemVersion = (select max(i2.ItemVersion) from Item i2 where i2.Id = i.Id)";
 
             using (var cn = Connection)
             {
                 cn.Open();
-                return await cn.QueryAsync<ItemAmostraTaiDTO>(query, new { matrizId, tipoCurriculoGradeId, state = (int)EnumState.ativo });
+                return await cn.QueryAsync<ItemAmostraTaiDTO>(query, new { matrizId = matrizesIds, tipoCurriculoGradeId = tiposCurriculosGradesIds, state = (int)EnumState.ativo });
             }
         }
 
