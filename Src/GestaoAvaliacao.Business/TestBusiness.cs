@@ -1448,8 +1448,23 @@ namespace GestaoAvaliacao.Business
 
                             if (block == null)
                             {
+                                int ehInteiro;
+                                int.TryParse(caderno.Trim(), out ehInteiro);
+
+                                if(ehInteiro <= 0)
+                                {
+                                    erros.Add(new ErrosImportacaoCSV
+                                    {
+                                        Linha = linha,
+                                        Erro = "Caderno deve ser um número"
+                                    });
+                                    continue;
+
+                                }
+
+
                                 var numCaderno = Convert.ToInt16(caderno.Trim());
-                                if (numCaderno < 1 || numCaderno > test.NumberBlock)
+                                if ( numCaderno < 1 || numCaderno > test.NumberBlock)
                                 {
                                     erros.Add(new ErrosImportacaoCSV
                                     {
