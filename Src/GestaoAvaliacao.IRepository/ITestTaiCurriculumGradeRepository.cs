@@ -1,9 +1,5 @@
 ﻿using GestaoAvaliacao.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.IRepository
 {
@@ -12,5 +8,6 @@ namespace GestaoAvaliacao.IRepository
         TestTaiCurriculumGrade Save(TestTaiCurriculumGrade entity);
         List<TestTaiCurriculumGrade> GetListByTestId(long testId);
         TestTaiCurriculumGrade Update(TestTaiCurriculumGrade entity);
+        void DeleteByTestId(long testId);
     }
 }

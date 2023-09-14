@@ -60,9 +60,11 @@
     <Compile Include="BlockChain.cs" />
     <Compile Include="BlockChainBlock.cs" />
     <Compile Include="BlockChainItem.cs" />
+    <Compile Include="DTO\DadosProvaTaiDTO.cs" />
     <Compile Include="DTO\CsvImportDTO.cs" />
     <Compile Include="DTO\ErrosImportacaoCSV.cs" />
     <Compile Include="DTO\EscolaDto.cs" />
+    <Compile Include="DTO\ItemAmostraTaiDTO.cs" />
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoDTO.cs" />
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoRespostaDTO.cs" />
     <Compile Include="DTO\TestTaiCurriculumGradeDTO.cs" />

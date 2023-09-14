@@ -1243,8 +1243,8 @@ namespace GestaoAvaliacao.Repository
 	                                            ttcg.TypeCurriculumGradeId,
 	                                            ttcg.Percentage,
 	                                            ttcg.Test_Id as TestId
-                                            from TestTaiCurriculumGrade ttcg
-                                            inner join EvaluationMatrix em on em.Id = ttcg.EvaluationMatrix_Id
+                                            from TestTaiCurriculumGrade ttcg WITH(NOLOCK)
+                                            inner join EvaluationMatrix em WITH(NOLOCK) on em.Id = ttcg.EvaluationMatrix_Id
 	                                            and em.State = @state
                                             where ttcg.Test_Id = @testId
                                             and ttcg.State = @state");
@@ -1258,6 +1258,77 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
+        public async Task<DadosProvaTaiDTO> ObterDadosProvaTai(long provaId)
+        {
+            const string query = @"select nitt.TestId as ProvaId,
+                                        t.Discipline_Id as DisciplinaId,
+                                        niat.Value as NumeroItensAmostra,
+                                        nitt.AdvanceWithoutAnswering as AvancarSemResponder,
+                                        nitt.BackToPreviousItem as VoltarAoItemAnterior
+                                    from NumberItemTestTai nitt with (NOLOCK)
+                                    inner join NumberItemsAplicationTai niat with (NOLOCK) on niat.Id = nitt.ItemAplicationTaiId
+	                                    and niat.State = @state
+                                    inner join Test t with (NOLOCK) on t.Id = nitt.TestId 
+	                                    and t.State = @state
+	                                    and t.TestTai = 1
+                                    where nitt.TestId = @provaId
+                                    and nitt.State = @state";
+
+            using (var cn = Connection)
+            {
+                return (await cn.QueryAsync<DadosProvaTaiDTO>(query,
+                    new { provaId, state = (int)EnumState.ativo })).FirstOrDefault();
+            }
+        }
+
+        public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizesIds, int[] tiposCurriculosGradesIds)
+        {
+            var query = $@"select
+						        i.Id ItemId,
+						        i.ItemCode ItemCodigo,
+                                i.Statement as Enunciado, 
+                                i.EvaluationMatrix_Id as MatrizId,
+						        icg.TypeCurriculumGradeId TipoCurriculoGradeId,                
+						        s.Id HabilidadeId,
+						        s.[Description] HabilidadeNome,
+						        s.Code HabilidadeCodigo,
+						        sub.Id AssuntoId,
+						        sub.[Description] AssuntoNome,
+						        ss.Id SubAssuntoId,
+						        ss.[Description] SubAssuntoNome,
+						        i.TRIDiscrimination Discriminacao,
+						        i.TRIDifficulty ProporcaoAcertos,
+						        i.TRICasualSetting AcertoCasual,
+						        IT.QuantityAlternative QuantidadeAlternativas,
+						        case when IT.QuantityAlternative > 0 then 
+							        1 
+						        else 
+							        2 
+						        end TipoItem,
+						        bt.Description as TextoBase
+					        from Item i WITH(NOLOCK)
+						        inner join ITemType it WITH(NOLOCK) on i.ItemType_Id = it.id and it.State = @state
+						        inner join ItemCurriculumGrade icg WITH(NOLOCK) on i.Id = icg.Item_id and icg.State = @state
+						        inner join ItemSkill its WITH(NOLOCK) on i.Id = its.Item_Id and its.State = @state
+						        inner join Skill s WITH(NOLOCK) on its.Skill_Id = s.Id and s.State = @state
+						        inner join SubSubject ss WITH(NOLOCK) on i.SubSubject_Id = ss.Id and ss.State = @state
+						        inner join [Subject] sub WITH(NOLOCK) on ss.Subject_Id = sub.Id and sub.State = @state
+						        inner join BaseText bt WITH(NOLOCK) on bt.Id = I.BaseText_Id and bt.State = @state
+					        where i.[State] = @state
+						        and s.Parent_Id is not null
+						        and i.EvaluationMatrix_Id in ({string.Join(",", matrizesIds)})
+						        and i.TRIDiscrimination is not null
+						        and i.TRIDifficulty is not null
+						        and i.TRICasualSetting is not null
+						        and icg.TypeCurriculumGradeId in ({string.Join(",", tiposCurriculosGradesIds)})
+						        and i.ItemVersion = (select max(i2.ItemVersion) from Item i2 where i2.Id = i.Id)";
+
+            using (var cn = Connection)
+            {
+                cn.Open();
+                return await cn.QueryAsync<ItemAmostraTaiDTO>(query, new { matrizId = matrizesIds, tipoCurriculoGradeId = tiposCurriculosGradesIds, state = (int)EnumState.ativo });
+            }
+        }
 
         public async Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id)
         {
@@ -1548,7 +1619,7 @@ namespace GestaoAvaliacao.Repository
                 var test = gestaoAvaliacaoContext.Test.Include("Discipline").Include("TestCurriculumGrades")
                     .Include("TestPerformanceLevels").Include("TestPerformanceLevels.PerformanceLevel")
                     .Include("TestItemLevels").Include("TestItemLevels.ItemLevel").Include("TestType")
-                    .Include("TestSubGroup").Include("BlockChains").Include("Blocks")
+                    .Include("TestSubGroup").Include("BlockChains").Include("Blocks").Include("NumberItemsTestTai")
                     .FirstOrDefault(a => a.Id == entity.Id);
 
                 if (test == null)
@@ -1556,6 +1627,15 @@ namespace GestaoAvaliacao.Repository
 
                 test.RemoveBlockChain = entity.BlockChainNumber < test.BlockChainNumber || entity.BlockChainItems < test.BlockChainItems;
                 test.RemoveBlockChainBlock = entity.NumberBlock < test.NumberBlock || entity.BlockChainItems < test.BlockChainItems;
+                test.RemoveTaiCurriculumGrade = entity.TestTai;
+
+                if (entity.TestTai)
+                {
+                    var numberItemTestTaiAtual = test.NumberItemsTestTai.FirstOrDefault();
+
+                    if (numberItemTestTaiAtual != null)
+                        test.RemoveTaiCurriculumGrade = entity.NumberItemsAplicationTai.Id != numberItemTestTaiAtual.ItemAplicationTaiId;
+                }
 
                 test.TestSituation = entity.TestSituation;
 

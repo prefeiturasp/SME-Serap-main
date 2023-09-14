@@ -106,10 +106,11 @@ namespace GestaoAvaliacao.Business
 
             return valid;
         }
+
         private Validate Validate(Test entity, ValidateAction action, Validate valid, bool isAdmin, Guid? UsuId = null)
         {
             valid.Message = null;
-            int qtdeMaxItems = 100;
+            const int qtdeMaxItems = 100;
 
             if (action == ValidateAction.Save)
             {
@@ -121,9 +122,10 @@ namespace GestaoAvaliacao.Business
                 || entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
                     valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
 
-                int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
+                var totalItems = entity.TestItemLevels?.Sum(i => i.Value) ?? 0;
+
                 if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)
-                    valid.Message = string.Format("A quantidade de itens deve ser menor ou igual a {0}.", qtdeMaxItems);
+                    valid.Message = $"A quantidade de itens deve ser menor ou igual a {qtdeMaxItems}.";
             }
 
             if (entity.Bib)
@@ -136,7 +138,7 @@ namespace GestaoAvaliacao.Business
                 if (maxBlock != null)
                 {
                     if (entity.NumberBlock > int.Parse(maxBlock.Value))
-                        valid.Message = string.Format("A quantidade de cadernos deve ser menor ou igual a {0}.", int.Parse(maxBlock.Value));
+                        valid.Message = $"A quantidade de cadernos deve ser menor ou igual a {int.Parse(maxBlock.Value)}.";
                 }
 
                 if (entity.BlockChain.GetValueOrDefault())
@@ -152,6 +154,12 @@ namespace GestaoAvaliacao.Business
                 }
             }
 
+            if (entity.TestTai)
+            {
+                if (entity.NumberItemsAplicationTai == null)
+                    valid.Message = "É preciso informar uma opção de quantidade de amostras para prova com aplicação TAI.";
+            }
+
             if (action == ValidateAction.Update)
             {
                 var cadastred = testRepository.GetObjectWithTestType(entity.Id);
@@ -159,9 +167,11 @@ namespace GestaoAvaliacao.Business
                 if (entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
                     valid.Message = "O tempo de prova deve ser informado.";
 
-                int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
+                var totalItems = entity.TestItemLevels?.Sum(i => i.Value) ?? 0;
+
                 if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)
-                    valid.Message = string.Format("A quantidade de itens deve ser menor ou igual a {0}.", qtdeMaxItems);
+                    valid.Message = $"A quantidade de itens deve ser menor ou igual a {qtdeMaxItems}.";
+
                 if (!((cadastred.UsuId == UsuId) || (isAdmin && cadastred.TestType.Global)))
                     valid.Message = "Apenas o proprietário da prova pode alterá-la";
             }
@@ -177,7 +187,6 @@ namespace GestaoAvaliacao.Business
                     }
                 }
             }
-
 
             if (!string.IsNullOrEmpty(valid.Message))
             {
@@ -617,6 +626,12 @@ namespace GestaoAvaliacao.Business
         public async Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId) =>
             await testRepository.GetListTestTaiCurriculumGradeByTestId(testId);
 
+        public async Task<DadosProvaTaiDTO> ObterDadosProvaTai(long provaId) => 
+            await testRepository.ObterDadosProvaTai(provaId);
+
+        public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizesIds, int[] tiposCurriculosGradesIds) =>
+            await testRepository.ObterItensAmostraTai(matrizesIds, tiposCurriculosGradesIds);
+
         public bool ExistsAdherenceByTestId(long test_id) => testRepository.ExistsAdherenceByTestId(test_id);
         #endregion
 
@@ -624,34 +639,34 @@ namespace GestaoAvaliacao.Business
 
         public Test Save(Test entity, Guid usu_id, bool isAdmin)
         {
-            DateTime dateNow = DateTime.Now;
+            var dateNow = DateTime.Now;
 
             entity.CreateDate = dateNow;
             entity.UpdateDate = dateNow;
 
             entity.Validate = Validate(entity, ValidateAction.Save, entity.Validate, isAdmin);
-            if (entity.Validate.IsValid)
+
+            if (!entity.Validate.IsValid) 
+                return entity;
+
+            if (entity.NumberItem == 0)
             {
-                if (entity.NumberItem == 0)
+                foreach (var item in entity.TestItemLevels)
                 {
-                    foreach (var item in entity.TestItemLevels)
-                    {
-                        entity.NumberItem += item.Value;
-                    }
+                    entity.NumberItem += item.Value;
                 }
-
-                entity = testRepository.Save(entity, usu_id);
-
-                if (entity.TestTai)
-                {
-
-                    var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
-                    numberItemTestTaiRepository.Save(itemTestTai);
-                }
-
-                entity.Validate.Type = ValidateType.Save.ToString();
-                entity.Validate.Message = "Prova salva com sucesso.";
             }
+
+            entity = testRepository.Save(entity, usu_id);
+
+            if (entity.TestTai)
+            {
+                var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
+                numberItemTestTaiRepository.Save(itemTestTai);
+            }
+
+            entity.Validate.Type = ValidateType.Save.ToString();
+            entity.Validate.Message = "Prova salva com sucesso.";
 
             return entity;
         }
@@ -660,42 +675,46 @@ namespace GestaoAvaliacao.Business
         {
             entity.Validate = Validate(entity, ValidateAction.Update, entity.Validate, isAdmin, UsuId);
 
-            if (entity.Validate.IsValid)
+            if (!entity.Validate.IsValid) 
+                return entity;
+
+            if (entity.NumberItem == 0)
             {
-                if (entity.NumberItem == 0)
+                foreach (var item in entity.TestItemLevels)
                 {
-                    foreach (var item in entity.TestItemLevels)
-                    {
-                        entity.NumberItem += item.Value;
-                    }
+                    entity.NumberItem += item.Value;
                 }
-
-                if (entity.TestTai)
-                {
-                    if (entity.NumberItemsAplicationTai != null)
-                    {
-                        var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
-                        numberItemTestTaiRepository.DeleteSaveByTestId(itemTestTai);
-                    }
-                    else
-                    {
-                        throw new Exception("É preciso informar uma opção de quantidade de amostras para prova com aplicação TAI.");
-                    }
-                }
-                else if (entity.NumberItemsAplicationTai != null)
-                    numberItemTestTaiRepository.DeleteByTestId(entity.Id);
-
-                entity.TestSituation = ValidateTestSituation(entity);
-
-                var test = testRepository.Update(Id, entity);
-
-                entity.BlockChains.AddRange(test.BlockChains);
-                entity.Blocks.AddRange(test.Blocks);
-                entity.RemoveBlockChain = test.RemoveBlockChain;
-                entity.RemoveBlockChainBlock = test.RemoveBlockChainBlock;
-                entity.Validate.Type = ValidateType.Update.ToString();
-                entity.Validate.Message = "Prova alterada com sucesso.";
             }
+
+            entity.TestSituation = ValidateTestSituation(entity);
+
+            var test = testRepository.Update(Id, entity);
+
+            entity.BlockChains.AddRange(test.BlockChains);
+            entity.Blocks.AddRange(test.Blocks);
+            entity.RemoveBlockChain = test.RemoveBlockChain;
+            entity.RemoveBlockChainBlock = test.RemoveBlockChainBlock;
+            entity.RemoveTaiCurriculumGrade = test.RemoveTaiCurriculumGrade;
+
+            if (entity.TestTai)
+            {
+                if (entity.RemoveTaiCurriculumGrade)
+                    testTaiCurriculumGradeRepository.DeleteByTestId(entity.Id);
+
+                if (entity.NumberItemsAplicationTai != null)
+                {
+                    var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
+                    numberItemTestTaiRepository.DeleteSaveByTestId(itemTestTai);
+                }
+            }
+            else
+            {
+                testTaiCurriculumGradeRepository.DeleteByTestId(entity.Id);
+                numberItemTestTaiRepository.DeleteByTestId(entity.Id);
+            }
+
+            entity.Validate.Type = ValidateType.Update.ToString();
+            entity.Validate.Message = "Prova alterada com sucesso.";
 
             return entity;
         }

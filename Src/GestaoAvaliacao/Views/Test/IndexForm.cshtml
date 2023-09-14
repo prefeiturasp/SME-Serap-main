@@ -682,7 +682,8 @@
                                                     ng-title="e2_listaComponenteCurricular"
                                                     ng-title-propertie="Description"
                                                     ng-title-selected
-                                                    ng-title-index="1">
+                                                    ng-title-index="1"
+                                                    ng-disabled="anosItensAmostraProvaTai.Length > 0">
                                                 <option value="">--Selecione--</option>
                                             </select>
                                         </div>
@@ -1840,7 +1841,7 @@
                                         ng-options="matriz as matriz.Description for matriz in e2_matrizAvaliacaoList">
                                     <option value="">--Selecione--</option>
                                 </select>
-                            </div>                            
+                            </div>
 
                             <div class="campoLabel">
                                 <label>Ano*:</label>
@@ -1858,12 +1859,15 @@
                             <div class="campoLabel">
                                 <label>Porcentagem(%)*:</label>
                                 <div>
-                                    <input type="text"
-                                           class="form-control"
-                                           maxlength="3"
-                                           ng-model="e2_dadosModalAnoItensAmostraTai.Porcentagem"
-                                           ng-change="validarPorcentagemInteiro();"
-                                           placeholder="Digite a Porcentagem(%)"/>
+                                    <div>
+                                        <input type="text"
+                                               class="form-control"
+                                               maxlength="3"
+                                               ng-model="e2_dadosModalAnoItensAmostraTai.Porcentagem"
+                                               ng-change="validarPorcentagemInteiro();"
+                                               placeholder="Digite a Porcentagem(%)" />
+                                    </div>
+                                    <p style="color: red;" class="textoDescricao pull-left">{{ e2_dadosModalAnoItensAmostraTai.DadosAmostra.LabelInfoPorcentagemMaximaMatrizAno }}</p>
                                 </div>
                             </div>
                         </div>
