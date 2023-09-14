@@ -3316,6 +3316,8 @@
         */
         ng.e2_VoltarModal = e2_voltarModal
         function e2_voltarModal(index) {
+            if (ng.ShowTestTAI)
+                e2_criarObjetoDadosModalAnoItensAmostraTai();
 
             if (index) {
                 ng.e2_Navegacao = index;
