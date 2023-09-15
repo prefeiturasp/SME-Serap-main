@@ -1873,9 +1873,8 @@
             ng.e2_matrizAvaliacaoList = [];
             ng.e2_dadosAmostraTaiList = [];
             ng.e2_listAnoItensTai = [];
+
             e2_criarObjetoDadosModalAnoItensAmostraTai();
-            ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = '';
-            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
 
             ng.e2_listaComponenteCurricular = [];
             ng.e2_cbComponenteCurricular
@@ -3511,22 +3510,25 @@
 
         ng.callModalAnoItensAmostraTai = callModalAnoItensAmostraTai;
         function callModalAnoItensAmostraTai() {
+            e2_criarObjetoDadosModalAnoItensAmostraTai();            
+            ObterUltimaMatriz();            
+            angular.element("#modalAnoItensAmostraTai").modal({ backdrop: 'static' });
+        };
+
+        function ObterUltimaMatriz() {
             ng.e2_matrizAvaliacao = null;
 
-            if (ng.e2_dadosModalAnoItensAmostraTai === null)
-                e2_criarObjetoDadosModalAnoItensAmostraTai();
-
-            if (ng.anosItensAmostraProvaTai.length > 0) {
+            if (ng.anosItensAmostraProvaTai && ng.anosItensAmostraProvaTai.length > 0) {
                 var ultimaMatriz = ng.anosItensAmostraProvaTai[ng.anosItensAmostraProvaTai.length - 1].Matriz;
 
                 if (ultimaMatriz) {
                     ng.e2_matrizAvaliacao = ultimaMatriz;
-                    ng.e2_dadosModalAnoItensAmostraTai.Matriz = ultimaMatriz;
+
+                    if (ng.e2_dadosModalAnoItensAmostraTai)
+                        ng.e2_dadosModalAnoItensAmostraTai.Matriz = ultimaMatriz;
                 }
             }
-
-            angular.element("#modalAnoItensAmostraTai").modal({ backdrop: 'static' });
-        };
+        }
 
         ng.e2_exibirModalProximoBloco = e2_exibirModalProximoBloco;
         function e2_exibirModalProximoBloco() {
@@ -5196,6 +5198,9 @@
                 Porcentagem: '',
                 DadosAmostra: { PorcentagemMaximaMatrizAno: 0, NumeroItensAmostraMatrizAno: 0, LabelInfoPorcentagemMaximaMatrizAno: '' }
             };
+
+            ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
+            ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = null;
         };
 
         ng.e2_addDadosModalAnoItensAmostraTai = e2_addDadosModalAnoItensAmostraTai;
@@ -5255,7 +5260,7 @@
                     ng.anosItensAmostraProvaTai.push(itemNovo);
                 }
 
-                ng.e2_criarObjetoDadosModalAnoItensAmostraTai();
+                e2_criarObjetoDadosModalAnoItensAmostraTai();
                 self.etapa2.alterou = true
 
                 angular.element('#modalAnoItensAmostraTai').modal('hide');
@@ -5289,7 +5294,7 @@
             if (ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai) {
                 const indexItemDelete = ng.anosItensAmostraProvaTai.indexOf(ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai);
                 ng.anosItensAmostraProvaTai.splice(indexItemDelete, 1);
-                ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = '';
+                ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = null;
                 self.etapa2.alterou = true
             }
             angular.element('#modalDeleteItemAnosItensAmostraProvaTai').modal('hide');
@@ -5299,6 +5304,7 @@
         function e2_limparDadosModalAnoItensAmostraTai() {
             e2_criarObjetoDadosModalAnoItensAmostraTai();
             ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = null;
+            ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = null;
         }
 
         function obterPorcentagemAnoItensAmostraTai() {
