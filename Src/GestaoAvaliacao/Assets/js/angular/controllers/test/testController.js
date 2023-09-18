@@ -3433,9 +3433,12 @@
                 if (!ng.anosItensAmostraProvaTai || ng.anosItensAmostraProvaTai.length == 0)
                     return $notification.alert('Selecione o(s) ano(s) dos itens da amostra.');
 
-                if (!dadosAmostraTaiEhValido()) {
+                if (!dadosAmostraTaiEhValido())
                     return $notification.alert('Amostra insuficiente para a prova. Verifique a matriz ou ano selecionado.');
-                }
+
+                var porcentagem = obterPorcentagemAnoItensAmostraTai();
+                if (porcentagem != 100 && ng.anosItensAmostraProvaTai.length > 1)
+                    return $notification.alert('A soma da porcentagem dos anos escolares deve ser igual a 100.');
 
                 return true;
             }
@@ -5309,10 +5312,11 @@
 
         function obterPorcentagemAnoItensAmostraTai() {
             var porcentagem = 0;
+
             for (var i = 0; i < ng.anosItensAmostraProvaTai.length; i++) {
-                var pi = parseInt(ng.anosItensAmostraProvaTai[i].Porcentagem);
-                porcentagem = pi + porcentagem;
+                porcentagem += parseInt(ng.anosItensAmostraProvaTai[i].Porcentagem);
             };
+
             return porcentagem;
         }
 
