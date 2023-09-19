@@ -5653,6 +5653,8 @@
         }
 
         function configuraEtapa2Tai() {
+            ng.anosItensAmostraProvaTai = [];
+
             if (ng.provaId && ng.provaId > 0) {
                 carregarListaTestTaiCurriculumGrade()
             } else {
