@@ -3392,7 +3392,7 @@
             if (ng.showTestTAI) {
                 var listaParaSalvar = e2_mapearParaListaTestTaiCurriculumGradeSave();
 
-                TestModel.saveTestTaiCurriculumGrade({ listEntity: listaParaSalvar }, function (result) {
+                TestModel.saveTestTaiCurriculumGrade({ test_id: ng.provaId, listEntity: listaParaSalvar }, function (result) {
                     if (result.success) {
                         $notification.success('A prova foi salva com sucesso!');
                         ng.alterouEtapaAtual = (false);
@@ -5299,6 +5299,7 @@
                 ng.anosItensAmostraProvaTai.splice(indexItemDelete, 1);
                 ng.e2_itemParaDeletarDaListaAnosItensAmostraProvaTai = null;
                 self.etapa2.alterou = true
+                e2_Salvar(true);
             }
             angular.element('#modalDeleteItemAnosItensAmostraProvaTai').modal('hide');
         };

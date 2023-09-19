@@ -1184,21 +1184,17 @@ namespace GestaoAvaliacao.Business
             testRepository.Update(testDestino);
         }
 
-        public void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> listEntity)
+        public void TestTaiCurriculumGradeSave(long test_id, List<TestTaiCurriculumGrade> listEntity)
         {
             try
             {
-                var test = listEntity.FirstOrDefault();
-
-                if (test == null)
-                    throw new Exception("Prova não localizada.");
-
-                var testId = test.TestId;
-
-                if (testId <= 0)
+                if (test_id <= 0)
                     throw new Exception("TestId é obrigatório");
 
-                var listTestTaiCurriculumGrade = testTaiCurriculumGradeRepository.GetListByTestId(testId);
+                if (listEntity == null)
+                    listEntity = new List<TestTaiCurriculumGrade>();
+
+                var listTestTaiCurriculumGrade = testTaiCurriculumGradeRepository.GetListByTestId(test_id);
 
                 if (listTestTaiCurriculumGrade == null || !listTestTaiCurriculumGrade.Any())
                 {
