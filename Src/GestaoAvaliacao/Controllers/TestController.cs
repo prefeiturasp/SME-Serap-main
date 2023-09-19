@@ -1171,23 +1171,19 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpPost]
-        public JsonResult TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> listEntity)
+        public JsonResult TestTaiCurriculumGradeSave(long test_id, List<TestTaiCurriculumGrade> listEntity)
         {
             try
             {
 
-                testBusiness.TestTaiCurriculumGradeSave(listEntity);
-
+                testBusiness.TestTaiCurriculumGradeSave(test_id, listEntity);
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-
+                LogFacade.SaveError(ex);
                 return Json(new { success = false }, JsonRequestBehavior.AllowGet);
-                throw ex;
             }
-
-            //GetListTestTaiCurriculumGrade
         }
 
         [HttpGet]
