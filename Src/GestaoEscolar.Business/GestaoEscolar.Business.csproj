@@ -73,6 +73,10 @@
     <Compile Include="TUR_TurmaTipoCurriculoPeriodoBusiness.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GestaoAvaliacao.Entities\GestaoAvaliacao.Entities.csproj">
+      <Project>{834EFDFB-45FE-48F4-9618-222BEB838A4A}</Project>
+      <Name>GestaoAvaliacao.Entities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GestaoAvaliacao.Util\GestaoAvaliacao.Util.csproj">
       <Project>{638b2bdc-aa34-4dcd-a041-ab4eb9c4d831}</Project>
       <Name>GestaoAvaliacao.Util</Name>

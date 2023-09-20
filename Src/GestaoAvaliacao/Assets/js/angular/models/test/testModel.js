@@ -68,7 +68,6 @@
             },
             /////////////////////////////////////////////
             // CHAMADAS DA ETAPA 2
-
             'saveTestTaiCurriculumGrade': {
                 method: 'POST',
                 url: base_url('Test/TestTaiCurriculumGradeSave')
@@ -77,6 +76,16 @@
             'loadTestTaiCurriculumGrade': {
                 method: 'GET',
                 url: base_url('Test/GetListTestTaiCurriculumGrade')
+            },
+
+            'ObterDadosAmostraProvaTai': {
+                method: 'GET',
+                url: base_url('Test/ObterDadosAmostraProvaTai')
+            },
+
+            'ObterDadosAmostraProvaTaiPorProvaId': {
+                method: 'GET',
+                url: base_url('Test/ObterDadosAmostraProvaTaiPorProvaId')
             },
 
             'carregaAreaConhecimento': {
@@ -106,6 +115,7 @@
                 method: 'GET',
                 url: base_url('Skill/GetByParent')
             },
+
             // CHAMADAS PARA BLOCOS
             'loadBlock': {
                 method: 'GET',

@@ -14,7 +14,7 @@ namespace GestaoEscolar.Repository
     {
         public IEnumerable<SYS_UnidadeAdministrativa> LoadSimple(Guid ent_id, IEnumerable<string> uad_id = null)
         {
-            var sql = new StringBuilder("SELECT uad.uad_id, uad.uad_nome, uad.uad_codigo ");
+            var sql = new StringBuilder("SELECT uad.uad_id, uad.uad_nome, uad.uad_codigo, uad.uad_sigla ");
             sql.Append("FROM SYS_UnidadeAdministrativa uad (NOLOCK) ");
             sql.Append("WHERE uad.ent_id = @ent_id AND uad.uad_situacao = @situacao ");
             if (uad_id != null)

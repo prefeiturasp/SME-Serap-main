@@ -5,11 +5,10 @@ using GestaoAvaliacao.Models;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
 using GestaoEscolar.IBusiness;
-using Newtonsoft.Json;
 using System;
-using System.Data;
 using System.Linq;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 
 namespace GestaoAvaliacao.Controllers
 {
@@ -42,26 +41,30 @@ namespace GestaoAvaliacao.Controllers
 		{
 			var test = testBusiness.GetObjectToAdherence(test_id);
 			var visao = (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString());
-			this.ViewBag.testOwner = DateTime.Today <= test.ApplicationEndDate &&
-					(test.UsuId.Equals(SessionFacade.UsuarioLogado.Usuario.usu_id) || (test.Global && visao == EnumSYS_Visao.Administracao));
+
+            ViewBag.testOwner = DateTime.Today <= test.ApplicationEndDate &&
+                                (test.UsuId.Equals(SessionFacade.UsuarioLogado.Usuario.usu_id) ||
+                                 (test.Global && visao == EnumSYS_Visao.Administracao));
+
 			var dados = new
 			{
 				//Apenas será disponivel aderir se estiver no periodo de aplicação e o usuario logado for o dono da prova ou a prova for global e o usuário admin
-				testOwner =  this.ViewBag.testOwner,
+                ViewBag.testOwner,
 				testName = test.TestDescription,
                 frequencyApplication = test.FrequencyApplicationDescription,
 				testDiscipline = test.DisciplineDescription,
 				testId = test.Id,
 				testAllAdhered = test.AllAdhered,
-				token = Util.JwtHelper.CreateToken(SessionFacade.UsuarioLogado.Usuario.usu_id.ToString(), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString(),
+				token = JwtHelper.CreateToken(SessionFacade.UsuarioLogado.Usuario.usu_id.ToString(), SessionFacade.UsuarioLogado.Grupo.vis_id.ToString(),
 					SessionFacade.UsuarioLogado.Usuario.pes_id.ToString(), SessionFacade.UsuarioLogado.Usuario.ent_id.ToString(), test.Id.ToString()),
 				global = test.Global,
 			};
-			this.ViewBag.dados = JsonConvert.SerializeObject(dados);
-			this.ViewBag.typeSelection = EnumExtensions.EnumToJson<GestaoAvaliacao.Entities.Enumerator.EnumAdherenceSelection>();
-			this.ViewBag.typeEntity = EnumExtensions.EnumToJson<GestaoAvaliacao.Entities.Enumerator.EnumAdherenceEntity>();
-			this.ViewBag.global = test.Global;
-			this.ViewBag.visao = visao;
+
+			ViewBag.dados = JsonConvert.SerializeObject(dados);
+			ViewBag.typeSelection = EnumExtensions.EnumToJson<GestaoAvaliacao.Entities.Enumerator.EnumAdherenceSelection>();
+			ViewBag.typeEntity = EnumExtensions.EnumToJson<GestaoAvaliacao.Entities.Enumerator.EnumAdherenceEntity>();
+			ViewBag.global = test.Global;
+			ViewBag.visao = visao;
 
 			return View();
 		}
@@ -402,9 +405,10 @@ namespace GestaoAvaliacao.Controllers
                 {
                     Id = a.alu_id,
                     Description = a.alu_nome,
-                    Status = a.TypeSelection.Value,
-                    Selected = a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.NotSelected && a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.Blocked,
-                    Open = false
+                    Status = a.TypeSelection,
+                    Selected = a.TypeSelection != null && a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.NotSelected && a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.Blocked,
+                    Open = false,
+					a.Alu_Matricula
                 });
 
                 return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
@@ -426,15 +430,25 @@ namespace GestaoAvaliacao.Controllers
                 var retorno = alunos.Select(a => new
                 {
                     Id = a.alu_id,
-                    Description = a.alu_nome + (a.TypeSelection.Value == Entities.Enumerator.EnumAdherenceSelection.Blocked ? " (Bloqueado)" : ""),
-                    Status = a.TypeSelection.Value,
-                    Selected = a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.NotSelected && a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.Blocked
-                });
-                if (retorno.Count() > 0)
-                    return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
-                else
-                    return Json(new { success = true, type = ValidateType.alert.ToString(), message = "Não foram encontrados alunos aderidos." }, JsonRequestBehavior.AllowGet);
+                    Description = a.alu_nome +
+                                  (a.TypeSelection != null && a.TypeSelection.Value == Entities.Enumerator.EnumAdherenceSelection.Blocked
+                                      ? " (Bloqueado)"
+                                      : ""),
+                    Status = a.TypeSelection,
+                    Selected = a.TypeSelection != null && a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.NotSelected &&
+                               a.TypeSelection.Value != Entities.Enumerator.EnumAdherenceSelection.Blocked,
+                    a.Alu_Matricula
+                }).ToList();
 
+                return retorno.Any()
+                    ? Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet)
+                    : Json(
+                        new
+                        {
+                            success = true,
+                            type = ValidateType.alert.ToString(),
+                            message = "Não foram encontrados alunos aderidos."
+                        }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

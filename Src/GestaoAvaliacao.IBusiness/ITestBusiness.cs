@@ -56,7 +56,6 @@ namespace GestaoAvaliacao.IBusiness
 		void ChangeOrderTestUp(long Id, long order);
 		void ChangeOrderTestDown(long Id, long order);
 		IEnumerable<TestResult> GetTestsBySubGroup(long id);
-
 		TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
 		Task<List<ElectronicTestDTO>> SearchEletronicTests();
 		Task<Test> SearchInfoTestAsync(long test_id);
@@ -68,10 +67,13 @@ namespace GestaoAvaliacao.IBusiness
 
 		Task<List<ElectronicTestDTO>> GetTestsByPesId(Guid pes_id);
 
-		void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> entity);
-		List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId);
+		void TestTaiCurriculumGradeSave(long test_id, List<TestTaiCurriculumGrade> entity);
+        List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId);
+        Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId);
+        Task<DadosProvaTaiDTO> ObterDadosProvaTai(long provaId);
+        Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizesIds, int[] tiposCurriculosGradesIds);
         bool ExistsAdherenceByTestId(long test_id);
-        void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno);
-        void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno);
+        void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno);
+        void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno);
     }
 }
