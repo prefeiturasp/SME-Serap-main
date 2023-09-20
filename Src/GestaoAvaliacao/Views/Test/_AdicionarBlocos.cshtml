@@ -32,18 +32,50 @@
                 
                 <table class="table ordem">
                     <colgroup>
-                        <col style="width: 50%" />
-                        <col style="width: 50%" />
+                        <col style="width: 25%" />
+                        <col style="width: 25%" />
+                        <col style="width: 25%" />
+                        <col style="width: 25%" />
                     </colgroup>
                     <thead>
                         <tr>
                             <th class="table-parameter-centralize">Ordem</th>
+                            <th class="table-parameter-centralize">Acima</th>
+                            <th class="table-parameter-centralize">Abaixo</th>
                             <th class="table-parameter-centralize">Bloco</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="($indexItem, ordem) in [].constructor(cadernoSelecionado.Total) track by $indexItem">
                             <td class="table-parameter-centralize">{{ $indexItem+1 }}</td>
+                            <td class="table-parameter-centralize">
+                                <div ng-hide="$indexItem===0
+                                     || listaBlocosSelecionadosCadernoModal===undefined
+                                     || listaBlocosSelecionadosCadernoModal===null
+                                     || listaBlocosSelecionadosCadernoModal===[]
+                                     || listaBlocosSelecionadosCadernoModal.length===0
+                                     || ($indexItem < 0 || $indexItem >= listaBlocosSelecionadosCadernoModal.length)
+                                     ">
+                                    <a href="javascript:void(0);" ng-click="e3_listaBlocosSelecionadosCadernoModalOrdenar('previous', $indexItem);"
+                                       ng-class="{'orderBaseTextToggle':$indexItem!=0, 'cinzaorderitem': $indexItem==0}">
+                                        <i class="material-icons">keyboard_arrow_up</i>
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="table-parameter-centralize">
+                                <div ng-hide="$indexItem==(listaBlocosSelecionadosCadernoModal.length-1)
+                                     || listaBlocosSelecionadosCadernoModal===undefined 
+                                     || listaBlocosSelecionadosCadernoModal===null
+                                     || listaBlocosSelecionadosCadernoModal===[]
+                                     || listaBlocosSelecionadosCadernoModal.length===0
+                                     || ($indexItem < 0 || $indexItem >= listaBlocosSelecionadosCadernoModal.length)
+                                     ">
+                                    <a href="javascript:void(0);" ng-click="e3_listaBlocosSelecionadosCadernoModalOrdenar('next', $indexItem);"
+                                       ng-class="{'orderBaseTextToggle':$indexItem<(listaBlocosSelecionadosCadernoModal.length-1), 'cinzaorderitem':$indexItem==(listaBlocosSelecionadosCadernoModal.length-1)}">
+                                        <i class="material-icons">keyboard_arrow_down</i>
+                                    </a>
+                                </div>                                
+                            </td>
                             <td class="table-parameter-centralize">{{ listaBlocosSelecionadosCadernoModal[$indexItem].Description }}</td>
                         </tr>
                     </tbody>

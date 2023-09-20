@@ -387,6 +387,11 @@ namespace GestaoAvaliacao.MappingDependence
                 .WithService.AllInterfaces()
                 .SetLifestyle(LifestylePerWebRequest));
 
+            container.Register(Classes.FromAssemblyContaining<ReportStudiesRepository>()
+                .BasedOn(typeof(IReportStudiesRepository))
+                .WithService.AllInterfaces()
+                .SetLifestyle(LifestylePerWebRequest));
+
             #region GestaoEscolar
 
             container.Register(Classes.FromAssemblyContaining<ACA_CursoRepository>()

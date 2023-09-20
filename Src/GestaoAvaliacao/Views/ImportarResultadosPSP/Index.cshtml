@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
 }
 <div id="div_loading" class="loading-box" style="display:none; width:100%; height:100%; position:fixed; background:rgba(255,255,255,.3); top:0; z-index:99999"><label id="preloading">Carregando...</label></div>
@@ -98,14 +97,25 @@
                                 </select>
                             </div>
                         </div>
-                        <div style="margin-bottom: 20px;" class="campoLabel">
+                        <div  class="campoLabel">
                             <label>Arquivo*: </label>
                             <div>
                                 <div class="upload-group">
                                     <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">
                                     <span class="input-group-btn fake-upload">
-                                        <i class="material-icons">file_upload</i>
-                                        <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
+                                        <span>
+                                            <label class="icon-inline">
+                                                <i class="material-icons">file_upload</i>
+                                                <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
+                                            </label>
+                                        </span>
+                                        <span>
+                                            <label class="icon-inline">
+                                                <a class="btn-pesquisar" href="https://serap.sme.prefeitura.sp.gov.br/Files/Legenda_de_dados/legenda_de_dados_autosservico_importacao_psp.xlsx" title="Legenda de dados">
+                                                    <i class="material-icons">subtitles</i>
+                                                </a>
+                                            </label>
+                                        </span>
                                     </span>
                                 </div>
                                 <p style="font-size: 11px;" class="textoDescricao pull-left">Tamanho máximo de 10MB</p>

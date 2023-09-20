@@ -80,22 +80,28 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                IEnumerable<Block> blocos = blockBusiness.GetTestBlocks(Id);
-                if (blocos != null && blocos.Count() > 0)
-                {
-                    var retorno = blocos.Select(x => new
-                    {
-                        Id = x.Id,
-                        Description = x.Description,
-                        ItensCount = x.BlockItems != null ? x.BlockItems.Count : 0,
-                        ItensId = x.BlockItems.Select(i => i.Id),
-                        QtdeKnowledgeArea = x.Test.KnowledgeAreaBlock ? x.BlockItems.Select(p => p.KnowledgeArea_Id).Distinct().Count() : 0
-                    }).ToList();
+                var blocos = blockBusiness.GetTestBlocks(Id).ToList();
 
-                    return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+                if (!blocos.Any())
+                {
+                    return Json(
+                        new
+                        {
+                            success = false, type = ValidateType.alert.ToString(),
+                            message = "Não existe(m) bloco(s) de prova criado(s)."
+                        }, JsonRequestBehavior.AllowGet);
                 }
-                else
-                    return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Não existe(m) bloco(s) de prova criado(s)." }, JsonRequestBehavior.AllowGet);
+
+                var retorno = blocos.Select(x => new
+                {
+                    x.Id,
+                    x.Description,
+                    ItensCount = x.BlockItems?.Select(c => c.Id).Distinct().Count() ?? 0,
+                    ItensId = x.BlockItems?.Select(i => i.Id).Distinct(),
+                    QtdeKnowledgeArea = x.Test.KnowledgeAreaBlock ? x.BlockItems?.Select(p => p.KnowledgeArea_Id).Distinct().Count() : 0
+                }).ToList();
+
+                return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

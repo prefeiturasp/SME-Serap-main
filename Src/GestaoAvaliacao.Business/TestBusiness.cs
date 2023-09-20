@@ -106,10 +106,11 @@ namespace GestaoAvaliacao.Business
 
             return valid;
         }
+
         private Validate Validate(Test entity, ValidateAction action, Validate valid, bool isAdmin, Guid? UsuId = null)
         {
             valid.Message = null;
-            int qtdeMaxItems = 100;
+            const int qtdeMaxItems = 100;
 
             if (action == ValidateAction.Save)
             {
@@ -121,9 +122,10 @@ namespace GestaoAvaliacao.Business
                 || entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
                     valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
 
-                int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
+                var totalItems = entity.TestItemLevels?.Sum(i => i.Value) ?? 0;
+
                 if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)
-                    valid.Message = string.Format("A quantidade de itens deve ser menor ou igual a {0}.", qtdeMaxItems);
+                    valid.Message = $"A quantidade de itens deve ser menor ou igual a {qtdeMaxItems}.";
             }
 
             if (entity.Bib)
@@ -136,7 +138,7 @@ namespace GestaoAvaliacao.Business
                 if (maxBlock != null)
                 {
                     if (entity.NumberBlock > int.Parse(maxBlock.Value))
-                        valid.Message = string.Format("A quantidade de cadernos deve ser menor ou igual a {0}.", int.Parse(maxBlock.Value));
+                        valid.Message = $"A quantidade de cadernos deve ser menor ou igual a {int.Parse(maxBlock.Value)}.";
                 }
 
                 if (entity.BlockChain.GetValueOrDefault())
@@ -152,6 +154,12 @@ namespace GestaoAvaliacao.Business
                 }
             }
 
+            if (entity.TestTai)
+            {
+                if (entity.NumberItemsAplicationTai == null)
+                    valid.Message = "É preciso informar uma opção de quantidade de amostras para prova com aplicação TAI.";
+            }
+
             if (action == ValidateAction.Update)
             {
                 var cadastred = testRepository.GetObjectWithTestType(entity.Id);
@@ -159,9 +167,11 @@ namespace GestaoAvaliacao.Business
                 if (entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
                     valid.Message = "O tempo de prova deve ser informado.";
 
-                int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
+                var totalItems = entity.TestItemLevels?.Sum(i => i.Value) ?? 0;
+
                 if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)
-                    valid.Message = string.Format("A quantidade de itens deve ser menor ou igual a {0}.", qtdeMaxItems);
+                    valid.Message = $"A quantidade de itens deve ser menor ou igual a {qtdeMaxItems}.";
+
                 if (!((cadastred.UsuId == UsuId) || (isAdmin && cadastred.TestType.Global)))
                     valid.Message = "Apenas o proprietário da prova pode alterá-la";
             }
@@ -177,7 +187,6 @@ namespace GestaoAvaliacao.Business
                     }
                 }
             }
-
 
             if (!string.IsNullOrEmpty(valid.Message))
             {
@@ -614,6 +623,15 @@ namespace GestaoAvaliacao.Business
 
         public bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id) => testRepository.ExistsAdherenceByAluIdTestId(alu_id, test_id);
 
+        public async Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId) =>
+            await testRepository.GetListTestTaiCurriculumGradeByTestId(testId);
+
+        public async Task<DadosProvaTaiDTO> ObterDadosProvaTai(long provaId) => 
+            await testRepository.ObterDadosProvaTai(provaId);
+
+        public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizesIds, int[] tiposCurriculosGradesIds) =>
+            await testRepository.ObterItensAmostraTai(matrizesIds, tiposCurriculosGradesIds);
+
         public bool ExistsAdherenceByTestId(long test_id) => testRepository.ExistsAdherenceByTestId(test_id);
         #endregion
 
@@ -621,34 +639,34 @@ namespace GestaoAvaliacao.Business
 
         public Test Save(Test entity, Guid usu_id, bool isAdmin)
         {
-            DateTime dateNow = DateTime.Now;
+            var dateNow = DateTime.Now;
 
             entity.CreateDate = dateNow;
             entity.UpdateDate = dateNow;
 
             entity.Validate = Validate(entity, ValidateAction.Save, entity.Validate, isAdmin);
-            if (entity.Validate.IsValid)
+
+            if (!entity.Validate.IsValid) 
+                return entity;
+
+            if (entity.NumberItem == 0)
             {
-                if (entity.NumberItem == 0)
+                foreach (var item in entity.TestItemLevels)
                 {
-                    foreach (var item in entity.TestItemLevels)
-                    {
-                        entity.NumberItem += item.Value;
-                    }
+                    entity.NumberItem += item.Value;
                 }
-
-                entity = testRepository.Save(entity, usu_id);
-
-                if (entity.TestTai)
-                {
-
-                    var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
-                    numberItemTestTaiRepository.Save(itemTestTai);
-                }
-
-                entity.Validate.Type = ValidateType.Save.ToString();
-                entity.Validate.Message = "Prova salva com sucesso.";
             }
+
+            entity = testRepository.Save(entity, usu_id);
+
+            if (entity.TestTai)
+            {
+                var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
+                numberItemTestTaiRepository.Save(itemTestTai);
+            }
+
+            entity.Validate.Type = ValidateType.Save.ToString();
+            entity.Validate.Message = "Prova salva com sucesso.";
 
             return entity;
         }
@@ -657,42 +675,46 @@ namespace GestaoAvaliacao.Business
         {
             entity.Validate = Validate(entity, ValidateAction.Update, entity.Validate, isAdmin, UsuId);
 
-            if (entity.Validate.IsValid)
+            if (!entity.Validate.IsValid) 
+                return entity;
+
+            if (entity.NumberItem == 0)
             {
-                if (entity.NumberItem == 0)
+                foreach (var item in entity.TestItemLevels)
                 {
-                    foreach (var item in entity.TestItemLevels)
-                    {
-                        entity.NumberItem += item.Value;
-                    }
+                    entity.NumberItem += item.Value;
                 }
-
-                if (entity.TestTai)
-                {
-                    if (entity.NumberItemsAplicationTai != null)
-                    {
-                        var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
-                        numberItemTestTaiRepository.DeleteSaveByTestId(itemTestTai);
-                    }
-                    else
-                    {
-                        throw new Exception("É preciso informar uma opção de quantidade de amostras para prova com aplicação TAI.");
-                    }
-                }
-                else if (entity.NumberItemsAplicationTai != null)
-                    numberItemTestTaiRepository.DeleteByTestId(entity.Id);
-
-                entity.TestSituation = ValidateTestSituation(entity);
-
-                var test = testRepository.Update(Id, entity);
-
-                entity.BlockChains.AddRange(test.BlockChains);
-                entity.Blocks.AddRange(test.Blocks);
-                entity.RemoveBlockChain = test.RemoveBlockChain;
-                entity.RemoveBlockChainBlock = test.RemoveBlockChainBlock;
-                entity.Validate.Type = ValidateType.Update.ToString();
-                entity.Validate.Message = "Prova alterada com sucesso.";
             }
+
+            entity.TestSituation = ValidateTestSituation(entity);
+
+            var test = testRepository.Update(Id, entity);
+
+            entity.BlockChains.AddRange(test.BlockChains);
+            entity.Blocks.AddRange(test.Blocks);
+            entity.RemoveBlockChain = test.RemoveBlockChain;
+            entity.RemoveBlockChainBlock = test.RemoveBlockChainBlock;
+            entity.RemoveTaiCurriculumGrade = test.RemoveTaiCurriculumGrade;
+
+            if (entity.TestTai)
+            {
+                if (entity.RemoveTaiCurriculumGrade)
+                    testTaiCurriculumGradeRepository.DeleteByTestId(entity.Id);
+
+                if (entity.NumberItemsAplicationTai != null)
+                {
+                    var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
+                    numberItemTestTaiRepository.DeleteSaveByTestId(itemTestTai);
+                }
+            }
+            else
+            {
+                testTaiCurriculumGradeRepository.DeleteByTestId(entity.Id);
+                numberItemTestTaiRepository.DeleteByTestId(entity.Id);
+            }
+
+            entity.Validate.Type = ValidateType.Update.ToString();
+            entity.Validate.Message = "Prova alterada com sucesso.";
 
             return entity;
         }
@@ -1162,16 +1184,17 @@ namespace GestaoAvaliacao.Business
             testRepository.Update(testDestino);
         }
 
-        public void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> listEntity)
+        public void TestTaiCurriculumGradeSave(long test_id, List<TestTaiCurriculumGrade> listEntity)
         {
             try
             {
-                var testId = listEntity.FirstOrDefault().TestId;
-
-                if (testId <= 0)
+                if (test_id <= 0)
                     throw new Exception("TestId é obrigatório");
 
-                var listTestTaiCurriculumGrade = testTaiCurriculumGradeRepository.GetListByTestId(testId);
+                if (listEntity == null)
+                    listEntity = new List<TestTaiCurriculumGrade>();
+
+                var listTestTaiCurriculumGrade = testTaiCurriculumGradeRepository.GetListByTestId(test_id);
 
                 if (listTestTaiCurriculumGrade == null || !listTestTaiCurriculumGrade.Any())
                 {
@@ -1182,18 +1205,21 @@ namespace GestaoAvaliacao.Business
                 }
                 else
                 {
+                    var testTaiCurriculumGradeNew = listEntity.Where(x => !listTestTaiCurriculumGrade.Any(entity =>
+                        x.DisciplineId == entity.DisciplineId
+                        && x.MatrixId == entity.MatrixId
+                        && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
 
-                    var testTaiCurriculumGradeNew = listEntity.Where(x => !listTestTaiCurriculumGrade.Any(entity => x.DisciplineId == entity.DisciplineId
-                                                                                                                 && x.MatrixId == entity.MatrixId
-                                                                                                                 && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+                    var testTaiCurriculumGradeExists = listTestTaiCurriculumGrade.Where(x => listEntity.Any(entity =>
+                        x.DisciplineId == entity.DisciplineId
+                        && x.MatrixId == entity.MatrixId
+                        && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
 
-                    var testTaiCurriculumGradeExists = listTestTaiCurriculumGrade.Where(x => listEntity.Any(entity => x.DisciplineId == entity.DisciplineId
-                                                                                                                   && x.MatrixId == entity.MatrixId
-                                                                                                                   && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+                    var testTaiCurriculumGradeNotExists = listTestTaiCurriculumGrade.Where(x => !listEntity.Any(entity =>
+                        x.DisciplineId == entity.DisciplineId
+                        && x.MatrixId == entity.MatrixId
+                        && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
 
-                    var testTaiCurriculumGradeNotExists = listTestTaiCurriculumGrade.Where(x => !listEntity.Any(entity => x.DisciplineId == entity.DisciplineId
-                                                                                                                      && x.MatrixId == entity.MatrixId
-                                                                                                                      && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
                     //Inserir
                     foreach (var entity in testTaiCurriculumGradeNew)
                     {
@@ -1203,15 +1229,17 @@ namespace GestaoAvaliacao.Business
                     //Alterar
                     foreach (var entity in testTaiCurriculumGradeExists)
                     {
-                        var testTaiCurriculumGrade = listEntity.FirstOrDefault(x => x.DisciplineId == entity.DisciplineId
-                                                                                    && x.MatrixId == entity.MatrixId
-                                                                                    && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId);
-                        if (entity.Percentage != testTaiCurriculumGrade.Percentage)
-                        {
-                            entity.Percentage = testTaiCurriculumGrade.Percentage;
-                            entity.UpdateDate = DateTime.Now;
-                            testTaiCurriculumGradeRepository.Update(entity);
-                        }
+                        var testTaiCurriculumGrade = listEntity.FirstOrDefault(x =>
+                            x.DisciplineId == entity.DisciplineId
+                            && x.MatrixId == entity.MatrixId
+                            && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId);
+
+                        if (testTaiCurriculumGrade == null || entity.Percentage == testTaiCurriculumGrade.Percentage)
+                            continue;
+
+                        entity.Percentage = testTaiCurriculumGrade.Percentage;
+                        entity.UpdateDate = DateTime.Now;
+                        testTaiCurriculumGradeRepository.Update(entity);
                     }
 
                     //Excluir
@@ -1221,15 +1249,12 @@ namespace GestaoAvaliacao.Business
                         entity.UpdateDate = DateTime.Now;
                         testTaiCurriculumGradeRepository.Update(entity);
                     }
-
                 }
-
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-
         }
 
         public List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId)
@@ -1261,7 +1286,7 @@ namespace GestaoAvaliacao.Business
             }
         };
 
-        public void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno)
+        public void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno)
         {
             var dateTimeNow = DateTime.Now;
 
@@ -1274,7 +1299,7 @@ namespace GestaoAvaliacao.Business
                         var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
                         var blocosItens = csv.GetRecords<BlockCsvDTO>().ToList();
                         var blocos = blocosItens.GroupBy(x => x.NumeroBloco).ToList();
-                        var erros = new List<ErrorCsvBlockImportDTO>();
+                        var erros = new List<ErrosImportacaoCSV>();
 
                         foreach (var bloco in blocos)
                         {
@@ -1303,19 +1328,23 @@ namespace GestaoAvaliacao.Business
                                 blockChain.Test_Id = testId;
                                 blockChain.Test = testRepository.GetObject(testId);
                                 blockChain.State = Convert.ToByte(EnumState.ativo);
+                                blockChain.BlockChainItems.Clear();
                             }
 
                             var test = blockChain.Test;
                             var blockChainId = blockChain.Id;
                             var maxOrder = 0;
 
-                            foreach (var blocoItem in bloco)
+                            #region blocoItem
+                            var linha = 1;
+                            foreach (var blocoItem in blocosItens)
                             {
-                                var linha = blocosItens.FindIndex(c => c.CodigoItem == blocoItem.CodigoItem && c.NumeroBloco == blocoItem.NumeroBloco) + 2;
+                                linha++;
+                                if (blocoItem.NumeroBloco != bloco.Key) continue;
 
                                 if (!ehNumero || Convert.ToInt64(bloco.Key) > test.BlockChainNumber)
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = "Bloco inválido"
@@ -1328,7 +1357,7 @@ namespace GestaoAvaliacao.Business
 
                                 if (item == null)
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = "Código do item inválido"
@@ -1339,7 +1368,7 @@ namespace GestaoAvaliacao.Business
 
                                 if (!(blockChain.BlockChainItems.Count < test.BlockChainItems))
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = "Quantidade de item do bloco excedida"
@@ -1348,7 +1377,15 @@ namespace GestaoAvaliacao.Business
                                     continue;
                                 }
 
-
+                                if (blockChain.BlockChainItems.Any(i => i.Item_Id == item.Id))
+                                {
+                                    erros.Add(new ErrosImportacaoCSV
+                                    {
+                                        Linha = linha,
+                                        Erro = $"Item {blocoItem.CodigoItem} em duplicidade no bloco {bloco.Key}."
+                                    });
+                                    continue;
+                                }
 
                                 var blockChainItem = new BlockChainItem
                                 {
@@ -1362,7 +1399,8 @@ namespace GestaoAvaliacao.Business
 
                                 blockChain.BlockChainItems.Add(blockChainItem);
                                 maxOrder++;
-                            }
+                            }                            
+                            #endregion
 
                             if (!ehNumero || long.Parse(blockChain.Description) > test.BlockChainNumber)
                                 continue;
@@ -1375,7 +1413,7 @@ namespace GestaoAvaliacao.Business
 
                         blockChainBusiness.UpdateBlockByTestId(testId);
 
-                        retorno = new CsvBlockImportDTO
+                        retorno = new CsvImportDTO
                         {
                             QtdeSucesso = blocosItens.Count - erros.Count,
                             QtdeErros = erros.Count
@@ -1391,7 +1429,7 @@ namespace GestaoAvaliacao.Business
             }
         }
 
-        public void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvBlockImportDTO retorno)
+        public void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno)
         {
 
             try
@@ -1405,7 +1443,7 @@ namespace GestaoAvaliacao.Business
                         var blocksTest = blockBusiness.GetTestBlocks(testId);
                         var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
                         var cadernosBlocos = csv.GetRecords<CadernoCsvDTO>().ToList();
-                        var erros = new List<ErrorCsvBlockImportDTO>();
+                        var erros = new List<ErrosImportacaoCSV>();
                         var cadernosInserirAlterar = new List<Block>();
                         var linha = 1;
 
@@ -1425,10 +1463,24 @@ namespace GestaoAvaliacao.Business
 
                             if (block == null)
                             {
+                                int ehInteiro;
+                                int.TryParse(caderno.Trim(), out ehInteiro);
+
+                                if (ehInteiro <= 0)
+                                {
+                                    erros.Add(new ErrosImportacaoCSV
+                                    {
+                                        Linha = linha,
+                                        Erro = "Caderno deve ser um número"
+                                    });
+                                    continue;
+
+                                }
+
                                 var numCaderno = Convert.ToInt16(caderno.Trim());
                                 if (numCaderno < 1 || numCaderno > test.NumberBlock)
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = "Caderno inválido"
@@ -1445,7 +1497,7 @@ namespace GestaoAvaliacao.Business
                             var blockChain = blockChains.FirstOrDefault(x => x.Description == bloco.Trim());
                             if (blockChain == null)
                             {
-                                erros.Add(new ErrorCsvBlockImportDTO
+                                erros.Add(new ErrosImportacaoCSV
                                 {
                                     Linha = linha,
                                     Erro = "Bloco inválido"
@@ -1459,7 +1511,7 @@ namespace GestaoAvaliacao.Business
                                 {
                                     if (block.BlockChainBlocks.Any(x => x.BlockChain_Id == blockChain.Id))
                                     {
-                                        erros.Add(new ErrorCsvBlockImportDTO
+                                        erros.Add(new ErrosImportacaoCSV
                                         {
                                             Linha = linha,
                                             Erro = $"Bloco {bloco} em duplicidade no caderno {caderno}"
@@ -1490,7 +1542,7 @@ namespace GestaoAvaliacao.Business
                                 }
                                 else
                                 {
-                                    erros.Add(new ErrorCsvBlockImportDTO
+                                    erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
                                         Erro = "Quantidade de blocos do caderno excedida"
@@ -1506,7 +1558,7 @@ namespace GestaoAvaliacao.Business
                                 cadernosInserirAlterar[indexCaderno] = block;
                         }
 
-                        retorno = new CsvBlockImportDTO
+                        retorno = new CsvImportDTO
                         {
                             QtdeSucesso = cadernosBlocos.Count - erros.Count,
                             QtdeErros = erros.Count

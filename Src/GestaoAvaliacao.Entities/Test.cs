@@ -19,6 +19,7 @@ namespace GestaoAvaliacao.Entities
             TestContexts = new List<TestContext>();
             BlockChains = new List<BlockChain>();
             Blocks = new List<Block>();
+            NumberItemsTestTai = new List<NumberItemTestTai>();
         }
 
 		public string Description { get; set; }
@@ -73,6 +74,7 @@ namespace GestaoAvaliacao.Entities
         public virtual List<TestContext> TestContexts { get; set; }
         public virtual List<BlockChain> BlockChains { get; set; }
         public virtual List<Block> Blocks { get; set; }
+        public virtual List<NumberItemTestTai> NumberItemsTestTai { get; set; }
 
         public bool AllAdhered { get; set; }
 
@@ -132,6 +134,8 @@ namespace GestaoAvaliacao.Entities
         public bool RemoveBlockChain { get; set; }
         [NotMapped]
         public bool RemoveBlockChainBlock { get; set; }
+        [NotMapped]
+        public bool RemoveTaiCurriculumGrade { get; set; }
 
         public DateTime? DownloadStartDate { get; set; }
         public bool? BlockChain { get; set; }

@@ -75,6 +75,7 @@
     <Compile Include="IReportItemChoiceBusiness.cs" />
     <Compile Include="IReportStudentPerformanceBusiness.cs" />
     <Compile Include="IReportItemPerformanceBusiness.cs" />
+    <Compile Include="IReportStudiesBusiness.cs" />
     <Compile Include="IRequestRevokeBusiness.cs" />
     <Compile Include="IResponseChangeLogBusiness.cs" />
     <Compile Include="IResultadoPspBusiness.cs" />

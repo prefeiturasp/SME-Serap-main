@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using static IdentityModel.Client.OAuth2Constants;
@@ -344,6 +345,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar opções de situação da correção." }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         public JsonResult GetInfoTestReport(long Test_id)
         {
@@ -418,6 +420,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         public JsonResult GetInfoEscReport(long Test_id, Guid uad_id, long esc_id)
         {
@@ -438,6 +441,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         public JsonResult GetInfoTurReport(long Test_id, Guid uad_id, long esc_id, long tur_id)
         {
@@ -849,6 +853,99 @@ namespace GestaoAvaliacao.Controllers
                 Response.Redirect(Request.UrlReferrer.PathAndQuery, false);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> ObterDadosAmostraProvaTai(long provaId, long matrizId,
+            int tipoCurriculoGradeId)
+        {
+            var dadosProvaTai = await testBusiness.ObterDadosProvaTai(provaId);
+
+            if (dadosProvaTai == null)
+            {
+                return Json(
+                    new
+                    {
+                        success = false,
+                        type = ValidateType.error.ToString(),
+                        message = $"Os dados da amostra não foram cadastrados para a prova {provaId}."
+                    }, JsonRequestBehavior.AllowGet);
+            }
+
+            var numeroItensAmostraTai = dadosProvaTai.NumeroItensAmostra;
+
+            var numeroItensAmostraMatrizAnoTai = (await testBusiness
+                    .ObterItensAmostraTai(new[] { matrizId }, new[] { tipoCurriculoGradeId }))
+                .Take(numeroItensAmostraTai).Count();
+
+            var porcentagemMaxima = numeroItensAmostraMatrizAnoTai * 100 / numeroItensAmostraTai;
+
+            var dados = new
+            {
+                porcentagemMaximaMatrizAno = porcentagemMaxima,
+                numeroItensAmostraMatrizAno = numeroItensAmostraMatrizAnoTai,
+                labelInfoPorcentagemMaximaMatrizAno = $"Valor % máximo: {porcentagemMaxima}."
+            };
+
+            return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> ObterDadosAmostraProvaTaiPorProvaId(long provaId)
+        {
+            var dadosProvaTai = await testBusiness.ObterDadosProvaTai(provaId);
+
+            if (dadosProvaTai == null)
+            {
+                return Json(
+                    new
+                    {
+                        success = false,
+                        type = ValidateType.error.ToString(),
+                        message = $"Os dados da amostra não foram cadastrados para a prova {provaId}."
+                    }, JsonRequestBehavior.AllowGet);
+            }
+
+            var list = await testBusiness.GetListTestTaiCurriculumGradeByTestId(provaId);
+
+            if (list == null || !list.Any())
+            {
+                return Json(
+                    new
+                    {
+                        success = false,
+                        type = ValidateType.error.ToString(),
+                        message = $"Os dados não foram cadastrados para a prova {provaId}."
+                    }, JsonRequestBehavior.AllowGet);
+            }
+
+            var numeroItensAmostraTai = dadosProvaTai.NumeroItensAmostra;
+            var matrizesIds = list.Select(c => c.MatrixId).Distinct().ToArray();
+            var tiposCurriculosGradesIds = list.Select(c => int.Parse(c.TypeCurriculumGradeId.ToString())).Distinct().ToArray();
+
+            var itensAmostraMatrizAnoTai = await testBusiness.ObterItensAmostraTai(matrizesIds, tiposCurriculosGradesIds);
+
+            var itensAgrupadosAmostraMatrizAnoTai = itensAmostraMatrizAnoTai
+                .GroupBy(c => new {c.MatrizId, c.TipoCurriculoGradeId });
+
+            var dados = new List<object>();
+
+            foreach (var item in itensAgrupadosAmostraMatrizAnoTai)
+            {
+                var numeroItensAmostraMatrizAnoTai = item.Take(numeroItensAmostraTai).Count();
+                var porcentagemMaxima = numeroItensAmostraMatrizAnoTai * 100 / numeroItensAmostraTai;
+
+                dados.Add(new
+                {
+                    item.Key.MatrizId,
+                    item.Key.TipoCurriculoGradeId,
+                    porcentagemMaximaMatrizAno = porcentagemMaxima,
+                    numeroItensAmostraMatrizAno = item.Count(),
+                    labelInfoPorcentagemMaximaMatrizAno = $"Valor % máximo: {porcentagemMaxima}."
+                });
+            }
+
+            return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region Write
@@ -1074,36 +1171,30 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpPost]
-        public JsonResult TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> listEntity)
+        public JsonResult TestTaiCurriculumGradeSave(long test_id, List<TestTaiCurriculumGrade> listEntity)
         {
             try
             {
 
-                testBusiness.TestTaiCurriculumGradeSave(listEntity);
-
+                testBusiness.TestTaiCurriculumGradeSave(test_id, listEntity);
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-
+                LogFacade.SaveError(ex);
                 return Json(new { success = false }, JsonRequestBehavior.AllowGet);
-                throw ex;
             }
-
-            //GetListTestTaiCurriculumGrade
-
-
         }
+
         [HttpGet]
-        public JsonResult GetListTestTaiCurriculumGrade(long testId)
+        public async Task<JsonResult> GetListTestTaiCurriculumGrade(long testId)
         {
             try
             {
-                var list = testBusiness.GetListTestTaiCurriculumGrade(testId);
+                var list = await testBusiness.GetListTestTaiCurriculumGradeByTestId(testId);
 
                 if (list != null && list.Any())
                     return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
-
 
                 return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
             }

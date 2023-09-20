@@ -22,10 +22,11 @@ namespace GestaoAvaliacao.WebProject.Facade
 		private const string MODULOS_GRUPOS_PERMISSOES = "MODULOS_GRUPOS_PERMISSOES";
 		private const string PARAMETERS = "PARAMETERS";
 		private const string PARAMETERKEYS = "PARAMETERKEYS";
+        private const string SME_ENT_ID = "6CF424DC-8EC3-E011-9B36-00155D033206";
 
-		#region Constructor
+        #region Constructor
 
-		static ApplicationFacade()
+        static ApplicationFacade()
 		{
 			// Armazena a URL do SSO definido nos parâmetros do CoreSSO.
 			UrlCoreSso = SYS_ParametroBO.ParametroValor(SYS_ParametroBO.eChave.URL_ADMINISTRATIVO);
@@ -179,39 +180,35 @@ namespace GestaoAvaliacao.WebProject.Facade
 			}
 		}
 
-		public static string PhysicalDirectory
-		{
-			get
-			{
-				IParameterBusiness parameterBusiness = container.Resolve<IParameterBusiness>();
-				var paramPath = parameterBusiness.GetParamByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), SessionFacade.UsuarioLogado.Usuario.ent_id);
-				var physicalPath = paramPath != null ? paramPath.Value : HttpContext.Current.Request.PhysicalApplicationPath;
+        private static string GetPhysicalDirectoryByEntId(Guid entId)
+        {
+            var parameterBusiness = container.Resolve<IParameterBusiness>();
+            var paramPath = parameterBusiness.GetParamByKey(EnumParameterKey.STORAGE_PATH.GetDescription(), entId);
+            var physicalPath = paramPath != null ? paramPath.Value : HttpContext.Current.Request.PhysicalApplicationPath;
 
-				return physicalPath;
-			}
-		}
+            return physicalPath;
+        }
 
-		public static string VirtualDirectory
-		{
-			get
-			{
-				IParameterBusiness parameterBusiness = container.Resolve<IParameterBusiness>();
-				var paramPath = parameterBusiness.GetParamByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), SessionFacade.UsuarioLogado.Usuario.ent_id);
-				var virtualPath = paramPath != null ? paramPath.Value : (ApplicationFacade.BaseURL + HttpContext.Current.Request.ApplicationPath);
+        private static string GetVirtualDirectoryByEntId(Guid entId)
+        {
+            var parameterBusiness = container.Resolve<IParameterBusiness>();
+            var paramPath = parameterBusiness.GetParamByKey(EnumParameterKey.VIRTUAL_PATH.GetDescription(), entId);
+            var virtualPath = paramPath != null ? paramPath.Value : (BaseURL + HttpContext.Current.Request.ApplicationPath);
 
-				return virtualPath;
-			}
-		}
+            return virtualPath;
+        }
 
-		public static string ProjectVirtualDirectory
-		{
-			get
-			{
-				return (ApplicationFacade.BaseURL + HttpContext.Current.Request.ApplicationPath);
-			}
-		}
+		public static string PhysicalDirectory => GetPhysicalDirectoryByEntId(SessionFacade.UsuarioLogado.Usuario.ent_id);
 
-		private static string BaseURL
+        public static string VirtualDirectory => GetVirtualDirectoryByEntId(SessionFacade.UsuarioLogado.Usuario.ent_id);
+
+        public static string PhysicalDirectorySme => GetPhysicalDirectoryByEntId(Guid.Parse(SME_ENT_ID));
+
+        public static string VirtualDirectorySme => GetVirtualDirectoryByEntId(Guid.Parse(SME_ENT_ID));
+
+        public static string ProjectVirtualDirectory => (BaseURL + HttpContext.Current.Request.ApplicationPath);
+
+        private static string BaseURL
 		{
 			get
 			{

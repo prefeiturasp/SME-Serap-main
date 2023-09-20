@@ -31,14 +31,13 @@ namespace GestaoAvaliacao.API.Controllers
 		[ResponseType(typeof(AdherenceResult))]
 		public HttpResponseMessage Post([FromBody]AdherenceModel model)
 		{
-			Adherence entity;
-			try
+            try
 			{
-				entity = adherenceBusiness.Select(long.Parse(this.UserData()), this.UserId(), model.idEntity, model.typeEntity, 
-					model.typeSelection, this.PesId(), this.EntityId(), this.VisId(), model.ttn_id, model.year, model.parentId);
+				var entity = adherenceBusiness.Select(long.Parse(this.UserData()), this.UserId(), model.idEntity, model.typeEntity, 
+                    model.typeSelection, this.PesId(), this.EntityId(), this.VisId(), model.ttn_id, model.year, model.parentId);
 
-				var result = new AdherenceResult()
-				{
+				var result = new AdherenceResult
+                {
 					id = model.idEntity,
 					success = entity.Validate.IsValid,
 					type = entity.Validate.Type,

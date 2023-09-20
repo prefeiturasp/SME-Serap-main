@@ -42,6 +42,9 @@
     <Reference Include="FluentValidation, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentValidation.8.6.3\lib\net45\FluentValidation.dll</HintPath>
     </Reference>
+    <Reference Include="GestaoAvaliacao.WebProject">
+      <HintPath>..\GestaoAvaliacao\Bin\GestaoAvaliacao.WebProject.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -130,6 +133,7 @@
     <Compile Include="CorrectionResultsBusiness.cs" />
     <Compile Include="DTO\BlockCsvDTO.cs" />
     <Compile Include="DTO\CadernoCsvDTO.cs" />
+    <Compile Include="DTO\ReportStudiesCsvDto.cs" />
     <Compile Include="ExportAnalysisBusiness.cs" />
     <Compile Include="GenerateHtmlBusiness.cs" />
     <Compile Include="ItemAudioBusiness.cs" />
@@ -142,6 +146,7 @@
     <Compile Include="ReportItemChoiceBusiness.cs" />
     <Compile Include="ReportStudentPerformanceBusiness.cs" />
     <Compile Include="ReportItemPerformanceBusiness.cs" />
+    <Compile Include="ReportStudiesBusiness.cs" />
     <Compile Include="RequestRevokeBusiness.cs" />
     <Compile Include="ResponseChangeLogBusiness.cs" />
     <Compile Include="ResultadoPspBusiness.cs" />
