@@ -215,6 +215,12 @@ namespace GestaoAvaliacao.Repository
                                "FROM BlockChain WITH (NOLOCK) " +
                                "WHERE Test_Id = @testId " +
                                "AND State = @state " +
+                               "ORDER BY " +
+                               "CASE IsNumeric(Description) " +
+                               "    WHEN 1 THEN Replicate('0', 100 - Len(Description)) + Description " +
+                               "ELSE " +
+                               "    Description " +
+                               "END " +
 
                                "SELECT T.Id " +
                                "FROM Test T WITH(NOLOCK)" +
@@ -261,7 +267,12 @@ namespace GestaoAvaliacao.Repository
   										                                          AND bc.State = @state)
 										   WHERE bcb.Block_Id = b.Id 
 										   AND bcb.State = @state)
-                                ORDER BY b.Description
+                                ORDER BY 
+                                CASE IsNumeric(b.Description)
+                                    WHEN 1 THEN Replicate('0', 100 - Len(b.Description)) + b.Description
+                                ELSE 
+                                    b.Description
+                                END
 
 								SELECT T.Id
 								FROM Test T WITH(NOLOCK)
