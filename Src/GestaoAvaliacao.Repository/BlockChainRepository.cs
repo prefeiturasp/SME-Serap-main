@@ -159,6 +159,18 @@ namespace GestaoAvaliacao.Repository
                 if (blockChainItems.Count > 0)
                     entity.BlockChainItems.AddRange(blockChainItems);
 
+                //-> BlockItem
+                if (blockItems.Count > 0)
+                {
+                    foreach (var blockChainBlock in entity.BlockChainBlocks)
+                    {
+                        var blockItemsAdd = blockItems.Where(c => c.Block_Id == blockChainBlock.Block_Id);
+
+                        if (blockItemsAdd.Any())
+                            blockChainBlock.Block.BlockItems.AddRange(blockItemsAdd);
+                    }
+                }
+
                 #endregion
 
                 entity.Test.UpdateDate = dateNow;
