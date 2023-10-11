@@ -1625,13 +1625,14 @@ namespace GestaoAvaliacao.Repository
 
                 gestaoAvaliacaoContext.SaveChanges();
 
-                var blockChainBlock = gestaoAvaliacaoContext.BlockChainBlocks.FirstOrDefault(c =>
+                var blockChainBlocks = gestaoAvaliacaoContext.BlockChainBlocks.Where(c =>
                     c.BlockChain_Id == blockChainId && c.State == (int)EnumState.ativo);
 
-                if (blockChainBlock == null)
+                if (!blockChainBlocks.Any())
                     return;
 
-                SaveChangeItem(item, testId, itemIdAntigo, blockChainBlock.Block_Id);
+                foreach (var blockId in blockChainBlocks.Select(c => c.Block_Id).Distinct())
+                    SaveChangeItem(item, testId, itemIdAntigo, blockId);
             }
         }
 
