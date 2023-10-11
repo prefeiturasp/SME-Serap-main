@@ -1500,7 +1500,6 @@ namespace GestaoAvaliacao.Controllers
                     (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
                         SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);
 
-
                 return Json(new { success = true, retorno, message = "Importação dos blocos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
