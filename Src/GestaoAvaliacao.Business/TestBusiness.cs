@@ -1471,7 +1471,7 @@ namespace GestaoAvaliacao.Business
                                     erros.Add(new ErrosImportacaoCSV
                                     {
                                         Linha = linha,
-                                        Erro = "Caderno deve ser um número"
+                                        Erro = "Caderno inválido"
                                     });
                                     continue;
 
