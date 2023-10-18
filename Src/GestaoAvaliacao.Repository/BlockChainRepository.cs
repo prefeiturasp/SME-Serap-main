@@ -51,15 +51,17 @@ namespace GestaoAvaliacao.Repository
                 var blockChainItems = new List<BlockChainItem>();
                 var blockItems = new List<BlockItem>();
 
-                var blockChainBlocksDatabase = entity.BlockChainBlocks.Where(c => c.BlockChain_Id == blockChain.Id && c.State == (byte)EnumState.ativo).ToList();
-                var blocksDatabase = blockChainBlocksDatabase.Select(c => c.Block).Where(c => c.State == (byte)EnumState.ativo).ToList();
-                var blockChainItemsDatabase = entity.BlockChainItems.Where(c => c.State == (byte)EnumState.ativo).ToList();
+                var blockChainBlocksDatabase = entity.BlockChainBlocks.Where(c => c.BlockChain_Id == blockChain.Id && c.State == (byte)EnumState.ativo);
+                var blocksDatabase = blockChainBlocksDatabase.Select(c => c.Block).Where(c => c.State == (byte)EnumState.ativo);
+                var blockChainItemsDatabase = entity.BlockChainItems.Where(c => c.State == (byte)EnumState.ativo);
 
                 var blockChainItemsFront = blockChain.BlockChainItems;
+
                 var idsItemsFront = blockChainItemsFront.Select(s => s.Item_Id);
                 var idsItemsDatabase = blockChainItemsDatabase.Select(s => s.Item_Id);
-                var idsItemsToExclude = idsItemsDatabase.Except(idsItemsFront).ToList();
+                var idsItemsToExclude = idsItemsDatabase.Except(idsItemsFront);
 
+                //-> excluir itens do bloco e do caderno
                 if (idsItemsToExclude.Any())
                 {
                     //-> BlockChainItem
@@ -74,10 +76,10 @@ namespace GestaoAvaliacao.Repository
                     //-> Block
                     foreach (var block in blocksDatabase)
                     {
-                        var blockItemsToExclude = block.BlockItems.Where(s =>
-                            idsItemsToExclude.Contains(s.Item_Id) && s.State == (byte)EnumState.ativo);
+                        var blockItemsDatabase = block.BlockItems.Where(c => c.State == (byte)EnumState.ativo &&
+                                                                             c.Block_Id == block.Id);
 
-                        foreach (var blockItem in blockItemsToExclude)
+                        foreach (var blockItem in blockItemsDatabase.Where(c => idsItemsToExclude.Contains(c.Item_Id)))
                         {
                             blockItem.State = Convert.ToByte(EnumState.excluido);
                             blockItem.UpdateDate = dateNow;
@@ -87,6 +89,7 @@ namespace GestaoAvaliacao.Repository
                     }
                 }
 
+                //-> incluir/atualizar itens do bloco e do caderno
                 foreach (var blockChainItemFront in blockChainItemsFront)
                 {
                     if (blockChainItemFront == null)
@@ -95,8 +98,8 @@ namespace GestaoAvaliacao.Repository
                     //-> BlockChainItem
                     var blockChainItemDb = blockChainItemsDatabase
                         .FirstOrDefault(e =>
-                            e.Item_Id.Equals(blockChainItemFront.Item_Id) &&
-                            e.BlockChain_Id.Equals(blockChainItemFront.BlockChain_Id));
+                            e.Item_Id == blockChainItemFront.Item_Id &&
+                            e.BlockChain_Id == blockChainItemFront.BlockChain_Id);
 
                     if (blockChainItemDb != null)
                     {
@@ -112,12 +115,14 @@ namespace GestaoAvaliacao.Repository
                     //-> Block
                     foreach (var blockDb in blocksDatabase)
                     {
-                        var blockItemDb = blockDb.BlockItems.FirstOrDefault(c =>
-                            c.Item_Id == blockChainItemFront.Item_Id && c.Block_Id == blockDb.Id &&
-                            c.State == (byte)EnumState.ativo);
+                        var blockItemsDatabase = blockDb.BlockItems.Where(c => c.State == (byte)EnumState.ativo &&
+                                                                               c.Block_Id == blockDb.Id);
+
+                        var blockItemDb = blockItemsDatabase.FirstOrDefault(c => c.Item_Id == blockChainItemFront.Item_Id);
 
                         if (blockItemDb != null)
                         {
+                            blockItemDb.Order = blockChainItemFront.Order;
                             blockItemDb.UpdateDate = dateNow;
                             gestaoAvaliacaoContext.Entry(blockItemDb).State = System.Data.Entity.EntityState.Modified;
 
@@ -125,31 +130,11 @@ namespace GestaoAvaliacao.Repository
                         }
                         else
                         {
-                            var ordem = blockItems.Any() ? blockItems.Max(c => c.Order) + 1 : 1;
-
-                            if (blockItems.Any())
-                            {
-                                var ordens = blockItems.Select(c => c.Order).ToList();
-                                var ordemMaxima = ordens.Max();
-                                var intervaloEncontrado = -1;
-
-                                if (ordemMaxima >= 0)
-                                {
-                                    intervaloEncontrado = Enumerable.Range(-1, ordens.Count).Except(ordens)
-                                        .FirstOrDefault();
-
-                                    if (intervaloEncontrado == -1)
-                                        intervaloEncontrado = 0;
-                                }
-
-                                ordem = intervaloEncontrado >= 0 ? intervaloEncontrado : ordemMaxima + 1;
-                            }
-
                             blockItems.Add(new BlockItem
                             {
                                 Block_Id = blockDb.Id,
                                 Item_Id = blockChainItemFront.Item_Id,
-                                Order = ordem
+                                Order = blockChainItemFront.Order
                             });
                         }
                     }
