@@ -125,24 +125,36 @@ namespace GestaoAvaliacao.Repository
                         }
                         else
                         {
-                            var ordem = blockItems.Any() ? blockItems.Max(c => c.Order) + 1 : 1;
+                            var ordem = blockItems.Any() ? blockItems.Max(c => c.Order) + 1 : 0;
 
                             if (blockItems.Any())
                             {
-                                var ordens = blockItems.Select(c => c.Order).ToList();
+                                var ordens = blockItems.Select(c => c.Order);
                                 var ordemMaxima = ordens.Max();
+
+                                var ordemItemExcluido = -1;
+                                var blockItemsExcluidos = blockItems.Where(c => c.State == Convert.ToByte(EnumState.excluido));
+                                if (blockItemsExcluidos.Any())
+                                {
+                                    var blockItemExcluido = blockItemsExcluidos.FirstOrDefault(c => !ordens.Contains(c.Order));
+
+                                    if (blockItemExcluido != null)
+                                        ordemItemExcluido = blockItemExcluido.Order;
+                                }
+
                                 var intervaloEncontrado = -1;
 
                                 if (ordemMaxima >= 0)
                                 {
-                                    intervaloEncontrado = Enumerable.Range(-1, ordens.Count).Except(ordens)
+                                    intervaloEncontrado = Enumerable.Range(-1, ordens.Count()).Except(ordens)
                                         .FirstOrDefault();
 
                                     if (intervaloEncontrado == -1)
                                         intervaloEncontrado = 0;
                                 }
 
-                                ordem = intervaloEncontrado >= 0 ? intervaloEncontrado : ordemMaxima + 1;
+                                var proximaOrdem = ordemMaxima + 1;
+                                ordem = ordemItemExcluido < 0 ? intervaloEncontrado >= 0 ? intervaloEncontrado : proximaOrdem : ordemItemExcluido;
                             }
 
                             blockItems.Add(new BlockItem
