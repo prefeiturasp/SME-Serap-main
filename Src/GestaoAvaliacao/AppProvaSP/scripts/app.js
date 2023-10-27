@@ -6155,9 +6155,33 @@ function definirEventHandlers() {
 
     function iniciarQuestionario() {
         $("#divQuestionario" + questionarioId_atual + "_Intro").hide();
+        buscarRespostasUsuarioQuestionario();
         $("#divQuestionario" + questionarioId_atual + "_Questoes").show();
         $("#divTituloQuestionario").show();
         $.mobile.silentScroll(0);
+    }
+
+    function buscarRespostasUsuarioQuestionario() {
+        let urlRespostasUsuarioQuestionario = urlBackEnd +
+            "api/Usuario/RespostasUsuario?" +
+            "&questionarioID=" + questionarioId_atual +
+            "&usu_id=" + Usuario.usu_id;
+
+        $.ajax({
+            url: urlRespostasUsuarioQuestionario,
+            type: "GET",
+            "dataType": "JSON",
+            crossDomain: true,
+            cache: false,
+            success: function (data) {
+                data.forEach(e => {
+                    $("#Questionario_" + questionarioId_atual +  "_Questao_" + e.Numero + "_" + e.Valor).prop('checked', true).checkboxradio('refresh');
+                });
+            },
+            error: function (erro) {
+                ProvaSP_Erro("Erro " + erro.status, erro.statusText);
+            }
+        })
     }
 
     /**
