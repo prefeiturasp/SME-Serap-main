@@ -314,13 +314,18 @@ namespace ProvaSP.Data
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
             {
                 StringBuilder sqlQuery = new StringBuilder();
-                sqlQuery.AppendLine("SELECT COUNT(0)");
-                sqlQuery.AppendLine("	FROM QuestionarioUsuario qu");
-                sqlQuery.AppendLine("        INNER JOIN Questionario q");
-                sqlQuery.AppendLine("            ON qu.QuestionarioID = q.QuestionarioID");
+                sqlQuery.AppendLine("SELECT COUNT(DISTINCT qri.QuestionarioItemID) - COUNT(qi.QuestionarioItemID)");
+                sqlQuery.AppendLine("	FROM Questionario q");
+                sqlQuery.AppendLine("		INNER JOIN QuestionarioItem qi");
+                sqlQuery.AppendLine("			ON q.QuestionarioID = qi.QuestionarioID");
+                sqlQuery.AppendLine("		LEFT JOIN QuestionarioUsuario qu");
+                sqlQuery.AppendLine("			ON q.QuestionarioID = qu.QuestionarioID AND");
+                sqlQuery.AppendLine("			   qu.usu_id = @usu_id");
+                sqlQuery.AppendLine("		LEFT JOIN QuestionarioRespostaItem qri");
+                sqlQuery.AppendLine("			ON qi.QuestionarioItemID = qri.QuestionarioItemID AND");
+                sqlQuery.AppendLine("			   qu.QuestionarioUsuarioID = qri.QuestionarioUsuarioID");
                 sqlQuery.AppendLine("WHERE q.Edicao = @edicao AND");
-                sqlQuery.AppendLine("      q.QuestionarioID = @questionarioID AND");
-                sqlQuery.AppendLine("      qu.usu_id = @usu_id");
+                sqlQuery.AppendLine("	  qi.QuestionarioID = @questionarioID");
 
                 var parametros = new DynamicParameters();
                 parametros.Add("edicao", edicao, DbType.AnsiString, ParameterDirection.Input, 10);
@@ -329,7 +334,7 @@ namespace ProvaSP.Data
 
                 try
                 {
-                    return conn.Query<int>(sql: sqlQuery.ToString(), param: parametros).Single() > 0;
+                    return conn.Query<int>(sql: sqlQuery.ToString(), param: parametros).Single() >= 0;
                 }
                 catch (Exception ex)
                 {
@@ -358,5 +363,44 @@ namespace ProvaSP.Data
                 }
             }
         }
+
+        public static IEnumerable<RespostasQuestao> ObterRespostasQuestionarioPorUsuario(int questionarioID, string usu_id)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                var sqlQuery = new StringBuilder();
+                sqlQuery.AppendLine("SELECT qi.Numero,");
+                sqlQuery.AppendLine("	    qri.Valor");
+                sqlQuery.AppendLine("	FROM QuestionarioUsuario qu");
+                sqlQuery.AppendLine("		INNER JOIN QuestionarioItem qi");
+                sqlQuery.AppendLine("			ON qu.QuestionarioID = qi.QuestionarioID");
+                sqlQuery.AppendLine("		LEFT JOIN QuestionarioRespostaItem qri");
+                sqlQuery.AppendLine("			ON qu.QuestionarioUsuarioID = qri.QuestionarioUsuarioID AND");
+                sqlQuery.AppendLine("			   qi.QuestionarioItemID = qri.QuestionarioItemID");
+                sqlQuery.AppendLine("WHERE qi.QuestionarioID = @questionarioID AND");
+                sqlQuery.AppendLine("	   qu.usu_id = @usu_id AND");
+                sqlQuery.AppendLine("	   qri.Valor IS NOT NULL");
+                sqlQuery.AppendLine("ORDER BY CONVERT(INT, qi.Numero)");
+
+                var parametros = new DynamicParameters();
+                parametros.Add("questionarioID", questionarioID, DbType.Int32, ParameterDirection.Input);
+                parametros.Add("usu_id", usu_id, DbType.AnsiString, ParameterDirection.Input);
+
+                try
+                {
+                    return conn.Query<RespostasQuestao>(sql: sqlQuery.ToString(), param: parametros);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }        
+    }
+
+    public struct RespostasQuestao
+    {
+        public string Numero { get; set; }
+        public string Valor { get; set; }
     }
 }
