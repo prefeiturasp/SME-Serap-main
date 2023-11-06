@@ -7930,7 +7930,9 @@ function popupProvaAluno(serverRetorno) {
             //Critérios de redação
             itemProvaDownloaHTML += "<p class='provaaluno_criterios'>";
             for (var j = 1; j < 6; j++) {
-                if (serverRetorno[i].hasOwnProperty("REDQ" + j)) {
+                console.log("ObjServerRetorno", serverRetorno[i]);
+                if (serverRetorno[i].hasOwnProperty("REDQ" + j) && serverRetorno[i]["REDQ" + j] != null) {
+
                     itemProvaDownloaHTML += "Critério " + j + ": ";
                     itemProvaDownloaHTML += serverRetorno[i]["REDQ" + j];
                     itemProvaDownloaHTML += "<br />";
@@ -7983,8 +7985,20 @@ function buscarCicloPeloAnoLetivo(anoLetivo) {
 $("#btnProvaAlunoCriterios").unbind("click").click(function () {
     try {
         var disciplinaID = $("#ddlResultadoAreaConhecimento").val();
-        var linkCriterio = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
-            "CriterioCorrecao/" + disciplinaID + "/" + provaAlunoCicloSelecionado + ".pdf";
+        var anoLetivo = $("#ddlResultadoEdicao").val();
+        var anoEscolar = $("#ddlResultadoAno").val();
+        var linkCriterio = '';
+        if (anoLetivo < 2022) {
+
+            linkCriterio = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
+                "CriterioCorrecao/" + disciplinaID + "/" + provaAlunoCicloSelecionado + ".pdf";
+        }
+        else {
+
+            linkCriterio = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
+                "CriterioCorrecao/" + anoLetivo + "/" + anoEscolar + "/" + disciplinaID + "/" + provaAlunoCicloSelecionado + ".pdf";
+        }
+
 
         if (mobile) {
             if (navigator.connection.type == Connection.NONE || navigator.connection.type == Connection.UNKNOWN) {
@@ -9520,7 +9534,7 @@ $("#btnCFEApresentar").unbind("click").click(function () {
                     $("#ddlCFEQuestionario option:selected").text() + " - ");
 
                 if ($("#ddlCFECiclo").val() != "")
-                    $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFECiclo option:selected").text()); 
+                    $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFECiclo option:selected").text());
 
                 if ($("#ddlCFEAnoEscolar").val() != "")
                     $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFEAnoEscolar option:selected").text());

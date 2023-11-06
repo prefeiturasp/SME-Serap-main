@@ -10,10 +10,10 @@
         public string pagina { get; set; }
         public string alu_nome { get; set; }
         public string caminho { get; set; }
-        public float REDQ1 { get; set; }
-        public float REDQ2 { get; set; }
-        public float REDQ3 { get; set; }
-        public float REDQ4 { get; set; }
-        public float REDQ5 { get; set; }
+        public float? REDQ1 { get; set; }
+        public float? REDQ2 { get; set; }
+        public float? REDQ3 { get; set; }
+        public float? REDQ4 { get; set; }
+        public float? REDQ5 { get; set; }
     }
 }
