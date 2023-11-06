@@ -27,7 +27,7 @@ public class ReportStudiesController : Controller
     }
 
     [HttpPost]
-    public JsonResult Save(HttpPostedFileBase file, string Name, int?TypeGroup, string Addressee, string Link)
+    public JsonResult Save(HttpPostedFileBase file, string Name, int? TypeGroup, string Addressee, string Link)
     {
         try
         {
@@ -55,7 +55,7 @@ public class ReportStudiesController : Controller
             if (entity == null)
                 throw new Exception("Entidade não pode ser nula");
             var ret = reportStudiesBusiness.Save(entity, upload);
-        
+
             return Json(new { success = ret, message = ret ? null : "Erro ao salvar arquivo." }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
@@ -80,7 +80,7 @@ public class ReportStudiesController : Controller
                 {
                     Codigo = entity.Id,
                     NomeArquivo = entity.Name,
-                    Grupo = entity.TypeGroup!= null? ((EnumTypeGroup)entity.TypeGroup).GetDescription() : "",
+                    Grupo = entity.TypeGroup != null ? ((EnumTypeGroup)entity.TypeGroup).GetDescription() : "",
                     Destinatario = entity.Addressee,
                     DataUpload = entity.CreateDate.ToString(),
                     Link = entity.Link
@@ -100,26 +100,41 @@ public class ReportStudiesController : Controller
         }
     }
 
+    [HttpGet]
+    public JsonResult ListarGrupos()
+    {
+        try
+        {
+            var result = reportStudiesBusiness.ListarGrupos();
+            return Json(new { success = true, lista = result }, JsonRequestBehavior.AllowGet);
+        }
+        catch (Exception ex)
+        {
+            LogFacade.SaveError(ex);
+            return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar listar os grupos." }, JsonRequestBehavior.AllowGet);
+        }
+    }
+
     [HttpPost]
     public JsonResult Delete(long id)
     {
         try
         {
-           var ret = reportStudiesBusiness.DeleteById(id);
+            var ret = reportStudiesBusiness.DeleteById(id);
             return Json(new { success = ret, message = ret ? null : "Erro ao deletar  arquivo." }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
         {
             LogFacade.SaveError(ex);
-            return Json(new { success = false , message = "Erro ao deletar  arquivo." }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = false, message = "Erro ao deletar  arquivo." }, JsonRequestBehavior.AllowGet);
         }
-   
+
     }
 
     [HttpPost]
     public JsonResult ImportCsv(HttpPostedFileBase file)
     {
-            var b = new BinaryReader(file.InputStream);
+        var b = new BinaryReader(file.InputStream);
         var binData = b.ReadBytes(file.ContentLength);
         var result = System.Text.Encoding.UTF8.GetString(binData);
 
@@ -133,14 +148,14 @@ public class ReportStudiesController : Controller
 
         try
         {
-             
+
             reportStudiesBusiness.ImportCsv(file, SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, out var retorno);
             return Json(new { success = true, retorno, message = "Importação realizada com sucesso!." }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
         {
             LogFacade.SaveError(ex);
-            return Json(new { success = false, retorno = "", message = ex.Message}, JsonRequestBehavior.AllowGet);
+            return Json(new { success = false, retorno = "", message = ex.Message }, JsonRequestBehavior.AllowGet);
         }
     }
 

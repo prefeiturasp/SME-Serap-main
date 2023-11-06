@@ -11,6 +11,7 @@ using GestaoEscolar.IBusiness;
 using MSTech.CoreSSO.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -236,6 +237,29 @@ namespace GestaoAvaliacao.Business
             };
 
             return listaGrupo;
+        }
+
+        public IEnumerable<ItemListaDto> ListarGrupos()
+        {
+            var enumType = typeof(EnumTypeGroup);
+            var listaGrupos = new List<ItemListaDto>();
+
+            foreach (var value in Enum.GetValues(enumType))
+            {
+                var name = Enum.GetName(enumType, value);
+                var fieldInfo = enumType.GetField(name);
+                var descriptionAttribute = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false)
+                                                    .FirstOrDefault() as DescriptionAttribute;
+
+                if (descriptionAttribute != null)
+                {
+                    var description = descriptionAttribute.Description;
+                    var code = (int)value;
+                    listaGrupos.Add(new ItemListaDto { Descricao = description, Id = code });
+                }
+            }
+
+            return listaGrupos.OrderBy(x => x.Id);
         }
 
         private static CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)
