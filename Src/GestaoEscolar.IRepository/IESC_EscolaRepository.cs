@@ -22,6 +22,7 @@ namespace GestaoEscolar.IRepository
         SchoolAndDRENamesProjection GetSchoolAndDRENames(int esc_id);
 
         IEnumerable<EscolaDto> LoadAllSchoollsActiveDto();
+        IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo);
     }
 
 }

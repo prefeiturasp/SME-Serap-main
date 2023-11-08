@@ -11,6 +11,7 @@ using GestaoEscolar.IBusiness;
 using MSTech.CoreSSO.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -236,6 +237,60 @@ namespace GestaoAvaliacao.Business
             };
 
             return listaGrupo;
+        }
+
+        public IEnumerable<ItemListaDto> ListarGrupos()
+        {
+            var enumType = typeof(EnumTypeGroup);
+            var listaGrupos = new List<ItemListaDto>();
+
+            foreach (var value in Enum.GetValues(enumType))
+            {
+                var name = Enum.GetName(enumType, value);
+                var fieldInfo = enumType.GetField(name);
+                var descriptionAttribute = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false)
+                                                    .FirstOrDefault() as DescriptionAttribute;
+
+                if (descriptionAttribute != null)
+                {
+                    var description = descriptionAttribute.Description;
+                    var code = (int)value;
+                    listaGrupos.Add(new ItemListaDto { Descricao = description, Id = code });
+                }
+            }
+
+            return listaGrupos.OrderBy(x => x.Id);
+        }
+
+        public IEnumerable<ItemListaDto> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup tipoGrupo, string uad_codigo)
+        {
+            var listaDestinatarios = new List<ItemListaDto>();
+            
+            var listaDres = _uadBusiness.LoadDRESimple(usuario, sysGrupo);
+            var listaCodigosDre = listaDres.Select(x => x.uad_sigla).ToList();
+
+            if (tipoGrupo == EnumTypeGroup.DRE)
+            {
+                listaDestinatarios = listaDres.Select(x => new ItemListaDto
+                {
+                    Codigo = x.uad_codigo,
+                    Descricao = x.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")
+                }).ToList();
+            }
+
+            if (tipoGrupo == EnumTypeGroup.UE)
+            {
+                if (string.IsNullOrEmpty(uad_codigo)) throw new Exception("informe o código da DRE");
+                var dre = _uadBusiness.GetByUad_Codigo(uad_codigo);
+                var listaEscolas = _schoolBusiness.LoadSimple(usuario, sysGrupo, dre.uad_id);
+                listaDestinatarios = listaEscolas.Select(x => new ItemListaDto
+                {
+                    Codigo = x.esc_codigo,
+                    Descricao = $"{x.esc_codigo} - {x.esc_nome}"
+                }).ToList();
+            }
+
+            return listaDestinatarios;
         }
 
         private static CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)

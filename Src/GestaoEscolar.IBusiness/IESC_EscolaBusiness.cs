@@ -22,5 +22,6 @@ namespace GestaoEscolar.IBusiness
         ESC_Escola GetWithAdministrativeUnity(Guid ent_id, long esc_id);
 		IEnumerable<ESC_Escola> LoadSimpleTeacher(Guid ent_id, Guid pes_id, Guid uad_id);
         IEnumerable<EscolaDto> LoadAllSchoollsActiveDto();
+        IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo);
     }
 }

@@ -17,7 +17,7 @@ namespace GestaoEscolar.Repository
         public IEnumerable<ESC_Escola> LoadSimple(Guid ent_id, Guid uad_id, IEnumerable<string> esc_id = null)
         {
             var sql = new StringBuilder("SELECT esc_id, esc_nome, uad_idSuperiorGestao ");
-            sql.Append("FROM ESC_Escola AS ESC WITH (NOLOCK) ");         
+            sql.Append("FROM ESC_Escola AS ESC WITH (NOLOCK) ");
             sql.Append("INNER JOIN Synonym_AdministrativeUnitType AS AUT WITH(NOLOCK) ");
             sql.Append("ON AUT.AdministrativeUnitTypeId = ESC.tua_id ");
             sql.Append("WHERE ent_id = @ent_id ");
@@ -78,7 +78,7 @@ namespace GestaoEscolar.Repository
             sql.AppendLine("INNER JOIN TUR_TurmaDocente (NOLOCK) tdoc ON d.doc_id = tdoc.doc_id AND tdoc.tdt_situacao = @state ");
             sql.AppendLine("INNER JOIN TUR_TurmaDisciplina (NOLOCK) td ON td.tud_id = tdoc.tud_id AND td.tud_situacao = @state ");
             sql.AppendLine("INNER JOIN TUR_Turma t (NOLOCK) ON t.tur_id = td.tur_id AND t.tur_situacao = @state ");
-            sql.AppendLine("INNER JOIN ESC_Escola e (NOLOCK) ON e.esc_id = t.esc_id AND e.esc_situacao = @state ");          
+            sql.AppendLine("INNER JOIN ESC_Escola e (NOLOCK) ON e.esc_id = t.esc_id AND e.esc_situacao = @state ");
             sql.AppendLine("INNER JOIN Synonym_AdministrativeUnitType AS AUT WITH(NOLOCK) ");
             sql.AppendLine("ON AUT.AdministrativeUnitTypeId = e.tua_id ");
             sql.AppendLine("WHERE d.doc_situacao = @state ");
@@ -153,7 +153,7 @@ namespace GestaoEscolar.Repository
         }
 
 
-       public IEnumerable<EscolaDto> LoadAllSchoollsActiveDto()
+        public IEnumerable<EscolaDto> LoadAllSchoollsActiveDto()
         {
 
             var sql = new StringBuilder("SELECT esc_codigo as EscCodigo , esc_nome as EscNome  ")
@@ -165,6 +165,21 @@ namespace GestaoEscolar.Repository
                 cn.Open();
 
                 return cn.Query<EscolaDto>(sql.ToString()).ToList();
+            }
+        }
+
+        public IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo)
+        {
+            var sql = @"SELECT esc.esc_codigo as EscCodigo , esc.esc_nome as EscNome
+								FROM ESC_Escola esc
+								INNER JOIN SYS_UnidadeAdministrativa uad ON uad.uad_id = esc.uad_idSuperiorGestao
+								where esc.esc_situacao = 1
+								and uad.uad_codigo = @uad_codigo";
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+                return cn.Query<EscolaDto>(sql.ToString(), new { uad_codigo = uad_codigo }).ToList();
             }
         }
     }
