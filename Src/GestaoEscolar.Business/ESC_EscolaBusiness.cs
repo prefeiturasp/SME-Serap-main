@@ -94,6 +94,11 @@ namespace GestaoEscolar.Business
 			return escolaRepository.LoadAllSchoollsActiveDto();
 		}
 
+        public IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo)
+        {
+            return escolaRepository.ListarEscolasPorcodigoDre(uad_codigo);
+        }
+
         #endregion
 
     }
