@@ -22,6 +22,6 @@ namespace GestaoAvaliacao.IBusiness
         Validate Validate(ReportStudies entity, long evaluationMatrixId, ValidateAction action, Validate valid);
         void ImportCsv(HttpPostedFileBase arquivo, SYS_Usuario usuario, SYS_Grupo sysGrupo, out CsvImportDTO retornoCsv);
         IEnumerable<ItemListaDto> ListarGrupos();
-        IEnumerable<ItemListaDto> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup tipoGrupo, string uad_codigo);
+        IEnumerable<ItemListaDto> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup tipoGrupo);
     }
 }

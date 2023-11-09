@@ -29,13 +29,16 @@
         $scope.resultImportarCsv = null;
         $scope.paginate = $pager(ReportStudiesModel.carregaImportacoes);
         $scope.pageSize = 10;
+        $scope.grupo = {};
+        $scope.destinatario = {};
+;
 
         $scope.load = function _load() {
             self.chamadasBack = {};
             $notification.clear();
             $scope.carregaImportacoesPaginado(null);
             $scope.carregaGrupos();
-            $scope.carregaDestinatarios();
+         
         };
 
         $scope.pesquisarArquivo = function _pesquisarArquivo() {
@@ -69,21 +72,34 @@
         }
 
         $scope.carregaGrupos = function __carregaGrupos() {
-            $scope.listaGrupos = [
-                { Codigo: 1, Nome: 'UE' },
-                { Codigo: 2, Nome: 'DRE' },
-                { Codigo: 3, Nome: 'SME' },
-                { Codigo: 4, Nome: 'Geral' },
-                { Codigo: 5, Nome: 'Público' }
-            ];
+            ReportStudiesModel.listarGrupos({}, function (result) {
+                    if (result.success) {
+                        $scope.listaGrupos = result.lista;
+                    }
+                    else {
+                        $notification[result.type ? result.type : 'error'](result.message);
+                    }
+                });   
         }
 
         $scope.carregaDestinatarios = function __carregaDestinatarios() {
-            $scope.listaDestinatarios = [
-                { Codigo: 1, Nome: 'BT - Butanta' },
-                { Codigo: 2, Nome: 'Geral' },
-                { Codigo: 3, Nome: '191 - Alipio' }
-            ];
+            ReportStudiesModel.listarDestinatarios({ tipoGrupo: $scope.grupo.Id }, function (result) {
+                if (result.success) {
+                    $scope.listaDestinatarios = result.lista;
+                }
+                else {
+                    $notification[result.type ? result.type : 'error'](result.message);
+                }
+            });   
+
+
+
+            //$scope.listaDestinatarios = [
+            //    { Codigo: 1, Nome: 'BT - Butanta' },
+            //    { Codigo: 2, Nome: 'Geral' },
+            //    { Codigo: 3, Nome: '191 - Alipio' }
+            //];
+
         }
 
         $scope.carregaImportacoesPaginado = function __ImportacoesPaginado(paginate) {
@@ -172,7 +188,8 @@
             angular.element("input[type='file']").val(null);
         }
         
-        $scope.confirmarDeletar = function __confirmarDeletar(item) {
+        $scope.confirmarDeletar = function 
+            (item) {
             $scope.itemParaDeletar = item;
             angular.element('#modalDelete').modal({ backdrop: 'static' });
         };

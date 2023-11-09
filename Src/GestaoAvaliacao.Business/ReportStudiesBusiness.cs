@@ -43,10 +43,7 @@ namespace GestaoAvaliacao.Business
             {
                 if (entity == null || string.IsNullOrEmpty(entity.Name) || string.IsNullOrEmpty(entity.Addressee))
                     valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
-
-
             }
-
 
             if (!string.IsNullOrEmpty(valid.Message))
             {
@@ -262,7 +259,7 @@ namespace GestaoAvaliacao.Business
             return listaGrupos.OrderBy(x => x.Id);
         }
 
-        public IEnumerable<ItemListaDto> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup tipoGrupo, string uad_codigo)
+        public IEnumerable<ItemListaDto> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup tipoGrupo)
         {
             var listaDestinatarios = new List<ItemListaDto>();
             
@@ -280,9 +277,7 @@ namespace GestaoAvaliacao.Business
 
             if (tipoGrupo == EnumTypeGroup.UE)
             {
-                if (string.IsNullOrEmpty(uad_codigo)) throw new Exception("informe o código da DRE");
-                var dre = _uadBusiness.GetByUad_Codigo(uad_codigo);
-                var listaEscolas = _schoolBusiness.LoadSimple(usuario, sysGrupo, dre.uad_id);
+                var listaEscolas = _schoolBusiness.LoadSimple(usuario, sysGrupo, Guid.Empty);
                 listaDestinatarios = listaEscolas.Select(x => new ItemListaDto
                 {
                     Codigo = x.esc_codigo,

@@ -116,11 +116,11 @@ public class ReportStudiesController : Controller
     }
 
     [HttpGet]
-    public JsonResult ListarDestinatarios(EnumTypeGroup tipoGrupo, string uad_codigo)
+    public JsonResult ListarDestinatarios(EnumTypeGroup tipoGrupo)
     {
         try
         {
-            var result = reportStudiesBusiness.ListarDestinatarios(SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, tipoGrupo, uad_codigo);
+            var result = reportStudiesBusiness.ListarDestinatarios(SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, tipoGrupo);
             return Json(new { success = true, lista = result }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)

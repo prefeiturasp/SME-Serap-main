@@ -19,6 +19,14 @@
 				method: 'POST',
 				url: base_url('ReportStudies/Delete')
 			},
+			'listarDestinatarios': {
+				method: 'GET',
+				url: base_url('ReportStudies/ListarDestinatarios')
+			},
+			'listarGrupos': {
+				method: 'GET',
+				url: base_url('ReportStudies/ListarGrupos')
+			},
 		};
 
 		// Retorna o serviço       
