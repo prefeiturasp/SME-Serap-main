@@ -113,6 +113,7 @@
                 bComponente: false,
                 bTipoProva: false,
                 uintWatchProva: null,
+                loadNumberItemsAplicationTai: NumberItemsAplicationTaiModel.loadAll,
             };
             self.situacaoList = [
                 { Id: 1, Description: "Pendente", Style: "icone-pendente material-icons situacao", Icon: 'remove_circle_outline' },
@@ -366,11 +367,11 @@
             else
                 ng.provaId = ng.params.Id.Value ? ng.params.Id : 0;
 
+            numberItemsAplicationTaiCarregar();
             tipoProvaCarregar();
             // Modal contexto
             e1_criarObjetoDadosModalContexto();
             ng.e1_itemParaDeletarDaListaTestContex = '';
-            loadNumberItemsAplicationTai();
         };
 
         /**
@@ -385,20 +386,21 @@
                     return list[k];
                 };
             };
-        };
+        };        
 
         /**
         * @function Carrega itens amostra prova TAI
         * @private
         * @param
         */
-        function loadNumberItemsAplicationTai() {
-            NumberItemsAplicationTaiModel.loadAll({}, function (result) {
-                if (result.success) {
-                    ng.e1_nItensTestTAIList = result.lista;
-                }
-                else {
-                    $notification[result.type ? result.type : 'error'](result.message);
+        function numberItemsAplicationTaiCarregar() {
+            self.etapa1.loadNumberItemsAplicationTai(function (r) {                
+                if (r.success) {
+                    ng.e1_nItensTestTAIList = angular.copy(r.lista);                    
+                } else {
+                    if (r.type && r.message)
+                        $notification[r.type ? r.type : 'error'](r.message);
+                    return false;
                 }
             });
         };
