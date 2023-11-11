@@ -114,6 +114,7 @@
                 bTipoProva: false,
                 uintWatchProva: null,
                 loadNumberItemsAplicationTai: NumberItemsAplicationTaiModel.loadAll,
+                carregaGrupoSubgrupo: TestGroupModel.loadGroupsSubGroups
             };
             self.situacaoList = [
                 { Id: 1, Description: "Pendente", Style: "icone-pendente material-icons situacao", Icon: 'remove_circle_outline' },
@@ -367,6 +368,7 @@
             else
                 ng.provaId = ng.params.Id.Value ? ng.params.Id : 0;
 
+            carregaGrupoSubgrupo();
             numberItemsAplicationTaiCarregar();
             tipoProvaCarregar();
             // Modal contexto
@@ -412,8 +414,7 @@
         */
         function tipoProvaCarregar() {
             self.etapa1.tipoProva(function (r) {
-                ng.bTipoProva = true;
-                carregaGrupoSubgrupo();
+                ng.bTipoProva = true;                
                 if (r.success) {
                     //Detecta se prova selecionada permite BIB
                     ng.showFlagBIB = angular.copy(r.Bib);
@@ -1674,6 +1675,12 @@
                 if (r.success) {
                     r = r.lista;
                     ng.params = r.Id;
+
+                    console.log('ng.grupoSubgrupoList', ng.grupoSubgrupoList);
+                    console.log('e1_grupoSubgrupo', ng.e1_grupoSubgrupo);
+
+                    if (ng.grupoSubgrupoList == null || ng.grupoSubgrupoList == undefined || ng.grupoSubgrupoList == [] || ng.grupoSubgrupoList.length == 0)
+                        carregaGrupoSubgrupo();
 
                     ng.e1_cbTipoProva = procurarElementoEm([r.TestType], ng.e1_listaTipoProva)[0];
                     ng.e1_grupoSubgrupo = procurarElementoEm([r.TestSubGroup], ng.grupoSubgrupoList)[0];
@@ -5034,13 +5041,14 @@
          * @public
          */
         function carregaGrupoSubgrupo() {
-            TestGroupModel.loadGroupsSubGroups(function (result) {
-                if (result.success) {
-                    ng.grupoSubgrupoList = result.groupSubGroup;
-                    ng.e1_grupoSubgrupo = setValuesComb(ng.grupoSubgrupoList, result.groupSubGroup);
-                }
-                else {
-                    $notification[result.type ? result.type : 'error'](result.message);
+            self.etapa1.carregaGrupoSubgrupo(function (r) {
+                if (r.success) {
+                    ng.grupoSubgrupoList = angular.copy(r.groupSubGroup);                                      
+                    //ng.e1_grupoSubgrupo = setValuesComb(ng.grupoSubgrupoList, r.groupSubGroup);
+                } else {
+                    if (r.type && r.message)
+                        $notification[r.type ? r.type : 'error'](r.message);
+                    return false;
                 }
             });
         };
