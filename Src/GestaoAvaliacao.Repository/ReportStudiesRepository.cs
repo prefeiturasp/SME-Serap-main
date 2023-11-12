@@ -23,12 +23,35 @@ namespace GestaoAvaliacao.Repository
             using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
                 DateTime dateNow = DateTime.Now;
+               if(entity.Id == 0)
                 entity.CreateDate = dateNow;
                 entity.UpdateDate = dateNow;
                 entity.State = Convert.ToByte(Entities.Enumerator.EnumState.ativo);
 
-                gestaoAvaliacaoContext.ReportStudies.Add(entity);
+                gestaoAvaliacaoContext.ReportStudies.Remove(entity);
                 gestaoAvaliacaoContext.SaveChanges();
+            }
+            return true;
+
+        }
+
+        public bool Edit(ReportStudies entity)
+        {
+            var sql = new StringBuilder("UPDATE ReportsStudies SET [Name] =  @name,  TypeGroup = @typeGroup, [Addressee]  = @addressee, [Link] = @link, [UpdateDate] = @updateDate   WHERE Id = @id");
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+
+                cn.Execute(sql.ToString(),
+                    new
+                    {
+                        id = entity.Id,
+                        name = entity.Name,
+                        typeGroup = entity.TypeGroup,
+                        addressee = entity.Addressee,
+                        link = entity.Link,
+                        updateDate = entity.UpdateDate
+                    });
             }
             return true;
 

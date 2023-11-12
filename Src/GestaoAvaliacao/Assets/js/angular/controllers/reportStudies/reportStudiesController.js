@@ -10,10 +10,10 @@
         .module('appMain')
         .controller("ReportStudiesController", ReportStudiesController);
 
-    ReportStudiesController.$inject = ['$scope', 'ReportStudiesModel', '$notification', '$pager', '$util', '$http', '$q', '$window'];
+    ReportStudiesController.$inject = ['$scope', 'ReportStudiesModel', '$notification', '$pager', '$util', '$http', '$q', '$window', '$rootScope'];
 
 
-    function ReportStudiesController($scope, ReportStudiesModel, $notification, $pager, $util, $http, $q, $window) {
+    function ReportStudiesController($scope, ReportStudiesModel, $notification, $pager, $util, $http, $q, $window,  $rootScope) {
 
         var self = this;
         var params = $util.getUrlParams();
@@ -30,14 +30,36 @@
         $scope.paginate = $pager(ReportStudiesModel.carregaImportacoes);
         $scope.pageSize = 10;
         $scope.grupo = {};
-        $scope.destinatario = {};
-;
-
+        $scope.destinatario = { Id: undefined, text: undefined };
+      
         $scope.load = function _load() {
             self.chamadasBack = {};
             $notification.clear();
             $scope.carregaImportacoesPaginado(null);
-            $scope.carregaGrupos();
+          
+
+            $(".comboListagrupo").select2(
+                {
+                    multiple: false,
+                    placeholder: "Selecione um grupo",
+                    width: '100%',
+                    ajax: {
+                        url: "reportstudies/listargrupos",
+                        dataType: 'json',
+                        data: function (params, page) {
+                            return {
+                                description: params.term
+                            };
+                        },
+                        processResults: function (data, page) {
+                            return { results: data };
+                        }
+                    }
+                })
+
+            $(".comboListaDestinatario").select2({
+                placeholder: "Selecione a lista destinatário"
+            });
          
         };
 
@@ -79,10 +101,40 @@
                     else {
                         $notification[result.type ? result.type : 'error'](result.message);
                     }
-                });   
+                });
         }
 
-        $scope.carregaDestinatarios = function __carregaDestinatarios() {
+       
+
+        $scope.carregadestinatarios = function __carregadestinatarios() {
+            $(".comboListaDestinatario").select2(
+                {
+                    placeholder: "selecione um destinatario",
+                    width: '100%',
+                    ajax: {
+                        url: "reportstudies/listardestinatarios",
+                        dataType: 'json',
+                        data: function (params, page) {
+                            return {
+                                filtroDesc: params.term,
+                                tipoGrupo: ($('.comboListagrupo').val())
+                            };
+                        },
+                        processResults: function (data, page) {
+                            return { results: data };
+                        }
+                    }
+                });
+            
+        };
+
+
+
+        $('.comboListagrupo').on("select2:select", function (e) {
+            $(".comboListaDestinatario").empty().trigger('change');
+        });
+
+        $scope.destinatarioObsoleto = function __destinatarioObsoleto() {
             ReportStudiesModel.listarDestinatarios({ tipoGrupo: $scope.grupo.Id }, function (result) {
                 if (result.success) {
                     $scope.listaDestinatarios = result.lista;
@@ -92,7 +144,10 @@
                 }
             });   
 
-
+            //$('.comboListaGrupo').on("select2:select", function (e) {
+            //    $(".combolistadestinatario").empty().trigger('change');
+              
+            //});
 
             //$scope.listaDestinatarios = [
             //    { Codigo: 1, Nome: 'BT - Butanta' },
@@ -129,6 +184,8 @@
             $scope.limparDados();
             angular.element("#modalNovaImportacao").modal({ backdrop: 'static' });
         };
+
+
 
         $scope.callModalImportarCsvEdicaoLote = function __callModalImportarCsvEdicaoLote() {
             angular.element("#modalImportarCsvEdicaoLote").modal({ backdrop: 'static' });
@@ -194,6 +251,15 @@
             angular.element('#modalDelete').modal({ backdrop: 'static' });
         };
 
+        $scope.confirmarEditar = function
+            (item) {
+            console.log("item:", item);
+          //  $scope.grupo.Id = 1;
+          //  $scope.carregadestinatarios();
+       //     $scope.arquivoSelecionado.name = item.NomeArquivo;
+            angular.element('#modalNovaImportacao').modal({ backdrop: 'static' });
+        };
+
         $scope.abrirLink = function __abrirLink(link) {
             $window.open(link, '_blank', 'noreferrer');
         };
@@ -241,17 +307,23 @@
         }
 
         $scope.UploadFile = function () {
+
+            $scope.grupo.Codigo = $('.comboListagrupo').val();
+            $scope.destinatario.Nome = $(".comboListaDestinatario").text();
             var form = new FormData();
             if ($scope.grupo !== null && $scope.grupo !== undefined) {
-                form.append('TypeGroup', $scope.grupo.Codigo);
+                form.append('TypeGroup', $('.comboListagrupo').val());
             }
 
             if ($scope.destinatario !== null && $scope.destinatario !== undefined) {
-                form.append('Addressee', $scope.destinatario.Nome);
+                form.append('Addressee', $(".comboListaDestinatario").text())
             }
             form.append('file', $scope.arquivoSelecionado);
             form.append('Name', $scope.arquivoSelecionado.FileName);
             form.append('Link', '');
+
+            //Passar o id aqui quando for edicao;
+            form.append('Codigo', 0);
 
             var defer = $q.defer();
             $http.post("/ReportStudies/Save", form,

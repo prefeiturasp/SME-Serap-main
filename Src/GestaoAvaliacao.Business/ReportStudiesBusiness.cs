@@ -68,7 +68,10 @@ namespace GestaoAvaliacao.Business
         {         
                 var file = fileBusiness.Upload(upload);
                 entity.Link = file.Path;
+            if(entity.Id == 0)
                 return reportStudiesRepository.Save(entity);
+
+            return reportStudiesRepository.Update(entity);
         }
 
         public IEnumerable<ReportStudies> ListAll()
@@ -236,10 +239,10 @@ namespace GestaoAvaliacao.Business
             return listaGrupo;
         }
 
-        public IEnumerable<ItemListaDto> ListarGrupos()
+        public IEnumerable<AJX_Select2> ListarGrupos()
         {
             var enumType = typeof(EnumTypeGroup);
-            var listaGrupos = new List<ItemListaDto>();
+            var listaGrupos = new List<AJX_Select2>();
 
             foreach (var value in Enum.GetValues(enumType))
             {
@@ -252,39 +255,42 @@ namespace GestaoAvaliacao.Business
                 {
                     var description = descriptionAttribute.Description;
                     var code = (int)value;
-                    listaGrupos.Add(new ItemListaDto { Descricao = description, Id = code });
+                    listaGrupos.Add(new AJX_Select2 { text = description, id = code.ToString() });
                 }
+
             }
 
-            return listaGrupos.OrderBy(x => x.Id);
+            return listaGrupos.OrderBy(x => x.text);
         }
 
-        public IEnumerable<ItemListaDto> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup tipoGrupo)
+        public IEnumerable<AJX_Select2> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup tipoGrupo, string filtroDesc = null)
         {
-            var listaDestinatarios = new List<ItemListaDto>();
+            var listaDestinatarios = new List<AJX_Select2>();
             
             var listaDres = _uadBusiness.LoadDRESimple(usuario, sysGrupo);
             var listaCodigosDre = listaDres.Select(x => x.uad_sigla).ToList();
 
             if (tipoGrupo == EnumTypeGroup.DRE)
             {
-                listaDestinatarios = listaDres.Select(x => new ItemListaDto
+                listaDestinatarios = listaDres.Select(x => new AJX_Select2
                 {
-                    Codigo = x.uad_codigo,
-                    Descricao = x.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")
+                    id = x.uad_codigo,
+                    text = x.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")
                 }).ToList();
             }
 
             if (tipoGrupo == EnumTypeGroup.UE)
             {
                 var listaEscolas = _schoolBusiness.LoadSimple(usuario, sysGrupo, Guid.Empty);
-                listaDestinatarios = listaEscolas.Select(x => new ItemListaDto
+                listaDestinatarios = listaEscolas.Select(x => new AJX_Select2
                 {
-                    Codigo = x.esc_codigo,
-                    Descricao = $"{x.esc_codigo} - {x.esc_nome}"
+                    id = x.esc_codigo,
+                    text = $"{x.esc_codigo} - {x.esc_nome}"
                 }).ToList();
             }
 
+            if (!string.IsNullOrEmpty(filtroDesc))
+                listaDestinatarios = listaDestinatarios.Where(x => x.text.Contains(filtroDesc.ToUpper())).ToList();
             return listaDestinatarios;
         }
 

@@ -2027,11 +2027,14 @@ namespace GestaoAvaliacao.App_Start
                 .Include("~/Assets/js/angular/services/_bundle/pager/services.js")
                 .Include("~/Assets/js/angular/controllers/ReportStudies/reportStudiesController.js")
                 .Include("~/Assets/js/angular/models/ReportStudies/reportStudiesModel.js")
+                .Include("~/Assets/js/angular/directives/_bundle/radio-select/radio-select.js")
+                .Include("~/Assets/js/angular/directives/_bundle/tags-input/ng-tags-input.js")
             );
             bundles.Add(
                 new StyleBundle("~/bundles/ReportStudies_css")
                 .Include("~/Assets/js/vendor/datepicker/datepicker.css")
                 .Include("~/Assets/js/angular/directives/_bundle/page/page.css")
+                .Include("~/Assets/js/angular/directives/_bundle/tags-input/ng-tags-input.css")
             );
 
             #endregion

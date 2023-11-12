@@ -27,12 +27,12 @@ public class ReportStudiesController : Controller
     }
 
     [HttpPost]
-    public JsonResult Save(HttpPostedFileBase file, string Name, int? TypeGroup, string Addressee, string Link)
+    public JsonResult Save(HttpPostedFileBase file, string Name, int? TypeGroup, string Addressee, string Link, long Codigo)
     {
         try
         {
             var entity = new ReportStudies
-            {
+            {   Id = Codigo,
                 Name = file?.FileName,
                 TypeGroup = TypeGroup,
                 Addressee = Addressee,
@@ -100,13 +100,14 @@ public class ReportStudiesController : Controller
         }
     }
 
+    [Route("listargrupos")]
     [HttpGet]
+    
     public JsonResult ListarGrupos()
     {
         try
         {
-            var result = reportStudiesBusiness.ListarGrupos();
-            return Json(new { success = true, lista = result }, JsonRequestBehavior.AllowGet);
+            return Json(reportStudiesBusiness.ListarGrupos(), JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
         {
@@ -115,13 +116,13 @@ public class ReportStudiesController : Controller
         }
     }
 
+    [Route("listardestinatarios")]
     [HttpGet]
-    public JsonResult ListarDestinatarios(EnumTypeGroup tipoGrupo)
+    public JsonResult ListarDestinatarios(string filtroDesc, EnumTypeGroup tipoGrupo)
     {
         try
         {
-            var result = reportStudiesBusiness.ListarDestinatarios(SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, tipoGrupo);
-            return Json(new { success = true, lista = result }, JsonRequestBehavior.AllowGet);
+            return Json(reportStudiesBusiness.ListarDestinatarios(SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, tipoGrupo, filtroDesc), JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
         {

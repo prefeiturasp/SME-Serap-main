@@ -101,7 +101,7 @@
 
 
     @* Modal para importar novo arquivo de resultados *@
-    <div class="modal fade" id="modalNovaImportacao" tabindex="-1" role="dialog" aria-labelledby="modalNovaImportacao" aria-hidden="true">
+    <div class="modal fade" id="modalNovaImportacao" role="dialog" aria-labelledby="modalNovaImportacao" aria-hidden="true">
         <div class="modal-dialog ">
             <div class="modal-content ">
 
@@ -130,37 +130,33 @@
                         <div class="campoLabel">
                             <label>Grupo: </label>
                          
-                                <div>
-                                    <select id="grupo" class="form-control" title="{{ grupo.Descricao }}"
-                                            ng-model="grupo"
-                                            ng-options="g as g.Descricao for g in listaGrupos"
-                                            ng-title="listaGrupos"
-                                            ng-title-propertie="Descricao"
-                                            ng-title-index="1"
-                                            ng-change="carregaDestinatarios()">
+                                <div ng-show="!editMode">
+                                    <select   ng-title-index="1"
+                                            id="comboListagrupo" 
+                                            class="comboListagrupo" 
+                                            ng-model="grupo.Id"                                                                               
+                                            ng-change="carregadestinatarios();">
                                         <option value="">--Selecione uma opção--</option>
                                     </select>
                                 </div>
-                                <div>
-                                    <input readonly class="labelgrupo form-control" id="labelgrupo" ng-model="grupo.Descricao" />
+                                <div ng-show="editMode">
+                                    <input readonly class="labelListaGrupo form-control" id="labelListaGrupo" ng-model="grupo.Descricao" />
                                 </div>
                           
                             </div>
-                                @*<div>
-            <input readonly class="labelAreaConhecimento form-control" id="labelAreaConhecimento" ng-model="area.objArea.Description" />
-        </div>*@
-                            </div>
+
                         <div class="campoLabel">
                             <label>Destinatário: </label>
-                            <div>
-                                <select id="grupo" class="form-control" title="{{ destinatario.Descricao }}"
-                                        ng-model="destinatario"
-                                        ng-options="dest as dest.Descricao for dest in listaDestinatarios"
-                                        ng-title="listaDestinatarios"
-                                        ng-title-propertie="Descricao"
+                            <div ng-show="!editMode">
+                                <select id="comboListaDestinatario"
+                                        class="comboListaDestinatario" 
+                                        ng-model="destinatario.Id"            
                                         ng-title-index="1">
                                     <option value="">--Selecione uma opção--</option>
                                 </select>
+                            </div>
+                            <div ng-show="editMode">
+                                <input readonly class="labelListaDestinatario form-control" id="labelListaDestinatario" ng-model="destinatario.filtroDesc" />
                             </div>
                         </div>
                     </div>
@@ -326,6 +322,11 @@
     }
 
 </div>
+<style>
+    .select2-container {
+        z-index: 100000;
+    }
+</style>
 
 
 
