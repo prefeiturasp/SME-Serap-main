@@ -80,6 +80,7 @@ public class ReportStudiesController : Controller
                 {
                     Codigo = entity.Id,
                     NomeArquivo = entity.Name,
+                    TipoGrupo = entity.TypeGroup != null ? (EnumTypeGroup)entity.TypeGroup : (EnumTypeGroup?)null,
                     Grupo = entity.TypeGroup != null ? ((EnumTypeGroup)entity.TypeGroup).GetDescription() : "",
                     Destinatario = entity.Addressee,
                     DataUpload = entity.CreateDate.ToString(),
