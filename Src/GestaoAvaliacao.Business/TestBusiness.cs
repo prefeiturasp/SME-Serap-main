@@ -85,7 +85,8 @@ namespace GestaoAvaliacao.Business
             this.itemRepository = itemRepository;
             this.blockChainBusiness = blockChainBusiness;
             this.resultadoPspBusiness = resultadoPspBusiness;
-            this.blockChainBlockBusiness = blockChainBlockBusiness;            this.blockBusiness = blockBusiness;
+            this.blockChainBlockBusiness = blockChainBlockBusiness;
+            this.blockBusiness = blockBusiness;
             this.blockChainBlockRepository = blockChainBlockRepository;
         }
 

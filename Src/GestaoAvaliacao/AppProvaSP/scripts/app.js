@@ -58,32 +58,35 @@ var corteCache = [];
  Questionário 8: Funcionalidades de acompanhamento da ProvaSP no dia da mesma;
  Fichas de registro: Perguntas aos diretores e responsáveis sobre andamento técnico da ProvaSP
 */
-var edicoesComTurmasAmostrais = ["2017", "2018", "2019", "2021"];
+var edicoesComTurmasAmostrais = ["2017", "2018", "2019", "2021", "2023"];
 var edicoesRevistasPedagogicas = []; // ["2017"] é Boletim
 var questionarios = [
-    "1",/*Questionário Supervisor*/
+    //"1",/*Questionário Supervisor*/
     //"2",/*Questionário Diretor 2018*/
     //"3",/*Questionário Coordenador*/
-    "8",/*Controle da Prova a ser aplicada*/
-    "9",/*Ficha de registro Supervisor*/
-    "10",/*Ficha de registro Diretor*/
-    "11",/*Ficha de registro Coordenador*/
+    //"8",/*Controle da Prova a ser aplicada*/
+    //"9",/*Ficha de registro Supervisor*/
+    //"10",/*Ficha de registro Diretor*/
+    //"11",/*Ficha de registro Coordenador*/
     //"12",/*Questionário Professor 2018*/
     //"13",/*Questionário Assistente de Diretoria 2018*/
-    "14",/*Questionário do Auxiliar Técnico da Educação*/
-    "15",/*Questionário do Agente Escolar: Merendeira*/
-    "16",/*Questionário do Agente Escolar: Portaria*/
-    "17",/*Questionário do Agente Escolar: Zeladoria*/
+    //"14",/*Questionário do Auxiliar Técnico da Educação*/
+    //"15",/*Questionário do Agente Escolar: Merendeira*/
+    //"16",/*Questionário do Agente Escolar: Portaria*/
+    //"17",/*Questionário do Agente Escolar: Zeladoria*/
     //"18",/*Questionário dos Alunos do 3º ano 2018*/
     //"19",/*Questionário dos Alunos do 4º ao 6º ano 2018*/
     //"20",/*Questionário dos Alunos do 7º ao 9º ano ID 2018*/
-    "21",/*NOVO Questionário dos Alunos do 3º ao 6º ano 2019*/
-    "22",/*NOVO Questionário dos Alunos do 7º ao 9º ano 2019*/
+    //"21",/*NOVO Questionário dos Alunos do 3º ao 6º ano 2019*/
+    //"22",/*NOVO Questionário dos Alunos do 7º ao 9º ano 2019*/
     //"23",/*NOVO Questionário Professor 2019*/
-    "25",/*NOVO Questionário Assistente de Diretoria 2019*/
-    "26",/*NOVO Questionário Diretor 2021*/
-    "27",/*NOVO Questionário CP 2021*/
-    "28",/*NOVO Questionário Professor 2021*/
+    //"25",/*NOVO Questionário Assistente de Diretoria 2019*/
+    //"26",/*NOVO Questionário Diretor 2021*/
+    //"27",/*NOVO Questionário CP 2021*/
+    //"28",/*NOVO Questionário Professor 2021*/
+    "29",/*NOVO Questionário Diretor 2023*/
+    "30",/*NOVO Questionário CP 2023*/
+    "31",/*NOVO Questionário Professor 2023*/
 ];
 /**
 -----MSTECH-----
@@ -532,12 +535,12 @@ function onDeviceReady() {
          *Questionário do Supervisor foi descontinuado em 2018
         */
         if (Usuario.Diretor) {
-            $("#divAbrirQuestionarioID_26").show();
+            $("#divAbrirQuestionarioID_29").show();
             // Desabilitar temporariamente a ficha de registro dos professores 22/10/19
             //$("#divAbrirQuestionarioID_10").show();
         }
         if (Usuario.Professor) {
-            $("#divAbrirQuestionarioID_28").show();
+            $("#divAbrirQuestionarioID_31").show();
         }
         if (Usuario.Aluno) {
             var turma_ano = parseInt(Usuario.Ano);
@@ -559,7 +562,7 @@ function onDeviceReady() {
             $("#divAbrirQuestionarioID_9").show();
         }*/
         if (Usuario.Coordenador) {
-            $("#divAbrirQuestionarioID_27").show();
+            $("#divAbrirQuestionarioID_30").show();
             //$("#divAbrirQuestionarioID_11").show();
         }
         /*if (Usuario.AuxiliarTecnicoEducacao) {
@@ -6152,9 +6155,33 @@ function definirEventHandlers() {
 
     function iniciarQuestionario() {
         $("#divQuestionario" + questionarioId_atual + "_Intro").hide();
+        buscarRespostasUsuarioQuestionario();
         $("#divQuestionario" + questionarioId_atual + "_Questoes").show();
         $("#divTituloQuestionario").show();
         $.mobile.silentScroll(0);
+    }
+
+    function buscarRespostasUsuarioQuestionario() {
+        let urlRespostasUsuarioQuestionario = urlBackEnd +
+            "api/Usuario/RespostasUsuario?" +
+            "&questionarioID=" + questionarioId_atual +
+            "&usu_id=" + Usuario.usu_id;
+
+        $.ajax({
+            url: urlRespostasUsuarioQuestionario,
+            type: "GET",
+            "dataType": "JSON",
+            crossDomain: true,
+            cache: false,
+            success: function (data) {
+                data.forEach(e => {
+                    $("#Questionario_" + questionarioId_atual +  "_Questao_" + e.Numero + "_" + e.Valor).prop('checked', true).checkboxradio('refresh');
+                });
+            },
+            error: function (erro) {
+                ProvaSP_Erro("Erro " + erro.status, erro.statusText);
+            }
+        })
     }
 
     /**
@@ -6163,8 +6190,8 @@ function definirEventHandlers() {
      para iniciar o questionário de fato.
      *Reparar que esconde a introdução e mostra as questões
     */
-    $("#btnQuestionario1_Iniciar,#btnQuestionario26_Iniciar,#btnQuestionario27_Iniciar," +
-        "#btnQuestionario28_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
+    $("#btnQuestionario1_Iniciar,#btnQuestionario29_Iniciar,#btnQuestionario30_Iniciar," +
+        "#btnQuestionario31_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
         "#btnQuestionario15_Iniciar,#btnQuestionario16_Iniciar,#btnQuestionario17_Iniciar," +
         "#btnQuestionario18_Iniciar,#btnQuestionario21_Iniciar,#btnQuestionario22_Iniciar")
         .unbind("click").click(function () {
@@ -7903,7 +7930,9 @@ function popupProvaAluno(serverRetorno) {
             //Critérios de redação
             itemProvaDownloaHTML += "<p class='provaaluno_criterios'>";
             for (var j = 1; j < 6; j++) {
-                if (serverRetorno[i].hasOwnProperty("REDQ" + j)) {
+                console.log("ObjServerRetorno", serverRetorno[i]);
+                if (serverRetorno[i].hasOwnProperty("REDQ" + j) && serverRetorno[i]["REDQ" + j] != null) {
+
                     itemProvaDownloaHTML += "Critério " + j + ": ";
                     itemProvaDownloaHTML += serverRetorno[i]["REDQ" + j];
                     itemProvaDownloaHTML += "<br />";
@@ -7956,8 +7985,20 @@ function buscarCicloPeloAnoLetivo(anoLetivo) {
 $("#btnProvaAlunoCriterios").unbind("click").click(function () {
     try {
         var disciplinaID = $("#ddlResultadoAreaConhecimento").val();
-        var linkCriterio = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
-            "CriterioCorrecao/" + disciplinaID + "/" + provaAlunoCicloSelecionado + ".pdf";
+        var anoLetivo = $("#ddlResultadoEdicao").val();
+        var anoEscolar = $("#ddlResultadoAno").val();
+        var linkCriterio = '';
+        if (anoLetivo < 2022) {
+
+            linkCriterio = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
+                "CriterioCorrecao/" + disciplinaID + "/" + provaAlunoCicloSelecionado + ".pdf";
+        }
+        else {
+
+            linkCriterio = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
+                "CriterioCorrecao/" + anoLetivo + "/" + anoEscolar + "/" + disciplinaID + "/" + provaAlunoCicloSelecionado + ".pdf";
+        }
+
 
         if (mobile) {
             if (navigator.connection.type == Connection.NONE || navigator.connection.type == Connection.UNKNOWN) {
@@ -9493,7 +9534,7 @@ $("#btnCFEApresentar").unbind("click").click(function () {
                     $("#ddlCFEQuestionario option:selected").text() + " - ");
 
                 if ($("#ddlCFECiclo").val() != "")
-                    $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFECiclo option:selected").text()); 
+                    $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFECiclo option:selected").text());
 
                 if ($("#ddlCFEAnoEscolar").val() != "")
                     $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFEAnoEscolar option:selected").text());
