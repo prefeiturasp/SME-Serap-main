@@ -1,7 +1,7 @@
 ﻿//var urlBackEnd = "http://provasp-smesp.mstech.com.br/";
 //var urlBackEnd = "http://provasp.sme.prefeitura.sp.gov.br/";
-var urlBackEnd = "http://provasp.sme.prefeitura.sp.gov.br/";
-//var urlBackEnd = "http://localhost:52912/";
+//var urlBackEnd = "http://provasp.sme.prefeitura.sp.gov.br/";
+var urlBackEnd = "http://localhost:52912/";
 
 var Usuario = null;
 
