@@ -10,8 +10,8 @@ namespace ProvaSP.Data
 {
     public enum TipoQuestionario : int
     {
-        QuestionarioSupervisor = 1,
-        QuestionarioCoordenadorPedagogico = 3,
+        //QuestionarioSupervisor = 1,
+        //QuestionarioCoordenadorPedagogico = 3,
         FichaRegistroAplicadorProva = 8,
         FichaRegistroSupervisor = 9,
         FichaRegistroDiretor = 10,
@@ -33,10 +33,15 @@ namespace ProvaSP.Data
         //Edição 2019
         QuestionarioAlunos3AnoAo6Ano = 21,
         QuestionarioAlunos7AnoAo9Ano = 22,
-        QuestionarioProfessor = 23,
-        QuestionarioDiretor = 24,
-        QuestionarioAssistenteDiretoria = 25
+        //QuestionarioProfessor = 23,
+        //QuestionarioDiretor = 24,
+        QuestionarioAssistenteDiretoria = 25,
 
+        //Edição 2023
+        QuestionarioDiretor = 29,
+        QuestionarioCoordenadorPedagogico = 30,
+        QuestionarioProfessor = 31,
+        QuestionarioSupervisor = 32
     };
 
     public enum TipoPerfil : int
