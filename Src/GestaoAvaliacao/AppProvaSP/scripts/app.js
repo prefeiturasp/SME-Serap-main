@@ -87,6 +87,7 @@ var questionarios = [
     "29",/*NOVO Questionário Diretor 2023*/
     "30",/*NOVO Questionário CP 2023*/
     "31",/*NOVO Questionário Professor 2023*/
+    "32",/*NOVO Questionário Supervisor Escolar 2023*/
 ];
 /**
 -----MSTECH-----
@@ -556,11 +557,11 @@ function onDeviceReady() {
         if (Usuario.AssistenteDeDiretoria) {
             $("#divAbrirQuestionarioID_25").show();
         }
-        // Desabilitar temporariamente Auxiliar, Agente, Coordenador e Supervisor. 04/11/2019
-        /*if (Usuario.Supervisor) {
-            //$("#divAbrirQuestionarioID_1").show();
-            $("#divAbrirQuestionarioID_9").show();
-        }*/
+        
+        if (Usuario.Supervisor) {            
+            $("#divAbrirQuestionarioID_32").show();
+        }
+
         if (Usuario.Coordenador) {
             $("#divAbrirQuestionarioID_30").show();
             //$("#divAbrirQuestionarioID_11").show();
@@ -6191,7 +6192,7 @@ function definirEventHandlers() {
      *Reparar que esconde a introdução e mostra as questões
     */
     $("#btnQuestionario1_Iniciar,#btnQuestionario29_Iniciar,#btnQuestionario30_Iniciar," +
-        "#btnQuestionario31_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
+        "#btnQuestionario31_Iniciar,#btnQuestionario32_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
         "#btnQuestionario15_Iniciar,#btnQuestionario16_Iniciar,#btnQuestionario17_Iniciar," +
         "#btnQuestionario18_Iniciar,#btnQuestionario21_Iniciar,#btnQuestionario22_Iniciar")
         .unbind("click").click(function () {
