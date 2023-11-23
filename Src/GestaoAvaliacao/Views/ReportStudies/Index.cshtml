@@ -96,9 +96,7 @@
         </table>
         <page method="carregaImportacoesPaginado('paginate')" total-pages="{{pages}}" total-itens="{{totalItens}}" page-size="pageSize" ng-show="listaImportacoes != null" data-arr-page-size="[10,20,30,40,50,100]"></page>
         <p class="nresultados" ng-show="listaImportacoes == null || listaImportacoes.length == 0">Nenhum arquivo adicionado.</p>
-
     </div>
-
 
     @* Modal para importar novo arquivo de resultados *@
     <div class="modal fade" id="modalNovaImportacao" role="dialog" aria-labelledby="modalNovaImportacao" aria-hidden="true">
@@ -119,7 +117,7 @@
                             <label>Arquivo: </label>
                             <div>
                                 <div class="upload-group">
-                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">
+                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" ng-disabled="true">
                                     <span class="input-group-btn fake-upload">
                                         <i class="material-icons">file_upload</i>
                                         <input type="file" accept=".htm,.html" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
@@ -131,7 +129,7 @@
                             <label>Grupo: </label>
                          
                                 <div ng-show="!editMode">
-                                    <select   ng-title-index="1"
+                                    <select ng-title-index="1"
                                             id="comboListagrupo" 
                                             class="comboListagrupo" 
                                             ng-model="grupo.Id"                                                                               
@@ -198,7 +196,7 @@
                             <label>Arquivo: </label>
                             <div>
                                 <div class="upload-group">
-                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoEditar.name" disabled="true">
+                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoEditar.name" ng-disabled="true">
                                     <span class="input-group-btn fake-upload">
                                         <i class="material-icons">file_upload</i>
                                         <input type="file" accept=".htm,.html" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" ng-disabled="false" />
@@ -213,13 +211,14 @@
                                 <select ng-title-index="1"
                                         id="comboListagrupo"
                                         class="comboListagrupo"
-                                        ng-model="arquivoEditar.TipoGrupo"
-                                        ng-change="carregadestinatariosEditar();">
+                                        ng-options="opt.id as opt.text for opt in listaGrupos"
+                                        ng-model="arquivoEditar.STipoGrupo"
+                                        ng-change="carregadestinatariosEditar();" >
                                     <option value="">--Selecione uma opção--</option>
                                 </select>
                             </div>
                             <div ng-show="editMode">
-                                <input readonly class="labelListaGrupo form-control" id="labelListaGrupo" ng-model="arquivoEditar.grupo" />
+                                <input readonly class="labelListaGrupo form-control" id="labelListaGrupo" ng-model="arquivoEditar.Grupo" />
                             </div>
                         </div>
                         <div class="campoLabel">
@@ -293,7 +292,7 @@
                             <label>Arquivo*: </label>
                             <div>
                                 <div class="upload-group">
-                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionadoCsv.name" disabled="true">
+                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionadoCsv.name" ng-disabled="true">
                                     <span class="input-group-btn fake-upload">
                                         <i class="material-icons">file_upload</i>
                                         <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionadoCsv" id="arquivo_resultadoCsv" onchange="angular.element(this).scope().selecionarArquivoCsv(this)" ng-disabled="false" />

@@ -38,7 +38,6 @@
             $notification.clear();
             $scope.carregaImportacoesPaginado(null);
 
-
             $(".comboListagrupo").select2(
                 {
                     multiple: false,
@@ -53,7 +52,7 @@
                             };
                         },
                         processResults: function (data, page) {
-                            return { results: data };
+                            return { results: data.lista };
                         }
                     }
                 })
@@ -105,8 +104,6 @@
             });
         }
 
-
-
         $scope.carregadestinatarios = function __carregadestinatarios() {
             $(".comboListaDestinatario").select2(
                 {
@@ -148,7 +145,6 @@
                         }
                     }
                 });
-
         };
 
         $('.comboListagrupo').on("select2:select", function (e) {
@@ -175,7 +171,6 @@
             //    { Codigo: 2, Nome: 'Geral' },
             //    { Codigo: 3, Nome: '191 - Alipio' }
             //];
-
         }
 
         $scope.carregaImportacoesPaginado = function __ImportacoesPaginado(paginate) {
@@ -208,6 +203,7 @@
 
         $scope.callModalEditarImportacao = function __callModalEditarImportacao(arquivo) {
             $scope.limparDados();
+            $scope.carregaGrupos();
             $scope.arquivoEditar = arquivo;            
             console.log('arquivo', $scope.arquivoEditar);
             angular.element("#modalEdicaoImportacao").modal({ backdrop: 'static' });
@@ -334,7 +330,6 @@
         }
 
         $scope.UploadFile = function () {
-
             $scope.grupo.Codigo = $('.comboListagrupo').val();
             $scope.destinatario.Nome = $(".comboListaDestinatario").text();
             var form = new FormData();

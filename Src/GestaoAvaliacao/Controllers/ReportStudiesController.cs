@@ -81,6 +81,7 @@ public class ReportStudiesController : Controller
                     Codigo = entity.Id,
                     NomeArquivo = entity.Name,
                     TipoGrupo = entity.TypeGroup != null ? (EnumTypeGroup)entity.TypeGroup : (EnumTypeGroup?)null,
+                    STipoGrupo = entity.TypeGroup != null ? entity.TypeGroup.ToString() : null,
                     Grupo = entity.TypeGroup != null ? ((EnumTypeGroup)entity.TypeGroup).GetDescription() : "",
                     Destinatario = entity.Addressee,
                     DataUpload = entity.CreateDate.ToString(),
@@ -108,7 +109,7 @@ public class ReportStudiesController : Controller
     {
         try
         {
-            return Json(reportStudiesBusiness.ListarGrupos(), JsonRequestBehavior.AllowGet);
+            return Json( new { success = true, lista = reportStudiesBusiness.ListarGrupos() }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
         {
