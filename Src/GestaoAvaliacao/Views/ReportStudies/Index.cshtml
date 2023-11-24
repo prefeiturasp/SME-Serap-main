@@ -107,7 +107,7 @@
                 <div class="modal-header">
                     <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
                     <h4 class="modal-title">
-                        <strong>Relatórios e Estudos - Adicionar</strong>
+                        <strong>Relatórios e Estudos - {{editMode ? 'Editar' : 'Adicionar'}}</strong>
                     </h4>
                 </div>
                 @*BODY*@
@@ -117,44 +117,66 @@
                             <label>Arquivo: </label>
                             <div>
                                 <div class="upload-group">
-                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" ng-disabled="true">
+                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="editMode ? arquivoEditar.NomeArquivo : arquivoSelecionado.name" ng-disabled="true">
                                     <span class="input-group-btn fake-upload">
                                         <i class="material-icons">file_upload</i>
-                                        <input type="file" accept=".htm,.html" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
+                                        <input type="file" accept=".htm,.html" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="editMode" />
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div class="campoLabel">
                             <label>Grupo: </label>
-                         
-                                <div ng-show="!editMode">
-                                    <select ng-title-index="1"
-                                            id="comboListagrupo" 
-                                            class="comboListagrupo" 
-                                            ng-model="grupo.Id"                                                                               
-                                            ng-change="carregadestinatarios();">
-                                        <option value="">--Selecione uma opção--</option>
-                                    </select>
-                                </div>
-                                <div ng-show="editMode">
-                                    <input readonly class="labelListaGrupo form-control" id="labelListaGrupo" ng-model="grupo.Descricao" />
-                                </div>
-                          
+
+                            <div ng-show="!editMode">
+                                <select ng-title-index="1"
+                                        id="comboListagrupo"
+                                        class="comboListagrupo"
+                                        ng-model="grupo.Id"
+                                        ng-change="carregadestinatarios();">
+                                    <option value="">--Selecione uma opção--</option>
+                                </select>
                             </div>
+
+                            <div ng-show="editMode">
+                                <select ng-title-index="1"
+                                        id="comboListagrupoEditar"
+                                        class="comboListagrupoEditar"
+                                        ng-options="opt.id as opt.text for opt in listaGrupos"
+                                        ng-model="arquivoEditar.STipoGrupo"
+                                        ng-change="carregadestinatariosEditar();">
+                                    <option value="">--Selecione uma opção--</option>
+                                </select>
+                            </div>
+
+                        </div>
 
                         <div class="campoLabel">
                             <label>Destinatário: </label>
                             <div ng-show="!editMode">
                                 <select id="comboListaDestinatario"
-                                        class="comboListaDestinatario" 
-                                        ng-model="destinatario.Id"            
+                                        class="comboListaDestinatario"
+                                        ng-model="destinatario.Id"
                                         ng-title-index="1">
                                     <option value="">--Selecione uma opção--</option>
                                 </select>
                             </div>
                             <div ng-show="editMode">
-                                <input readonly class="labelListaDestinatario form-control" id="labelListaDestinatario" ng-model="destinatario.filtroDesc" />
+                                <select id="comboListaDestinatarioEditar"
+                                        class="comboListaDestinatarioEditar"
+                                        ng-options="opt.id as opt.text for opt in listaDestinatarios"
+                                        ng-model="arquivoEditar.UadCodigoDestinatario"
+                                        ng-title-index="1"
+                                        ng-change="destinatarioMudou();">
+                                    <option value="">--Selecione uma opção--</option>
+                                </select>
+                                @*<select id="comboListaDestinatario"
+                                            class="comboListaDestinatario"
+                                            ng-model="arquivoEditar.UadCodigoDestinatario"
+                                            ng-title-index="1"
+                                            ng-change="destinatarioMudou();">
+                                        <option value="">--Selecione uma opção--</option>
+                                    </select>*@
                             </div>
                         </div>
                     </div>
@@ -196,10 +218,10 @@
                             <label>Arquivo: </label>
                             <div>
                                 <div class="upload-group">
-                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoEditar.name" ng-disabled="true">
+                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoEditar.NomeArquivo" ng-disabled="true">
                                     <span class="input-group-btn fake-upload">
                                         <i class="material-icons">file_upload</i>
-                                        <input type="file" accept=".htm,.html" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" ng-disabled="false" />
+                                        <input type="file" accept=".htm,.html" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" ng-disabled="true" />
                                     </span>
                                 </div>
                             </div>
@@ -213,7 +235,7 @@
                                         class="comboListagrupo"
                                         ng-options="opt.id as opt.text for opt in listaGrupos"
                                         ng-model="arquivoEditar.STipoGrupo"
-                                        ng-change="carregadestinatariosEditar();" >
+                                        ng-change="carregadestinatariosEditar();">
                                     <option value="">--Selecione uma opção--</option>
                                 </select>
                             </div>
@@ -224,9 +246,10 @@
                         <div class="campoLabel">
                             <label>Destinatário: </label>
                             <div ng-show="!editMode">
-                                <select id="comboListaDestinatario"
-                                        class="comboListaDestinatario"
-                                        ng-model="arquivoEditar.destinatario.Id"
+                                <select id="comboListaDestinatarioEditar"
+                                        class="comboListaDestinatarioEditar"
+                                        ng-options="opt.id as opt.text for opt in listaDestinatarios"
+                                        ng-model="arquivoEditar.UadCodigoDestinatario"
                                         ng-title-index="1">
                                     <option value="">--Selecione uma opção--</option>
                                 </select>

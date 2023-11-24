@@ -27,7 +27,7 @@ public class ReportStudiesController : Controller
     }
 
     [HttpPost]
-    public JsonResult Save(HttpPostedFileBase file, string Name, int? TypeGroup, string Addressee, string Link, long Codigo)
+    public JsonResult Save(HttpPostedFileBase file, string Name, int? TypeGroup, string Addressee, string Link, long Codigo, string uadCodigoDestinatario)
     {
         try
         {
@@ -36,6 +36,7 @@ public class ReportStudiesController : Controller
                 Name = file?.FileName,
                 TypeGroup = TypeGroup,
                 Addressee = Addressee,
+                UadCodigoDestinatario = uadCodigoDestinatario,
                 Link = Link
             };
 
@@ -84,8 +85,10 @@ public class ReportStudiesController : Controller
                     STipoGrupo = entity.TypeGroup != null ? entity.TypeGroup.ToString() : null,
                     Grupo = entity.TypeGroup != null ? ((EnumTypeGroup)entity.TypeGroup).GetDescription() : "",
                     Destinatario = entity.Addressee,
+                    UadCodigoDestinatario = entity.UadCodigoDestinatario,
                     DataUpload = entity.CreateDate.ToString(),
-                    Link = entity.Link
+                    Link = entity.Link,
+                    ObjDestinatario = new { id = entity.UadCodigoDestinatario.ToString(), text = entity.Addressee.ToString() }
                 });
 
                 return Json(new { success = true, lista = ret, pageSize = pager.PageSize }, JsonRequestBehavior.AllowGet);
@@ -125,6 +128,21 @@ public class ReportStudiesController : Controller
         try
         {
             return Json(reportStudiesBusiness.ListarDestinatarios(SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, tipoGrupo, filtroDesc), JsonRequestBehavior.AllowGet);
+        }
+        catch (Exception ex)
+        {
+            LogFacade.SaveError(ex);
+            return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar listar os destinatários." }, JsonRequestBehavior.AllowGet);
+        }
+    }
+
+    [HttpGet]
+    public JsonResult ListarDestinatariosEditarInicial(string filtroDesc, EnumTypeGroup tipoGrupo)
+    {
+        try
+        {
+            var result = reportStudiesBusiness.ListarDestinatarios(SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, tipoGrupo, filtroDesc);
+            return Json(new { success = true, message = string.Empty, lista = result }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
         {

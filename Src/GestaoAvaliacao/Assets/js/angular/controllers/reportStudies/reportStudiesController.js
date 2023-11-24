@@ -18,6 +18,7 @@
         var self = this;
         var params = $util.getUrlParams();
 
+        $scope.editMode = false;
         $scope.processando = true;
         $scope.tipoResultado = null;
         $scope.listaGrupos = [];
@@ -38,24 +39,35 @@
             $notification.clear();
             $scope.carregaImportacoesPaginado(null);
 
-            $(".comboListagrupo").select2(
-                {
-                    multiple: false,
-                    placeholder: "Selecione um grupo",
-                    width: '100%',
-                    ajax: {
-                        url: "reportstudies/listargrupos",
-                        dataType: 'json',
-                        data: function (params, page) {
-                            return {
-                                description: params.term
-                            };
-                        },
-                        processResults: function (data, page) {
-                            return { results: data.lista };
-                        }
+            $(".comboListagrupo").select2({
+                multiple: false,
+                placeholder: "Selecione um grupo",
+                width: '100%',
+                ajax: {
+                    url: "reportstudies/listargrupos",
+                    dataType: 'json',
+                    data: function (params, page) {
+                        return {
+                            description: params.term
+                        };
+                    },
+                    processResults: function (data, page) {
+                        return { results: data.lista };
                     }
-                })
+                }
+            });
+
+            $(".comboListagrupoEditar").select2({
+                multiple: false,
+                placeholder: "Selecione um grupo",
+                width: '100%',
+            });
+
+            $(".comboListaDestinatarioEditar").select2({
+                multiple: false,
+                placeholder: "selecione um destinatario",
+                width: '100%',
+            });
 
             $(".comboListaDestinatario").select2({
                 placeholder: "Selecione a lista destinatário"
@@ -91,7 +103,7 @@
                         $notification[result.type ? result.type : 'error'](result.message);
                     }
                 });
-        }
+        };
 
         $scope.carregaGrupos = function __carregaGrupos() {
             ReportStudiesModel.listarGrupos({}, function (result) {
@@ -102,7 +114,7 @@
                     $notification[result.type ? result.type : 'error'](result.message);
                 }
             });
-        }
+        };
 
         $scope.carregadestinatarios = function __carregadestinatarios() {
             $(".comboListaDestinatario").select2(
@@ -123,11 +135,14 @@
                         }
                     }
                 });
+        };
 
+        $scope.destinatarioMudou = function __destinatarioMudou() {
+            console.log('UadCodigoDestinatario', $scope.arquivoEditar.UadCodigoDestinatario);
         };
 
         $scope.carregadestinatariosEditar = function __carregadestinatariosEditar() {
-            $(".comboListaDestinatario").select2(
+            $(".comboListaDestinatarioEditar").select2(
                 {
                     placeholder: "selecione um destinatario",
                     width: '100%',
@@ -137,22 +152,22 @@
                         data: function (params, page) {
                             return {
                                 filtroDesc: params.term,
-                                tipoGrupo: $scope.arquivoEditar.TipoGrupo
+                                tipoGrupo: $scope.arquivoEditar.STipoGrupo
                             };
                         },
                         processResults: function (data, page) {
-                            return { results: data };
+                            var busca = data.filter(x => x.id === $scope.arquivoEditar.UadCodigoDestinatario);
+                            if (busca == null || busca == undefined || busca.length == 0)
+                                data.push(busca);
+                            $scope.listaDestinatarios = data;
+                            return { results: $scope.listaDestinatarios };
                         }
                     }
                 });
         };
 
-        $('.comboListagrupo').on("select2:select", function (e) {
-            $(".comboListaDestinatario").empty().trigger('change');
-        });
-
-        $scope.destinatarioObsoleto = function __destinatarioObsoleto() {
-            ReportStudiesModel.listarDestinatarios({ tipoGrupo: $scope.grupo.Id }, function (result) {
+        $scope.carregadestinatariosEditarInicial = function __carregadestinatariosEditarInicial(arquivo) {
+            ReportStudiesModel.listarDestinatariosEditarInicial({ tipoGrupo: arquivo.STipoGrupo, filtroDesc: arquivo.UadCodigoDestinatario }, function (result) {
                 if (result.success) {
                     $scope.listaDestinatarios = result.lista;
                 }
@@ -160,18 +175,11 @@
                     $notification[result.type ? result.type : 'error'](result.message);
                 }
             });
+        };
 
-            //$('.comboListaGrupo').on("select2:select", function (e) {
-            //    $(".combolistadestinatario").empty().trigger('change');
-
-            //});
-
-            //$scope.listaDestinatarios = [
-            //    { Codigo: 1, Nome: 'BT - Butanta' },
-            //    { Codigo: 2, Nome: 'Geral' },
-            //    { Codigo: 3, Nome: '191 - Alipio' }
-            //];
-        }
+        $('.comboListagrupo').on("select2:select", function (e) {
+            $(".comboListaDestinatario").empty().trigger('change');
+        });
 
         $scope.carregaImportacoesPaginado = function __ImportacoesPaginado(paginate) {
             $scope.listaImportacoes = [];
@@ -194,7 +202,7 @@
                         $notification[result.type ? result.type : 'error'](result.message);
                     }
                 });
-        }
+        };
 
         $scope.callModalNovaImportacao = function __callModalNovaImportacao() {
             $scope.limparDados();
@@ -203,10 +211,13 @@
 
         $scope.callModalEditarImportacao = function __callModalEditarImportacao(arquivo) {
             $scope.limparDados();
+            $scope.editMode = true;
             $scope.carregaGrupos();
-            $scope.arquivoEditar = arquivo;            
+            $scope.arquivoEditar = angular.copy(arquivo);
+            $scope.carregadestinatariosEditarInicial($scope.arquivoEditar);
+            $scope.carregadestinatariosEditar();
             console.log('arquivo', $scope.arquivoEditar);
-            angular.element("#modalEdicaoImportacao").modal({ backdrop: 'static' });
+            angular.element("#modalNovaImportacao").modal({ backdrop: 'static' });
         };
 
         $scope.callModalImportarCsvEdicaoLote = function __callModalImportarCsvEdicaoLote() {
@@ -217,13 +228,13 @@
         $scope.selecionarArquivo = function __selecionarArquivo(element) {
             $scope.arquivoSelecionado = element.files[0];
             $scope.validacoesArquivo();
-        }
+        };
 
 
         $scope.selecionarArquivoCsv = function __selecionarArquivoCsv(element) {
             $scope.arquivoSelecionadoCsv = element.files[0];
             $scope.validacoesArquivoCsv();
-        }
+        };
 
         $scope.validacoesArquivo = function __validacoesArquivo() {
             var tamanhoArquivo = parseInt($scope.arquivoSelecionado.size);
@@ -234,7 +245,7 @@
                 $notification['error']("Selecione um arquivo HTML");
                 return false;
             }
-        }
+        };
 
 
         $scope.validacoesArquivoCsv = function __validacoesArquivoCsv() {
@@ -246,41 +257,33 @@
                 $notification['error']("Selecione um arquivo CSV.");
                 return false;
             }
-        }
+        };
 
         $scope.exibirLoading = function __exibirLoading(exibir) {
             if (exibir)
                 angular.element('#div_loading').css('display', 'block');
             else
                 angular.element('#div_loading').css('display', 'none');
-        }
+        };
 
         $scope.limparDados = function __limpar() {
+            $scope.editMode = false;
             $scope.arquivoEditar = {};
             $scope.grupo = null;
             $scope.destinatario = null;
             $scope.arquivoSelecionado = null;
             angular.element("input[type='file']").val(null);
-        }
+        };
 
         $scope.limparDadosCsv = function __limparCsv() {
             $scope.arquivoSelecionadoCsv = null;
             angular.element("input[type='file']").val(null);
-        }
+        };
 
         $scope.confirmarDeletar = function
             (item) {
             $scope.itemParaDeletar = item;
             angular.element('#modalDelete').modal({ backdrop: 'static' });
-        };
-
-        $scope.confirmarEditar = function
-            (item) {
-            console.log("item:", item);
-            //  $scope.grupo.Id = 1;
-            //  $scope.carregadestinatarios();
-            //     $scope.arquivoSelecionado.name = item.NomeArquivo;
-            angular.element('#modalNovaImportacao').modal({ backdrop: 'static' });
         };
 
         $scope.abrirLink = function __abrirLink(link) {
@@ -327,25 +330,27 @@
                 $scope.exibirLoading(false);
                 $notification.error(e);
             });
-        }
+        };
 
         $scope.UploadFile = function () {
             $scope.grupo.Codigo = $('.comboListagrupo').val();
             $scope.destinatario.Nome = $(".comboListaDestinatario").text();
+
             var form = new FormData();
             if ($scope.grupo !== null && $scope.grupo !== undefined) {
                 form.append('TypeGroup', $('.comboListagrupo').val());
             }
 
             if ($scope.destinatario !== null && $scope.destinatario !== undefined) {
-                form.append('Addressee', $(".comboListaDestinatario").text())
+                form.append('Addressee', $(".comboListaDestinatario").text());
+                form.append('uadCodigoDestinatario', $(".comboListaDestinatario").val());
             }
+
+            form.append('Codigo', 0);
+
             form.append('file', $scope.arquivoSelecionado);
             form.append('Name', $scope.arquivoSelecionado.FileName);
             form.append('Link', '');
-
-            //Passar o id aqui quando for edicao;
-            form.append('Codigo', 0);
 
             var defer = $q.defer();
             $http.post("/ReportStudies/Save", form,
@@ -361,7 +366,7 @@
                 });
 
             return defer.promise;
-        }
+        };
 
         function kmgtbytes(num) {
             if (num > 0) {
@@ -410,7 +415,7 @@
                 $notification.error(e);
             });
 
-        }
+        };
 
         $scope.UploadFileCsv = function () {
             var form = new FormData();
@@ -430,7 +435,7 @@
                 });
 
             return defer.promise;
-        }
+        };
 
     };
 

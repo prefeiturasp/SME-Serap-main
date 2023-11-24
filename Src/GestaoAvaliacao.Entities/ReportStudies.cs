@@ -8,7 +8,9 @@ namespace GestaoAvaliacao.Entities
 
         public virtual int? TypeGroup { get; set; }
 
-        public virtual string Addressee { get; set; }
+        public virtual string Addressee { get; set; } = null;
+
+        public virtual string UadCodigoDestinatario { get; set; } = null;
 
         public virtual string Link { get; set; }
 

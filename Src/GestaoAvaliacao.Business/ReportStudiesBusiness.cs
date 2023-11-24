@@ -65,11 +65,13 @@ namespace GestaoAvaliacao.Business
             return valid;
         }
         public bool Save(ReportStudies entity, UploadModel upload)
-        {         
+        {            
+            if (entity.Id == 0)
+            {
                 var file = fileBusiness.Upload(upload);
                 entity.Link = file.Path;
-            if(entity.Id == 0)
                 return reportStudiesRepository.Save(entity);
+            }
 
             return reportStudiesRepository.Update(entity);
         }
@@ -266,7 +268,7 @@ namespace GestaoAvaliacao.Business
         public IEnumerable<AJX_Select2> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup tipoGrupo, string filtroDesc = null)
         {
             var listaDestinatarios = new List<AJX_Select2>();
-            
+
             var listaDres = _uadBusiness.LoadDRESimple(usuario, sysGrupo);
             var listaCodigosDre = listaDres.Select(x => x.uad_sigla).ToList();
 

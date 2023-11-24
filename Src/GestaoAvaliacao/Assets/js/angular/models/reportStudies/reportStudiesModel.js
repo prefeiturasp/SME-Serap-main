@@ -19,6 +19,10 @@
 				method: 'POST',
 				url: base_url('ReportStudies/Delete')
 			},
+			'listarDestinatariosEditarInicial': {
+				method: 'GET',
+				url: base_url('ReportStudies/ListarDestinatariosEditarInicial')
+			},
 			'listarDestinatarios': {
 				method: 'GET',
 				url: base_url('ReportStudies/ListarDestinatarios')

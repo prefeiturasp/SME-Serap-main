@@ -5,14 +5,10 @@ using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Repository.Context;
 using GestaoAvaliacao.Util;
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GestaoAvaliacao.Repository
 {
@@ -28,7 +24,7 @@ namespace GestaoAvaliacao.Repository
                 entity.UpdateDate = dateNow;
                 entity.State = Convert.ToByte(Entities.Enumerator.EnumState.ativo);
 
-                gestaoAvaliacaoContext.ReportStudies.Remove(entity);
+                gestaoAvaliacaoContext.ReportStudies.Add(entity);
                 gestaoAvaliacaoContext.SaveChanges();
             }
             return true;
@@ -37,7 +33,7 @@ namespace GestaoAvaliacao.Repository
 
         public bool Edit(ReportStudies entity)
         {
-            var sql = new StringBuilder("UPDATE ReportsStudies SET [Name] =  @name,  TypeGroup = @typeGroup, [Addressee]  = @addressee, [Link] = @link, [UpdateDate] = @updateDate   WHERE Id = @id");
+            var sql = new StringBuilder("UPDATE ReportsStudies SET [Name] =  @name,  TypeGroup = @typeGroup, [Addressee]  = @addressee, [UadCodigoDestinatario] = @uadCodigoDestinatario, [Link] = @link, [UpdateDate] = @updateDate   WHERE Id = @id");
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
@@ -49,6 +45,7 @@ namespace GestaoAvaliacao.Repository
                         name = entity.Name,
                         typeGroup = entity.TypeGroup,
                         addressee = entity.Addressee,
+                        uadCodigoDestinatario = entity.UadCodigoDestinatario,
                         link = entity.Link,
                         updateDate = entity.UpdateDate
                     });
@@ -78,6 +75,7 @@ namespace GestaoAvaliacao.Repository
                     rs.Name,
                     rs.TypeGroup,
                     rs.Addressee,
+                    rs.UadCodigoDestinatario,
                     rs.CreateDate,
                     rs.UpdateDate,
                     rs.[State],
@@ -91,6 +89,7 @@ namespace GestaoAvaliacao.Repository
                 Name,
                 TypeGroup,
                 Addressee,
+                UadCodigoDestinatario,
                 CreateDate,
                 UpdateDate,
                 Link,
@@ -144,6 +143,7 @@ namespace GestaoAvaliacao.Repository
                     rs.Name,
                     rs.TypeGroup,
                     rs.Addressee,
+                    rs.UadCodigoDestinatario,
                     rs.CreateDate,
                     rs.UpdateDate,
                     rs.[State],
@@ -158,6 +158,7 @@ namespace GestaoAvaliacao.Repository
                 Name,
                 TypeGroup,
                 Addressee,
+                UadCodigoDestinatario,
                 CreateDate,
                 UpdateDate,
                 Link,
@@ -210,6 +211,7 @@ namespace GestaoAvaliacao.Repository
                                        Name,
                                        TypeGroup,
                                        Addressee,
+                                       UadCodigoDestinatario,
                                        CreateDate,
                                        UpdateDate,
                                        [State],
@@ -236,9 +238,10 @@ namespace GestaoAvaliacao.Repository
                 var Id = entity.Id;
                 var typeGroup = entity.TypeGroup;
                 var addresse = entity.Addressee;
+                var uadCodigoDestinatario = entity.UadCodigoDestinatario;
                 var updateDate = DateTime.Now;
 
-                var sql = new StringBuilder("UPDATE ReportsStudies SET TypeGroup  =  @typeGroup, Addressee = @addresse, UpdateDate = @updateDate  WHERE Id = @id");
+                var sql = new StringBuilder("UPDATE ReportsStudies SET TypeGroup  =  @typeGroup, Addressee = @addresse, UadCodigoDestinatario = @uadCodigoDestinatario, UpdateDate = @updateDate  WHERE Id = @id");
                 using (IDbConnection cn = Connection)
                 {
                     cn.Open();
@@ -249,6 +252,7 @@ namespace GestaoAvaliacao.Repository
                             id = Id,
                             typeGroup = typeGroup,
                             addresse = addresse,
+                            uadCodigoDestinatario = uadCodigoDestinatario,
                             updateDate = updateDate,
                         });
                 }
