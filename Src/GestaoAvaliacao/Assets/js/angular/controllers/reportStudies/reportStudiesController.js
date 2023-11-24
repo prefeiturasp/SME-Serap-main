@@ -131,7 +131,8 @@
                             };
                         },
                         processResults: function (data, page) {
-                            return { results: data };
+                            $scope.listaDestinatarios = data.lista;
+                            return { results: data.lista };
                         }
                     }
                 });
@@ -156,11 +157,7 @@
                             };
                         },
                         processResults: function (data, page) {
-                            var busca = data.filter(x => x.id === $scope.arquivoEditar.UadCodigoDestinatario);
-                            if (busca == null || busca == undefined || busca.length == 0)
-                                data.push(busca);
-                            $scope.listaDestinatarios = data;
-                            return { results: $scope.listaDestinatarios };
+                            return { results: data.lista };
                         }
                     }
                 });
@@ -212,18 +209,20 @@
         $scope.callModalEditarImportacao = function __callModalEditarImportacao(arquivo) {
             $scope.limparDados();
             $scope.editMode = true;
+
             $scope.carregaGrupos();
             $scope.arquivoEditar = angular.copy(arquivo);
             $scope.carregadestinatariosEditarInicial($scope.arquivoEditar);
             $scope.carregadestinatariosEditar();
+
             console.log('arquivo', $scope.arquivoEditar);
+
             angular.element("#modalNovaImportacao").modal({ backdrop: 'static' });
         };
 
         $scope.callModalImportarCsvEdicaoLote = function __callModalImportarCsvEdicaoLote() {
             angular.element("#modalImportarCsvEdicaoLote").modal({ backdrop: 'static' });
         };
-
 
         $scope.selecionarArquivo = function __selecionarArquivo(element) {
             $scope.arquivoSelecionado = element.files[0];

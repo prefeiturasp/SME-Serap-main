@@ -127,7 +127,7 @@ public class ReportStudiesController : Controller
     {
         try
         {
-            return Json(reportStudiesBusiness.ListarDestinatarios(SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, tipoGrupo, filtroDesc), JsonRequestBehavior.AllowGet);
+            return Json( new { succes = true, lista = reportStudiesBusiness.ListarDestinatarios(SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, tipoGrupo, filtroDesc)  }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
         {
