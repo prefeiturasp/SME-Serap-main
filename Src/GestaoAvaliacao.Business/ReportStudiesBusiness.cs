@@ -64,16 +64,39 @@ namespace GestaoAvaliacao.Business
 
             return valid;
         }
-        public bool Save(ReportStudies entity, UploadModel upload)
-        {            
-            if (entity.Id == 0)
-            {
-                var file = fileBusiness.Upload(upload);
-                entity.Link = file.Path;
-                return reportStudiesRepository.Save(entity);
-            }
 
+        public bool Save(ReportStudies entity, UploadModel upload)
+        {
+            entity.Id = 0;
+            TrataGrupoDestinatario(entity);
+            var file = fileBusiness.Upload(upload);
+            entity.Link = file.Path;
+            return reportStudiesRepository.Save(entity);
+        }
+
+        public bool Update(ReportStudies entity)
+        {
+            TrataGrupoDestinatario(entity);
+            var entityDb = reportStudiesRepository.GetById(entity.Id);
+            if (entityDb == null || entityDb?.Id == 0) throw new Exception("arquivo não encontrado.");
             return reportStudiesRepository.Update(entity);
+        }
+
+        private void TrataGrupoDestinatario(in ReportStudies entity)
+        {
+            if (entity.TypeGroup == null || entity.TypeGroup == 0)
+            {
+                entity.Addressee = entity.UadCodigoDestinatario = null;
+                entity.TypeGroup = null;
+            }
+            else if (entity.TypeGroup != (int)EnumTypeGroup.DRE && entity.TypeGroup != (int)EnumTypeGroup.UE)
+                entity.Addressee = entity.UadCodigoDestinatario = null;
+
+            if (entity.TypeGroup == (int)EnumTypeGroup.DRE || entity.TypeGroup != (int)EnumTypeGroup.UE)
+            {
+                if (string.IsNullOrEmpty(entity.UadCodigoDestinatario) || entity.UadCodigoDestinatario.Trim() == "0")
+                    entity.Addressee = entity.UadCodigoDestinatario = null;
+            }
         }
 
         public IEnumerable<ReportStudies> ListAll()
@@ -265,7 +288,7 @@ namespace GestaoAvaliacao.Business
             return listaGrupos.OrderBy(x => x.text);
         }
 
-        public IEnumerable<AJX_Select2> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup tipoGrupo, string filtroDesc = null)
+        public IEnumerable<AJX_Select2> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup? tipoGrupo, string filtroDesc = null)
         {
             var listaDestinatarios = new List<AJX_Select2>();
 
@@ -291,8 +314,9 @@ namespace GestaoAvaliacao.Business
                 }).ToList();
             }
 
-            if (!string.IsNullOrEmpty(filtroDesc))
+            if (!string.IsNullOrEmpty(filtroDesc) && tipoGrupo == EnumTypeGroup.UE)
                 listaDestinatarios = listaDestinatarios.Where(x => x.text.Contains(filtroDesc.ToUpper())).ToList();
+
             return listaDestinatarios;
         }
 

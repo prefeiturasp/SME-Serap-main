@@ -30,9 +30,10 @@
         $scope.resultImportarCsv = null;
         $scope.paginate = $pager(ReportStudiesModel.carregaImportacoes);
         $scope.pageSize = 10;
-        $scope.grupo = {};
-        $scope.destinatario = { Id: undefined, text: undefined };
+        $scope.grupo = { "id": "0" };
+        $scope.destinatario = { "id": "0", "text": "" };
         $scope.arquivoEditar = {};
+        $scope.opcaoPadrao = { "id": "0", "text": "--Selecione uma opção--" };
 
         $scope.load = function _load() {
             self.chamadasBack = {};
@@ -41,7 +42,7 @@
 
             $(".comboListagrupo").select2({
                 multiple: false,
-                placeholder: "Selecione um grupo",
+                placeholder: "--Selecione uma opção--",
                 width: '100%',
                 ajax: {
                     url: "reportstudies/listargrupos",
@@ -52,25 +53,16 @@
                         };
                     },
                     processResults: function (data, page) {
+                        data.lista.unshift($scope.opcaoPadrao);
                         return { results: data.lista };
                     }
                 }
             });
 
-            $(".comboListagrupoEditar").select2({
+            $(".comboListagrupoEditar, .comboListaDestinatarioEditar, .comboListaDestinatario").select2({
                 multiple: false,
-                placeholder: "Selecione um grupo",
+                placeholder: "--Selecione uma opção--",
                 width: '100%',
-            });
-
-            $(".comboListaDestinatarioEditar").select2({
-                multiple: false,
-                placeholder: "selecione um destinatario",
-                width: '100%',
-            });
-
-            $(".comboListaDestinatario").select2({
-                placeholder: "Selecione a lista destinatário"
             });
 
         };
@@ -108,6 +100,7 @@
         $scope.carregaGrupos = function __carregaGrupos() {
             ReportStudiesModel.listarGrupos({}, function (result) {
                 if (result.success) {
+                    result.lista.unshift($scope.opcaoPadrao);
                     $scope.listaGrupos = result.lista;
                 }
                 else {
@@ -119,7 +112,7 @@
         $scope.carregadestinatarios = function __carregadestinatarios() {
             $(".comboListaDestinatario").select2(
                 {
-                    placeholder: "selecione um destinatario",
+                    placeholder: "--Selecione uma opção--",
                     width: '100%',
                     ajax: {
                         url: "reportstudies/listardestinatarios",
@@ -131,6 +124,7 @@
                             };
                         },
                         processResults: function (data, page) {
+                            data.lista.unshift($scope.opcaoPadrao);
                             $scope.listaDestinatarios = data.lista;
                             return { results: data.lista };
                         }
@@ -138,14 +132,10 @@
                 });
         };
 
-        $scope.destinatarioMudou = function __destinatarioMudou() {
-            console.log('UadCodigoDestinatario', $scope.arquivoEditar.UadCodigoDestinatario);
-        };
-
         $scope.carregadestinatariosEditar = function __carregadestinatariosEditar() {
             $(".comboListaDestinatarioEditar").select2(
                 {
-                    placeholder: "selecione um destinatario",
+                    placeholder: "--Selecione uma opção--",
                     width: '100%',
                     ajax: {
                         url: "reportstudies/listardestinatarios",
@@ -157,6 +147,7 @@
                             };
                         },
                         processResults: function (data, page) {
+                            data.lista.unshift($scope.opcaoPadrao);
                             return { results: data.lista };
                         }
                     }
@@ -174,8 +165,8 @@
             });
         };
 
-        $('.comboListagrupo').on("select2:select", function (e) {
-            $(".comboListaDestinatario").empty().trigger('change');
+        $('.comboListagrupo, .comboListagrupoEditar').on("select2:select", function (e) {
+            $(".comboListaDestinatario, .comboListaDestinatarioEditar").empty().trigger('change');
         });
 
         $scope.carregaImportacoesPaginado = function __ImportacoesPaginado(paginate) {
@@ -203,20 +194,19 @@
 
         $scope.callModalNovaImportacao = function __callModalNovaImportacao() {
             $scope.limparDados();
+            $scope.carregadestinatarios();            
             angular.element("#modalNovaImportacao").modal({ backdrop: 'static' });
         };
 
         $scope.callModalEditarImportacao = function __callModalEditarImportacao(arquivo) {
             $scope.limparDados();
+            $scope.listaDestinatarios = null;
             $scope.editMode = true;
-
             $scope.carregaGrupos();
             $scope.arquivoEditar = angular.copy(arquivo);
             $scope.carregadestinatariosEditarInicial($scope.arquivoEditar);
             $scope.carregadestinatariosEditar();
-
             console.log('arquivo', $scope.arquivoEditar);
-
             angular.element("#modalNovaImportacao").modal({ backdrop: 'static' });
         };
 
@@ -267,9 +257,9 @@
 
         $scope.limparDados = function __limpar() {
             $scope.editMode = false;
-            $scope.arquivoEditar = {};
-            $scope.grupo = null;
-            $scope.destinatario = null;
+            $scope.arquivoEditar = null;
+            $scope.grupo = { "id": "0" };
+            $scope.destinatario = { "id": "0", "text": "" };
             $scope.arquivoSelecionado = null;
             angular.element("input[type='file']").val(null);
         };
@@ -300,6 +290,34 @@
                 }
             });
             angular.element('#modalDelete').modal('hide');
+        };
+
+        $scope.salvarAlteracaoImportacao = function __salvarAlteracaoImportacao() {
+            console.log('arquivoEditar', $scope.arquivoEditar);
+
+            var id = $scope.arquivoEditar.Codigo;
+            var tipoGrupo = $scope.arquivoEditar.STipoGrupo;
+            var destinatario = $(".comboListaDestinatarioEditar").text();
+            var uadCodigoDestinatario = $(".comboListaDestinatarioEditar").val();
+
+            ReportStudiesModel.update({
+                id: id,
+                tipoGrupo: tipoGrupo,
+                destinatario: destinatario,
+                uadCodigoDestinatario: uadCodigoDestinatario
+            }, function (result) {
+                if (result.success) {
+                    $scope.limparDados();
+                    $scope.exibirLoading(false);
+                    $scope.carregaImportacoesPaginado();
+                    $notification.success("Arquivo alterado com sucesso!");
+                }
+                else {
+                    $scope.limparDados();
+                    $scope.exibirLoading(false);
+                    $notification[result.type ? result.type : 'error'](result.message);
+                }
+            });
         };
 
         $scope.salvarImportacao = function __salvarImportacao() {
@@ -345,11 +363,7 @@
                 form.append('uadCodigoDestinatario', $(".comboListaDestinatario").val());
             }
 
-            form.append('Codigo', 0);
-
             form.append('file', $scope.arquivoSelecionado);
-            form.append('Name', $scope.arquivoSelecionado.FileName);
-            form.append('Link', '');
 
             var defer = $q.defer();
             $http.post("/ReportStudies/Save", form,

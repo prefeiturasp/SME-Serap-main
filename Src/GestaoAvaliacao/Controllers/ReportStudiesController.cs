@@ -27,18 +27,17 @@ public class ReportStudiesController : Controller
     }
 
     [HttpPost]
-    public JsonResult Save(HttpPostedFileBase file, string Name, int? TypeGroup, string Addressee, string Link, long Codigo, string uadCodigoDestinatario)
+    public JsonResult Save(HttpPostedFileBase file, int? TypeGroup, string Addressee, string uadCodigoDestinatario)
     {
         try
         {
             var entity = new ReportStudies
-            {   Id = Codigo,
+            {
                 Name = file?.FileName,
                 TypeGroup = TypeGroup,
                 Addressee = Addressee,
-                UadCodigoDestinatario = uadCodigoDestinatario,
-                Link = Link
-            };
+                UadCodigoDestinatario = uadCodigoDestinatario
+            };            
 
             UploadModel upload = new UploadModel
             {
@@ -66,6 +65,30 @@ public class ReportStudiesController : Controller
         }
     }
 
+    [HttpPost]
+    public JsonResult Update(long id, int? tipoGrupo, string destinatario, string uadCodigoDestinatario)
+    {
+        try
+        {
+            var entity = new ReportStudies
+            {
+                Id = id,
+                TypeGroup = tipoGrupo,
+                Addressee = destinatario,
+                UadCodigoDestinatario = uadCodigoDestinatario,
+            };            
+
+            var ret = reportStudiesBusiness.Update(entity);
+
+            return Json(new { success = ret, message = ret ? null : "Erro ao alterar arquivo." }, JsonRequestBehavior.AllowGet);
+        }
+        catch (Exception ex)
+        {
+            LogFacade.SaveError(ex);
+            return Json(new { success = false, message = "Erro ao alterar arquivo.", type = ValidateType.error.ToString() }, JsonRequestBehavior.AllowGet);
+        }
+    }
+
     [HttpGet]
     [Paginate]
     public JsonResult ListReportStudies(string searchFilter)
@@ -88,7 +111,7 @@ public class ReportStudiesController : Controller
                     UadCodigoDestinatario = entity.UadCodigoDestinatario,
                     DataUpload = entity.CreateDate.ToString(),
                     Link = entity.Link,
-                    ObjDestinatario = new { id = entity.UadCodigoDestinatario.ToString(), text = entity.Addressee.ToString() }
+                    ObjDestinatario = new { id = $"{entity.UadCodigoDestinatario?.ToString()}", text = $"{entity.Addressee?.ToString()}" }
                 });
 
                 return Json(new { success = true, lista = ret, pageSize = pager.PageSize }, JsonRequestBehavior.AllowGet);
@@ -107,12 +130,12 @@ public class ReportStudiesController : Controller
 
     [Route("listargrupos")]
     [HttpGet]
-    
+
     public JsonResult ListarGrupos()
     {
         try
         {
-            return Json( new { success = true, lista = reportStudiesBusiness.ListarGrupos() }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = true, lista = reportStudiesBusiness.ListarGrupos() }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
         {
@@ -123,11 +146,11 @@ public class ReportStudiesController : Controller
 
     [Route("listardestinatarios")]
     [HttpGet]
-    public JsonResult ListarDestinatarios(string filtroDesc, EnumTypeGroup tipoGrupo)
+    public JsonResult ListarDestinatarios(string filtroDesc, EnumTypeGroup? tipoGrupo)
     {
         try
         {
-            return Json( new { succes = true, lista = reportStudiesBusiness.ListarDestinatarios(SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, tipoGrupo, filtroDesc)  }, JsonRequestBehavior.AllowGet);
+            return Json(new { succes = true, lista = reportStudiesBusiness.ListarDestinatarios(SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, tipoGrupo, filtroDesc) }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
         {
@@ -137,7 +160,7 @@ public class ReportStudiesController : Controller
     }
 
     [HttpGet]
-    public JsonResult ListarDestinatariosEditarInicial(string filtroDesc, EnumTypeGroup tipoGrupo)
+    public JsonResult ListarDestinatariosEditarInicial(string filtroDesc, EnumTypeGroup? tipoGrupo)
     {
         try
         {

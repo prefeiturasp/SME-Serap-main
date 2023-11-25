@@ -113,12 +113,21 @@
                 @*BODY*@
                 <div class="modal-body">
                     <div class="col-md-12">
+                        <div ng-show="editMode" class="campoLabel">
+                            <label>Código: </label>
+                            <div>
+                                <div class="upload-group">
+                                    <input type="text" class="form-control input-upload" ng-model="arquivoEditar.Codigo" ng-disabled="true" ng-show="editMode">
+                                </div>
+                            </div>
+                        </div>
                         <div style="margin-bottom: 20px;" class="campoLabel">
                             <label>Arquivo: </label>
                             <div>
                                 <div class="upload-group">
-                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="editMode ? arquivoEditar.NomeArquivo : arquivoSelecionado.name" ng-disabled="true">
-                                    <span class="input-group-btn fake-upload">
+                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" ng-disabled="true" ng-show="!editMode">
+                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoEditar.NomeArquivo" ng-disabled="true" ng-show="editMode">
+                                    <span ng-show="!editMode" class="input-group-btn fake-upload">
                                         <i class="material-icons">file_upload</i>
                                         <input type="file" accept=".htm,.html" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="editMode" />
                                     </span>
@@ -166,17 +175,9 @@
                                         class="comboListaDestinatarioEditar"
                                         ng-options="opt.id as opt.text for opt in listaDestinatarios"
                                         ng-model="arquivoEditar.UadCodigoDestinatario"
-                                        ng-title-index="1"
-                                        ng-change="destinatarioMudou();">
+                                        ng-title-index="1">
                                     <option value="">--Selecione uma opção--</option>
                                 </select>
-                                @*<select id="comboListaDestinatario"
-                                            class="comboListaDestinatario"
-                                            ng-model="arquivoEditar.UadCodigoDestinatario"
-                                            ng-title-index="1"
-                                            ng-change="destinatarioMudou();">
-                                        <option value="">--Selecione uma opção--</option>
-                                    </select>*@
                             </div>
                         </div>
                     </div>
@@ -186,89 +187,17 @@
                 <div class="modal-footer footerCustom ">
                     <div class="container-fluid row-fluid">
                         <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="limparDados()" aria-hidden="true">Cancelar</button>
-                        <button type="button"
+                        <button ng-show="!editMode" type="button"
                                 class="btn btn-primary" data-dismiss="modal"
                                 ng-click="salvarImportacao()"
                                 ng-disabled="!arquivoSelecionado.name">
                             Salvar
                         </button>
-                    </div>
-                </div>
 
-            </div>
-        </div>
-    </div>
-
-    @* Modal para editar arquivo de resultados *@
-    <div class="modal fade" id="modalEdicaoImportacao" tabindex="-1" role="dialog" aria-labelledby="modalEdicaoImportacao" aria-hidden="true">
-        <div class="modal-dialog ">
-            <div class="modal-content ">
-
-                @*HEADER*@
-                <div class="modal-header">
-                    <a class="pull-right centralizarY" data-dismiss="modal" aria-hidden="true"><i class="material-icons">close</i></a>
-                    <h4 class="modal-title">
-                        <strong>Relatórios e Estudos - Editar</strong>
-                    </h4>
-                </div>
-                @*BODY*@
-                <div class="modal-body">
-                    <div class="col-md-12">
-                        <div style="margin-bottom: 20px;" class="campoLabel">
-                            <label>Arquivo: </label>
-                            <div>
-                                <div class="upload-group">
-                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoEditar.NomeArquivo" ng-disabled="true">
-                                    <span class="input-group-btn fake-upload">
-                                        <i class="material-icons">file_upload</i>
-                                        <input type="file" accept=".htm,.html" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" ng-disabled="true" />
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="campoLabel">
-                            <label>Grupo: </label>
-
-                            <div ng-show="!editMode">
-                                <select ng-title-index="1"
-                                        id="comboListagrupo"
-                                        class="comboListagrupo"
-                                        ng-options="opt.id as opt.text for opt in listaGrupos"
-                                        ng-model="arquivoEditar.STipoGrupo"
-                                        ng-change="carregadestinatariosEditar();">
-                                    <option value="">--Selecione uma opção--</option>
-                                </select>
-                            </div>
-                            <div ng-show="editMode">
-                                <input readonly class="labelListaGrupo form-control" id="labelListaGrupo" ng-model="arquivoEditar.Grupo" />
-                            </div>
-                        </div>
-                        <div class="campoLabel">
-                            <label>Destinatário: </label>
-                            <div ng-show="!editMode">
-                                <select id="comboListaDestinatarioEditar"
-                                        class="comboListaDestinatarioEditar"
-                                        ng-options="opt.id as opt.text for opt in listaDestinatarios"
-                                        ng-model="arquivoEditar.UadCodigoDestinatario"
-                                        ng-title-index="1">
-                                    <option value="">--Selecione uma opção--</option>
-                                </select>
-                            </div>
-                            <div ng-show="editMode">
-                                <input readonly class="labelListaDestinatario form-control" id="labelListaDestinatario" ng-model="destinatario.filtroDesc" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                @*FOOTER*@
-                <div class="modal-footer footerCustom ">
-                    <div class="container-fluid row-fluid">
-                        <button type="button" class="btn btnCancelar2" data-dismiss="modal" ng-click="limparDados()" aria-hidden="true">Cancelar</button>
-                        <button type="button"
+                        <button ng-show="editMode" type="button"
                                 class="btn btn-primary" data-dismiss="modal"
-                                ng-click="salvarImportacao()"
-                                ng-disabled="!arquivoSelecionado.name">
+                                ng-click="salvarAlteracaoImportacao()"
+                                ng-disabled="!arquivoEditar.NomeArquivo">
                             Salvar
                         </button>
                     </div>
