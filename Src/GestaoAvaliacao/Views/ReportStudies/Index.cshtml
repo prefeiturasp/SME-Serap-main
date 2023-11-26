@@ -141,7 +141,7 @@
                                 <select ng-title-index="1"
                                         id="comboListagrupo"
                                         class="comboListagrupo"
-                                        ng-model="grupo.Id"
+                                        ng-model="grupo.id"
                                         ng-change="carregadestinatarios();">
                                     <option value="">--Selecione uma opção--</option>
                                 </select>
@@ -152,7 +152,7 @@
                                         id="comboListagrupoEditar"
                                         class="comboListagrupoEditar"
                                         ng-options="opt.id as opt.text for opt in listaGrupos"
-                                        ng-model="arquivoEditar.STipoGrupo"
+                                        ng-model="grupo.id"
                                         ng-change="carregadestinatariosEditar();">
                                     <option value="">--Selecione uma opção--</option>
                                 </select>
@@ -160,7 +160,7 @@
 
                         </div>
 
-                        <div class="campoLabel">
+                        <div ng-show="grupo.id == '1' || grupo.id == '2'" class="campoLabel">
                             <label>Destinatário: </label>
                             <div ng-show="!editMode">
                                 <select id="comboListaDestinatario"
@@ -174,7 +174,7 @@
                                 <select id="comboListaDestinatarioEditar"
                                         class="comboListaDestinatarioEditar"
                                         ng-options="opt.id as opt.text for opt in listaDestinatarios"
-                                        ng-model="arquivoEditar.UadCodigoDestinatario"
+                                        ng-model="destinatario.id"
                                         ng-title-index="1">
                                     <option value="">--Selecione uma opção--</option>
                                 </select>

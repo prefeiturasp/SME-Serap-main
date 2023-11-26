@@ -69,6 +69,7 @@ namespace GestaoAvaliacao.Business
         {
             entity.Id = 0;
             TrataGrupoDestinatario(entity);
+            TrataDescricaoDestinatario(entity);
             var file = fileBusiness.Upload(upload);
             entity.Link = file.Path;
             return reportStudiesRepository.Save(entity);
@@ -77,6 +78,7 @@ namespace GestaoAvaliacao.Business
         public bool Update(ReportStudies entity)
         {
             TrataGrupoDestinatario(entity);
+            TrataDescricaoDestinatario(entity);
             var entityDb = reportStudiesRepository.GetById(entity.Id);
             if (entityDb == null || entityDb?.Id == 0) throw new Exception("arquivo não encontrado.");
             return reportStudiesRepository.Update(entity);
@@ -96,6 +98,23 @@ namespace GestaoAvaliacao.Business
             {
                 if (string.IsNullOrEmpty(entity.UadCodigoDestinatario) || entity.UadCodigoDestinatario.Trim() == "0")
                     entity.Addressee = entity.UadCodigoDestinatario = null;
+            }
+        }
+
+        private void TrataDescricaoDestinatario(in ReportStudies entity)
+        {
+            if (entity.TypeGroup == (int)EnumTypeGroup.DRE)
+            {
+                var dre = _uadBusiness.GetByUad_Codigo(entity.UadCodigoDestinatario);
+                if (dre == null) throw new Exception($"DRE não encontrada: {entity.UadCodigoDestinatario}");
+                entity.Addressee = dre.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "");
+            }
+
+            if (entity.TypeGroup == (int)EnumTypeGroup.UE)
+            {
+                var escola = _schoolBusiness.ObterEscolaPorCodigo(entity.UadCodigoDestinatario);
+                if (escola == null) throw new Exception($"ESCOLA não encontrada: {entity.UadCodigoDestinatario}");
+                entity.Addressee = $"{escola.EscCodigo} - {escola.EscNome}";
             }
         }
 
@@ -136,8 +155,6 @@ namespace GestaoAvaliacao.Business
                     var listaGrupos = CarregaGrupos();
                     foreach (var item in listaArquivoEstudoCsvDto)
                     {
-                        var destinatario = string.Empty;
-
                         linha++;
                         var entity = reportStudiesRepository.GetById(item.Codigo);
 
@@ -156,9 +173,8 @@ namespace GestaoAvaliacao.Business
                         if (Enum.TryParse(RemoveAcentos(item.TipoGrupo.ToUpper()), out EnumTypeGroup enumTypeGroup))
                             entity.TypeGroup = (int)enumTypeGroup;
 
-                        destinatario = TrataDestinatario(listaEscolas, listaDres, item, destinatario, entity);
+                        TrataDestinatario(listaEscolas, listaDres, item, entity);
 
-                        entity.Addressee = destinatario;
                         codigosAtualizados.Add(item.Codigo);
 
                         reportStudiesRepository.Update(entity);
@@ -176,20 +192,20 @@ namespace GestaoAvaliacao.Business
             }
         }
 
-        private static string TrataDestinatario(IEnumerable<EscolaDto> listaEscolas, IEnumerable<GestaoEscolar.Entities.SYS_UnidadeAdministrativa> listaDres, ReportStudiesCsvDto item, string destinatario, ReportStudies entity)
+        private static void TrataDestinatario(IEnumerable<EscolaDto> listaEscolas, IEnumerable<GestaoEscolar.Entities.SYS_UnidadeAdministrativa> listaDres, ReportStudiesCsvDto item, in ReportStudies entity)
         {
             if (entity.TypeGroup == (int)EnumTypeGroup.DRE)
             {
                 var dre = listaDres.Where(x => x.uad_sigla == item.Destinatario).FirstOrDefault();
-                destinatario = $"{dre.uad_sigla} - {dre.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")}";
+                entity.Addressee = $"{dre.uad_sigla} - {dre.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")}";
+                entity.UadCodigoDestinatario = dre.uad_codigo;
             }
             if (entity.TypeGroup == (int)EnumTypeGroup.UE)
             {
                 var ue = listaEscolas.Where(x => x.EscCodigo == item.Destinatario).FirstOrDefault();
-                destinatario = $"{ue.EscCodigo} - {ue.EscNome}";
+                entity.Addressee = $"{ue.EscCodigo} - {ue.EscNome}";
+                entity.UadCodigoDestinatario = ue.EscCodigo;
             }
-
-            return destinatario;
         }
 
         private static bool ExisteErroItemCsv(List<ErrosImportacaoCSV> listaErros, int linha, List<long> codigosAtualizados, IEnumerable<EscolaDto> listaEscolas, List<string> listaAbreviacaoDres, List<string> listaGrupos, ReportStudiesCsvDto item, ReportStudies entity)

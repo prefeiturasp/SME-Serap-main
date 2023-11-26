@@ -99,6 +99,11 @@ namespace GestaoEscolar.Business
             return escolaRepository.ListarEscolasPorcodigoDre(uad_codigo);
         }
 
+        public EscolaDto ObterEscolaPorCodigo(string esc_codigo)
+        {
+            return escolaRepository.ObterEscolaPorCodigo(esc_codigo);
+        }
+
         #endregion
 
     }

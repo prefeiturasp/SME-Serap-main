@@ -32,7 +32,7 @@
         $scope.pageSize = 10;
         $scope.grupo = { "id": "0" };
         $scope.destinatario = { "id": "0", "text": "" };
-        $scope.arquivoEditar = {};
+        $scope.arquivoEditar = null;
         $scope.opcaoPadrao = { "id": "0", "text": "--Selecione uma opção--" };
 
         $scope.load = function _load() {
@@ -120,19 +120,19 @@
                         data: function (params, page) {
                             return {
                                 filtroDesc: params.term,
-                                tipoGrupo: ($('.comboListagrupo').val())
+                                tipoGrupo: ($('.comboListagrupo').val().replace("string:", ""))
                             };
                         },
                         processResults: function (data, page) {
                             data.lista.unshift($scope.opcaoPadrao);
-                            $scope.listaDestinatarios = data.lista;
                             return { results: data.lista };
                         }
                     }
                 });
         };
 
-        $scope.carregadestinatariosEditar = function __carregadestinatariosEditar() {
+        $scope.carregadestinatariosEditar = function __carregadestinatariosEditar(arquivo) {
+            $scope.setGrupoDestinatarioEditar(arquivo);
             $(".comboListaDestinatarioEditar").select2(
                 {
                     placeholder: "--Selecione uma opção--",
@@ -143,11 +143,12 @@
                         data: function (params, page) {
                             return {
                                 filtroDesc: params.term,
-                                tipoGrupo: $scope.arquivoEditar.STipoGrupo
+                                tipoGrupo: ($(".comboListagrupoEditar").val().replace("string:", ""))
                             };
                         },
                         processResults: function (data, page) {
                             data.lista.unshift($scope.opcaoPadrao);
+                            $scope.setGrupoDestinatarioEditar(arquivo);
                             return { results: data.lista };
                         }
                     }
@@ -155,9 +156,11 @@
         };
 
         $scope.carregadestinatariosEditarInicial = function __carregadestinatariosEditarInicial(arquivo) {
+            $scope.setGrupoDestinatarioEditar(arquivo);
             ReportStudiesModel.listarDestinatariosEditarInicial({ tipoGrupo: arquivo.STipoGrupo, filtroDesc: arquivo.UadCodigoDestinatario }, function (result) {
                 if (result.success) {
-                    $scope.listaDestinatarios = result.lista;
+                    $scope.setGrupoDestinatarioEditar(arquivo);
+                    $scope.listaDestinatarios = angular.copy(result.lista);
                 }
                 else {
                     $notification[result.type ? result.type : 'error'](result.message);
@@ -194,7 +197,7 @@
 
         $scope.callModalNovaImportacao = function __callModalNovaImportacao() {
             $scope.limparDados();
-            $scope.carregadestinatarios();            
+            $scope.carregadestinatarios();
             angular.element("#modalNovaImportacao").modal({ backdrop: 'static' });
         };
 
@@ -203,11 +206,26 @@
             $scope.listaDestinatarios = null;
             $scope.editMode = true;
             $scope.carregaGrupos();
+            $scope.grupo = { "id": arquivo.STipoGrupo };
+            $scope.destinatario = { "id": arquivo.ObjDestinatario.id, "text": "" };
             $scope.arquivoEditar = angular.copy(arquivo);
-            $scope.carregadestinatariosEditarInicial($scope.arquivoEditar);
-            $scope.carregadestinatariosEditar();
-            console.log('arquivo', $scope.arquivoEditar);
+            $scope.carregadestinatariosEditarInicial(arquivo);
+            $scope.carregadestinatariosEditar(arquivo);
             angular.element("#modalNovaImportacao").modal({ backdrop: 'static' });
+        };
+
+        $scope.setGrupoDestinatarioEditar = function __setGrupoDestinatarioEditar(arquivo) {
+            if (arquivo != null && arquivo != undefined) {
+                if (arquivo.STipoGrupo != null && arquivo.STipoGrupo != undefined)
+                    $scope.grupo = { "id": arquivo.STipoGrupo };
+                else
+                    $scope.grupo = { "id": "0" };
+
+                if (arquivo.ObjDestinatario.id != null && arquivo.ObjDestinatario.id != undefined)
+                    $scope.destinatario = { "id": arquivo.ObjDestinatario.id, "text": "" };
+                else
+                    $scope.destinatario = { "id": "0", "text": "" };
+            }
         };
 
         $scope.callModalImportarCsvEdicaoLote = function __callModalImportarCsvEdicaoLote() {
@@ -293,17 +311,20 @@
         };
 
         $scope.salvarAlteracaoImportacao = function __salvarAlteracaoImportacao() {
-            console.log('arquivoEditar', $scope.arquivoEditar);
 
             var id = $scope.arquivoEditar.Codigo;
-            var tipoGrupo = $scope.arquivoEditar.STipoGrupo;
-            var destinatario = $(".comboListaDestinatarioEditar").text();
-            var uadCodigoDestinatario = $(".comboListaDestinatarioEditar").val();
+            var tipoGrupo = ($(".comboListagrupoEditar").val());
+            var uadCodigoDestinatario = ($(".comboListaDestinatarioEditar").val());
+
+            if (tipoGrupo != null && tipoGrupo != undefined)
+                tipoGrupo = tipoGrupo.replace("string:", "");
+
+            if (uadCodigoDestinatario != null && uadCodigoDestinatario != undefined)
+                uadCodigoDestinatario = uadCodigoDestinatario.replace("string:", "");
 
             ReportStudiesModel.update({
                 id: id,
                 tipoGrupo: tipoGrupo,
-                destinatario: destinatario,
                 uadCodigoDestinatario: uadCodigoDestinatario
             }, function (result) {
                 if (result.success) {
@@ -350,17 +371,18 @@
         };
 
         $scope.UploadFile = function () {
-            $scope.grupo.Codigo = $('.comboListagrupo').val();
-            $scope.destinatario.Nome = $(".comboListaDestinatario").text();
+            $scope.grupo.Codigo = $('.comboListagrupo').val().replace("string:", "");
+
+            var tipoGrupo = ($(".comboListagrupo").val());
+            var uadCodigoDestinatario = ($(".comboListaDestinatario").val());
 
             var form = new FormData();
-            if ($scope.grupo !== null && $scope.grupo !== undefined) {
-                form.append('TypeGroup', $('.comboListagrupo').val());
+            if (tipoGrupo !== null && tipoGrupo !== undefined) {
+                form.append('TypeGroup', tipoGrupo.replace("string:", ""));
             }
 
-            if ($scope.destinatario !== null && $scope.destinatario !== undefined) {
-                form.append('Addressee', $(".comboListaDestinatario").text());
-                form.append('uadCodigoDestinatario', $(".comboListaDestinatario").val());
+            if (uadCodigoDestinatario !== null && uadCodigoDestinatario !== undefined) {
+                form.append('uadCodigoDestinatario', uadCodigoDestinatario.replace("string:", ""));
             }
 
             form.append('file', $scope.arquivoSelecionado);

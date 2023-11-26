@@ -185,5 +185,19 @@ namespace GestaoEscolar.Repository
                 return cn.Query<EscolaDto>(sql.ToString(), new { uad_codigo = uad_codigo }).ToList();
             }
         }
+
+        public EscolaDto ObterEscolaPorCodigo(string esc_codigo)
+        {
+            var sql = @"SELECT esc.esc_codigo as EscCodigo , esc.esc_nome as EscNome
+								FROM ESC_Escola esc
+								where esc.esc_situacao = 1
+								and esc.esc_codigo = @esc_codigo";
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+                return cn.Query<EscolaDto>(sql.ToString(), new { esc_codigo = esc_codigo }).FirstOrDefault();
+            }
+        }
     }
 }

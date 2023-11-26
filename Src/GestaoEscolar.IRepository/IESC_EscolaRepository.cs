@@ -23,6 +23,7 @@ namespace GestaoEscolar.IRepository
 
         IEnumerable<EscolaDto> LoadAllSchoollsActiveDto(string filtroNome = null);
         IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo);
+        EscolaDto ObterEscolaPorCodigo(string esc_codigo);
     }
 
 }

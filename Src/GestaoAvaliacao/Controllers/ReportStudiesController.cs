@@ -27,7 +27,7 @@ public class ReportStudiesController : Controller
     }
 
     [HttpPost]
-    public JsonResult Save(HttpPostedFileBase file, int? TypeGroup, string Addressee, string uadCodigoDestinatario)
+    public JsonResult Save(HttpPostedFileBase file, int? TypeGroup, string uadCodigoDestinatario)
     {
         try
         {
@@ -35,8 +35,7 @@ public class ReportStudiesController : Controller
             {
                 Name = file?.FileName,
                 TypeGroup = TypeGroup,
-                Addressee = Addressee,
-                UadCodigoDestinatario = uadCodigoDestinatario
+                UadCodigoDestinatario = uadCodigoDestinatario,
             };            
 
             UploadModel upload = new UploadModel
@@ -66,7 +65,7 @@ public class ReportStudiesController : Controller
     }
 
     [HttpPost]
-    public JsonResult Update(long id, int? tipoGrupo, string destinatario, string uadCodigoDestinatario)
+    public JsonResult Update(long id, int? tipoGrupo, string uadCodigoDestinatario)
     {
         try
         {
@@ -74,7 +73,6 @@ public class ReportStudiesController : Controller
             {
                 Id = id,
                 TypeGroup = tipoGrupo,
-                Addressee = destinatario,
                 UadCodigoDestinatario = uadCodigoDestinatario,
             };            
 
