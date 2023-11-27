@@ -280,7 +280,7 @@ namespace GestaoAvaliacao.Business
             return listaGrupo;
         }
 
-        public IEnumerable<AJX_Select2> ListarGrupos()
+        public IEnumerable<AJX_Select2> ListarGrupos(string description = null)
         {
             var enumType = typeof(EnumTypeGroup);
             var listaGrupos = new List<AJX_Select2>();
@@ -294,12 +294,14 @@ namespace GestaoAvaliacao.Business
 
                 if (descriptionAttribute != null)
                 {
-                    var description = descriptionAttribute.Description;
+                    var desc = descriptionAttribute.Description;
                     var code = (int)value;
-                    listaGrupos.Add(new AJX_Select2 { text = description, id = code.ToString() });
+                    listaGrupos.Add(new AJX_Select2 { text = desc, id = code.ToString() });
                 }
-
             }
+
+            if (!string.IsNullOrEmpty(description))
+                listaGrupos = listaGrupos.Where(x => x.text.ToUpper().Contains(description.ToUpper())).ToList();
 
             return listaGrupos.OrderBy(x => x.text);
         }
@@ -330,8 +332,8 @@ namespace GestaoAvaliacao.Business
                 }).ToList();
             }
 
-            if (!string.IsNullOrEmpty(filtroDesc) && tipoGrupo == EnumTypeGroup.UE)
-                listaDestinatarios = listaDestinatarios.Where(x => x.text.Contains(filtroDesc.ToUpper())).ToList();
+            if (!string.IsNullOrEmpty(filtroDesc) && (tipoGrupo == EnumTypeGroup.UE || tipoGrupo == EnumTypeGroup.DRE))
+                listaDestinatarios = listaDestinatarios.Where(x => x.text.ToUpper().Contains(filtroDesc.ToUpper())).ToList();
 
             return listaDestinatarios;
         }

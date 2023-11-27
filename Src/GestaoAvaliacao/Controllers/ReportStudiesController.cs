@@ -129,11 +129,11 @@ public class ReportStudiesController : Controller
     [Route("listargrupos")]
     [HttpGet]
 
-    public JsonResult ListarGrupos()
+    public JsonResult ListarGrupos(string description)
     {
         try
         {
-            return Json(new { success = true, lista = reportStudiesBusiness.ListarGrupos() }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = true, lista = reportStudiesBusiness.ListarGrupos(description) }, JsonRequestBehavior.AllowGet);
         }
         catch (Exception ex)
         {
