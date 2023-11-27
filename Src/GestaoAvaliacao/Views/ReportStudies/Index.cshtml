@@ -141,9 +141,10 @@
                                 <select ng-title-index="1"
                                         id="comboListagrupo"
                                         class="comboListagrupo"
+                                        ng-options="opt.id as opt.text for opt in listaGrupos"
                                         ng-model="grupo.id"
                                         ng-change="carregadestinatarios();">
-                                    <option value="">--Selecione uma opção--</option>
+                                    <option value="" selected="selected">--Selecione uma opção--</option>
                                 </select>
                             </div>
 
@@ -154,7 +155,7 @@
                                         ng-options="opt.id as opt.text for opt in listaGrupos"
                                         ng-model="grupo.id"
                                         ng-change="carregadestinatariosEditar();">
-                                    <option value="">--Selecione uma opção--</option>
+                                    <option value="" selected="selected">--Selecione uma opção--</option>
                                 </select>
                             </div>
 
