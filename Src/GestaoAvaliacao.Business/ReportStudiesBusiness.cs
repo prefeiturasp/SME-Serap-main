@@ -330,7 +330,7 @@ namespace GestaoAvaliacao.Business
                 }).ToList();
             }
 
-            if (!string.IsNullOrEmpty(filtroDesc) && tipoGrupo == EnumTypeGroup.UE)
+            if (!string.IsNullOrEmpty(filtroDesc))
                 listaDestinatarios = listaDestinatarios.Where(x => x.text.Contains(filtroDesc.ToUpper())).ToList();
 
             return listaDestinatarios;

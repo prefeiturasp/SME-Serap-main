@@ -39,31 +39,15 @@
             self.chamadasBack = {};
             $notification.clear();
             $scope.carregaImportacoesPaginado(null);
+            $scope.carregaGrupos();            
 
-            $(".comboListagrupo").select2({
-                multiple: false,
-                placeholder: "--Selecione uma opção--",
-                width: '100%',
-                ajax: {
-                    url: "reportstudies/listargrupos",
-                    dataType: 'json',
-                    data: function (params, page) {
-                        return {
-                            description: params.term
-                        };
-                    },
-                    processResults: function (data, page) {
-                        data.lista.unshift($scope.opcaoPadrao);
-                        return { results: data.lista };
-                    }
-                }
-            });
-
-            $(".comboListagrupoEditar, .comboListaDestinatarioEditar, .comboListaDestinatario").select2({
+            $(".comboListaDestinatarioEditar, .comboListaDestinatario").select2({
                 multiple: false,
                 placeholder: "--Selecione uma opção--",
                 width: '100%',
             });
+
+            $(".comboListagrupo, .comboListagrupoEditar").css({ "width": "100%" });
 
         };
 
@@ -100,7 +84,6 @@
         $scope.carregaGrupos = function __carregaGrupos() {
             ReportStudiesModel.listarGrupos({}, function (result) {
                 if (result.success) {
-                    result.lista.unshift($scope.opcaoPadrao);
                     $scope.listaGrupos = result.lista;
                 }
                 else {
