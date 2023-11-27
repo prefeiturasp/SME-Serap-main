@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using GestaoAvaliacao.Business.DTO;
+using GestaoAvaliacao.Entities;
 using GestaoEscolar.Entities;
 using GestaoEscolar.Entities.Projections;
 using GestaoEscolar.IRepository;
@@ -16,7 +17,7 @@ namespace GestaoEscolar.Repository
     {
         public IEnumerable<ESC_Escola> LoadSimple(Guid ent_id, Guid uad_id, IEnumerable<string> esc_id = null)
         {
-            var sql = new StringBuilder("SELECT esc_id, esc_nome, uad_idSuperiorGestao ");
+            var sql = new StringBuilder("SELECT esc_id, esc_nome, uad_idSuperiorGestao, esc_codigo ");
             sql.Append("FROM ESC_Escola AS ESC WITH (NOLOCK) ");
             sql.Append("INNER JOIN Synonym_AdministrativeUnitType AS AUT WITH(NOLOCK) ");
             sql.Append("ON AUT.AdministrativeUnitTypeId = ESC.tua_id ");
@@ -38,7 +39,6 @@ namespace GestaoEscolar.Repository
                 cn.Open();
 
                 return cn.Query<ESC_Escola>(sql.ToString(), new { ent_id = ent_id, uad_idSuperiorGestao = uad_id, state = (byte)1 });
-
             }
         }
 
@@ -152,19 +152,22 @@ namespace GestaoEscolar.Repository
             }
         }
 
-
-        public IEnumerable<EscolaDto> LoadAllSchoollsActiveDto()
+        public IEnumerable<EscolaDto> LoadAllSchoollsActiveDto(string filtroNome = null)
         {
 
             var sql = new StringBuilder("SELECT esc_codigo as EscCodigo , esc_nome as EscNome  ")
                                         .AppendLine("FROM ESC_Escola  ")
                                         .AppendLine("WHERE esc_situacao = 1");
+            if (!string.IsNullOrEmpty(filtroNome)){
+                sql.AppendLine("AND esc_nome LIKE '%' + @filtroNome + '%'");
+            }
+
 
             using (IDbConnection cn = Connection)
             {
                 cn.Open();
 
-                return cn.Query<EscolaDto>(sql.ToString()).ToList();
+                return cn.Query<EscolaDto>(sql.ToString(), new { filtroNome  = filtroNome }).ToList();
             }
         }
 
@@ -180,6 +183,20 @@ namespace GestaoEscolar.Repository
             {
                 cn.Open();
                 return cn.Query<EscolaDto>(sql.ToString(), new { uad_codigo = uad_codigo }).ToList();
+            }
+        }
+
+        public EscolaDto ObterEscolaPorCodigo(string esc_codigo)
+        {
+            var sql = @"SELECT esc.esc_codigo as EscCodigo , esc.esc_nome as EscNome
+								FROM ESC_Escola esc
+								where esc.esc_situacao = 1
+								and esc.esc_codigo = @esc_codigo";
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+                return cn.Query<EscolaDto>(sql.ToString(), new { esc_codigo = esc_codigo }).FirstOrDefault();
             }
         }
     }

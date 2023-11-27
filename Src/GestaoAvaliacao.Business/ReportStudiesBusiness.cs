@@ -43,10 +43,7 @@ namespace GestaoAvaliacao.Business
             {
                 if (entity == null || string.IsNullOrEmpty(entity.Name) || string.IsNullOrEmpty(entity.Addressee))
                     valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
-
-
             }
-
 
             if (!string.IsNullOrEmpty(valid.Message))
             {
@@ -67,11 +64,58 @@ namespace GestaoAvaliacao.Business
 
             return valid;
         }
+
         public bool Save(ReportStudies entity, UploadModel upload)
-        {         
-                var file = fileBusiness.Upload(upload);
-                entity.Link = file.Path;
-                return reportStudiesRepository.Save(entity);
+        {
+            entity.Id = 0;
+            TrataGrupoDestinatario(entity);
+            TrataDescricaoDestinatario(entity);
+            var file = fileBusiness.Upload(upload);
+            entity.Link = file.Path;
+            return reportStudiesRepository.Save(entity);
+        }
+
+        public bool Update(ReportStudies entity)
+        {
+            TrataGrupoDestinatario(entity);
+            TrataDescricaoDestinatario(entity);
+            var entityDb = reportStudiesRepository.GetById(entity.Id);
+            if (entityDb == null || entityDb?.Id == 0) throw new Exception("arquivo não encontrado.");
+            return reportStudiesRepository.Update(entity);
+        }
+
+        private void TrataGrupoDestinatario(in ReportStudies entity)
+        {
+            if (entity.TypeGroup == null || entity.TypeGroup == 0)
+            {
+                entity.Addressee = entity.UadCodigoDestinatario = null;
+                entity.TypeGroup = null;
+            }
+            else if (entity.TypeGroup != (int)EnumTypeGroup.DRE && entity.TypeGroup != (int)EnumTypeGroup.UE)
+                entity.Addressee = entity.UadCodigoDestinatario = null;
+
+            if (entity.TypeGroup == (int)EnumTypeGroup.DRE || entity.TypeGroup != (int)EnumTypeGroup.UE)
+            {
+                if (string.IsNullOrEmpty(entity.UadCodigoDestinatario) || entity.UadCodigoDestinatario.Trim() == "0")
+                    entity.Addressee = entity.UadCodigoDestinatario = null;
+            }
+        }
+
+        private void TrataDescricaoDestinatario(in ReportStudies entity)
+        {
+            if (entity.TypeGroup == (int)EnumTypeGroup.DRE)
+            {
+                var dre = _uadBusiness.GetByUad_Codigo(entity.UadCodigoDestinatario);
+                if (dre == null) throw new Exception($"DRE não encontrada: {entity.UadCodigoDestinatario}");
+                entity.Addressee = dre.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "");
+            }
+
+            if (entity.TypeGroup == (int)EnumTypeGroup.UE)
+            {
+                var escola = _schoolBusiness.ObterEscolaPorCodigo(entity.UadCodigoDestinatario);
+                if (escola == null) throw new Exception($"ESCOLA não encontrada: {entity.UadCodigoDestinatario}");
+                entity.Addressee = $"{escola.EscCodigo} - {escola.EscNome}";
+            }
         }
 
         public IEnumerable<ReportStudies> ListAll()
@@ -111,8 +155,6 @@ namespace GestaoAvaliacao.Business
                     var listaGrupos = CarregaGrupos();
                     foreach (var item in listaArquivoEstudoCsvDto)
                     {
-                        var destinatario = string.Empty;
-
                         linha++;
                         var entity = reportStudiesRepository.GetById(item.Codigo);
 
@@ -131,9 +173,8 @@ namespace GestaoAvaliacao.Business
                         if (Enum.TryParse(RemoveAcentos(item.TipoGrupo.ToUpper()), out EnumTypeGroup enumTypeGroup))
                             entity.TypeGroup = (int)enumTypeGroup;
 
-                        destinatario = TrataDestinatario(listaEscolas, listaDres, item, destinatario, entity);
+                        TrataDestinatario(listaEscolas, listaDres, item, entity);
 
-                        entity.Addressee = destinatario;
                         codigosAtualizados.Add(item.Codigo);
 
                         reportStudiesRepository.Update(entity);
@@ -151,20 +192,20 @@ namespace GestaoAvaliacao.Business
             }
         }
 
-        private static string TrataDestinatario(IEnumerable<EscolaDto> listaEscolas, IEnumerable<GestaoEscolar.Entities.SYS_UnidadeAdministrativa> listaDres, ReportStudiesCsvDto item, string destinatario, ReportStudies entity)
+        private static void TrataDestinatario(IEnumerable<EscolaDto> listaEscolas, IEnumerable<GestaoEscolar.Entities.SYS_UnidadeAdministrativa> listaDres, ReportStudiesCsvDto item, in ReportStudies entity)
         {
             if (entity.TypeGroup == (int)EnumTypeGroup.DRE)
             {
                 var dre = listaDres.Where(x => x.uad_sigla == item.Destinatario).FirstOrDefault();
-                destinatario = $"{dre.uad_sigla} - {dre.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")}";
+                entity.Addressee = $"{dre.uad_sigla} - {dre.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")}";
+                entity.UadCodigoDestinatario = dre.uad_codigo;
             }
             if (entity.TypeGroup == (int)EnumTypeGroup.UE)
             {
                 var ue = listaEscolas.Where(x => x.EscCodigo == item.Destinatario).FirstOrDefault();
-                destinatario = $"{ue.EscCodigo} - {ue.EscNome}";
+                entity.Addressee = $"{ue.EscCodigo} - {ue.EscNome}";
+                entity.UadCodigoDestinatario = ue.EscCodigo;
             }
-
-            return destinatario;
         }
 
         private static bool ExisteErroItemCsv(List<ErrosImportacaoCSV> listaErros, int linha, List<long> codigosAtualizados, IEnumerable<EscolaDto> listaEscolas, List<string> listaAbreviacaoDres, List<string> listaGrupos, ReportStudiesCsvDto item, ReportStudies entity)
@@ -239,10 +280,10 @@ namespace GestaoAvaliacao.Business
             return listaGrupo;
         }
 
-        public IEnumerable<ItemListaDto> ListarGrupos()
+        public IEnumerable<AJX_Select2> ListarGrupos()
         {
             var enumType = typeof(EnumTypeGroup);
-            var listaGrupos = new List<ItemListaDto>();
+            var listaGrupos = new List<AJX_Select2>();
 
             foreach (var value in Enum.GetValues(enumType))
             {
@@ -255,40 +296,42 @@ namespace GestaoAvaliacao.Business
                 {
                     var description = descriptionAttribute.Description;
                     var code = (int)value;
-                    listaGrupos.Add(new ItemListaDto { Descricao = description, Id = code });
+                    listaGrupos.Add(new AJX_Select2 { text = description, id = code.ToString() });
                 }
+
             }
 
-            return listaGrupos.OrderBy(x => x.Id);
+            return listaGrupos.OrderBy(x => x.text);
         }
 
-        public IEnumerable<ItemListaDto> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup tipoGrupo, string uad_codigo)
+        public IEnumerable<AJX_Select2> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup? tipoGrupo, string filtroDesc = null)
         {
-            var listaDestinatarios = new List<ItemListaDto>();
-            
+            var listaDestinatarios = new List<AJX_Select2>();
+
             var listaDres = _uadBusiness.LoadDRESimple(usuario, sysGrupo);
             var listaCodigosDre = listaDres.Select(x => x.uad_sigla).ToList();
 
             if (tipoGrupo == EnumTypeGroup.DRE)
             {
-                listaDestinatarios = listaDres.Select(x => new ItemListaDto
+                listaDestinatarios = listaDres.Select(x => new AJX_Select2
                 {
-                    Codigo = x.uad_codigo,
-                    Descricao = x.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")
+                    id = x.uad_codigo,
+                    text = x.uad_nome.Replace("DIRETORIA REGIONAL DE EDUCACAO", "")
                 }).ToList();
             }
 
             if (tipoGrupo == EnumTypeGroup.UE)
             {
-                if (string.IsNullOrEmpty(uad_codigo)) throw new Exception("informe o código da DRE");
-                var dre = _uadBusiness.GetByUad_Codigo(uad_codigo);
-                var listaEscolas = _schoolBusiness.LoadSimple(usuario, sysGrupo, dre.uad_id);
-                listaDestinatarios = listaEscolas.Select(x => new ItemListaDto
+                var listaEscolas = _schoolBusiness.LoadSimple(usuario, sysGrupo, Guid.Empty);
+                listaDestinatarios = listaEscolas.Select(x => new AJX_Select2
                 {
-                    Codigo = x.esc_codigo,
-                    Descricao = $"{x.esc_codigo} - {x.esc_nome}"
+                    id = x.esc_codigo,
+                    text = $"{x.esc_codigo} - {x.esc_nome}"
                 }).ToList();
             }
+
+            if (!string.IsNullOrEmpty(filtroDesc) && tipoGrupo == EnumTypeGroup.UE)
+                listaDestinatarios = listaDestinatarios.Where(x => x.text.Contains(filtroDesc.ToUpper())).ToList();
 
             return listaDestinatarios;
         }
