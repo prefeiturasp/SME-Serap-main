@@ -50,7 +50,7 @@ namespace ImportacaoDeQuestionariosSME.Services.Constructos
                             CicloId = ciclos.FirstOrDefault(x => x.AnoEscolar == anoEscolar)?.CicloId ?? default,
                             ConstructoId = ++maxConstructoId,
                             Edicao = dto.Edicao,
-                            FatorAssociadoQuestionarioId = 5,
+                            FatorAssociadoQuestionarioId = constructoReumido.FatorAssociadoQuestionarioId,
                             Nome = constructoReumido.Nome,
                             Referencia = constructoReumido.Referencia
                         })
@@ -76,39 +76,28 @@ namespace ImportacaoDeQuestionariosSME.Services.Constructos
         private static IEnumerable<ConstructoResumido> GetConstructosResumidos()
             => new List<ConstructoResumido>
             {
-                new ConstructoResumido("Sexo [feminino]","masculino"),
-                new ConstructoResumido("Cor/Origem [pardo]","branco/amarelo"),
-                new ConstructoResumido("Cor/Origem [preto/indígena]","branco/amarelo"),
-                new ConstructoResumido("Cor/Origem [não sabe/não resp.]","branco/amarelo"),
-                new ConstructoResumido("NSE [médio-baixo]","baixo/muito baixo"),
-                new ConstructoResumido("NSE [médio]","baixo/muito baixo"),
-                new ConstructoResumido("NSE [médio-alto]","baixo/muito baixo"),
-                new ConstructoResumido("Trabalha fora ou doméstico > 3h [sim]","não"),
-                new ConstructoResumido("Perdeu algum ano (defasado) [sim]","não"),
-                new ConstructoResumido("Faz o dever de casa [de vez em quando]","nunca"),
-                new ConstructoResumido("Faz o dever de casa [sempre]","nunca"),
-                new ConstructoResumido("Bagunça na aula atrapalha [sim]","não"),
-                new ConstructoResumido("Nível de Bullying [médio]","baixo"),
-                new ConstructoResumido("Nível de Bullying [alto]","baixo"),
-                new ConstructoResumido("Nível do comprometimento dos pais [regular]","ruim"),
-                new ConstructoResumido("Nível do comprometimento dos pais [bom/ótimo]","ruim"),
-                new ConstructoResumido("Nível de satisfação com a escola [regular]","ruim"),
-                new ConstructoResumido("Nível de satisfação com a escola [bom]","ruim"),
-                new ConstructoResumido("Nível do relacionamento escolar [ótimo]", "ruim"),
-                new ConstructoResumido("Nível do relacionamento escolar [reg./bom]", "ruim"),
-                new ConstructoResumido("Professor de preocupa com dever de casa [sim]", "não")
+                new ConstructoResumido("Perfil", 10),
+                new ConstructoResumido("Nível socioeconômico", 10),
+                new ConstructoResumido("Nível educational", 10),
+                new ConstructoResumido("Organização da rotina de estudos", 10),
+                new ConstructoResumido("Perfil", 11),
+                new ConstructoResumido("Nível socioeconômico", 11),
+                new ConstructoResumido("Relação dos responsáveis com a escola e com o acompanhamento da rotina escolar", 11),
+                new ConstructoResumido("Acompanhamento da rotina de estudo da(o) estudante", 11)
             };
     }
 
     public class ConstructoResumido
     {
-        public ConstructoResumido(string nome, string referencia)
+        public ConstructoResumido(string nome, int fatorAssociadoQuestionarioId, string referencia = null)
         {
             Nome = nome;
+            FatorAssociadoQuestionarioId = fatorAssociadoQuestionarioId;
             Referencia = referencia;
         }
 
         public string Nome { get; set; }
+        public int FatorAssociadoQuestionarioId { get; set; }
         public string Referencia { get; set; }
     }
 }
