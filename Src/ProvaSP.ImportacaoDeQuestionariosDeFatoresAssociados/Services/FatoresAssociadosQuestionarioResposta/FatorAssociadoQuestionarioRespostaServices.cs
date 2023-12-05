@@ -9,10 +9,10 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
 {
     public abstract class FatorAssociadoQuestionarioRespostaServices
     {
+        protected const int FatorAssociadoQuestionarioIdEstudante = 10;
         protected readonly IEnumerable<QuestaoConstructoDto> _questaoConstructoDtos;
-        protected const int FatorAssociadoQuestionarioIdEstudante = 5;
 
-        public FatorAssociadoQuestionarioRespostaServices(IEnumerable<QuestaoConstructoDto> questaoConstructoDtos)
+        protected FatorAssociadoQuestionarioRespostaServices(IEnumerable<QuestaoConstructoDto> questaoConstructoDtos)
         {
             _questaoConstructoDtos = questaoConstructoDtos;
         }
@@ -43,13 +43,17 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
         protected IEnumerable<Constructo> GetConstructosRelacionados(string edicao, int cicloId, int anoEscolar, int questao, IEnumerable<Constructo> constructos)
         {
             var questaoConstructoDtos = _questaoConstructoDtos.Where(x => x.Questao == questao);
-            if (questaoConstructoDtos is null || !questaoConstructoDtos.Any()) return null;
+
+            if (!questaoConstructoDtos.Any()) 
+                return null;
 
             var results = questaoConstructoDtos
-                .Select(x => constructos
-                             .FirstOrDefault(y => y.Edicao == edicao && y.AnoEscolar == anoEscolar && y.CicloId == cicloId && y.Nome == x.ConstructoDescricao))
+                .Select(x => constructos.FirstOrDefault(y => y.Edicao == edicao && y.AnoEscolar == anoEscolar && y.CicloId == cicloId && y.Nome == x.ConstructoDescricao))
                 .ToList();
-            if (results is null || !results.Any() || results.Count() != questaoConstructoDtos.Count()) throw new ArgumentOutOfRangeException();
+
+            if (results is null || !results.Any() || results.Count() != questaoConstructoDtos.Count()) 
+                throw new ArgumentOutOfRangeException();
+
             return results;
         }
 

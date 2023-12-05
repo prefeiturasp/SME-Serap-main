@@ -1,9 +1,7 @@
 ﻿using ImportacaoDeQuestionariosSME.Data.Repositories.Alunos;
 using ImportacaoDeQuestionariosSME.Data.Repositories.CiclosAnoEscolar;
-using ImportacaoDeQuestionariosSME.Data.Repositories.Constructos;
 using ImportacaoDeQuestionariosSME.Domain.Alunos;
 using ImportacaoDeQuestionariosSME.Domain.CiclosAnoEscolar;
-using ImportacaoDeQuestionariosSME.Domain.Constructos;
 using ImportacaoDeQuestionariosSME.Domain.Questionarios.Itens;
 using ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRespostaFamilia.Dtos;
 using ImportacaoDeQuestionariosSME.Utils;
@@ -14,29 +12,30 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
 {
     public abstract class FatoresAssociadosQuestionarioRespostaFamiliaServices
     {
+        protected const int FatorAssociadoQuestionarioIdFamilia = 11;
         protected readonly IAlunoRepository _alunoRepository;
         protected readonly ICicloAnoEscolarRepository _cicloAnoEscolarRepository;
-        protected readonly IConstructoRepository _constructoRepository;
         protected readonly DataTable _dtRespostas;
 
-        public FatoresAssociadosQuestionarioRespostaFamiliaServices(DataTable dtRespostas)
+        protected FatoresAssociadosQuestionarioRespostaFamiliaServices(DataTable dtRespostas)
         {
             _alunoRepository = new AlunoRepository();
             _cicloAnoEscolarRepository = new CicloAnoEscolarRepository();
-            _constructoRepository = new ConstructoRepository();
             _dtRespostas = dtRespostas;
         }
 
         protected IEnumerable<QuestionarioItem> MontarQuestoes(ImportacaoDeQuestionariosDeFatoresAssociadosFamiliaDto dto)
         {
             var dtQuestionario = CsvManager.GetCsvFile(dto.CaminhoDaPlanilhaQuesitonarios);
+
             if (dtQuestionario.Rows.Count <= 0)
             {
-                dto.AddErro("Não existem regitros na planilha para exportação.");
+                dto.AddErro("Não existem regitros na planilha para importação.");
                 return null;
             }
 
             var result = new List<QuestionarioItem>();
+
             var indice = 0;
             while (indice < dtQuestionario.Rows.Count)
             {
@@ -49,8 +48,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
                     };
 
                     indice++;
-                    while (indice < dtQuestionario.Rows.Count
-                        && dtQuestionario.Rows[indice]["seq"].ToString() != "0")
+                    while (indice < dtQuestionario.Rows.Count && dtQuestionario.Rows[indice]["seq"].ToString() != "0")
                     {
                         var opcao = new Opcao
                         {

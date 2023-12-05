@@ -3,12 +3,9 @@ using ImportacaoDeQuestionariosSME.Data.Repositories.Constructos;
 using ImportacaoDeQuestionariosSME.Domain.CiclosAnoEscolar;
 using ImportacaoDeQuestionariosSME.Domain.Constructos;
 using ImportacaoDeQuestionariosSME.Services.Constructos.Dtos;
-using ImportacaoDeQuestionariosSME.Utils;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ImportacaoDeQuestionariosSME.Services.Constructos
@@ -36,11 +33,11 @@ namespace ImportacaoDeQuestionariosSME.Services.Constructos
             try
             {
                 var entities = new List<Constructo>();
-
                 var maxConstructoId = await _constructoRepository.GetMaxConstructoId();
                 var ciclos = await _cicloAnoEscolarRepository.GetAsync();
                 var anosEscolares = GetAnosEscolares();
                 var constructorsResumidos = GetConstructosResumidos();
+
                 foreach (var constructoReumido in constructorsResumidos)
                 {
                     var constructos = anosEscolares
@@ -76,14 +73,27 @@ namespace ImportacaoDeQuestionariosSME.Services.Constructos
         private static IEnumerable<ConstructoResumido> GetConstructosResumidos()
             => new List<ConstructoResumido>
             {
-                new ConstructoResumido("Perfil", 10),
-                new ConstructoResumido("Nível socioeconômico", 10),
-                new ConstructoResumido("Nível educational", 10),
-                new ConstructoResumido("Organização da rotina de estudos", 10),
-                new ConstructoResumido("Perfil", 11),
-                new ConstructoResumido("Nível socioeconômico", 11),
-                new ConstructoResumido("Relação dos responsáveis com a escola e com o acompanhamento da rotina escolar", 11),
-                new ConstructoResumido("Acompanhamento da rotina de estudo da(o) estudante", 11)
+                new ConstructoResumido("Sexo [feminino]", 5, "masculino"),
+                new ConstructoResumido("Cor/Origem [pardo]", 5, "branco/amarelo"),
+                new ConstructoResumido("Cor/Origem [preto/indígena]", 5, "branco/amarelo"),
+                new ConstructoResumido("Cor/Origem [não sabe/não resp.]", 5, "branco/amarelo"),
+                new ConstructoResumido("NSE [médio-baixo]", 5, "baixo/muito baixo"),
+                new ConstructoResumido("NSE [médio]", 5, "baixo/muito baixo"),
+                new ConstructoResumido("NSE [médio-alto]", 5, "baixo/muito baixo"),
+                new ConstructoResumido("Trabalha fora ou doméstico > 3h [sim]", 5, "não"),
+                new ConstructoResumido("Perdeu algum ano (defasado) [sim]", 5, "não"),
+                new ConstructoResumido("Faz o dever de casa [de vez em quando]", 5, "nunca"),
+                new ConstructoResumido("Faz o dever de casa [sempre]", 5, "nunca"),
+                new ConstructoResumido("Bagunça na aula atrapalha [sim]", 5, "não"),
+                new ConstructoResumido("Nível de Bullying [médio]", 5, "baixo"),
+                new ConstructoResumido("Nível de Bullying [alto]", 5, "baixo"),
+                new ConstructoResumido("Nível do comprometimento dos pais [regular]", 5, "ruim"),
+                new ConstructoResumido("Nível do comprometimento dos pais [bom/ótimo]", 5, "ruim"),
+                new ConstructoResumido("Nível de satisfação com a escola [regular]", 5, "ruim"),
+                new ConstructoResumido("Nível de satisfação com a escola [bom]", 5, "ruim"),
+                new ConstructoResumido("Nível do relacionamento escolar [ótimo]", 5, "ruim"),
+                new ConstructoResumido("Nível do relacionamento escolar [reg./bom]", 5, "ruim"),
+                new ConstructoResumido("Professor de preocupa com dever de casa [sim]", 5, "não")
             };
     }
 
