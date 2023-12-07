@@ -216,11 +216,11 @@
             this.cmbEstudante.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbEstudante.FormattingEnabled = true;
             this.cmbEstudante.Items.AddRange(new object[] {
-            "10 - Estudante",
-            "11 - Familia",
-            "12 - Assistente de Diretor(a)",
-            "13 - Diretor(a)",
-            "14 - Professor(a)"});
+            "5 - Estudante",
+            "6 - Familia",
+            "7 - Assistente de Diretor(a)",
+            "8 - Diretor(a)",
+            "9 - Professor(a)"});
             this.cmbEstudante.Location = new System.Drawing.Point(140, 35);
             this.cmbEstudante.Name = "cmbEstudante";
             this.cmbEstudante.Size = new System.Drawing.Size(407, 21);

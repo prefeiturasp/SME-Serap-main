@@ -12,7 +12,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
 {
     public abstract class FatoresAssociadosQuestionarioRespostaFamiliaServices
     {
-        protected const int FatorAssociadoQuestionarioIdFamilia = 11;
+        protected const int FatorAssociadoQuestionarioIdFamilia = 6;
         protected readonly IAlunoRepository _alunoRepository;
         protected readonly ICicloAnoEscolarRepository _cicloAnoEscolarRepository;
         protected readonly DataTable _dtRespostas;

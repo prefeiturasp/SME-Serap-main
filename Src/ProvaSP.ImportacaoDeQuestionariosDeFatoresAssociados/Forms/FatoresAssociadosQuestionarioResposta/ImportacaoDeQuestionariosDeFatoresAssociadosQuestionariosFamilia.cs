@@ -21,7 +21,7 @@ namespace ImportacaoDeQuestionariosSME.Forms.FatoresAssociadosQuestionarioRespos
 
         private void ImportacaoDeQuestionariosDeFatoresAssociadosQuestionariosFamilia_Shown(object sender, EventArgs e)
         {
-            txtAno.Text = "2022";
+            txtAno.Text = "2019";
         }
 
         private void btnLocalizarTabela_Click(object sender, EventArgs e)

@@ -46,7 +46,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
                 var ciclosAnoEscolar = await _cicloAnoEscolarRepository.GetAsync();
                 _nextPKDRE = await _fatorAssociadoQuestionarioRespostaDRERepository.GetNextPk();
 
-                for (var numQuestao = 1; numQuestao <= 43; numQuestao++)
+                for (var numQuestao = 1; numQuestao <= 61; numQuestao++)
                 {
                     var questao = questionarioItens.FirstOrDefault(x => x.Numero == numQuestao);
                     if (questao is null)

@@ -9,7 +9,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
 {
     public abstract class FatorAssociadoQuestionarioRespostaServices
     {
-        protected const int FatorAssociadoQuestionarioIdEstudante = 10;
+        protected const int FatorAssociadoQuestionarioIdEstudante = 5;
         protected readonly IEnumerable<QuestaoConstructoDto> _questaoConstructoDtos;
 
         protected FatorAssociadoQuestionarioRespostaServices(IEnumerable<QuestaoConstructoDto> questaoConstructoDtos)
