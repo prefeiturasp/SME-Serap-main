@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.rdbSME = new System.Windows.Forms.RadioButton();
+            this.rdbEscola = new System.Windows.Forms.RadioButton();
+            this.rdbDRE = new System.Windows.Forms.RadioButton();
             this.label4 = new System.Windows.Forms.Label();
             this.btnLocalizarTabelaAnoEscolar = new System.Windows.Forms.Button();
             this.txtArquivoAnoEscolar = new System.Windows.Forms.TextBox();
@@ -45,16 +49,7 @@
             this.btnLocalizarTabela = new System.Windows.Forms.Button();
             this.txtArquivo = new System.Windows.Forms.TextBox();
             this.btnFechar = new System.Windows.Forms.Button();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.btnImportarFatoresAssociados = new System.Windows.Forms.Button();
-            this.btnLocalizarTabelaFatoresAssociados = new System.Windows.Forms.Button();
-            this.txtArquivoFatoresAssociados = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.rdbSME = new System.Windows.Forms.RadioButton();
-            this.rdbEscola = new System.Windows.Forms.RadioButton();
-            this.rdbDRE = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,11 +72,57 @@
             this.groupBox1.Controls.Add(this.btnLocalizarTabela);
             this.groupBox1.Controls.Add(this.txtArquivo);
             this.groupBox1.Controls.Add(this.btnFechar);
-            this.groupBox1.Location = new System.Drawing.Point(12, 107);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(556, 291);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.rdbSME);
+            this.groupBox2.Controls.Add(this.rdbEscola);
+            this.groupBox2.Controls.Add(this.rdbDRE);
+            this.groupBox2.Location = new System.Drawing.Point(20, 192);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(527, 50);
+            this.groupBox2.TabIndex = 21;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Tipo de questionário";
+            // 
+            // rdbSME
+            // 
+            this.rdbSME.AutoSize = true;
+            this.rdbSME.Location = new System.Drawing.Point(243, 20);
+            this.rdbSME.Name = "rdbSME";
+            this.rdbSME.Size = new System.Drawing.Size(48, 17);
+            this.rdbSME.TabIndex = 8;
+            this.rdbSME.TabStop = true;
+            this.rdbSME.Text = "SME";
+            this.rdbSME.UseVisualStyleBackColor = true;
+            // 
+            // rdbEscola
+            // 
+            this.rdbEscola.AutoSize = true;
+            this.rdbEscola.Location = new System.Drawing.Point(120, 20);
+            this.rdbEscola.Name = "rdbEscola";
+            this.rdbEscola.Size = new System.Drawing.Size(57, 17);
+            this.rdbEscola.TabIndex = 7;
+            this.rdbEscola.TabStop = true;
+            this.rdbEscola.Text = "Escola";
+            this.rdbEscola.UseVisualStyleBackColor = true;
+            // 
+            // rdbDRE
+            // 
+            this.rdbDRE.AutoSize = true;
+            this.rdbDRE.Checked = true;
+            this.rdbDRE.Location = new System.Drawing.Point(19, 20);
+            this.rdbDRE.Name = "rdbDRE";
+            this.rdbDRE.Size = new System.Drawing.Size(48, 17);
+            this.rdbDRE.TabIndex = 6;
+            this.rdbDRE.TabStop = true;
+            this.rdbDRE.Text = "DRE";
+            this.rdbDRE.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
@@ -240,101 +281,12 @@
             this.btnFechar.UseVisualStyleBackColor = true;
             this.btnFechar.Click += new System.EventHandler(this.btnFechar_Click);
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.btnImportarFatoresAssociados);
-            this.groupBox3.Controls.Add(this.btnLocalizarTabelaFatoresAssociados);
-            this.groupBox3.Controls.Add(this.txtArquivoFatoresAssociados);
-            this.groupBox3.Location = new System.Drawing.Point(12, 12);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(556, 90);
-            this.groupBox3.TabIndex = 2;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Fatores Associados";
-            // 
-            // btnImportarFatoresAssociados
-            // 
-            this.btnImportarFatoresAssociados.BackColor = System.Drawing.Color.LightGreen;
-            this.btnImportarFatoresAssociados.Location = new System.Drawing.Point(20, 55);
-            this.btnImportarFatoresAssociados.Name = "btnImportarFatoresAssociados";
-            this.btnImportarFatoresAssociados.Size = new System.Drawing.Size(135, 23);
-            this.btnImportarFatoresAssociados.TabIndex = 13;
-            this.btnImportarFatoresAssociados.Text = "Importar";
-            this.btnImportarFatoresAssociados.UseVisualStyleBackColor = false;
-            this.btnImportarFatoresAssociados.Click += new System.EventHandler(this.btnImportarFatoresAssociados_Click);
-            // 
-            // btnLocalizarTabelaFatoresAssociados
-            // 
-            this.btnLocalizarTabelaFatoresAssociados.Location = new System.Drawing.Point(517, 27);
-            this.btnLocalizarTabelaFatoresAssociados.Name = "btnLocalizarTabelaFatoresAssociados";
-            this.btnLocalizarTabelaFatoresAssociados.Size = new System.Drawing.Size(30, 23);
-            this.btnLocalizarTabelaFatoresAssociados.TabIndex = 11;
-            this.btnLocalizarTabelaFatoresAssociados.Text = "...";
-            this.btnLocalizarTabelaFatoresAssociados.UseVisualStyleBackColor = true;
-            this.btnLocalizarTabelaFatoresAssociados.Click += new System.EventHandler(this.btnLocalizarTabelaFatoresAssociados_Click);
-            // 
-            // txtArquivoFatoresAssociados
-            // 
-            this.txtArquivoFatoresAssociados.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtArquivoFatoresAssociados.Location = new System.Drawing.Point(20, 28);
-            this.txtArquivoFatoresAssociados.Name = "txtArquivoFatoresAssociados";
-            this.txtArquivoFatoresAssociados.ReadOnly = true;
-            this.txtArquivoFatoresAssociados.Size = new System.Drawing.Size(482, 21);
-            this.txtArquivoFatoresAssociados.TabIndex = 12;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.rdbSME);
-            this.groupBox2.Controls.Add(this.rdbEscola);
-            this.groupBox2.Controls.Add(this.rdbDRE);
-            this.groupBox2.Location = new System.Drawing.Point(20, 192);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(527, 50);
-            this.groupBox2.TabIndex = 21;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Tipo de questionário";
-            // 
-            // rdbSME
-            // 
-            this.rdbSME.AutoSize = true;
-            this.rdbSME.Location = new System.Drawing.Point(243, 20);
-            this.rdbSME.Name = "rdbSME";
-            this.rdbSME.Size = new System.Drawing.Size(48, 17);
-            this.rdbSME.TabIndex = 8;
-            this.rdbSME.TabStop = true;
-            this.rdbSME.Text = "SME";
-            this.rdbSME.UseVisualStyleBackColor = true;
-            // 
-            // rdbEscola
-            // 
-            this.rdbEscola.AutoSize = true;
-            this.rdbEscola.Location = new System.Drawing.Point(120, 20);
-            this.rdbEscola.Name = "rdbEscola";
-            this.rdbEscola.Size = new System.Drawing.Size(57, 17);
-            this.rdbEscola.TabIndex = 7;
-            this.rdbEscola.TabStop = true;
-            this.rdbEscola.Text = "Escola";
-            this.rdbEscola.UseVisualStyleBackColor = true;
-            // 
-            // rdbDRE
-            // 
-            this.rdbDRE.AutoSize = true;
-            this.rdbDRE.Checked = true;
-            this.rdbDRE.Location = new System.Drawing.Point(19, 20);
-            this.rdbDRE.Name = "rdbDRE";
-            this.rdbDRE.Size = new System.Drawing.Size(48, 17);
-            this.rdbDRE.TabIndex = 6;
-            this.rdbDRE.TabStop = true;
-            this.rdbDRE.Text = "DRE";
-            this.rdbDRE.UseVisualStyleBackColor = true;
-            // 
             // ImportacaoDeQuestionariosDeFatoresAssociadosQuestionariosFamilia
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(578, 410);
+            this.ClientSize = new System.Drawing.Size(578, 309);
             this.ControlBox = false;
-            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "ImportacaoDeQuestionariosDeFatoresAssociadosQuestionariosFamilia";
@@ -343,8 +295,6 @@
             this.Shown += new System.EventHandler(this.ImportacaoDeQuestionariosDeFatoresAssociadosQuestionariosFamilia_Shown);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -362,10 +312,6 @@
         private System.Windows.Forms.Button btnLocalizarTabela;
         private System.Windows.Forms.TextBox txtArquivo;
         private System.Windows.Forms.Button btnFechar;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button btnImportarFatoresAssociados;
-        private System.Windows.Forms.Button btnLocalizarTabelaFatoresAssociados;
-        private System.Windows.Forms.TextBox txtArquivoFatoresAssociados;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnLocalizarTabelaQuestionario;
         private System.Windows.Forms.TextBox txtArquivoQuestionario;
