@@ -98,5 +98,20 @@ namespace ImportacaoDeQuestionariosSME.Forms.CaracterizacaoFamiliasEscolasQuesti
 
             MessageBox.Show("Importação realizada com sucesso.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        private void rdbSME_CheckedChanged(object sender, EventArgs e)
+        {
+            txtArquivo.Text = string.Empty;
+        }
+
+        private void rdbDRE_CheckedChanged(object sender, EventArgs e)
+        {
+            txtArquivo.Text = string.Empty;
+        }
+
+        private void rdbEscola_CheckedChanged(object sender, EventArgs e)
+        {
+            txtArquivo.Text = string.Empty;
+        }
     }
 }

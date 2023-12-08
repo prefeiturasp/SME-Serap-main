@@ -1,5 +1,4 @@
 ﻿using ImportacaoDeQuestionariosSME.Data.Repositories.Abstractions;
-using ImportacaoDeQuestionariosSME.Data.Repositories.FatoresAssociadosQuestionarioResposta;
 using ImportacaoDeQuestionariosSME.Domain.FatoresAssociadosQuestionarioResposta.DRE;
 using System.Collections.Generic;
 using System.Linq;

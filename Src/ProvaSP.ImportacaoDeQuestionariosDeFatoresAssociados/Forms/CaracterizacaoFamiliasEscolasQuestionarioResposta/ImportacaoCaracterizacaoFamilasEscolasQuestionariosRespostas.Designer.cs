@@ -29,19 +29,19 @@
         private void InitializeComponent()
         {
             this.grbCaracterizacaoFamiliasEscolasQuestionarios = new System.Windows.Forms.GroupBox();
-            this.cmbEdicao = new System.Windows.Forms.ComboBox();
-            this.lblEdicao = new System.Windows.Forms.Label();
-            this.btnFechar = new System.Windows.Forms.Button();
-            this.lblFatorAssociadoQuestionario = new System.Windows.Forms.Label();
-            this.cmbFatorAssociadoQuestionario = new System.Windows.Forms.ComboBox();
-            this.grbTipoQuestionario = new System.Windows.Forms.GroupBox();
-            this.rdbSME = new System.Windows.Forms.RadioButton();
-            this.rdbDRE = new System.Windows.Forms.RadioButton();
-            this.rdbEscola = new System.Windows.Forms.RadioButton();
-            this.txtArquivo = new System.Windows.Forms.TextBox();
-            this.lblArquivo = new System.Windows.Forms.Label();
-            this.btnLocalizarArquivo = new System.Windows.Forms.Button();
             this.btnImportar = new System.Windows.Forms.Button();
+            this.btnLocalizarArquivo = new System.Windows.Forms.Button();
+            this.lblArquivo = new System.Windows.Forms.Label();
+            this.txtArquivo = new System.Windows.Forms.TextBox();
+            this.grbTipoQuestionario = new System.Windows.Forms.GroupBox();
+            this.rdbEscola = new System.Windows.Forms.RadioButton();
+            this.rdbDRE = new System.Windows.Forms.RadioButton();
+            this.rdbSME = new System.Windows.Forms.RadioButton();
+            this.cmbFatorAssociadoQuestionario = new System.Windows.Forms.ComboBox();
+            this.lblFatorAssociadoQuestionario = new System.Windows.Forms.Label();
+            this.lblEdicao = new System.Windows.Forms.Label();
+            this.cmbEdicao = new System.Windows.Forms.ComboBox();
+            this.btnFechar = new System.Windows.Forms.Button();
             this.grbCaracterizacaoFamiliasEscolasQuestionarios.SuspendLayout();
             this.grbTipoQuestionario.SuspendLayout();
             this.SuspendLayout();
@@ -65,54 +65,43 @@
             this.grbCaracterizacaoFamiliasEscolasQuestionarios.TabIndex = 0;
             this.grbCaracterizacaoFamiliasEscolasQuestionarios.TabStop = false;
             // 
-            // cmbEdicao
+            // btnImportar
             // 
-            this.cmbEdicao.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbEdicao.FormattingEnabled = true;
-            this.cmbEdicao.Items.AddRange(new object[] {
-            "2022"});
-            this.cmbEdicao.Location = new System.Drawing.Point(6, 33);
-            this.cmbEdicao.Name = "cmbEdicao";
-            this.cmbEdicao.Size = new System.Drawing.Size(121, 22);
-            this.cmbEdicao.TabIndex = 0;
+            this.btnImportar.BackColor = System.Drawing.Color.LightGreen;
+            this.btnImportar.Location = new System.Drawing.Point(424, 157);
+            this.btnImportar.Name = "btnImportar";
+            this.btnImportar.Size = new System.Drawing.Size(75, 23);
+            this.btnImportar.TabIndex = 8;
+            this.btnImportar.Text = "Importar";
+            this.btnImportar.UseVisualStyleBackColor = false;
+            this.btnImportar.Click += new System.EventHandler(this.btnImportar_Click);
             // 
-            // lblEdicao
+            // btnLocalizarArquivo
             // 
-            this.lblEdicao.AutoSize = true;
-            this.lblEdicao.Location = new System.Drawing.Point(6, 16);
-            this.lblEdicao.Name = "lblEdicao";
-            this.lblEdicao.Size = new System.Drawing.Size(39, 14);
-            this.lblEdicao.TabIndex = 1;
-            this.lblEdicao.Text = "Edição";
+            this.btnLocalizarArquivo.Location = new System.Drawing.Point(467, 128);
+            this.btnLocalizarArquivo.Name = "btnLocalizarArquivo";
+            this.btnLocalizarArquivo.Size = new System.Drawing.Size(32, 23);
+            this.btnLocalizarArquivo.TabIndex = 7;
+            this.btnLocalizarArquivo.Text = "...";
+            this.btnLocalizarArquivo.UseVisualStyleBackColor = true;
+            this.btnLocalizarArquivo.Click += new System.EventHandler(this.btnLocalizarArquivo_Click);
             // 
-            // btnFechar
+            // lblArquivo
             // 
-            this.btnFechar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFechar.Location = new System.Drawing.Point(438, 222);
-            this.btnFechar.Name = "btnFechar";
-            this.btnFechar.Size = new System.Drawing.Size(80, 23);
-            this.btnFechar.TabIndex = 1;
-            this.btnFechar.Text = "Fechar";
-            this.btnFechar.UseVisualStyleBackColor = true;
-            this.btnFechar.Click += new System.EventHandler(this.btnFechar_Click);
+            this.lblArquivo.AutoSize = true;
+            this.lblArquivo.Location = new System.Drawing.Point(6, 112);
+            this.lblArquivo.Name = "lblArquivo";
+            this.lblArquivo.Size = new System.Drawing.Size(45, 14);
+            this.lblArquivo.TabIndex = 6;
+            this.lblArquivo.Text = "Arquivo";
             // 
-            // lblFatorAssociadoQuestionario
+            // txtArquivo
             // 
-            this.lblFatorAssociadoQuestionario.AutoSize = true;
-            this.lblFatorAssociadoQuestionario.Location = new System.Drawing.Point(140, 16);
-            this.lblFatorAssociadoQuestionario.Name = "lblFatorAssociadoQuestionario";
-            this.lblFatorAssociadoQuestionario.Size = new System.Drawing.Size(86, 14);
-            this.lblFatorAssociadoQuestionario.TabIndex = 2;
-            this.lblFatorAssociadoQuestionario.Text = "Fator Associado";
-            // 
-            // cmbFatorAssociadoQuestionario
-            // 
-            this.cmbFatorAssociadoQuestionario.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFatorAssociadoQuestionario.FormattingEnabled = true;
-            this.cmbFatorAssociadoQuestionario.Location = new System.Drawing.Point(143, 33);
-            this.cmbFatorAssociadoQuestionario.Name = "cmbFatorAssociadoQuestionario";
-            this.cmbFatorAssociadoQuestionario.Size = new System.Drawing.Size(357, 22);
-            this.cmbFatorAssociadoQuestionario.TabIndex = 3;
+            this.txtArquivo.Location = new System.Drawing.Point(6, 129);
+            this.txtArquivo.Name = "txtArquivo";
+            this.txtArquivo.ReadOnly = true;
+            this.txtArquivo.Size = new System.Drawing.Size(455, 20);
+            this.txtArquivo.TabIndex = 5;
             // 
             // grbTipoQuestionario
             // 
@@ -126,17 +115,17 @@
             this.grbTipoQuestionario.TabStop = false;
             this.grbTipoQuestionario.Text = "Tipo do questionário";
             // 
-            // rdbSME
+            // rdbEscola
             // 
-            this.rdbSME.AutoSize = true;
-            this.rdbSME.Checked = true;
-            this.rdbSME.Location = new System.Drawing.Point(6, 19);
-            this.rdbSME.Name = "rdbSME";
-            this.rdbSME.Size = new System.Drawing.Size(46, 18);
-            this.rdbSME.TabIndex = 0;
-            this.rdbSME.TabStop = true;
-            this.rdbSME.Text = "SME";
-            this.rdbSME.UseVisualStyleBackColor = true;
+            this.rdbEscola.AutoSize = true;
+            this.rdbEscola.Location = new System.Drawing.Point(423, 19);
+            this.rdbEscola.Name = "rdbEscola";
+            this.rdbEscola.Size = new System.Drawing.Size(57, 18);
+            this.rdbEscola.TabIndex = 2;
+            this.rdbEscola.TabStop = true;
+            this.rdbEscola.Text = "Escola";
+            this.rdbEscola.UseVisualStyleBackColor = true;
+            this.rdbEscola.CheckedChanged += new System.EventHandler(this.rdbEscola_CheckedChanged);
             // 
             // rdbDRE
             // 
@@ -148,55 +137,69 @@
             this.rdbDRE.TabStop = true;
             this.rdbDRE.Text = "DRE";
             this.rdbDRE.UseVisualStyleBackColor = true;
+            this.rdbDRE.CheckedChanged += new System.EventHandler(this.rdbDRE_CheckedChanged);
             // 
-            // rdbEscola
+            // rdbSME
             // 
-            this.rdbEscola.AutoSize = true;
-            this.rdbEscola.Location = new System.Drawing.Point(423, 19);
-            this.rdbEscola.Name = "rdbEscola";
-            this.rdbEscola.Size = new System.Drawing.Size(57, 18);
-            this.rdbEscola.TabIndex = 2;
-            this.rdbEscola.TabStop = true;
-            this.rdbEscola.Text = "Escola";
-            this.rdbEscola.UseVisualStyleBackColor = true;
+            this.rdbSME.AutoSize = true;
+            this.rdbSME.Checked = true;
+            this.rdbSME.Location = new System.Drawing.Point(6, 19);
+            this.rdbSME.Name = "rdbSME";
+            this.rdbSME.Size = new System.Drawing.Size(46, 18);
+            this.rdbSME.TabIndex = 0;
+            this.rdbSME.TabStop = true;
+            this.rdbSME.Text = "SME";
+            this.rdbSME.UseVisualStyleBackColor = true;
+            this.rdbSME.CheckedChanged += new System.EventHandler(this.rdbSME_CheckedChanged);
             // 
-            // txtArquivo
+            // cmbFatorAssociadoQuestionario
             // 
-            this.txtArquivo.Location = new System.Drawing.Point(6, 129);
-            this.txtArquivo.Name = "txtArquivo";
-            this.txtArquivo.ReadOnly = true;
-            this.txtArquivo.Size = new System.Drawing.Size(455, 20);
-            this.txtArquivo.TabIndex = 5;
+            this.cmbFatorAssociadoQuestionario.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFatorAssociadoQuestionario.FormattingEnabled = true;
+            this.cmbFatorAssociadoQuestionario.Location = new System.Drawing.Point(143, 33);
+            this.cmbFatorAssociadoQuestionario.Name = "cmbFatorAssociadoQuestionario";
+            this.cmbFatorAssociadoQuestionario.Size = new System.Drawing.Size(357, 22);
+            this.cmbFatorAssociadoQuestionario.TabIndex = 3;
             // 
-            // lblArquivo
+            // lblFatorAssociadoQuestionario
             // 
-            this.lblArquivo.AutoSize = true;
-            this.lblArquivo.Location = new System.Drawing.Point(6, 112);
-            this.lblArquivo.Name = "lblArquivo";
-            this.lblArquivo.Size = new System.Drawing.Size(45, 14);
-            this.lblArquivo.TabIndex = 6;
-            this.lblArquivo.Text = "Arquivo";
+            this.lblFatorAssociadoQuestionario.AutoSize = true;
+            this.lblFatorAssociadoQuestionario.Location = new System.Drawing.Point(140, 16);
+            this.lblFatorAssociadoQuestionario.Name = "lblFatorAssociadoQuestionario";
+            this.lblFatorAssociadoQuestionario.Size = new System.Drawing.Size(86, 14);
+            this.lblFatorAssociadoQuestionario.TabIndex = 2;
+            this.lblFatorAssociadoQuestionario.Text = "Fator Associado";
             // 
-            // btnLocalizarArquivo
+            // lblEdicao
             // 
-            this.btnLocalizarArquivo.Location = new System.Drawing.Point(467, 128);
-            this.btnLocalizarArquivo.Name = "btnLocalizarArquivo";
-            this.btnLocalizarArquivo.Size = new System.Drawing.Size(32, 23);
-            this.btnLocalizarArquivo.TabIndex = 7;
-            this.btnLocalizarArquivo.Text = "...";
-            this.btnLocalizarArquivo.UseVisualStyleBackColor = true;
-            this.btnLocalizarArquivo.Click += new System.EventHandler(this.btnLocalizarArquivo_Click);
+            this.lblEdicao.AutoSize = true;
+            this.lblEdicao.Location = new System.Drawing.Point(6, 16);
+            this.lblEdicao.Name = "lblEdicao";
+            this.lblEdicao.Size = new System.Drawing.Size(39, 14);
+            this.lblEdicao.TabIndex = 1;
+            this.lblEdicao.Text = "Edição";
             // 
-            // btnImportar
+            // cmbEdicao
             // 
-            this.btnImportar.BackColor = System.Drawing.Color.LightGreen;
-            this.btnImportar.Location = new System.Drawing.Point(424, 157);
-            this.btnImportar.Name = "btnImportar";
-            this.btnImportar.Size = new System.Drawing.Size(75, 23);
-            this.btnImportar.TabIndex = 8;
-            this.btnImportar.Text = "Importar";
-            this.btnImportar.UseVisualStyleBackColor = false;
-            this.btnImportar.Click += new System.EventHandler(this.btnImportar_Click);
+            this.cmbEdicao.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbEdicao.FormattingEnabled = true;
+            this.cmbEdicao.Items.AddRange(new object[] {
+            "2022"});
+            this.cmbEdicao.Location = new System.Drawing.Point(6, 33);
+            this.cmbEdicao.Name = "cmbEdicao";
+            this.cmbEdicao.Size = new System.Drawing.Size(121, 22);
+            this.cmbEdicao.TabIndex = 0;
+            // 
+            // btnFechar
+            // 
+            this.btnFechar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFechar.Location = new System.Drawing.Point(438, 222);
+            this.btnFechar.Name = "btnFechar";
+            this.btnFechar.Size = new System.Drawing.Size(80, 23);
+            this.btnFechar.TabIndex = 1;
+            this.btnFechar.Text = "Fechar";
+            this.btnFechar.UseVisualStyleBackColor = true;
+            this.btnFechar.Click += new System.EventHandler(this.btnFechar_Click);
             // 
             // ImportacaoCaracterizacaoFamilasEscolasQuestionariosRespostas
             // 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using ImportacaoDeQuestionariosSME.Data.Repositories.CiclosAnoEscolar;
@@ -30,6 +31,12 @@ namespace ImportacaoDeQuestionariosSME.Services.CaracterizacaoFamiliasEscolasQue
             if (csv.Rows.Count <= 0)
             {
                 dto.AddErro("Não existem regitros para serem importados.");
+                return;
+            }
+
+            if (!EhArquivoValido(csv))
+            {
+                dto.AddErro("O arquivo não é válido para importação do tipo DRE.");
                 return;
             }
 
@@ -76,7 +83,22 @@ namespace ImportacaoDeQuestionariosSME.Services.CaracterizacaoFamiliasEscolasQue
                 indice++;
             }
 
-            await _fatorAssociadoQuestionarioRespostaDreRepository.InsertAsync(entities);
+            //await _fatorAssociadoQuestionarioRespostaDreRepository.InsertAsync(entities);
+        }
+
+        private static bool EhArquivoValido(DataTable csv)
+        {
+            var colunasArquivo = new[] { "dre_sigla", "QuestaoId", "ItemId", "Questao", "Item", "Valor", "AnoEscolar" };
+
+            for (var i = 0; i < csv.Columns.Count; i++)
+            {
+                var nomeColuna = csv.Columns[i].ColumnName;
+
+                if (!colunasArquivo.Select(c => c.ToLower()).Contains(nomeColuna.ToLower()))
+                    return false;
+            }
+
+            return true;
         }
     }
 }
