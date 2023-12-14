@@ -1,5 +1,5 @@
 insert into QuestionarioItem (QuestionarioId, Titulo, Numero, DataInclusao)
-values (34, 'Quem é a(o) responsável pelas respostas dadas a este questionário? [A) A mãe., B) O pai., C) Os dois (pai e mãE) ., D) Outro responsável.]', 1, GetDate());
+values (34, 'Quem é a(o) responsável pelas respostas dadas a este questionário? [A) A mãe., B) O pai., C) Os dois (pai e mãe)., D) Outro responsável.]', 1, GetDate());
 insert into QuestionarioItem (QuestionarioId, Titulo, Numero, DataInclusao)
 values (34, 'Até que série/ano escolar a mãe ou a mulher responsável pela(o) estudante estudou? [A) Ensino Fundamental incompleto (até 8a série/9o ano)., B) Ensino Fundamental completo (até 8a série/9o ano)., C) Ensino Médio completo (antigo colegial). D) Ensino Superior completo., E) Não sei dizer.]', 2, GetDate());
 insert into QuestionarioItem (QuestionarioId, Titulo, Numero, DataInclusao)
