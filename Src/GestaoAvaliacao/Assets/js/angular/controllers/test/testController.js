@@ -5,7 +5,6 @@
  * @author julio.silva@mstech.com.br - 07/11/2016
  */
 (function (angular, $) {
-
     angular
         .module('appMain', ['services', 'filters', 'directives', 'tooltip', 'ngTagsInput']);
 
@@ -13,7 +12,9 @@
         .module('appMain')
         .controller("TestController", TestController);
 
-    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel', 'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', 'NumberItemsAplicationTaiModel', '$window', 'EvaluationMatrixModel', '$sce', '$http', '$q' ];
+    TestController.$inject = ['$scope', '$util', '$notification', '$pager', 'TestModel',
+        'ItemTypeModel', 'ModalityModel', 'TestTypeModel', 'TestGroupModel', 'NumberItemsAplicationTaiModel',
+        '$window', 'EvaluationMatrixModel', '$sce', '$http', '$q'];
 
     /**
      * @function Controller para criação de prova
@@ -26,7 +27,9 @@
      * @param {Object} TestTypeModel
      * @returns
      */
-    function TestController(ng, $util, $notification, $pager, TestModel, ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, NumberItemsAplicationTaiModel, $window, EvaluationMatrixModel, $sce, $http, $q) {
+    function TestController(ng, $util, $notification, $pager, TestModel,
+        ItemTypeModel, ModalityModel, TestTypeModel, TestGroupModel, NumberItemsAplicationTaiModel,
+        $window, EvaluationMatrixModel, $sce, $http, $q) {
 
         ng.params = $util.getUrlParams();
         var self = this;
@@ -144,7 +147,8 @@
                 itensVersoes: TestModel.GetItemVersions,
                 salvarCadeiaBloco: TestModel.saveBlockChain,
                 obterDadosAmostraProvaTai: TestModel.ObterDadosAmostraProvaTai,
-                obterDadosAmostraProvaTaiPorProvaId: TestModel.ObterDadosAmostraProvaTaiPorProvaId
+                obterDadosAmostraProvaTaiPorProvaId: TestModel.ObterDadosAmostraProvaTaiPorProvaId,
+                obterTiposGradesCurricularesProvaTai: TestModel.ObterTiposGradesCurricularesProvaTai
             };
 
             //Chamadas utilizada na Etapa 3
@@ -1913,8 +1917,26 @@
 
         ng.e2_matrizAvaliacaoMudou = e2_matrizAvaliacaoMudou;
         function e2_matrizAvaliacaoMudou() {
-            if (ng.mostrarTela)
+            if (ng.mostrarTela) {
                 ng.alterouEtapaAtual = self.etapa2.alterou = true;
+
+                const itemAtual = {
+                    ...ng.e2_dadosModalAnoItensAmostraTai
+                };
+
+                ng.e2_dadosModalAnoItensAmostraTai = {
+                    id: itemAtual.id,
+                    Matriz: itemAtual.Matriz,
+                    Ano: { Id: 0, Description: '', CountItemsTai: 0 },
+                    Porcentagem: itemAtual.Porcentagem,
+                    DadosAmostra: itemAtual.DadosAmostra
+                };
+
+                if (itemAtual.Matriz && itemAtual.Matriz.Id > 0)
+                    obterTiposGradesCurricularesProvaTaiCarregar(itemAtual.Matriz.Id)
+                else
+                    ng.e2_listAnoItensTai = [];
+            }
 
             obterDadosAmostraTai();
 
@@ -2236,10 +2258,6 @@
                 }
             });
         };
-
-        function carregaListAnoItensTai() {
-            ng.e2_listAnoItensTai = ng.e1_listaPeriodos;
-        }
 
         /**
         * @function Tratamentos resultado do nivel de ensino
@@ -3529,8 +3547,12 @@
                 if (ultimaMatriz) {
                     ng.e2_matrizAvaliacao = ultimaMatriz;
 
-                    if (ng.e2_dadosModalAnoItensAmostraTai)
+                    if (ng.e2_dadosModalAnoItensAmostraTai) {
                         ng.e2_dadosModalAnoItensAmostraTai.Matriz = ultimaMatriz;
+
+                        if (ultimaMatriz.Id > 0)
+                            obterTiposGradesCurricularesProvaTaiCarregar(ultimaMatriz.Id);
+                    }
                 }
             }
         }
@@ -5199,7 +5221,7 @@
             ng.e2_dadosModalAnoItensAmostraTai = {
                 id: 0,
                 Matriz: { Id: 0, Description: '' },
-                Ano: { Id: 0, Description: '' },
+                Ano: { Id: 0, Description: '', CountItemsTai: 0 },
                 Porcentagem: '',
                 DadosAmostra: { PorcentagemMaximaMatrizAno: 0, NumeroItensAmostraMatrizAno: 0, LabelInfoPorcentagemMaximaMatrizAno: '' }
             };
@@ -5278,6 +5300,9 @@
         ng.e2_editarModalAnoItensAmostraTai = e2_editarModalAnoItensAmostraTai;
         function e2_editarModalAnoItensAmostraTai(item) {
             e2_criarObjetoDadosModalAnoItensAmostraTai();
+
+            if (item.Matriz && item.Matriz.Id > 0)
+                obterTiposGradesCurricularesProvaTaiCarregar(item.Matriz.Id)
 
             ng.e2_itemParaAlterarDaListaAnosItensAmostraProvaTai = item;
 
@@ -5665,7 +5690,6 @@
             }
             var $matrizAvaliacao = $(".matrizAvaliacao");
             $matrizAvaliacao.select2();
-            carregaListAnoItensTai();
         }
 
         ng.e2_avisoBlockComponenteTai = function __avisoBlockComponenteTai() {
@@ -5724,9 +5748,23 @@
             self.etapa2.obterDadosAmostraProvaTaiPorProvaId({ provaId: ng.provaId }, obterDadosAmostraProvaTaiPorProvaIdCarregado);
         }
 
+        function obterTiposGradesCurricularesProvaTaiCarregar(matrizId) {
+            self.etapa2.obterTiposGradesCurricularesProvaTai({ tipoProvaId: ng.e1_cbTipoProva.Id, matrizId: matrizId },
+                obterTiposGradesCurricularesProvaTaiCarregado)
+        }
+
         function obterDadosAmostraProvaTaiPorProvaIdCarregado(r) {
             if (r.success) {
                 ng.e2_dadosAmostraTaiList = angular.copy(r.dados)
+            } else {
+                if (r.type && r.message)
+                    $notification[r.type ? r.type : 'error'](r.message);
+            }
+        }
+
+        function obterTiposGradesCurricularesProvaTaiCarregado(r) {
+            if (r.success) {
+                ng.e2_listAnoItensTai = angular.copy(r.lista)
             } else {
                 if (r.type && r.message)
                     $notification[r.type ? r.type : 'error'](r.message);

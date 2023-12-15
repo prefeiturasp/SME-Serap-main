@@ -1851,7 +1851,8 @@
                                         ng-options="ano as ano.Description for ano in e2_listAnoItensTai"
                                         ng-title="e2_listAnoItensTai"
                                         ng-title-propertie="Description"
-                                        ng-title-index="1">
+                                        ng-title-index="1"
+                                        ng-disabled="!e2_dadosModalAnoItensAmostraTai.Matriz || e2_dadosModalAnoItensAmostraTai.Matriz.Id === 0">
                                     <option value="">--Selecione uma opção --</option>
                                 </select>
                             </div>
