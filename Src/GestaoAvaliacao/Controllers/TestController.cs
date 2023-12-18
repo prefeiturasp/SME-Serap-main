@@ -17,7 +17,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using static IdentityModel.Client.OAuth2Constants;
 using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.Controllers
@@ -40,12 +39,13 @@ namespace GestaoAvaliacao.Controllers
         private readonly ITestContextBusiness testContextBusiness;
         private readonly IBlockChainBusiness blockChainBusiness;
         private readonly IBlockChainBlockBusiness blockChainBlockBusiness;
+        private readonly ITestTypeCourseCurriculumGradeBusiness testTypeCourseCurriculumGradeBusiness;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
             IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
             IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness,
             ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness, IBlockChainBusiness blockChainBusiness,
-            IBlockChainBlockBusiness blockChainBlockBusiness)
+            IBlockChainBlockBusiness blockChainBlockBusiness, ITestTypeCourseCurriculumGradeBusiness testTypeCourseCurriculumGradeBusiness)
         {
             this.testBusiness = testBusiness;
             this.testFilesBusiness = testFilesBusiness;
@@ -61,6 +61,7 @@ namespace GestaoAvaliacao.Controllers
             this.testContextBusiness = testContextBusiness;
             this.blockChainBusiness = blockChainBusiness;
             this.blockChainBlockBusiness = blockChainBlockBusiness;
+            this.testTypeCourseCurriculumGradeBusiness = testTypeCourseCurriculumGradeBusiness;
         }
 
         public ActionResult Index() => View();
@@ -946,6 +947,40 @@ namespace GestaoAvaliacao.Controllers
             return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> ObterTiposGradesCurricularesProvaTai(int tipoProvaId, long matrizId)
+        {
+            var testTypeCourseCurriculumGrade = testTypeCourseCurriculumGradeBusiness.GetCurriculumGradesByTestType(tipoProvaId);
+            var listCurriculumGrade = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
+            var tiposCurriculosGradesIds = listCurriculumGrade.Select(c => c.tcp_id).Distinct().ToArray();
+
+            var itensAmostraMatrizAnoTai = Enumerable.Empty<ItemAmostraTaiDTO>();
+            if (tiposCurriculosGradesIds.Any())
+                itensAmostraMatrizAnoTai = await testBusiness.ObterItensAmostraTai(new [] { matrizId }, tiposCurriculosGradesIds);
+
+            var typesCurriculumGrade = testTypeCourseCurriculumGrade.Select(p =>
+            {
+                var countItemsTai = itensAmostraMatrizAnoTai.Count(a => a.TipoCurriculoGradeId == p.TypeCurriculumGradeId);
+
+                var description = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId)?.tcp_descricao;
+                if (description != null)
+                {
+                    var comp = countItemsTai > 1 ? "itens" : "item";
+                    description = $"{description} - {countItemsTai} {comp}";
+                }
+
+                return new
+                {
+                    Id = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId)?.tcp_id,
+                    Description = description,
+                    Order = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId)?.tcp_ordem,
+                    CountItemsTai = countItemsTai
+                };
+            });
+
+            return Json(new { success = true, lista = typesCurriculumGrade }, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region Write
@@ -1192,11 +1227,48 @@ namespace GestaoAvaliacao.Controllers
             try
             {
                 var list = await testBusiness.GetListTestTaiCurriculumGradeByTestId(testId);
+                var listCurriculumGrade = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
+                var tiposCurriculosGradesIds = listCurriculumGrade.Select(c => c.tcp_id).Distinct().ToArray();
 
-                if (list != null && list.Any())
-                    return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
+                var listaRetorno = new List<object>();
+                foreach (var item in list)
+                {
+                    if (!tiposCurriculosGradesIds.Any())
+                        continue;
+                    
+                    var itensAmostraMatrizAnoTai = await testBusiness.ObterItensAmostraTai(new[] { item.MatrixId }, tiposCurriculosGradesIds);
+                    var countItemsTai = itensAmostraMatrizAnoTai.Count(a => a.TipoCurriculoGradeId == item.TypeCurriculumGradeId);
 
-                return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
+                    var description = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == item.TypeCurriculumGradeId)?.tcp_descricao;
+                    if (description != null)
+                    {
+                        var comp = countItemsTai > 1 ? "itens" : "item";
+                        description = $"{description} - {countItemsTai} {comp}";
+                    }
+
+                    listaRetorno.Add(new
+                    {
+                        item.DisciplineId,
+                        Matriz = new
+                        {
+                            Id = item.MatrixId,
+                            Description = item.MatrixDescription
+                        },
+                        item.Percentage,
+                        item.TestId,
+                        TypeCurriculumGrade = new
+                        {
+                            Id = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == item.TypeCurriculumGradeId)?.tcp_id,
+                            Description = description,
+                            Order = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == item.TypeCurriculumGradeId)?.tcp_ordem,
+                            CountItemsTai = countItemsTai
+                        }
+                }); 
+                }
+
+                return listaRetorno.Any()
+                    ? Json(new { success = true, lista = listaRetorno }, JsonRequestBehavior.AllowGet)
+                    : Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
