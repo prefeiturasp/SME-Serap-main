@@ -1848,7 +1848,7 @@
                                 <select id="anosItensAnostraTai" class="form-control" title="{{ e2_dadosModalAnoItensAmostraTai.Ano.Description }}"
                                         ng-change="e2_anoItensAmostraTaiMudou();"
                                         ng-model="e2_dadosModalAnoItensAmostraTai.Ano"
-                                        ng-options="ano as ano.Description for ano in e2_listAnoItensTai"
+                                        ng-options="ano as ano.Description for ano in e2_listAnoItensTai track by ano.Id"
                                         ng-title="e2_listAnoItensTai"
                                         ng-title-propertie="Description"
                                         ng-title-index="1"
