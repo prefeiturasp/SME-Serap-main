@@ -1287,7 +1287,7 @@
                 "Discipline": ng.e1_cbComponenteCurricular,
                 "Bib": ng.temBIB,
                 "BlockChain": ng.ehCadeiaBlocos,
-                "NumberBlock": ng.temBIB ? parseInt(ng.e1_qtdBlocos) : 0,
+                "NumberBlock": ng.temBIB ? parseInt(ng.e1_qtdBlocos) : ng.showTestTAI ? 1 : 0,
                 "BlockChainNumber": ng.temBIB ? parseInt(ng.e1_qtdCadeiaBlocos) : 0,
                 "BlockChainItems": ng.temBIB ? parseInt(ng.e1_qtdItensCadeiaBlocos) : 0,
                 "BlockChainForBlock": ng.temBIB ? parseInt(ng.e1_qtdCadeiaBlocosPorBloco) : 0,
