@@ -1516,7 +1516,6 @@
                 return false;
             }
 
-
             if (validarData() === false)
                 return false;
 
