@@ -1607,6 +1607,11 @@
                 if (retorno) return false;
             }
 
+            if (ng.isMultidiscipline && ng.showTestTAI) {
+                $notification.alert('A prova com aplicação em TAI não pode ser multidiciplinar.');
+                return false;
+            }
+
             return true;
         };
 
