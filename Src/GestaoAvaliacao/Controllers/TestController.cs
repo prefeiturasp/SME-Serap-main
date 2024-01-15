@@ -871,19 +871,13 @@ namespace GestaoAvaliacao.Controllers
                     }, JsonRequestBehavior.AllowGet);
             }
 
-            var numeroItensAmostraTai = dadosProvaTai.NumeroItensAmostra;
-
             var numeroItensAmostraMatrizAnoTai = (await testBusiness
-                    .ObterItensAmostraTai(new[] { matrizId }, new[] { tipoCurriculoGradeId }))
-                .Take(numeroItensAmostraTai).Count();
-
-            var porcentagemMaxima = numeroItensAmostraMatrizAnoTai * 100 / numeroItensAmostraTai;
+                .ObterItensAmostraTai(new[] { matrizId }, new[] { tipoCurriculoGradeId }))
+                .Count();
 
             var dados = new
             {
-                porcentagemMaximaMatrizAno = porcentagemMaxima,
-                numeroItensAmostraMatrizAno = numeroItensAmostraMatrizAnoTai,
-                labelInfoPorcentagemMaximaMatrizAno = $"Valor % máximo: {porcentagemMaxima}."
+                numeroItensAmostraMatrizAno = numeroItensAmostraMatrizAnoTai
             };
 
             return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
@@ -918,7 +912,6 @@ namespace GestaoAvaliacao.Controllers
                     }, JsonRequestBehavior.AllowGet);
             }
 
-            var numeroItensAmostraTai = dadosProvaTai.NumeroItensAmostra;
             var matrizesIds = list.Select(c => c.MatrixId).Distinct().ToArray();
             var tiposCurriculosGradesIds = list.Select(c => int.Parse(c.TypeCurriculumGradeId.ToString())).Distinct().ToArray();
 
@@ -931,16 +924,11 @@ namespace GestaoAvaliacao.Controllers
 
             foreach (var item in itensAgrupadosAmostraMatrizAnoTai)
             {
-                var numeroItensAmostraMatrizAnoTai = item.Take(numeroItensAmostraTai).Count();
-                var porcentagemMaxima = numeroItensAmostraMatrizAnoTai * 100 / numeroItensAmostraTai;
-
                 dados.Add(new
                 {
                     item.Key.MatrizId,
                     item.Key.TipoCurriculoGradeId,
-                    porcentagemMaximaMatrizAno = porcentagemMaxima,
-                    numeroItensAmostraMatrizAno = item.Count(),
-                    labelInfoPorcentagemMaximaMatrizAno = $"Valor % máximo: {porcentagemMaxima}."
+                    numeroItensAmostraMatrizAno = item.Count()
                 });
             }
 
@@ -1254,7 +1242,6 @@ namespace GestaoAvaliacao.Controllers
                             Id = item.MatrixId,
                             Description = item.MatrixDescription
                         },
-                        item.Percentage,
                         item.TestId,
                         TypeCurriculumGrade = new
                         {
