@@ -7223,15 +7223,17 @@ function formatted_string(pad, user_str, pad_pos) {
 }
 
 function loadEdicoesDaRevistaPedagogica() {
-    var edicoes = []
+    var edicoes = [];
+    edicoesRevistasPedagogicas = [];
 
-    let anoAtual = new Date().getFullYear() - 1;
+    let anoAtual = new Date().getFullYear() - 1;    
     for (var i = anoAtual; i >= 2017; i--) {
         edicoes.push(i);
         if (i > 2017)
             edicoesRevistasPedagogicas.push(i.toString());
     }
 
+    $("#ddlRevistasBoletinsEdicao").empty();
     edicoes.forEach(function (item) {
         $('#ddlRevistasBoletinsEdicao').append($('<option>', {
             value: item,
