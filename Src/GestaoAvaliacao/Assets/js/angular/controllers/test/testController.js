@@ -107,16 +107,17 @@
             };
             //Chamadas utilizada na Etapa 1
             self.etapa1 = {
+                loadGroupsSubGroups: TestGroupModel.loadGroupsSubGroups,
                 tipoProva: TestModel.loadByUserGroup,
                 componenteCurricular: TestModel.searchDisciplinesSaves,
                 dadosProva: TestModel.findTest,
                 niveis: TestModel.getAll,
+                loadNumberItemsAplicationTai: NumberItemsAplicationTaiModel.loadAll,
                 prova: TestModel.loadTest,
                 save: TestModel.save,
                 bComponente: false,
                 bTipoProva: false,
                 uintWatchProva: null,
-                loadNumberItemsAplicationTai: NumberItemsAplicationTaiModel.loadAll,
             };
             self.situacaoList = [
                 { Id: 1, Description: "Pendente", Style: "icone-pendente material-icons situacao", Icon: 'remove_circle_outline' },
@@ -370,27 +371,29 @@
             else
                 ng.provaId = ng.params.Id.Value ? ng.params.Id : 0;
 
-            numberItemsAplicationTaiCarregar();
-            tipoProvaCarregar();
 
+            carregarInfosProva();
             // Modal contexto
             e1_criarObjetoDadosModalContexto();
             ng.e1_itemParaDeletarDaListaTestContex = '';
         };
 
-        /**
-         * @function - Salvar
-         * @param {Object} list - lista de valores que preencherá o combo
-         * @param {Object} opcao - opcao a ser procurada dentro da lista
-         * @public
-         */
-        function setValuesComb(list, opcao) {
-            for (var k = 0; k < list.length; k++) {
-                if (list[k].Description == opcao.Description) {
-                    return list[k];
-                };
-            };
-        };        
+        function carregarInfosProva() {
+            numberItemsAplicationTaiCarregar().catch(function (retornoErro) {
+                if (retornoErro.type && retornoErro.message)
+                    $notification[retornoErro.type ? retornoErro.type : 'error'](retornoErro.message);
+            }).then(function () {
+                return carregaGrupoSubgrupo();
+            }).catch(function (retornoErro) {
+                if (retornoErro.type && retornoErro.message)
+                    $notification[retornoErro.type ? retornoErro.type : 'error'](retornoErro.message);
+            }).then(function () {
+                return tipoProvaCarregar();
+            }).catch(function (retornoErro) {
+                if (retornoErro.type && retornoErro.message)
+                    $notification[retornoErro.type ? retornoErro.type : 'error'](retornoErro.message);
+            })
+        }
 
         /**
         * @function Carrega itens amostra prova TAI
@@ -398,16 +401,22 @@
         * @param
         */
         function numberItemsAplicationTaiCarregar() {
-            self.etapa1.loadNumberItemsAplicationTai(function (r) {                
-                if (r.success) {
-                    ng.e1_nItensTestTAIList = angular.copy(r.lista);
-                    ng.e1_nItensTestTAI = ng.e1_nItensTestTAIList[0];
-                } else {
-                    if (r.type && r.message)
-                        $notification[r.type ? r.type : 'error'](r.message);
-                    return false;
-                }
-            });
+            return new Promise(function (resolve, reject) {
+                self.etapa1.loadNumberItemsAplicationTai(function (r) {
+                    if (r.success) {
+                        ng.e1_nItensTestTAIList = angular.copy(r.lista);
+                        ng.e1_nItensTestTAI = ng.e1_nItensTestTAIList[0];
+                        resolve("Número de itens TAI carregado com sucesso");
+                    } else {
+                        let retornoErro = {
+                            type: r.type,
+                            message: r.message
+                        }
+
+                        reject(retornoErro);
+                    }
+                })
+            });            
         };
 
         /**
@@ -416,34 +425,43 @@
         * @param
         */
         function tipoProvaCarregar() {
-            self.etapa1.tipoProva(function (r) {
-                ng.bTipoProva = true;
-                carregaGrupoSubgrupo();
-                if (r.success) {
-                    //Detecta se prova selecionada permite BIB
-                    ng.showFlagBIB = angular.copy(r.Bib);
-                    //Configura breadcomb da prova
-                    configuraWizard(ng.showFlagBIB);
-                    r = r.lista;
-                    ng.e1_listaTipoProva = angular.copy(r.testTypeList);
-                    ng.e1_tipoNivelEnsino = angular.copy(r.TypeLevelEducation);
-                    ng.tempoDeProvaList = angular.copy(r.temposDeProva);
-                    //Exibe tela assim que terminar de carregar
-                    if (!ng.editMode) {
+            return new Promise(function (resolve, reject) {
+                self.etapa1.tipoProva(function (r) {
+                    ng.bTipoProva = true;
+                    if (r.success) {
+                        //Detecta se prova selecionada permite BIB
+                        ng.showFlagBIB = angular.copy(r.Bib);
+
+                        //Configura breadcomb da prova
+                        configuraWizard(ng.showFlagBIB);
+
+                        r = r.lista;
+                        ng.e1_listaTipoProva = angular.copy(r.testTypeList);
+                        ng.e1_tipoNivelEnsino = angular.copy(r.TypeLevelEducation);
+                        ng.tempoDeProvaList = angular.copy(r.temposDeProva);
+
+                        //Exibe tela assim que terminar de carregar
+                        if (!ng.editMode) {
+                            ng.mostrarTela = true;
+                            ng.situacao = procurarElementoEm([{ Id: r.TestSituation }], self.situacaoList)[0];
+                        }
+                        else {
+                            provaCarregar();
+                        }
+
+                        resolve("Tipo a prova carregado com sucesso");
+                    } else {
+                        configuraWizard(false);
                         ng.mostrarTela = true;
-                        ng.situacao = procurarElementoEm([{ Id: r.TestSituation }], self.situacaoList)[0];
+
+                        let retornoErro = {
+                            type: r.type,
+                            message: r.message
+                        }
+
+                        reject(retornoErro);
                     }
-                    else {
-                        //Carrega dados da prova
-                        provaCarregar();
-                    }
-                } else {
-                    if (r.type && r.message)
-                        $notification[r.type ? r.type : 'error'](r.message);
-                    configuraWizard(false);
-                    ng.mostrarTela = true;
-                    return false;
-                }
+                })
             });
         };
 
@@ -5031,17 +5049,24 @@
          * @public
          */
         function carregaGrupoSubgrupo() {
-            TestGroupModel.loadGroupsSubGroups(function (result) {
-                if (result.success) {
-                    ng.grupoSubgrupoList = result.groupSubGroup;
-                    ng.e1_grupoSubgrupo = setValuesComb(ng.grupoSubgrupoList, result.groupSubGroup);
-                }
-                else {
-                    $notification[result.type ? result.type : 'error'](result.message);
-                }
+            return new Promise(function (resolve, reject) {
+                self.etapa1.loadGroupsSubGroups(function (result) {
+                    if (result.success) {
+                        ng.grupoSubgrupoList = angular.copy(result.groupSubGroup);
+                        ng.e1_grupoSubgrupo = ng.grupoSubgrupoList[0];
+                        resolve("Grupo/Subgrupo da prova carregado com sucesso");
+                    }
+                    else {
+                        let retornoErro = {
+                            type: r.type,
+                            message: r.message
+                        }
+
+                        reject(retornoErro);
+                    }
+                })
             });
         };
-
 
         ng.carregarVersoes = function carregarVersoes(item) {
             for (var k = 0; k < ng.e2_ListaItemSelecionados.length; k++) {
