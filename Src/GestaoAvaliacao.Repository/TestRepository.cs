@@ -1320,7 +1320,7 @@ namespace GestaoAvaliacao.Repository
 						        and i.TRIDifficulty is not null
 						        and i.TRICasualSetting is not null
 						        and icg.TypeCurriculumGradeId in ({string.Join(",", tiposCurriculosGradesIds)})
-						        and i.ItemVersion = (select max(i2.ItemVersion) from Item i2 where i2.Id = i.Id)";
+						        and i.ItemVersion = (select max(i2.ItemVersion) from Item i2 where i2.ItemCode = i.ItemCode)";
 
             using (var cn = Connection)
             {
