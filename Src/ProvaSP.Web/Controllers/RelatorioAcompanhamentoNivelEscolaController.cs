@@ -16,7 +16,7 @@ namespace ProvaSP.Web.Controllers
         {
             var usuario = DataUsuario.RetornarUsuario(usu_id);
 
-            if (usuario.AcessoNivelSME || usuario.Supervisor || usuario.Diretor || usuario.Coordenador)
+            if (usuario.AcessoNivelSME || usuario.AcessoNivelDRE || usuario.Supervisor || usuario.Diretor || usuario.Coordenador)
             {
                 ViewBag.Usuario = usuario;
                 var escola = DataEscola.RecuperarEscola(esc_codigo);

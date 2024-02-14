@@ -16,7 +16,7 @@ namespace ProvaSP.Web.Controllers
         {
             var usuario = DataUsuario.RetornarUsuario(usu_id);
 
-            if (usuario.AcessoNivelSME || usuario.Supervisor)
+            if (usuario.AcessoNivelSME || usuario.AcessoNivelDRE || usuario.Supervisor)
             {
                 ViewBag.Usuario = usuario;
                 ViewBag.DRE = uad_codigo;
