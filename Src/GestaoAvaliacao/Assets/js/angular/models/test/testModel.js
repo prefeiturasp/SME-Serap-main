@@ -88,6 +88,11 @@
                 url: base_url('Test/ObterDadosAmostraProvaTaiPorProvaId')
             },
 
+            'ObterTiposGradesCurricularesProvaTai': {
+                method: 'GET',
+                url: base_url('Test/ObterTiposGradesCurricularesProvaTai')
+            },
+
             'carregaAreaConhecimento': {
                 method: 'GET',
                 url: base_url('Item/loadallknowledgeareaactive')

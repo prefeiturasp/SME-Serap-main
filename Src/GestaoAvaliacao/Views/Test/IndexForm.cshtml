@@ -276,20 +276,6 @@
                                 <h4 class="tituloCard">{{labels.informationTestTAI}}*: </h4>
                                 @* Header *@
                                 <div class="campoLabel">
-
-                                    <label for="numberItemsTestTAI">{{labels.numberItemsTestTAI}}*: </label>
-                                    <div>
-                                        <select id="nItensTestTAI" class="form-control" title="{{ e1_nItensTestTAI.Name }}" ng-title-index="1"
-                                                ng-change="e1_nItensTestTAIMudou();"
-                                                ng-model="e1_nItensTestTAI"
-                                                ng-options="ItensTestTAI as ItensTestTAI.Name for ItensTestTAI in e1_nItensTestTAIList"
-                                                ng-title="e1_nItensTestTAIList"
-                                                ng-title-propertie="Name">
-                                            <option value="">--Selecione uma opção--</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="campoLabel">
                                     <label class="label-pos-inline">  {{labels.advanceWithoutAnswering}}: </label>
                                     <div class="switch" ng-click="selectAdvanceWithoutAnswering();" ng-class="{'off': !advanceWithoutAnswering}" style="position: absolute; margin: 4px 250px;"><input type="button" /></div>
                                 </div>
@@ -707,14 +693,12 @@
                                                     <col style="width: 40%" />
                                                     <col style="width: 20%" />
                                                     <col style="width: 20%" />
-                                                    <col style="width: 10%" />
-                                                    <col style="width: 10%" />
+                                                    <col style="width: 20%" />
                                                 </colgroup>
                                                 <thead>
                                                     <tr>
                                                         <th>Matriz de avaliação</th>
                                                         <th class="table-parameter-centralize">Ano</th>
-                                                        <th class="table-parameter-centralize">Porcentagem(%)</th>
                                                         <th class="table-parameter-centralize">Editar</th>
                                                         <th class="table-parameter-centralize">Excluir</th>
                                                     </tr>
@@ -723,7 +707,6 @@
                                                     <tr ng-repeat="anoItem in anosItensAmostraProvaTai">
                                                         <th>{{ anoItem.Matriz.Description }}</th>
                                                         <th class="table-parameter-centralize">{{ anoItem.Ano.Description }}</th>
-                                                        <th class="table-parameter-centralize">{{ anoItem.Porcentagem }}</th>
                                                         <th class="table-parameter-centralize">
                                                             <a ng-click="e2_editarModalAnoItensAmostraTai(anoItem)"><i type="button" class="material-icons">format_list_bulleted</i></a>
                                                         </th>
@@ -1848,27 +1831,13 @@
                                 <select id="anosItensAnostraTai" class="form-control" title="{{ e2_dadosModalAnoItensAmostraTai.Ano.Description }}"
                                         ng-change="e2_anoItensAmostraTaiMudou();"
                                         ng-model="e2_dadosModalAnoItensAmostraTai.Ano"
-                                        ng-options="ano as ano.Description for ano in e2_listAnoItensTai"
+                                        ng-options="ano as ano.Description for ano in e2_listAnoItensTai track by ano.Id"
                                         ng-title="e2_listAnoItensTai"
                                         ng-title-propertie="Description"
-                                        ng-title-index="1">
+                                        ng-title-index="1"
+                                        ng-disabled="!e2_dadosModalAnoItensAmostraTai.Matriz || e2_dadosModalAnoItensAmostraTai.Matriz.Id === 0">
                                     <option value="">--Selecione uma opção --</option>
                                 </select>
-                            </div>
-
-                            <div class="campoLabel">
-                                <label>Porcentagem(%)*:</label>
-                                <div>
-                                    <div>
-                                        <input type="text"
-                                               class="form-control"
-                                               maxlength="3"
-                                               ng-model="e2_dadosModalAnoItensAmostraTai.Porcentagem"
-                                               ng-change="validarPorcentagemInteiro();"
-                                               placeholder="Digite a Porcentagem(%)" />
-                                    </div>
-                                    <p style="color: red;" class="textoDescricao pull-left">{{ e2_dadosModalAnoItensAmostraTai.DadosAmostra.LabelInfoPorcentagemMaximaMatrizAno }}</p>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -1880,7 +1849,6 @@
                             <button type="button" class="btn btn-primary" data-dismiss="modal"
                                     ng-click="e2_addDadosModalAnoItensAmostraTai()"
                                     ng-disabled="!e2_dadosModalAnoItensAmostraTai.Ano || e2_dadosModalAnoItensAmostraTai.Ano.Id === 0 ||
-                                             !e2_dadosModalAnoItensAmostraTai.Porcentagem || parseInt(e2_dadosModalAnoItensAmostraTai.Porcentagem) === 0 ||
                                              !e2_dadosModalAnoItensAmostraTai.Matriz || e2_dadosModalAnoItensAmostraTai.Matriz.Id === 0">
                                 Adicionar
                             </button>

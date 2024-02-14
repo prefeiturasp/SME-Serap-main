@@ -21,7 +21,9 @@ namespace GestaoEscolar.IRepository
         /// <returns>Projection com o nome da DRE e da escola</returns>
         SchoolAndDRENamesProjection GetSchoolAndDRENames(int esc_id);
 
-        IEnumerable<EscolaDto> LoadAllSchoollsActiveDto();
+        IEnumerable<EscolaDto> LoadAllSchoollsActiveDto(string filtroNome = null);
+        IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo);
+        EscolaDto ObterEscolaPorCodigo(string esc_codigo);
     }
 
 }

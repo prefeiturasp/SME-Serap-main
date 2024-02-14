@@ -6,7 +6,6 @@ using ImportacaoDeQuestionariosSME.Domain.CiclosAnoEscolar;
 using ImportacaoDeQuestionariosSME.Domain.Constructos;
 using ImportacaoDeQuestionariosSME.Domain.FatoresAssociadosQuestionarioResposta.SME;
 using ImportacaoDeQuestionariosSME.Domain.Questionarios.Itens;
-using ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioResposta.DRE.Dtos;
 using ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioResposta.Dtos;
 using ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioResposta.SME.Dtos;
 using ImportacaoDeQuestionariosSME.Utils;

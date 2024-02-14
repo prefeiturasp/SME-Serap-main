@@ -101,12 +101,15 @@
                             <label>Arquivo*: </label>
                             <div>
                                 <div class="upload-group">
-                                    <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control input-upload" ng-model="arquivoSelecionado.name" disabled="true">
+                                    <span style="display: block;margin: 0;padding: 0" class="input-upload">
+                                        <input type="text" placeholder="Clique no ícone para adicionar um arquivo" class="form-control" ng-model="arquivoSelecionado.name" disabled="true">
+                                        <p style="font-size: 11px;" class="textoDescricao pull-left input-upload">Tamanho máximo de 10MB</p>
+                                    </span>
                                     <span class="input-group-btn fake-upload">
                                         <span>
                                             <label class="icon-inline">
                                                 <i class="material-icons">file_upload</i>
-                                                <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false" />
+                                                <input type="file" accept="text/csv" title="Arquivo" uploader="arquivoSelecionado" id="arquivo_resultado" onchange="angular.element(this).scope().selecionarArquivo(this)" ng-disabled="false"/>
                                             </label>
                                         </span>
                                         <span>
@@ -118,7 +121,6 @@
                                         </span>
                                     </span>
                                 </div>
-                                <p style="font-size: 11px;" class="textoDescricao pull-left">Tamanho máximo de 10MB</p>
                             </div>
                         </div>
                     </div>
