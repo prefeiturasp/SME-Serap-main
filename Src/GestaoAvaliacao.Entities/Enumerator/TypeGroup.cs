@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace GestaoAvaliacao.Entities.Enumerator
 {
@@ -15,9 +10,9 @@ namespace GestaoAvaliacao.Entities.Enumerator
         DRE = 2,
         [Description("SME")]
         SME = 3,
-        [Description("GERAL")]
+        [Description("Geral")]
         GERAL = 4,
-        [Description("PÚBLICO")]
+        [Description("Público Geral")]
         PUBLICO = 5
     }
 }

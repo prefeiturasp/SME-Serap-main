@@ -29,18 +29,20 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnFatoresAssociadosQuestionariosFamiliaRespostas = new System.Windows.Forms.Button();
             this.btnImagensDasRedacoes = new System.Windows.Forms.Button();
             this.btnConstructos = new System.Windows.Forms.Button();
             this.btnFatoresAssociadosQuestionarios = new System.Windows.Forms.Button();
             this.btnFechar = new System.Windows.Forms.Button();
             this.btnFatoresAssociadosQuestionariosEstudanteRespostas = new System.Windows.Forms.Button();
             this.btnFatoresAssociados = new System.Windows.Forms.Button();
-            this.btnFatoresAssociadosQuestionariosFamiliaRespostas = new System.Windows.Forms.Button();
+            this.btnCaracterizacaoFamiliasEscolas = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnCaracterizacaoFamiliasEscolas);
             this.groupBox1.Controls.Add(this.btnFatoresAssociadosQuestionariosFamiliaRespostas);
             this.groupBox1.Controls.Add(this.btnImagensDasRedacoes);
             this.groupBox1.Controls.Add(this.btnConstructos);
@@ -50,15 +52,25 @@
             this.groupBox1.Controls.Add(this.btnFatoresAssociados);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(353, 258);
+            this.groupBox1.Size = new System.Drawing.Size(375, 302);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
+            // 
+            // btnFatoresAssociadosQuestionariosFamiliaRespostas
+            // 
+            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.Location = new System.Drawing.Point(26, 149);
+            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.Name = "btnFatoresAssociadosQuestionariosFamiliaRespostas";
+            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.Size = new System.Drawing.Size(326, 23);
+            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.TabIndex = 7;
+            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.Text = "Fatores Associados Questionários [Respostas] - Familia";
+            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.UseVisualStyleBackColor = true;
+            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.Click += new System.EventHandler(this.btnFatoresAssociadosQuestionariosFamiliaRespostas_Click);
             // 
             // btnImagensDasRedacoes
             // 
             this.btnImagensDasRedacoes.Location = new System.Drawing.Point(26, 178);
             this.btnImagensDasRedacoes.Name = "btnImagensDasRedacoes";
-            this.btnImagensDasRedacoes.Size = new System.Drawing.Size(302, 23);
+            this.btnImagensDasRedacoes.Size = new System.Drawing.Size(326, 23);
             this.btnImagensDasRedacoes.TabIndex = 6;
             this.btnImagensDasRedacoes.Text = "Imagens de redações";
             this.btnImagensDasRedacoes.UseVisualStyleBackColor = true;
@@ -68,7 +80,7 @@
             // 
             this.btnConstructos.Location = new System.Drawing.Point(26, 62);
             this.btnConstructos.Name = "btnConstructos";
-            this.btnConstructos.Size = new System.Drawing.Size(302, 23);
+            this.btnConstructos.Size = new System.Drawing.Size(326, 23);
             this.btnConstructos.TabIndex = 2;
             this.btnConstructos.Text = "Constructos";
             this.btnConstructos.UseVisualStyleBackColor = true;
@@ -78,7 +90,7 @@
             // 
             this.btnFatoresAssociadosQuestionarios.Location = new System.Drawing.Point(26, 33);
             this.btnFatoresAssociadosQuestionarios.Name = "btnFatoresAssociadosQuestionarios";
-            this.btnFatoresAssociadosQuestionarios.Size = new System.Drawing.Size(302, 23);
+            this.btnFatoresAssociadosQuestionarios.Size = new System.Drawing.Size(326, 23);
             this.btnFatoresAssociadosQuestionarios.TabIndex = 1;
             this.btnFatoresAssociadosQuestionarios.Text = "Fatores Associados Questionários";
             this.btnFatoresAssociadosQuestionarios.UseVisualStyleBackColor = true;
@@ -87,7 +99,7 @@
             // btnFechar
             // 
             this.btnFechar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnFechar.Location = new System.Drawing.Point(66, 229);
+            this.btnFechar.Location = new System.Drawing.Point(86, 273);
             this.btnFechar.Name = "btnFechar";
             this.btnFechar.Size = new System.Drawing.Size(213, 23);
             this.btnFechar.TabIndex = 5;
@@ -99,7 +111,7 @@
             // 
             this.btnFatoresAssociadosQuestionariosEstudanteRespostas.Location = new System.Drawing.Point(26, 120);
             this.btnFatoresAssociadosQuestionariosEstudanteRespostas.Name = "btnFatoresAssociadosQuestionariosEstudanteRespostas";
-            this.btnFatoresAssociadosQuestionariosEstudanteRespostas.Size = new System.Drawing.Size(302, 23);
+            this.btnFatoresAssociadosQuestionariosEstudanteRespostas.Size = new System.Drawing.Size(326, 23);
             this.btnFatoresAssociadosQuestionariosEstudanteRespostas.TabIndex = 4;
             this.btnFatoresAssociadosQuestionariosEstudanteRespostas.Text = "Fatores Associados Questionários [Respostas] - Estudantes";
             this.btnFatoresAssociadosQuestionariosEstudanteRespostas.UseVisualStyleBackColor = true;
@@ -109,27 +121,27 @@
             // 
             this.btnFatoresAssociados.Location = new System.Drawing.Point(26, 91);
             this.btnFatoresAssociados.Name = "btnFatoresAssociados";
-            this.btnFatoresAssociados.Size = new System.Drawing.Size(302, 23);
+            this.btnFatoresAssociados.Size = new System.Drawing.Size(326, 23);
             this.btnFatoresAssociados.TabIndex = 3;
             this.btnFatoresAssociados.Text = "Fatores Associados";
             this.btnFatoresAssociados.UseVisualStyleBackColor = true;
             this.btnFatoresAssociados.Click += new System.EventHandler(this.btnFatoresAssociados_Click);
             // 
-            // btnFatoresAssociadosQuestionariosFamiliaRespostas
+            // btnCaracterizacaoFamiliasEscolas
             // 
-            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.Location = new System.Drawing.Point(26, 149);
-            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.Name = "btnFatoresAssociadosQuestionariosFamiliaRespostas";
-            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.Size = new System.Drawing.Size(302, 23);
-            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.TabIndex = 7;
-            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.Text = "Fatores Associados Questionários [Respostas] - Familia";
-            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.UseVisualStyleBackColor = true;
-            this.btnFatoresAssociadosQuestionariosFamiliaRespostas.Click += new System.EventHandler(this.btnFatoresAssociadosQuestionariosFamiliaRespostas_Click);
+            this.btnCaracterizacaoFamiliasEscolas.Location = new System.Drawing.Point(26, 207);
+            this.btnCaracterizacaoFamiliasEscolas.Name = "btnCaracterizacaoFamiliasEscolas";
+            this.btnCaracterizacaoFamiliasEscolas.Size = new System.Drawing.Size(326, 23);
+            this.btnCaracterizacaoFamiliasEscolas.TabIndex = 8;
+            this.btnCaracterizacaoFamiliasEscolas.Text = "Caracterização das Famílias e Escolas Questionários [Respostas]";
+            this.btnCaracterizacaoFamiliasEscolas.UseVisualStyleBackColor = true;
+            this.btnCaracterizacaoFamiliasEscolas.Click += new System.EventHandler(this.btnCaracterizacaoFamiliasEscolas_Click);
             // 
             // StartupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(375, 282);
+            this.ClientSize = new System.Drawing.Size(398, 326);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -151,5 +163,6 @@
         private System.Windows.Forms.Button btnConstructos;
         private System.Windows.Forms.Button btnImagensDasRedacoes;
         private System.Windows.Forms.Button btnFatoresAssociadosQuestionariosFamiliaRespostas;
+        private System.Windows.Forms.Button btnCaracterizacaoFamiliasEscolas;
     }
 }

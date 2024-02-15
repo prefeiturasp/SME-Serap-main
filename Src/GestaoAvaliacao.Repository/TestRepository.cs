@@ -1241,7 +1241,6 @@ namespace GestaoAvaliacao.Repository
 	                                            ttcg.EvaluationMatrix_Id as MatrixId,
 	                                            em.Description as MatrixDescription,
 	                                            ttcg.TypeCurriculumGradeId,
-	                                            ttcg.Percentage,
 	                                            ttcg.Test_Id as TestId
                                             from TestTaiCurriculumGrade ttcg WITH(NOLOCK)
                                             inner join EvaluationMatrix em WITH(NOLOCK) on em.Id = ttcg.EvaluationMatrix_Id
@@ -1262,7 +1261,7 @@ namespace GestaoAvaliacao.Repository
         {
             const string query = @"select nitt.TestId as ProvaId,
                                         t.Discipline_Id as DisciplinaId,
-                                        niat.Value as NumeroItensAmostra,
+                                        coalesce(niat.Value, 0) as NumeroItensAmostra,
                                         nitt.AdvanceWithoutAnswering as AvancarSemResponder,
                                         nitt.BackToPreviousItem as VoltarAoItemAnterior
                                     from NumberItemTestTai nitt with (NOLOCK)
@@ -1321,7 +1320,7 @@ namespace GestaoAvaliacao.Repository
 						        and i.TRIDifficulty is not null
 						        and i.TRICasualSetting is not null
 						        and icg.TypeCurriculumGradeId in ({string.Join(",", tiposCurriculosGradesIds)})
-						        and i.ItemVersion = (select max(i2.ItemVersion) from Item i2 where i2.Id = i.Id)";
+						        and i.ItemVersion = (select max(i2.ItemVersion) from Item i2 where i2.ItemCode = i.ItemCode)";
 
             using (var cn = Connection)
             {

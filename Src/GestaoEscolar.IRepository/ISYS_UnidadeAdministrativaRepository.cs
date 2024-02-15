@@ -10,5 +10,6 @@ namespace GestaoEscolar.IRepository
 		IEnumerable<SYS_UnidadeAdministrativa> LoadSimpleTeacher(Guid ent_id, Guid pes_id);
 		IEnumerable<SYS_UnidadeAdministrativa> LoadSimpleCoordinator(Guid ent_id, IEnumerable<string> uad_id);
         SYS_UnidadeAdministrativa GetByUad_Id(Guid uad_id);
+        SYS_UnidadeAdministrativa GetByUad_Codigo(string uad_codigo);
     }
 }
