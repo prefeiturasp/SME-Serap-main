@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using StackExchange.Redis;
 
 namespace GestaoAvaliacao.Repository
 {
@@ -18,26 +19,29 @@ namespace GestaoAvaliacao.Repository
 		#region ReadOnly
 		public IEnumerable<ExportAnalysisDTO> Search(ref Pager pager, ExportAnalysisFilter filter)
 		{
-			var from = "FROM TestSectionStatusCorrection tssc WITH(NOLOCK) ";
-			var inner = @"INNER JOIN Test t WITH(NOLOCK) ON t.Id = tssc.Test_Id
-						  INNER JOIN TestType tt WITH(NOLOCK) ON tt.Id = t.TestType_Id AND tt.State = @state
-						  LEFT JOIN ExportAnalysis ea WITH(NOLOCK) ON ea.Test_Id = t.Id AND ea.State = @state
-						  LEFT JOIN[File] f WITH(NOLOCK) ON f.OwnerId = ea.Id AND f.OwnerType = @OwnerType AND f.State = @state ";
-			StringBuilder where = new StringBuilder(@"WHERE t.State = @state ");
+			const string from = "FROM TestSectionStatusCorrection tssc WITH(NOLOCK) ";
+			const string inner = @"INNER JOIN Test t WITH(NOLOCK) ON t.Id = tssc.Test_Id
+						           INNER JOIN TestType tt WITH(NOLOCK) ON tt.Id = t.TestType_Id AND tt.State = @state
+						           LEFT JOIN ExportAnalysis ea WITH(NOLOCK) ON ea.Test_Id = t.Id AND ea.State = @state
+						           LEFT JOIN[File] f WITH(NOLOCK) ON f.OwnerId = ea.Id AND f.OwnerType = @OwnerType AND f.State = @state ";
+
+			var where = new StringBuilder(@"WHERE t.State = @state ");
+
 			if (filter.Code > 0)
 				where.AppendLine("AND t.Id = @TestId");
+
 			if (filter.StartDate != null)
-			{
 				where.AppendLine("AND CAST(t.ApplicationStartDate AS Date) >= CAST(@StartDate AS Date) ");
-			}
+
 			if (filter.EndDate != null)
-			{
 				where.AppendLine("AND CAST(t.CorrectionEndDate AS Date) <= CAST(@EndDate AS Date) ");
-			}
-			//var sql = ExportAnalysisQueryFactory.GenerateQuerySearchByFilter(filter);
+
 			var sql = @"WITH DistinctExportAnalysis AS (
 							SELECT DISTINCT t.Id AS Test_Id, 
-								t.Description AS TestDescription, 
+								t.Description AS TestDescription,
+                                t.ApplicationStartDate as ApplicationStartDateTime,
+                                CONVERT(VARCHAR(10), t.ApplicationStartDate, 103) AS ApplicationStartDate, 
+                                CONVERT(VARCHAR(10), t.ApplicationEndDate, 103) AS ApplicationEndDate,
 								ea.CreateDate, 
 								ea.UpdateDate, 
 								tt.Description AS TestTypeDescription, 
@@ -46,20 +50,22 @@ namespace GestaoAvaliacao.Repository
 							from +
 							inner +
 							where +
-						@"),
+                        @"),
 						NumberedExportAnalysis AS ( 
 							SELECT Test_Id, 
 								TestDescription, 
+                                ApplicationStartDate,
+                                ApplicationEndDate,
 								CreateDate, 
 								UpdateDate, 
 								TestTypeDescription, 
 								StateExecution,
 								FileId,
-								ROW_NUMBER() OVER(ORDER BY Test_Id) AS RowNumber 
+								ROW_NUMBER() OVER(ORDER BY ApplicationStartDateTime DESC) AS RowNumber 
 							FROM DistinctExportAnalysis
 						) 
-						SELECT Test_Id, TestDescription, CreateDate, UpdateDate, TestTypeDescription, 
-							StateExecution, FileId 
+						SELECT Test_Id, TestDescription, ApplicationStartDate, ApplicationEndDate,
+                            CreateDate, UpdateDate, TestTypeDescription, StateExecution, FileId 
 						FROM NumberedExportAnalysis 
 						WHERE RowNumber > ( @pageSize * @page ) 
 						AND RowNumber <= ( ( @page + 1 ) * @pageSize ) 
@@ -70,18 +76,18 @@ namespace GestaoAvaliacao.Repository
 							inner +
 							where;
 
-			using (IDbConnection cn = Connection)
+			using (var cn = Connection)
 			{
 				cn.Open();
 
-				var retorno = cn.Query< ExportAnalysisDTO>(sql,
+				var retorno = cn.Query<ExportAnalysisDTO>(sql,
 					new
 					{
 						state = EnumState.ativo,
 						TestId = filter.Code,
 						OwnerType = EnumFileType.AnalysisItem,
-						StartDate = filter.StartDate,
-						EndDate = filter.EndDate,
+                        filter.StartDate,
+                        filter.EndDate,
 						page = pager.CurrentPage,
 						pageSize = pager.PageSize
 					});
@@ -91,8 +97,8 @@ namespace GestaoAvaliacao.Repository
 					state = EnumState.ativo,
 					TestId = filter.Code,
 					OwnerType = EnumFileType.AnalysisItem,
-					StartDate = filter.StartDate,
-					EndDate = filter.EndDate,
+                    filter.StartDate,
+                    filter.EndDate,
 					page = pager.CurrentPage,
 					pageSize = pager.PageSize
 				});

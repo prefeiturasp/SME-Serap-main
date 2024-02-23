@@ -90,49 +90,63 @@
 			<div role="tabpanel" class="tab-pane fade active in" id="exportacao">
 				<table class="table table-hover" ng-show="filesExported.length">
 					<colgroup>
-						<col width="10%">
-						<col width="45%">
-						<col width="15%">
-						<col width="15%">
-						<col width="15%">
+						<col style="width: 5%">
+						<col style="width: 35%">
+                        <col style="width: 10%">
+                        <col style="width: 10%">
+                        <col style="width: 10%">
+						<col style="width: 10%">
+                        <col style="width: 10%">
+                        <col style="width: 10%">
 					</colgroup>
 					<thead>
 						<tr>
 							<th class="center">Código</th>
-							<th>Prova</th>
+                            <th>Prova</th>
+                            <th class="center">Data início</th>
+                            <th class="center">Data fim</th>
 							<th class="center">Última exportação</th>
 							<th class="center">Exportar</th>
-							<th class="right">Situação</th>
+                            <th class="right">Situação</th>
+                            <th class="center">Download</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="(indexExport, file) in filesExported track by $index">
 							<td class="center">{{file.Test_Id}}</td>
-							<td class="">{{file.TestDescription}}</td>
-							<td class="">{{file.UpdateDate}}</td>
+                            <td class="">{{file.TestDescription}}</td>
+                            <td class="center">{{file.ApplicationStartDate}}</td>
+                            <td class="center">{{file.ApplicationEndDate}}</td>
+							<td class="center">{{file.UpdateDate}}</td>
 							<td class="center">
 								<button class="btnCancelar2 pull-right" ng-click="exportFile(file)"
 										ng-if="file.StateExecution == @((Byte)EnumServiceState.NotRequest) || file.StateExecution == @((Byte)EnumServiceState.Error) || file.StateExecution == @((Byte)EnumServiceState.Success)">
 									<span>Exportar</span>
 								</button>
 							</td>
-							<td class="right nao-exportado" ng-if="file.StateExecution == @((Byte)EnumServiceState.NotRequest)"><a> <i class="material-icons">close</i> Não exportado</a></td>
-							<td class="right exportado" ng-if="file.StateExecution != @((Byte)EnumServiceState.NotRequest)">
-								<span ng-if="file.StateExecution == @((Byte)EnumServiceState.Pending)" data-trigger="hover" data-type="success" class="status-@(EnumServiceState.Pending.ToString())">
-									<span class="icone-cadastrar material-icons" aria-hidden="true">remove_circle_outline</span>@(EnumServiceState.Pending.GetDescription())
-								</span>
-								<span ng-if="file.StateExecution == @((Byte)EnumServiceState.Processing)" data-trigger="hover" data-type="success" data-placement="top"
-									  data-animation="am-fade" data-container="body" data-bs-tooltip class="status-@(EnumServiceState.Processing.ToString())">
-									<span class="icone-cadastrar material-icons" aria-hidden="true">timelapse</span>@(EnumServiceState.Processing.GetDescription())
-								</span>
-								<span ng-if="file.StateExecution == @((Byte)EnumServiceState.Error)" data-trigger="hover" data-type="success" class="status-@(EnumServiceState.Error.ToString())">
-									<span class="icone-cadastrar material-icons" aria-hidden="true">error_outline</span>@(EnumServiceState.Error.GetDescription())
-								</span>
-
-								<a ng-if="file.StateExecution == @((Byte)EnumServiceState.Success)" data-trigger="hover" class="status-@(EnumServiceState.Success.ToString())" ng-click="downloadFileResultadoProva(file.Test_Id, file.FileId)">
-									<span class="icone-cadastrar material-icons" aria-hidden="true">file_download</span>@(EnumServiceState.Success.GetDescription())
-								</a>
-							</td>
+                            <td class="right nao-exportado" ng-if="file.StateExecution == @((Byte)EnumServiceState.NotRequest)">
+                                <a><i class="material-icons">close</i> Não exportado</a>
+                            </td>
+                            <td class="right exportado" ng-if="file.StateExecution != @((Byte)EnumServiceState.NotRequest)">
+                                <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Pending)" data-trigger="hover" class="status-@(EnumServiceState.Pending.ToString())">
+                                    <i class="icone-cadastrar material-icons" aria-hidden="true">remove_circle_outline</i> @(EnumServiceState.Pending.GetDescription())
+                                </a>
+                                <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Processing)" data-trigger="hover" data-placement="top"
+                                      data-animation="am-fade" data-container="body" data-bs-tooltip class="status-@(EnumServiceState.Processing.ToString())">
+                                    <i class="icone-cadastrar material-icons" aria-hidden="true">timelapse</i> @(EnumServiceState.Processing.GetDescription())
+                                </a>
+                                <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Error)" data-trigger="hover" class="status-@(EnumServiceState.Error.ToString())">
+                                    <i class="icone-cadastrar material-icons" aria-hidden="true">error_outline</i> @(EnumServiceState.Error.GetDescription())
+                                </a>
+                                <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Success)" data-trigger="hover" class="status-@(EnumServiceState.Success.ToString())">
+                                    <i class="material-icons">check_circle_outline</i> @(EnumServiceState.Success.GetDescription())
+                                </a>
+                            </td>
+                            <td class="center">
+                                <button class="btnCancelar2 pull-right" ng-if="file.StateExecution == @((Byte)EnumServiceState.Success) && file.StateExecution != @((Byte)EnumServiceState.NotRequest)" ng-click="downloadFileResultadoProva(file.Test_Id, file.FileId)">
+                                    <i class="icone-cadastrar material-icons" aria-hidden="true">file_download</i>
+                                </button>
+                            </td>
 						</tr>
 					</tbody>
 				</table>

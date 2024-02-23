@@ -73,9 +73,10 @@ namespace GestaoAvaliacao.Business
             var provas = new List<ExportAnalysisDTO>();
 
             var provasSerap = exportAnalysisRepository.Search(ref pager, filter);
-            provas.AddRange(provasSerap);
+            if (provasSerap != null && provasSerap.Any())
+                provas.AddRange(provasSerap);
 
-            var provasSerapEstudantes = ObterProvasExportacaoSerapEstudantes(filter);
+            var provasSerapEstudantes = ObterProvasExportacaoSerapEstudantes(ref pager, filter);
             if (provasSerapEstudantes != null && provasSerapEstudantes.Any())
                 provas.AddRange(provasSerapEstudantes);
 
@@ -141,19 +142,21 @@ namespace GestaoAvaliacao.Business
             }
         }
 
-        public List<ExportAnalysisDTO> ObterProvasExportacaoSerapEstudantes(ExportAnalysisFilter filter)
+        public List<ExportAnalysisDTO> ObterProvasExportacaoSerapEstudantes(ref Pager pager, ExportAnalysisFilter filter)
         {
             var provasSerapEstudantes = new List<ExportAnalysisDTO>();
             try
             {
                 var client = ObterClientConfigurado();
-                HttpRequestMessage requestMessage = new HttpRequestMessage(new HttpMethod("POST"), $"{client.BaseAddress.AbsoluteUri}exportacoes-resultados/exportacoes-status");
-                var filtro = new FiltroExportacaoResultadoDto { ProvaSerapId = filter.Code, DataInicio = filter.StartDate, DataFim = filter.EndDate };
+                var requestMessage = new HttpRequestMessage(new HttpMethod("POST"), $"{client.BaseAddress.AbsoluteUri}exportacoes-resultados/exportacoes-status");
+                var filtro = new FiltroExportacaoResultadoDto { ProvaSerapId = filter.Code, DataInicio = filter.StartDate, DataFim = filter.EndDate, QuantidadeRegistros = pager.PageSize, NumeroPagina = pager.CurrentPage };
+
                 requestMessage.Content = new StringContent(JsonSerializer.Serialize(filtro), Encoding.UTF8, "application/json");
                 requestMessage.Headers.Accept.Clear();
                 requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
-                HttpResponseMessage response = client.SendAsync(requestMessage).GetAwaiter().GetResult();
+
+                var response = client.SendAsync(requestMessage).GetAwaiter().GetResult();
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -163,11 +166,12 @@ namespace GestaoAvaliacao.Business
                 }
                 else
                 {
-                    string statusCode = response.StatusCode.ToString();
+                    var statusCode = response.StatusCode.ToString();
                     var responseMessage = response.EnsureSuccessStatusCode();
                     var headers = responseMessage.Headers;
                     throw new Exception($"erro ao obter provas para exportar - StatusCode:{statusCode}, Content:{responseMessage.Content}");
                 }
+
                 return provasSerapEstudantes;
             }
             catch (Exception e)
