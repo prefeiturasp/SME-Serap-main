@@ -149,19 +149,19 @@
                                 <a data-trigger="hover"><span class="icone-cadastrar material-icons">close</span> Não exportado</a>
                             </td>
                             <td class="exportado" ng-if="file.StateExecution != @((Byte)EnumServiceState.NotRequest)">
-                                <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Pending)" data-trigger="hover" class="status-@(EnumServiceState.Pending.ToString())">
+                                <span ng-if="file.StateExecution == @((Byte)EnumServiceState.Pending)" data-trigger="hover" data-type="success" class="status-@(EnumServiceState.Pending.ToString())">
                                     <span class="icone-cadastrar material-icons" aria-hidden="true">remove_circle_outline</span> @(EnumServiceState.Pending.GetDescription())
-                                </a>
-                                <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Processing)" data-trigger="hover" data-placement="top"
+                                </span>
+                                <span ng-if="file.StateExecution == @((Byte)EnumServiceState.Processing)" data-trigger="hover" data-type="success" data-placement="top"
                                       data-animation="am-fade" data-container="body" data-bs-tooltip class="status-@(EnumServiceState.Processing.ToString())">
                                     <span class="icone-cadastrar material-icons" aria-hidden="true">timelapse</span> @(EnumServiceState.Processing.GetDescription())
-                                </a>
-                                <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Error)" data-trigger="hover" class="status-@(EnumServiceState.Error.ToString())">
+                                </span>
+                                <span ng-if="file.StateExecution == @((Byte)EnumServiceState.Error)" data-trigger="hover" data-type="success" class="status-@(EnumServiceState.Error.ToString())">
                                     <span class="icone-cadastrar material-icons" aria-hidden="true">error_outline</span> @(EnumServiceState.Error.GetDescription())
-                                </a>
-                                <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Success)" data-trigger="hover" class="status-@(EnumServiceState.Success.ToString())">
+                                </span>
+                                <span ng-if="file.StateExecution == @((Byte)EnumServiceState.Success)" data-trigger="hover" data-type="success" class="status-@(EnumServiceState.Success.ToString())">
                                     <span class="icone-cadastrar material-icons" aria-hidden="true">check_circle</span> @(EnumServiceState.Success.GetDescription())
-                                </a>
+                                </span>
                             </td>
                             <td class="center">
                                 <button class="btnCancelar2 pull-right" ng-if="file.StateExecution == @((Byte)EnumServiceState.Success) && file.StateExecution != @((Byte)EnumServiceState.NotRequest)" ng-click="downloadFileResultadoProva(file.Test_Id, file.FileId)">
