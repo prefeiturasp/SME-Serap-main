@@ -96,8 +96,8 @@
                         <col style="width: 10%">
                         <col style="width: 10%">
 						<col style="width: 10%">
-                        <col style="width: 10%">
-                        <col style="width: 10%">
+                        <col style="width: 15%">
+                        <col style="width: 5%">
 					</colgroup>
 					<thead>
 						<tr>
@@ -107,44 +107,45 @@
                             <th class="center">Data fim</th>
 							<th class="center">Última exportação</th>
 							<th class="center">Exportar</th>
-                            <th class="right">Situação</th>
+                            <th>Situação</th>
                             <th class="center">Download</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr ng-repeat="(indexExport, file) in filesExported track by $index">
 							<td class="center">{{file.Test_Id}}</td>
-                            <td class="">{{file.TestDescription}}</td>
+                            <td>{{file.TestDescription}}</td>
                             <td class="center">{{file.ApplicationStartDate}}</td>
                             <td class="center">{{file.ApplicationEndDate}}</td>
 							<td class="center">{{file.UpdateDate}}</td>
-							<td class="center">
-								<button class="btnCancelar2 pull-right" ng-click="exportFile(file)"
-										ng-if="file.StateExecution == @((Byte)EnumServiceState.NotRequest) || file.StateExecution == @((Byte)EnumServiceState.Error) || file.StateExecution == @((Byte)EnumServiceState.Success)">
-									<span>Exportar</span>
-								</button>
-							</td>
-                            <td class="right nao-exportado" ng-if="file.StateExecution == @((Byte)EnumServiceState.NotRequest)">
-                                <a><i class="material-icons">close</i> Não exportado</a>
+                            <td class="center">
+                                <button class="btnCancelar2 pull-right"
+                                        ng-click="modalExportFile(file)"
+                                        ng-if="file.StateExecution == @((Byte)EnumServiceState.NotRequest) || file.StateExecution == @((Byte)EnumServiceState.Error) || file.StateExecution == @((Byte)EnumServiceState.Success)">
+                                    <span>Exportar</span>
+                                </button>
                             </td>
-                            <td class="right exportado" ng-if="file.StateExecution != @((Byte)EnumServiceState.NotRequest)">
+                            <td class="nao-exportado" ng-if="file.StateExecution == @((Byte)EnumServiceState.NotRequest)">
+                                <a data-trigger="hover"><span class="icone-cadastrar material-icons">close</span> Não exportado</a>
+                            </td>
+                            <td class="exportado" ng-if="file.StateExecution != @((Byte)EnumServiceState.NotRequest)">
                                 <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Pending)" data-trigger="hover" class="status-@(EnumServiceState.Pending.ToString())">
-                                    <i class="icone-cadastrar material-icons" aria-hidden="true">remove_circle_outline</i> @(EnumServiceState.Pending.GetDescription())
+                                    <span class="icone-cadastrar material-icons" aria-hidden="true">remove_circle_outline</span> @(EnumServiceState.Pending.GetDescription())
                                 </a>
                                 <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Processing)" data-trigger="hover" data-placement="top"
                                       data-animation="am-fade" data-container="body" data-bs-tooltip class="status-@(EnumServiceState.Processing.ToString())">
-                                    <i class="icone-cadastrar material-icons" aria-hidden="true">timelapse</i> @(EnumServiceState.Processing.GetDescription())
+                                    <span class="icone-cadastrar material-icons" aria-hidden="true">timelapse</span> @(EnumServiceState.Processing.GetDescription())
                                 </a>
                                 <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Error)" data-trigger="hover" class="status-@(EnumServiceState.Error.ToString())">
-                                    <i class="icone-cadastrar material-icons" aria-hidden="true">error_outline</i> @(EnumServiceState.Error.GetDescription())
+                                    <span class="icone-cadastrar material-icons" aria-hidden="true">error_outline</span> @(EnumServiceState.Error.GetDescription())
                                 </a>
                                 <a ng-if="file.StateExecution == @((Byte)EnumServiceState.Success)" data-trigger="hover" class="status-@(EnumServiceState.Success.ToString())">
-                                    <i class="material-icons">check_circle_outline</i> @(EnumServiceState.Success.GetDescription())
+                                    <span class="icone-cadastrar material-icons" aria-hidden="true">check_circle</span> @(EnumServiceState.Success.GetDescription())
                                 </a>
                             </td>
                             <td class="center">
                                 <button class="btnCancelar2 pull-right" ng-if="file.StateExecution == @((Byte)EnumServiceState.Success) && file.StateExecution != @((Byte)EnumServiceState.NotRequest)" ng-click="downloadFileResultadoProva(file.Test_Id, file.FileId)">
-                                    <i class="icone-cadastrar material-icons" aria-hidden="true">file_download</i>
+                                    <span class="icone-cadastrar material-icons">file_download</span>
                                 </button>
                             </td>
 						</tr>
@@ -199,15 +200,27 @@
 		</div>
 	</div>
 	@* delete modal confirm *@
-	<modal id="modalExcluir" modal-title="Deseja realmente remover o arquivo {{currentfile.Name}} ?">
-		<div class="container-fluid">
-			<span></span>
-			<div class="row">
-				<div class="col-sm-12 text-right">
-					<button type="button" class="btnPadrao" ng-click="delete();">Excluir</button>
-					<button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
-				</div>
-			</div>
-		</div>
-	</modal>
+    <modal id="modalExcluir" modal-title="Deseja realmente remover o arquivo {{currentfile.Name}} ?">
+        <div class="container-fluid">
+            <span></span>
+            <div class="row">
+                <div class="col-sm-12 text-right">
+                    <button type="button" class="btnPadrao" ng-click="delete();">Excluir</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </modal>
+    @* export modal confirm *@
+    <modal id="modalExportar" modal-title="Deseja realmente exportar o arquivo {{currentfile.Name}} ?">
+        <div class="container-fluid">
+            <span></span>
+            <div class="row">
+                <div class="col-sm-12 text-right">
+                    <button type="button" class="btnPadrao" ng-click="exportFile(currentfile);">Exportar</button>
+                    <button type="button" class="btnCancelar2" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </modal>
 </div>

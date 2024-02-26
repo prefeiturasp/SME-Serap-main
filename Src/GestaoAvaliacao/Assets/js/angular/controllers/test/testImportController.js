@@ -79,13 +79,19 @@
 			});
 		};
 
+		$scope.modalExportFile = function __modalExportFile(file) {
+			$scope.setCurrent(file);
+			angular.element("#modalExportar").modal({ backdrop: 'static' });
+		},
+
 		/**
 		 * @function Realizar pedido de exportação
 		 * @param
 		 * @returns
 		 */
 		$scope.exportFile = function __exportFile(file) {
-		   
+			angular.element('#modalExportar').modal('hide');
+
 			TestImportExportModel.solicitExport({ TestId: file.Test_Id },
 			function (result) {
 				if (result.success) {
