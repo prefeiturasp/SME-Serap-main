@@ -111,13 +111,13 @@
 				<table class="table table-hover" ng-show="filesExported.length">
 					<colgroup>
 						<col style="width: 5%">
-						<col style="width: 35%">
-                        <col style="width: 10%">
-                        <col style="width: 10%">
-                        <col style="width: 10%">
-						<col style="width: 10%">
+						<col style="width: 40%">
+                        <col style="width: 9%">
+                        <col style="width: 9%">
+                        <col style="width: 9%">
+						<col style="width: 9%">
                         <col style="width: 15%">
-                        <col style="width: 5%">
+                        <col style="width: 4%">
 					</colgroup>
 					<thead>
 						<tr>
@@ -179,10 +179,10 @@
 			<div role="tabpanel" class="tab-pane fade" id="importacao">
 				<table class="table table-hover">
 					<colgroup>
-						<col width="55%">
-						<col width="15%">
-						<col width="15%">
-						<col width="15%">
+						<col style="width: 55%">
+						<col style="width: 15%">
+						<col style="width: 15%">
+						<col style="width: 15%">
 					</colgroup>
 					<thead>
 						<tr>
@@ -194,7 +194,7 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat="(indexImport, file) in filesImported track by $index">
-							<td class="">{{file.Name}}</td>
+							<td>{{file.Name}}</td>
 							<td class="center">{{file.CreateDate}}</td>
 							<td class="right exportado" ng-if="file"><a> <i class="material-icons">check</i> Sucesso</a></td>
 							<td class="right exportado" ng-if="file.State"><a> <i class="material-icons">check</i> Erro</a></td>
