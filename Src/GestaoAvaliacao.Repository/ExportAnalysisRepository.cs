@@ -64,7 +64,7 @@ namespace GestaoAvaliacao.Repository
 								TestTypeDescription, 
 								StateExecution,
 								FileId,
-								ROW_NUMBER() OVER(ORDER BY ApplicationStartDateTime DESC) AS RowNumber 
+								ROW_NUMBER() OVER(ORDER BY ApplicationStartDateTime DESC, Test_Id) AS RowNumber 
 							FROM DistinctExportAnalysis
 						) 
 						SELECT Test_Id, TestDescription, ApplicationStartDate, ApplicationEndDate,
