@@ -3,19 +3,16 @@ using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
-using GestaoAvaliacao.LogFacade;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using System.Net;
 using System.Web.Configuration;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text;
 using GestaoAvaliacao.Dtos;
+using GestaoAvaliacao.Entities.Enumerator;
 
 namespace GestaoAvaliacao.Business
 {
@@ -72,13 +69,23 @@ namespace GestaoAvaliacao.Business
         {
             var provas = new List<ExportAnalysisDTO>();
 
-            var provasSerap = exportAnalysisRepository.Search(ref pager, filter);
-            if (provasSerap != null && provasSerap.Any())
-                provas.AddRange(provasSerap);
-
-            var provasSerapEstudantes = ObterProvasExportacaoSerapEstudantes(ref pager, filter);
-            if (provasSerapEstudantes != null && provasSerapEstudantes.Any())
-                provas.AddRange(provasSerapEstudantes);
+            switch (filter.Sistema + 1)
+            {
+                case (short)EnumSystem.Serap:
+                {
+                    var provasSerap = exportAnalysisRepository.Search(ref pager, filter);
+                    if (provasSerap != null && provasSerap.Any())
+                        provas.AddRange(provasSerap);
+                    break;
+                }
+                case (short)EnumSystem.SerapEstudantes:
+                {
+                    var provasSerapEstudantes = ObterProvasExportacaoSerapEstudantes(ref pager, filter);
+                    if (provasSerapEstudantes != null && provasSerapEstudantes.Any())
+                        provas.AddRange(provasSerapEstudantes);
+                    break;
+                }
+            }
 
             return provas;
         }
@@ -144,7 +151,6 @@ namespace GestaoAvaliacao.Business
 
         public List<ExportAnalysisDTO> ObterProvasExportacaoSerapEstudantes(ref Pager pager, ExportAnalysisFilter filter)
         {
-            var provasSerapEstudantes = new List<ExportAnalysisDTO>();
             try
             {
                 var client = ObterClientConfigurado();
@@ -158,21 +164,24 @@ namespace GestaoAvaliacao.Business
 
                 var response = client.SendAsync(requestMessage).GetAwaiter().GetResult();
 
+                PaginacaoResultadoDto<ExportAnalysisDTO> provasSerapEstudantes;
                 if (response.IsSuccessStatusCode)
                 {
                     var result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                     var optionsJson = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, WriteIndented = true };
-                    provasSerapEstudantes = JsonSerializer.Deserialize<List<ExportAnalysisDTO>>(result, optionsJson);
+                    provasSerapEstudantes = JsonSerializer.Deserialize<PaginacaoResultadoDto<ExportAnalysisDTO>>(result, optionsJson);
+
+                    pager.SetTotalPages(provasSerapEstudantes.TotalPaginas);
+                    pager.SetTotalItens(provasSerapEstudantes.TotalRegistros);
                 }
                 else
                 {
                     var statusCode = response.StatusCode.ToString();
                     var responseMessage = response.EnsureSuccessStatusCode();
-                    var headers = responseMessage.Headers;
                     throw new Exception($"erro ao obter provas para exportar - StatusCode:{statusCode}, Content:{responseMessage.Content}");
                 }
 
-                return provasSerapEstudantes;
+                return provasSerapEstudantes.Items.ToList();
             }
             catch (Exception e)
             {

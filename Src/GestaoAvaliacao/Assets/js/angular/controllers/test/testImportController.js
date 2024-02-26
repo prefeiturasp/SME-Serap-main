@@ -19,7 +19,6 @@
 
 	TestImportController.$inject = ['$scope', '$timeout', '$util', 'TestImportExportModel', '$pager', '$notification', '$http','FileModel'];
 
-
 	/**
 	 * @function Importar arquivos
 	 * @param {Object} $scope
@@ -31,7 +30,6 @@
 	 * @returns
 	 */
 	function TestImportController($scope, $timeout, $util, TestImportExportModel, $pager, $notification, $http, FileModel) {
-
 		/**
 		 * @function Pesquisa de importação
 		 * @param
@@ -111,7 +109,6 @@
 		 * @returns
 		 */
 		$scope.filterExport = function __filterExport() {
-
 			$scope.export.pages = 0;
 			$scope.export.totalItens = 0;
 			$scope.export.pagination.indexPage(0);
@@ -195,9 +192,10 @@
 			$scope.filters = {
 				Code: undefined,
 				StartDate: undefined,
-				EndDate: undefined
+				EndDate: undefined,
+				Sistema: 1
 			};
-			$scope.countFilter = 0;
+			$scope.countFilter = 1;
 		};
 
 		/**
@@ -327,6 +325,7 @@
 			angular.element('body').click($scope.close);
 			$scope.filesImported = null;
 			$scope.filesExported = null;
+			$scope.itemsSystemOptions = [{ id: 0, label: "SERAp" }, { id: 1, label: "SERAp Estudantes" }]
 			$scope.export = {
 				pagination: $pager(TestImportExportModel.exportAnalysisSearch),
 				pageSize: 10,
@@ -363,6 +362,7 @@
 				if ($scope.filters.StartDate) $scope.countFilter += 1;
 				if ($scope.filters.EndDate) $scope.countFilter += 1;
 				if ($scope.filters.Code) $scope.countFilter += 1;
+				if ($scope.filters.Sistema) $scope.countFilter += 1;
 			}, true);
 		})($scope);
 
