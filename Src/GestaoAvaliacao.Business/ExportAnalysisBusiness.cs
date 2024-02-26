@@ -155,7 +155,7 @@ namespace GestaoAvaliacao.Business
             {
                 var client = ObterClientConfigurado();
                 var requestMessage = new HttpRequestMessage(new HttpMethod("POST"), $"{client.BaseAddress.AbsoluteUri}exportacoes-resultados/exportacoes-status");
-                var filtro = new FiltroExportacaoResultadoDto { ProvaSerapId = filter.Code, DataInicio = filter.StartDate, DataFim = filter.EndDate, QuantidadeRegistros = pager.PageSize, NumeroPagina = pager.CurrentPage };
+                var filtro = new FiltroExportacaoResultadoDto { ProvaSerapId = filter.Code, DescricaoProva = filter.DescricaoProva, DataInicio = filter.StartDate, DataFim = filter.EndDate, QuantidadeRegistros = pager.PageSize, NumeroPagina = pager.CurrentPage };
 
                 requestMessage.Content = new StringContent(JsonSerializer.Serialize(filtro), Encoding.UTF8, "application/json");
                 requestMessage.Headers.Accept.Clear();

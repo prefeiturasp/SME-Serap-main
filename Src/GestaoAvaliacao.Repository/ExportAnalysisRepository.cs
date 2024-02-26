@@ -36,6 +36,9 @@ namespace GestaoAvaliacao.Repository
 			if (filter.EndDate != null)
 				where.AppendLine("AND CAST(t.CorrectionEndDate AS Date) <= CAST(@EndDate AS Date) ");
 
+            if (!string.IsNullOrEmpty(filter.DescricaoProva))
+                where.AppendLine($"AND LOWER(t.Description) LIKE '%{filter.DescricaoProva.ToLower()}%'");
+
 			var sql = @"WITH DistinctExportAnalysis AS (
 							SELECT DISTINCT t.Id AS Test_Id, 
 								t.Description AS TestDescription,

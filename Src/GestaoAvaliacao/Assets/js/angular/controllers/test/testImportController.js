@@ -193,7 +193,8 @@
 				Code: undefined,
 				StartDate: undefined,
 				EndDate: undefined,
-				Sistema: 1
+				Sistema: 1,
+				DescricaoProva: undefined
 			};
 			$scope.countFilter = 1;
 		};
@@ -355,14 +356,13 @@
 			$scope.tab = 1;
 			$scope.clear();
 			$scope.getFileExport($scope.filters);
-			$scope.countFilter = 0;
+			$scope.countFilter = 1;
 
 			$scope.$watchCollection('filters', function () {
-				$scope.countFilter = 0;
+				$scope.countFilter = 1;
 				if ($scope.filters.StartDate) $scope.countFilter += 1;
 				if ($scope.filters.EndDate) $scope.countFilter += 1;
 				if ($scope.filters.Code) $scope.countFilter += 1;
-				if ($scope.filters.Sistema) $scope.countFilter += 1;
 			}, true);
 		})($scope);
 
