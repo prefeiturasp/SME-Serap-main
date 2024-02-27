@@ -1501,9 +1501,9 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                Pager pager = this.GetPager();
+                var pager = this.GetPager();
                 var lista = exportAnalysisBusiness.Search(ref pager, filter);
-                return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, lista }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

@@ -66,9 +66,11 @@
     <Compile Include="DTO\EscolaDto.cs" />
     <Compile Include="DTO\ItemAmostraTaiDTO.cs" />
     <Compile Include="DTO\ItemListaDto.cs" />
+    <Compile Include="DTO\PaginacaoResultadoDto.cs" />
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoDTO.cs" />
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoRespostaDTO.cs" />
     <Compile Include="DTO\TestTaiCurriculumGradeDTO.cs" />
+    <Compile Include="Enumerator\EnumSystem.cs" />
     <Compile Include="Enumerator\TypeGroup.cs" />
     <Compile Include="ReportStudies.cs" />
     <Compile Include="ResultadoPsp\ArquivoResultadoPsp.cs" />
