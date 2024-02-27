@@ -12,10 +12,8 @@ namespace GestaoAvaliacao.Entities.DTO
 		public string ApplicationEndDate { get; set; }
         public string TestTypeDescription { get; set; }
 		public EnumServiceState StateExecution { get; set; }
-
 		public string CreateDate { get; set; }
 		public string UpdateDate { get; set; }
-
 		public long FileId { get; set; }
 	}
 }

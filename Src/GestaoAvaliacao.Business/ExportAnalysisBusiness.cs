@@ -71,7 +71,7 @@ namespace GestaoAvaliacao.Business
 
             switch (filter.Sistema + 1)
             {
-                case (short)EnumSystem.Serap:
+                case (short)EnumSystem.SerapOnLine:
                 {
                     var provasSerap = exportAnalysisRepository.Search(ref pager, filter);
                     if (provasSerap != null && provasSerap.Any())

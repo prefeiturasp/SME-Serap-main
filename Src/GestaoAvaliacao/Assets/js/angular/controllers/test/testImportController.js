@@ -326,7 +326,7 @@
 			angular.element('body').click($scope.close);
 			$scope.filesImported = null;
 			$scope.filesExported = null;
-			$scope.itemsSystemOptions = [{ id: 0, label: "SERAp" }, { id: 1, label: "SERAp Estudantes" }]
+			$scope.itemsSystemOptions = [{ id: 0, label: "SERAp On-line" }, { id: 1, label: "SERAp Estudantes" }]
 			$scope.export = {
 				pagination: $pager(TestImportExportModel.exportAnalysisSearch),
 				pageSize: 10,
