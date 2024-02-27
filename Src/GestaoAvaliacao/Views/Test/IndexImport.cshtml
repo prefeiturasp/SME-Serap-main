@@ -107,37 +107,38 @@
 		@* resultado da busca *@
 		<div class="tab-content">
 			@* Exportar *@
-			<div role="tabpanel" class="tab-pane fade active in" id="exportacao">
-				<table class="table table-hover" ng-show="filesExported.length">
-					<colgroup>
-						<col style="width: 5%">
-						<col style="width: 40%">
-                        <col style="width: 9%">
-                        <col style="width: 9%">
-                        <col style="width: 9%">
-						<col style="width: 9%">
-                        <col style="width: 15%">
-                        <col style="width: 4%">
-					</colgroup>
-					<thead>
-						<tr>
-							<th class="center">Código</th>
+            <div role="tabpanel" class="tab-pane fade active in" id="exportacao">
+                <div class="col-md-12 semPadding table-responsive">
+                    <table class="table table-hover padding" ng-show="filesExported.length">
+                        <colgroup>
+                            <col style="width: 4%">
+                            <col style="width: 39%">
+                            <col style="width: 4%">
+                            <col style="width: 4%">
+                            <col style="width: 7%">
+                            <col style="width: 4%">
+                            <col style="width: 34%">
+                            <col style="width: 4%">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th class="center">Código</th>
                             <th>Prova</th>
                             <th class="center">Data início</th>
                             <th class="center">Data fim</th>
-							<th class="center">Última exportação</th>
-							<th class="center">Exportar</th>
+                            <th class="center">Última exportação</th>
+                            <th class="center">Exportar</th>
                             <th>Situação</th>
                             <th class="center">Download</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="(indexExport, file) in filesExported track by $index">
-							<td class="center">{{file.Test_Id}}</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="(indexExport, file) in filesExported track by $index">
+                            <td class="center">{{file.Test_Id}}</td>
                             <td>{{file.TestDescription}}</td>
                             <td class="center">{{file.ApplicationStartDate}}</td>
                             <td class="center">{{file.ApplicationEndDate}}</td>
-							<td class="center">{{file.UpdateDate}}</td>
+                            <td class="center">{{file.UpdateDate}}</td>
                             <td class="center">
                                 <button class="btnCancelar2 pull-right"
                                         ng-click="modalExportFile(file)"
@@ -168,13 +169,14 @@
                                     <span class="icone-cadastrar material-icons">file_download</span>
                                 </button>
                             </td>
-						</tr>
-					</tbody>
-				</table>
-				<page ng-show="filesExported.length" method="getFileExport(filters)" pager="export.pagination" total-pages="{{export.pages}}" total-itens="{{export.totalItens}}" page-size="export.pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
-				<br />
-				<p class="nresultados" ng-show="filesExported==0">Nenhum resultado encontrado.</p>
-			</div>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <page ng-show="filesExported.length" method="getFileExport(filters)" pager="export.pagination" total-pages="{{export.pages}}" total-itens="{{export.totalItens}}" page-size="export.pageSize" data-arr-page-size="[10,20,30,40,50,100]"></page>
+                <br/>
+                <p class="nresultados" ng-show="filesExported==0">Nenhum resultado encontrado.</p>
+            </div>
 			@* Importar *@
 			<div role="tabpanel" class="tab-pane fade" id="importacao">
 				<table class="table table-hover">
