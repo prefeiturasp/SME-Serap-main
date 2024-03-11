@@ -37,13 +37,15 @@
                                                 <select class="comboAreaConhecimento"
                                                         id="comboAreaConhecimento"
                                                         style="width: 100%"
-                                                        ng-model='area.objArea.Id'
+                                                        ng-model="area.objArea.Id"
                                                         ng-change="carregaComponenteCurricular();">
                                                     <option></option>
                                                 </select>
                                             </div>
                                             <div ng-show="editMode">
-                                                <input readonly class="labelAreaConhecimento form-control" id="labelAreaConhecimento" ng-model="area.objArea.Description" />
+                                                <input readonly class="labelAreaConhecimento form-control" 
+                                                       id="labelAreaConhecimento" 
+                                                       ng-model="area.objArea.Description" />
                                             </div>
                                         </div>
                                         <div class="campoLabel">
@@ -53,36 +55,35 @@
                                                 <select class="comboComponenteCurricular"
                                                         id="comboComponenteCurricular"
                                                         style="width: 100%"
-                                                        ng-model='materia.Id'
+                                                        ng-model="materia.Id"
                                                         ng-change="relacaoDisciplina();">
                                                     <option></option>
                                                 </select>
                                             </div>
                                             <div ng-show="editMode">
-                                                <input readonly class="labelComponenteCurricular form-control" id="labelComponenteCurricular" ng-model="materia.objMateria.Description" />
+                                                <input readonly class="labelComponenteCurricular form-control" 
+                                                       id="labelComponenteCurricular" 
+                                                       ng-model="materia.objMateria.Description" />
                                             </div>
                                         </div>
                                         <div class="campoLabel" style="width:90%">
                                             @* Matriz *@
                                             <label for="matriz">Matriz*: </label>
-                                            <div ng-show="!editMode">
+                                            <div>
                                                 <select class="comboMatriz"
+                                                        name="comboMatriz"
                                                         id="comboMatriz"
                                                         style="width: 90%"
-                                                        ng-model='matriz.Id'
+                                                        ng-model="matriz.Id"
                                                         ng-change="setParamDefaultEtapa1();">
-                                                    <option></option>
                                                 </select>
-                                            </div>
-                                            <div ng-show="editMode">
-                                                <input readonly class="labelMatriz form-control" id="labelMatriz" ng-model="matriz.objMatriz.Description" />
                                             </div>
                                             <a href="javascript:void(0)"
                                                class="visualizar-select-clique"
                                                data-ng-if="matriz.objMatriz"
                                                data-ng-click="activeModalText('Matriz', matriz.objMatriz);"
                                                data-ng-disabled="matriz.lock">
-                                                <i class="material-icons">visibility</i>
+                                               <i class="material-icons">visibility</i>
                                             </a>
                                         </div>
                                         <div class="campoLabel">
