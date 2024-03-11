@@ -845,7 +845,8 @@ namespace GestaoAvaliacao.Controllers
                 if (item.Id > 0)
                 {
                     item.ItemSituation = item.ItemSituation_Id > 0 ? itemSituationBusiness.GetItemSituationById(item.ItemSituation_Id) : null;
-                    if ((files != null && files.Count > 0) || !item.ItemSituation.AllowVersion)
+
+                    if ((files != null && files.Count > 0) || item.ItemSituation == null || !item.ItemSituation.AllowVersion)
                         entity = itemBusiness.Update(item.Id, item, files);
                     else
                         entity = itemBusiness.Update(item.Id, item);
@@ -854,24 +855,24 @@ namespace GestaoAvaliacao.Controllers
                     {
                         auxItem = new
                         {
-                            Id = entity.Id,
-                            IsRestrict = entity.IsRestrict,
-                            ItemCode = entity.ItemCode,
-                            ItemCodeVersion = entity.ItemCodeVersion,
-                            ItemVersion = entity.ItemVersion,
-                            Statement = entity.Statement,
+                            entity.Id,
+                            entity.IsRestrict,
+                            entity.ItemCode,
+                            entity.ItemCodeVersion,
+                            entity.ItemVersion,
+                            entity.Statement,
                             Alternatives = entity.Alternatives.Select(a => new
                             {
-                                Id = a.Id,
-                                Description = a.Description,
-                                Order = a.Order,
-                                Correct = a.Correct,
+                                a.Id,
+                                a.Description,
+                                a.Order,
+                                a.Correct,
                                 numeration = a.Numeration,
-                                Justificative = a.Justificative,
-                                TCTDiscrimination = a.TCTDiscrimination,
-                                TCTDificulty = a.TCTDificulty,
-                                TCTBiserialCoefficient = a.TCTBiserialCoefficient,
-                                State = a.State
+                                a.Justificative,
+                                a.TCTDiscrimination,
+                                a.TCTDificulty,
+                                a.TCTBiserialCoefficient,
+                                a.State
                             }).ToList(),
                             Versions = itemBusiness._GetItemVersions(entity.ItemCodeVersion).Select(x => new
                             {
@@ -881,11 +882,11 @@ namespace GestaoAvaliacao.Controllers
                                 criacao = x.CreateDate.ToString("dd/MM/yyyy"),
                                 provas = string.Empty
                             }),
-                            BaseText_Id = entity.BaseText != null ? entity.BaseText.Id : 0,
-                            ItemNarrated = entity.ItemNarrated,
-                            StudentStatement = entity.StudentStatement,
-                            NarrationStudentStatement = entity.NarrationStudentStatement,
-                            NarrationAlternatives = entity.NarrationAlternatives
+                            BaseText_Id = entity.BaseText?.Id ?? 0,
+                            entity.ItemNarrated,
+                            entity.StudentStatement,
+                            entity.NarrationStudentStatement,
+                            entity.NarrationAlternatives
                         };
                     }
                 }
@@ -900,24 +901,24 @@ namespace GestaoAvaliacao.Controllers
                     {
                         auxItem = new
                         {
-                            Id = entity.Id,
-                            IsRestrict = entity.IsRestrict,
-                            ItemCode = entity.ItemCode,
-                            ItemVersion = entity.ItemVersion,
-                            ItemCodeVersion = entity.ItemCodeVersion,
-                            Statement = entity.Statement,
+                            entity.Id,
+                            entity.IsRestrict,
+                            entity.ItemCode,
+                            entity.ItemVersion,
+                            entity.ItemCodeVersion,
+                            entity.Statement,
                             Alternatives = entity.Alternatives.Select(a => new
                             {
-                                Id = a.Id,
-                                Description = a.Description,
-                                Order = a.Order,
-                                Correct = a.Correct,
+                                a.Id,
+                                a.Description,
+                                a.Order,
+                                a.Correct,
                                 numeration = a.Numeration,
-                                Justificative = a.Justificative,
-                                TCTDiscrimination = a.TCTDiscrimination,
-                                TCTDificulty = a.TCTDificulty,
-                                TCTBiserialCoefficient = a.TCTBiserialCoefficient,
-                                State = a.State
+                                a.Justificative,
+                                a.TCTDiscrimination,
+                                a.TCTDificulty,
+                                a.TCTBiserialCoefficient,
+                                a.State
                             }).ToList(),
                             Versions = new
                             {
@@ -927,11 +928,11 @@ namespace GestaoAvaliacao.Controllers
                                 criacao = entity.CreateDate.ToString("dd/MM/yyyy"),
                                 provas = string.Empty
                             },
-                            BaseText_Id = entity.BaseText_Id != null ? entity.BaseText_Id : 0,
-                            ItemNarrated = entity.ItemNarrated,
-                            StudentStatement = entity.StudentStatement,
-                            NarrationStudentStatement = entity.NarrationStudentStatement,
-                            NarrationAlternatives = entity.NarrationAlternatives
+                            BaseText_Id = entity.BaseText_Id ?? 0,
+                            entity.ItemNarrated,
+                            entity.StudentStatement,
+                            entity.NarrationStudentStatement,
+                            entity.NarrationAlternatives
                         };
                     }
                 }

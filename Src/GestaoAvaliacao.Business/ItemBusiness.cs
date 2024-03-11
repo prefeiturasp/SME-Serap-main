@@ -293,101 +293,133 @@ namespace GestaoAvaliacao.Business
         private bool ValidateVersioning(Item entity)
         {
             Item item = itemRepository._GetItemById(entity.Id);
+            if (!item.ItemSituation.AllowVersion) 
+                return false;
 
-            if (item.ItemSituation.AllowVersion)
+            if (item.ItemSituation.Id != entity.ItemSituation.Id) 
+                return true;
+
+            //id da página de item = 2
+            var parameters = parambusiness.GetParamsByPage(2);
+            parameters = parameters.Where(p => p.Versioning == true).ToList();
+
+            foreach (var par in parameters)
             {
-                if (item.ItemSituation.Id != entity.ItemSituation.Id) return true;
-                //id da página de item = 2
-                var parameters = parambusiness.GetParamsByPage(2);
-
-                parameters = parameters.Where(p => p.Versioning == true).ToList();
-
-                foreach (var par in parameters)
+                switch (par.Key)
                 {
-                    switch (par.Key)
-                    {
-                        case "DESCRIPTORSENTENCE":
-                            if (item.descriptorSentence != entity.descriptorSentence) return true;
+                    case "DESCRIPTORSENTENCE":
+                        if (item.descriptorSentence != entity.descriptorSentence)
+                            return true;
+
+                        break;
+
+                    case "ITEMTYPE":
+                        if (item.ItemType.Id != entity.ItemType_Id)
+                            return true;
+
+                        break;
+
+                    case "ITEMCURRICULUMGRADE":
+                        var groupTypes = new HashSet<int>(item.ItemCurriculumGrades.Select(x => x.TypeCurriculumGradeId));
+                        var filteredTypes = entity.ItemCurriculumGrades.Where(x => !groupTypes.Contains(x.TypeCurriculumGradeId)).ToList();
+
+                        if (filteredTypes.Count > 0)
+                            return true;
+
+                        break;
+
+                    case "KEYWORDS":
+                        if (!Compare.ValidateEqualsString(item.Keywords, entity.Keywords))
+                            return true;
+
+                        break;
+
+                    case "PROFICIENCY":
+                        if (item.proficiency != entity.proficiency)
+                            return true;
+
+                        break;
+
+                    case "ITEMLEVEL":
+                        if (Compare.ValidateEqualsInt(item.ItemLevel_Id, entity.ItemLevel_Id))
                             break;
 
-                        case "ITEMTYPE":
-                            if (item.ItemType.Id != entity.ItemType_Id) return true;
+                        return true;
+
+                    case "STATEMENT":
+                        if (item.Statement != entity.Statement) 
+                            return true;
+
+                        break;
+
+                    case "TRI":
+                        if (Compare.ValidateEqualsDecimal(item.TRICasualSetting, entity.TRICasualSetting) && Compare.ValidateEqualsDecimal(item.TRIDifficulty, entity.TRIDifficulty) && Compare.ValidateEqualsDecimal(item.TRIDiscrimination, item.TRIDiscrimination))
                             break;
 
-                        case "ITEMCURRICULUMGRADE":
-                            var groupTypes = new HashSet<int>(item.ItemCurriculumGrades.Select(x => x.TypeCurriculumGradeId));
-                            var filteredTypes = entity.ItemCurriculumGrades.Where(x => !groupTypes.Contains(x.TypeCurriculumGradeId)).ToList();
-                            if (filteredTypes.Count > 0) return true;
-                            break;
+                        return true;
+                    case "TIPS":
+                        if (item.Tips != entity.Tips) 
+                            return true;
 
-                        case "KEYWORDS":
-                            if (!GestaoAvaliacao.Util.Compare.ValidateEqualsString(item.Keywords, entity.Keywords)) return true;
-                            break;
+                        break;
 
-                        case "PROFICIENCY":
-                            if (item.proficiency != entity.proficiency) return true;
-                            break;
-
-                        case "ITEMLEVEL":
-                            if (GestaoAvaliacao.Util.Compare.ValidateEqualsInt(item.ItemLevel_Id, entity.ItemLevel_Id))
-                            {
-                                break;
-                            }
-                            else
+                    case "ALTERNATIVES":
+                        for (int i = 0; i < item.Alternatives.Count; i++)
+                        {
+                            if (item.Alternatives[i].Description != entity.Alternatives[i].Description ||
+                                item.Alternatives[i].Correct != entity.Alternatives[i].Correct)
                             {
                                 return true;
                             }
+                        }
 
-                        case "STATEMENT":
-                            if (item.Statement != entity.Statement) return true;
-                            break;
+                        break;
 
-                        case "TRI":
-                            if (GestaoAvaliacao.Util.Compare.ValidateEqualsDecimal(item.TRICasualSetting, entity.TRICasualSetting) && GestaoAvaliacao.Util.Compare.ValidateEqualsDecimal(item.TRIDifficulty, entity.TRIDifficulty) && GestaoAvaliacao.Util.Compare.ValidateEqualsDecimal(item.TRIDiscrimination, item.TRIDiscrimination))
-                            {
-                                break;
-                            }
-                            else
+                    case "TCT":
+                        for (int i = 0; i < item.Alternatives.Count; i++)
+                        {
+                            if (item.Alternatives[i].TCTBiserialCoefficient !=
+                                entity.Alternatives[i].TCTBiserialCoefficient ||
+                                item.Alternatives[i].TCTDificulty != entity.Alternatives[i].TCTDificulty ||
+                                item.Alternatives[i].TCTDiscrimination != entity.Alternatives[i].TCTDiscrimination)
                             {
                                 return true;
                             }
-                        case "TIPS":
-                            if (item.Tips != entity.Tips) return true;
-                            break;
+                        }
 
-                        case "ALTERNATIVES":
-                            for (int i = 0; i < item.Alternatives.Count; i++)
-                                if (item.Alternatives[i].Description != entity.Alternatives[i].Description || item.Alternatives[i].Correct != entity.Alternatives[i].Correct)
-                                    return true;
-                            break;
+                        break;
 
-                        case "TCT":
-                            for (int i = 0; i < item.Alternatives.Count; i++)
-                            {
-                                if (item.Alternatives[i].TCTBiserialCoefficient != entity.Alternatives[i].TCTBiserialCoefficient ||
-                                    item.Alternatives[i].TCTDificulty != entity.Alternatives[i].TCTDificulty ||
-                                    item.Alternatives[i].TCTDiscrimination != entity.Alternatives[i].TCTDiscrimination) return true;
-                            }
-                            break;
+                    case "JUSTIFICATIVE":
+                        for (int i = 0; i < item.Alternatives.Count; i++)
+                        {
+                            if (item.Alternatives[i].Justificative != entity.Alternatives[i].Justificative)
+                                return true;
+                        }
 
-                        case "JUSTIFICATIVE":
-                            for (int i = 0; i < item.Alternatives.Count; i++)
-                                if (item.Alternatives[i].Justificative != entity.Alternatives[i].Justificative) return true;
-                            break;
+                        break;
 
-                        case "ISRESTRICT":
-                            if (item.IsRestrict != entity.IsRestrict) return true;
-                            break;
-                        case "NIVEISMATRIZ":
-                            var itemskills = item.ItemSkills.Where(s => s.State == (Byte)EnumState.ativo);
-                            if (itemskills != null && itemskills.Any())
-                            {
-                                var groupSkills = new HashSet<long>(itemskills.Where(x => x.Skill != null).Select(x => x.Skill.Id));
-                                var filteredSkills = entity.ItemSkills.Where(x => x.Skill != null && !groupSkills.Contains(x.Skill.Id)).ToList();
-                                if (filteredSkills.Count > 0) return true;
-                            }
-                            break;
-                    }
+                    case "ISRESTRICT":
+                        if (item.IsRestrict != entity.IsRestrict) return true;
+                        break;
+
+                    case "NIVEISMATRIZ":
+                        var itemskills = item.ItemSkills.Where(s => s.State == (Byte)EnumState.ativo);
+
+                        if (itemskills.Any())
+                        {
+                            var groupSkills = new HashSet<long>(itemskills.Where(x => x.Skill != null).Select(x => x.Skill.Id));
+                            var filteredSkills = entity.ItemSkills.Where(x => x.Skill != null && !groupSkills.Contains(x.Skill.Id)).ToList();
+
+                            if (filteredSkills.Count > 0) 
+                                return true;
+                        }
+                        break;
+
+                    case "EVALUATION_MATRIX":
+                        if (item.EvaluationMatrix_Id != entity.EvaluationMatrix_Id)
+                            return true;
+
+                        break;
                 }
             }
 
@@ -687,8 +719,11 @@ namespace GestaoAvaliacao.Business
         public Item Update(long Id, Item entity, List<EntityFile> files = null)
         {
             Item oldItem = entity.ShalowCopy();
-            Item _entity = new Item();
-            _entity.Validate = Validate(entity, ValidateAction.Update, entity.Validate);
+
+            Item _entity = new Item
+            {
+                Validate = Validate(entity, ValidateAction.Update, entity.Validate)
+            };
 
             if (_entity.Validate.IsValid)
             {
@@ -704,6 +739,7 @@ namespace GestaoAvaliacao.Business
                     if (ValidateVersioning(entity))
                     {
                         itemRepository.UpdateVersion(Id);
+
                         entity.Alternatives = entity.Alternatives.Where(i => i.State == (Byte)EnumState.ativo).ToList();
                         entity.Id = 0;
                         entity.ItemVersion = itemRepository.GetMaxVersionByItemCode(entity.ItemCodeVersion) + 1;
@@ -719,23 +755,27 @@ namespace GestaoAvaliacao.Business
                         //Troca do tipo de item
                         long[] alternativesExcluded = entity.Alternatives.Where(i => i.State == (Byte)EnumState.excluido && i.Id > 0).Select(i => i.Id).ToArray();
                         foreach (long alternativeId in alternativesExcluded)
-                        {
                             alternativeRepository.Delete(alternativeId);
-                        }
+
                         entity.Alternatives = entity.Alternatives.Where(i => i.State == (Byte)EnumState.ativo).ToList();
                         entity.BaseText = null;
                         entity.ItemSituation = null;
+
                         _entity = itemRepository.Update(entity);
                     }
                 }
                 else
                 {
-                    foreach (Alternative alternative in entity.Alternatives.Where(i => i.State == (Byte)EnumState.ativo).ToList())
+                    foreach (var alternative in entity.Alternatives.Where(i => i.State == (Byte)EnumState.ativo).ToList())
                     {
-                        _entity.Alternatives.FirstOrDefault(i => i.Order == alternative.Order).Correct = alternative.Correct;
-                        _entity.Alternatives.FirstOrDefault(i => i.Order == alternative.Order).Justificative = alternative.Justificative;
-                        _entity.Alternatives.FirstOrDefault(i => i.Order == alternative.Order).Description = alternative.Description;
-                        _entity.Alternatives.FirstOrDefault(i => i.Order == alternative.Order).Numeration = alternative.Numeration;
+                        var alternativaOrdem = _entity.Alternatives.FirstOrDefault(i => i.Order == alternative.Order);
+                        if (alternativaOrdem == null)
+                            continue;
+
+                        alternativaOrdem.Correct = alternative.Correct;
+                        alternativaOrdem.Justificative = alternative.Justificative;
+                        alternativaOrdem.Description = alternative.Description;
+                        alternativaOrdem.Numeration = alternative.Numeration;
                     }
 
                     entity.Alternatives = _entity.Alternatives;
@@ -743,6 +783,7 @@ namespace GestaoAvaliacao.Business
                     entity.ItemVersion = _entity.ItemVersion;
                     entity.BaseText_Id = _entity.BaseText_Id;
                     entity.BaseText = null;
+
                     _entity = itemRepository.Update(entity);
                 }
 
@@ -751,10 +792,9 @@ namespace GestaoAvaliacao.Business
 
                 #region Files
 
-                EntityFile entityFile = new EntityFile();
                 if (files != null)
                 {
-                    entityFile = SaveFiles(Id, oldItem, _entity, files);
+                    var entityFile = SaveFiles(Id, oldItem, _entity, files);
                     if (!entityFile.Validate.IsValid)
                         _entity.Validate = entityFile.Validate;
                 }
