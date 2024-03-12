@@ -43,7 +43,7 @@ namespace GestaoAvaliacao.Repository
 
             using (new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Required, transactionOptions))
             {
-                using (GestaoAvaliacaoContext ctx = new GestaoAvaliacaoContext())
+                using (var ctx = new GestaoAvaliacaoContext())
                 {
                     var query = ctx.Item.AsNoTracking()
                         .Include("EvaluationMatrix.Discipline")
@@ -1466,14 +1466,14 @@ namespace GestaoAvaliacao.Repository
 
         public void UpdateVersion(long Id)
         {
-
-            using (GestaoAvaliacaoContext GestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            using (GestaoAvaliacaoContext gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
             {
-                Item _lastEntity = GestaoAvaliacaoContext.Item.FirstOrDefault(a => a.Id == Id);
+                Item _lastEntity = gestaoAvaliacaoContext.Item.FirstOrDefault(a => a.Id == Id);
                 _lastEntity.LastVersion = false;
                 _lastEntity.UpdateDate = DateTime.Now;
-                GestaoAvaliacaoContext.Entry(_lastEntity).State = System.Data.Entity.EntityState.Modified;
-                GestaoAvaliacaoContext.SaveChanges();
+
+                gestaoAvaliacaoContext.Entry(_lastEntity).State = System.Data.Entity.EntityState.Modified;
+                gestaoAvaliacaoContext.SaveChanges();
             }
         }
 

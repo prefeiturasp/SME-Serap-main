@@ -875,7 +875,6 @@
         }
 
         function habilitarComboMatriz() {
-
             var componente = $('.comboComponenteCurricular').val();
 
             if (componente === null || componente === "") {
@@ -909,7 +908,7 @@
                             $scope.matriz.lista = result.lista;
                             $scope.matriz.objMatriz = result.lista[0];
                         }
-                        if ($scope.createMode && !$scope.params.i) {
+                        if (!$scope.params.i) {
 
                             if ($scope.comommItemID != undefined) {
 
@@ -976,21 +975,36 @@
         };
 
         function setParamEditarItemEtapa1(_result) {
-
             $scope.itemloaded.etapa1 = true;
+
             $scope.materia.objMateria = { Id: _result.Id, Description: _result.Description, LevelEducationDescription: _result.TypeLevelEducation.Description };
             $(".comboComponenteCurricular").prop("disabled", true);
+            $scope.relacaoDisciplina();
+
             $scope.modeloMatriz.Id = _result.EvaluationMatrix.ModelEvaluationMatrix.Id;
             $scope.modeloMatriz.Description = _result.EvaluationMatrix.ModelEvaluationMatrix.Description;
-            $scope.matriz.objMatriz = { Id: _result.EvaluationMatrix.Id, Description: _result.EvaluationMatrix.Description };
-            $(".comboMatriz").prop("disabled", true);
-            $scope.matriz.lista = [$scope.matriz.objMatriz];
+
             $scope.nivel.Id = _result.TypeLevelEducation.Id;
             $scope.nivel.Description = _result.TypeLevelEducation.Description;
             $scope.nivel.TypeLevelEducationId = _result.TypeLevelEducation.TypeLevelEducationId;
-            $scope.item.ItemNarrated = _result.ItemNarrated;
-            $scope.area.objArea = { Id: _result.KnowledgeArea.Id, Description: _result.KnowledgeArea.Description };
 
+            $scope.matriz.objMatriz = {
+                Id: _result.EvaluationMatrix.Id,
+                Description: _result.EvaluationMatrix.Description,
+                ModelEvaluationMatrix: _result.EvaluationMatrix.ModelEvaluationMatrix,
+                Discipline: {
+                    TypeLevelEducation: _result.TypeLevelEducation
+                }   
+            };
+            $scope.matriz.lista = [$scope.matriz.objMatriz];
+            $(".comboMatriz").prop("disabled", false);
+
+            var divData = '<option value=' + _result.EvaluationMatrix.Id + ' selected="selected">' + _result.EvaluationMatrix.Description + '</option>';
+            $(divData).appendTo("#comboMatriz");
+
+            $scope.item.ItemNarrated = _result.ItemNarrated;
+
+            $scope.area.objArea = { Id: _result.KnowledgeArea.Id, Description: _result.KnowledgeArea.Description };
 
             $scope.trigger = {
                 change: true,
@@ -1007,9 +1021,7 @@
         };
 
         function setParamEditarItemEtapa3(_result) {
-
             if (_result.Subsubject != null) {
-
                 SubjectModel.loadSubjectBySubsubject({ idSubsubject: _result.Subsubject.Id }, function (result) {
                     if (result.success) {
                         $scope.assunto = result.assunto;
@@ -1023,6 +1035,7 @@
                         };
                         loadListSkillsEdit();
                         loadSubject();
+
                         $scope.sentenca = _result.descriptorSentence != null ? _result.descriptorSentence : undefined;
                         $scope.proficiencia = _result.proficiency != null ? _result.proficiency : undefined;
                         $scope.enunciado.Description = _result.Statement != null ? (_result.Statement.Description != null ? _result.Statement.Description : undefined) : undefined;
@@ -1048,7 +1061,6 @@
 
                             $scope.tipoItem.objTipoItem = arr[0];
                             $scope.itemTypeQtd = $scope.tipoItem.objTipoItem;
-
                         }
                         if (_result.ItemSituation != null) {
                             var arr = jQuery.grep($scope.statusItem.lista, function (n, i) {
@@ -1101,12 +1113,14 @@
                 $scope.existeAssunto = false;
                 $scope.itemloaded.etapa3 = true;
                 $scope.loadingEditSkills = true;
+
                 $scope.queue = {
                     data: _result.ItemSkills,
                     currentLevel: 0
                 };
                 loadListSkillsEdit();
                 loadSubject();
+
                 $scope.sentenca = _result.descriptorSentence != null ? _result.descriptorSentence : undefined;
                 $scope.proficiencia = _result.proficiency != null ? _result.proficiency : undefined;
                 $scope.enunciado.Description = _result.Statement != null ? (_result.Statement.Description != null ? _result.Statement.Description : undefined) : undefined;
@@ -1233,7 +1247,6 @@
 
 
         function loadListSkillsEdit(parentId) {
-
             if (parentId == undefined) {
                 var skill;
                 var arr = jQuery.grep($scope.skills[$scope.queue.currentLevel].lista, function (n, i) {
@@ -1244,7 +1257,7 @@
                 $scope.skills[$scope.queue.currentLevel].objSkill = skill;
                 $scope.queue.currentLevel += 1;
 
-                if ($scope.queue.currentLevel < $scope.queue.data.length) {
+                if ($scope.queue.currentLevel < $scope.queue.data.length && skill !== undefined) {
                     loadListSkillsEdit($scope.queue.data[$scope.queue.currentLevel].Skill.Parent);
                 }
                 else {
@@ -1304,42 +1317,33 @@
             $scope.nivel.Description = undefined;
             $scope.nivel.TypeLevelEducationId = undefined;
 
-            if ($scope.materia.Id === undefined) return;
+            var materiaId = $scope.materia.Id;
+            if ($scope.editMode)
+                materiaId = $scope.materia.objMateria.Id;
 
-            if ($scope.createMode) {
+            if (materiaId === undefined)
+                return;
 
-                $(".comboMatriz").select2(
-                    {
-                        placeholder: "Selecione uma matriz",
-                        width: '100%',
-                        ajax: {
-                            url: "loadmatrizbydiscipline",
-                            dataType: 'json',
-                            data: function (params, page) {
-                                return {
-                                    description: params.term,
-                                    discipline: ($scope.materia.Id).toString()
-                                };
-                            },
-                            processResults: function (data, page) {
-                                return {
-                                    results: data
-                                };
-                            }
+            $(".comboMatriz").select2(
+                {
+                    placeholder: "Selecione uma matriz",
+                    width: '100%',
+                    ajax: {
+                        url: "loadmatrizbydiscipline",
+                        dataType: 'json',
+                        data: function (params, page) {
+                            return {
+                                description: params.term,
+                                discipline: (materiaId).toString()
+                            };
+                        },
+                        processResults: function (data, page) {
+                            return {
+                                results: data
+                            };
                         }
-                    });
-
-                //EvaluationMatrixModel.load({ Id: $scope.materia.objMateria.Id }, function (result) {
-                //    if (result.success) {
-                //        if ($scope.materia.objMateria != undefined)
-                //            carregarDefaultEtapa1(result.lista);
-                //    }
-                //    else {
-                //        $notification[result.type ? result.type : 'error'](result.message);
-                //        $scope.nivel.masterLabel = "";
-                //    }
-                //});
-            }
+                    }
+                });
         };
 
         $scope.setParamDefaultEtapa1 = function __setParamDefaultEtapa1() {
@@ -1348,20 +1352,29 @@
             $scope.nivel.Description = undefined;
             $scope.nivel.TypeLevelEducationId = undefined;
 
-            if ($scope.matriz.objMatriz === undefined) return;
+            if ($scope.matriz.objMatriz === undefined)
+                return;
 
             $scope.alterouMatriz = true;
-            $scope.skills = null;
 
-            if ($scope.createMode) {
-
-                $scope.modeloMatriz.Id = $scope.matriz.objMatriz.ModelEvaluationMatrix.Id;
-                $scope.modeloMatriz.Description = $scope.matriz.objMatriz.ModelEvaluationMatrix.Description;
-                $scope.nivel.Id = $scope.matriz.objMatriz.Discipline.TypeLevelEducation.Id;
-                $scope.nivel.Description = $scope.matriz.objMatriz.Discipline.TypeLevelEducation.Description;
-                $scope.nivel.TypeLevelEducationId = $scope.matriz.objMatriz.Discipline.TypeLevelEducation.TypeLevelEducationId;
-                $scope.matriz.objMatriz.Id = $scope.matriz.Id;
+            for (var a = 0; a < $scope.skills.length; a++) {
+                $scope.skills[a].lista = [{
+                    Id: undefined, Description: "--Selecione--"
+                }];
+                $scope.skills[a].objSkill = {
+                    Id: undefined, Description: "--Selecione--"
+                };
             }
+
+            $scope.matriz.objMatriz.Id = $scope.matriz.Id;
+
+            $scope.modeloMatriz.Id = $scope.matriz.objMatriz.ModelEvaluationMatrix.Id;
+            $scope.modeloMatriz.Description = $scope.matriz.objMatriz.ModelEvaluationMatrix.Description;
+
+            $scope.nivel.Id = $scope.matriz.objMatriz.Discipline.TypeLevelEducation.Id;
+            $scope.nivel.Description = $scope.matriz.objMatriz.Discipline.TypeLevelEducation.Description;
+            $scope.nivel.TypeLevelEducationId = $scope.matriz.objMatriz.Discipline.TypeLevelEducation.TypeLevelEducationId;
+
             $scope.trigger = {
                 change: true,
                 id: $scope.matriz.objMatriz.Id
@@ -1436,7 +1449,6 @@
         };
 
         $scope.carregarCascadeSkill = function __carregarCascadeSkill($indexSkill, node) {
-
             for (var a = 0; a < $scope.skills.length; a++) {
                 if (a > $indexSkill) {
                     $scope.skills[a].lista = [{
