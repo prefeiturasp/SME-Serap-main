@@ -413,31 +413,34 @@ namespace GestaoAvaliacao.Controllers
             {
                 var entity = itemBusiness._GetMatrixBytem(itemId);
 
-                if (entity.EvaluationMatrix != null)
-                {
-                    var ret = entity.EvaluationMatrix != null && entity.EvaluationMatrix.Discipline != null ? new
-                    {
-                        Id = entity.EvaluationMatrix.Discipline.Id,
-                        Description = entity.EvaluationMatrix.Discipline.Description,
-                        EvaluationMatrix = new
+                if (entity.EvaluationMatrix == null)
+                    return Json(
+                        new
                         {
-                            Id = entity.EvaluationMatrix.Id,
-                            Description = entity.EvaluationMatrix.Description,
-                            ModelEvaluationMatrix = entity.EvaluationMatrix.ModelEvaluationMatrix != null ? new
-                            {
-                                Id = entity.EvaluationMatrix.ModelEvaluationMatrix.Id,
-                                Description = entity.EvaluationMatrix.ModelEvaluationMatrix.Description
-                            } : null
-                        },
-                        TypeLevelEducation = levelEducationBusiness.GetCustom(entity.EvaluationMatrix.Discipline.TypeLevelEducationId),
-                        ItemNarrated = entity.ItemNarrated,
-                        KnowledgeArea = entity.KnowledgeArea
-                    } : null;
+                            success = false, type = ValidateType.alert.ToString(),
+                            message = "Matriz não encontrada para o item."
+                        }, JsonRequestBehavior.AllowGet);
 
-                    return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
-                }
+                var ret = entity.EvaluationMatrix?.Discipline != null ? new
+                {
+                    entity.EvaluationMatrix.Discipline.Id,
+                    entity.EvaluationMatrix.Discipline.Description,
+                    EvaluationMatrix = new
+                    {
+                        entity.EvaluationMatrix.Id,
+                        entity.EvaluationMatrix.Description,
+                        ModelEvaluationMatrix = entity.EvaluationMatrix.ModelEvaluationMatrix != null ? new
+                        {
+                            entity.EvaluationMatrix.ModelEvaluationMatrix.Id,
+                            entity.EvaluationMatrix.ModelEvaluationMatrix.Description
+                        } : null
+                    },
+                    TypeLevelEducation = levelEducationBusiness.GetCustom(entity.EvaluationMatrix.Discipline.TypeLevelEducationId),
+                    entity.ItemNarrated,
+                    entity.KnowledgeArea
+                } : null;
 
-                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Matriz não encontrada para o item." }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
