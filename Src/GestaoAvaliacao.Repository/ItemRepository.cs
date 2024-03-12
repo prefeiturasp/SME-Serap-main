@@ -43,7 +43,7 @@ namespace GestaoAvaliacao.Repository
 
             using (new System.Transactions.TransactionScope(System.Transactions.TransactionScopeOption.Required, transactionOptions))
             {
-                using (GestaoAvaliacaoContext ctx = new GestaoAvaliacaoContext())
+                using (var ctx = new GestaoAvaliacaoContext())
                 {
                     var query = ctx.Item.AsNoTracking()
                         .Include("EvaluationMatrix.Discipline")
