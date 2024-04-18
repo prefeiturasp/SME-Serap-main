@@ -1,18 +1,18 @@
 ﻿using GestaoAvaliacao.API.Middleware;
 using GestaoAvaliacao.Dtos.ItemApi;
+using GestaoAvaliacao.Dtos.SimuladorSerapEstudantes;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
-
+using EntityFile = GestaoAvaliacao.Entities.File;
 
 namespace GestaoAvaliacao.API.Controllers
 {
@@ -20,10 +20,12 @@ namespace GestaoAvaliacao.API.Controllers
     public class ItemController : ApiController
     {
         private readonly IItemBusiness itemBusiness;
+        private readonly IFileBusiness fileBusiness;
 
-        public ItemController(IItemBusiness itemBusiness)
+        public ItemController(IItemBusiness itemBusiness, IFileBusiness fileBusiness)
         {
             this.itemBusiness = itemBusiness;
+            this.fileBusiness = fileBusiness;
         }
 
         [Route("api/Item/AreasConhecimento")]
@@ -68,7 +70,8 @@ namespace GestaoAvaliacao.API.Controllers
             try
             {
                 if (disciplinaId <= 0)
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro disciplinaId é obrigatório e tem que ser maior que zero.");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        "O parametro disciplinaId é obrigatório e tem que ser maior que zero.");
 
 
                 var lista = itemBusiness.LoadMatrixByDiscipline(disciplinaId);
@@ -77,15 +80,13 @@ namespace GestaoAvaliacao.API.Controllers
                     return Request.CreateResponse(HttpStatusCode.NoContent, "Matriz de avaliação não encontrada.");
 
                 // TODO return dto
-
-
-
                 return Request.CreateResponse(HttpStatusCode.OK, lista);
             }
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de matrizes dessa disciplina");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    "Não foi possivel retornar a lista de matrizes dessa disciplina");
             }
         }
 
@@ -97,20 +98,23 @@ namespace GestaoAvaliacao.API.Controllers
             try
             {
                 if (matrizId <= 0)
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro matrizId é obrigatório e tem que ser maior que zero.");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        "O parametro matrizId é obrigatório e tem que ser maior que zero.");
 
 
                 var lista = itemBusiness.LoadSkillByMatrix(matrizId);
 
                 if (lista == null || !lista.Any())
                     return Request.CreateResponse(HttpStatusCode.NoContent, "Eixos não encontrados.");
+
                 // TODO return dto 
                 return Request.CreateResponse(HttpStatusCode.OK, lista);
             }
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de eixos dessa matriz");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    "Não foi possivel retornar a lista de eixos dessa matriz");
             }
         }
 
@@ -122,20 +126,23 @@ namespace GestaoAvaliacao.API.Controllers
             try
             {
                 if (competenciaId <= 0)
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro competenciaId é obrigatório e tem que ser maior que zero.");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        "O parametro competenciaId é obrigatório e tem que ser maior que zero.");
 
                 var lista = itemBusiness.LoadAbilityBySkill(competenciaId);
 
 
                 if (lista == null || !lista.Any())
                     return Request.CreateResponse(HttpStatusCode.NoContent, "Habilidades não encontrados.");
+
                 // TODO return dto 
                 return Request.CreateResponse(HttpStatusCode.OK, lista);
             }
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de habilidades desse eixo");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    "Não foi possivel retornar a lista de habilidades desse eixo");
             }
         }
 
@@ -149,12 +156,14 @@ namespace GestaoAvaliacao.API.Controllers
                 var lista = itemBusiness.LoadAllSubjects();
                 if (lista == null || !lista.Any())
                     return Request.CreateResponse(HttpStatusCode.NoContent, "Assuntos não encontrados.");
+
                 return Request.CreateResponse(HttpStatusCode.OK, lista);
             }
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de assuntos");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    "Não foi possivel retornar a lista de assuntos");
             }
         }
 
@@ -168,12 +177,14 @@ namespace GestaoAvaliacao.API.Controllers
                 var lista = itemBusiness.ObterAssuntosPorDisciplina(disciplinaId);
                 if (lista == null || !lista.Any())
                     return Request.CreateResponse(HttpStatusCode.NoContent, "Assuntos não encontrados.");
+
                 return Request.CreateResponse(HttpStatusCode.OK, lista);
             }
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de assuntos");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    "Não foi possivel retornar a lista de assuntos");
             }
         }
 
@@ -185,7 +196,8 @@ namespace GestaoAvaliacao.API.Controllers
             try
             {
                 if (assuntoId <= 0)
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro assuntoId é obrigatório e tem que ser maior que zero.");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        "O parametro assuntoId é obrigatório e tem que ser maior que zero.");
                 var lista = itemBusiness.LoadSubsubjectBySubject(assuntoId.ToString());
                 if (lista == null || !lista.Any())
                     return Request.CreateResponse(HttpStatusCode.NoContent, "Assuntos não encontrados.");
@@ -194,7 +206,8 @@ namespace GestaoAvaliacao.API.Controllers
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de assuntos");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    "Não foi possivel retornar a lista de assuntos");
             }
         }
 
@@ -214,7 +227,8 @@ namespace GestaoAvaliacao.API.Controllers
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de tipos de itens.");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    "Não foi possivel retornar a lista de tipos de itens.");
             }
         }
 
@@ -226,18 +240,21 @@ namespace GestaoAvaliacao.API.Controllers
             try
             {
                 if (evaluationMatrixId <= 0)
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, "O parametro evaluationMatrixId é obrigatório e tem que ser maior que zero.");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest,
+                        "O parametro evaluationMatrixId é obrigatório e tem que ser maior que zero.");
                 var lista = itemBusiness.LoadCurriculumGradesByMatrix(evaluationMatrixId);
 
                 if (lista == null || !lista.Any())
                     return Request.CreateResponse(HttpStatusCode.NoContent, "Os anos da matriz não foram encontrados.");
+
                 // TODO return dto
                 return Request.CreateResponse(HttpStatusCode.OK, lista);
             }
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de habilidades desse eixo");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    "Não foi possivel retornar a lista de habilidades desse eixo");
             }
         }
 
@@ -250,14 +267,16 @@ namespace GestaoAvaliacao.API.Controllers
             {
                 var lista = itemBusiness.LoadAllItemLevel();
                 if (lista == null || !lista.Any())
-                    return Request.CreateResponse(HttpStatusCode.NoContent, "As dificuldades sugeridas não foram encontrados.");
+                    return Request.CreateResponse(HttpStatusCode.NoContent,
+                        "As dificuldades sugeridas não foram encontrados.");
 
                 return Request.CreateResponse(HttpStatusCode.OK, lista);
             }
             catch (Exception ex)
             {
                 LogFacade.SaveError(ex);
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Não foi possivel retornar a lista de deficuldades sugeridas");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError,
+                    "Não foi possivel retornar a lista de deficuldades sugeridas");
             }
         }
 
@@ -334,6 +353,47 @@ namespace GestaoAvaliacao.API.Controllers
                 LogFacade.SaveBasicError(ex.Message);
                 return Request.CreateResponse(HttpStatusCode.InternalServerError);
             }
+        }
+
+        [Route("api/Item/Arquivos/Upload")]
+        [HttpPost]
+        [ResponseType(typeof(ResponseUploadArquivoDto))]
+        public HttpResponseMessage Upload(Uploader file)
+        {
+            var entity = new EntityFile();
+            try
+            {
+                var upload = new UploadModel
+                {
+                    ContentLength = file.ContentLength,
+                    ContentType = file.ContentType,
+                    InputStream = file.InputStream,
+                    Stream = null,
+                    FileName = file.FileName,
+                    VirtualDirectory = ApplicationFacade.VirtualDirectorySme,
+                    PhysicalDirectory = ApplicationFacade.PhysicalDirectorySme,
+                    FileType = file.FileType,
+                    UsuId = null
+                };
+                
+                entity = fileBusiness.Upload(upload);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = $"Erro ao realizar o upload ({file.FileType.GetDescription()}).";
+                LogFacade.SaveErrorSme(ex);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new ResponseUploadArquivoDto
+            {
+                Success = entity.Validate.IsValid,
+                Type = entity.Validate.Type,
+                Message = entity.Validate.Message,
+                FileLink = entity.Path,
+                IdFile = entity.Id
+            });
         }
     }
 }
