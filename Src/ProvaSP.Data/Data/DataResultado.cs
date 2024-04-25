@@ -492,7 +492,7 @@ namespace ProvaSP.Data
             }
         }
 
-        public static ResultadoAluno ObterResultadoAluno(string codigoAluno, int anoEdicao)
+        public static IEnumerable<ResultadoAluno> ObterResultadoAluno(string codigoAluno, int anoEdicao)
         {
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
             {
@@ -502,7 +502,7 @@ namespace ProvaSP.Data
                 parametros.Add("codigoAluno", codigoAluno, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 50);
 
                 conn.Open();
-                return conn.QueryFirstOrDefault<ResultadoAluno>(
+                return conn.Query<ResultadoAluno>(
                         sql: $@"select
 	                            ra.edicao as AnoEdicao,
 	                            esc_codigo as CodigoUe,
