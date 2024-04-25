@@ -3,6 +3,7 @@ using GestaoAvaliacao.WebProject.Facade;
 using ProvaSP.Data;
 using ProvaSP.Model.Entidades;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -15,7 +16,7 @@ namespace GestaoAvaliacao.API.Controllers
     {
         [Route("api/prova-sp/edicoes/{anoEdicao}/alunos/{codigoAluno}")]
         [HttpGet]
-        [ResponseType(typeof(ResultadoAluno))]
+        [ResponseType(typeof(IEnumerable<ResultadoAluno>))]
         public HttpResponseMessage ObterResultadoAluno(int anoEdicao, string codigoAluno)
         {
             try
