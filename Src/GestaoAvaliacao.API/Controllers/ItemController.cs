@@ -4,12 +4,15 @@ using GestaoAvaliacao.Dtos.SimuladorSerapEstudantes;
 using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
+using GestaoAvaliacao.Util.Videos;
 using GestaoAvaliacao.WebProject.Facade;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using EntityFile = GestaoAvaliacao.Entities.File;
@@ -21,11 +24,16 @@ namespace GestaoAvaliacao.API.Controllers
     {
         private readonly IItemBusiness itemBusiness;
         private readonly IFileBusiness fileBusiness;
+        private readonly IVideoConverter videoConverter;
+        private readonly IParameterBusiness parameterBusiness;
+        private const string VideoConvertedContentType = "video/webm";
 
-        public ItemController(IItemBusiness itemBusiness, IFileBusiness fileBusiness)
+        public ItemController(IItemBusiness itemBusiness, IFileBusiness fileBusiness, IVideoConverter videoConverter, IParameterBusiness parameterBusiness)
         {
             this.itemBusiness = itemBusiness;
             this.fileBusiness = fileBusiness;
+            this.videoConverter = videoConverter;
+            this.parameterBusiness = parameterBusiness;
         }
 
         [Route("api/Item/AreasConhecimento")]
@@ -372,7 +380,7 @@ namespace GestaoAvaliacao.API.Controllers
                     FileName = file.FileName,
                     VirtualDirectory = ApplicationFacade.VirtualDirectorySme,
                     PhysicalDirectory = ApplicationFacade.PhysicalDirectorySme,
-                    FileType = file.FileType,
+                    FileType = EnumFileType.File,
                     UsuId = null
                 };
                 
@@ -382,7 +390,7 @@ namespace GestaoAvaliacao.API.Controllers
             {
                 entity.Validate.IsValid = false;
                 entity.Validate.Type = ValidateType.error.ToString();
-                entity.Validate.Message = $"Erro ao realizar o upload ({file.FileType.GetDescription()}).";
+                entity.Validate.Message = $"Erro ao realizar o upload do arquivo.";
                 LogFacade.SaveErrorSme(ex);
             }
 
@@ -394,6 +402,133 @@ namespace GestaoAvaliacao.API.Controllers
                 FileLink = entity.Path,
                 IdFile = entity.Id
             });
+        }
+
+        [Route("api/Item/Arquivos/UploadVideo")]
+        [HttpPost]
+        [ResponseType(typeof(ResponseUploadArquivoVideoDto))]
+        public async Task<HttpResponseMessage> UploadVideoAsync(Uploader file)
+        {
+            var entity = new EntityFile();
+            var entityFileConvert = new EntityFile();
+            try
+            {
+                var bytes= Convert.FromBase64String(file.InputStream);
+                Stream stream = new MemoryStream(bytes);
+
+                var sizeToConvertVideo = parameterBusiness.GetByKey(EnumParameterKey.SIZE_TO_CONVERT_VIDEO_FILE.GetDescription());
+                if (file.ContentLength >= int.Parse(sizeToConvertVideo.Value))
+                    entityFileConvert = await ConvertVideoAsync(stream, file.ContentType, file.FileName);
+
+                var upload = new UploadModel
+                {
+                    ContentLength = file.ContentLength,
+                    ContentType = file.ContentType,
+                    InputStream = null,
+                    Stream = stream,
+                    FileName = file.FileName,
+                    VirtualDirectory = ApplicationFacade.VirtualDirectorySme,
+                    PhysicalDirectory = ApplicationFacade.PhysicalDirectorySme,
+                    FileType = EnumFileType.Video,
+                    UsuId = null
+                };
+
+                entity = fileBusiness.Upload(upload);
+
+                if (!entityFileConvert.Validate.IsValid)
+                    entity.Validate.Message += entityFileConvert.Validate.Message;
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao realizar o upload do arquivo de vídeo.";
+                LogFacade.SaveError(ex);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new ResponseUploadArquivoVideoDto
+            {
+                Success = entity.Validate.IsValid,
+                Type = entity.Validate.Type,
+                Message = entity.Validate.Message,
+                FileLink = entity.Path,
+                IdFile = entity.Id,
+                IdConvertedFile = entityFileConvert.Id
+            });
+        }
+
+        [Route("api/Item/Arquivos/UploadAudio")]
+        [HttpPost]
+        [ResponseType(typeof(ResponseUploadArquivoAudioDto))]
+        public HttpResponseMessage UploadAudio(Uploader file)
+        {
+            var entity = new EntityFile();
+            try
+            {
+                var bytes = Convert.FromBase64String(file.InputStream);
+                Stream stream = new MemoryStream(bytes);
+
+                var upload = new UploadModel
+                {
+                    ContentLength = file.ContentLength,
+                    ContentType = file.ContentType,
+                    InputStream = null,
+                    Stream = stream,
+                    FileName = file.FileName,
+                    VirtualDirectory = ApplicationFacade.VirtualDirectorySme,
+                    PhysicalDirectory = ApplicationFacade.PhysicalDirectorySme,
+                    FileType = EnumFileType.Audio,
+                    UsuId = null
+                };
+
+                entity = fileBusiness.Upload(upload);
+            }
+            catch (Exception ex)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message = "Erro ao realizar o upload do arquivo de áudio.";
+                LogFacade.SaveError(ex);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, new ResponseUploadArquivoAudioDto
+            {
+                Success = entity.Validate.IsValid,
+                Type = entity.Validate.Type,
+                Message = entity.Validate.Message,
+                FileLink = entity.Path,
+                IdFile = entity.Id
+            });
+        }
+
+        private async Task<EntityFile> ConvertVideoAsync(Stream inputStream, string contentType, string fileName)
+        {
+            var entity = new EntityFile();
+
+            var convertedVideoDto = await videoConverter.Convert(inputStream, contentType, fileName, SessionFacade.UsuarioLogado.Usuario.usu_id);
+            if (convertedVideoDto is null)
+            {
+                entity.Validate.IsValid = false;
+                entity.Validate.Type = ValidateType.error.ToString();
+                entity.Validate.Message =
+                    "Não foi possível realizar a conversão do vídeo para um tamanho menor. O vídeo origianl será mantido.";
+                return entity;
+            }
+
+            var uploadConvertedVideo = new UploadModel
+            {
+                ContentLength = (int)convertedVideoDto.Stream.Length,
+                ContentType = VideoConvertedContentType,
+                InputStream = null,
+                Stream = convertedVideoDto.Stream,
+                FileName = convertedVideoDto.FileName,
+                VirtualDirectory = ApplicationFacade.VirtualDirectory,
+                PhysicalDirectory = ApplicationFacade.PhysicalDirectory,
+                FileType = EnumFileType.Video,
+                UsuId = SessionFacade.UsuarioLogado.Usuario.usu_id
+            };
+
+            return fileBusiness.Upload(uploadConvertedVideo);
         }
     }
 }
