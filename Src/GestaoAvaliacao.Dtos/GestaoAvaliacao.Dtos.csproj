@@ -53,6 +53,8 @@
     <Compile Include="ItemApi\ItemTypeDto.cs" />
     <Compile Include="ItemApi\MatrixDto.cs" />
     <Compile Include="ItemApi\SkillDto.cs" />
+    <Compile Include="SimuladorSerapEstudantes\ResponseUploadArquivoAudioDto.cs" />
+    <Compile Include="SimuladorSerapEstudantes\ResponseUploadArquivoVideoDto.cs" />
     <Compile Include="StudentTest\StudentTestTimeListaDto.cs" />
     <Compile Include="StudentTest\StudentTestTimeResultDto.cs" />
     <Compile Include="StudentTest\StudentTestTimeDto.cs" />
