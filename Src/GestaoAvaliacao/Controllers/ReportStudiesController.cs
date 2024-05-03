@@ -21,9 +21,103 @@ public class ReportStudiesController : Controller
     {
         this.reportStudiesBusiness = reportStudiesBusiness;
     }
+
     public ActionResult Index()
     {
         return View();
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    public JsonResult CheckReportStudiesExists(long id)
+    {
+        var valid = new Validate
+        {
+            IsValid = false,
+            Type = ValidateType.alert.ToString()
+        };
+
+        try
+        {
+            var entity = reportStudiesBusiness.GetById(id);
+            if (entity == null)
+                valid.Message = "Relatório de estudos não existe";
+            else
+            {
+                var link = entity.Link;
+                if (string.IsNullOrEmpty(link))
+                    valid.Message = "Link do relatório de estudos não existe";
+                else
+                {
+                    var filePath = new Uri(link).AbsolutePath.Replace("Files/", string.Empty);
+                    var physicalPath = string.Concat(ApplicationFacade.PhysicalDirectory, filePath.Replace("/", "\\"));
+                    var decodedUrl = HttpUtility.UrlDecode(physicalPath);
+
+                    if (!System.IO.File.Exists(decodedUrl))
+                        valid.Message = "Caminho do relatório de estudos não existe";
+                    else
+                    {
+                        valid.IsValid = true;
+                        valid.Type = string.Empty;
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            LogFacade.SaveError(e);
+            valid.IsValid = false;
+            valid.Type = ValidateType.error.ToString();
+            valid.Message = "Erro ao tentar encontrar o relatório de estudos.";
+        }
+
+        return Json(new { success = valid.IsValid, type = valid.Type, message = valid.Message },
+            JsonRequestBehavior.AllowGet);
+    }
+
+    [AllowAnonymous]
+    [HttpGet]
+    public void GetReportStudies(long id)
+    {
+        var entity = reportStudiesBusiness.GetById(id);
+        if (entity == null)
+            return;
+
+        var link = entity.Link;
+        if (string.IsNullOrEmpty(link))
+            return;
+
+        var fileExtension = Path.GetExtension(link);
+        var fileExtensionEnum = EnumExtensions.GetValueFromDescription<EnumFileExtension>(fileExtension);
+
+        string contentType;
+        switch (fileExtensionEnum)
+        {
+            case EnumFileExtension.Html:
+                contentType = EnumFileContentType.Html.GetDescription();
+                break;
+            case EnumFileExtension.Csv:
+                contentType = EnumFileContentType.Csv.GetDescription();
+                break;
+            default:
+                throw new NotImplementedException("Extensão de arquivo não implementada.");
+        }
+
+        var filePath = new Uri(link).AbsolutePath.Replace("Files/", string.Empty);
+        var physicalPath = string.Concat(ApplicationFacade.PhysicalDirectory, filePath.Replace("/", "\\"));
+
+        var decodedUrl = HttpUtility.UrlDecode(physicalPath);
+        if (!System.IO.File.Exists(decodedUrl))
+            return;
+
+        var originalName = Path.GetFileName(decodedUrl);
+        var file = System.IO.File.ReadAllBytes(decodedUrl);
+
+        Response.Clear();
+        Response.AddHeader("Content-disposition", $"attachment; filename={originalName}");
+        Response.ContentType = contentType;
+        Response.BinaryWrite(file);
+        Response.End();
     }
 
     [HttpPost]
@@ -128,7 +222,6 @@ public class ReportStudiesController : Controller
 
     [Route("listargrupos")]
     [HttpGet]
-
     public JsonResult ListarGrupos()
     {
         try
@@ -185,7 +278,6 @@ public class ReportStudiesController : Controller
             LogFacade.SaveError(ex);
             return Json(new { success = false, message = "Erro ao deletar  arquivo." }, JsonRequestBehavior.AllowGet);
         }
-
     }
 
     [HttpPost]
@@ -205,7 +297,6 @@ public class ReportStudiesController : Controller
 
         try
         {
-
             reportStudiesBusiness.ImportCsv(file, SessionFacade.UsuarioLogado.Usuario, SessionFacade.UsuarioLogado.Grupo, out var retorno);
             return Json(new { success = true, retorno, message = "Importação realizada com sucesso!." }, JsonRequestBehavior.AllowGet);
         }
@@ -215,7 +306,4 @@ public class ReportStudiesController : Controller
             return Json(new { success = false, retorno = "", message = ex.Message }, JsonRequestBehavior.AllowGet);
         }
     }
-
-
-
 }
