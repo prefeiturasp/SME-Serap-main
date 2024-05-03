@@ -37,6 +37,10 @@
 			'checkReportStudiesExists': {
 				method: 'GET',
 				url: base_url('ReportStudies/CheckReportStudiesExists')
+			},
+			'getReportStudies': {
+				method: 'GET',
+				url: base_url('ReportStudies/GetReportStudies')
 			},			
 		};
 

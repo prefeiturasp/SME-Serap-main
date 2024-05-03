@@ -104,20 +104,21 @@ public class ReportStudiesController : Controller
         }
 
         var filePath = new Uri(link).AbsolutePath.Replace("Files/", string.Empty);
-        var physicalPath = string.Concat(ApplicationFacade.PhysicalDirectory, filePath.Replace("/", "\\"));
+        var physicalPath = string.Concat(ApplicationFacade.PhysicalDirectorySme, filePath.Replace("/", "\\"));
 
         var decodedUrl = HttpUtility.UrlDecode(physicalPath);
         if (!System.IO.File.Exists(decodedUrl))
             return;
 
-        var originalName = Path.GetFileName(decodedUrl);
         var file = System.IO.File.ReadAllBytes(decodedUrl);
 
         Response.Clear();
-        Response.AddHeader("Content-disposition", $"attachment; filename={originalName}");
         Response.ContentType = contentType;
+        Response.Buffer = true;
+        Response.Cache.SetCacheability(HttpCacheability.NoCache);
         Response.BinaryWrite(file);
         Response.End();
+        Response.Close();
     }
 
     [HttpPost]
