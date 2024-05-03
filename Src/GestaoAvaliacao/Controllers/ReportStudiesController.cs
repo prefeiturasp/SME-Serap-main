@@ -201,9 +201,8 @@ public class ReportStudiesController : Controller
                     STipoGrupo = entity.TypeGroup != null ? entity.TypeGroup.ToString() : null,
                     Grupo = entity.TypeGroup != null ? ((EnumTypeGroup)entity.TypeGroup).GetDescription() : "",
                     Destinatario = entity.Addressee,
-                    UadCodigoDestinatario = entity.UadCodigoDestinatario,
+                    entity.UadCodigoDestinatario,
                     DataUpload = entity.CreateDate.ToString(),
-                    Link = entity.Link,
                     ObjDestinatario = new { id = $"{entity.UadCodigoDestinatario?.ToString()}", text = $"{entity.Addressee?.ToString()}" }
                 });
 
