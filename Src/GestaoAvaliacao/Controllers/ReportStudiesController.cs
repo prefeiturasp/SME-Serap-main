@@ -4,6 +4,7 @@ using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Util;
 using GestaoAvaliacao.WebProject.Facade;
+using ProvaSP.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,6 +28,31 @@ public class ReportStudiesController : Controller
         return View();
     }
 
+    private bool CheckReportEstudiesPermissions(EnumTypeGroup typeGroup)
+    {
+        if (typeGroup == EnumTypeGroup.PUBLICO)
+            return true;
+
+        var usuarioLogado = SessionFacade.UsuarioLogado;
+        if (usuarioLogado == null)
+            throw new ApplicationException("Usuário não autenticado para visualizar o relatório de estudos.");
+
+        var usuario = DataUsuario.RetornarUsuario(usuarioLogado.Usuario.usu_login, "");
+
+        switch (typeGroup)
+        {
+            case EnumTypeGroup.UE:
+                return usuario.AcessoNivelEscola;
+            case EnumTypeGroup.DRE:
+                return usuario.AcessoNivelDRE;
+            case EnumTypeGroup.SME:
+                return usuario.AcessoNivelSME;
+            case EnumTypeGroup.GERAL:
+            default:
+                return true;
+        }
+    }
+
     [AllowAnonymous]
     [HttpGet]
     public JsonResult CheckReportStudiesExists(long id)
@@ -44,21 +70,28 @@ public class ReportStudiesController : Controller
                 valid.Message = "Relatório de estudos não existe";
             else
             {
-                var link = entity.Link;
-                if (string.IsNullOrEmpty(link))
-                    valid.Message = "Link do relatório de estudos não existe";
+                var typeGroup = entity.TypeGroup ?? (int)EnumTypeGroup.PUBLICO;
+                if (!CheckReportEstudiesPermissions((EnumTypeGroup)typeGroup))
+                    valid.Message = "Você não possui permissão de acesso ao relatório de estudos.";
                 else
                 {
-                    var filePath = new Uri(link).AbsolutePath.Replace("Files/", string.Empty);
-                    var physicalPath = string.Concat(ApplicationFacade.PhysicalDirectory, filePath.Replace("/", "\\"));
-                    var decodedUrl = HttpUtility.UrlDecode(physicalPath);
-
-                    if (!System.IO.File.Exists(decodedUrl))
-                        valid.Message = "Caminho do relatório de estudos não existe";
+                    var link = entity.Link;
+                    if (string.IsNullOrEmpty(link))
+                        valid.Message = "Link do relatório de estudos não existe";
                     else
                     {
-                        valid.IsValid = true;
-                        valid.Type = string.Empty;
+                        var filePath = new Uri(link).AbsolutePath.Replace("Files/", string.Empty);
+                        var physicalPath = string.Concat(ApplicationFacade.PhysicalDirectorySme,
+                            filePath.Replace("/", "\\"));
+                        var decodedUrl = HttpUtility.UrlDecode(physicalPath);
+
+                        if (!System.IO.File.Exists(decodedUrl))
+                            valid.Message = "Caminho do relatório de estudos não existe";
+                        else
+                        {
+                            valid.IsValid = true;
+                            valid.Type = string.Empty;
+                        }
                     }
                 }
             }

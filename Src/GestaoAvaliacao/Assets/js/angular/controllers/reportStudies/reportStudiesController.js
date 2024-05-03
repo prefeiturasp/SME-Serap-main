@@ -289,7 +289,7 @@
                     window.open("/ReportStudies/GetReportStudies?Id=" + codigo, "_blank");
                 }
                 else {
-                    $notification.alert("Relatório de estudos não encontrado");
+                    $notification.alert(result.message);
                 }
             });
         };
