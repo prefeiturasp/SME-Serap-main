@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ProvaSP.Model.Entidades;
 
 [Authorize]
 [AuthorizeModule]
@@ -28,28 +29,27 @@ public class ReportStudiesController : Controller
         return View();
     }
 
-    private bool CheckReportEstudiesPermissions(EnumTypeGroup typeGroup)
+    private static bool CheckReportEstudiesPermissions(EnumTypeGroup typeGroup)
     {
-        if (typeGroup == EnumTypeGroup.PUBLICO)
-            return true;
-
         var usuarioLogado = SessionFacade.UsuarioLogado;
-        if (usuarioLogado == null)
-            throw new ApplicationException("Usuário não autenticado para visualizar o relatório de estudos.");
 
-        var usuario = DataUsuario.RetornarUsuario(usuarioLogado.Usuario.usu_login, "");
+        Usuario usuario = null;
+        if (usuarioLogado != null)
+            usuario = DataUsuario.RetornarUsuario(usuarioLogado.Usuario.usu_login, "");
 
         switch (typeGroup)
         {
-            case EnumTypeGroup.UE:
-                return usuario.AcessoNivelEscola;
-            case EnumTypeGroup.DRE:
-                return usuario.AcessoNivelDRE;
             case EnumTypeGroup.SME:
-                return usuario.AcessoNivelSME;
+                return usuario != null && usuario.AcessoNivelSME;
+            case EnumTypeGroup.DRE:
+                return usuario != null && (usuario.AcessoNivelSME || usuario.AcessoNivelDRE);
+            case EnumTypeGroup.UE:
+                return usuario != null && (usuario.AcessoNivelSME || usuario.AcessoNivelDRE || usuario.AcessoNivelEscola);
             case EnumTypeGroup.GERAL:
+                return usuarioLogado != null;
+            case EnumTypeGroup.PUBLICO:
             default:
-                return true;
+                return typeGroup == EnumTypeGroup.PUBLICO;
         }
     }
 
@@ -116,42 +116,51 @@ public class ReportStudiesController : Controller
         if (entity == null)
             return;
 
-        var link = entity.Link;
-        if (string.IsNullOrEmpty(link))
-            return;
-
-        var fileExtension = Path.GetExtension(link);
-        var fileExtensionEnum = EnumExtensions.GetValueFromDescription<EnumFileExtension>(fileExtension);
-
-        string contentType;
-        switch (fileExtensionEnum)
+        var typeGroup = entity.TypeGroup ?? (int)EnumTypeGroup.PUBLICO;
+        if (!CheckReportEstudiesPermissions((EnumTypeGroup)typeGroup))
         {
-            case EnumFileExtension.Html:
-                contentType = EnumFileContentType.Html.GetDescription();
-                break;
-            case EnumFileExtension.Csv:
-                contentType = EnumFileContentType.Csv.GetDescription();
-                break;
-            default:
-                throw new NotImplementedException("Extensão de arquivo não implementada.");
+            System.Web.HttpContext.Current.Response.Redirect("/", false);
+            System.Web.HttpContext.Current.ApplicationInstance.CompleteRequest();
         }
+        else
+        {
+            var link = entity.Link;
+            if (string.IsNullOrEmpty(link))
+                return;
 
-        var filePath = new Uri(link).AbsolutePath.Replace("Files/", string.Empty);
-        var physicalPath = string.Concat(ApplicationFacade.PhysicalDirectorySme, filePath.Replace("/", "\\"));
+            var fileExtension = Path.GetExtension(link);
+            var fileExtensionEnum = EnumExtensions.GetValueFromDescription<EnumFileExtension>(fileExtension);
 
-        var decodedUrl = HttpUtility.UrlDecode(physicalPath);
-        if (!System.IO.File.Exists(decodedUrl))
-            return;
+            string contentType;
+            switch (fileExtensionEnum)
+            {
+                case EnumFileExtension.Html:
+                    contentType = EnumFileContentType.Html.GetDescription();
+                    break;
+                case EnumFileExtension.Csv:
+                    contentType = EnumFileContentType.Csv.GetDescription();
+                    break;
+                default:
+                    throw new NotImplementedException("Extensão de arquivo não implementada.");
+            }
 
-        var file = System.IO.File.ReadAllBytes(decodedUrl);
+            var filePath = new Uri(link).AbsolutePath.Replace("Files/", string.Empty);
+            var physicalPath = string.Concat(ApplicationFacade.PhysicalDirectorySme, filePath.Replace("/", "\\"));
 
-        Response.Clear();
-        Response.ContentType = contentType;
-        Response.Buffer = true;
-        Response.Cache.SetCacheability(HttpCacheability.NoCache);
-        Response.BinaryWrite(file);
-        Response.End();
-        Response.Close();
+            var decodedUrl = HttpUtility.UrlDecode(physicalPath);
+            if (!System.IO.File.Exists(decodedUrl))
+                return;
+
+            var file = System.IO.File.ReadAllBytes(decodedUrl);
+
+            Response.Clear();
+            Response.ContentType = contentType;
+            Response.Buffer = true;
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.BinaryWrite(file);
+            Response.End();
+            Response.Close();
+        }
     }
 
     [HttpPost]
