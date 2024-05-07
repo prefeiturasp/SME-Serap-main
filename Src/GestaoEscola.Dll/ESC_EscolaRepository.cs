@@ -186,6 +186,21 @@ namespace GestaoEscolar.Repository
             }
         }
 
+        public IEnumerable<EscolaDto> ListarEscolasPorCodigosDres(IEnumerable<string> uads_codigos)
+        {
+            var sql = $@"SELECT esc.esc_codigo as EscCodigo , esc.esc_nome as EscNome
+								FROM ESC_Escola esc
+								INNER JOIN SYS_UnidadeAdministrativa uad ON uad.uad_id = esc.uad_idSuperiorGestao
+								where esc.esc_situacao = 1
+								and uad.uad_codigo in ({string.Join(",", uads_codigos.ToArray())})";
+
+            using (var cn = Connection)
+            {
+                cn.Open();
+                return cn.Query<EscolaDto>(sql).ToList();
+            }
+        }
+
         public EscolaDto ObterEscolaPorCodigo(string esc_codigo)
         {
             var sql = @"SELECT esc.esc_codigo as EscCodigo , esc.esc_nome as EscNome

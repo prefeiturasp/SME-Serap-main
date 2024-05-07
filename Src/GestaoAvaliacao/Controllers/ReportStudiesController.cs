@@ -7,10 +7,12 @@ using GestaoAvaliacao.WebProject.Facade;
 using ProvaSP.Data;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using GestaoEscolar.IBusiness;
 using ProvaSP.Model.Entidades;
 
 [Authorize]
@@ -18,10 +20,15 @@ using ProvaSP.Model.Entidades;
 public class ReportStudiesController : Controller
 {
     private readonly IReportStudiesBusiness reportStudiesBusiness;
+    private readonly ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness;
+    private readonly IESC_EscolaBusiness escolaBusiness;
 
-    public ReportStudiesController(IReportStudiesBusiness reportStudiesBusiness)
+    public ReportStudiesController(IReportStudiesBusiness reportStudiesBusiness,
+        ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness, IESC_EscolaBusiness escolaBusiness)
     {
         this.reportStudiesBusiness = reportStudiesBusiness;
+        this.unidadeAdministrativaBusiness = unidadeAdministrativaBusiness;
+        this.escolaBusiness = escolaBusiness;
     }
 
     public ActionResult Index()
@@ -29,22 +36,28 @@ public class ReportStudiesController : Controller
         return View();
     }
 
-    private static bool CheckReportEstudiesPermissions(EnumTypeGroup typeGroup)
+    private bool CheckReportEstudiesPermissions(EnumTypeGroup typeGroup, string uadCodigoDestinatario)
     {
         var usuarioLogado = SessionFacade.UsuarioLogado;
 
         Usuario usuario = null;
+        var dres= Enumerable.Empty<string>();
+        var ues = Enumerable.Empty<string>();
         if (usuarioLogado != null)
+        {
             usuario = DataUsuario.RetornarUsuario(usuarioLogado.Usuario.usu_login, "");
+            dres = unidadeAdministrativaBusiness.LoadDRESimple(usuarioLogado.Usuario, usuarioLogado.Grupo).Select(c => c.uad_codigo);
+            ues = escolaBusiness.ListarEscolasPorCodigosDres(dres).Select(c => c.EscCodigo);
+        }
 
         switch (typeGroup)
         {
             case EnumTypeGroup.SME:
                 return usuario != null && usuario.AcessoNivelSME;
             case EnumTypeGroup.DRE:
-                return usuario != null && (usuario.AcessoNivelSME || usuario.AcessoNivelDRE);
+                return usuario != null && (usuario.AcessoNivelSME || (usuario.AcessoNivelDRE && dres.Contains(uadCodigoDestinatario ?? string.Empty)));
             case EnumTypeGroup.UE:
-                return usuario != null && (usuario.AcessoNivelSME || usuario.AcessoNivelDRE || usuario.AcessoNivelEscola);
+                return usuario != null && (usuario.AcessoNivelSME || (usuario.AcessoNivelDRE && dres.Contains(uadCodigoDestinatario ?? string.Empty)) || (usuario.AcessoNivelEscola && ues.Contains(uadCodigoDestinatario ?? string.Empty)));
             case EnumTypeGroup.GERAL:
                 return usuarioLogado != null;
             case EnumTypeGroup.PUBLICO:
@@ -71,7 +84,7 @@ public class ReportStudiesController : Controller
             else
             {
                 var typeGroup = entity.TypeGroup ?? (int)EnumTypeGroup.PUBLICO;
-                if (!CheckReportEstudiesPermissions((EnumTypeGroup)typeGroup))
+                if (!CheckReportEstudiesPermissions((EnumTypeGroup)typeGroup, entity.UadCodigoDestinatario))
                     valid.Message = "Você não possui permissão de acesso ao relatório de estudos.";
                 else
                 {
@@ -117,7 +130,7 @@ public class ReportStudiesController : Controller
             return;
 
         var typeGroup = entity.TypeGroup ?? (int)EnumTypeGroup.PUBLICO;
-        if (!CheckReportEstudiesPermissions((EnumTypeGroup)typeGroup))
+        if (!CheckReportEstudiesPermissions((EnumTypeGroup)typeGroup, entity.UadCodigoDestinatario))
         {
             System.Web.HttpContext.Current.Response.Redirect("/", false);
             System.Web.HttpContext.Current.ApplicationInstance.CompleteRequest();
