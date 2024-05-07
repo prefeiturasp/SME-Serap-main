@@ -26,6 +26,7 @@ namespace GestaoAvaliacao.Business
         private readonly IFileBusiness fileBusiness;
         private readonly IESC_EscolaBusiness _schoolBusiness;
         private readonly ISYS_UnidadeAdministrativaBusiness _uadBusiness;
+
         public ReportStudiesBusiness(IReportStudiesRepository reportStudiesRepository, IFileBusiness fileBusiness, IESC_EscolaBusiness _schoolBusiness,
            ISYS_UnidadeAdministrativaBusiness _uadBusiness)
         {
@@ -84,6 +85,11 @@ namespace GestaoAvaliacao.Business
             return reportStudiesRepository.Update(entity);
         }
 
+        public ReportStudies GetById(long id)
+        {
+            return reportStudiesRepository.GetById(id);
+        }
+
         private void TrataGrupoDestinatario(in ReportStudies entity)
         {
             if (entity.TypeGroup == null || entity.TypeGroup == 0)
@@ -127,12 +133,15 @@ namespace GestaoAvaliacao.Business
         {
             if (!string.IsNullOrEmpty(searchFilter))
                 return reportStudiesRepository.ListWithFilter(searchFilter);
+
             return reportStudiesRepository.ListPaginated(ref pager);
         }
+
         public void Delete(long id)
         {
             reportStudiesRepository.Delete(id);
         }
+
         public bool DeleteById(long id)
         {
             return reportStudiesRepository.DeleteById(id);
@@ -140,7 +149,6 @@ namespace GestaoAvaliacao.Business
 
         public void ImportCsv(HttpPostedFileBase arquivo, SYS_Usuario usuario, SYS_Grupo sysGrupo, out CsvImportDTO retornoCsv)
         {
-
             using (var leitorAquivo = new StreamReader(arquivo.InputStream, encoding: Encoding.UTF8))
             {
                 using (var csv = new CsvReader(leitorAquivo, config))
@@ -168,8 +176,6 @@ namespace GestaoAvaliacao.Business
                                                  entity))
                         { continue; }
 
-
-
                         if (Enum.TryParse(RemoveAcentos(item.TipoGrupo.ToUpper()), out EnumTypeGroup enumTypeGroup))
                             entity.TypeGroup = (int)enumTypeGroup;
 
@@ -178,7 +184,6 @@ namespace GestaoAvaliacao.Business
                         codigosAtualizados.Add(item.Codigo);
 
                         reportStudiesRepository.Update(entity);
-
                     }
                     retornoCsv = new CsvImportDTO
                     {
@@ -187,7 +192,6 @@ namespace GestaoAvaliacao.Business
                     };
 
                     retornoCsv.Erros.AddRange(listaErros);
-
                 }
             }
         }
@@ -253,7 +257,6 @@ namespace GestaoAvaliacao.Business
             }
 
             if (codigosAtualizados.Contains(item.Codigo))
-
             {
                 listaErros.Add(new ErrosImportacaoCSV
                 {
@@ -355,7 +358,6 @@ namespace GestaoAvaliacao.Business
                        (arrayLinha.Length > 0 && string.IsNullOrEmpty(arrayLinha[0]));
             }
         };
-
 
         private static string RemoveAcentos(string valor)
         {
