@@ -173,22 +173,22 @@ namespace GestaoEscolar.Repository
 
         public IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo)
         {
-            var sql = @"SELECT esc.esc_codigo as EscCodigo , esc.esc_nome as EscNome
-								FROM ESC_Escola esc
-								INNER JOIN SYS_UnidadeAdministrativa uad ON uad.uad_id = esc.uad_idSuperiorGestao
-								where esc.esc_situacao = 1
-								and uad.uad_codigo = @uad_codigo";
+            const string sql = @"SELECT esc.esc_codigo as EscCodigo , esc.esc_nome as EscNome, uad.uad_codigo as DreCodigo
+								    FROM ESC_Escola esc
+								    INNER JOIN SYS_UnidadeAdministrativa uad ON uad.uad_id = esc.uad_idSuperiorGestao
+								    where esc.esc_situacao = 1
+								    and uad.uad_codigo = @uad_codigo";
 
-            using (IDbConnection cn = Connection)
+            using (var cn = Connection)
             {
                 cn.Open();
-                return cn.Query<EscolaDto>(sql.ToString(), new { uad_codigo = uad_codigo }).ToList();
+                return cn.Query<EscolaDto>(sql.ToString(), new { uad_codigo }).ToList();
             }
         }
 
         public IEnumerable<EscolaDto> ListarEscolasPorCodigosDres(IEnumerable<string> uads_codigos)
         {
-            var sql = $@"SELECT esc.esc_codigo as EscCodigo , esc.esc_nome as EscNome
+            var sql = $@"SELECT esc.esc_codigo as EscCodigo, esc.esc_nome as EscNome, uad.uad_codigo as DreCodigo
 								FROM ESC_Escola esc
 								INNER JOIN SYS_UnidadeAdministrativa uad ON uad.uad_id = esc.uad_idSuperiorGestao
 								where esc.esc_situacao = 1

@@ -43,11 +43,22 @@ public class ReportStudiesController : Controller
         Usuario usuario = null;
         var dres= Enumerable.Empty<string>();
         var ues = Enumerable.Empty<string>();
+        var dresDasUes = Enumerable.Empty<string>();
+        var permissaoDre = false;
+        var permissaoUe = false;
+
         if (usuarioLogado != null)
         {
             usuario = DataUsuario.RetornarUsuario(usuarioLogado.Usuario.usu_login, "");
             dres = unidadeAdministrativaBusiness.LoadDRESimple(usuarioLogado.Usuario, usuarioLogado.Grupo).Select(c => c.uad_codigo);
-            ues = escolaBusiness.ListarEscolasPorCodigosDres(dres).Select(c => c.EscCodigo);
+            ues = escolaBusiness.ListarEscolasPorCodigosDres(dres).Select(c => c.EscCodigo).Distinct();
+            dresDasUes = escolaBusiness.ListarEscolasPorCodigosDres(dres).Select(c => c.DreCodigo).Distinct();
+
+            permissaoDre = usuario.AcessoNivelDRE && (dres.Contains(uadCodigoDestinatario ?? string.Empty) ||
+                                                      dresDasUes.Contains(uadCodigoDestinatario ?? string.Empty));
+
+            permissaoUe = usuario.AcessoNivelEscola && ues.Contains(uadCodigoDestinatario ?? string.Empty);
+
         }
 
         switch (typeGroup)
@@ -55,9 +66,9 @@ public class ReportStudiesController : Controller
             case EnumTypeGroup.SME:
                 return usuario != null && usuario.AcessoNivelSME;
             case EnumTypeGroup.DRE:
-                return usuario != null && (usuario.AcessoNivelSME || (usuario.AcessoNivelDRE && dres.Contains(uadCodigoDestinatario ?? string.Empty)));
+                return usuario != null && (usuario.AcessoNivelSME || permissaoDre);
             case EnumTypeGroup.UE:
-                return usuario != null && (usuario.AcessoNivelSME || (usuario.AcessoNivelDRE && dres.Contains(uadCodigoDestinatario ?? string.Empty)) || (usuario.AcessoNivelEscola && ues.Contains(uadCodigoDestinatario ?? string.Empty)));
+                return usuario != null && (usuario.AcessoNivelSME || permissaoDre || permissaoUe);
             case EnumTypeGroup.GERAL:
                 return usuarioLogado != null;
             case EnumTypeGroup.PUBLICO:
