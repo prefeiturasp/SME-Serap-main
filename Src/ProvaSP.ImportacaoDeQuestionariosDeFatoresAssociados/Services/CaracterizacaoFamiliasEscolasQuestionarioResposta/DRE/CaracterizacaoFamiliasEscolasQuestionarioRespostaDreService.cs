@@ -83,7 +83,7 @@ namespace ImportacaoDeQuestionariosSME.Services.CaracterizacaoFamiliasEscolasQue
                 indice++;
             }
 
-            //await _fatorAssociadoQuestionarioRespostaDreRepository.InsertAsync(entities);
+            await _fatorAssociadoQuestionarioRespostaDreRepository.InsertAsync(entities);
         }
 
         private static bool EhArquivoValido(DataTable csv)
