@@ -137,7 +137,7 @@
 @if (controllerDefault.Equals("item", StringComparison.CurrentCultureIgnoreCase) || controllerDefault.Equals("test", StringComparison.CurrentCultureIgnoreCase))
 {
     string urlMathJax = bool.Parse(ApplicationFacade.Parameters.First(p => p.Key.Equals("UTILIZACDNMATHJAX")).Value) ?
-        "http://cdn.mathjax.org/mathjax/latest/MathJax.js" : "/Assets/js/vendor/MathJax.js";
+        "https://cdn.mathjax.org/mathjax/latest/MathJax.js" : "/Assets/js/vendor/MathJax.js";
 
     <script src="@urlMathJax">
 
