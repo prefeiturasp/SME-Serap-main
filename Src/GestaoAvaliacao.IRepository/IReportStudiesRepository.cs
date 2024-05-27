@@ -14,7 +14,6 @@ namespace GestaoAvaliacao.IRepository
         void Delete(long id);
         ReportStudies GetById(long id);
         bool Update(ReportStudies entity);
-
         bool Edit(ReportStudies entity);
     }
 }
