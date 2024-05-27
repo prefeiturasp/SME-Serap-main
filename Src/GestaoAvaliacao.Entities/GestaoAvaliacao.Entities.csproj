@@ -71,7 +71,7 @@
     <Compile Include="DTO\SerapEstudantes\SimuladorAutenticacaoRespostaDTO.cs" />
     <Compile Include="DTO\TestTaiCurriculumGradeDTO.cs" />
     <Compile Include="Enumerator\EnumSystem.cs" />
-    <Compile Include="Enumerator\TypeGroup.cs" />
+    <Compile Include="Enumerator\EnumTypeGroup.cs" />
     <Compile Include="ReportStudies.cs" />
     <Compile Include="ResultadoPsp\ArquivoResultadoPsp.cs" />
     <Compile Include="BaseText.cs" />

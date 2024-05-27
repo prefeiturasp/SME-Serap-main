@@ -23,6 +23,7 @@ namespace GestaoEscolar.IBusiness
 		IEnumerable<ESC_Escola> LoadSimpleTeacher(Guid ent_id, Guid pes_id, Guid uad_id);
         IEnumerable<EscolaDto> LoadAllSchoollsActiveDto();
         IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo);
+        IEnumerable<EscolaDto> ListarEscolasPorCodigosDres(IEnumerable<string> uads_codigos);
         EscolaDto ObterEscolaPorCodigo(string esc_codigo);
     }
 }

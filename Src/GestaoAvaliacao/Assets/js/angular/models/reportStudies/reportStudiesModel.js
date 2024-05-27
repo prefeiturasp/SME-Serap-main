@@ -6,11 +6,10 @@
 
 		// Model
 		var model = {
-
 			'carregaImportacoes': {
 				method: 'GET',
 				url: base_url('ReportStudies/ListReportStudies')
-			},			
+			},
 			'importarArquivoResultado': {
 				method: 'POST',
 				url: base_url('ReportStudies/Importar')
@@ -35,6 +34,14 @@
 				method: 'GET',
 				url: base_url('ReportStudies/ListarGrupos')
 			},
+			'checkReportStudiesExists': {
+				method: 'GET',
+				url: base_url('ReportStudies/CheckReportStudiesExists')
+			},
+			'getReportStudies': {
+				method: 'GET',
+				url: base_url('ReportStudies/GetReportStudies')
+			},			
 		};
 
 		// Retorna o serviço       

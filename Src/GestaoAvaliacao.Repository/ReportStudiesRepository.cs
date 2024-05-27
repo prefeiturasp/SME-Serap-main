@@ -205,7 +205,6 @@ namespace GestaoAvaliacao.Repository
         }
         public ReportStudies GetById(long id)
         {
-
             var sql = new StringBuilder(@"SELECT 
                                        Id,
                                        Name,

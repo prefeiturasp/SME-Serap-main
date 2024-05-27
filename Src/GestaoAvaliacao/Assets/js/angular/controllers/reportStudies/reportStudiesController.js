@@ -283,8 +283,15 @@
             angular.element('#modalDelete').modal({ backdrop: 'static' });
         };
 
-        $scope.abrirLink = function __abrirLink(link) {
-            $window.open(link, '_blank', 'noreferrer');
+        $scope.abrirLink = function __abrirLink(codigo) {
+            ReportStudiesModel.checkReportStudiesExists({ Id: codigo }, function (result) {
+                if (result.success) {
+                    window.open("/ReportStudies/GetReportStudies?Id=" + codigo, "_blank");
+                }
+                else {
+                    $notification.alert(result.message);
+                }
+            });
         };
 
         $scope.deletar = function __deletar() {

@@ -20,5 +20,6 @@ namespace GestaoAvaliacao.IBusiness
         IEnumerable<AJX_Select2> ListarGrupos();
         IEnumerable<AJX_Select2> ListarDestinatarios(SYS_Usuario usuario, SYS_Grupo sysGrupo, EnumTypeGroup? tipoGrupo, string filtroDesc = null);
         bool Update(ReportStudies entity);
+        ReportStudies GetById(long id);
     }
 }
