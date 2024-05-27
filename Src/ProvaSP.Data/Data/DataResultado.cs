@@ -492,6 +492,40 @@ namespace ProvaSP.Data
             }
         }
 
+        public static IEnumerable<ResultadoAluno> ObterResultadoAluno(string codigoAluno, int anoEdicao)
+        {
+            using (var conn = new SqlConnection(StringsConexao.ProvaSP))
+            {
+                var parametros = new DynamicParameters();
+
+                parametros.Add("anoEdicao", anoEdicao.ToString(), System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 10);
+                parametros.Add("codigoAluno", codigoAluno, System.Data.DbType.AnsiString, System.Data.ParameterDirection.Input, 50);
+
+                conn.Open();
+                return conn.Query<ResultadoAluno>(
+                        sql: $@"select
+	                            ra.edicao as AnoEdicao,
+	                            esc_codigo as CodigoUe,
+	                            tur_codigo as AnoTurma,
+	                            tur_id as CodigoTurma,
+	                            alu_matricula as CodigoAluno,
+	                            alu_nome as Aluno,
+	                            ra.AreaConhecimentoID as CodigoAreaConhecimento,
+	                            ac.Nome as AreaConhecimento,
+	                            np.nome as Nivel,
+	                            ra.Valor as Proficiencia
+                            from
+	                            ProvaSP.dbo.ResultadoAluno ra
+                            left join ProvaSP.dbo.NivelProficiencia np on
+	                            np.NivelProficienciaID = ra.NivelProficienciaID
+                            left join ProvaSP.dbo.AreaConhecimento ac on
+	                            ac.AreaConhecimentoID = ra.AreaConhecimentoID
+                            where ra.edicao = @anoEdicao
+                              and ra.alu_matricula = @codigoAluno ",
+                        param: parametros);
+            }
+        }
+
         public static byte[] ExportarDadosDreEscolasDosAlunos(string Edicao, int AreaConhecimentoID, string AnoEscolar, string lista_uad_sigla)
         {
             var dadosDosAlunos = new List<DadosDosAlunosParaExportarCsvDreEscolas>();
