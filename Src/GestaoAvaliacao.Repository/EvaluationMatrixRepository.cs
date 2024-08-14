@@ -330,11 +330,12 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-        public EvaluationMatrix Get(long Id)
+        public EvaluationMatrix Get(long Id, bool considerActiveState = true)
         {
             var sql = new StringBuilder("SELECT [Id],[Description],[Edition],[CreateDate],[UpdateDate],[State],[Discipline_Id],[ModelEvaluationMatrix_Id] ");
             sql.Append("FROM [EvaluationMatrix] WITH (NOLOCK) ");
-            sql.Append("WHERE [Id] = @id AND [State] = @state ");
+            if (considerActiveState)
+                sql.Append("WHERE [Id] = @id AND [State] = @state ");
 
             using (IDbConnection cn = Connection)
             {
