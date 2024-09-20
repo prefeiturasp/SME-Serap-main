@@ -58,7 +58,7 @@ var corteCache = [];
  Questionário 8: Funcionalidades de acompanhamento da ProvaSP no dia da mesma;
  Fichas de registro: Perguntas aos diretores e responsáveis sobre andamento técnico da ProvaSP
 */
-var edicoesComTurmasAmostrais = ["2017", "2018", "2019", "2021", "2023"];
+var edicoesComTurmasAmostrais = ["2017", "2018", "2019", "2021", "2023", "2024"];
 var edicoesRevistasPedagogicas = []; // ["2017"] é Boletim
 var questionarios = [
     //"1",/*Questionário Supervisor*/
@@ -84,10 +84,14 @@ var questionarios = [
     //"26",/*NOVO Questionário Diretor 2021*/
     //"27",/*NOVO Questionário CP 2021*/
     //"28",/*NOVO Questionário Professor 2021*/
-    "29",/*NOVO Questionário Diretor 2023*/
-    "30",/*NOVO Questionário CP 2023*/
-    "31",/*NOVO Questionário Professor 2023*/
-    "32",/*NOVO Questionário Supervisor Escolar 2023*/
+    //"29",/*NOVO Questionário Diretor 2023*/
+    //"30",/*NOVO Questionário CP 2023*/
+    //"31",/*NOVO Questionário Professor 2023*/
+    //"32",/*NOVO Questionário Supervisor Escolar 2023*/
+    "33",/*NOVO Questionário Diretor 2024*/
+    "34",/*NOVO Questionário CP 2024*/
+    "35",/*NOVO Questionário Professor 2024*/
+    "36",/*NOVO Questionário Supervisor Escolar 2024*/
 ];
 /**
 -----MSTECH-----
@@ -536,12 +540,12 @@ function onDeviceReady() {
          *Questionário do Supervisor foi descontinuado em 2018
         */
         if (Usuario.Diretor) {
-            $("#divAbrirQuestionarioID_29").show();
+            $("#divAbrirQuestionarioID_33").show();
             // Desabilitar temporariamente a ficha de registro dos professores 22/10/19
             //$("#divAbrirQuestionarioID_10").show();
         }
         if (Usuario.Professor) {
-            $("#divAbrirQuestionarioID_31").show();
+            $("#divAbrirQuestionarioID_35").show();
         }
         if (Usuario.Aluno) {
             var turma_ano = parseInt(Usuario.Ano);
@@ -559,11 +563,11 @@ function onDeviceReady() {
         }
         
         if (Usuario.Supervisor) {            
-            $("#divAbrirQuestionarioID_32").show();
+            $("#divAbrirQuestionarioID_36").show();
         }
 
         if (Usuario.Coordenador) {
-            $("#divAbrirQuestionarioID_30").show();
+            $("#divAbrirQuestionarioID_34").show();
             //$("#divAbrirQuestionarioID_11").show();
         }
         /*if (Usuario.AuxiliarTecnicoEducacao) {
@@ -6191,8 +6195,8 @@ function definirEventHandlers() {
      para iniciar o questionário de fato.
      *Reparar que esconde a introdução e mostra as questões
     */
-    $("#btnQuestionario1_Iniciar,#btnQuestionario29_Iniciar,#btnQuestionario30_Iniciar," +
-        "#btnQuestionario31_Iniciar,#btnQuestionario32_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
+    $("#btnQuestionario1_Iniciar,#btnQuestionario33_Iniciar,#btnQuestionario34_Iniciar," +
+        "#btnQuestionario35_Iniciar,#btnQuestionario36_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
         "#btnQuestionario15_Iniciar,#btnQuestionario16_Iniciar,#btnQuestionario17_Iniciar," +
         "#btnQuestionario18_Iniciar,#btnQuestionario21_Iniciar,#btnQuestionario22_Iniciar")
         .unbind("click").click(function () {
