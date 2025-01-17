@@ -58,7 +58,7 @@ var corteCache = [];
  Questionário 8: Funcionalidades de acompanhamento da ProvaSP no dia da mesma;
  Fichas de registro: Perguntas aos diretores e responsáveis sobre andamento técnico da ProvaSP
 */
-var edicoesComTurmasAmostrais = ["2017", "2018", "2019", "2021", "2023"];
+var edicoesComTurmasAmostrais = ["2017", "2018", "2019", "2021", "2023", "2024"];
 var edicoesRevistasPedagogicas = []; // ["2017"] é Boletim
 var questionarios = [
     //"1",/*Questionário Supervisor*/
