@@ -393,6 +393,10 @@
     <Content Include="AppProvaSP\questionario_10.html" />
     <Content Include="AppProvaSP\questionario_11.html" />
     <Content Include="AppProvaSP\questionario_12.html" />
+    <Content Include="AppProvaSP\questionario_36.html" />
+    <Content Include="AppProvaSP\questionario_35.html" />
+    <Content Include="AppProvaSP\questionario_34.html" />
+    <Content Include="AppProvaSP\questionario_33.html" />
     <Content Include="AppProvaSP\questionario_32.html" />
     <Content Include="AppProvaSP\questionario_31.html" />
     <Content Include="AppProvaSP\questionario_30.html" />
