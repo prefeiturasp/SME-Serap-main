@@ -467,6 +467,12 @@ namespace GestaoAvaliacao.MappingDependence
                 .WithService.AllInterfaces()
                 .SetLifestyle(LifestylePerWebRequest));
 
+
+            container.Register(Classes.FromAssemblyContaining<BoletimProvaBusiness>()
+                .BasedOn(typeof(IBoletimProvaBusiness))
+                .WithService.AllInterfaces()
+                .SetLifestyle(LifestylePerWebRequest));
+
             container.Register(Classes.FromAssemblyContaining<ResultadoPspBusiness>()
                 .BasedOn(typeof(IResultadoPspBusiness))
                 .WithService.AllInterfaces()
