@@ -1780,6 +1780,7 @@ namespace GestaoAvaliacao.Repository
                 test.ProvaComProficiencia = entity.ProvaComProficiencia;
                 test.ApresentarResultados = entity.ApresentarResultados;
                 test.ApresentarResultadosPorItem = entity.ApresentarResultadosPorItem;
+                test.ShowInReport = entity.ShowInReport;
 
                 test.UpdateDate = DateTime.Now;
 
