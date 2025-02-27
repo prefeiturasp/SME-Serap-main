@@ -19,12 +19,7 @@ namespace GestaoAvaliacao.Entities
         public virtual long TypeCurriculumGradeId { get; set; }
         [Column("Percentage")]
         public virtual int Percentage { get; set; }
-
         [Column("Test_Id")]
         public virtual long TestId { get; set; }
-
-
-
-
     }
 }

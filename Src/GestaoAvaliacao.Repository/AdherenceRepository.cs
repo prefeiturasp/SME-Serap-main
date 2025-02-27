@@ -644,14 +644,15 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<AdherenceGrid> LoadStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao)
 		{
 			#region Query
-			var sql = string.Format(@"
+			var sql = $@"
                         SELECT 
 	                        Alu.alu_id, 
 							Alu.pes_id,
 							Mtu.mtu_numeroChamada,
 	                        (CASE WHEN (Mtu.mtu_numeroChamada > 0) THEN CAST(Mtu.mtu_numeroChamada AS VARCHAR(MAX)) + ' - ' ELSE '' END + Alu.alu_nome) AS alu_nome, 
-	                        ISNULL(a.TypeSelection, {0}) AS TypeSelection,
-                            CAST(CASE WHEN (a.Id IS NULL) THEN 0 ELSE 1 END AS BIT) AS existAdherence
+	                        ISNULL(a.TypeSelection, {(AllAdhered ? (byte)EnumAdherenceSelection.Selected : (byte)EnumAdherenceSelection.NotSelected)}) AS TypeSelection,
+                            CAST(CASE WHEN (a.Id IS NULL) THEN 0 ELSE 1 END AS BIT) AS existAdherence,
+                            Alu.alu_matricula as Alu_Matricula
                         FROM 
 	                        SGP_MTR_MatriculaTurma AS Mtu WITH(NOLOCK)
 	                        INNER JOIN SGP_ACA_Aluno AS Alu WITH(NOLOCK)
@@ -665,21 +666,21 @@ namespace GestaoAvaliacao.Repository
 						   AND Mtu.mtu_situacao <> @stateExcluido
 						   AND Mtu.mtu_dataMatricula <= @dataAplicacao
 						   AND(Mtu.mtu_dataSaida IS NULL OR Mtu.mtu_dataSaida > @dataAplicacao)
-						ORDER BY mtu_numeroChamada, alu_nome;",
-					AllAdhered ? (byte)EnumAdherenceSelection.Selected : (byte)EnumAdherenceSelection.NotSelected);
+						ORDER BY mtu_numeroChamada, alu_nome;";
 			#endregion
 
-			using (IDbConnection cn = Connection)
+			using (var cn = Connection)
 			{
 				cn.Open();
 				var retorno = cn.Query<AdherenceGrid>(sql, new 
 				{
-					tur_id = tur_id,
-					test_id = test_id,
+                    tur_id,
+                    test_id,
 					stateExcluido = (byte)3,
 					typeEntity = (byte)EnumAdherenceEntity.Student,
-					dataAplicacao = dataAplicacao
+                    dataAplicacao
 				});
+
 				return retorno;
 			}
 		}
@@ -1268,23 +1269,26 @@ namespace GestaoAvaliacao.Repository
 		public IEnumerable<AdherenceGrid> LoadSelectedStudent(long tur_id, long test_id, bool AllAdhered, DateTime dataAplicacao)
 		{
 			#region Query
+
 			var sql = new StringBuilder();
-			sql.AppendFormat(@" SELECT 
+
+            sql.AppendFormat(@" SELECT 
 	                                Alu.alu_id, 
 	                                (CASE WHEN (Mtu.mtu_numeroChamada > 0) THEN CAST(Mtu.mtu_numeroChamada AS VARCHAR(MAX)) + ' - ' ELSE '' END + Alu.alu_nome) AS alu_nome, 
-	                                ISNULL(a.TypeSelection, {0}) AS TypeSelection
+	                                ISNULL(a.TypeSelection, {0}) AS TypeSelection,
+                                    Alu.alu_matricula as Alu_Matricula
                                 FROM 
 	                                SGP_MTR_MatriculaTurma AS Mtu WITH(NOLOCK)
 	                                INNER JOIN SGP_ACA_Aluno AS Alu WITH(NOLOCK)
 		                                ON Mtu.alu_id = Alu.alu_id
-		                                AND Alu.alu_situacao <> @stateExcluido "
-							, AllAdhered ? (byte)EnumAdherenceSelection.Selected : (byte)EnumAdherenceSelection.NotSelected);
+		                                AND Alu.alu_situacao <> @stateExcluido ",
+                AllAdhered ? (byte)EnumAdherenceSelection.Selected : (byte)EnumAdherenceSelection.NotSelected);
 
 			//Se a prova for para todas as escolas selecionadas, remover as que estão salvas como não selecionadas
 			if (AllAdhered)
 			{
 				sql.Append("LEFT JOIN Adherence A WITH (NOLOCK) ON A.EntityId = alu.alu_id AND A.Test_Id = @test_id AND a.TypeEntity = @typeEntity AND a.TypeSelection != @TypeSelection ");
-				sql.Append(string.Format("WHERE (a.Id IS NULL OR a.TypeSelection = {0}) AND ", (byte)EnumAdherenceSelection.Blocked));
+				sql.Append($"WHERE (a.Id IS NULL OR a.TypeSelection = {(byte)EnumAdherenceSelection.Blocked}) AND ");
 			}
 			//Senão, trazer apenas as que estão salvas como selecionadas/parcial
 			else
@@ -1301,18 +1305,18 @@ namespace GestaoAvaliacao.Repository
 
 			#endregion
 
-			using (IDbConnection cn = Connection)
+			using (var cn = Connection)
 			{
 				cn.Open();
 
 				var retorno = cn.Query<AdherenceGrid>(sql.ToString(), new
 				{
-					tur_id = tur_id,
-					test_id = test_id,
+                    tur_id,
+                    test_id,
 					stateExcluido = (byte)3,
 					typeEntity = (byte)EnumAdherenceEntity.Student,
 					TypeSelection = (byte)EnumAdherenceSelection.Selected,
-					dataAplicacao = dataAplicacao
+                    dataAplicacao
 				});
 
 				return retorno;

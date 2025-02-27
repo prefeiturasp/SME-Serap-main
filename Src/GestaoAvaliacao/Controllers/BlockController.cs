@@ -80,22 +80,28 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                IEnumerable<Block> blocos = blockBusiness.GetTestBlocks(Id);
-                if (blocos != null && blocos.Count() > 0)
-                {
-                    var retorno = blocos.Select(x => new
-                    {
-                        Id = x.Id,
-                        Description = x.Description,
-                        ItensCount = x.BlockItems != null ? x.BlockItems.Count : 0,
-                        ItensId = x.BlockItems.Select(i => i.Id),
-                        QtdeKnowledgeArea = x.Test.KnowledgeAreaBlock ? x.BlockItems.Select(p => p.KnowledgeArea_Id).Distinct().Count() : 0
-                    }).ToList();
+                var blocos = blockBusiness.GetTestBlocks(Id).ToList();
 
-                    return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+                if (!blocos.Any())
+                {
+                    return Json(
+                        new
+                        {
+                            success = false, type = ValidateType.alert.ToString(),
+                            message = "Não existe(m) bloco(s) de prova criado(s)."
+                        }, JsonRequestBehavior.AllowGet);
                 }
-                else
-                    return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Não existe(m) bloco(s) de prova criado(s)." }, JsonRequestBehavior.AllowGet);
+
+                var retorno = blocos.Select(x => new
+                {
+                    x.Id,
+                    x.Description,
+                    ItensCount = x.BlockItems?.Select(c => c.Id).Distinct().Count() ?? 0,
+                    ItensId = x.BlockItems?.Select(i => i.Id).Distinct(),
+                    QtdeKnowledgeArea = x.Test.KnowledgeAreaBlock ? x.BlockItems?.Select(p => p.KnowledgeArea_Id).Distinct().Count() : 0
+                }).ToList();
+
+                return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -114,38 +120,86 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                IEnumerable<Item> blockItens = blockBusiness.GetBlockItens(Id, page, pageItens);
+                var blockItens = blockBusiness.GetBlockItens(Id, page, pageItens);
 
-                if (blockItens != null && blockItens.Count() > 0)
-                {
-                    var retorno = blockItens.Select(x => new
-                    {
-                        Id = x.Id,
-                        Code = x.ItemCode,
-                        ItemVersion = x.ItemVersion,
-                        Revoked = x.Revoked ?? false,
-                        Statement = x.Statement,
-                        Periodo = x.ItemCurriculumGrades != null && x.ItemCurriculumGrades.FirstOrDefault() != null ? tipoCurriculoPeriodoBusiness.GetDescription(x.ItemCurriculumGrades.FirstOrDefault().TypeCurriculumGradeId, 0, 0, 0) : " - ",
-                        BaseTextId = (x.BaseText != null) ? (int?)x.BaseText.Id : (int?)null,
-                        BaseTextDescription = x.BaseText != null ? x.BaseText.Description : null,
-                        ItemLevel = x.ItemLevel != null ? new
-                        {
-                            Description = x.ItemLevel.Description,
-                            Value = x.ItemLevel.Value
-                        } : null,
-                        Skills = ReturnSkills(x.Id),
-                        Order = x.BlockItems != null && x.BlockItems.FirstOrDefault(i => i.Item_Id == x.Id) != null ? x.BlockItems.FirstOrDefault(i => i.Item_Id == x.Id).Order : 0,
-                        DisciplineDescription = x.EvaluationMatrix.Discipline.Description,
-                        KnowledgeArea_Id = x.KnowledgeArea_Id,
-                        KnowledgeArea_Description = x.KnowledgeArea_Description,
-                        KnowledgeArea_Order = x.KnowledgeArea_Order,
-                        ItemCodeVersion = x.ItemCodeVersion
-                    }).OrderBy(x => x.KnowledgeArea_Order).ThenBy(x => x.Order).ToList();
-
-                    return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
-                }
-                else
+                if (blockItens == null || !blockItens.Any())
                     return Json(new { success = true, lista = "" }, JsonRequestBehavior.AllowGet);
+
+                var retorno = blockItens.Select(x => new
+                {
+                    x.Id,
+                    Code = x.ItemCode,
+                    x.ItemVersion,
+                    Revoked = x.Revoked ?? false,
+                    x.Statement,
+                    Periodo = x.ItemCurriculumGrades?.FirstOrDefault() != null ? tipoCurriculoPeriodoBusiness.GetDescription(x.ItemCurriculumGrades.First().TypeCurriculumGradeId, 0, 0, 0) : " - ",
+                    BaseTextId = x.BaseText != null ? (int?)x.BaseText.Id : null,
+                    BaseTextDescription = x.BaseText?.Description,
+                    ItemLevel = x.ItemLevel != null ? new
+                    {
+                        x.ItemLevel.Description,
+                        x.ItemLevel.Value
+                    } : null,
+                    Skills = ReturnSkills(x.Id),
+                    Order = x.BlockItems?.FirstOrDefault(i => i.Item_Id == x.Id) != null ? x.BlockItems.First(i => i.Item_Id == x.Id).Order : 0,
+                    DisciplineDescription = x.EvaluationMatrix.Discipline.Description,
+                    x.KnowledgeArea_Id,
+                    x.KnowledgeArea_Description,
+                    x.KnowledgeArea_Order,
+                    x.ItemCodeVersion
+                }).OrderBy(x => x.KnowledgeArea_Order).ThenBy(x => x.Order).ToList();
+
+                return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar recuperar os itens do bloco." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// Retorna os itens já inseridos no bloco pelo Id. Utilizado no gerenciamento de itens.
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public JsonResult GetBlockItensWithBlockChain(Int64 Id, int page, int pageItens)
+        {
+            try
+            {
+                var blockItens = blockBusiness.GetBlockItensWithBlockChain(Id, page, pageItens);
+
+                if (blockItens == null || !blockItens.Any())
+                    return Json(new { success = true, lista = "" }, JsonRequestBehavior.AllowGet);
+
+                var retorno = blockItens.Select(x => new
+                {
+                    x.Id,
+                    Code = x.ItemCode,
+                    x.ItemVersion,
+                    Revoked = x.Revoked ?? false,
+                    x.Statement,
+                    Periodo = x.ItemCurriculumGrades?.FirstOrDefault() != null ? tipoCurriculoPeriodoBusiness.GetDescription(x.ItemCurriculumGrades.First().TypeCurriculumGradeId, 0, 0, 0) : " - ",
+                    BaseTextId = x.BaseText != null ? (int?)x.BaseText.Id : null,
+                    BaseTextDescription = x.BaseText?.Description,
+                    ItemLevel = x.ItemLevel != null ? new
+                    {
+                        x.ItemLevel.Description,
+                        x.ItemLevel.Value
+                    } : null,
+                    Skills = ReturnSkills(x.Id),
+                    Order = x.BlockItems?.FirstOrDefault(i => i.Item_Id == x.Id) != null ? x.BlockItems.First(i => i.Item_Id == x.Id).Order : 0,
+                    DisciplineDescription = x.EvaluationMatrix.Discipline.Description,
+                    x.KnowledgeArea_Id,
+                    x.KnowledgeArea_Description,
+                    x.KnowledgeArea_Order,
+                    x.ItemCodeVersion,
+                    x.BlockChain_Id,
+                    x.BlockChain_Description
+                }).OrderBy(x => x.KnowledgeArea_Order).ThenBy(x => x.Order).ToList();
+
+                return Json(new { success = true, lista = retorno }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -317,7 +371,6 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-
                 if (entity.Id > 0)
                 {
                     blockBusiness.Update(entity, SessionFacade.UsuarioLogado.Usuario.usu_id,

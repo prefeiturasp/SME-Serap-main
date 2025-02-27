@@ -1,4 +1,7 @@
-﻿using GestaoAvaliacao.Entities;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using GestaoAvaliacao.Business.DTO;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
@@ -10,11 +13,22 @@ using GestaoEscolar.IBusiness;
 using MSTech.CoreSSO.Entities;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
+using GestaoAvaliacao.Business.DTO;
 using EntityFile = GestaoAvaliacao.Entities.File;
+using Validate = GestaoAvaliacao.Util.Validate;
+using GestaoAvaliacao.Entities.DTO.Tests;
+using System.Drawing;
+using System.Net.Http;
+using System.Drawing;
+using System.Net.Http;
 
 namespace GestaoAvaliacao.Business
 {
@@ -37,13 +51,19 @@ namespace GestaoAvaliacao.Business
         private readonly INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository;
         private readonly INumberItemTestTaiRepository numberItemTestTaiRepository;
         private readonly ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository;
-
+        private readonly IItemRepository itemRepository;
+        private readonly IBlockChainBusiness blockChainBusiness;
+        private readonly IResultadoPspBusiness resultadoPspBusiness;
+        private readonly IBlockChainBlockBusiness blockChainBlockBusiness;
+        private readonly IBlockBusiness blockBusiness;
+        private readonly IBlockChainBlockRepository blockChainBlockRepository;
 
         public TestBusiness(ITestRepository testRepository, IFileBusiness fileBusiness, IBookletBusiness bookletBusiness, IFileRepository fileRepository,
             ITestPerformanceLevelRepository testPerformanceLevelRepository, IItemLevelRepository itemLevelRepository, IPerformanceLevelRepository performanceLevelRepository,
             IBlockRepository blockRepository, IParameterBusiness parameterBusiness, IStorage storage, ITUR_TurmaBusiness turmaBusiness, ISYS_UnidadeAdministrativaBusiness unidadeAdministrativaBusiness,
             IESC_EscolaBusiness escolaBusiness, ITestTypeDeficiencyRepository testTypeDeficiencyRepository, INumberItemsAplicationTaiRepository numberItemsAplicationTaiRepository,
-            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository)
+            INumberItemTestTaiRepository numberItemTestTaiRepository, ITestTaiCurriculumGradeRepository testTaiCurriculumGradeRepository, IItemRepository itemRepository, IBlockChainBusiness blockChainBusiness,
+            IResultadoPspBusiness resultadoPspBusiness, IBlockChainBlockBusiness blockChainBlockBusiness, IBlockBusiness blockBusiness, IBlockChainBlockRepository blockChainBlockRepository)
         {
             this.testRepository = testRepository;
             this.fileRepository = fileRepository;
@@ -62,6 +82,12 @@ namespace GestaoAvaliacao.Business
             this.numberItemsAplicationTaiRepository = numberItemsAplicationTaiRepository;
             this.numberItemTestTaiRepository = numberItemTestTaiRepository;
             this.testTaiCurriculumGradeRepository = testTaiCurriculumGradeRepository;
+            this.itemRepository = itemRepository;
+            this.blockChainBusiness = blockChainBusiness;
+            this.resultadoPspBusiness = resultadoPspBusiness;
+            this.blockChainBlockBusiness = blockChainBlockBusiness;
+            this.blockBusiness = blockBusiness;
+            this.blockChainBlockRepository = blockChainBlockRepository;
         }
 
         #region Custom
@@ -81,10 +107,11 @@ namespace GestaoAvaliacao.Business
 
             return valid;
         }
+
         private Validate Validate(Test entity, ValidateAction action, Validate valid, bool isAdmin, Guid? UsuId = null)
         {
             valid.Message = null;
-            int qtdeMaxItems = 100;
+            const int qtdeMaxItems = 100;
 
             if (action == ValidateAction.Save)
             {
@@ -96,9 +123,10 @@ namespace GestaoAvaliacao.Business
                 || entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
                     valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
 
-                int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
+                var totalItems = entity.TestItemLevels?.Sum(i => i.Value) ?? 0;
+
                 if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)
-                    valid.Message = string.Format("A quantidade de itens deve ser menor ou igual a {0}.", qtdeMaxItems);
+                    valid.Message = $"A quantidade de itens deve ser menor ou igual a {qtdeMaxItems}.";
             }
 
             if (entity.Bib)
@@ -111,7 +139,7 @@ namespace GestaoAvaliacao.Business
                 if (maxBlock != null)
                 {
                     if (entity.NumberBlock > int.Parse(maxBlock.Value))
-                        valid.Message = string.Format("A quantidade de cadernos deve ser menor ou igual a {0}.", int.Parse(maxBlock.Value));
+                        valid.Message = $"A quantidade de cadernos deve ser menor ou igual a {int.Parse(maxBlock.Value)}.";
                 }
 
                 if (entity.BlockChain.GetValueOrDefault())
@@ -127,6 +155,12 @@ namespace GestaoAvaliacao.Business
                 }
             }
 
+            if (entity.TestTai)
+            {
+                if (entity.NumberItemsAplicationTai == null)
+                    valid.Message = "É preciso informar uma opção de quantidade de amostras para prova com aplicação TAI.";
+            }
+
             if (action == ValidateAction.Update)
             {
                 var cadastred = testRepository.GetObjectWithTestType(entity.Id);
@@ -134,9 +168,11 @@ namespace GestaoAvaliacao.Business
                 if (entity.TestTime == null || (entity.TestTime != null && entity.TestTime.Id <= 0))
                     valid.Message = "O tempo de prova deve ser informado.";
 
-                int totalItems = entity.TestItemLevels != null ? entity.TestItemLevels.Sum(i => i.Value) : 0;
+                var totalItems = entity.TestItemLevels?.Sum(i => i.Value) ?? 0;
+
                 if (entity.NumberItem > qtdeMaxItems || totalItems > qtdeMaxItems)
-                    valid.Message = string.Format("A quantidade de itens deve ser menor ou igual a {0}.", qtdeMaxItems);
+                    valid.Message = $"A quantidade de itens deve ser menor ou igual a {qtdeMaxItems}.";
+
                 if (!((cadastred.UsuId == UsuId) || (isAdmin && cadastred.TestType.Global)))
                     valid.Message = "Apenas o proprietário da prova pode alterá-la";
             }
@@ -152,7 +188,6 @@ namespace GestaoAvaliacao.Business
                     }
                 }
             }
-
 
             if (!string.IsNullOrEmpty(valid.Message))
             {
@@ -239,18 +274,76 @@ namespace GestaoAvaliacao.Business
 
         public IEnumerable<TestResult> _SearchTests(TestFilter filter, ref Pager pager)
         {
-            switch (filter.vis_id)
+
+            IEnumerable<TestResult> testList = null;
+            if (filter.vis_id == EnumSYS_Visao.Administracao)
+                testList = testRepository._SearchTests(filter, ref pager);
+
+
+            else if (filter.vis_id == EnumSYS_Visao.Gestao ||
+                     filter.vis_id == EnumSYS_Visao.UnidadeAdministrativa ||
+                     filter.vis_id == EnumSYS_Visao.Individual)
+                testList = testRepository._SearchTestsUser(filter, ref pager);
+
+            if (filter.TestGroupId != null || filter.TestId != null)
             {
-                case EnumSYS_Visao.Administracao:
-                    return testRepository._SearchTests(filter, ref pager);
-                case EnumSYS_Visao.Gestao:
-                case EnumSYS_Visao.UnidadeAdministrativa:
-                case EnumSYS_Visao.Individual:
-                    return testRepository._SearchTestsUser(filter, ref pager);
-                default:
-                    return null;
+                foreach (var test in testList)
+                    test.HasAdhered = ExistsAdherenceByTestId(test.TestId);
+
+                var lastSyncDate = GetLastDateSynchronizationSerapStudents();
+                if (lastSyncDate != null)
+                {
+                    var testsSerapStudents = testList.Where(t => t.ShowOnSerapEstudantes).ToList();
+                    var tests = testList.Where(t => !t.ShowOnSerapEstudantes).ToList();
+                    foreach (TestResult test in testsSerapStudents)
+                        test.SynchronizedInSerapStudents = !string.IsNullOrEmpty(test.UpdateDate) ? (Convert.ToDateTime(test.UpdateDate) < lastSyncDate) : false;
+                    testList = testsSerapStudents.Concat(tests).AsEnumerable();
+                }
+            }
+            return testList;
+        }
+
+        private DateTime? GetLastDateSynchronizationSerapStudents()
+        {
+            try
+            {
+                var client = resultadoPspBusiness.ObterHttpClient();
+                HttpResponseMessage response = client.GetAsync("admin/provas/data-ticks-ultima-sincronizacao").GetAwaiter().GetResult();
+                if (!response.IsSuccessStatusCode)
+                    throw new ArgumentException($"Erro ao consultar última data sincronização provas Serap Estudantes.");
+
+                string stringContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                if (!string.IsNullOrEmpty(stringContent))
+                    return new DateTime(long.Parse(stringContent));
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
+
+
+
+
+
+
+
+
+        //switch (filter.vis_id)
+        //{
+        //    case EnumSYS_Visao.Administracao:
+        //        return testRepository._SearchTests(filter, ref pager);
+        //    case EnumSYS_Visao.Gestao:
+        //    case EnumSYS_Visao.UnidadeAdministrativa:
+        //    case EnumSYS_Visao.Individual:
+        //        return testRepository._SearchTestsUser(filter, ref pager);
+        //    default:
+        //        return null;
+        //}
+
 
         public ReportCorrectionTestResult GetInfoReportCorrection(long test_id)
         {
@@ -531,40 +624,50 @@ namespace GestaoAvaliacao.Business
 
         public bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id) => testRepository.ExistsAdherenceByAluIdTestId(alu_id, test_id);
 
+        public async Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId) =>
+            await testRepository.GetListTestTaiCurriculumGradeByTestId(testId);
+
+        public async Task<DadosProvaTaiDTO> ObterDadosProvaTai(long provaId) => 
+            await testRepository.ObterDadosProvaTai(provaId);
+
+        public async Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizesIds, int[] tiposCurriculosGradesIds) =>
+            await testRepository.ObterItensAmostraTai(matrizesIds, tiposCurriculosGradesIds);
+
+        public bool ExistsAdherenceByTestId(long test_id) => testRepository.ExistsAdherenceByTestId(test_id);
         #endregion
 
         #region Write
 
         public Test Save(Test entity, Guid usu_id, bool isAdmin)
         {
-            DateTime dateNow = DateTime.Now;
+            var dateNow = DateTime.Now;
 
             entity.CreateDate = dateNow;
             entity.UpdateDate = dateNow;
 
             entity.Validate = Validate(entity, ValidateAction.Save, entity.Validate, isAdmin);
-            if (entity.Validate.IsValid)
+
+            if (!entity.Validate.IsValid) 
+                return entity;
+
+            if (entity.NumberItem == 0)
             {
-                if (entity.NumberItem == 0)
+                foreach (var item in entity.TestItemLevels)
                 {
-                    foreach (var item in entity.TestItemLevels)
-                    {
-                        entity.NumberItem += item.Value;
-                    }
+                    entity.NumberItem += item.Value;
                 }
-
-                entity = testRepository.Save(entity, usu_id);
-
-                if (entity.TestTai)
-                {
-
-                    var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
-                    numberItemTestTaiRepository.Save(itemTestTai);
-                }
-
-                entity.Validate.Type = ValidateType.Save.ToString();
-                entity.Validate.Message = "Prova salva com sucesso.";
             }
+
+            entity = testRepository.Save(entity, usu_id);
+
+            if (entity.TestTai)
+            {
+                var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
+                numberItemTestTaiRepository.Save(itemTestTai);
+            }
+
+            entity.Validate.Type = ValidateType.Save.ToString();
+            entity.Validate.Message = "Prova salva com sucesso.";
 
             return entity;
         }
@@ -573,40 +676,46 @@ namespace GestaoAvaliacao.Business
         {
             entity.Validate = Validate(entity, ValidateAction.Update, entity.Validate, isAdmin, UsuId);
 
-            if (entity.Validate.IsValid)
+            if (!entity.Validate.IsValid) 
+                return entity;
+
+            if (entity.NumberItem == 0)
             {
-                if (entity.NumberItem == 0)
+                foreach (var item in entity.TestItemLevels)
                 {
-                    foreach (var item in entity.TestItemLevels)
-                    {
-                        entity.NumberItem += item.Value;
-                    }
+                    entity.NumberItem += item.Value;
                 }
-
-                if (entity.TestTai)
-                {
-                    if (entity.NumberItemsAplicationTai != null)
-                    {
-                        var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
-                        numberItemTestTaiRepository.DeleteSaveByTestId(itemTestTai);
-                    }
-                    else
-                    {
-                        throw new Exception("É preciso informar uma opção de quantidade de amostras para prova com aplicação TAI.");
-                    }
-                }
-                else if (entity.NumberItemsAplicationTai != null)
-                    numberItemTestTaiRepository.DeleteByTestId(entity.Id);
-
-                entity.TestSituation = ValidateTestSituation(entity);
-
-                var test = testRepository.Update(Id, entity);
-
-                entity.BlockChains.AddRange(test.BlockChains);
-                entity.RemoveBlockChain = test.RemoveBlockChain;
-                entity.Validate.Type = ValidateType.Update.ToString();
-                entity.Validate.Message = "Prova alterada com sucesso.";
             }
+
+            entity.TestSituation = ValidateTestSituation(entity);
+
+            var test = testRepository.Update(Id, entity);
+
+            entity.BlockChains.AddRange(test.BlockChains);
+            entity.Blocks.AddRange(test.Blocks);
+            entity.RemoveBlockChain = test.RemoveBlockChain;
+            entity.RemoveBlockChainBlock = test.RemoveBlockChainBlock;
+            entity.RemoveTaiCurriculumGrade = test.RemoveTaiCurriculumGrade;
+
+            if (entity.TestTai)
+            {
+                if (entity.RemoveTaiCurriculumGrade)
+                    testTaiCurriculumGradeRepository.DeleteByTestId(entity.Id);
+
+                if (entity.NumberItemsAplicationTai != null)
+                {
+                    var itemTestTai = new NumberItemTestTai(entity.Id, entity.NumberItemsAplicationTai.Id, entity.AdvanceWithoutAnswering, entity.BackToPreviousItem);
+                    numberItemTestTaiRepository.DeleteSaveByTestId(itemTestTai);
+                }
+            }
+            else
+            {
+                testTaiCurriculumGradeRepository.DeleteByTestId(entity.Id);
+                numberItemTestTaiRepository.DeleteByTestId(entity.Id);
+            }
+
+            entity.Validate.Type = ValidateType.Update.ToString();
+            entity.Validate.Message = "Prova alterada com sucesso.";
 
             return entity;
         }
@@ -1076,16 +1185,17 @@ namespace GestaoAvaliacao.Business
             testRepository.Update(testDestino);
         }
 
-        public void TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> listEntity)
+        public void TestTaiCurriculumGradeSave(long test_id, List<TestTaiCurriculumGrade> listEntity)
         {
             try
             {
-                var testId = listEntity.FirstOrDefault().TestId;
-
-                if (testId <= 0)
+                if (test_id <= 0)
                     throw new Exception("TestId é obrigatório");
 
-                var listTestTaiCurriculumGrade = testTaiCurriculumGradeRepository.GetListByTestId(testId);
+                if (listEntity == null)
+                    listEntity = new List<TestTaiCurriculumGrade>();
+
+                var listTestTaiCurriculumGrade = testTaiCurriculumGradeRepository.GetListByTestId(test_id);
 
                 if (listTestTaiCurriculumGrade == null || !listTestTaiCurriculumGrade.Any())
                 {
@@ -1096,18 +1206,21 @@ namespace GestaoAvaliacao.Business
                 }
                 else
                 {
+                    var testTaiCurriculumGradeNew = listEntity.Where(x => !listTestTaiCurriculumGrade.Any(entity =>
+                        x.DisciplineId == entity.DisciplineId
+                        && x.MatrixId == entity.MatrixId
+                        && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
 
-                    var testTaiCurriculumGradeNew = listEntity.Where(x => !listTestTaiCurriculumGrade.Any(entity => x.DisciplineId == entity.DisciplineId
-                                                                                                                 && x.MatrixId == entity.MatrixId
-                                                                                                                 && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+                    var testTaiCurriculumGradeExists = listTestTaiCurriculumGrade.Where(x => listEntity.Any(entity =>
+                        x.DisciplineId == entity.DisciplineId
+                        && x.MatrixId == entity.MatrixId
+                        && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
 
-                    var testTaiCurriculumGradeExists = listTestTaiCurriculumGrade.Where(x => listEntity.Any(entity => x.DisciplineId == entity.DisciplineId
-                                                                                                                   && x.MatrixId == entity.MatrixId
-                                                                                                                   && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
+                    var testTaiCurriculumGradeNotExists = listTestTaiCurriculumGrade.Where(x => !listEntity.Any(entity =>
+                        x.DisciplineId == entity.DisciplineId
+                        && x.MatrixId == entity.MatrixId
+                        && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
 
-                    var testTaiCurriculumGradeNotExists = listTestTaiCurriculumGrade.Where(x => !listEntity.Any(entity => x.DisciplineId == entity.DisciplineId
-                                                                                                                      && x.MatrixId == entity.MatrixId
-                                                                                                                      && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId));
                     //Inserir
                     foreach (var entity in testTaiCurriculumGradeNew)
                     {
@@ -1117,15 +1230,17 @@ namespace GestaoAvaliacao.Business
                     //Alterar
                     foreach (var entity in testTaiCurriculumGradeExists)
                     {
-                        var testTaiCurriculumGrade = listEntity.FirstOrDefault(x => x.DisciplineId == entity.DisciplineId
-                                                                                    && x.MatrixId == entity.MatrixId
-                                                                                    && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId);
-                        if (entity.Percentage != testTaiCurriculumGrade.Percentage)
-                        {
-                            entity.Percentage = testTaiCurriculumGrade.Percentage;
-                            entity.UpdateDate = DateTime.Now;
-                            testTaiCurriculumGradeRepository.Update(entity);
-                        }
+                        var testTaiCurriculumGrade = listEntity.FirstOrDefault(x =>
+                            x.DisciplineId == entity.DisciplineId
+                            && x.MatrixId == entity.MatrixId
+                            && x.TypeCurriculumGradeId == entity.TypeCurriculumGradeId);
+
+                        if (testTaiCurriculumGrade == null || entity.Percentage == testTaiCurriculumGrade.Percentage)
+                            continue;
+
+                        entity.Percentage = testTaiCurriculumGrade.Percentage;
+                        entity.UpdateDate = DateTime.Now;
+                        testTaiCurriculumGradeRepository.Update(entity);
                     }
 
                     //Excluir
@@ -1135,15 +1250,12 @@ namespace GestaoAvaliacao.Business
                         entity.UpdateDate = DateTime.Now;
                         testTaiCurriculumGradeRepository.Update(entity);
                     }
-                    
                 }
-
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-
         }
 
         public List<TestTaiCurriculumGrade> GetListTestTaiCurriculumGrade(long testId)
@@ -1154,8 +1266,326 @@ namespace GestaoAvaliacao.Business
             return testTaiCurriculumGradeRepository.GetListByTestId(testId);
         }
 
-    }
 
-    #endregion
+        private static CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+            Delimiter = ";",
+            MissingFieldFound = null,
+            IgnoreBlankLines = true,
+            TrimOptions = TrimOptions.Trim,
+            ShouldSkipRecord = records =>
+            {
+                var linha = records.Row.Parser.RawRecord.Replace(Environment.NewLine, string.Empty);
+                linha = linha.Trim().Replace("\r", string.Empty);
+                linha = linha.Trim().Replace("\n", string.Empty);
+                linha = linha.Trim().Replace("\0", string.Empty);
+
+                var arrayLinha = records.Row.Parser.Record;
+                return string.IsNullOrEmpty(linha) || arrayLinha == null || arrayLinha.Length == 0 ||
+                       (arrayLinha.Length > 0 && string.IsNullOrEmpty(arrayLinha[0]));
+            }
+        };
+
+        public void ImportarCvsBlocos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno)
+        {
+            var dateTimeNow = DateTime.Now;
+
+            try
+            {
+                using (var leitorAquivo = new StreamReader(arquivo.InputStream, encoding: Encoding.UTF8))
+                {
+                    using (var csv = new CsvReader(leitorAquivo, config))
+                    {
+                        var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
+                        var blocosItens = csv.GetRecords<BlockCsvDTO>().ToList();
+                        var blocos = blocosItens.GroupBy(x => x.NumeroBloco).ToList();
+                        var erros = new List<ErrosImportacaoCSV>();
+
+                        foreach (var bloco in blocos)
+                        {
+
+                            var ehNumero = int.TryParse(bloco.Key, out _);
+                            var blockChain = blockChains.FirstOrDefault(c => c.Description == bloco.Key);
+
+                            if (blockChain == null)
+                            {
+                                blockChain = new BlockChain
+                                {
+                                    Description = bloco.Key,
+                                    CreateDate = dateTimeNow,
+                                    UpdateDate = dateTimeNow,
+                                    State = Convert.ToByte(EnumState.ativo),
+                                    Test_Id = testId,
+                                    Test = testRepository.GetObject(testId)
+                                };
+                            }
+                            else
+                            {
+                                blockChain = blockChainBusiness.DeleteBlockChainItems(blockChain.Id);
+
+                                blockChain.Description = bloco.Key;
+                                blockChain.UpdateDate = dateTimeNow;
+                                blockChain.Test_Id = testId;
+                                blockChain.Test = testRepository.GetObject(testId);
+                                blockChain.State = Convert.ToByte(EnumState.ativo);
+                                blockChain.BlockChainItems.Clear();
+                            }
+
+                            var test = blockChain.Test;
+                            var blockChainId = blockChain.Id;
+                            var maxOrder = 0;
+
+                            #region blocoItem
+                            var linha = 1;
+                            foreach (var blocoItem in blocosItens)
+                            {
+                                linha++;
+                                if (blocoItem.NumeroBloco != bloco.Key) continue;
+
+                                if (!ehNumero || Convert.ToInt64(bloco.Key) > test.BlockChainNumber)
+                                {
+                                    erros.Add(new ErrosImportacaoCSV
+                                    {
+                                        Linha = linha,
+                                        Erro = "Bloco inválido"
+                                    });
+
+                                    continue;
+                                }
+
+                                var item = itemRepository.GetItemByItemCode(blocoItem.CodigoItem);
+
+                                if (item == null)
+                                {
+                                    erros.Add(new ErrosImportacaoCSV
+                                    {
+                                        Linha = linha,
+                                        Erro = "Código do item inválido"
+                                    });
+
+                                    continue;
+                                }
+
+                                if (!(blockChain.BlockChainItems.Count < test.BlockChainItems))
+                                {
+                                    erros.Add(new ErrosImportacaoCSV
+                                    {
+                                        Linha = linha,
+                                        Erro = "Quantidade de item do bloco excedida"
+                                    });
+
+                                    continue;
+                                }
+
+                                if (blockChain.BlockChainItems.Any(i => i.Item_Id == item.Id))
+                                {
+                                    erros.Add(new ErrosImportacaoCSV
+                                    {
+                                        Linha = linha,
+                                        Erro = $"Item {blocoItem.CodigoItem} em duplicidade no bloco {bloco.Key}."
+                                    });
+                                    continue;
+                                }
+
+                                var blockChainItem = new BlockChainItem
+                                {
+                                    BlockChain_Id = blockChainId,
+                                    Item_Id = item.Id,
+                                    Order = maxOrder,
+                                    State = Convert.ToByte(EnumState.ativo),
+                                    CreateDate = dateTimeNow,
+                                    UpdateDate = dateTimeNow
+                                };
+
+                                blockChain.BlockChainItems.Add(blockChainItem);
+                                maxOrder++;
+                            }                            
+                            #endregion
+
+                            if (!ehNumero || long.Parse(blockChain.Description) > test.BlockChainNumber)
+                                continue;
+
+                            if (blockChainId == 0)
+                                blockChainBusiness.Save(blockChain, usuId, vision);
+                            else
+                                blockChainBusiness.Update(blockChain, usuId, vision);
+                        }
+
+                        blockChainBusiness.UpdateBlockByTestId(testId);
+
+                        retorno = new CsvImportDTO
+                        {
+                            QtdeSucesso = blocosItens.Count - erros.Count,
+                            QtdeErros = erros.Count
+                        };
+
+                        retorno.Erros.AddRange(erros);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void ImportarCvsCadernos(HttpPostedFileBase arquivo, int testId, Guid usuId, EnumSYS_Visao vision, out CsvImportDTO retorno)
+        {
+
+            try
+            {
+                var test = testRepository.GetObject(testId);
+
+                using (var leitorAquivo = new StreamReader(arquivo.InputStream, encoding: Encoding.UTF8))
+                {
+                    using (var csv = new CsvReader(leitorAquivo, config))
+                    {
+                        var blocksTest = blockBusiness.GetTestBlocks(testId);
+                        var blockChains = blockChainBusiness.GetTestBlockChains(testId).ToList();
+                        var cadernosBlocos = csv.GetRecords<CadernoCsvDTO>().ToList();
+                        var erros = new List<ErrosImportacaoCSV>();
+                        var cadernosInserirAlterar = new List<Block>();
+                        var linha = 1;
+
+                        foreach (var cb in cadernosBlocos)
+                        {
+                            var caderno = cb.NumeroCaderno;
+                            var bloco = cb.NumeroBloco;
+                            linha++;
+
+                            var block = cadernosInserirAlterar.Where(x => x.Description == caderno.Trim()).FirstOrDefault();
+                            if (block == null && blocksTest.Any(x => x.Description == caderno.Trim()))
+                            {
+                                block = blocksTest.Where(x => x.Description == caderno.Trim()).FirstOrDefault();
+                                block.BlockItems.Clear();
+                                block.BlockChainBlocks.Clear();
+                            }                            
+
+                            if (block == null)
+                            {
+                                int ehInteiro;
+                                int.TryParse(caderno.Trim(), out ehInteiro);
+
+                                if (ehInteiro <= 0)
+                                {
+                                    erros.Add(new ErrosImportacaoCSV
+                                    {
+                                        Linha = linha,
+                                        Erro = "Caderno inválido"
+                                    });
+                                    continue;
+
+                                }
+
+                                var numCaderno = Convert.ToInt16(caderno.Trim());
+                                if (numCaderno < 1 || numCaderno > test.NumberBlock)
+                                {
+                                    erros.Add(new ErrosImportacaoCSV
+                                    {
+                                        Linha = linha,
+                                        Erro = "Caderno inválido"
+                                    });
+                                    continue;
+                                }
+                                block = new Block
+                                {
+                                    Description = caderno,
+                                    Test_Id = test.Id,
+                                };
+                            }
+
+                            var blockChain = blockChains.FirstOrDefault(x => x.Description == bloco.Trim());
+                            if (blockChain == null)
+                            {
+                                erros.Add(new ErrosImportacaoCSV
+                                {
+                                    Linha = linha,
+                                    Erro = "Bloco inválido"
+                                });
+                                continue;
+                            }
+                            else
+                            {
+
+                                if (block.BlockChainBlocks.Count() < test.BlockChainForBlock)
+                                {
+                                    if (block.BlockChainBlocks.Any(x => x.BlockChain_Id == blockChain.Id))
+                                    {
+                                        erros.Add(new ErrosImportacaoCSV
+                                        {
+                                            Linha = linha,
+                                            Erro = $"Bloco {bloco} em duplicidade no caderno {caderno}"
+                                        });
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        block.BlockChainBlocks.Add(new BlockChainBlock
+                                        {
+                                            Block_Id = block.Id,
+                                            BlockChain_Id = blockChain.Id,
+                                            Order = block.BlockChainBlocks.Any() ? block.BlockChainBlocks.Count : 0,
+                                        });
+
+                                        var blockChainItems = blockChain.BlockChainItems.OrderBy(x => x.Order);
+                                        foreach (var itemBlockChain in blockChainItems)
+                                        {
+                                            var ordem = block.BlockItems.Any() ? block.BlockItems.Select(x => x.Order).Max() + 1 : 0;
+                                            block.BlockItems.Add(new BlockItem
+                                            {
+                                                Block_Id = block.Id,
+                                                Item_Id = itemBlockChain.Item_Id,
+                                                Order = ordem,
+                                            });
+                                        }
+                                    }                                    
+                                }
+                                else
+                                {
+                                    erros.Add(new ErrosImportacaoCSV
+                                    {
+                                        Linha = linha,
+                                        Erro = "Quantidade de blocos do caderno excedida"
+                                    });
+                                    continue;
+                                }
+                            }
+
+                            var indexCaderno = cadernosInserirAlterar.FindIndex(x => x.Description == caderno);
+                            if (indexCaderno < 0)
+                                cadernosInserirAlterar.Add(block);
+                            else
+                                cadernosInserirAlterar[indexCaderno] = block;
+                        }
+
+                        retorno = new CsvImportDTO
+                        {
+                            QtdeSucesso = cadernosBlocos.Count - erros.Count,
+                            QtdeErros = erros.Count
+                        };
+                        retorno.Erros.AddRange(erros);
+
+                        foreach (var block in cadernosInserirAlterar)
+                        {                            
+                            if (block.Id > 0)
+                            {
+                                blockChainBlockBusiness.DeleteByBlockId(block.Id);
+                                blockBusiness.Update(block, usuId, vision);
+                            }                                
+                            else
+                                blockBusiness.Save(block, usuId, vision);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+    }
 }
+
+#endregion
 

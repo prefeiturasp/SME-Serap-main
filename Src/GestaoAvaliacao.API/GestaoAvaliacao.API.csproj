@@ -55,6 +55,10 @@
       <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MSTech.CoreSSO.Entities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MSTech.Library\CoreSSO\MSTech.CoreSSO.Entities.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -152,6 +156,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Item\" />
+    <Folder Include="Views\SimuladorSerapEstudantes\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -169,6 +174,8 @@
     <Compile Include="Controllers\AnswerSheetController.cs" />
     <Compile Include="Controllers\CorrectionController.cs" />
     <Compile Include="Controllers\DocsController.cs" />
+    <Compile Include="Controllers\ProvaSPIntegracaoController.cs" />
+    <Compile Include="Controllers\SimuladorSerapEstudantesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
     <Compile Include="Controllers\ResumableController.cs" />
@@ -265,6 +272,14 @@
     <ProjectReference Include="..\OMRService\OMRService.csproj">
       <Project>{edae4fec-1800-4d82-af1a-4ab8e451d9db}</Project>
       <Name>OMRService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProvaSP.Data\ProvaSP.Data.csproj">
+      <Project>{c4ba204b-393c-4020-9000-9eca1fcdfe22}</Project>
+      <Name>ProvaSP.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProvaSP.Model\ProvaSP.Model.csproj">
+      <Project>{4cdab73f-429d-4f78-a9de-2d0b4d889405}</Project>
+      <Name>ProvaSP.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

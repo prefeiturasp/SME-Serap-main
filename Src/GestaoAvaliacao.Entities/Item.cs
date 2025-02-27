@@ -69,5 +69,9 @@ namespace GestaoAvaliacao.Entities
         public string KnowledgeArea_Description { get; set; }
         [NotMapped]
         public int KnowledgeArea_Order { get; set; }
+        [NotMapped]
+        public long BlockChain_Id { get; set; }
+        [NotMapped]
+        public string BlockChain_Description { get; set; }
     }
 }

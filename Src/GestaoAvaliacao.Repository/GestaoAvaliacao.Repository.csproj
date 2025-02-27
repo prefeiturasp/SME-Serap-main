@@ -78,6 +78,8 @@
     <Compile Include="AnswerSheetBatchQueueRepository.cs" />
     <Compile Include="AnswerSheetLotRepository.cs" />
     <Compile Include="BaseTextRepository.cs" />
+    <Compile Include="BlockChainBlockRepository.cs" />
+    <Compile Include="Map\BlockChainBlockMap.cs" />
     <Compile Include="BlockChainRepository.cs" />
     <Compile Include="BlockRepository.cs" />
     <Compile Include="BookletRepository.cs" />
@@ -107,6 +109,7 @@
     <Compile Include="Map\NumberItemsAplicationTaiMap.cs" />
     <Compile Include="Map\NumberItemTestTaiMap.cs" />
     <Compile Include="Map\PageConfigurationMap.cs" />
+    <Compile Include="Map\ReportsStudiesMap.cs" />
     <Compile Include="Map\StudentTestAccoplishmentMap.cs" />
     <Compile Include="Map\StudentTestSentMap.cs" />
     <Compile Include="Map\StudentTestSessionMap.cs" />
@@ -123,6 +126,7 @@
     <Compile Include="NumberItemTestTaiRepository.cs" />
     <Compile Include="PageConfigurationRepository.cs" />
     <Compile Include="ReportItemPerformanceRepository.cs" />
+    <Compile Include="ReportStudiesRepository.cs" />
     <Compile Include="ReportTestPerformanceRepository.cs" />
     <Compile Include="CorrectionRepository.cs" />
     <Compile Include="ExportAnalysisRepository.cs" />

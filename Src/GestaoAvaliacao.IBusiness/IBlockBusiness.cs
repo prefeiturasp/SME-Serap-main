@@ -19,6 +19,7 @@ namespace GestaoAvaliacao.IBusiness
         IEnumerable<Block> GetBlocksByItensTests(List<long> tests);
         IEnumerable<Block> GetTestBlocks(Int64 TestId);
         IEnumerable<Item> GetBlockItens(Int64 Id, int page, int pageItens);
+        IEnumerable<Item> GetBlockItensWithBlockChain(Int64 Id, int page, int pageItens);
         IEnumerable<BlockKnowledgeArea> GetBlockKnowledgeAreas(long Id);
         void RemoveBlockItem(Int64 Id, Int64 ItemId);
         Block Save(Block block, Guid UsuId, EnumSYS_Visao vision);

@@ -304,7 +304,7 @@ namespace GestaoAvaliacao.Business
 
 		public IEnumerable<AdherenceGrid> LoadSelectedStudent(long tur_id, long test_id)
 		{
-			Test test = testRepository.GetObject(test_id);
+			var test = testRepository.GetObject(test_id);
 			return adherenceRepository.LoadSelectedStudent(tur_id, test.Id, test.AllAdhered, test.ApplicationStartDate);
 		}
 
@@ -501,7 +501,7 @@ namespace GestaoAvaliacao.Business
 			Adherence retorno = new Adherence();
 			var test = testRepository.GetObjectWithTestType(test_id);
 
-			retorno.Validate = Validate(test, usuId, vis_id);
+            retorno.Validate = Validate(test, usuId, vis_id);
 
 			if (retorno.Validate.IsValid)
 				return this.Adherence(retorno, Entityid, typeEntity, typeSelection, pes_id, ent_id, vis_id, ttn_id, year, test, parentId);
@@ -558,10 +558,20 @@ namespace GestaoAvaliacao.Business
 					RulesSection(test, Entityid, typeSelection, pes_id, vis_id, ent_id);
 				else
 					RulesStudent(test, Entityid, typeSelection, pes_id, vis_id, ent_id, parentId);
-			}
+
+				UpdateTeste(test.Id);
+            }
 
 			return retorno;
 		}
+
+        private void UpdateTeste(long testId)
+        {
+            var test = testRepository.GetTestById(testId);
+            test.UpdateDate = DateTime.Now;
+            testRepository.Update(test);
+        }
+
 		private void PreparReturn(ref IEnumerable<AdherenceGrid> retorno, EnumAdherenceEntity entityType, long test_id)
 		{
 			if (retorno != null && retorno.Count() > 0)
@@ -672,7 +682,8 @@ namespace GestaoAvaliacao.Business
 			if (year > 0)
 				years = years.Where(t => t.crp_ordem == year);
 
-			var turmas = turmaBusiness.LoadByGrade(EntityId, ttn_id, ent_id, pes_id, vis_id, years.Select(t => t.tcp_id.HasValue ? t.tcp_id.Value : 0)).Select(i => i.tur_id);
+            var turmas = turmaBusiness.LoadByGrade(EntityId, ttn_id, ent_id, pes_id, vis_id,
+                years.Select(t => t.tcp_id ?? 0)).Select(i => i.tur_id);
 
 			//Se for todos selecionados na prova e for checado para selecionado a escola, remover todos do banco
 			if ((test.AllAdhered && typeSelection == EnumAdherenceSelection.Selected) || (!test.AllAdhered && typeSelection == EnumAdherenceSelection.NotSelected))
@@ -680,17 +691,21 @@ namespace GestaoAvaliacao.Business
 				adherenceRepository.RemoveById(test.Id, Convert.ToInt64(EntityId), EnumAdherenceEntity.School);
 				adherenceRepository.RemoveByIds(test.Id, turmas, EnumAdherenceEntity.Section);
 
-				foreach (long turma in turmas)
-				{
-					var alunos = adherenceRepository.LoadStudent(turma, test.Id, test.AllAdhered, test.ApplicationStartDate).Where(p => p.TypeSelection != EnumAdherenceSelection.Blocked).Select(q => q.alu_id);
+				foreach (var turma in turmas)
+                {
+                    var alunos = adherenceRepository
+                        .LoadStudent(turma, test.Id, test.AllAdhered, test.ApplicationStartDate)
+                        .Where(p => p.TypeSelection != EnumAdherenceSelection.Blocked).Select(q => q.alu_id);
+
 					adherenceRepository.RemoveByIds(test.Id, alunos, EnumAdherenceEntity.Student);
 				}
 			}
 			else
 			{
-				adherenceRepository.Save(test.Id, Convert.ToInt64(EntityId), EnumAdherenceEntity.School, typeSelection);
+                adherenceRepository.Save(test.Id, Convert.ToInt64(EntityId), EnumAdherenceEntity.School, typeSelection);
 				adherenceRepository.Save(test.Id, turmas, EnumAdherenceEntity.Section, typeSelection, EntityId);
-				foreach (long turma in turmas)
+
+				foreach (var turma in turmas)
 				{
 					var alunos = adherenceRepository.LoadStudent(turma, test.Id, test.AllAdhered, test.ApplicationStartDate).Where(p => p.TypeSelection != EnumAdherenceSelection.Blocked).Select(q => q.alu_id);
 					adherenceRepository.Save(test.Id, alunos, EnumAdherenceEntity.Student, typeSelection, turma);
@@ -719,7 +734,8 @@ namespace GestaoAvaliacao.Business
 
 			var turmaSelecionadas = adherenceRepository.GetByTest(test.Id, EnumAdherenceEntity.Section, ParentId: turma.esc_id);
 
-			var alunos = adherenceRepository.LoadStudent(EntityId, test.Id, test.AllAdhered, test.ApplicationStartDate).Where(p => p.TypeSelection != EnumAdherenceSelection.Blocked).Select(q => q.alu_id);
+            var alunos = adherenceRepository.LoadStudent(EntityId, test.Id, test.AllAdhered, test.ApplicationStartDate)
+                .Where(p => p.TypeSelection != EnumAdherenceSelection.Blocked).Select(q => q.alu_id);
 
 			if ((test.AllAdhered && typeSelection == EnumAdherenceSelection.Selected) || (!test.AllAdhered && typeSelection == EnumAdherenceSelection.NotSelected))
 			{
@@ -733,9 +749,9 @@ namespace GestaoAvaliacao.Business
 			}
 			else
 			{
-				adherenceRepository.Save(test.Id, EntityId, EnumAdherenceEntity.Section, typeSelection, turma.esc_id);
-				adherenceRepository.Save(test.Id, turma.esc_id, EnumAdherenceEntity.School,
-					(todasTurmas != (turmaSelecionadas.Count() + 1) ? EnumAdherenceSelection.Partial : typeSelection));
+                adherenceRepository.Save(test.Id, EntityId, EnumAdherenceEntity.Section, typeSelection, turma.esc_id);
+                adherenceRepository.Save(test.Id, turma.esc_id, EnumAdherenceEntity.School,
+                    (todasTurmas != (turmaSelecionadas.Count() + 1) ? EnumAdherenceSelection.Partial : typeSelection));
 
 				adherenceRepository.Save(test.Id, alunos, EnumAdherenceEntity.Student, typeSelection, EntityId);
 			}
@@ -787,14 +803,13 @@ namespace GestaoAvaliacao.Business
 			}
 			else
 			{
-				alunosSelecionados = alunosSelecionados.FindAll(p => p.TypeSelection == EnumAdherenceSelection.Selected);
+                alunosSelecionados = alunosSelecionados.FindAll(p => p.TypeSelection == EnumAdherenceSelection.Selected);
 
 				typeSelectionParent = (todosAlunos.Count() != (alunosSelecionados.Count + 1) ? EnumAdherenceSelection.Partial : (typeSelection == EnumAdherenceSelection.Blocked ? EnumAdherenceSelection.NotSelected : typeSelection));
 				adherenceRepository.Save(test.Id, EntityId, EnumAdherenceEntity.Student, typeSelection, parentId);
 				adherenceRepository.Save(test.Id, parentId, EnumAdherenceEntity.Section, typeSelectionParent);
 				adherenceRepository.Save(test.Id, turma.esc_id, EnumAdherenceEntity.School, (todasTurmas != (turmaSelecionadas.Count() + 1) ? EnumAdherenceSelection.Partial : typeSelectionParent));
-
-			}
+            }
 		}
 
 		#endregion

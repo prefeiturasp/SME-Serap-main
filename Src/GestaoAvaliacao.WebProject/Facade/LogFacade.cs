@@ -63,23 +63,19 @@ namespace GestaoAvaliacao.WebProject.Facade
             }
         }
 
-        /// <summary>
-        /// Logs exceptions that are thrown on routines in this web site.
-        /// In case of error, tries to log the exception on error file.
-        /// </summary>
-        /// <param name="ex">Exception to be saved on database</param>
-        public static void SaveError(Exception ex, string error = null)
+        private static void SaveError(Exception ex, string physicalDirectory, string error = null)
         {
             try
             {
-                LogError logError = new LogError(string.Concat(ApplicationFacade.PhysicalDirectory, "Log"));
-
-                logError.SaveLogBD = delegate(string message)
+                var logError = new LogError(string.Concat(physicalDirectory, "Log"))
                 {
-                    LOG_Erros entity = new LOG_Erros();
-                    try
+                    SaveLogBD = delegate (string message)
                     {
-                        entity.err_descricao = message;
+                        var entity = new LOG_Erros
+                        {
+                            err_descricao = message
+                        };
+
                         if (ex != null)
                         {
                             entity.err_erroBase = ex.GetBaseException().Message;
@@ -89,29 +85,39 @@ namespace GestaoAvaliacao.WebProject.Facade
                         {
                             entity.err_erroBase = error;
                         }
+
                         entity.err_dataHora = DateTime.Now;
+
                         if (HttpContext.Current != null && HttpContext.Current.Request != null)
-                        {        
+                        {
                             entity.err_ip = HttpContext.Current.Request.UserHostAddress;
                             entity.err_machineName = HttpContext.Current.Server.MachineName;
                             entity.err_caminhoArq = HttpContext.Current.Request.AppRelativeCurrentExecutionFilePath;
+
                             try
                             {
-                                entity.err_browser = String.Concat(new[] { HttpContext.Current.Request.Browser.Browser, HttpContext.Current.Request.Browser.MajorVersion.ToString(), HttpContext.Current.Request.Browser.MinorVersionString });
+                                entity.err_browser = string.Concat(new[]
+                                {
+                                    HttpContext.Current.Request.Browser.Browser,
+                                    HttpContext.Current.Request.Browser.MajorVersion.ToString(),
+                                    HttpContext.Current.Request.Browser.MinorVersionString
+                                });
                             }
                             catch
                             {
                                 entity.err_browser = string.Empty;
                             }
 
-                            SYS_Sistema sistema = SYS_SistemaBO.GetEntity(new SYS_Sistema() { sis_id = GestaoAvaliacao.Util.Constants.IdSistema });
+                            var sistema = SYS_SistemaBO.GetEntity(new SYS_Sistema { sis_id = Constants.IdSistema });
+
                             entity.sis_id = sistema.sis_id;
                             entity.sis_decricao = sistema.sis_nome;
 
                             if (HttpContext.Current.Session != null)
                             {
-                                UsuarioLogado session = SessionFacade.UsuarioLogado;
-                                if (session != null && session.Usuario != null)
+                                var session = SessionFacade.UsuarioLogado;
+
+                                if (session?.Usuario != null)
                                 {
                                     entity.usu_id = session.Usuario.usu_id;
                                     entity.usu_login = session.Usuario.usu_login;
@@ -120,10 +126,6 @@ namespace GestaoAvaliacao.WebProject.Facade
                         }
 
                         LOG_ErrosBO.Save(entity);
-                    }
-                    catch (Exception)
-                    {
-                        throw;
                     }
                 };
 
@@ -138,6 +140,21 @@ namespace GestaoAvaliacao.WebProject.Facade
             }
         }
 
+        /// <summary>
+        /// Logs exceptions that are thrown on routines in this web site.
+        /// In case of error, tries to log the exception on error file.
+        /// </summary>
+        /// <param name="ex">Exception to be saved on database</param>
+        /// <param name="error"></param>
+        public static void SaveError(Exception ex, string error = null)
+        {
+            SaveError(ex, ApplicationFacade.PhysicalDirectory, error);
+        }
+
+        public static void SaveErrorSme(Exception ex, string error = null)
+        {
+            SaveError(ex, ApplicationFacade.PhysicalDirectorySme, error);
+        }
 
         /// <summary>
         /// Save the system log, means saving an action that the user did 

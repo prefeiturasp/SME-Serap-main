@@ -107,5 +107,13 @@ namespace ProvaSP.Model.Entidades
                 return grupos.Where(x => x.AcessoNivelDRE).Count() > 0;
             }
         }
+
+        public bool AcessoNivelEscola
+        {
+            get
+            {
+                return grupos.Where(x => x.AcessoNivelEscola).Count() > 0;
+            }
+        }
     }
 }

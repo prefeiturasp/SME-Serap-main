@@ -9,7 +9,7 @@ namespace GestaoAvaliacao.IRepository
 	{
 		EvaluationMatrix Save(EvaluationMatrix entity);
 		EvaluationMatrix Update(EvaluationMatrix entity);
-		EvaluationMatrix Get(long id);
+		EvaluationMatrix Get(long id, bool considerActiveState = true);
 		IEnumerable<EvaluationMatrix> Load(Guid ent_id, ref Pager pager);
 		void Delete(EvaluationMatrix entity);
 		IEnumerable<EvaluationMatrix> Search(string search, string searchEdition, Guid ent_id, ref Pager pager);

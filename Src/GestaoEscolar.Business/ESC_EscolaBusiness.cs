@@ -1,4 +1,5 @@
-﻿using GestaoAvaliacao.Util;
+﻿using GestaoAvaliacao.Business.DTO;
+using GestaoAvaliacao.Util;
 using GestaoEscolar.Entities;
 using GestaoEscolar.Entities.Projections;
 using GestaoEscolar.IBusiness;
@@ -86,6 +87,26 @@ namespace GestaoEscolar.Business
         public SchoolAndDRENamesProjection GetSchoolAndDRENames(int esc_id)
         {
             return escolaRepository.GetSchoolAndDRENames(esc_id);
+        }
+
+        public IEnumerable<EscolaDto> LoadAllSchoollsActiveDto()
+        {
+			return escolaRepository.LoadAllSchoollsActiveDto();
+		}
+
+        public IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo)
+        {
+            return escolaRepository.ListarEscolasPorcodigoDre(uad_codigo);
+        }
+
+        public IEnumerable<EscolaDto> ListarEscolasPorCodigosDres(IEnumerable<string> uads_codigos)
+        {
+            return escolaRepository.ListarEscolasPorCodigosDres(uads_codigos);
+        }
+
+        public EscolaDto ObterEscolaPorCodigo(string esc_codigo)
+        {
+            return escolaRepository.ObterEscolaPorCodigo(esc_codigo);
         }
 
         #endregion

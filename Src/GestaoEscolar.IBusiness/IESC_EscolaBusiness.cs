@@ -1,4 +1,5 @@
-﻿using GestaoEscolar.Entities;
+﻿using GestaoAvaliacao.Business.DTO;
+using GestaoEscolar.Entities;
 using GestaoEscolar.Entities.Projections;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,9 @@ namespace GestaoEscolar.IBusiness
         SchoolAndDRENamesProjection GetSchoolAndDRENames(int esc_id);
         ESC_Escola GetWithAdministrativeUnity(Guid ent_id, long esc_id);
 		IEnumerable<ESC_Escola> LoadSimpleTeacher(Guid ent_id, Guid pes_id, Guid uad_id);
-
+        IEnumerable<EscolaDto> LoadAllSchoollsActiveDto();
+        IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo);
+        IEnumerable<EscolaDto> ListarEscolasPorCodigosDres(IEnumerable<string> uads_codigos);
+        EscolaDto ObterEscolaPorCodigo(string esc_codigo);
     }
 }

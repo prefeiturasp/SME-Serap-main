@@ -230,19 +230,20 @@
                             <td class="dre">{{school.DRE}}</td>
                             <td class="maisDadosSub collapsed">
                                 <i ng-class="{'descer':team.Open}" ng-click="team.Open=!team.Open; loadStudentsByTeam(team, $indexSchool, $indexTeam, team.Open);" class="material-icons abreModal">expand_less</i>
+
                                 @* Alunos *@
                                 <div ng-if="school.Open && team.Open" class="subAdesaoDiv" >
                                     <table class="table tableAdesao">
                                         <tr ng-repeat="($indexStudent, student) in team.Students track by $indexStudent" class="subSubAdesao">
-                                            <td>
+                                            <td colspan="2">
                                                 <div class="checkbox checkbox-primary" ng-if="testInformation.TestOwner">
                                                     <input ng-disabled="isBlocked(student.Status)" ng-class="{'blocked':isBlocked(student.Status)}" id="student_{{student.Id}}" type="checkbox" ng-model="student.Selected"
                                                             ng-change="selectStudent($indexSchool, $indexTeam, $indexStudent, student.Selected);">
-                                                    <label ng-class="{'blocked':isBlocked(student.Status)}" for="student_{{student.Id}}">{{student.Description}}</label>
+                                                    <label ng-class="{'blocked':isBlocked(student.Status)}" for="student_{{student.Id}}">{{student.Description}} ({{student.Alu_Matricula}})</label>
                                                 </div>
                                                 <div ng-if="!testInformation.TestOwner">
                                                     <i class="material-icons">done</i>
-                                                    <label>{{student.Description}}</label>
+                                                    <label>{{student.Description}} ({{student.Alu_Matricula}})</label>
                                                 </div>
                                             </td>
                                             <td>

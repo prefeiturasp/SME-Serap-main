@@ -483,6 +483,16 @@ namespace GestaoAvaliacao.MappingDependence
                 .WithService.AllInterfaces()
                 .SetLifestyle(LifestylePerWebRequest));
 
+            container.Register(Classes.FromAssemblyContaining<BlockChainBlockBusiness>()
+                .BasedOn(typeof(IBlockChainBlockBusiness))
+                .WithService.AllInterfaces()
+                .SetLifestyle(LifestylePerWebRequest));
+
+            container.Register(Classes.FromAssemblyContaining<ReportStudiesBusiness>()
+                .BasedOn(typeof(IReportStudiesBusiness))
+                .WithService.AllInterfaces()
+                .SetLifestyle(LifestylePerWebRequest));
+
             #region GestaoEscolar
 
             container.Register(Classes.FromAssemblyContaining<ACA_CursoBusiness>()

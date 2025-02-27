@@ -55,6 +55,10 @@ namespace ProvaSP.Data
             sbAtributos.Append((int)Atributo.NumeroDeQuestionariosAlunos7AnoAo9Ano_ParaPreencher);
             sbAtributos.Append(",");
             sbAtributos.Append((int)Atributo.NumeroDeQuestionariosAlunos7AnoAo9Ano_TotalPreenchidos);
+            sbAtributos.Append(",");
+            sbAtributos.Append((int)Atributo.NumeroDeQuestionariosDeSupervisor_ParaPreencher);
+            sbAtributos.Append(",");
+            sbAtributos.Append((int)Atributo.NumeroDeQuestionariosDeSupervisor_TotalPreenchidos);
             return sbAtributos.ToString();
         }
 
@@ -79,6 +83,8 @@ namespace ProvaSP.Data
                         WHEN a.Nome = 'NumeroDeQuestionariosAlunos4AnoAo6Ano_TotalPreenchidos' THEN 16
                         WHEN a.Nome = 'NumeroDeQuestionariosAlunos7AnoAo9Ano_ParaPreencher' THEN 17
                         WHEN a.Nome = 'NumeroDeQuestionariosAlunos7AnoAo9Ano_TotalPreenchidos' THEN 18
+                        WHEN a.Nome = 'NumeroDeQuestionariosDeSupervisor_ParaPreencher' THEN 19
+                        WHEN a.Nome = 'NumeroDeQuestionariosDeSupervisor_TotalPreenchidos' THEN 20
                         ELSE 99
                     END";
         }
@@ -106,6 +112,8 @@ namespace ProvaSP.Data
             sbAtributos.Append((int)Atributo.FichaAplicacaoDeCoordenadorPreenchida);
             sbAtributos.Append(",");
             sbAtributos.Append((int)Atributo.QuestionarioDeProfessorPreenchido);
+            sbAtributos.Append(",");
+            sbAtributos.Append((int)Atributo.QuestionarioDeSupervisorPreenchido);
             return sbAtributos.ToString();
         }
         #endregion

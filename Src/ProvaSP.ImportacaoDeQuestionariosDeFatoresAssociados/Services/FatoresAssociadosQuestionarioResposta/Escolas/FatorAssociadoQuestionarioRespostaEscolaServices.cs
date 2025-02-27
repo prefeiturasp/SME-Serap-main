@@ -1,14 +1,11 @@
 ﻿using ImportacaoDeQuestionariosSME.Data.Repositories.CiclosAnoEscolar;
 using ImportacaoDeQuestionariosSME.Data.Repositories.Constructos;
-using ImportacaoDeQuestionariosSME.Data.Repositories.Escolas;
 using ImportacaoDeQuestionariosSME.Data.Repositories.FatoresAssociadosQuestionarioResposta.Escolas;
 using ImportacaoDeQuestionariosSME.Data.Repositories.Questionarios.Itens;
 using ImportacaoDeQuestionariosSME.Domain.CiclosAnoEscolar;
 using ImportacaoDeQuestionariosSME.Domain.Constructos;
-using ImportacaoDeQuestionariosSME.Domain.Escolas;
 using ImportacaoDeQuestionariosSME.Domain.FatoresAssociadosQuestionarioResposta.Escolas;
 using ImportacaoDeQuestionariosSME.Domain.Questionarios.Itens;
-using ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioResposta.DRE.Dtos;
 using ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioResposta.Dtos;
 using ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioResposta.Escolas.Dtos;
 using ImportacaoDeQuestionariosSME.Utils;

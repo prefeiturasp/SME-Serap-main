@@ -57,6 +57,7 @@
     <Compile Include="IAnswerSheetBatchQueueRepository.cs" />
     <Compile Include="IAnswerSheetBatchRepository.cs" />
     <Compile Include="IAnswerSheetLotRepository.cs" />
+    <Compile Include="IBlockChainBlockRepository.cs" />
     <Compile Include="IBlockChainRepository.cs" />
     <Compile Include="IConnectionMultiplexerSME.cs" />
     <Compile Include="ICorrectionRepository.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="IPageConfigurationRepository.cs" />
     <Compile Include="IPerformanceItemRepository.cs" />
     <Compile Include="IReportItemPerformanceRepository.cs" />
+    <Compile Include="IReportStudiesRepository.cs" />
     <Compile Include="IRepositoryCache.cs" />
     <Compile Include="IRequestRevokeRepository.cs" />
     <Compile Include="IResponseChangeLogMongoRepository.cs" />

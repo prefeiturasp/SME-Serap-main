@@ -9,7 +9,7 @@ namespace GestaoAvaliacao.IBusiness
 	{
 		EvaluationMatrix Save(EvaluationMatrix entity);
 		EvaluationMatrix Update(long id, EvaluationMatrix entity);
-		EvaluationMatrix Get(long id);
+		EvaluationMatrix Get(long id, bool considerActiveState = true);
 		EvaluationMatrix Delete(long id);
 		IEnumerable<EvaluationMatrix> Load(ref Pager pager, Guid ent_id);
 		IEnumerable<EvaluationMatrix> Search(string search, string searchEdition, ref Pager pager, Guid ent_id);

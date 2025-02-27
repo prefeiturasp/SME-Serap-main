@@ -4,9 +4,7 @@ using ProvaSP.Model.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Net;
-using System.Net.Http;
-//using System.Web.
+
 namespace ProvaSP.Data
 {
     public static class DataPreenchimentoDeQuestionario
@@ -14,7 +12,7 @@ namespace ProvaSP.Data
 
         public static List<string> Sincronizar(List<QuestionarioUsuario> preenchimentosDeQuestionario, string ip, string userAgent)
         {
-            string edicao = Funcionalidades.Prova.Edicao;
+            string edicao = Prova.Edicao;
             DateTime DataInicioAplicacao;
             var guidsSincronizados = new List<string>();
             using (var conn = new SqlConnection(StringsConexao.ProvaSP))
@@ -26,13 +24,12 @@ namespace ProvaSP.Data
                 {
                     try
                     {
-
                         foreach (var preenchimentoDeQuestionario in preenchimentosDeQuestionario)
                         {
                             TipoQuestionario tipoQuestionario = (TipoQuestionario)preenchimentoDeQuestionario.QuestionarioID;
-                            if (tipoQuestionario==TipoQuestionario.FichaRegistroAplicadorProva)
+                            if (tipoQuestionario == TipoQuestionario.FichaRegistroAplicadorProva)
                             {
-                                if (preenchimentoDeQuestionario.tur_id!=null)
+                                if (preenchimentoDeQuestionario.tur_id != null)
                                 {
                                     //Quando o item em questão for do tipo "FichaRegistroAplicadorProva", recupera a Escola com base na turma.
                                     preenchimentoDeQuestionario.esc_codigo = DataEscola.RecuperarCodigoEscolaComBaseNaTurma((int)preenchimentoDeQuestionario.tur_id, dbContextTransaction, conn);
@@ -54,31 +51,39 @@ namespace ProvaSP.Data
                                     PerfilID = (int)TipoPerfil.Aluno; */
                                 else if (tipoQuestionario == TipoQuestionario.QuestionarioAlunos3AnoAo6Ano || tipoQuestionario == TipoQuestionario.QuestionarioAlunos7AnoAo9Ano)
                                     PerfilID = (int)TipoPerfil.Aluno;
-                                if (PerfilID>-1)
+                                if (PerfilID > -1)
                                     preenchimentoDeQuestionario.esc_codigo = DataEscola.RecuperarCodigoEscolaComBaseNoPerfilDaPessoa(edicao, preenchimentoDeQuestionario.usu_id, PerfilID, dbContextTransaction, conn);
                             }
 
                             if (string.IsNullOrEmpty(preenchimentoDeQuestionario.DataPreenchimento))
-                            {
                                 preenchimentoDeQuestionario.DataPreenchimento = DateTime.Now.ToString("yyyy-MM-dd HH':'mm':'ss");
-                            }
 
                             int QuestionarioUsuarioID = conn.ExecuteScalar<int>(
-                                        sql: @"
-                                    IF (@Guid='' OR NOT EXISTS(SELECT * FROM QuestionarioUsuario WITH (NOLOCK) WHERE Guid=@Guid))
+                                        sql: $@"
+                                    IF NOT EXISTS(SELECT 1 FROM QuestionarioUsuario WITH (NOLOCK) WHERE {(!string.IsNullOrEmpty(preenchimentoDeQuestionario.Guid) ? "Guid=@Guid OR " : string.Empty)}(QuestionarioID=@QuestionarioID AND usu_id = @usu_id))
                                     BEGIN
                                         INSERT INTO QuestionarioUsuario (QuestionarioID, Guid, esc_codigo, tur_id, usu_id, DataPreenchimento, IP, UserAgent, Edicao) VALUES (@QuestionarioID, @Guid, @esc_codigo, @tur_id, @usu_id, @DataPreenchimento, @IP, @UserAgent, @Edicao)
                                         SELECT @@IDENTITY
                                     END
                                     ELSE
-                                        SELECT -1
-                                    ",
+                                    BEGIN
+                                        UPDATE QuestionarioUsuario 
+                                        SET Guid=@Guid, 
+                                            esc_codigo=@esc_codigo,
+                                            tur_id=@tur_id,
+                                            IP=@IP,
+                                            UserAgent=@UserAgent,
+                                            Edicao=@Edicao,
+                                            DataPreenchimento=@DataPreenchimento
+                                        WHERE QuestionarioID = @QuestionarioID AND usu_id = @usu_id
+                                        SELECT QuestionarioUsuarioID FROM QuestionarioUsuario WHERE QuestionarioID = @QuestionarioID AND usu_id = @usu_id
+                                    END",
                                         param: new
                                         {
-                                            QuestionarioID = preenchimentoDeQuestionario.QuestionarioID,
+                                            preenchimentoDeQuestionario.QuestionarioID,
                                             Guid = new DbString() { Value = preenchimentoDeQuestionario.Guid, IsAnsi = true, Length = 50 },
                                             esc_codigo = new DbString() { Value = preenchimentoDeQuestionario.esc_codigo, IsAnsi = true, Length = 20 },
-                                            tur_id = preenchimentoDeQuestionario.tur_id,
+                                            preenchimentoDeQuestionario.tur_id,
                                             usu_id = new DbString() { Value = preenchimentoDeQuestionario.usu_id, IsAnsi = true, Length = 40 },
                                             DataPreenchimento = Convert.ToDateTime(preenchimentoDeQuestionario.DataPreenchimento),
                                             IP = new DbString() { Value = ip, IsAnsi = true, Length = 50 },
@@ -86,28 +91,30 @@ namespace ProvaSP.Data
                                             Edicao = new DbString() { Value = edicao, IsAnsi = true, Length = 10 }
                                         },
                                         transaction: dbContextTransaction);
+
                             if (QuestionarioUsuarioID > 0)
                             {
-
                                 DataAcompanhamentoAplicacao.ProcessarInclusaoQuestionario(edicao, DataInicioAplicacao, preenchimentoDeQuestionario, dbContextTransaction, conn);
+
+                                conn.Execute(sql: "DELETE FROM QuestionarioRespostaItem WHERE QuestionarioUsuarioID = @QuestionarioUsuarioID",
+                                             param: new { QuestionarioUsuarioID },
+                                             transaction: dbContextTransaction);
 
                                 foreach (var resposta in preenchimentoDeQuestionario.Respostas)
                                 {
                                     System.Diagnostics.Debug.WriteLine(resposta.Numero);
-                                    if (resposta.Valor=="default")
-                                    {
+
+                                    if (resposta.Valor == "default")
                                         resposta.Valor = "";
-                                    }
+
                                     conn.Execute(
-                                    sql: @"
-                                        DECLARE @QuestionarioItemID int
-                                        SELECT @QuestionarioItemID=QuestionarioItemID FROM QuestionarioItem WITH (NOLOCK) WHERE QuestionarioID=@QuestionarioID AND Numero=@Numero
-                                        INSERT INTO QuestionarioRespostaItem (QuestionarioUsuarioID, QuestionarioItemID, Valor) VALUES (@QuestionarioUsuarioID, @QuestionarioItemID, @Valor) 
-                                        ",
+                                    sql: @"DECLARE @QuestionarioItemID int
+                                           SELECT @QuestionarioItemID=QuestionarioItemID FROM QuestionarioItem WITH (NOLOCK) WHERE QuestionarioID=@QuestionarioID AND Numero=@Numero                                        
+                                           INSERT INTO QuestionarioRespostaItem (QuestionarioUsuarioID, QuestionarioItemID, Valor) VALUES (@QuestionarioUsuarioID, @QuestionarioItemID, @Valor)",
                                     param: new
                                     {
-                                        QuestionarioUsuarioID = QuestionarioUsuarioID,
-                                        QuestionarioID = preenchimentoDeQuestionario.QuestionarioID,
+                                        QuestionarioUsuarioID,
+                                        preenchimentoDeQuestionario.QuestionarioID,
                                         Numero = new DbString() { Value = resposta.Numero, IsAnsi = true, Length = 100 },
                                         Valor = new DbString() { Value = resposta.Valor, IsAnsi = true, Length = 500 }
                                     },
@@ -117,7 +124,7 @@ namespace ProvaSP.Data
                             }
                         }
                         dbContextTransaction.Commit();
-                        
+
                     }
                     catch (Exception ex)
                     {

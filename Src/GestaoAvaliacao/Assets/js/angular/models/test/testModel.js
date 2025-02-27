@@ -68,7 +68,6 @@
             },
             /////////////////////////////////////////////
             // CHAMADAS DA ETAPA 2
-
             'saveTestTaiCurriculumGrade': {
                 method: 'POST',
                 url: base_url('Test/TestTaiCurriculumGradeSave')
@@ -77,6 +76,21 @@
             'loadTestTaiCurriculumGrade': {
                 method: 'GET',
                 url: base_url('Test/GetListTestTaiCurriculumGrade')
+            },
+
+            'ObterDadosAmostraProvaTai': {
+                method: 'GET',
+                url: base_url('Test/ObterDadosAmostraProvaTai')
+            },
+
+            'ObterDadosAmostraProvaTaiPorProvaId': {
+                method: 'GET',
+                url: base_url('Test/ObterDadosAmostraProvaTaiPorProvaId')
+            },
+
+            'ObterTiposGradesCurricularesProvaTai': {
+                method: 'GET',
+                url: base_url('Test/ObterTiposGradesCurricularesProvaTai')
             },
 
             'carregaAreaConhecimento': {
@@ -106,6 +120,7 @@
                 method: 'GET',
                 url: base_url('Skill/GetByParent')
             },
+
             // CHAMADAS PARA BLOCOS
             'loadBlock': {
                 method: 'GET',
@@ -114,6 +129,10 @@
             'visualizar': {
                 method: 'GET',
                 url: base_url('Block/GetBlockItens')
+            },
+            'visualizarComCadeiaBlocos': {
+                method: 'GET',
+                url: base_url('Block/GetBlockItensWithBlockChain')
             },
             'getBlockKnowledgeAreas': {
                 method: 'GET',
@@ -158,7 +177,7 @@
             'deleteBlockItems': {
                 method: 'POST',
                 url: base_url('Block/DeleteBlockItems')
-            },            
+            },
 
             'saveKnowLedgeAreaOrder': {
                 method: 'POST',
@@ -189,6 +208,11 @@
             'deleteBlockChainItems': {
                 method: 'DELETE',
                 url: base_url('BlockChain/DeleteBlockChainItems')
+            },
+            // CHAMADAS PARA CADERNOS COM CADEIA DE BLOCOS
+            'loadBlockChainBlocks': {
+                method: 'GET',
+                url: base_url('BlockChain/GetCadernosProva')
             },
             /////////////////////////////////////////////
             // CHAMADAS DA ETAPA 4
@@ -237,6 +261,10 @@
             'checkFilesExists': {
                 method: 'GET',
                 url: base_url('Booklet/CheckFilesExists')
+            },
+            'checkExistsAdherenceByTestId': {
+                method: 'GET',
+                url: base_url('Test/CheckExistsAdherenceByTestId')
             }
         };
 

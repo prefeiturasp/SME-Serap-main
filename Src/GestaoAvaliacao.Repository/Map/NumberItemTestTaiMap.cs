@@ -17,6 +17,9 @@ namespace GestaoAvaliacao.Repository.Map
                 .WithMany()
                 .HasForeignKey(t => t.ItemAplicationTaiId);
 
+            HasRequired(p => p.Test)
+                .WithMany(p => p.NumberItemsTestTai)
+                .HasForeignKey(p => p.TestId);
         }
     }
 }

@@ -63,6 +63,7 @@
     <Compile Include="Entidades\Configuracao.cs" />
     <Compile Include="Entidades\Constructo.cs" />
     <Compile Include="Entidades\Corte.cs" />
+    <Compile Include="Entidades\ResultadoAluno.cs" />
     <Compile Include="Entidades\UploadFiles\UploadFileBatch.cs" />
     <Compile Include="Entidades\NivelDeProficiencia.cs" />
     <Compile Include="Entidades\FatorAssociado.cs" />

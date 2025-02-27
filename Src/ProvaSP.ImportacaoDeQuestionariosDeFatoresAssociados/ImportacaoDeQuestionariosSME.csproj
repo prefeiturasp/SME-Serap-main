@@ -14,7 +14,7 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -93,6 +93,7 @@
     <Compile Include="Domain\CiclosAnoEscolar\ICicloAnoEscolarRepository.cs" />
     <Compile Include="Domain\Constructos\Constructo.cs" />
     <Compile Include="Domain\Constructos\IConstructoRepository.cs" />
+    <Compile Include="Domain\Enums\TipoQuestionarioEnum.cs" />
     <Compile Include="Domain\Escolas\Escola.cs" />
     <Compile Include="Domain\Escolas\IEscolaRepository.cs" />
     <Compile Include="Domain\FatoresAssociadosQuestionarioResposta\DRE\FatorAssociadoQuestionarioRespostaDRE.cs" />
@@ -118,6 +119,12 @@
     <Compile Include="Domain\ImagensAlunos\ImagemAluno.cs" />
     <Compile Include="Domain\Questionarios\Itens\IQuestionarioItemRepository.cs" />
     <Compile Include="Domain\Questionarios\Itens\QuestionarioItem.cs" />
+    <Compile Include="Forms\CaracterizacaoFamiliasEscolasQuestionarioResposta\ImportacaoCaracterizacaoFamilasEscolasQuestionariosRespostas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CaracterizacaoFamiliasEscolasQuestionarioResposta\ImportacaoCaracterizacaoFamilasEscolasQuestionariosRespostas.Designer.cs">
+      <DependentUpon>ImportacaoCaracterizacaoFamilasEscolasQuestionariosRespostas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Constructos\ImportacaoDeConstructos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -149,6 +156,13 @@
       <DependentUpon>ImportacaoDeImagensDeRedacoes.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Abstractions\BaseDto.cs" />
+    <Compile Include="Services\CaracterizacaoFamiliasEscolasQuestionarioResposta\DRE\CaracterizacaoFamiliasEscolasQuestionarioRespostaDreService.cs" />
+    <Compile Include="Services\CaracterizacaoFamiliasEscolasQuestionarioResposta\Dtos\CaracterizacaoFamiliasEscolasQuestionarioRespostaDto.cs" />
+    <Compile Include="Services\CaracterizacaoFamiliasEscolasQuestionarioResposta\Escola\CaracterizacaoFamiliasEscolasQuestionarioRespostaEscolaService.cs" />
+    <Compile Include="Services\CaracterizacaoFamiliasEscolasQuestionarioResposta\Factories\CaracterizacaoFamiliasEscolasQuestionarioRespostaFactory.cs" />
+    <Compile Include="Services\CaracterizacaoFamiliasEscolasQuestionarioResposta\Factories\ICaracterizacaoFamiliasEscolasQuestionarioRespostaFactory.cs" />
+    <Compile Include="Services\CaracterizacaoFamiliasEscolasQuestionarioResposta\ICaracterizacaoFamiliasEscolasQuestionarioRespostaService.cs" />
+    <Compile Include="Services\CaracterizacaoFamiliasEscolasQuestionarioResposta\SME\CaracterizacaoFamiliasEscolasQuestionarioRespostaSmeService.cs" />
     <Compile Include="Services\Constructos\ConstructoServices.cs" />
     <Compile Include="Services\Constructos\Dtos\ImportacaoDeConstructosDto.cs" />
     <Compile Include="Services\Constructos\IConstructoServices.cs" />
@@ -197,6 +211,9 @@
     </Compile>
     <Compile Include="Utils\CsvManager.cs" />
     <Compile Include="Utils\Extensions.cs" />
+    <EmbeddedResource Include="Forms\CaracterizacaoFamiliasEscolasQuestionarioResposta\ImportacaoCaracterizacaoFamilasEscolasQuestionariosRespostas.resx">
+      <DependentUpon>ImportacaoCaracterizacaoFamilasEscolasQuestionariosRespostas.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Constructos\ImportacaoDeConstructos.resx">
       <DependentUpon>ImportacaoDeConstructos.cs</DependentUpon>
     </EmbeddedResource>

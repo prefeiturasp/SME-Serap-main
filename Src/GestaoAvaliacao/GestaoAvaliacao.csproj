@@ -393,6 +393,10 @@
     <Content Include="AppProvaSP\questionario_10.html" />
     <Content Include="AppProvaSP\questionario_11.html" />
     <Content Include="AppProvaSP\questionario_12.html" />
+    <Content Include="AppProvaSP\questionario_32.html" />
+    <Content Include="AppProvaSP\questionario_31.html" />
+    <Content Include="AppProvaSP\questionario_30.html" />
+    <Content Include="AppProvaSP\questionario_29.html" />
     <Content Include="AppProvaSP\questionario_28.html" />
     <Content Include="AppProvaSP\questionario_26.html" />
     <Content Include="AppProvaSP\questionario_25.html" />
@@ -529,6 +533,8 @@
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\listCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\electronicTestResult\indexElectronicTestResultController.js" />
     <Content Include="Assets\js\angular\controllers\importarResultadosPSP\importarResultadosPSPController.js" />
+    <Content Include="Assets\js\angular\controllers\reportStudies\reportStudiesController.js" />
+    <Content Include="Assets\js\angular\controllers\simuladorSerapEstudantesController\simuladorSerapEstudantesController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsController.js" />
     <Content Include="Assets\js\angular\controllers\studentResultsGraphics\studentResultsGraphicsResultController.js" />
     <Content Include="Assets\js\angular\controllers\correction\correctionResultController.js" />
@@ -588,6 +594,7 @@
     <Content Include="Assets\js\angular\models\electronicTestResult\electronicTestResultModel.js" />
     <Content Include="Assets\js\angular\models\importarResultadosPSP\importarResultadosPSPModel.js" />
     <Content Include="Assets\js\angular\models\NumberItemsAplicationTai\numberItemsAplicationTaiModel.js" />
+    <Content Include="Assets\js\angular\models\reportStudies\reportStudiesModel.js" />
     <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsApiModel.js" />
     <Content Include="Assets\js\angular\models\studentResultsGraphics\studentResultsGraphicsModel.js" />
     <Content Include="Assets\js\angular\models\electronicTest\electronicTestModel.js" />
@@ -1766,6 +1773,13 @@
     <Content Include="Views\Test\_BlockChain.cshtml" />
     <Content Include="Views\Test\_EditBlockChain.cshtml" />
     <Content Include="Views\Test\_ClearSelectedItemsBlockChain.cshtml" />
+    <Content Include="Views\Test\_BlockChainBlock.cshtml" />
+    <Content Include="Views\Test\_AdicionarBlocos.cshtml" />
+    <Content Include="Views\Test\_VisualizarItensCaderno.cshtml" />
+    <Content Include="Views\Test\_ModalResultadoImportarCsvBlocos.cshtml" />
+    <Content Include="Views\Test\_Block.cshtml" />
+    <Content Include="Views\ReportStudies\Index.cshtml" />
+    <Content Include="Views\ReportStudies\_ModalResultadoCsv.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1781,6 +1795,8 @@
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
     <Compile Include="Controllers\ImportarResultadosPSPController.cs" />
     <Compile Include="Controllers\NumberItemsAplicationTaiController.cs" />
+    <Compile Include="Controllers\ReportStudiesController.cs" />
+    <Compile Include="Controllers\SimuladorSerapEstudantesController.cs" />
     <Compile Include="Controllers\StudentResultsGraphicsController.cs" />
     <Compile Include="Controllers\StudentResultsController.cs" />
     <Compile Include="Controllers\ProvaSPController.cs" />
@@ -1948,6 +1964,7 @@
     <Folder Include="Assets\tests\unit\services\" />
     <Folder Include="Views\BlockChain\" />
     <Folder Include="Views\NumberItemsAplicationTai\" />
+    <Folder Include="Views\SimuladorSerapEstudantes\" />
     <Folder Include="Views\TesteCI\" />
   </ItemGroup>
   <ItemGroup>

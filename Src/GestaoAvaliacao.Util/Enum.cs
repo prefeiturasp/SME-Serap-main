@@ -54,6 +54,22 @@ namespace GestaoAvaliacao.Util
         Auditoria = 8
     }
 
+    public enum EnumFileContentType
+    {
+        [Description("text/html")]
+        Html = 1,
+        [Description("text/csv")]
+        Csv = 2
+    }
+
+    public enum EnumFileExtension
+    {
+        [Description(".html")]
+        Html = 1,
+        [Description(".csv")]
+        Csv = 2
+    }
+
 	public enum EnumFileType
 	{
 		[Description("Texto_Base")]
@@ -663,7 +679,27 @@ namespace GestaoAvaliacao.Util
 			return enumerator.ToString();
 		}
 
-		public static T FromString<T>(string value)
+        public static T GetValueFromDescription<T>(string description) where T : Enum
+        {
+            foreach (var field in typeof(T).GetFields())
+            {
+                if (Attribute.GetCustomAttribute(field,
+                        typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
+                {
+                    if (attribute.Description == description)
+                        return (T)field.GetValue(null);
+                }
+                else
+                {
+                    if (field.Name == description)
+                        return (T)field.GetValue(null);
+                }
+            }
+
+            throw new ArgumentException("Enum não encontrado.", nameof(description));
+        }
+
+        public static T FromString<T>(string value)
 		{
 			return (T)Enum.Parse(typeof(T), value);
 		}

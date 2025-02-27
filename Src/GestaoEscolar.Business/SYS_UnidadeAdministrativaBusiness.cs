@@ -54,5 +54,10 @@ namespace GestaoEscolar.Business
         {
             return unidadeAdministrativaRepository.GetByUad_Id(uad_id);
         }
+
+        public SYS_UnidadeAdministrativa GetByUad_Codigo(string uad_codigo)
+        {
+            return unidadeAdministrativaRepository.GetByUad_Codigo(uad_codigo);
+        }
     }
 }

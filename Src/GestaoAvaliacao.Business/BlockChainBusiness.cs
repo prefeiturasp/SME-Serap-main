@@ -13,11 +13,16 @@ namespace GestaoAvaliacao.Business
     {
         private readonly IBlockChainRepository blockChainRepository;
         private readonly ITestRepository testRepository;
+        private readonly IBlockChainBlockRepository blockChainBlockRepository;
+        private readonly IBlockRepository blockRepository;
 
-        public BlockChainBusiness(IBlockChainRepository blockChainRepository, ITestRepository testRepository)
+        public BlockChainBusiness(IBlockChainRepository blockChainRepository, ITestRepository testRepository,
+            IBlockChainBlockRepository blockChainBlockRepository, IBlockRepository blockRepository)
         {
             this.blockChainRepository = blockChainRepository;
             this.testRepository = testRepository;
+            this.blockRepository = blockRepository;
+            this.blockChainBlockRepository = blockChainBlockRepository;
         }
 
         #region Custom
@@ -56,7 +61,6 @@ namespace GestaoAvaliacao.Business
         }
 
         #endregion
-
 
         public BlockChain Save(BlockChain blockChain, Guid usuId, EnumSYS_Visao vision)
         {
@@ -121,6 +125,11 @@ namespace GestaoAvaliacao.Business
             return blockChainRepository.GetTestBlockChains(testId);
         }
 
+        public IEnumerable<Block> ObterCadernosPorProva(long testId)
+        {
+            return blockChainRepository.ObterCadernosPorProva(testId);
+        }
+
         public IEnumerable<Item> GetBlockChainItems(long blockChainId, int page, int pageItems)
         {
             return blockChainRepository.GetBlockChainItems(blockChainId, page, pageItems);
@@ -129,6 +138,28 @@ namespace GestaoAvaliacao.Business
         public void DeleteByTestId(long testId)
         {
             blockChainRepository.DeleteByTestId(testId);
+        }
+
+        public void UpdateBlockByTestId(long testId)
+        {
+            var blockChainsBlockDb = blockChainBlockRepository.GetTestBlockChainsBlock(testId);
+            var blockChainsDb = blockChainRepository.GetTestBlockChains(testId).ToList();
+            var blocksDb = blockRepository.GetTestBlocks(testId).ToList();
+
+            foreach (var blockChainBlock in blockChainsBlockDb)
+            {
+                var blockChainDb = blockChainsDb.FirstOrDefault(c => c.Id == blockChainBlock.BlockChain_Id);
+
+                if (blockChainDb == null)
+                    continue;
+
+                var blockDb = blocksDb.FirstOrDefault(c => c.Id == blockChainBlock.Block_Id);
+
+                if (blockDb == null)
+                    continue;
+
+                blockRepository.Update(blockDb);
+            }
         }
     }
 }

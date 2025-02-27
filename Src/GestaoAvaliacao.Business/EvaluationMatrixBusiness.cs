@@ -26,13 +26,11 @@ namespace GestaoAvaliacao.Business
         {
             valid.Message = null;
             if ((action == ValidateAction.Save) && (entity == null || string.IsNullOrEmpty(entity.Description) || string.IsNullOrEmpty(entity.Edition) || entity.ModelEvaluationMatrix == null || entity.Discipline == null))
-            {
                 valid.Message = "Não foram preenchidos todos os campos obrigatórios.";
-            }
 
             if (action == ValidateAction.Update)
             {
-                EvaluationMatrix ent = Get(entity.Id);
+                EvaluationMatrix ent = Get(entity.Id, false);
                 if (ent == null)
                 {
                     valid.Message = "Não foi encontrada a matriz de avaliação a ser atualizada.";
@@ -75,9 +73,9 @@ namespace GestaoAvaliacao.Business
 
         #region Read
 
-        public EvaluationMatrix Get(long id)
+        public EvaluationMatrix Get(long id, bool considerActiveState = true)
         {
-            return evaluationMatrixRepository.Get(id);
+            return evaluationMatrixRepository.Get(id, considerActiveState);
         }
 
         public IEnumerable<EvaluationMatrix> Load(ref Pager pager, Guid ent_id)

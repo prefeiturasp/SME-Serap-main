@@ -6086,10 +6086,6 @@ h3.label-menu {
     margin-left: 10px;
 }
 
-.active:after {
-    content: "\2212";
-}
-
 .accordion-test-panel-group {
     max-height: 0;
     overflow: hidden;
@@ -6103,6 +6099,20 @@ h3.label-menu {
     width: 100%;
     margin-bottom: 10px;
     box-shadow: 0 2px 7px #c7c7c7;
+}
+
+.icon-container {
+    display: flex;
+    align-items: center;
+}
+
+    .icon-container .material-icons {
+        margin-right: 5px;
+    }
+
+.icon-inline {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 

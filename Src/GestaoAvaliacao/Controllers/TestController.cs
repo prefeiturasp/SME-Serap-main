@@ -1,5 +1,6 @@
 ﻿using GestaoAvaliacao.App_Start;
 using GestaoAvaliacao.Entities;
+using GestaoAvaliacao.Entities.DTO;
 using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.Models;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using EntityFile = GestaoAvaliacao.Entities.File;
@@ -36,11 +38,14 @@ namespace GestaoAvaliacao.Controllers
         private readonly ITestPermissionBusiness testPermissionBusiness;
         private readonly ITestContextBusiness testContextBusiness;
         private readonly IBlockChainBusiness blockChainBusiness;
+        private readonly IBlockChainBlockBusiness blockChainBlockBusiness;
+        private readonly ITestTypeCourseCurriculumGradeBusiness testTypeCourseCurriculumGradeBusiness;
 
         public TestController(ITestBusiness testBusiness, ITestFilesBusiness testFilesBusiness, IACA_TipoCurriculoPeriodoBusiness tipoCurriculoPeriodoBusiness,
             IBlockBusiness blockBusiness, IFileBusiness fileBusiness, ICorrectionBusiness correctionBusiness, IRequestRevokeBusiness requestRevokeBusiness,
             IExportAnalysisBusiness exportAnalysisBusiness, IESC_EscolaBusiness escolaBusiness, ITestCurriculumGradeBusiness testCurriculumGradeBusiness,
-            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness, IBlockChainBusiness blockChainBusiness)
+            ITestPermissionBusiness testPermissionBusiness, ITestContextBusiness testContextBusiness, IBlockChainBusiness blockChainBusiness,
+            IBlockChainBlockBusiness blockChainBlockBusiness, ITestTypeCourseCurriculumGradeBusiness testTypeCourseCurriculumGradeBusiness)
         {
             this.testBusiness = testBusiness;
             this.testFilesBusiness = testFilesBusiness;
@@ -55,6 +60,8 @@ namespace GestaoAvaliacao.Controllers
             this.testPermissionBusiness = testPermissionBusiness;
             this.testContextBusiness = testContextBusiness;
             this.blockChainBusiness = blockChainBusiness;
+            this.blockChainBlockBusiness = blockChainBlockBusiness;
+            this.testTypeCourseCurriculumGradeBusiness = testTypeCourseCurriculumGradeBusiness;
         }
 
         public ActionResult Index() => View();
@@ -98,6 +105,26 @@ namespace GestaoAvaliacao.Controllers
         public ActionResult IndexPermission()
         {
             return View();
+        }
+
+        public ActionResult IndexFilterGroupTest(long test_id)
+        {
+            try
+            {
+                var entity = testBusiness.GetTestById(test_id);
+                ViewBag.GroupFilter = new
+                {
+                    TestGroupId = entity.TestSubGroup != null ? entity.TestSubGroup.TestGroup.Id : (long?)null,
+                    TestSubGroupId = entity.TestSubGroup != null ? entity.TestSubGroup.Id : (long?)null,
+                    getGroup = false,
+                };
+                return View();
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return View();
+            }
         }
 
         #region Read
@@ -233,7 +260,12 @@ namespace GestaoAvaliacao.Controllers
                         }).ToList(),
                         BlockChains = entity.BlockChains.Where(c => c.State == (byte)EnumState.ativo).Select(c => new
                         {
-                            c.Id, 
+                            c.Id,
+                            c.Description
+                        }).ToList(),
+                        Blocks = entity.Blocks.Where(c => c.State == (byte)EnumState.ativo).Select(c => new
+                        {
+                            c.Id,
                             c.Description
                         }).ToList(),
                         TestSituation = entity.TestSituation,
@@ -276,6 +308,21 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpGet]
+        public JsonResult CheckExistsAdherenceByTestId(long Id)
+        {
+            try
+            {
+                var existeAdesao = testBusiness.ExistsAdherenceByTestId(Id);
+                return Json(new { success = true, existeAdesao }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao verificar a adesão da prova." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
         public JsonResult GetStatusCorrectionList()
         {
             try
@@ -299,6 +346,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao tentar encontrar opções de situação da correção." }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         public JsonResult GetInfoTestReport(long Test_id)
         {
@@ -373,6 +421,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         public JsonResult GetInfoEscReport(long Test_id, Guid uad_id, long esc_id)
         {
@@ -393,6 +442,7 @@ namespace GestaoAvaliacao.Controllers
                 return Json(new { success = false, type = ValidateType.error.ToString(), message = "Erro ao obter informações do cabeçalho do relatório" }, JsonRequestBehavior.AllowGet);
             }
         }
+
         [HttpGet]
         public JsonResult GetInfoTurReport(long Test_id, Guid uad_id, long esc_id, long tur_id)
         {
@@ -804,6 +854,121 @@ namespace GestaoAvaliacao.Controllers
                 Response.Redirect(Request.UrlReferrer.PathAndQuery, false);
         }
 
+        [HttpGet]
+        public async Task<JsonResult> ObterDadosAmostraProvaTai(long provaId, long matrizId,
+            int tipoCurriculoGradeId)
+        {
+            var dadosProvaTai = await testBusiness.ObterDadosProvaTai(provaId);
+
+            if (dadosProvaTai == null)
+            {
+                return Json(
+                    new
+                    {
+                        success = false,
+                        type = ValidateType.error.ToString(),
+                        message = $"Os dados da amostra não foram cadastrados para a prova {provaId}."
+                    }, JsonRequestBehavior.AllowGet);
+            }
+
+            var numeroItensAmostraMatrizAnoTai = (await testBusiness
+                .ObterItensAmostraTai(new[] { matrizId }, new[] { tipoCurriculoGradeId }))
+                .Count();
+
+            var dados = new
+            {
+                numeroItensAmostraMatrizAno = numeroItensAmostraMatrizAnoTai
+            };
+
+            return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> ObterDadosAmostraProvaTaiPorProvaId(long provaId)
+        {
+            var dadosProvaTai = await testBusiness.ObterDadosProvaTai(provaId);
+
+            if (dadosProvaTai == null)
+            {
+                return Json(
+                    new
+                    {
+                        success = false,
+                        type = ValidateType.error.ToString(),
+                        message = $"Os dados da amostra não foram cadastrados para a prova {provaId}."
+                    }, JsonRequestBehavior.AllowGet);
+            }
+
+            var list = await testBusiness.GetListTestTaiCurriculumGradeByTestId(provaId);
+
+            if (list == null || !list.Any())
+            {
+                return Json(
+                    new
+                    {
+                        success = false,
+                        type = ValidateType.error.ToString(),
+                        message = $"Os dados não foram cadastrados para a prova {provaId}."
+                    }, JsonRequestBehavior.AllowGet);
+            }
+
+            var matrizesIds = list.Select(c => c.MatrixId).Distinct().ToArray();
+            var tiposCurriculosGradesIds = list.Select(c => int.Parse(c.TypeCurriculumGradeId.ToString())).Distinct().ToArray();
+
+            var itensAmostraMatrizAnoTai = await testBusiness.ObterItensAmostraTai(matrizesIds, tiposCurriculosGradesIds);
+
+            var itensAgrupadosAmostraMatrizAnoTai = itensAmostraMatrizAnoTai
+                .GroupBy(c => new {c.MatrizId, c.TipoCurriculoGradeId });
+
+            var dados = new List<object>();
+
+            foreach (var item in itensAgrupadosAmostraMatrizAnoTai)
+            {
+                dados.Add(new
+                {
+                    item.Key.MatrizId,
+                    item.Key.TipoCurriculoGradeId,
+                    numeroItensAmostraMatrizAno = item.Count()
+                });
+            }
+
+            return Json(new { success = true, dados }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> ObterTiposGradesCurricularesProvaTai(int tipoProvaId, long matrizId)
+        {
+            var testTypeCourseCurriculumGrade = testTypeCourseCurriculumGradeBusiness.GetCurriculumGradesByTestType(tipoProvaId);
+            var listCurriculumGrade = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
+            var tiposCurriculosGradesIds = listCurriculumGrade.Select(c => c.tcp_id).Distinct().ToArray();
+
+            var itensAmostraMatrizAnoTai = Enumerable.Empty<ItemAmostraTaiDTO>();
+            if (tiposCurriculosGradesIds.Any())
+                itensAmostraMatrizAnoTai = await testBusiness.ObterItensAmostraTai(new [] { matrizId }, tiposCurriculosGradesIds);
+
+            var typesCurriculumGrade = testTypeCourseCurriculumGrade.Select(p =>
+            {
+                var countItemsTai = itensAmostraMatrizAnoTai.Count(a => a.TipoCurriculoGradeId == p.TypeCurriculumGradeId);
+
+                var description = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId)?.tcp_descricao;
+                if (description != null)
+                {
+                    var comp = countItemsTai > 1 ? "itens" : "item";
+                    description = $"{description} - {countItemsTai} {comp}";
+                }
+
+                return new
+                {
+                    Id = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId)?.tcp_id,
+                    Description = description,
+                    Order = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == p.TypeCurriculumGradeId)?.tcp_ordem,
+                    CountItemsTai = countItemsTai
+                };
+            });
+
+            return Json(new { success = true, lista = typesCurriculumGrade }, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region Write
@@ -842,6 +1007,12 @@ namespace GestaoAvaliacao.Controllers
 
                     if (entity.RemoveBlockChain && entity.BlockChains.Any())
                         blockChainBusiness.DeleteByTestId(entity.Id);
+
+                    if (entity.RemoveBlockChainBlock && entity.Blocks.Any())
+                    {
+                        foreach (var block in entity.Blocks)
+                            blockChainBlockBusiness.DeleteByBlockId(block.Id);
+                    }
                 }
                 else
                 {
@@ -1023,38 +1194,68 @@ namespace GestaoAvaliacao.Controllers
         }
 
         [HttpPost]
-        public JsonResult TestTaiCurriculumGradeSave(List<TestTaiCurriculumGrade> listEntity)
+        public JsonResult TestTaiCurriculumGradeSave(long test_id, List<TestTaiCurriculumGrade> listEntity)
         {
             try
             {
 
-                testBusiness.TestTaiCurriculumGradeSave(listEntity);
-
+                testBusiness.TestTaiCurriculumGradeSave(test_id, listEntity);
                 return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-
+                LogFacade.SaveError(ex);
                 return Json(new { success = false }, JsonRequestBehavior.AllowGet);
-                throw ex;
             }
-
-            //GetListTestTaiCurriculumGrade
-
-
         }
+
         [HttpGet]
-        public JsonResult GetListTestTaiCurriculumGrade(long testId)
+        public async Task<JsonResult> GetListTestTaiCurriculumGrade(long testId)
         {
             try
             {
-                var list = testBusiness.GetListTestTaiCurriculumGrade(testId);
+                var list = await testBusiness.GetListTestTaiCurriculumGradeByTestId(testId);
+                var listCurriculumGrade = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
+                var tiposCurriculosGradesIds = listCurriculumGrade.Select(c => c.tcp_id).Distinct().ToArray();
 
-                if (list != null && list.Any())
-                    return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
+                var listaRetorno = new List<object>();
+                foreach (var item in list)
+                {
+                    if (!tiposCurriculosGradesIds.Any())
+                        continue;
+                    
+                    var itensAmostraMatrizAnoTai = await testBusiness.ObterItensAmostraTai(new[] { item.MatrixId }, tiposCurriculosGradesIds);
+                    var countItemsTai = itensAmostraMatrizAnoTai.Count(a => a.TipoCurriculoGradeId == item.TypeCurriculumGradeId);
 
+                    var description = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == item.TypeCurriculumGradeId)?.tcp_descricao;
+                    if (description != null)
+                    {
+                        var comp = countItemsTai > 1 ? "itens" : "item";
+                        description = $"{description} - {countItemsTai} {comp}";
+                    }
 
-                return Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
+                    listaRetorno.Add(new
+                    {
+                        item.DisciplineId,
+                        Matriz = new
+                        {
+                            Id = item.MatrixId,
+                            Description = item.MatrixDescription
+                        },
+                        item.TestId,
+                        TypeCurriculumGrade = new
+                        {
+                            Id = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == item.TypeCurriculumGradeId)?.tcp_id,
+                            Description = description,
+                            Order = listCurriculumGrade.FirstOrDefault(a => a.tcp_id == item.TypeCurriculumGradeId)?.tcp_ordem,
+                            CountItemsTai = countItemsTai
+                        }
+                }); 
+                }
+
+                return listaRetorno.Any()
+                    ? Json(new { success = true, lista = listaRetorno }, JsonRequestBehavior.AllowGet)
+                    : Json(new { success = true, lista = list }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -1300,9 +1501,9 @@ namespace GestaoAvaliacao.Controllers
         {
             try
             {
-                Pager pager = this.GetPager();
+                var pager = this.GetPager();
                 var lista = exportAnalysisBusiness.Search(ref pager, filter);
-                return Json(new { success = true, lista = lista }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, lista }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -1337,6 +1538,65 @@ namespace GestaoAvaliacao.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult ImportarArquivoCsvBlocos(HttpPostedFileBase file, int testId)
+        {
+            var b = new BinaryReader(file.InputStream);
+            var binData = b.ReadBytes(file.ContentLength);
+            var result = System.Text.Encoding.UTF8.GetString(binData);
+
+            var splitRowResult = result.Substring(0, StringHelper.PositionOfNewLine(result)).Trim()
+                .Replace("\"", string.Empty).Split(';');
+
+            if (string.IsNullOrEmpty(splitRowResult.ToString()))
+                return Json(new { success = false, message = "Erro ao importar blocos." }, JsonRequestBehavior.AllowGet);
+
+            b.BaseStream.Position = 0;
+
+            try
+            {
+                testBusiness.ImportarCvsBlocos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                        SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);
+
+                return Json(new { success = true, retorno, message = "Importação dos blocos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, retorno = "", message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ImportarArquivoCsvCadernos(HttpPostedFileBase file, int testId)
+        {
+            var b = new BinaryReader(file.InputStream);
+            var binData = b.ReadBytes(file.ContentLength);
+            var result = System.Text.Encoding.UTF8.GetString(binData);
+
+            var splitRowResult = result.Substring(0, StringHelper.PositionOfNewLine(result)).Trim()
+                .Replace("\"", string.Empty).Split(';');
+
+            if (string.IsNullOrEmpty(splitRowResult.ToString()))
+                return Json(new { success = false, message = "Erro ao importar cadernos." }, JsonRequestBehavior.AllowGet);
+
+            b.BaseStream.Position = 0;
+
+            try
+            {
+                testBusiness.ImportarCvsCadernos(file, testId, SessionFacade.UsuarioLogado.Usuario.usu_id,
+                    (EnumSYS_Visao)Enum.Parse(typeof(EnumSYS_Visao),
+                        SessionFacade.UsuarioLogado.Grupo.vis_id.ToString()), out var retorno);                
+
+                return Json(new { success = true, retorno, message = "Importação dos cadernos realizadas com sucesso!." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogFacade.SaveError(ex);
+                return Json(new { success = false, retorno = "", message = "Erro ao importar resultados." }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         #endregion
     }

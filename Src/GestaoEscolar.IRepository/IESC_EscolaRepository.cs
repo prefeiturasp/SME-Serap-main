@@ -1,4 +1,5 @@
-﻿using GestaoEscolar.Entities;
+﻿using GestaoAvaliacao.Business.DTO;
+using GestaoEscolar.Entities;
 using GestaoEscolar.Entities.Projections;
 using System;
 using System.Collections.Generic;
@@ -19,5 +20,11 @@ namespace GestaoEscolar.IRepository
         /// <param name="esc_id">Id da escola</param>
         /// <returns>Projection com o nome da DRE e da escola</returns>
         SchoolAndDRENamesProjection GetSchoolAndDRENames(int esc_id);
+
+        IEnumerable<EscolaDto> LoadAllSchoollsActiveDto(string filtroNome = null);
+        IEnumerable<EscolaDto> ListarEscolasPorcodigoDre(string uad_codigo);
+        IEnumerable<EscolaDto> ListarEscolasPorCodigosDres(IEnumerable<string> uads_codigos);
+        EscolaDto ObterEscolaPorCodigo(string esc_codigo);
     }
+
 }

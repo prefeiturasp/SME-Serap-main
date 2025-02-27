@@ -37,26 +37,31 @@ namespace GestaoAvaliacao.Controllers
 		{
 			try
 			{
-				IEnumerable<ACA_TipoCurriculoPeriodo> listCurriculumGrades = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
-				List<EvaluationMatrixCourseCurriculumGrade> list = evaluationMatrixCourseCurriculumBusiness.GetCurriculumGradesByMatrix(evaluationMatrixId);
+				var listCurriculumGrades = tipoCurriculoPeriodoBusiness.GetAllTypeCurriculumGrades();
+				var list = evaluationMatrixCourseCurriculumBusiness.GetCurriculumGradesByMatrix(evaluationMatrixId);
 
-				if (list != null && list.Count > 0)
-				{
-					var query = list.Select(i => new
-					{
-						TypeCurriculumGradeId = i.TypeCurriculumGradeId,
-						TypeCurriculumGrade = i.TypeCurriculumGradeId > 0 ? new
-						{
-                            Id = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_id,
-                            Description = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_descricao,
-                            Order = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == i.TypeCurriculumGradeId).tcp_ordem
-						} : null
-					}).Where(x => x.TypeCurriculumGrade != null).OrderBy(x => x.TypeCurriculumGrade.Order).ToList();
+                if (list != null && list.Count > 0)
+                {
+                    var query = list.Select(c =>
+                    {
+                        var typeCurriculumGrade = listCurriculumGrades.FirstOrDefault(a => a.tcp_id == c.TypeCurriculumGradeId);
 
-					return Json(new { success = true, lista = query }, JsonRequestBehavior.AllowGet);
-				}
+                        return new
+                        {
+                            TypeCurriculumGradeId = c.TypeCurriculumGradeId,
+                            TypeCurriculumGrade = typeCurriculumGrade != null ? new
+                            {
+                                Id = typeCurriculumGrade.tcp_id,
+                                Description = typeCurriculumGrade.tcp_descricao,
+                                Order = typeCurriculumGrade.tcp_ordem
+                            } : null
+                        };
+                    }).Where(c => c.TypeCurriculumGrade != null).OrderBy(c => c.TypeCurriculumGrade.Order);
 
-				return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Os anos da matriz não foram encontrados." }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, lista = query }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { success = false, type = ValidateType.alert.ToString(), message = "Os anos da matriz não foram encontrados." }, JsonRequestBehavior.AllowGet);
 			}
 			catch (Exception ex)
 			{

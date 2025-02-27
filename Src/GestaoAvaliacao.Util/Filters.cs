@@ -71,6 +71,8 @@ namespace GestaoAvaliacao.Util
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public long Code { get; set; }
+        public short Sistema { get; set; }
+        public string DescricaoProva { get; set; }
     }
 
     public class AnswerSheetLotFilter

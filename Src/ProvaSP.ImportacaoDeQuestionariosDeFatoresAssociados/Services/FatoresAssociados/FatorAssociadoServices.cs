@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociados
@@ -42,7 +41,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociados
                 var dtFatoresAssociados = GetTabelaDeFatoresAssociadosAjustada(dto.CaminhoDaPlanilha);
                 if (dtFatoresAssociados.Rows.Count <= 0)
                 {
-                    dto.AddErro("Não existem regitros na planilha para exportação.");
+                    dto.AddErro("Não existem regitros na planilha para importação.");
                     return;
                 }
 
@@ -78,11 +77,16 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociados
         private int GetConstructoId(string edicao, int anoEscolar, string nome, IEnumerable<CicloAnoEscolar> ciclosAnoEscolar, IEnumerable<Constructo> constructos)
         {
             var cicloId = ciclosAnoEscolar.FirstOrDefault(c => c.AnoEscolar == anoEscolar)?.CicloId;
-            if (cicloId is null) throw new NullReferenceException($"Não foi possível definir o cicloId para o ano escolar {anoEscolar}");
+
+            if (cicloId is null) 
+                throw new NullReferenceException($"Não foi possível definir o cicloId para o ano escolar {anoEscolar}");
 
             var construto = constructos
                 .FirstOrDefault(x => x.Edicao == edicao && x.AnoEscolar == anoEscolar && x.CicloId == cicloId && x.Nome == nome);
-            if (construto is null) throw new NullReferenceException($"Não foi possível definir o construto para o ano escolar {anoEscolar}");
+
+            if (construto is null) 
+                throw new NullReferenceException($"Não foi possível definir o construto para o ano escolar {anoEscolar}");
+
             return construto.ConstructoId;
         }
 

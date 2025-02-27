@@ -707,7 +707,8 @@
 			    }
 			    else {
 			        if (result.lista.length > 0) {
-			            ng.searchResult = result.lista;
+						ng.searchResult = result.lista;
+						console.log("result.lista", result.lista)
 			            ng.totalResults = result.lista.length;
 			        }
 			        else {

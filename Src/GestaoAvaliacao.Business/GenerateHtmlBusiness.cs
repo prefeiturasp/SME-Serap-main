@@ -494,7 +494,7 @@ namespace GestaoAvaliacao.Business
 				{
 					#region MathJAX
 
-					string urlMathJax = filter.CDNMathJax ? "http://cdn.mathjax.org/mathjax/latest/MathJax.js" : string.Format("http://{0}/Assets/js/vendor/MathJax.js", filter.UrlSite);
+					string urlMathJax = filter.CDNMathJax ? "https://cdn.mathjax.org/mathjax/latest/MathJax.js" : string.Format("http://{0}/Assets/js/vendor/MathJax.js", filter.UrlSite);
 
 					html.AppendFormat("<script src='http://{0}/Assets/js/vendor/jquery-2.1.1.js' type='text/javascript'></script>", filter.UrlSite);
 					html.AppendFormat("<script src='{0}' type='text/javascript'>", urlMathJax);

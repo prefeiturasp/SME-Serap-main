@@ -1,12 +1,10 @@
 ﻿using ImportacaoDeQuestionariosSME.Data.Repositories.FatoresAssociadosQuestionario.DRE;
 using ImportacaoDeQuestionariosSME.Domain.FatoresAssociadosQuestionarioResposta.DRE;
-using ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioResposta.Dtos;
 using ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRespostaFamilia.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRespostaFamilia.DRE
@@ -14,9 +12,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
     public class FatoresAssociadosQuestionarioRespostaFamiliaDREServices : FatoresAssociadosQuestionarioRespostaFamiliaServices, IFatoresAssociadosQuestionarioRespostaFamiliaServices
     {
         private ICollection<FatorAssociadoQuestionarioRespostaDRE> _entitiesDRE;
-        private ICollection<FatorAssociadoQuestionarioRespostaDREConstructo> _entitiesDREConstructo;
         private readonly IFatorAssociadoQuestionarioRespostaDRERepository _fatorAssociadoQuestionarioRespostaDRERepository;
-        protected IEnumerable<QuestaoConstructoDto> _questaoConstructoDtos;
         private int _nextPKDRE;
 
         public FatoresAssociadosQuestionarioRespostaFamiliaDREServices(DataTable dtRespostas) : base(dtRespostas)
@@ -25,7 +21,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
             _fatorAssociadoQuestionarioRespostaDRERepository = new FatorAssociadoQuestionarioRespostaDRERepository();
         }
 
-        public async Task ImportarAsync(ImportacaoDeQuestionariosDeFatoresAssociadosFamiliaDto dto, IEnumerable<QuestaoConstructoDto> questaoConstructoDtos)
+        public async Task ImportarAsync(ImportacaoDeQuestionariosDeFatoresAssociadosFamiliaDto dto)
         {
             if (dto is null)
             {
@@ -36,9 +32,8 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
 
             try
             {
-                _questaoConstructoDtos = questaoConstructoDtos;
-
                 var questionarioItens = MontarQuestoes(dto);
+
                 if (!dto.IsValid()) return;
                 if (questionarioItens is null || !questionarioItens.Any()) return;
 
@@ -49,8 +44,6 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
                 }
 
                 var ciclosAnoEscolar = await _cicloAnoEscolarRepository.GetAsync();
-                var constructos = await _constructoRepository.GetAsync(dto.Edicao);
-
                 _nextPKDRE = await _fatorAssociadoQuestionarioRespostaDRERepository.GetNextPk();
 
                 for (var numQuestao = 1; numQuestao <= 61; numQuestao++)
@@ -92,13 +85,14 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
 
                         foreach (var opcao in questao.Opcoes)
                         {
-                            if (opcao.Letra == "NR") continue;
+                            if (opcao.Letra == "NR") 
+                                continue;
 
                             var quantidadeDaOpcao = agrupamentosPorAnoEscolarUadEOpcao
-                                    .FirstOrDefault(x => x.AnoEscolar == agrupamentoPorAnoEscolarEUad.AnoEscolar
-                                    && x.UadSigla == agrupamentoPorAnoEscolarEUad.UadSigla
-                                    && x.Alternativa == opcao.Letra)
-                                    ?.Quantidade;
+                                .FirstOrDefault(x => x.AnoEscolar == agrupamentoPorAnoEscolarEUad.AnoEscolar
+                                                     && x.UadSigla == agrupamentoPorAnoEscolarEUad.UadSigla
+                                                     && x.Alternativa == opcao.Letra)
+                                ?.Quantidade;
 
                             var valor = quantidadeDaOpcao is null
                                 ? 0m
@@ -109,7 +103,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
                                 AnoEscolar = agrupamentoPorAnoEscolarEUad.AnoEscolar,
                                 CicloId = cicloId,
                                 Edicao = dto.Edicao,
-                                FatorAssociadoQuestionarioId = 6,
+                                FatorAssociadoQuestionarioId = FatorAssociadoQuestionarioIdFamilia,
                                 Id = _nextPKDRE++,
                                 ItemDescricao = opcao.Descricao,
                                 ItemId = opcao.Numero,

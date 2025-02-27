@@ -5,6 +5,7 @@ using ImportacaoDeQuestionariosSME.Forms.FatoresAssociadosQuestionarioResposta;
 using ImportacaoDeQuestionariosSME.Forms.ImagensDeRedacoes;
 using System;
 using System.Windows.Forms;
+using ImportacaoDeQuestionariosSME.Forms.CaracterizacaoFamiliasEscolasQuestionarioResposta;
 
 namespace ImportacaoDeQuestionariosSME
 {
@@ -50,6 +51,12 @@ namespace ImportacaoDeQuestionariosSME
         private void btnFatoresAssociadosQuestionariosFamiliaRespostas_Click(object sender, EventArgs e)
         {
             var form = new ImportacaoDeQuestionariosDeFatoresAssociadosQuestionariosFamilia();
+            form.ShowDialog();
+        }
+
+        private void btnCaracterizacaoFamiliasEscolas_Click(object sender, EventArgs e)
+        {
+            var form = new ImportacaoCaracterizacaoFamilasEscolasQuestionariosRespostas();
             form.ShowDialog();
         }
     }

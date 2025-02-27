@@ -29,11 +29,11 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionario
             {
                 var entities = new List<FatorAssociadoQuestionario>
                 {
-                    new FatorAssociadoQuestionario { Edicao = dto.Edicao, FatorAssociadoQuestionarioId = 5, Nome = "Estudante" },
-                    new FatorAssociadoQuestionario { Edicao = dto.Edicao, FatorAssociadoQuestionarioId = 6, Nome = "Familia" },
-                    new FatorAssociadoQuestionario { Edicao = dto.Edicao, FatorAssociadoQuestionarioId = 7, Nome = "Assistente de Diretor(a)" },
-                    new FatorAssociadoQuestionario { Edicao = dto.Edicao, FatorAssociadoQuestionarioId = 8, Nome = "Diretor(a)" },
-                    new FatorAssociadoQuestionario { Edicao = dto.Edicao, FatorAssociadoQuestionarioId = 9, Nome = "Professor(a)" }
+                    new FatorAssociadoQuestionario { Edicao = dto.Edicao, FatorAssociadoQuestionarioId = 10, Nome = "Estudante" },
+                    new FatorAssociadoQuestionario { Edicao = dto.Edicao, FatorAssociadoQuestionarioId = 11, Nome = "Familia" },
+                    new FatorAssociadoQuestionario { Edicao = dto.Edicao, FatorAssociadoQuestionarioId = 12, Nome = "Assistente de Diretor(a)" },
+                    new FatorAssociadoQuestionario { Edicao = dto.Edicao, FatorAssociadoQuestionarioId = 13, Nome = "Diretor(a)" },
+                    new FatorAssociadoQuestionario { Edicao = dto.Edicao, FatorAssociadoQuestionarioId = 14, Nome = "Professor(a)" }
                 };
 
                 await _fatorAssociadoQuestionarioRepository.InsertAsync(entities);

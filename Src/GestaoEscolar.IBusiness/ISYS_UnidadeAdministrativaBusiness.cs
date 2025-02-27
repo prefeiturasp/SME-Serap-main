@@ -9,6 +9,6 @@ namespace GestaoEscolar.IBusiness
 	{
 		IEnumerable<SYS_UnidadeAdministrativa> LoadDRESimple(CoreSSO.SYS_Usuario user, CoreSSO.SYS_Grupo grupo);
         SYS_UnidadeAdministrativa GetByUad_Id(Guid uad_id);
-
+        SYS_UnidadeAdministrativa GetByUad_Codigo(string uad_codigo);
     }
 }

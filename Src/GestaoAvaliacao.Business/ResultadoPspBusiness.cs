@@ -154,7 +154,7 @@ namespace GestaoAvaliacao.Business
             return fileBytes;
         }
 
-        private HttpClient ObterHttpClient()
+        public HttpClient ObterHttpClient()
         {
             HttpClient client = new HttpClient();
             string uriConfig = WebConfigurationManager.AppSettings["URL_API_SERAP_ESTUDANTES"];

@@ -19,7 +19,7 @@ namespace GestaoAvaliacao.Repository.Map
                 .HasForeignKey(p => p.Booklet_Id);
 
             HasOptional(p => p.Test)
-                .WithMany()
+                .WithMany(p => p.Blocks)
                 .HasForeignKey(p => p.Test_Id);
         }
     }

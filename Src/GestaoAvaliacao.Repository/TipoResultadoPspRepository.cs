@@ -29,7 +29,8 @@ namespace GestaoAvaliacao.Repository
 								,[UpdateDate]
 								,[State]
 								from TipoResultadoPsp
-								where [State] = 1";
+								where [State] = 1
+                                order by Codigo";
 
                 var result = cn.Query<TipoResultadoPsp>(sql);
                 return result;

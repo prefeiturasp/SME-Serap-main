@@ -70,7 +70,29 @@ namespace GestaoAvaliacao.Repository
             }
         }
 
-     
+        public void DeleteByTestId(long testId)
+        {
+            using (var gestaoAvaliacaoContext = new GestaoAvaliacaoContext())
+            {
+                var listTestTaiCurriculumGrade = gestaoAvaliacaoContext
+                    .TestTaiCurriculumGrade
+                    .Where(c => c.TestId == testId && c.State == 1)
+                    .ToList();
+
+                if (!listTestTaiCurriculumGrade.Any()) 
+                    return;
+
+                foreach (var testTaiCurriculumGrade in listTestTaiCurriculumGrade)
+                {
+                    testTaiCurriculumGrade.State = Convert.ToByte(EnumState.excluido);
+                    testTaiCurriculumGrade.UpdateDate = DateTime.Now;
+
+                    gestaoAvaliacaoContext.Entry(testTaiCurriculumGrade).State = System.Data.Entity.EntityState.Modified;
+                }
+
+                gestaoAvaliacaoContext.SaveChanges();
+            }
+        }
     }
 }
 

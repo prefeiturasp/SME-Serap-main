@@ -26,7 +26,7 @@ var provaSP_configuracoes = {
         PossuiPerfilEdicaoAtual: false
     }
 };
-var areasConhecimento = ["Ciências da Natureza", "Língua Portuguesa", "Matemática", "Redação"];
+var areasConhecimento = ["Ciências da Natureza", "Língua Portuguesa", "Matemática", "Redação", "Ciências Humanas"];
 var cicloTotalAlunos = {};
 var modeloCiclos = { Ciclo1: [-1, 2, 3], Ciclo2: [4, 5, 6], Ciclo3: [7, 8, 9] };
 //MSTECH - Objeto para salvar os dados de agração de Série Histórica - Ano atual e Ano anterior
@@ -58,32 +58,36 @@ var corteCache = [];
  Questionário 8: Funcionalidades de acompanhamento da ProvaSP no dia da mesma;
  Fichas de registro: Perguntas aos diretores e responsáveis sobre andamento técnico da ProvaSP
 */
-var edicoesComTurmasAmostrais = ["2017", "2018", "2019", "2021"];
+var edicoesComTurmasAmostrais = ["2017", "2018", "2019", "2021", "2023", "2024"];
 var edicoesRevistasPedagogicas = []; // ["2017"] é Boletim
 var questionarios = [
-    "1",/*Questionário Supervisor*/
+    //"1",/*Questionário Supervisor*/
     //"2",/*Questionário Diretor 2018*/
     //"3",/*Questionário Coordenador*/
-    "8",/*Controle da Prova a ser aplicada*/
-    "9",/*Ficha de registro Supervisor*/
-    "10",/*Ficha de registro Diretor*/
-    "11",/*Ficha de registro Coordenador*/
+    //"8",/*Controle da Prova a ser aplicada*/
+    //"9",/*Ficha de registro Supervisor*/
+    //"10",/*Ficha de registro Diretor*/
+    //"11",/*Ficha de registro Coordenador*/
     //"12",/*Questionário Professor 2018*/
     //"13",/*Questionário Assistente de Diretoria 2018*/
-    "14",/*Questionário do Auxiliar Técnico da Educação*/
-    "15",/*Questionário do Agente Escolar: Merendeira*/
-    "16",/*Questionário do Agente Escolar: Portaria*/
-    "17",/*Questionário do Agente Escolar: Zeladoria*/
+    //"14",/*Questionário do Auxiliar Técnico da Educação*/
+    //"15",/*Questionário do Agente Escolar: Merendeira*/
+    //"16",/*Questionário do Agente Escolar: Portaria*/
+    //"17",/*Questionário do Agente Escolar: Zeladoria*/
     //"18",/*Questionário dos Alunos do 3º ano 2018*/
     //"19",/*Questionário dos Alunos do 4º ao 6º ano 2018*/
     //"20",/*Questionário dos Alunos do 7º ao 9º ano ID 2018*/
-    "21",/*NOVO Questionário dos Alunos do 3º ao 6º ano 2019*/
-    "22",/*NOVO Questionário dos Alunos do 7º ao 9º ano 2019*/
+    //"21",/*NOVO Questionário dos Alunos do 3º ao 6º ano 2019*/
+    //"22",/*NOVO Questionário dos Alunos do 7º ao 9º ano 2019*/
     //"23",/*NOVO Questionário Professor 2019*/
-    "25",/*NOVO Questionário Assistente de Diretoria 2019*/
-    "26",/*NOVO Questionário Diretor 2021*/
-    "27",/*NOVO Questionário CP 2021*/
-    "28",/*NOVO Questionário Professor 2021*/
+    //"25",/*NOVO Questionário Assistente de Diretoria 2019*/
+    //"26",/*NOVO Questionário Diretor 2021*/
+    //"27",/*NOVO Questionário CP 2021*/
+    //"28",/*NOVO Questionário Professor 2021*/
+    "29",/*NOVO Questionário Diretor 2023*/
+    "30",/*NOVO Questionário CP 2023*/
+    "31",/*NOVO Questionário Professor 2023*/
+    "32",/*NOVO Questionário Supervisor Escolar 2023*/
 ];
 /**
 -----MSTECH-----
@@ -532,12 +536,12 @@ function onDeviceReady() {
          *Questionário do Supervisor foi descontinuado em 2018
         */
         if (Usuario.Diretor) {
-            $("#divAbrirQuestionarioID_26").show();
+            $("#divAbrirQuestionarioID_29").show();
             // Desabilitar temporariamente a ficha de registro dos professores 22/10/19
             //$("#divAbrirQuestionarioID_10").show();
         }
         if (Usuario.Professor) {
-            $("#divAbrirQuestionarioID_28").show();
+            $("#divAbrirQuestionarioID_31").show();
         }
         if (Usuario.Aluno) {
             var turma_ano = parseInt(Usuario.Ano);
@@ -553,13 +557,13 @@ function onDeviceReady() {
         if (Usuario.AssistenteDeDiretoria) {
             $("#divAbrirQuestionarioID_25").show();
         }
-        // Desabilitar temporariamente Auxiliar, Agente, Coordenador e Supervisor. 04/11/2019
-        /*if (Usuario.Supervisor) {
-            //$("#divAbrirQuestionarioID_1").show();
-            $("#divAbrirQuestionarioID_9").show();
-        }*/
+        
+        if (Usuario.Supervisor) {            
+            $("#divAbrirQuestionarioID_32").show();
+        }
+
         if (Usuario.Coordenador) {
-            $("#divAbrirQuestionarioID_27").show();
+            $("#divAbrirQuestionarioID_30").show();
             //$("#divAbrirQuestionarioID_11").show();
         }
         /*if (Usuario.AuxiliarTecnicoEducacao) {
@@ -4620,8 +4624,9 @@ function definirEventHandlers() {
                 reguaProficiencia["7"] = [200, 250, 300]; //7° Ano
                 reguaProficiencia["8"] = [210, 275, 325]; //8° Ano
                 reguaProficiencia["9"] = [225, 300, 350]; //9° Ano
+                reguaProficiencia["9"] = [225, 300, 350]; //1ª série do EM
             }
-            else if (areaConhecimentoId == "2") {//Língua Portuguesa
+            else if (areaConhecimentoId == "2" || areaConhecimentoId == "5") {//Língua Portuguesa
                 reguaProficiencia["c1"] = [125, 175, 225]; //Básico
                 reguaProficiencia["c2"] = [150, 200, 250]; //Interdisciplinas
                 reguaProficiencia["c3"] = [185, 250, 300]; //Autoral
@@ -4634,6 +4639,7 @@ function definirEventHandlers() {
                 reguaProficiencia["7"] = [175, 225, 275]; //7° Ano
                 reguaProficiencia["8"] = [185, 250, 300]; //8° Ano
                 reguaProficiencia["9"] = [200, 275, 325]; //9° Ano
+                reguaProficiencia["10"] = [200, 275, 325]; //1ª série do EM
             }
             else if (areaConhecimentoId == "3") {//Matemática
                 reguaProficiencia["c1"] = [150, 200, 250]; //Básico
@@ -4648,6 +4654,7 @@ function definirEventHandlers() {
                 reguaProficiencia["7"] = [200, 250, 300]; //7° Ano
                 reguaProficiencia["8"] = [210, 275, 325]; //8° Ano
                 reguaProficiencia["9"] = [225, 300, 350]; //9° Ano
+                reguaProficiencia["9"] = [225, 300, 350]; //1ª série do EM
             }
             else if (areaConhecimentoId == "4") {//Redação
                 var proficienciaMaxima = 100;
@@ -4663,6 +4670,7 @@ function definirEventHandlers() {
                 reguaProficiencia["7"] = [50, 65, 90]; //7° Ano
                 reguaProficiencia["8"] = [50, 65, 90]; //8° Ano
                 reguaProficiencia["9"] = [50, 65, 90]; //9° Ano
+                reguaProficiencia["9"] = [50, 65, 90]; //1ª série do EM
             }
 
             /**
@@ -4895,8 +4903,10 @@ function definirEventHandlers() {
                     proficienciaMaxima - reguaProficiencia[anoAplicacaoProva][2]
                 ];
 
-                $(".lblResultadoTituloEscalaSaeb_1").html("Régua do " + anoAplicacaoProva + "º ano");
-                $(".lblResultadoTituloEscalaSaeb_2").html("Régua do " + ano + "º ano");
+                var desc1 = anoAplicacaoProva > 9 ? "Régua da " + (anoAplicacaoProva - 9) + "ª série do EM" : "Régua do " + anoAplicacaoProva + "º ano";
+                var desc2 = ano > 9 ? "Régua da " + (ano - 9) + "ª série do EM" : "Régua do " + ano + "º ano";
+                $(".lblResultadoTituloEscalaSaeb_1").html(desc1);
+                $(".lblResultadoTituloEscalaSaeb_2").html(desc2);
 
                 //CONFIGURA 2 RÉGUAS
                 document.getElementById('divChartResultadoDetalhe').style.overflow = 'auto';
@@ -5116,7 +5126,8 @@ function definirEventHandlers() {
                                     NivelProficienciaID_ENTURMACAO = 4;
 
                                 if (ciclo == "") {
-                                    return "Régua do " + anoRef + "º ano: " + tituloNivel[NivelProficienciaID_ENTURMACAO];
+                                    var desc = anoRef > 9 ? "Régua da " + (anoRef - 9) + "ª série do EM:" : "Régua do " + anoRef + "º ano:";
+                                    return desc + tituloNivel[NivelProficienciaID_ENTURMACAO];
                                 }
                                 else {
                                     return "Régua do ciclo de " + labelsCiclos["ciclo" + ciclo];
@@ -5209,6 +5220,7 @@ function definirEventHandlers() {
                     if (edicao == "ENTURMACAO_ATUAL")
                         chartResultadoDetalhe.data.datasets[1].data.push(item.Valor);
 
+                    var desc = anoAplicacaoProva > 9 ? "Régua da " + (anoAplicacaoProva - 9) + "ª série do EM" : "Régua do " + anoAplicacaoProva + "º ano";
                     var NivelProficienciaID_ENTURMACAO;
                     if (ciclo == "") {
                         if (item.Valor < reguaProficiencia[ano][0])
@@ -5219,7 +5231,7 @@ function definirEventHandlers() {
                             NivelProficienciaID_ENTURMACAO = 3;
                         else if (item.Valor >= reguaProficiencia[ano][2])
                             NivelProficienciaID_ENTURMACAO = 4;
-                        chartResultadoDetalhe.data.datasets[0].label = "Régua do " + anoAplicacaoProva + "º ano";
+                        chartResultadoDetalhe.data.datasets[0].label = desc;
                     }
                     else {
                         if (item.Valor < reguaProficiencia["c" + ciclo][0])
@@ -5241,7 +5253,8 @@ function definirEventHandlers() {
                     */
                     if (edicao == "ENTURMACAO_ATUAL") {
                         chartResultadoDetalhe.data.datasets[1].backgroundColor.push(hashtableProficienciaId_enturmacao_cor[NivelProficienciaID_ENTURMACAO]);
-                        chartResultadoDetalhe.data.datasets[1].label = "Régua do " + ano + "º ano";
+                        var desc = ano > 9 ? "Régua da " + ano - 9 + "ª série do EM" : "Régua do " + ano + "º ano"
+                        chartResultadoDetalhe.data.datasets[1].label = desc;
                     }
                 }
             }
@@ -5314,6 +5327,9 @@ function definirEventHandlers() {
             console.log(error);
         }
     }
+    /*FIM MÉTODO #resultadoApresentar#*/
+
+
 
     /**
     -----MSTECH-----
@@ -6140,9 +6156,33 @@ function definirEventHandlers() {
 
     function iniciarQuestionario() {
         $("#divQuestionario" + questionarioId_atual + "_Intro").hide();
+        buscarRespostasUsuarioQuestionario();
         $("#divQuestionario" + questionarioId_atual + "_Questoes").show();
         $("#divTituloQuestionario").show();
         $.mobile.silentScroll(0);
+    }
+
+    function buscarRespostasUsuarioQuestionario() {
+        let urlRespostasUsuarioQuestionario = urlBackEnd +
+            "api/Usuario/RespostasUsuario?" +
+            "&questionarioID=" + questionarioId_atual +
+            "&usu_id=" + Usuario.usu_id;
+
+        $.ajax({
+            url: urlRespostasUsuarioQuestionario,
+            type: "GET",
+            "dataType": "JSON",
+            crossDomain: true,
+            cache: false,
+            success: function (data) {
+                data.forEach(e => {
+                    $("#Questionario_" + questionarioId_atual +  "_Questao_" + e.Numero + "_" + e.Valor).prop('checked', true).checkboxradio('refresh');
+                });
+            },
+            error: function (erro) {
+                ProvaSP_Erro("Erro " + erro.status, erro.statusText);
+            }
+        })
     }
 
     /**
@@ -6151,8 +6191,8 @@ function definirEventHandlers() {
      para iniciar o questionário de fato.
      *Reparar que esconde a introdução e mostra as questões
     */
-    $("#btnQuestionario1_Iniciar,#btnQuestionario26_Iniciar,#btnQuestionario27_Iniciar," +
-        "#btnQuestionario28_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
+    $("#btnQuestionario1_Iniciar,#btnQuestionario29_Iniciar,#btnQuestionario30_Iniciar," +
+        "#btnQuestionario31_Iniciar,#btnQuestionario32_Iniciar,#btnQuestionario25_Iniciar,#btnQuestionario14_Iniciar," +
         "#btnQuestionario15_Iniciar,#btnQuestionario16_Iniciar,#btnQuestionario17_Iniciar," +
         "#btnQuestionario18_Iniciar,#btnQuestionario21_Iniciar,#btnQuestionario22_Iniciar")
         .unbind("click").click(function () {
@@ -7183,15 +7223,17 @@ function formatted_string(pad, user_str, pad_pos) {
 }
 
 function loadEdicoesDaRevistaPedagogica() {
-    var edicoes = []
+    var edicoes = [];
+    edicoesRevistasPedagogicas = [];
 
-    let anoAtual = new Date().getFullYear() - 1;
+    let anoAtual = new Date().getFullYear() - 1;    
     for (var i = anoAtual; i >= 2017; i--) {
         edicoes.push(i);
         if (i > 2017)
             edicoesRevistasPedagogicas.push(i.toString());
     }
 
+    $("#ddlRevistasBoletinsEdicao").empty();
     edicoes.forEach(function (item) {
         $('#ddlRevistasBoletinsEdicao').append($('<option>', {
             value: item,
@@ -7891,7 +7933,9 @@ function popupProvaAluno(serverRetorno) {
             //Critérios de redação
             itemProvaDownloaHTML += "<p class='provaaluno_criterios'>";
             for (var j = 1; j < 6; j++) {
-                if (serverRetorno[i].hasOwnProperty("REDQ" + j)) {
+                console.log("ObjServerRetorno", serverRetorno[i]);
+                if (serverRetorno[i].hasOwnProperty("REDQ" + j) && serverRetorno[i]["REDQ" + j] != null) {
+
                     itemProvaDownloaHTML += "Critério " + j + ": ";
                     itemProvaDownloaHTML += serverRetorno[i]["REDQ" + j];
                     itemProvaDownloaHTML += "<br />";
@@ -7944,8 +7988,20 @@ function buscarCicloPeloAnoLetivo(anoLetivo) {
 $("#btnProvaAlunoCriterios").unbind("click").click(function () {
     try {
         var disciplinaID = $("#ddlResultadoAreaConhecimento").val();
-        var linkCriterio = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
-            "CriterioCorrecao/" + disciplinaID + "/" + provaAlunoCicloSelecionado + ".pdf";
+        var anoLetivo = $("#ddlResultadoEdicao").val();
+        var anoEscolar = $("#ddlResultadoAno").val();
+        var linkCriterio = '';
+        if (anoLetivo < 2022) {
+
+            linkCriterio = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
+                "CriterioCorrecao/" + disciplinaID + "/" + provaAlunoCicloSelecionado + ".pdf";
+        }
+        else {
+
+            linkCriterio = provaSP_configuracoes.configuracoes.UrlImagemAlunos +
+                "CriterioCorrecao/" + anoLetivo + "/" + anoEscolar + "/" + disciplinaID + "/" + provaAlunoCicloSelecionado + ".pdf";
+        }
+
 
         if (mobile) {
             if (navigator.connection.type == Connection.NONE || navigator.connection.type == Connection.UNKNOWN) {
@@ -9481,7 +9537,7 @@ $("#btnCFEApresentar").unbind("click").click(function () {
                     $("#ddlCFEQuestionario option:selected").text() + " - ");
 
                 if ($("#ddlCFECiclo").val() != "")
-                    $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFECiclo option:selected").text()); 
+                    $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFECiclo option:selected").text());
 
                 if ($("#ddlCFEAnoEscolar").val() != "")
                     $("#constructoHeaderText").text($("#constructoHeaderText").text() + $("#ddlCFEAnoEscolar option:selected").text());

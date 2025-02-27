@@ -68,6 +68,7 @@
     <Compile Include="Cache.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Filters.cs" />
     <Compile Include="Impersonator.cs" />

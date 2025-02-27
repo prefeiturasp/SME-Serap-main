@@ -49,6 +49,7 @@ namespace GestaoAvaliacao.IRepository
         Task<List<ElectronicTestDTO>> SearchEletronicTestsByPesId(Guid pes_id);
         Task<Test> SearchInfoTestAsync(long test_id);
         bool ExistsAdherenceByAluIdTestId(long alu_id, long test_id);
+		bool ExistsAdherenceByTestId(long test_id);
         IEnumerable<TestResult> GetTestsBySubGroupTcpId(long Id, long tcp_id);
         Task<IEnumerable<Guid>> GetStudentDeficiencies(Guid pes_id);
         TestShowVideoAudioFilesDto GetTestShowVideoAudioFiles(long testId);
@@ -56,5 +57,8 @@ namespace GestaoAvaliacao.IRepository
 		Task<ElectronicTestDTO> GetElectronicTestByPesIdAndTestId(Guid pes_id, long testId);
 
 		Task<List<ElectronicTestDTO>> GetTestsByPesId(Guid pes_id);
-	}
+        Task<List<TestTaiCurriculumGradeDTO>> GetListTestTaiCurriculumGradeByTestId(long testId);
+        Task<DadosProvaTaiDTO> ObterDadosProvaTai(long provaId);
+        Task<IEnumerable<ItemAmostraTaiDTO>> ObterItensAmostraTai(long[] matrizesIds, int[] tiposCurriculosGradesIds);
+    }
 }

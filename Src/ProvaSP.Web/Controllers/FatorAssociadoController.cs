@@ -18,7 +18,7 @@ namespace ProvaSP.Web.Controllers
         private const string _edicao2019 = "2019";
         private const int _questionarioDaFamiliaDoAluno = 6;
         private static IEnumerable<int> _questionariosQueNaoDevemSerExibidosNoFatoresAssociados = new List<int> { 3, 4, 6, 7, 8, 9 };
-        private static IEnumerable<int> _questionariosQueNaoDevemSerExibidosNaCaracterizacaoDeFamilias = new List<int> { 3, 4, 7, 8, 9 };
+        private static IEnumerable<int> _questionariosQueNaoDevemSerExibidosNaCaracterizacaoDeFamilias = new List<int> { 3, 4, 7, 8, 9, 12, 13, 14 };
 
         [HttpGet]
         [Route("GetQuestionario")]

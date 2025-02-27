@@ -14,7 +14,7 @@ namespace GestaoEscolar.Repository
     {
         public IEnumerable<SYS_UnidadeAdministrativa> LoadSimple(Guid ent_id, IEnumerable<string> uad_id = null)
         {
-            var sql = new StringBuilder("SELECT uad.uad_id, uad.uad_nome, uad.uad_codigo ");
+            var sql = new StringBuilder("SELECT uad.uad_id, uad.uad_nome, uad.uad_codigo, uad.uad_sigla ");
             sql.Append("FROM SYS_UnidadeAdministrativa uad (NOLOCK) ");
             sql.Append("WHERE uad.ent_id = @ent_id AND uad.uad_situacao = @situacao ");
             if (uad_id != null)
@@ -79,6 +79,20 @@ namespace GestaoEscolar.Repository
                 cn.Open();
 
                 return cn.Query<SYS_UnidadeAdministrativa>(sql.ToString(), new { ent_id = ent_id, pes_id = pes_id, situacao = (byte)1 });
+            }
+        }
+
+        public SYS_UnidadeAdministrativa GetByUad_Codigo(string uad_codigo)
+        {
+            var sql = new StringBuilder("SELECT uad.uad_id, uad.uad_nome, uad.uad_codigo ");
+            sql.Append("FROM SYS_UnidadeAdministrativa uad (NOLOCK) ");
+            sql.Append("WHERE uad.uad_situacao = @situacao ");
+            sql.AppendFormat("AND uad_codigo = @uad_codigo ");
+
+            using (IDbConnection cn = Connection)
+            {
+                cn.Open();
+                return cn.Query<SYS_UnidadeAdministrativa>(sql.ToString(), new { situacao = (byte)1, uad_codigo = uad_codigo }).FirstOrDefault();
             }
         }
     }
