@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using GestaoAvaliacao.Entities.DTO.SerapEstudantes;
 using GestaoAvaliacao.IBusiness;
+using System.Net.Http.Json;
 
 namespace GestaoAvaliacao.Business
 {
-    internal class BoletimProvaBusiness :  IBoletimProvaBusiness
+    public class BoletimProvaBusiness :  IBoletimProvaBusiness
 
     {
         public static readonly string ENDPOINT_AUTENTICACAO = "api/v1/autenticacao";

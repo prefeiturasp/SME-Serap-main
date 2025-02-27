@@ -35,7 +35,7 @@ namespace GestaoAvaliacao.Controllers
                 if (string.IsNullOrWhiteSpace(urlApiBoletimProva))
                     throw new ApplicationException($"Necessário configurar a chave 'URL_BOLETIM_PROVA' no Web.config");
 
-                string urlAdminAcompanhamento = $"{urlApiBoletimProva}{resposta.Codigo}";
+                string urlAdminAcompanhamento = $"{urlApiBoletimProva}validar?codigo={resposta.Codigo}";
 
                 return Redirect(urlAdminAcompanhamento);
             }
