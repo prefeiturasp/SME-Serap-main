@@ -124,6 +124,8 @@ namespace GestaoAvaliacao.Entities
         public bool ApresentarResultadosPorItem { get; set; }
         public int? NumberSynchronizedResponseItems { get; set; }
 
+        public bool ShowInReport { get; set; }
+
         [NotMapped]
         public bool AdvanceWithoutAnswering { get; set; }
         [NotMapped]
