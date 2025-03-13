@@ -114,6 +114,7 @@
     <Compile Include="Adapters\ItemModelAdapter.cs" />
     <Compile Include="AdherenceBusiness.cs" />
     <Compile Include="AdminAcompanhamentoProvaBusiness.cs" />
+    <Compile Include="AdminBoletimProvaBusiness.cs.cs" />
     <Compile Include="AdministrativeUnitTypeBusiness.cs" />
     <Compile Include="AdminSerapEstudantesBusiness.cs" />
     <Compile Include="AlternativeBusiness.cs" />
