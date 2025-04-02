@@ -226,7 +226,8 @@
                 temBIB: 'Prova com BIB',
                 quantidadeCadeiaBlocos: 'Quantidade de blocos',
                 quantidadeItensCadeiaBlocos: 'Quantidade de itens por bloco',
-                quantidadeCadeiaBlocosPorBloco: 'Quantidade de blocos por caderno'
+                quantidadeCadeiaBlocosPorBloco: 'Quantidade de blocos por caderno',
+                showInReport: 'Exibir no boletim'
             };
             ng.curriculumGradeLabel = Parameters.Item.ITEMCURRICULUMGRADE.Value;
             //Lista de escolha 
@@ -361,6 +362,7 @@
             ng.e1_qtdItensCadeiaBlocos = null;
             ng.e1_qtdCadeiaBlocosPorBloco = null;
             ng.resultImportarCsvBlocos = null;
+            ng.showInReport = false;
 
             ng.params = {
                 Id: ng.params
@@ -858,6 +860,11 @@
             self.etapa1.alterou = true;
         };
 
+        ng.selectShowInReport = function () {
+            ng.showInReport = !ng.showInReport;
+            self.etapa1.alterou = true;
+        };
+
         ng.validarND1 = validarND1;
         function validarND1(i) {
             validarTotalItens(ng.e1_listaNiveis[i], 'Value1');
@@ -1328,7 +1335,8 @@
                 "ApresentarResultadosPorItem": ng.ApresentarResultadosPorItem,
                 "NumberItemsAplicationTai": ng.e1_nItensTestTAI,
                 "AdvanceWithoutAnswering": ng.advanceWithoutAnswering,
-                "BackToPreviousItem": ng.backToPreviousItem
+                "BackToPreviousItem": ng.backToPreviousItem,
+                "ShowInReport": ng.showInReport
             };
 
             ng.consideraCadeiaBlocosAoEditar = true;
@@ -1712,6 +1720,7 @@
                     ng.showVideoFiles = r.ShowVideoFiles;
                     ng.showAudioFiles = r.ShowAudioFiles;
                     ng.showTestTAI = r.ShowTestTAI;
+                    ng.showInReport = r.ShowInReport;
 
                     if (ng.showTestTAI) {
                         ng.e1_nItensTestTAI = procurarElementoEm([r.NumberItemsAplicationTai], ng.e1_nItensTestTAIList)[0];

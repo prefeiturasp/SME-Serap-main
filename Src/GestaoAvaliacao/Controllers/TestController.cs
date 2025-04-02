@@ -291,7 +291,8 @@ namespace GestaoAvaliacao.Controllers
                         entity.BlockChain,
                         BlockChainNumber = entity.BlockChainNumber.GetValueOrDefault(),
                         BlockChainItems = entity.BlockChainItems.GetValueOrDefault(),
-                        BlockChainForBlock = entity.BlockChainForBlock.GetValueOrDefault()
+                        BlockChainForBlock = entity.BlockChainForBlock.GetValueOrDefault(),
+                        ShowInReport = entity.ShowInReport
                     };
 
                     return Json(new { success = true, lista = ret }, JsonRequestBehavior.AllowGet);

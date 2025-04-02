@@ -528,6 +528,7 @@
     <Content Include="Assets\js\angular\controllers\answerSheet\testLotMenu.html" />
     <Content Include="Assets\js\angular\controllers\answerSheet\schoolLotMenu.html" />
     <Content Include="Assets\js\angular\controllers\answerSheet\batchDetailsController.js" />
+    <Content Include="Assets\js\angular\controllers\boletinProva\boletimProva.js" />
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\formCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\cognitiveCompetence\listCognitiveCompetenceController.js" />
     <Content Include="Assets\js\angular\controllers\electronicTestResult\indexElectronicTestResultController.js" />
@@ -1790,6 +1791,7 @@
     <Compile Include="Controllers\AdminAcompanhamentoProvasController.cs" />
     <Compile Include="Controllers\AdminSerapEstudantesController.cs" />
     <Compile Include="Controllers\BlockChainController.cs" />
+    <Compile Include="Controllers\BoletimProvaController.cs.cs" />
     <Compile Include="Controllers\ElectronicTestResultController.cs" />
     <Compile Include="Controllers\ImportarResultadosPSPController.cs" />
     <Compile Include="Controllers\NumberItemsAplicationTaiController.cs" />
