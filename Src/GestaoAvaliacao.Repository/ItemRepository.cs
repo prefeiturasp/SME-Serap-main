@@ -497,7 +497,7 @@ namespace GestaoAvaliacao.Repository
                             "SELECT isk.Id,isk.OriginalSkill,isk.CreateDate,isk.UpdateDate,isk.State,isk.Item_Id,isk.Skill_Id " +
                             "FROM ItemSkill isk " +
                             "INNER JOIN Skill s ON s.Id = isk.Skill_Id " +
-                            "WHERE isk.Item_Id = @id";
+                            "WHERE isk.Item_Id = @id and isk.state = 1 ";
 
                 var query = cn.QueryMultiple(sql, new { id = id });
                 var item = query.Read<Item>().FirstOrDefault();
@@ -1145,7 +1145,7 @@ namespace GestaoAvaliacao.Repository
                 GestaoAvaliacaoContext.SaveChanges();
 
                 return entity;
-            }
+            }            
         }
 
         public Item Update(Item entity)
@@ -1173,6 +1173,8 @@ namespace GestaoAvaliacao.Repository
                 _entity.NarrationAlternatives = entity.NarrationAlternatives;
                 _entity.SubSubject_Id = entity.SubSubject_Id;
                 _entity.KnowledgeArea_Id = entity.KnowledgeArea_Id;
+
+                _entity.EvaluationMatrix_Id = entity.EvaluationMatrix_Id;
 
                 _entity.UpdateDate = dateNow;
                 _entity.State = Convert.ToByte(EnumState.ativo);
@@ -1267,7 +1269,7 @@ namespace GestaoAvaliacao.Repository
                     }
                 }
 
-                List<ItemAudio> newItemAudio = new List<ItemAudio>();
+                    List<ItemAudio> newItemAudio = new List<ItemAudio>();
 
                 foreach (var audioModel in entity.ItemAudios)
                 {
@@ -1444,7 +1446,7 @@ namespace GestaoAvaliacao.Repository
                 _entity.ItemType_Id = entity.ItemType_Id;
                 _entity.EvaluationMatrix_Id = entity.EvaluationMatrix_Id;
 
-                GestaoAvaliacaoContext.Entry(_entity).State = System.Data.Entity.EntityState.Modified;
+                    GestaoAvaliacaoContext.Entry(_entity).State = System.Data.Entity.EntityState.Modified;
 
                 #region Caso já tenha sido versionado altera o itemCode dos outros registros
 
@@ -1458,7 +1460,7 @@ namespace GestaoAvaliacao.Repository
                     });
                 #endregion
 
-                GestaoAvaliacaoContext.SaveChanges();
+                    GestaoAvaliacaoContext.SaveChanges();
 
                 return _entity;
             }
