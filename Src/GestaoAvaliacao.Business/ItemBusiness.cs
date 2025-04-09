@@ -896,6 +896,9 @@ namespace GestaoAvaliacao.Business
                     newItem = DuplicateItem(item);
                     newItem.BaseText_Id = newBaseText;
 
+                    newItem.KnowledgeArea_Id = item.KnowledgeArea_Id;
+                    newItem.SubSubject_Id = item.SubSubject_Id;
+
                     itemRepository.Save(newItem);
                 }
                 else
