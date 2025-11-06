@@ -1,0 +1,14 @@
+﻿using GestaoAvaliacao.Entities.DTO.SerapEstudantes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GestaoAvaliacao.IBusiness
+{
+    public interface IAdminItemProvaBusiness
+    {
+        AdminAutenticacaoRespostaDTO AdminAutenticacao(AdminAutenticacaoDTO adminAutenticacaoDTO);
+    }
+}
