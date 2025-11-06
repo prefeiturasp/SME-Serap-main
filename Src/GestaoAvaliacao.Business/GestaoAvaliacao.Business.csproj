@@ -116,6 +116,7 @@
     <Compile Include="AdminAcompanhamentoProvaBusiness.cs" />
     <Compile Include="AdminBoletimProvaBusiness.cs.cs" />
     <Compile Include="AdministrativeUnitTypeBusiness.cs" />
+    <Compile Include="AdminItemProvaBusiness.cs.cs" />
     <Compile Include="AdminSerapEstudantesBusiness.cs" />
     <Compile Include="AlternativeBusiness.cs" />
     <Compile Include="AnswerSheetBatchQueueBusiness.cs" />
