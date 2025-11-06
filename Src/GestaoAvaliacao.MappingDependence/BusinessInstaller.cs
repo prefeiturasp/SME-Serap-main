@@ -467,9 +467,13 @@ namespace GestaoAvaliacao.MappingDependence
                 .WithService.AllInterfaces()
                 .SetLifestyle(LifestylePerWebRequest));
 
-
             container.Register(Classes.FromAssemblyContaining<BoletimProvaBusiness>()
                 .BasedOn(typeof(IBoletimProvaBusiness))
+                .WithService.AllInterfaces()
+                .SetLifestyle(LifestylePerWebRequest));
+
+            container.Register(Classes.FromAssemblyContaining<AdminItemProvaBusiness>()
+                .BasedOn(typeof(IAdminItemProvaBusiness))
                 .WithService.AllInterfaces()
                 .SetLifestyle(LifestylePerWebRequest));
 
