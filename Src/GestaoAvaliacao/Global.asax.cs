@@ -5,6 +5,7 @@ using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.MappingDependence;
 using Microsoft.AspNet.SignalR;
 using System;
+using System.Net;
 using System.Web.Http;
 using System.Web.Http.Dispatcher;
 using System.Web.Mvc;
@@ -19,12 +20,16 @@ namespace GestaoAvaliacao
 
         protected void Application_Start()
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             BootstrapContainer();
             SignalRHubRegistration();
+
+
 
             #if DEBUG
             BundleTable.EnableOptimizations = false;
