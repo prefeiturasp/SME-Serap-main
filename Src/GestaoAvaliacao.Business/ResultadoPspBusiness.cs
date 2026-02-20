@@ -91,7 +91,7 @@ namespace GestaoAvaliacao.Business
                 var bytesArquivo = readFileContents(file);
                 var formContent = new MultipartFormDataContent
                 {
-                    {new StringContent(nomeArquivo),"arquivoResultadoDto.NomeArquivo"},
+                    {new StringContent(nomeArquivo),"NomeArquivo"},
                     {new StreamContent(new MemoryStream(bytesArquivo)),"arquivo",nomeArquivo}
                 };
 
