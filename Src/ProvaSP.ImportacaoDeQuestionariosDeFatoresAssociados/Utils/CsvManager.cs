@@ -5,14 +5,17 @@ namespace ImportacaoDeQuestionariosSME.Utils
 {
     public static class CsvManager
     {
-        public static DataTable GetCsvFile(string csv_file_path)
+        public static DataTable GetCsvFile(string csv_file_path, Encoding encoding = null)
         {
+            if (encoding is null)
+                encoding = Encoding.GetEncoding(1252);
+
             var csvData = new DataTable();
 
             if (!csv_file_path.EndsWith(".csv")) 
                 return csvData;
 
-            using (var csvReader = new Microsoft.VisualBasic.FileIO.TextFieldParser(csv_file_path, Encoding.GetEncoding(1252)))
+            using (var csvReader = new Microsoft.VisualBasic.FileIO.TextFieldParser(csv_file_path, encoding))
             {
                 csvReader.SetDelimiters(";");
                 csvReader.HasFieldsEnclosedInQuotes = true;
