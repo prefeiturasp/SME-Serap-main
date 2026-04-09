@@ -184,7 +184,9 @@
             this.cmbEdicao.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbEdicao.FormattingEnabled = true;
             this.cmbEdicao.Items.AddRange(new object[] {
-            "2022"});
+            "2022",
+            "2023",
+            "2024"});
             this.cmbEdicao.Location = new System.Drawing.Point(6, 33);
             this.cmbEdicao.Name = "cmbEdicao";
             this.cmbEdicao.Size = new System.Drawing.Size(121, 22);
