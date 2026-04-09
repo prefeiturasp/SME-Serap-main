@@ -86,7 +86,7 @@ namespace ImportacaoDeQuestionariosSME.Services.CaracterizacaoFamiliasEscolasQue
 
         private static bool EhArquivoValido(DataTable csv)
         {
-            var colunasArquivo = new[] { "QuestaoId", "ItemId", "Questao", "Item", "Valor", "AnoEscolar" };
+            var colunasArquivo = new[] { "Aplicacao", "QuestaoId", "ItemId", "Questao", "Item", "Valor", "AnoEscolar" };
 
             for (var i = 0; i < csv.Columns.Count; i++)
             {
