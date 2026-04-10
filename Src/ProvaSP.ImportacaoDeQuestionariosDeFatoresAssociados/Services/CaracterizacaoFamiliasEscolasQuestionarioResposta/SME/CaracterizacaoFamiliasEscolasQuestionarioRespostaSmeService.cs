@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using ImportacaoDeQuestionariosSME.Data.Repositories.CiclosAnoEscolar;
+﻿using ImportacaoDeQuestionariosSME.Data.Repositories.CiclosAnoEscolar;
 using ImportacaoDeQuestionariosSME.Data.Repositories.FatoresAssociadosQuestionarioResposta.SME;
 using ImportacaoDeQuestionariosSME.Domain.CiclosAnoEscolar;
 using ImportacaoDeQuestionariosSME.Domain.FatoresAssociadosQuestionarioResposta.SME;
 using ImportacaoDeQuestionariosSME.Services.CaracterizacaoFamiliasEscolasQuestionarioResposta.Dtos;
 using ImportacaoDeQuestionariosSME.Utils;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ImportacaoDeQuestionariosSME.Services.CaracterizacaoFamiliasEscolasQuestionarioResposta.SME
 {
@@ -26,7 +27,7 @@ namespace ImportacaoDeQuestionariosSME.Services.CaracterizacaoFamiliasEscolasQue
                 return;
             }
 
-            var csv = CsvManager.GetCsvFile(dto.CaminhoArquivo);
+            var csv = CsvManager.GetCsvFile(dto.CaminhoArquivo, Encoding.UTF8);
 
             if (csv.Rows.Count <= 0)
             {
@@ -86,7 +87,7 @@ namespace ImportacaoDeQuestionariosSME.Services.CaracterizacaoFamiliasEscolasQue
 
         private static bool EhArquivoValido(DataTable csv)
         {
-            var colunasArquivo = new[] { "QuestaoId", "ItemId", "Questao", "Item", "Valor", "AnoEscolar" };
+            var colunasArquivo = new[] { "Aplicacao", "QuestaoId", "ItemId", "Questao", "Item", "Valor", "AnoEscolar" };
 
             for (var i = 0; i < csv.Columns.Count; i++)
             {
