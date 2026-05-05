@@ -82,7 +82,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
                         if (agrupamentoPorAnoEscolar.AnoEscolar == 0) 
                             continue;
 
-                        var cicloId = ciclosAnoEscolar.First(x => x.AnoEscolar == agrupamentoPorAnoEscolar.AnoEscolar).CicloId;
+                        var cicloId = ciclosAnoEscolar.FirstOrDefault(x => x.AnoEscolar == agrupamentoPorAnoEscolar.AnoEscolar)?.CicloId;
 
                         foreach (var opcao in questao.Opcoes)
                         {

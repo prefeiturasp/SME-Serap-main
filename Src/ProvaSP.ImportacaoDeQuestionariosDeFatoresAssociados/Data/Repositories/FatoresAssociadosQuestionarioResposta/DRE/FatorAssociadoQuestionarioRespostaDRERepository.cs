@@ -37,6 +37,9 @@ namespace ImportacaoDeQuestionariosSME.Data.Repositories.FatoresAssociadosQuesti
                VALUES ";
 
         protected override string GetValuesQueryForEntity(FatorAssociadoQuestionarioRespostaDRE entity)
-            => $@"({entity.Id}, '{entity.Edicao}', {entity.CicloId}, {entity.AnoEscolar}, {entity.FatorAssociadoQuestionarioId}, '{entity.VariavelId}', {entity.ItemId}, '{entity.UadSigla}', '{entity.VariavelDescricao}', '{entity.ItemDescricao}', {entity.Valor.ToString().Replace(",", ".")})";
+        {
+            var cicloId = entity.CicloId.HasValue ? entity.CicloId.ToString() : "null";
+            return $@"({entity.Id}, '{entity.Edicao}', {cicloId}, {entity.AnoEscolar}, {entity.FatorAssociadoQuestionarioId}, '{entity.VariavelId}', {entity.ItemId}, '{entity.UadSigla}', '{entity.VariavelDescricao}', '{entity.ItemDescricao}', {entity.Valor.ToString().Replace(",", ".")})";
+        }
     }
 }

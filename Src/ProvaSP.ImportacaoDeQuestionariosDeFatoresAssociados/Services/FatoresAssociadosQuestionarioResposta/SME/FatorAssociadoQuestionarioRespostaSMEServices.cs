@@ -93,7 +93,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
                     .ForEach(x =>
                     {
                         var questionarioItem = questionarioItens.FirstOrDefault(y => y.Numero == x.Questao);
-                        var cicloId = ciclosAnoEscolar.First(z => z.AnoEscolar == x.AnoEscolar).CicloId;
+                        var cicloId = ciclosAnoEscolar.FirstOrDefault(z => z.AnoEscolar == x.AnoEscolar)?.CicloId;
                         var valor = GetValorPercentual(x.Quantidade,
                                     respostasSMEAgrupadas.First(z => z.AnoEscolar == x.AnoEscolar && z.Questao == x.Questao).Quantidade);
                         var constructosRelacionados = GetConstructosRelacionados(dto.Edicao, cicloId, x.AnoEscolar, x.Questao, constructos);

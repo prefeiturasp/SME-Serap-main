@@ -78,9 +78,6 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociados
         {
             var cicloId = ciclosAnoEscolar.FirstOrDefault(c => c.AnoEscolar == anoEscolar)?.CicloId;
 
-            if (cicloId is null) 
-                throw new NullReferenceException($"Não foi possível definir o cicloId para o ano escolar {anoEscolar}");
-
             var construto = constructos
                 .FirstOrDefault(x => x.Edicao == edicao && x.AnoEscolar == anoEscolar && x.CicloId == cicloId && x.Nome == nome);
 

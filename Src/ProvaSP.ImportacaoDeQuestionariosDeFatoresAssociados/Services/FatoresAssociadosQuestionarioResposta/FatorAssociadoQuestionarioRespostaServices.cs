@@ -40,7 +40,7 @@ namespace ImportacaoDeQuestionariosSME.Services.FatoresAssociadosQuestionarioRes
             return dtImportacao;
         }
 
-        protected IEnumerable<Constructo> GetConstructosRelacionados(string edicao, int cicloId, int anoEscolar, int questao, IEnumerable<Constructo> constructos)
+        protected IEnumerable<Constructo> GetConstructosRelacionados(string edicao, int? cicloId, int anoEscolar, int questao, IEnumerable<Constructo> constructos)
         {
             var questaoConstructoDtos = _questaoConstructoDtos.Where(x => x.Questao == questao);
 

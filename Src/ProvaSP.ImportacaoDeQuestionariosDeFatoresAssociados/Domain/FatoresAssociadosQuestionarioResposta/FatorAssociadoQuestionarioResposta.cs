@@ -11,7 +11,7 @@ namespace ImportacaoDeQuestionariosSME.Domain.FatoresAssociadosQuestionarioRespo
 
         public int AnoEscolar { get; set; }
         public string Edicao { get; set; }
-        public int CicloId { get; set; }
+        public int? CicloId { get; set; }
         public int FatorAssociadoQuestionarioId { get; set; }
         public string VariavelId { get; set; }
         public int ItemId { get; set; }

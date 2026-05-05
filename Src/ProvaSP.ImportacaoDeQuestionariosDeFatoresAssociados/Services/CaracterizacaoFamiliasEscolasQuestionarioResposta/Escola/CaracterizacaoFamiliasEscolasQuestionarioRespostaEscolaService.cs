@@ -61,16 +61,10 @@ namespace ImportacaoDeQuestionariosSME.Services.CaracterizacaoFamiliasEscolasQue
 
                 var cicloAnoEscolar = ciclosAnosEscolares.FirstOrDefault(c => c.AnoEscolar == anoEscolar);
 
-                if (cicloAnoEscolar == null)
-                {
-                    dto.AddErro("Ciclo não localizado.");
-                    return;
-                }
-
                 var entity = new FatorAssociadoQuestionarioRespostaEscola
                 {
                     Edicao = dto.Edicao,
-                    CicloId = cicloAnoEscolar.CicloId,
+                    CicloId = cicloAnoEscolar?.CicloId,
                     FatorAssociadoQuestionarioId = dto.FatorAssociadoQuestionarioId,
                     VariavelId = variavelId,
                     ItemId = itemId,
