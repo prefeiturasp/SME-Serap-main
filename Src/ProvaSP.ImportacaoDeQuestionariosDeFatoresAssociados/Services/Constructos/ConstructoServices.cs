@@ -44,7 +44,7 @@ namespace ImportacaoDeQuestionariosSME.Services.Constructos
                         .Select(anoEscolar => new Constructo
                         {
                             AnoEscolar = anoEscolar,
-                            CicloId = ciclos.FirstOrDefault(x => x.AnoEscolar == anoEscolar)?.CicloId ?? default,
+                            CicloId = ciclos.FirstOrDefault(x => x.AnoEscolar == anoEscolar)?.CicloId,
                             ConstructoId = ++maxConstructoId,
                             Edicao = dto.Edicao,
                             FatorAssociadoQuestionarioId = constructoReumido.FatorAssociadoQuestionarioId,

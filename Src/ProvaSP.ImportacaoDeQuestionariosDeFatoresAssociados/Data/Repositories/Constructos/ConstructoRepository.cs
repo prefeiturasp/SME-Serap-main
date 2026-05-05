@@ -25,7 +25,10 @@ namespace ImportacaoDeQuestionariosSME.Data.Repositories.Constructos
                VALUES ";
 
         protected override string GetValuesQueryForEntity(Constructo entity)
-            => $"({entity.ConstructoId}, '{entity.Edicao}', {entity.CicloId}, {entity.FatorAssociadoQuestionarioId}, '{entity.Nome}', '{entity.Referencia}', {entity.AnoEscolar})";
+        {
+            var cicloId = entity.CicloId.HasValue ? entity.CicloId.ToString() : "null";
+            return $"({entity.ConstructoId}, '{entity.Edicao}', {cicloId}, {entity.FatorAssociadoQuestionarioId}, '{entity.Nome}', '{entity.Referencia}', {entity.AnoEscolar})";
+        }
 
         public async Task<int> GetMaxConstructoId()
         {

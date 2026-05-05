@@ -34,8 +34,8 @@ namespace ImportacaoDeQuestionariosSME.Forms.CaracterizacaoFamiliasEscolasQuesti
 
             var questionarios = new Dictionary<int, string>
             {
-                { 10, "Estudante" },
-                { 11, "Família" }
+                { 20, "Estudante" },
+                { 21, "Família" }
             };
 
             cmbFatorAssociadoQuestionario.DataSource = new BindingSource(questionarios, null);
