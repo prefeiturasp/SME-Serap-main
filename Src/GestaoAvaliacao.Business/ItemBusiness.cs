@@ -675,14 +675,18 @@ namespace GestaoAvaliacao.Business
 
             if (_entity.Validate.IsValid)
             {
-                var itemCodeVersion = itemRepository.GetMaxCode() + 1;
+                // Caso venha do novo sistema de itens rebe o valor que veio, senão gera a versão.
+                var itemCodeVersion = entity.ItemCodeVersion > 0
+                    ? entity.ItemCodeVersion
+                    : itemRepository.GetMaxCode() + 1;
 
                 if (entity.ItemCode.IsNullOrEmptyOrWhiteSpace())
                     entity.ItemCode = itemCodeVersion.ToString();
 
                 entity.ItemCodeVersion = itemCodeVersion;
                 entity.LastVersion = true;
-                entity.ItemVersion = 1;
+                entity.ItemVersion = entity.ItemVersion > 0 ? entity.ItemVersion : 1;
+
                 _entity = RuleUpdateBaseText(entity);
 
                 entity.BaseText_Id = _entity.BaseText_Id;
@@ -1612,6 +1616,10 @@ namespace GestaoAvaliacao.Business
                         SubSubject_Id = model.SubassuntoId,
                         ItemFiles = itemFiles,
                         ItemAudios = itemAudios,
+
+                        // Recebe informações do novo cadastro de Itens
+                        ItemVersion = model.ItemVersion ?? 0,
+                        ItemCodeVersion = model.ItemCodeVersion ?? 0,
                     };
 
                     item.ItemSkills.Add(new ItemSkill()

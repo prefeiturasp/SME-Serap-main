@@ -35,6 +35,9 @@ namespace GestaoAvaliacao.Dtos.ItemApi
         public int? Proficiencia { get; set; }
         public string Enunciado { get; set; }
 
+        public int? ItemVersion { get; set; }
+        public int? ItemCodeVersion { get; set; }
+
         public List<AlternativeDto> Alternativas { get; set; }
         public List<PictureDto> Imagens { get; set; }
         public List<VideoDto> Videos { get; set; }
