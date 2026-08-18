@@ -15,5 +15,9 @@ namespace GestaoAvaliacao.Entities.DTO
 		public string UpdateDate { get; set; }
 
 		public long FileId { get; set; }
-	}
+        public long? TipoId { get; set; }
+        public long? TipoLegadoId { get; set; }
+        public string TipoDescricao { get; set; }
+        public bool? TipoParaEstudanteComDeficiencia { get; set; }
+    }
 }
