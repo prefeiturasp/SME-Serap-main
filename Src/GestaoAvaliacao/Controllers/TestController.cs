@@ -1320,7 +1320,7 @@ namespace GestaoAvaliacao.Controllers
                 entity = exportAnalysisBusiness.SolicitExport(entity.Test_Id);
                 return Json(new
                 {
-                    success = true,
+                    success = entity.Validate.IsValid,
                     type = entity.Validate.Type,
                     message = entity.Validate.Message != null ? entity.Validate.Message : "Solicitação realizada com sucesso."
                 }, JsonRequestBehavior.AllowGet);

@@ -1,5 +1,7 @@
-﻿using GestaoAvaliacao.Entities;
+﻿using GestaoAvaliacao.Dtos;
+using GestaoAvaliacao.Entities;
 using GestaoAvaliacao.Entities.DTO;
+using GestaoAvaliacao.Entities.Enumerator;
 using GestaoAvaliacao.IBusiness;
 using GestaoAvaliacao.IRepository;
 using GestaoAvaliacao.Util;
@@ -87,8 +89,16 @@ namespace GestaoAvaliacao.Business
             var entity = new ExportAnalysis() { StateExecution = EnumServiceState.Pending, Test_Id = TestId };
             try
             {
-                var test = testBusiness.GetTestBy_Id(TestId);
-                if (test != null && test.ShowOnSerapEstudantes)
+                var provaExportacaoSerapEstudantes = ObterProvaExportacaoSerapEstudantesPorId(TestId);
+
+                if (VerificarSeProvaSpaParaEstudantesSemDeficiencia(provaExportacaoSerapEstudantes))
+                {
+                    return RetornaErroValidacaoTipoProva(entity);
+                }
+
+                var test = testBusiness.GetObjectWithTestType(TestId);
+
+                if (test != null && test.ShowOnSerapEstudantes )
                 {
                     SolicitarExportacaoProvaSerapEstudantes(TestId);
                     entity.Validate.Type = "OK";
@@ -198,7 +208,52 @@ namespace GestaoAvaliacao.Business
 
         #region Private methods
 
+        private ExportAnalysisDTO ObterProvaExportacaoSerapEstudantesPorId(long testId)
+        {
+            try
+            {
+                var filter = new ExportAnalysisFilter { Code = testId };
+                var provas = ObterProvasExportacaoSerapEstudantes(filter);
+                return provas?.FirstOrDefault();
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
+        private bool VerificarSeProvaSpaParaEstudantesSemDeficiencia(ExportAnalysisDTO provaExportacao)
+        {
+            if (provaExportacao == null || string.IsNullOrEmpty(provaExportacao.TipoDescricao))
+                return false;
+
+            const string tipoProvaSpa = "Prova Saberes e Aprendizagens";
+            string tipoDescricaoNormalizada = NormalizarTexto(provaExportacao.TipoDescricao);
+            bool isProvaSpa = tipoDescricaoNormalizada.Contains(NormalizarTexto(tipoProvaSpa));
+            bool isParaEstudanteSemDeficiencia = provaExportacao.TipoParaEstudanteComDeficiencia != true;
+
+            return isProvaSpa && isParaEstudanteSemDeficiencia;
+        }
+
+        // Remove espaços no início e fim, substitui espaços múltiplos por um único espaço e converte para lowercase
+        private string NormalizarTexto(string texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return string.Empty;
+
+            return System.Text.RegularExpressions.Regex.Replace(texto.ToLowerInvariant(), @"\s+", "");
+        }
+
+        private ExportAnalysis RetornaErroValidacaoTipoProva(
+            ExportAnalysis entity)
+        {
+            entity.Validate.IsValid = false;
+            entity.Validate.Type = ValidateType.error.ToString();
+
+            entity.Validate.Message = $"O relatório solicitado deve ser extraído na tela de 'Boletim de Provas.";
+
+            return entity;
+        }
 
         private Validate Validate(ExportAnalysis entity)
         {
