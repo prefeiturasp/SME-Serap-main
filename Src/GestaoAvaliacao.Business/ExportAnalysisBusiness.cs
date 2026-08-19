@@ -212,9 +212,8 @@ namespace GestaoAvaliacao.Business
         {
             try
             {
-                var pager = new Pager();
                 var filter = new ExportAnalysisFilter { Code = testId };
-                var provas = ObterProvasExportacaoSerapEstudantes(ref pager, filter);
+                var provas = ObterProvasExportacaoSerapEstudantes(filter);
                 return provas?.FirstOrDefault();
             }
             catch
