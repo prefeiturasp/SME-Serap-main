@@ -97,8 +97,11 @@ namespace GestaoAvaliacao.Business
             {
                 var provaExportacaoSerapEstudantes = ObterProvaExportacaoSerapEstudantesPorId(TestId);
 
-                if (VerificarSeProvaSpaParaEstudantesSemDeficiencia(provaExportacaoSerapEstudantes))
+                // Valida se a prova é do tipo SPA e para estudantes sem deficiência
+                if (VerificarSeProvaSpa(provaExportacaoSerapEstudantes) 
+                    && provaExportacaoSerapEstudantes.TipoParaEstudanteComDeficiencia == false)
                 {
+                    // Retona com Erro
                     return RetornaErroValidacaoTipoProva(entity);
                 }
 
@@ -234,7 +237,7 @@ namespace GestaoAvaliacao.Business
             }
         }
 
-        private bool VerificarSeProvaSpaParaEstudantesSemDeficiencia(ExportAnalysisDTO provaExportacao)
+        private bool VerificarSeProvaSpa(ExportAnalysisDTO provaExportacao)
         {
             if (provaExportacao == null || string.IsNullOrEmpty(provaExportacao.TipoDescricao))
                 return false;
@@ -242,9 +245,8 @@ namespace GestaoAvaliacao.Business
             const string tipoProvaSpa = "Prova Saberes e Aprendizagens";
             string tipoDescricaoNormalizada = NormalizarTexto(provaExportacao.TipoDescricao);
             bool isProvaSpa = tipoDescricaoNormalizada.Contains(NormalizarTexto(tipoProvaSpa));
-            bool isParaEstudanteSemDeficiencia = provaExportacao.TipoParaEstudanteComDeficiencia != true;
 
-            return isProvaSpa && isParaEstudanteSemDeficiencia;
+            return isProvaSpa;
         }
 
         // Remove espaços no início e fim, substitui espaços múltiplos por um único espaço e converte para lowercase
@@ -262,7 +264,7 @@ namespace GestaoAvaliacao.Business
             entity.Validate.IsValid = false;
             entity.Validate.Type = ValidateType.error.ToString();
 
-            entity.Validate.Message = $"O relatório solicitado deve ser extraído na tela de 'Boletim de Provas.";
+            entity.Validate.Message = $"O relatório solicitado deve ser extraído na tela de 'Boletim de Provas'.";
 
             return entity;
         }
