@@ -29,6 +29,8 @@ namespace GestaoAvaliacao
             BootstrapContainer();
             SignalRHubRegistration();
 
+
+
             #if DEBUG
             BundleTable.EnableOptimizations = false;
             #else 
